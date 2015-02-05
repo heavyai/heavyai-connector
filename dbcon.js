@@ -7,7 +7,8 @@
       setHost: setHost,
       setUser: setUser,
       setDbName: setDbName,
-      query: query
+      query: query,
+      getFields: getFields
     }
     var platform = "postgres";
     var host = "localhost"; // default
@@ -34,7 +35,7 @@
       return dbcon;
     }
 
-    function query(query) {
+    function testParamsDefined() {
       if (host == null) {
         throw "Host not defined";
       }
@@ -44,10 +45,21 @@
       if (dbName == null) {
         throw "Db name not defined";
       }
-
+    }
+    function query(query) {
+      testParamsDefined();
       var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
+      console.log(requestString);
       return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
     }
+
+    function getFields(tableName) { 
+      testParamsDefined();
+      var query = "SELECT * FROM " + tableName + " LIMIT 0";
+      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
+      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText).fields;
+    }
+
     return dbcon;
   }
 })(typeof exports !== 'undefined' && exports || this);
