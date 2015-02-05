@@ -1,12 +1,13 @@
 (function(exports){
   dbcon.version = "1.0";
+  exports.dbcon = dbcon;
   function dbcon() {
     var dbcon = {
-      setPlatform: setPlatform
-      setHost: setHost
+      setPlatform: setPlatform,
+      setHost: setHost,
       setUser: setUser,
       setDbName: setDbName,
-      query: query,
+      query: query
     }
     var platform = "postgres";
     var host = "localhost"; // default
@@ -44,7 +45,7 @@
         throw "Db name not defined";
       }
 
-      var requestString = platform + ".php?hos=t" + host + "&user=" + user + "&dbname=" + dbName + "&q" +  query;
+      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
       return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
     }
     return dbcon;
