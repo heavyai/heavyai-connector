@@ -45,7 +45,7 @@
         throw "Db name not defined";
       }
 
-      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
+      var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
       return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
     }
     return dbcon;
