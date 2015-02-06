@@ -49,8 +49,26 @@
     function query(query) {
       testParamsDefined();
       var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
-      console.log(requestString);
-      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
+      var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
+      var fields = response.fields;
+      // need to check for dates
+      var dateVars = []
+      var numFields = fields.length;
+      for (var i = 0; i < numFields; i++) {
+        if (fields[i].type == "date")  {
+          dateVars.push(fields[i].name);
+        }
+      }
+      var numDateVars = dateVars.length;
+      if (numDateVars > 0) {
+        var numRows = response.results.length;
+        for (var r = 0; r < numRows; r++) { 
+          for (var d = 0; d < numDateVars; d++) {
+            response.results[r][dateVars[d]] = new Date(response.results[r][dateVars[d]]);
+          }
+        }
+      }
+      return response.results;
     }
 
     function getFields(tableName) { 
