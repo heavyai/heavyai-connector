@@ -46,11 +46,8 @@
         throw "Db name not defined";
       }
     }
-    function query(query) {
-      testParamsDefined();
-      console.log(query);
-      var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
-      var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
+
+    function processResponse(response) {
       var fields = response.fields;
       // need to check for dates
       var dateVars = [];
@@ -70,9 +67,24 @@
           }
         }
       }
+    }
 
-
+    function query(query) {
+      testParamsDefined();
+      console.log(query);
+      var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
+      var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
+      processResponse(response);
       return response.results;
+    }
+
+    function queryAsync(query,callback) {
+      testParamsDefined();
+      var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
+      $.getJSON(requestString, function(response) {
+        processResponse(response);
+        callback(response.results);
+      });
     }
 
     function getFields(tableName) { 
