@@ -48,11 +48,13 @@
     }
     function query(query) {
       testParamsDefined();
+      console.log(query);
       var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
       var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
       var fields = response.fields;
       // need to check for dates
-      var dateVars = []
+      var dateVars = [];
+      //var valueVars = []; // value vars are attributes prefixed by value_ -> need to put these in value struct
       var numFields = fields.length;
       for (var i = 0; i < numFields; i++) {
         if (fields[i].type == "date")  {
@@ -68,6 +70,8 @@
           }
         }
       }
+
+
       return response.results;
     }
 
