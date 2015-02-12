@@ -54,7 +54,8 @@
       //var valueVars = []; // value vars are attributes prefixed by value_ -> need to put these in value struct
       var numFields = fields.length;
       for (var i = 0; i < numFields; i++) {
-        if (fields[i].type == "date")  {
+        console.log("type = " + fields[i].type);
+        if (fields[i].type == "date" || fields[i].type == "timestamp" || fields[i].type == "timestamptz")  {
           dateVars.push(fields[i].name);
         }
       }
