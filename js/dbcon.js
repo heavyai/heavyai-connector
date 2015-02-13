@@ -54,7 +54,7 @@
       //var valueVars = []; // value vars are attributes prefixed by value_ -> need to put these in value struct
       var numFields = fields.length;
       for (var i = 0; i < numFields; i++) {
-        console.log("type = " + fields[i].type);
+        //console.log("type = " + fields[i].type);
         if (fields[i].type == "date" || fields[i].type == "timestamp" || fields[i].type == "timestamptz")  {
           dateVars.push(fields[i].name);
         }
@@ -72,7 +72,7 @@
 
     function query(query) {
       testParamsDefined();
-      console.log(query);
+      //console.log(query);
       var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
       var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
       processResponse(response);
