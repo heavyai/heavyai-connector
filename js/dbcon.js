@@ -8,7 +8,8 @@
       setUser: setUser,
       setDbName: setDbName,
       query: query,
-      getFields: getFields
+      getFields: getFields,
+      getMetadata: getMetadata
     }
     var platform = "postgres";
     var host = "localhost"; // default
@@ -86,6 +87,13 @@
         processResponse(response);
         callback(response.results);
       });
+    }
+
+    function getMetadata(tableName) {
+      console.log("hi");
+      testParamsDefined();
+      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&meta=1&table=" + tableName;
+      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
     }
 
     function getFields(tableName) { 
