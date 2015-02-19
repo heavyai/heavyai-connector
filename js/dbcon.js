@@ -9,12 +9,15 @@
       setDbName: setDbName,
       query: query,
       getFields: getFields,
-      getMetadata: getMetadata
+      getDatabases: getDatabases,
+      getTablesForDb: getTablesForDb
+  
+      //getMetadata: getMetadata
     }
     var platform = "postgres";
     var host = "localhost"; // default
     var user = null;
-    var dbName = null;
+    var dbName = "postgres";
 
     function setPlatform(newPlatform) {
       platform = newPlatofrm;
@@ -89,12 +92,28 @@
       });
     }
 
+    function getDatabases () {
+      testParamsDefined();
+      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&meta=dbs";
+      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
+    }
+    function getTablesForDb () {
+      testParamsDefined();
+      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&meta=tables";
+      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
+    }
+
+    /* 
     function getMetadata(tableName) {
       console.log("hi");
       testParamsDefined();
-      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&meta=1&table=" + tableName;
+      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&meta=1";
+      if (tableName) {
+        requestString += "&table=" + tableName;
+      }
       return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
     }
+    */
 
     function getFields(tableName) { 
       testParamsDefined();
