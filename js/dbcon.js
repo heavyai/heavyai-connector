@@ -119,7 +119,7 @@
     function getFields(tableName) { 
       testParamsDefined();
       var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&table=" + tableName + "&meta=fields";
-      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText).fields;
+      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
       /*
       var query = "SELECT * FROM " + tableName + " LIMIT 0";
       var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
