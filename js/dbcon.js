@@ -14,10 +14,10 @@
   
       //getMetadata: getMetadata
     }
-    var platform = "postgres";
+    var platform = "server-test/mapd";
     var host = "localhost"; // default
     var user = null;
-    var dbName = "postgres";
+    var dbName = "mapd";
 
     function setPlatform(newPlatform) {
       platform = newPlatofrm;
