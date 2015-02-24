@@ -4,6 +4,7 @@
   function dbcon() {
     var dbcon = {
       setPlatform: setPlatform,
+      getPlatform: function () {return platform;},
       setHost: setHost,
       setUser: setUser,
       setDbName: setDbName,
@@ -20,7 +21,7 @@
     var dbName = "mapd";
 
     function setPlatform(newPlatform) {
-      platform = newPlatofrm;
+      platform = newPlatform;
       return dbcon;
     }
 
@@ -59,7 +60,7 @@
       var numFields = fields.length;
       for (var i = 0; i < numFields; i++) {
         //console.log("type = " + fields[i].type);
-        if (fields[i].type == "date" || fields[i].type == "timestamp" || fields[i].type == "timestamptz")  {
+        if (fields[i].type == "date" || fields[i].type == "timestamp" || fields[i].type == "timestamptz" || fields[i].type == "TIME")  {
           dateVars.push(fields[i].name);
         }
       }
@@ -76,8 +77,8 @@
 
     function query(query) {
       testParamsDefined();
-      //console.log(query);
-      var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
+      console.log(query);
+      var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query + ";";
       var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
       processResponse(response);
       return response.results;
@@ -117,9 +118,13 @@
 
     function getFields(tableName) { 
       testParamsDefined();
+      var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&table=" + tableName + "&meta=fields";
+      return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText).fields;
+      /*
       var query = "SELECT * FROM " + tableName + " LIMIT 0";
       var requestString = platform + ".php?host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query;
       return JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText).fields;
+      */
     }
 
     return dbcon;
