@@ -70,6 +70,7 @@
         for (var r = 0; r < numRows; r++) { 
           for (var d = 0; d < numDateVars; d++) {
             response.results[r][dateVars[d]] = new Date(response.results[r][dateVars[d]]);
+
           }
         }
       }
