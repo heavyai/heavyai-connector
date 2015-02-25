@@ -78,10 +78,10 @@
 
     function query(query) {
       testParamsDefined();
-      //console.log(query);
+      console.log(query);
       var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query + ";";
       var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
-      //console.log(response);
+      console.log(response);
       processResponse(response);
       return response.results;
     }
