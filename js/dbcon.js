@@ -69,6 +69,7 @@
         var numRows = response.results.length;
         for (var r = 0; r < numRows; r++) { 
           for (var d = 0; d < numDateVars; d++) {
+            debugger;
             response.results[r][dateVars[d]] = new Date(response.results[r][dateVars[d]]);
           }
         }
