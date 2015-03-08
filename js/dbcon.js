@@ -69,8 +69,7 @@
         var numRows = response.results.length;
         for (var r = 0; r < numRows; r++) { 
           for (var d = 0; d < numDateVars; d++) {
-            debugger;
-            response.results[r][dateVars[d]] = new Date(response.results[r][dateVars[d]]);
+            response.results[r][dateVars[d]] = new Date(response.results[r][dateVars[d]].replace(/-/g,'/'));
           }
         }
       }
@@ -78,10 +77,9 @@
 
     function query(query) {
       testParamsDefined();
-      console.log(query);
+      //console.log(query);
       var requestString = platform + ".php?zip=1&host=" + host + "&user=" + user + "&dbname=" + dbName + "&q=" +  query + ";";
       var response = JSON.parse($.ajax({type: "GET", url: requestString, async: false}).responseText);
-      console.log(response);
       processResponse(response);
       return response.results;
     }
