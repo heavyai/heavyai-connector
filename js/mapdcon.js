@@ -96,12 +96,14 @@
             case "STR":
               row[fieldName] = result.rows[r].cols[c].datum.str_val;
               break;
+            case "TIME":
+              row[fieldName] = new Date(result.rows[r].cols[c].datum.int_val * 1000);
+              break;
           }
         }
         formattedResult.results.push(row);
       }
-      console.log(formattedResult);
-      return formattedResult;
+      return formattedResult.results;
     }
 
     function getDatabases () {
