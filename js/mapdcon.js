@@ -65,7 +65,7 @@
       transport = new Thrift.Transport("http://" + host + ":" + port);
       protocol = new Thrift.Protocol(transport);
       client = new MapDClient(protocol);
-      return mapdcon
+      return mapdcon;
     }
 
     function query(query) {
@@ -74,15 +74,34 @@
       var formattedResult = {};
       formattedResult.fields = [];
       var numCols = result.proj_info.length;
+      var colNames = [];
       for (var c = 0; c < numCols; c++) {
         var field = result.proj_info[c]; 
-        formattedResult.fields.push({"name": field.proj_name, "type": datumEnum[field.proj_type.type});
+        formattedResult.fields.push({"name": field.proj_name, "type": datumEnum[field.proj_type.type]});
       }
-
-
-
-
-      return result.rows;
+      formattedResult.results = [];
+      var numRows = result.rows.length;
+      for (var r = 0; r < numRows; r++) {
+        var row = {};
+        for (var c = 0; c < numCols; c++) {
+          var fieldName = formattedResult.fields[c].name;
+          var fieldType = formattedResult.fields[c].type;
+          switch (fieldType) {
+            case "INT":
+              row[fieldName] = result.rows[r].cols[c].datum.int_val;
+              break;
+            case "REAL":
+              row[fieldName] = result.rows[r].cols[c].datum.real_val;
+              break;
+            case "STR":
+              row[fieldName] = result.rows[r].cols[c].datum.str_val;
+              break;
+          }
+        }
+        formattedResult.results.push(row);
+      }
+      console.log(formattedResult);
+      return formattedResult;
     }
 
     function getDatabases () {
