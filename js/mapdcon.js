@@ -103,7 +103,7 @@
         }
         formattedResult.results.push(row);
       }
-      console.log(formattedResult.results);
+      //console.log(formattedResult.results);
       return formattedResult.results;
     }
 
