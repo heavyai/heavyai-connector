@@ -118,7 +118,7 @@
       var numTables = tabs.length;
       var tableInfo = [];
       for (var t = 0; t < numTables; t++) {
-        tableInfo.push({"name": tabs[t], "label": "flights"});
+        tableInfo.push({"name": tabs[t], "label": "obs"});
       }
       return tableInfo; 
     }
