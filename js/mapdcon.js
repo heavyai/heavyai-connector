@@ -17,7 +17,7 @@
       getPlatform: getPlatform
     }
   
-    var host = "localhost";
+    var host = "192.168.1.8";
     var user = "mapd";
     var port = "9090";
     var dbname = null;

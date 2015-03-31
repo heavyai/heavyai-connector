@@ -16,7 +16,7 @@
       //getMetadata: getMetadata
     }
     var platform = "mapd";
-    var host = "localhost"; // default
+    var host = "192.168.1.8"; // default
     var user = null;
     var dbName = "mapd";
 
