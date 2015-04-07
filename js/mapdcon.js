@@ -96,6 +96,7 @@
     }
 
     function query(query) {
+      console.log(query);
       testConnection();
       var result = client.select(query + ";");
       var formattedResult = {};
