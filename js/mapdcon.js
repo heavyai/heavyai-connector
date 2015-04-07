@@ -10,11 +10,13 @@
       setPort: setPort,
       setDbName: setDbName,
       connect: connect,
+      disconnect: disconnect,
       query: query,
       getDatabases: getDatabases,
       getTablesForDb: getTablesForDb,
       getFields: getFields,
-      getPlatform: getPlatform
+      getPlatform: getPlatform,
+      getClient: getClient
     }
   
     var host = "192.168.1.8";
@@ -33,6 +35,9 @@
 
     function getPlatform() {
       return "mapd";
+    }
+    function getClient() {
+      return client;
     }
 
     function setHost(newHost) {
@@ -61,11 +66,33 @@
       }
     }
 
+    function testConnectionValidity() {
+      if (client == null)  {
+        throw "Client not connected";
+      }
+      try {
+        client.getTables();
+      }
+      catch(err) {
+        throw "Client connection error";
+      }
+    }
+
+
+
     function connect() {
+      console.log("connect");
       transport = new Thrift.Transport("http://" + host + ":" + port);
       protocol = new Thrift.Protocol(transport);
       client = new MapDClient(protocol);
+      testConnectionValidity();
       return mapdcon;
+    }
+
+    function disconnect() {
+      client = null;
+      protocol = null;
+      transport = null;
     }
 
     function query(query) {
