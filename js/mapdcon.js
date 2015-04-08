@@ -81,7 +81,6 @@
 
 
     function connect() {
-      console.log("connect");
       transport = new Thrift.Transport("http://" + host + ":" + port);
       protocol = new Thrift.Protocol(transport);
       client = new MapDClient(protocol);
@@ -96,7 +95,7 @@
     }
 
     function query(query) {
-      console.log(query);
+      //console.log(query);
       testConnection();
       var result = client.select(query + ";");
       var formattedResult = {};
