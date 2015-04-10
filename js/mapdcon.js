@@ -124,6 +124,8 @@
               row[fieldName] = result.rows[r].cols[c].datum.str_val;
               break;
             case "TIME":
+            case "TIMESTAMP":
+            case "DATE":
               row[fieldName] = new Date(result.rows[r].cols[c].datum.int_val * 1000);
               break;
           }

@@ -9,7 +9,9 @@ TDatumType = {
   'INT' : 0,
   'REAL' : 1,
   'STR' : 2,
-  'TIME' : 3
+  'TIME' : 3,
+  'TIMESTAMP' : 4,
+  'DATE' : 5
 };
 TDatum = function(args) {
   this.int_val = null;
@@ -96,12 +98,16 @@ TDatum.prototype.write = function(output) {
 ColumnValue = function(args) {
   this.type = null;
   this.datum = null;
+  this.is_null = null;
   if (args) {
     if (args.type !== undefined) {
       this.type = args.type;
     }
     if (args.datum !== undefined) {
       this.datum = args.datum;
+    }
+    if (args.is_null !== undefined) {
+      this.is_null = args.is_null;
     }
   }
 };
@@ -134,6 +140,13 @@ ColumnValue.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_null = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -153,6 +166,11 @@ ColumnValue.prototype.write = function(output) {
   if (this.datum !== null && this.datum !== undefined) {
     output.writeFieldBegin('datum', Thrift.Type.STRUCT, 2);
     this.datum.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.is_null !== null && this.is_null !== undefined) {
+    output.writeFieldBegin('is_null', Thrift.Type.BOOL, 3);
+    output.writeBool(this.is_null);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
