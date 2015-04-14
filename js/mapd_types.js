@@ -499,6 +499,72 @@ QueryResult.prototype.write = function(output) {
   return;
 };
 
+DBInfo = function(args) {
+  this.db_name = null;
+  this.db_owner = null;
+  if (args) {
+    if (args.db_name !== undefined) {
+      this.db_name = args.db_name;
+    }
+    if (args.db_owner !== undefined) {
+      this.db_owner = args.db_owner;
+    }
+  }
+};
+DBInfo.prototype = {};
+DBInfo.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.db_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.db_owner = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+DBInfo.prototype.write = function(output) {
+  output.writeStructBegin('DBInfo');
+  if (this.db_name !== null && this.db_name !== undefined) {
+    output.writeFieldBegin('db_name', Thrift.Type.STRING, 1);
+    output.writeString(this.db_name);
+    output.writeFieldEnd();
+  }
+  if (this.db_owner !== null && this.db_owner !== undefined) {
+    output.writeFieldBegin('db_owner', Thrift.Type.STRING, 2);
+    output.writeString(this.db_owner);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapDException = function(args) {
   this.error_msg = null;
   if (args) {

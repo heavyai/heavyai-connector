@@ -13,7 +13,7 @@
       disconnect: disconnect,
       query: query,
       getDatabases: getDatabases,
-      getTablesForDb: getTablesForDb,
+      getTables: getTables,
       getFields: getFields,
       getPlatform: getPlatform,
       getClient: getClient
@@ -21,11 +21,13 @@
   
     var host = "192.168.1.8";
     var user = "mapd";
+    var password = "HyperInteractive"; // to be changed 
     var port = "9090";
-    var dbname = null;
+    var dbName = null;
     var transport = null;
     var protocol = null;
     var client = null;
+    var sessionId = null;
     var datumEnum = {};
 
     function setPlatform(newPlatform) {
@@ -61,7 +63,7 @@
     }
 
     function testConnection() {
-      if (client == null)  {
+      if (sessionId == null)  {
         throw "Client not connected";
       }
     }
@@ -71,7 +73,7 @@
         throw "Client not connected";
       }
       try {
-        client.getTables();
+        client.getDatabases();
       }
       catch(err) {
         throw "Client connection error";
@@ -84,7 +86,9 @@
       transport = new Thrift.Transport("http://" + host + ":" + port);
       protocol = new Thrift.Protocol(transport);
       client = new MapDClient(protocol);
-      testConnectionValidity();
+      sessionId = client.connect(user, password, dbName);
+      console.log(sessionId);
+      //testConnectionValidity();
       return mapdcon;
     }
 
@@ -97,7 +101,7 @@
     function query(query) {
       //console.log(query);
       testConnection();
-      var result = client.select(query + ";");
+      var result = client.select(sessionId,query + ";");
       var formattedResult = {};
       formattedResult.fields = [];
       var numCols = result.proj_info.length;
@@ -139,12 +143,16 @@
 
     function getDatabases () {
       testConnection();
-      return ["mapd"];
+      var databases = client.getDatabases();
+      var dbNames = [];
+      $(databases).each(function(){dbNames.push(this.db_name)});
+      return dbNames;
     }
 
-    function getTablesForDb() {
+    function getTables() {
       testConnection();
-      var tabs = client.getTables();
+      var tabs = client.getTables(sessionId);
+      console.log(tabs);
       var numTables = tabs.length;
       var tableInfo = [];
       for (var t = 0; t < numTables; t++) {
@@ -161,7 +169,7 @@
 
     function getFields(tableName) {
       testConnection();
-      var fields = client.getColumnTypes(tableName);
+      var fields = client.getColumnTypes(sessionId,tableName);
       var fieldsArray = [];
       // silly to change this from map to array 
       // - then later it turns back to map
