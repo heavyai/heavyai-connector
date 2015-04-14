@@ -101,7 +101,7 @@
     function query(query) {
       //console.log(query);
       testConnection();
-      var result = client.select(sessionId,query + ";");
+      var result = client.sql_execute(sessionId,query + ";");
       var formattedResult = {};
       formattedResult.fields = [];
       var numCols = result.proj_info.length;

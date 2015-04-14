@@ -271,7 +271,7 @@ MapD_disconnect_result.prototype.write = function(output) {
   return;
 };
 
-MapD_select_args = function(args) {
+MapD_sql_execute_args = function(args) {
   this.session = null;
   this.query = null;
   if (args) {
@@ -283,8 +283,8 @@ MapD_select_args = function(args) {
     }
   }
 };
-MapD_select_args.prototype = {};
-MapD_select_args.prototype.read = function(input) {
+MapD_sql_execute_args.prototype = {};
+MapD_sql_execute_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -320,8 +320,8 @@ MapD_select_args.prototype.read = function(input) {
   return;
 };
 
-MapD_select_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_select_args');
+MapD_sql_execute_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.I32, 1);
     output.writeI32(this.session);
@@ -337,7 +337,7 @@ MapD_select_args.prototype.write = function(output) {
   return;
 };
 
-MapD_select_result = function(args) {
+MapD_sql_execute_result = function(args) {
   this.success = null;
   this.e = null;
   if (args instanceof MapDException) {
@@ -353,8 +353,8 @@ MapD_select_result = function(args) {
     }
   }
 };
-MapD_select_result.prototype = {};
-MapD_select_result.prototype.read = function(input) {
+MapD_sql_execute_result.prototype = {};
+MapD_sql_execute_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -392,8 +392,8 @@ MapD_select_result.prototype.read = function(input) {
   return;
 };
 
-MapD_select_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_select_result');
+MapD_sql_execute_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -1023,20 +1023,20 @@ MapDClient.prototype.recv_disconnect = function() {
   }
   return;
 };
-MapDClient.prototype.select = function(session, query, callback) {
+MapDClient.prototype.sql_execute = function(session, query, callback) {
   if (callback === undefined) {
-    this.send_select(session, query);
-    return this.recv_select();
+    this.send_sql_execute(session, query);
+    return this.recv_sql_execute();
   } else {
-    var postData = this.send_select(session, query, true);
+    var postData = this.send_sql_execute(session, query, true);
     return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_select);
+      .jqRequest(this, postData, arguments, this.recv_sql_execute);
   }
 };
 
-MapDClient.prototype.send_select = function(session, query, callback) {
-  this.output.writeMessageBegin('select', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_select_args();
+MapDClient.prototype.send_sql_execute = function(session, query, callback) {
+  this.output.writeMessageBegin('sql_execute', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_sql_execute_args();
   args.session = session;
   args.query = query;
   args.write(this.output);
@@ -1044,7 +1044,7 @@ MapDClient.prototype.send_select = function(session, query, callback) {
   return this.output.getTransport().flush(callback);
 };
 
-MapDClient.prototype.recv_select = function() {
+MapDClient.prototype.recv_sql_execute = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -1055,7 +1055,7 @@ MapDClient.prototype.recv_select = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_select_result();
+  var result = new MapD_sql_execute_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -1065,7 +1065,7 @@ MapDClient.prototype.recv_select = function() {
   if (null !== result.success) {
     return result.success;
   }
-  throw 'select failed: unknown result';
+  throw 'sql_execute failed: unknown result';
 };
 MapDClient.prototype.getColumnTypes = function(session, table_name, callback) {
   if (callback === undefined) {

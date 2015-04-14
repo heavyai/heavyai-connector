@@ -390,12 +390,16 @@ TResultRow.prototype.write = function(output) {
 QueryResult = function(args) {
   this.proj_info = null;
   this.rows = null;
+  this.execution_time_ms = null;
   if (args) {
     if (args.proj_info !== undefined) {
       this.proj_info = args.proj_info;
     }
     if (args.rows !== undefined) {
       this.rows = args.rows;
+    }
+    if (args.execution_time_ms !== undefined) {
+      this.execution_time_ms = args.execution_time_ms;
     }
   }
 };
@@ -455,6 +459,13 @@ QueryResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.execution_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -492,6 +503,11 @@ QueryResult.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.execution_time_ms !== null && this.execution_time_ms !== undefined) {
+    output.writeFieldBegin('execution_time_ms', Thrift.Type.I64, 3);
+    output.writeI64(this.execution_time_ms);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
