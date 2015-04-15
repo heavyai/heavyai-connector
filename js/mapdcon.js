@@ -64,22 +64,11 @@
 
     function testConnection() {
       if (sessionId == null)  {
-        throw "Client not connected";
+        return false;
+        //throw "Client not connected";
       }
+      return true;
     }
-
-    function testConnectionValidity() {
-      if (client == null)  {
-        throw "Client not connected";
-      }
-      try {
-        client.getDatabases();
-      }
-      catch(err) {
-        throw "Client connection error";
-      }
-    }
-
 
 
     function connect() {
@@ -87,19 +76,20 @@
       protocol = new Thrift.Protocol(transport);
       client = new MapDClient(protocol);
       sessionId = client.connect(user, password, dbName);
-      console.log(sessionId);
-      //testConnectionValidity();
       return mapdcon;
     }
 
     function disconnect() {
+      if (sessionId != null) {
+        client.disconnect(sessionId);
+        sessionId = null;
+      }
       client = null;
       protocol = null;
       transport = null;
     }
 
     function query(query) {
-      //console.log(query);
       testConnection();
       var result = client.sql_execute(sessionId,query + ";");
       var formattedResult = {};
@@ -152,7 +142,6 @@
     function getTables() {
       testConnection();
       var tabs = client.getTables(sessionId);
-      console.log(tabs);
       var numTables = tabs.length;
       var tableInfo = [];
       for (var t = 0; t < numTables; t++) {
