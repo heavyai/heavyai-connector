@@ -91,7 +91,17 @@
 
     function query(query) {
       testConnection();
-      var result = client.sql_execute(sessionId,query + ";");
+      var result = null;
+      try {
+        result = client.sql_execute(sessionId,query + ";");
+      }
+      catch (err) {
+        console.log(err);
+        //if (err.error_msg.search("TException") == -1)
+        connect();
+        // try one more time
+        result = client.sql_execute(sessionId,query + ";");
+      }
       var formattedResult = {};
       formattedResult.fields = [];
       var numCols = result.proj_info.length;
@@ -141,7 +151,15 @@
 
     function getTables() {
       testConnection();
-      var tabs = client.getTables(sessionId);
+      var tabs = null;
+      try {
+        tabs = client.getTables(sessionId);
+      }
+      catch (err) {
+        connect();
+        tabs = client.getTables(sessionId);
+      }
+
       var numTables = tabs.length;
       var tableInfo = [];
       for (var t = 0; t < numTables; t++) {
