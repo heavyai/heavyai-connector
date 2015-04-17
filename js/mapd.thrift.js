@@ -92,8 +92,13 @@ MapD_connect_args.prototype.write = function(output) {
 MapD_connect_result = function(args) {
   this.success = null;
   this.e = null;
+  this.te = null;
   if (args instanceof MapDException) {
     this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
     return;
   }
   if (args) {
@@ -102,6 +107,9 @@ MapD_connect_result = function(args) {
     }
     if (args.e !== undefined) {
       this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
     }
   }
 };
@@ -134,6 +142,14 @@ MapD_connect_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -153,6 +169,11 @@ MapD_connect_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -215,13 +236,21 @@ MapD_disconnect_args.prototype.write = function(output) {
 
 MapD_disconnect_result = function(args) {
   this.e = null;
+  this.te = null;
   if (args instanceof MapDException) {
     this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined) {
       this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
     }
   }
 };
@@ -247,9 +276,14 @@ MapD_disconnect_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -264,6 +298,11 @@ MapD_disconnect_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -340,8 +379,13 @@ MapD_sql_execute_args.prototype.write = function(output) {
 MapD_sql_execute_result = function(args) {
   this.success = null;
   this.e = null;
+  this.te = null;
   if (args instanceof MapDException) {
     this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
     return;
   }
   if (args) {
@@ -350,6 +394,9 @@ MapD_sql_execute_result = function(args) {
     }
     if (args.e !== undefined) {
       this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
     }
   }
 };
@@ -383,6 +430,14 @@ MapD_sql_execute_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -402,6 +457,11 @@ MapD_sql_execute_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -478,8 +538,13 @@ MapD_getColumnTypes_args.prototype.write = function(output) {
 MapD_getColumnTypes_result = function(args) {
   this.success = null;
   this.e = null;
+  this.te = null;
   if (args instanceof MapDException) {
     this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
     return;
   }
   if (args) {
@@ -488,6 +553,9 @@ MapD_getColumnTypes_result = function(args) {
     }
     if (args.e !== undefined) {
       this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
     }
   }
 };
@@ -543,6 +611,14 @@ MapD_getColumnTypes_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -572,6 +648,11 @@ MapD_getColumnTypes_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -635,8 +716,13 @@ MapD_getTables_args.prototype.write = function(output) {
 MapD_getTables_result = function(args) {
   this.success = null;
   this.e = null;
+  this.te = null;
   if (args instanceof MapDException) {
     this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
     return;
   }
   if (args) {
@@ -645,6 +731,9 @@ MapD_getTables_result = function(args) {
     }
     if (args.e !== undefined) {
       this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
     }
   }
 };
@@ -690,6 +779,14 @@ MapD_getTables_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -718,6 +815,11 @@ MapD_getTables_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -755,9 +857,17 @@ MapD_getUsers_args.prototype.write = function(output) {
 
 MapD_getUsers_result = function(args) {
   this.success = null;
+  this.te = null;
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined) {
       this.success = args.success;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
     }
   }
 };
@@ -795,9 +905,14 @@ MapD_getUsers_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -821,6 +936,11 @@ MapD_getUsers_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -858,9 +978,17 @@ MapD_getDatabases_args.prototype.write = function(output) {
 
 MapD_getDatabases_result = function(args) {
   this.success = null;
+  this.te = null;
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
   if (args) {
     if (args.success !== undefined) {
       this.success = args.success;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
     }
   }
 };
@@ -899,9 +1027,14 @@ MapD_getDatabases_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -925,6 +1058,11 @@ MapD_getDatabases_result.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -978,6 +1116,9 @@ MapDClient.prototype.recv_connect = function() {
   if (null !== result.e) {
     throw result.e;
   }
+  if (null !== result.te) {
+    throw result.te;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1021,6 +1162,9 @@ MapDClient.prototype.recv_disconnect = function() {
   if (null !== result.e) {
     throw result.e;
   }
+  if (null !== result.te) {
+    throw result.te;
+  }
   return;
 };
 MapDClient.prototype.sql_execute = function(session, query, callback) {
@@ -1061,6 +1205,9 @@ MapDClient.prototype.recv_sql_execute = function() {
 
   if (null !== result.e) {
     throw result.e;
+  }
+  if (null !== result.te) {
+    throw result.te;
   }
   if (null !== result.success) {
     return result.success;
@@ -1106,6 +1253,9 @@ MapDClient.prototype.recv_getColumnTypes = function() {
   if (null !== result.e) {
     throw result.e;
   }
+  if (null !== result.te) {
+    throw result.te;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1149,6 +1299,9 @@ MapDClient.prototype.recv_getTables = function() {
   if (null !== result.e) {
     throw result.e;
   }
+  if (null !== result.te) {
+    throw result.te;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1188,6 +1341,9 @@ MapDClient.prototype.recv_getUsers = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.te) {
+    throw result.te;
+  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1227,6 +1383,9 @@ MapDClient.prototype.recv_getDatabases = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.te) {
+    throw result.te;
+  }
   if (null !== result.success) {
     return result.success;
   }

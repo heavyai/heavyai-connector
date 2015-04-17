@@ -97,10 +97,11 @@
       }
       catch (err) {
         console.log(err);
-        //if (err.error_msg.search("TException") == -1)
-        connect();
-        // try one more time
-        result = client.sql_execute(sessionId,query + ";");
+        if (err.name == "ThriftException") {
+          connect();
+          // try one more time
+          result = client.sql_execute(sessionId,query + ";");
+        }
       }
       var formattedResult = {};
       formattedResult.fields = [];
@@ -143,7 +144,16 @@
 
     function getDatabases () {
       testConnection();
-      var databases = client.getDatabases();
+      var databases = null;
+      try {
+        databases = client.getDatabases();
+      }
+      catch (err) {
+        if (err.name == "ThriftException") {
+          connect();
+          databases = client.getDatabases();
+        }
+      }
       var dbNames = [];
       $(databases).each(function(){dbNames.push(this.db_name)});
       return dbNames;
@@ -156,8 +166,10 @@
         tabs = client.getTables(sessionId);
       }
       catch (err) {
-        connect();
-        tabs = client.getTables(sessionId);
+        if (err.name == "ThriftException") {
+          connect();
+          tabs = client.getTables(sessionId);
+        }
       }
 
       var numTables = tabs.length;

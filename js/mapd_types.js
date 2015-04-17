@@ -635,3 +635,57 @@ MapDException.prototype.write = function(output) {
   return;
 };
 
+ThriftException = function(args) {
+  this.error_msg = null;
+  if (args) {
+    if (args.error_msg !== undefined) {
+      this.error_msg = args.error_msg;
+    }
+  }
+};
+Thrift.inherits(ThriftException, Thrift.TException);
+ThriftException.prototype.name = 'ThriftException';
+ThriftException.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.error_msg = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+ThriftException.prototype.write = function(output) {
+  output.writeStructBegin('ThriftException');
+  if (this.error_msg !== null && this.error_msg !== undefined) {
+    output.writeFieldBegin('error_msg', Thrift.Type.STRING, 1);
+    output.writeString(this.error_msg);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
