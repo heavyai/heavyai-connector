@@ -139,6 +139,7 @@
       }
       //console.log(query);
       //console.log(formattedResult.results);
+      //console.log(formattedResult.results);
       return formattedResult.results;
     }
 
