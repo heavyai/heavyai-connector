@@ -11,7 +11,13 @@ TDatumType = {
   'STR' : 2,
   'TIME' : 3,
   'TIMESTAMP' : 4,
-  'DATE' : 5
+  'DATE' : 5,
+  'BOOL' : 6
+};
+TExecuteMode = {
+  'AUTO' : 0,
+  'GPU' : 1,
+  'CPU' : 2
 };
 TDatum = function(args) {
   this.int_val = null;
