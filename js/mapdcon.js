@@ -105,7 +105,12 @@
       }
       var formattedResult = {};
       formattedResult.fields = [];
+      try {
       var numCols = result.proj_info.length;
+      }
+      catch (err) {
+        debugger;
+      }
       var colNames = [];
       for (var c = 0; c < numCols; c++) {
         var field = result.proj_info[c]; 
