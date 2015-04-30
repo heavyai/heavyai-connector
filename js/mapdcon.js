@@ -12,6 +12,7 @@
       connect: connect,
       disconnect: disconnect,
       query: query,
+      queryAsync: queryAsync,
       getDatabases: getDatabases,
       getTables: getTables,
       getFields: getFields,
@@ -89,20 +90,79 @@
       transport = null;
     }
 
-    function query(query) {
+    function queryAsync(query,callbacks) {
       testConnection();
+      try {
+        client.sql_execute(sessionId,query + ";", processResults.bind(this,callbacks));
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          client.sql_execute(sessionId,query + ";", processResults.bind(this,callbacks));
+        }
+        else {
+          throw (err);
+        }
+      }
+    }
+
+    function query(query) {
       var result = null;
       try {
         result = client.sql_execute(sessionId,query + ";");
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.sql_execute(sessionId,query + ";");
+        }
+        else {
+          throw (err);
+        }
+      }
+      return processResults(undefined,result);
+    }
+
+    /*
+    function query(query, callback) {
+      testConnection();
+      var hasCallback = typeof callback !== 'undefined';
+      console.log("has callback: " + hasCallback);
+      var result = null;
+      try {
+        if (hasCallback) {
+          client.sql_execute(sessionId,query + ";", processResults);
+        }
+        else {
+          result = client.sql_execute(sessionId,query + ";");
+        }
+
       }
       catch (err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
           // try one more time
-          result = client.sql_execute(sessionId,query + ";");
+          if (hasCallback) {
+            client.sql_execute(sessionId,query + ";", processResults);
+          }
+          else {
+            result = client.sql_execute(sessionId,query + ";");
+          }
         }
       }
+      if (!hasCallback) {
+        return processResults(result);
+      }
+    }
+    */
+
+    function processResults(callbacks, result) {
+      console.log("process results");
+      console.log(result);
+      var hasCallback = typeof callbacks !== 'undefined';
       var formattedResult = {};
       formattedResult.fields = [];
       try {
@@ -145,7 +205,12 @@
       //console.log(query);
       //console.log(formattedResult.results);
       //console.log(formattedResult.results);
-      return formattedResult.results;
+      if (hasCallback) {
+        callbacks.pop()(formattedResult.results,callbacks);
+      }
+      else {
+        return formattedResult.results;
+      }
     }
 
     function getDatabases () {
