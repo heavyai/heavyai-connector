@@ -160,8 +160,6 @@
     */
 
     function processResults(callbacks, result) {
-      console.log("process results");
-      console.log(result);
       var hasCallback = typeof callbacks !== 'undefined';
       var formattedResult = {};
       formattedResult.fields = [];
