@@ -160,19 +160,20 @@
     */
 
     function processResults(callbacks, result) {
+      result = result.row_set;
       var hasCallback = typeof callbacks !== 'undefined';
       var formattedResult = {};
       formattedResult.fields = [];
       try {
-      var numCols = result.proj_info.length;
+      var numCols = result.row_desc.length;
       }
       catch (err) {
         debugger;
       }
       var colNames = [];
       for (var c = 0; c < numCols; c++) {
-        var field = result.proj_info[c]; 
-        formattedResult.fields.push({"name": field.proj_name, "type": datumEnum[field.proj_type.type]});
+        var field = result.row_desc[c]; 
+        formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type]});
       }
       formattedResult.results = [];
       var numRows = result.rows.length;
@@ -215,12 +216,12 @@
       testConnection();
       var databases = null;
       try {
-        databases = client.getDatabases();
+        databases = client.get_databases();
       }
       catch (err) {
         if (err.name == "ThriftException") {
           connect();
-          databases = client.getDatabases();
+          databases = client.get_databases();
         }
       }
       var dbNames = [];
@@ -232,12 +233,12 @@
       testConnection();
       var tabs = null;
       try {
-        tabs = client.getTables(sessionId);
+        tabs = client.get_tables(sessionId);
       }
       catch (err) {
         if (err.name == "ThriftException") {
           connect();
-          tabs = client.getTables(sessionId);
+          tabs = client.get_tables(sessionId);
         }
       }
 
@@ -257,12 +258,12 @@
 
     function getFields(tableName) {
       testConnection();
-      var fields = client.getColumnTypes(sessionId,tableName);
+      var fields = client.get_table_descriptor(sessionId,tableName);
       var fieldsArray = [];
       // silly to change this from map to array 
       // - then later it turns back to map
       for (key in fields) {
-        fieldsArray.push({"name": key, "type": datumEnum[fields[key].type]});
+        fieldsArray.push({"name": key, "type": datumEnum[fields[key].col_type.type]});
       }
       return fieldsArray;
     }

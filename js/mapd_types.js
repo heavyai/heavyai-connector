@@ -15,7 +15,7 @@ TDatumType = {
   'BOOL' : 6
 };
 TExecuteMode = {
-  'AUTO' : 0,
+  'HYBRID' : 0,
   'GPU' : 1,
   'CPU' : 2
 };
@@ -101,14 +101,10 @@ TDatum.prototype.write = function(output) {
   return;
 };
 
-ColumnValue = function(args) {
-  this.type = null;
+TColumnValue = function(args) {
   this.datum = null;
   this.is_null = null;
   if (args) {
-    if (args.type !== undefined) {
-      this.type = args.type;
-    }
     if (args.datum !== undefined) {
       this.datum = args.datum;
     }
@@ -117,8 +113,8 @@ ColumnValue = function(args) {
     }
   }
 };
-ColumnValue.prototype = {};
-ColumnValue.prototype.read = function(input) {
+TColumnValue.prototype = {};
+TColumnValue.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -132,13 +128,6 @@ ColumnValue.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
       if (ftype == Thrift.Type.STRUCT) {
         this.datum = new TDatum();
         this.datum.read(input);
@@ -146,7 +135,7 @@ ColumnValue.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 3:
+      case 2:
       if (ftype == Thrift.Type.BOOL) {
         this.is_null = input.readBool().value;
       } else {
@@ -162,20 +151,15 @@ ColumnValue.prototype.read = function(input) {
   return;
 };
 
-ColumnValue.prototype.write = function(output) {
-  output.writeStructBegin('ColumnValue');
-  if (this.type !== null && this.type !== undefined) {
-    output.writeFieldBegin('type', Thrift.Type.I32, 1);
-    output.writeI32(this.type);
-    output.writeFieldEnd();
-  }
+TColumnValue.prototype.write = function(output) {
+  output.writeStructBegin('TColumnValue');
   if (this.datum !== null && this.datum !== undefined) {
-    output.writeFieldBegin('datum', Thrift.Type.STRUCT, 2);
+    output.writeFieldBegin('datum', Thrift.Type.STRUCT, 1);
     this.datum.write(output);
     output.writeFieldEnd();
   }
   if (this.is_null !== null && this.is_null !== undefined) {
-    output.writeFieldBegin('is_null', Thrift.Type.BOOL, 3);
+    output.writeFieldBegin('is_null', Thrift.Type.BOOL, 2);
     output.writeBool(this.is_null);
     output.writeFieldEnd();
   }
@@ -184,7 +168,7 @@ ColumnValue.prototype.write = function(output) {
   return;
 };
 
-ColumnType = function(args) {
+TTypeInfo = function(args) {
   this.type = null;
   this.nullable = null;
   if (args) {
@@ -196,8 +180,8 @@ ColumnType = function(args) {
     }
   }
 };
-ColumnType.prototype = {};
-ColumnType.prototype.read = function(input) {
+TTypeInfo.prototype = {};
+TTypeInfo.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -233,8 +217,8 @@ ColumnType.prototype.read = function(input) {
   return;
 };
 
-ColumnType.prototype.write = function(output) {
-  output.writeStructBegin('ColumnType');
+TTypeInfo.prototype.write = function(output) {
+  output.writeStructBegin('TTypeInfo');
   if (this.type !== null && this.type !== undefined) {
     output.writeFieldBegin('type', Thrift.Type.I32, 1);
     output.writeI32(this.type);
@@ -250,20 +234,20 @@ ColumnType.prototype.write = function(output) {
   return;
 };
 
-ProjInfo = function(args) {
-  this.proj_name = null;
-  this.proj_type = null;
+TColumnType = function(args) {
+  this.col_name = null;
+  this.col_type = null;
   if (args) {
-    if (args.proj_name !== undefined) {
-      this.proj_name = args.proj_name;
+    if (args.col_name !== undefined) {
+      this.col_name = args.col_name;
     }
-    if (args.proj_type !== undefined) {
-      this.proj_type = args.proj_type;
+    if (args.col_type !== undefined) {
+      this.col_type = args.col_type;
     }
   }
 };
-ProjInfo.prototype = {};
-ProjInfo.prototype.read = function(input) {
+TColumnType.prototype = {};
+TColumnType.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -278,15 +262,15 @@ ProjInfo.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.proj_name = input.readString().value;
+        this.col_name = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRUCT) {
-        this.proj_type = new ColumnType();
-        this.proj_type.read(input);
+        this.col_type = new TTypeInfo();
+        this.col_type.read(input);
       } else {
         input.skip(ftype);
       }
@@ -300,16 +284,16 @@ ProjInfo.prototype.read = function(input) {
   return;
 };
 
-ProjInfo.prototype.write = function(output) {
-  output.writeStructBegin('ProjInfo');
-  if (this.proj_name !== null && this.proj_name !== undefined) {
-    output.writeFieldBegin('proj_name', Thrift.Type.STRING, 1);
-    output.writeString(this.proj_name);
+TColumnType.prototype.write = function(output) {
+  output.writeStructBegin('TColumnType');
+  if (this.col_name !== null && this.col_name !== undefined) {
+    output.writeFieldBegin('col_name', Thrift.Type.STRING, 1);
+    output.writeString(this.col_name);
     output.writeFieldEnd();
   }
-  if (this.proj_type !== null && this.proj_type !== undefined) {
-    output.writeFieldBegin('proj_type', Thrift.Type.STRUCT, 2);
-    this.proj_type.write(output);
+  if (this.col_type !== null && this.col_type !== undefined) {
+    output.writeFieldBegin('col_type', Thrift.Type.STRUCT, 2);
+    this.col_type.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -317,7 +301,7 @@ ProjInfo.prototype.write = function(output) {
   return;
 };
 
-TResultRow = function(args) {
+TRow = function(args) {
   this.cols = null;
   if (args) {
     if (args.cols !== undefined) {
@@ -325,8 +309,8 @@ TResultRow = function(args) {
     }
   }
 };
-TResultRow.prototype = {};
-TResultRow.prototype.read = function(input) {
+TRow.prototype = {};
+TRow.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -351,7 +335,7 @@ TResultRow.prototype.read = function(input) {
         for (var _i5 = 0; _i5 < _size0; ++_i5)
         {
           var elem6 = null;
-          elem6 = new ColumnValue();
+          elem6 = new TColumnValue();
           elem6.read(input);
           this.cols.push(elem6);
         }
@@ -372,8 +356,8 @@ TResultRow.prototype.read = function(input) {
   return;
 };
 
-TResultRow.prototype.write = function(output) {
-  output.writeStructBegin('TResultRow');
+TRow.prototype.write = function(output) {
+  output.writeStructBegin('TRow');
   if (this.cols !== null && this.cols !== undefined) {
     output.writeFieldBegin('cols', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
@@ -393,24 +377,20 @@ TResultRow.prototype.write = function(output) {
   return;
 };
 
-QueryResult = function(args) {
-  this.proj_info = null;
+TRowSet = function(args) {
+  this.row_desc = null;
   this.rows = null;
-  this.execution_time_ms = null;
   if (args) {
-    if (args.proj_info !== undefined) {
-      this.proj_info = args.proj_info;
+    if (args.row_desc !== undefined) {
+      this.row_desc = args.row_desc;
     }
     if (args.rows !== undefined) {
       this.rows = args.rows;
     }
-    if (args.execution_time_ms !== undefined) {
-      this.execution_time_ms = args.execution_time_ms;
-    }
   }
 };
-QueryResult.prototype = {};
-QueryResult.prototype.read = function(input) {
+TRowSet.prototype = {};
+TRowSet.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -427,7 +407,7 @@ QueryResult.prototype.read = function(input) {
       if (ftype == Thrift.Type.LIST) {
         var _size8 = 0;
         var _rtmp312;
-        this.proj_info = [];
+        this.row_desc = [];
         var _etype11 = 0;
         _rtmp312 = input.readListBegin();
         _etype11 = _rtmp312.etype;
@@ -435,9 +415,9 @@ QueryResult.prototype.read = function(input) {
         for (var _i13 = 0; _i13 < _size8; ++_i13)
         {
           var elem14 = null;
-          elem14 = new ProjInfo();
+          elem14 = new TColumnType();
           elem14.read(input);
-          this.proj_info.push(elem14);
+          this.row_desc.push(elem14);
         }
         input.readListEnd();
       } else {
@@ -456,18 +436,11 @@ QueryResult.prototype.read = function(input) {
         for (var _i20 = 0; _i20 < _size15; ++_i20)
         {
           var elem21 = null;
-          elem21 = new TResultRow();
+          elem21 = new TRow();
           elem21.read(input);
           this.rows.push(elem21);
         }
         input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.I64) {
-        this.execution_time_ms = input.readI64().value;
       } else {
         input.skip(ftype);
       }
@@ -481,16 +454,16 @@ QueryResult.prototype.read = function(input) {
   return;
 };
 
-QueryResult.prototype.write = function(output) {
-  output.writeStructBegin('QueryResult');
-  if (this.proj_info !== null && this.proj_info !== undefined) {
-    output.writeFieldBegin('proj_info', Thrift.Type.LIST, 1);
-    output.writeListBegin(Thrift.Type.STRUCT, this.proj_info.length);
-    for (var iter22 in this.proj_info)
+TRowSet.prototype.write = function(output) {
+  output.writeStructBegin('TRowSet');
+  if (this.row_desc !== null && this.row_desc !== undefined) {
+    output.writeFieldBegin('row_desc', Thrift.Type.LIST, 1);
+    output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
+    for (var iter22 in this.row_desc)
     {
-      if (this.proj_info.hasOwnProperty(iter22))
+      if (this.row_desc.hasOwnProperty(iter22))
       {
-        iter22 = this.proj_info[iter22];
+        iter22 = this.row_desc[iter22];
         iter22.write(output);
       }
     }
@@ -511,8 +484,70 @@ QueryResult.prototype.write = function(output) {
     output.writeListEnd();
     output.writeFieldEnd();
   }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TQueryResult = function(args) {
+  this.row_set = null;
+  this.execution_time_ms = null;
+  if (args) {
+    if (args.row_set !== undefined) {
+      this.row_set = args.row_set;
+    }
+    if (args.execution_time_ms !== undefined) {
+      this.execution_time_ms = args.execution_time_ms;
+    }
+  }
+};
+TQueryResult.prototype = {};
+TQueryResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.row_set = new TRowSet();
+        this.row_set.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.execution_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TQueryResult.prototype.write = function(output) {
+  output.writeStructBegin('TQueryResult');
+  if (this.row_set !== null && this.row_set !== undefined) {
+    output.writeFieldBegin('row_set', Thrift.Type.STRUCT, 1);
+    this.row_set.write(output);
+    output.writeFieldEnd();
+  }
   if (this.execution_time_ms !== null && this.execution_time_ms !== undefined) {
-    output.writeFieldBegin('execution_time_ms', Thrift.Type.I64, 3);
+    output.writeFieldBegin('execution_time_ms', Thrift.Type.I64, 2);
     output.writeI64(this.execution_time_ms);
     output.writeFieldEnd();
   }
@@ -521,7 +556,7 @@ QueryResult.prototype.write = function(output) {
   return;
 };
 
-DBInfo = function(args) {
+TDBInfo = function(args) {
   this.db_name = null;
   this.db_owner = null;
   if (args) {
@@ -533,8 +568,8 @@ DBInfo = function(args) {
     }
   }
 };
-DBInfo.prototype = {};
-DBInfo.prototype.read = function(input) {
+TDBInfo.prototype = {};
+TDBInfo.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -570,8 +605,8 @@ DBInfo.prototype.read = function(input) {
   return;
 };
 
-DBInfo.prototype.write = function(output) {
-  output.writeStructBegin('DBInfo');
+TDBInfo.prototype.write = function(output) {
+  output.writeStructBegin('TDBInfo');
   if (this.db_name !== null && this.db_name !== undefined) {
     output.writeFieldBegin('db_name', Thrift.Type.STRING, 1);
     output.writeString(this.db_name);
@@ -587,7 +622,7 @@ DBInfo.prototype.write = function(output) {
   return;
 };
 
-MapDException = function(args) {
+TMapDException = function(args) {
   this.error_msg = null;
   if (args) {
     if (args.error_msg !== undefined) {
@@ -595,9 +630,9 @@ MapDException = function(args) {
     }
   }
 };
-Thrift.inherits(MapDException, Thrift.TException);
-MapDException.prototype.name = 'MapDException';
-MapDException.prototype.read = function(input) {
+Thrift.inherits(TMapDException, Thrift.TException);
+TMapDException.prototype.name = 'TMapDException';
+TMapDException.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -629,8 +664,8 @@ MapDException.prototype.read = function(input) {
   return;
 };
 
-MapDException.prototype.write = function(output) {
-  output.writeStructBegin('MapDException');
+TMapDException.prototype.write = function(output) {
+  output.writeStructBegin('TMapDException');
   if (this.error_msg !== null && this.error_msg !== undefined) {
     output.writeFieldBegin('error_msg', Thrift.Type.STRING, 1);
     output.writeString(this.error_msg);
