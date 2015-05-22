@@ -71,7 +71,6 @@
       return true;
     }
 
-
     function connect() {
       transport = new Thrift.Transport("http://" + host + ":" + port);
       protocol = new Thrift.Protocol(transport);
