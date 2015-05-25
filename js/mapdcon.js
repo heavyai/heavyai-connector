@@ -13,6 +13,7 @@
       disconnect: disconnect,
       query: query,
       queryAsync: queryAsync,
+      getSessionId: function() {return sessionId;},
       getDatabases: getDatabases,
       getTables: getTables,
       getFields: getFields,
