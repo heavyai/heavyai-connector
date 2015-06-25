@@ -168,15 +168,85 @@ TColumnValue.prototype.write = function(output) {
   return;
 };
 
+TStringValue = function(args) {
+  this.str_val = null;
+  this.is_null = null;
+  if (args) {
+    if (args.str_val !== undefined) {
+      this.str_val = args.str_val;
+    }
+    if (args.is_null !== undefined) {
+      this.is_null = args.is_null;
+    }
+  }
+};
+TStringValue.prototype = {};
+TStringValue.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.str_val = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_null = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TStringValue.prototype.write = function(output) {
+  output.writeStructBegin('TStringValue');
+  if (this.str_val !== null && this.str_val !== undefined) {
+    output.writeFieldBegin('str_val', Thrift.Type.STRING, 1);
+    output.writeString(this.str_val);
+    output.writeFieldEnd();
+  }
+  if (this.is_null !== null && this.is_null !== undefined) {
+    output.writeFieldBegin('is_null', Thrift.Type.BOOL, 2);
+    output.writeBool(this.is_null);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TTypeInfo = function(args) {
   this.type = null;
   this.nullable = null;
+  this.is_array = null;
   if (args) {
     if (args.type !== undefined) {
       this.type = args.type;
     }
     if (args.nullable !== undefined) {
       this.nullable = args.nullable;
+    }
+    if (args.is_array !== undefined) {
+      this.is_array = args.is_array;
     }
   }
 };
@@ -208,6 +278,13 @@ TTypeInfo.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_array = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -227,6 +304,11 @@ TTypeInfo.prototype.write = function(output) {
   if (this.nullable !== null && this.nullable !== undefined) {
     output.writeFieldBegin('nullable', Thrift.Type.BOOL, 2);
     output.writeBool(this.nullable);
+    output.writeFieldEnd();
+  }
+  if (this.is_array !== null && this.is_array !== undefined) {
+    output.writeFieldBegin('is_array', Thrift.Type.BOOL, 3);
+    output.writeBool(this.is_array);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -377,6 +459,82 @@ TRow.prototype.write = function(output) {
   return;
 };
 
+TStringRow = function(args) {
+  this.cols = null;
+  if (args) {
+    if (args.cols !== undefined) {
+      this.cols = args.cols;
+    }
+  }
+};
+TStringRow.prototype = {};
+TStringRow.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.LIST) {
+        var _size8 = 0;
+        var _rtmp312;
+        this.cols = [];
+        var _etype11 = 0;
+        _rtmp312 = input.readListBegin();
+        _etype11 = _rtmp312.etype;
+        _size8 = _rtmp312.size;
+        for (var _i13 = 0; _i13 < _size8; ++_i13)
+        {
+          var elem14 = null;
+          elem14 = new TStringValue();
+          elem14.read(input);
+          this.cols.push(elem14);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TStringRow.prototype.write = function(output) {
+  output.writeStructBegin('TStringRow');
+  if (this.cols !== null && this.cols !== undefined) {
+    output.writeFieldBegin('cols', Thrift.Type.LIST, 1);
+    output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
+    for (var iter15 in this.cols)
+    {
+      if (this.cols.hasOwnProperty(iter15))
+      {
+        iter15 = this.cols[iter15];
+        iter15.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TRowSet = function(args) {
   this.row_desc = null;
   this.rows = null;
@@ -405,19 +563,19 @@ TRowSet.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size8 = 0;
-        var _rtmp312;
+        var _size16 = 0;
+        var _rtmp320;
         this.row_desc = [];
-        var _etype11 = 0;
-        _rtmp312 = input.readListBegin();
-        _etype11 = _rtmp312.etype;
-        _size8 = _rtmp312.size;
-        for (var _i13 = 0; _i13 < _size8; ++_i13)
+        var _etype19 = 0;
+        _rtmp320 = input.readListBegin();
+        _etype19 = _rtmp320.etype;
+        _size16 = _rtmp320.size;
+        for (var _i21 = 0; _i21 < _size16; ++_i21)
         {
-          var elem14 = null;
-          elem14 = new TColumnType();
-          elem14.read(input);
-          this.row_desc.push(elem14);
+          var elem22 = null;
+          elem22 = new TColumnType();
+          elem22.read(input);
+          this.row_desc.push(elem22);
         }
         input.readListEnd();
       } else {
@@ -426,19 +584,19 @@ TRowSet.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size15 = 0;
-        var _rtmp319;
+        var _size23 = 0;
+        var _rtmp327;
         this.rows = [];
-        var _etype18 = 0;
-        _rtmp319 = input.readListBegin();
-        _etype18 = _rtmp319.etype;
-        _size15 = _rtmp319.size;
-        for (var _i20 = 0; _i20 < _size15; ++_i20)
+        var _etype26 = 0;
+        _rtmp327 = input.readListBegin();
+        _etype26 = _rtmp327.etype;
+        _size23 = _rtmp327.size;
+        for (var _i28 = 0; _i28 < _size23; ++_i28)
         {
-          var elem21 = null;
-          elem21 = new TRow();
-          elem21.read(input);
-          this.rows.push(elem21);
+          var elem29 = null;
+          elem29 = new TRow();
+          elem29.read(input);
+          this.rows.push(elem29);
         }
         input.readListEnd();
       } else {
@@ -459,12 +617,12 @@ TRowSet.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter22 in this.row_desc)
+    for (var iter30 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter22))
+      if (this.row_desc.hasOwnProperty(iter30))
       {
-        iter22 = this.row_desc[iter22];
-        iter22.write(output);
+        iter30 = this.row_desc[iter30];
+        iter30.write(output);
       }
     }
     output.writeListEnd();
@@ -473,12 +631,12 @@ TRowSet.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter23 in this.rows)
+    for (var iter31 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter23))
+      if (this.rows.hasOwnProperty(iter31))
       {
-        iter23 = this.rows[iter23];
-        iter23.write(output);
+        iter31 = this.rows[iter31];
+        iter31.write(output);
       }
     }
     output.writeListEnd();
