@@ -263,7 +263,7 @@
       // silly to change this from map to array 
       // - then later it turns back to map
       for (key in fields) {
-        fieldsArray.push({"name": key, "type": datumEnum[fields[key].col_type.type]});
+        fieldsArray.push({"name": key, "type": datumEnum[fields[key].col_type.type], "is_array":fields[key].col_type.is_array});
       }
       return fieldsArray;
     }
