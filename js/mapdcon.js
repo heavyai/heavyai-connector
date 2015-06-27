@@ -186,8 +186,6 @@
           if (fieldIsArray) {
             row[fieldName] = [];
             var arrayNumElems = result.rows[r].cols[c].datum.arr_val.length;
-            //console.log(arrayNumElems);
-            //console.log(result.rows[r].cols[c]);
             for (var e = 0; e < arrayNumElems; e++) {
               switch(fieldType) {
                 case "INT":
