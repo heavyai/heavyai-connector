@@ -173,7 +173,7 @@
       var colNames = [];
       for (var c = 0; c < numCols; c++) {
         var field = result.row_desc[c]; 
-        formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type]});
+        formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type], "is_array":field.col_type.is_array});
       }
       formattedResult.results = [];
       var numRows = result.rows.length;
@@ -182,27 +182,53 @@
         for (var c = 0; c < numCols; c++) {
           var fieldName = formattedResult.fields[c].name;
           var fieldType = formattedResult.fields[c].type;
-          switch (fieldType) {
-            case "INT":
-              row[fieldName] = result.rows[r].cols[c].datum.int_val;
-              break;
-            case "REAL":
-              row[fieldName] = result.rows[r].cols[c].datum.real_val;
-              break;
-            case "STR":
-              row[fieldName] = result.rows[r].cols[c].datum.str_val;
-              break;
-            case "TIME":
-            case "TIMESTAMP":
-            case "DATE":
-              row[fieldName] = new Date(result.rows[r].cols[c].datum.int_val * 1000);
-              break;
+          var fieldIsArray = formattedResult.fields[c].is_array;
+          if (fieldIsArray) {
+            row[fieldName] = [];
+            var arrayNumElems = result.rows[r].cols[c].datum.arr_val.length;
+            //console.log(arrayNumElems);
+            //console.log(result.rows[r].cols[c]);
+            for (var e = 0; e < arrayNumElems; e++) {
+              switch(fieldType) {
+                case "INT":
+                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].int_val);
+                  break;
+                case "REAL":
+                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].real_val);
+                  break;
+                case "STR":
+                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].str_val);
+                  break;
+                case "TIME":
+                case "TIMESTAMP":
+                case "DATE":
+                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].int_val * 1000);
+                  break;
+              }
+            }
+          }
+          else {
+            switch (fieldType) {
+              case "INT":
+                row[fieldName] = result.rows[r].cols[c].datum.int_val;
+                break;
+              case "REAL":
+                row[fieldName] = result.rows[r].cols[c].datum.real_val;
+                break;
+              case "STR":
+                row[fieldName] = result.rows[r].cols[c].datum.str_val;
+                break;
+              case "TIME":
+              case "TIMESTAMP":
+              case "DATE":
+                row[fieldName] = new Date(result.rows[r].cols[c].datum.int_val * 1000);
+                break;
+            }
           }
         }
         formattedResult.results.push(row);
       }
       //console.log(query);
-      //console.log(formattedResult.results);
       //console.log(formattedResult.results);
       if (hasCallback) {
         callbacks.pop()(formattedResult.results,callbacks);

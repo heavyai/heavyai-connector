@@ -575,28 +575,28 @@ MapD_get_table_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.MAP) {
-        var _size32 = 0;
-        var _rtmp336;
+        var _size40 = 0;
+        var _rtmp344;
         this.success = {};
-        var _ktype33 = 0;
-        var _vtype34 = 0;
-        _rtmp336 = input.readMapBegin();
-        _ktype33 = _rtmp336.ktype;
-        _vtype34 = _rtmp336.vtype;
-        _size32 = _rtmp336.size;
-        for (var _i37 = 0; _i37 < _size32; ++_i37)
+        var _ktype41 = 0;
+        var _vtype42 = 0;
+        _rtmp344 = input.readMapBegin();
+        _ktype41 = _rtmp344.ktype;
+        _vtype42 = _rtmp344.vtype;
+        _size40 = _rtmp344.size;
+        for (var _i45 = 0; _i45 < _size40; ++_i45)
         {
-          if (_i37 > 0 ) {
+          if (_i45 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key38 = null;
-          var val39 = null;
-          key38 = input.readString().value;
-          val39 = new TColumnType();
-          val39.read(input);
-          this.success[key38] = val39;
+          var key46 = null;
+          var val47 = null;
+          key46 = input.readString().value;
+          val47 = new TColumnType();
+          val47.read(input);
+          this.success[key46] = val47;
         }
         input.readMapEnd();
       } else {
@@ -633,13 +633,13 @@ MapD_get_table_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.MAP, 0);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
-    for (var kiter40 in this.success)
+    for (var kiter48 in this.success)
     {
-      if (this.success.hasOwnProperty(kiter40))
+      if (this.success.hasOwnProperty(kiter48))
       {
-        var viter41 = this.success[kiter40];
-        output.writeString(kiter40);
-        viter41.write(output);
+        var viter49 = this.success[kiter48];
+        output.writeString(kiter48);
+        viter49.write(output);
       }
     }
     output.writeMapEnd();
@@ -766,19 +766,19 @@ MapD_get_row_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size42 = 0;
-        var _rtmp346;
+        var _size50 = 0;
+        var _rtmp354;
         this.success = [];
-        var _etype45 = 0;
-        _rtmp346 = input.readListBegin();
-        _etype45 = _rtmp346.etype;
-        _size42 = _rtmp346.size;
-        for (var _i47 = 0; _i47 < _size42; ++_i47)
+        var _etype53 = 0;
+        _rtmp354 = input.readListBegin();
+        _etype53 = _rtmp354.etype;
+        _size50 = _rtmp354.size;
+        for (var _i55 = 0; _i55 < _size50; ++_i55)
         {
-          var elem48 = null;
-          elem48 = new TColumnType();
-          elem48.read(input);
-          this.success.push(elem48);
+          var elem56 = null;
+          elem56 = new TColumnType();
+          elem56.read(input);
+          this.success.push(elem56);
         }
         input.readListEnd();
       } else {
@@ -815,12 +815,12 @@ MapD_get_row_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter49 in this.success)
+    for (var iter57 in this.success)
     {
-      if (this.success.hasOwnProperty(iter49))
+      if (this.success.hasOwnProperty(iter57))
       {
-        iter49 = this.success[iter49];
-        iter49.write(output);
+        iter57 = this.success[iter57];
+        iter57.write(output);
       }
     }
     output.writeListEnd();
@@ -934,18 +934,18 @@ MapD_get_tables_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size50 = 0;
-        var _rtmp354;
+        var _size58 = 0;
+        var _rtmp362;
         this.success = [];
-        var _etype53 = 0;
-        _rtmp354 = input.readListBegin();
-        _etype53 = _rtmp354.etype;
-        _size50 = _rtmp354.size;
-        for (var _i55 = 0; _i55 < _size50; ++_i55)
+        var _etype61 = 0;
+        _rtmp362 = input.readListBegin();
+        _etype61 = _rtmp362.etype;
+        _size58 = _rtmp362.size;
+        for (var _i63 = 0; _i63 < _size58; ++_i63)
         {
-          var elem56 = null;
-          elem56 = input.readString().value;
-          this.success.push(elem56);
+          var elem64 = null;
+          elem64 = input.readString().value;
+          this.success.push(elem64);
         }
         input.readListEnd();
       } else {
@@ -982,12 +982,12 @@ MapD_get_tables_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter57 in this.success)
+    for (var iter65 in this.success)
     {
-      if (this.success.hasOwnProperty(iter57))
+      if (this.success.hasOwnProperty(iter65))
       {
-        iter57 = this.success[iter57];
-        output.writeString(iter57);
+        iter65 = this.success[iter65];
+        output.writeString(iter65);
       }
     }
     output.writeListEnd();
@@ -1068,18 +1068,18 @@ MapD_get_users_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size58 = 0;
-        var _rtmp362;
+        var _size66 = 0;
+        var _rtmp370;
         this.success = [];
-        var _etype61 = 0;
-        _rtmp362 = input.readListBegin();
-        _etype61 = _rtmp362.etype;
-        _size58 = _rtmp362.size;
-        for (var _i63 = 0; _i63 < _size58; ++_i63)
+        var _etype69 = 0;
+        _rtmp370 = input.readListBegin();
+        _etype69 = _rtmp370.etype;
+        _size66 = _rtmp370.size;
+        for (var _i71 = 0; _i71 < _size66; ++_i71)
         {
-          var elem64 = null;
-          elem64 = input.readString().value;
-          this.success.push(elem64);
+          var elem72 = null;
+          elem72 = input.readString().value;
+          this.success.push(elem72);
         }
         input.readListEnd();
       } else {
@@ -1108,12 +1108,12 @@ MapD_get_users_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter65 in this.success)
+    for (var iter73 in this.success)
     {
-      if (this.success.hasOwnProperty(iter65))
+      if (this.success.hasOwnProperty(iter73))
       {
-        iter65 = this.success[iter65];
-        output.writeString(iter65);
+        iter73 = this.success[iter73];
+        output.writeString(iter73);
       }
     }
     output.writeListEnd();
@@ -1189,19 +1189,19 @@ MapD_get_databases_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size66 = 0;
-        var _rtmp370;
+        var _size74 = 0;
+        var _rtmp378;
         this.success = [];
-        var _etype69 = 0;
-        _rtmp370 = input.readListBegin();
-        _etype69 = _rtmp370.etype;
-        _size66 = _rtmp370.size;
-        for (var _i71 = 0; _i71 < _size66; ++_i71)
+        var _etype77 = 0;
+        _rtmp378 = input.readListBegin();
+        _etype77 = _rtmp378.etype;
+        _size74 = _rtmp378.size;
+        for (var _i79 = 0; _i79 < _size74; ++_i79)
         {
-          var elem72 = null;
-          elem72 = new TDBInfo();
-          elem72.read(input);
-          this.success.push(elem72);
+          var elem80 = null;
+          elem80 = new TDBInfo();
+          elem80.read(input);
+          this.success.push(elem80);
         }
         input.readListEnd();
       } else {
@@ -1230,12 +1230,12 @@ MapD_get_databases_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter73 in this.success)
+    for (var iter81 in this.success)
     {
-      if (this.success.hasOwnProperty(iter73))
+      if (this.success.hasOwnProperty(iter81))
       {
-        iter73 = this.success[iter73];
-        iter73.write(output);
+        iter81 = this.success[iter81];
+        iter81.write(output);
       }
     }
     output.writeListEnd();
@@ -1538,19 +1538,19 @@ MapD_load_table_binary_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size74 = 0;
-        var _rtmp378;
+        var _size82 = 0;
+        var _rtmp386;
         this.rows = [];
-        var _etype77 = 0;
-        _rtmp378 = input.readListBegin();
-        _etype77 = _rtmp378.etype;
-        _size74 = _rtmp378.size;
-        for (var _i79 = 0; _i79 < _size74; ++_i79)
+        var _etype85 = 0;
+        _rtmp386 = input.readListBegin();
+        _etype85 = _rtmp386.etype;
+        _size82 = _rtmp386.size;
+        for (var _i87 = 0; _i87 < _size82; ++_i87)
         {
-          var elem80 = null;
-          elem80 = new TRow();
-          elem80.read(input);
-          this.rows.push(elem80);
+          var elem88 = null;
+          elem88 = new TRow();
+          elem88.read(input);
+          this.rows.push(elem88);
         }
         input.readListEnd();
       } else {
@@ -1581,12 +1581,12 @@ MapD_load_table_binary_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter81 in this.rows)
+    for (var iter89 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter81))
+      if (this.rows.hasOwnProperty(iter89))
       {
-        iter81 = this.rows[iter81];
-        iter81.write(output);
+        iter89 = this.rows[iter89];
+        iter89.write(output);
       }
     }
     output.writeListEnd();
@@ -1719,19 +1719,19 @@ MapD_load_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size82 = 0;
-        var _rtmp386;
+        var _size90 = 0;
+        var _rtmp394;
         this.rows = [];
-        var _etype85 = 0;
-        _rtmp386 = input.readListBegin();
-        _etype85 = _rtmp386.etype;
-        _size82 = _rtmp386.size;
-        for (var _i87 = 0; _i87 < _size82; ++_i87)
+        var _etype93 = 0;
+        _rtmp394 = input.readListBegin();
+        _etype93 = _rtmp394.etype;
+        _size90 = _rtmp394.size;
+        for (var _i95 = 0; _i95 < _size90; ++_i95)
         {
-          var elem88 = null;
-          elem88 = new TStringRow();
-          elem88.read(input);
-          this.rows.push(elem88);
+          var elem96 = null;
+          elem96 = new TStringRow();
+          elem96.read(input);
+          this.rows.push(elem96);
         }
         input.readListEnd();
       } else {
@@ -1762,12 +1762,12 @@ MapD_load_table_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter89 in this.rows)
+    for (var iter97 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter89))
+      if (this.rows.hasOwnProperty(iter97))
       {
-        iter89 = this.rows[iter89];
-        iter89.write(output);
+        iter97 = this.rows[iter97];
+        iter97.write(output);
       }
     }
     output.writeListEnd();

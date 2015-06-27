@@ -23,6 +23,7 @@ TDatum = function(args) {
   this.int_val = null;
   this.real_val = null;
   this.str_val = null;
+  this.arr_val = null;
   if (args) {
     if (args.int_val !== undefined) {
       this.int_val = args.int_val;
@@ -32,6 +33,9 @@ TDatum = function(args) {
     }
     if (args.str_val !== undefined) {
       this.str_val = args.str_val;
+    }
+    if (args.arr_val !== undefined) {
+      this.arr_val = args.arr_val;
     }
   }
 };
@@ -70,6 +74,27 @@ TDatum.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.LIST) {
+        var _size0 = 0;
+        var _rtmp34;
+        this.arr_val = [];
+        var _etype3 = 0;
+        _rtmp34 = input.readListBegin();
+        _etype3 = _rtmp34.etype;
+        _size0 = _rtmp34.size;
+        for (var _i5 = 0; _i5 < _size0; ++_i5)
+        {
+          var elem6 = null;
+          elem6 = new TDatum();
+          elem6.read(input);
+          this.arr_val.push(elem6);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -94,6 +119,20 @@ TDatum.prototype.write = function(output) {
   if (this.str_val !== null && this.str_val !== undefined) {
     output.writeFieldBegin('str_val', Thrift.Type.STRING, 3);
     output.writeString(this.str_val);
+    output.writeFieldEnd();
+  }
+  if (this.arr_val !== null && this.arr_val !== undefined) {
+    output.writeFieldBegin('arr_val', Thrift.Type.LIST, 4);
+    output.writeListBegin(Thrift.Type.STRUCT, this.arr_val.length);
+    for (var iter7 in this.arr_val)
+    {
+      if (this.arr_val.hasOwnProperty(iter7))
+      {
+        iter7 = this.arr_val[iter7];
+        iter7.write(output);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -407,19 +446,19 @@ TRow.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size0 = 0;
-        var _rtmp34;
+        var _size8 = 0;
+        var _rtmp312;
         this.cols = [];
-        var _etype3 = 0;
-        _rtmp34 = input.readListBegin();
-        _etype3 = _rtmp34.etype;
-        _size0 = _rtmp34.size;
-        for (var _i5 = 0; _i5 < _size0; ++_i5)
+        var _etype11 = 0;
+        _rtmp312 = input.readListBegin();
+        _etype11 = _rtmp312.etype;
+        _size8 = _rtmp312.size;
+        for (var _i13 = 0; _i13 < _size8; ++_i13)
         {
-          var elem6 = null;
-          elem6 = new TColumnValue();
-          elem6.read(input);
-          this.cols.push(elem6);
+          var elem14 = null;
+          elem14 = new TColumnValue();
+          elem14.read(input);
+          this.cols.push(elem14);
         }
         input.readListEnd();
       } else {
@@ -443,12 +482,12 @@ TRow.prototype.write = function(output) {
   if (this.cols !== null && this.cols !== undefined) {
     output.writeFieldBegin('cols', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-    for (var iter7 in this.cols)
+    for (var iter15 in this.cols)
     {
-      if (this.cols.hasOwnProperty(iter7))
+      if (this.cols.hasOwnProperty(iter15))
       {
-        iter7 = this.cols[iter7];
-        iter7.write(output);
+        iter15 = this.cols[iter15];
+        iter15.write(output);
       }
     }
     output.writeListEnd();
@@ -483,19 +522,19 @@ TStringRow.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size8 = 0;
-        var _rtmp312;
+        var _size16 = 0;
+        var _rtmp320;
         this.cols = [];
-        var _etype11 = 0;
-        _rtmp312 = input.readListBegin();
-        _etype11 = _rtmp312.etype;
-        _size8 = _rtmp312.size;
-        for (var _i13 = 0; _i13 < _size8; ++_i13)
+        var _etype19 = 0;
+        _rtmp320 = input.readListBegin();
+        _etype19 = _rtmp320.etype;
+        _size16 = _rtmp320.size;
+        for (var _i21 = 0; _i21 < _size16; ++_i21)
         {
-          var elem14 = null;
-          elem14 = new TStringValue();
-          elem14.read(input);
-          this.cols.push(elem14);
+          var elem22 = null;
+          elem22 = new TStringValue();
+          elem22.read(input);
+          this.cols.push(elem22);
         }
         input.readListEnd();
       } else {
@@ -519,12 +558,12 @@ TStringRow.prototype.write = function(output) {
   if (this.cols !== null && this.cols !== undefined) {
     output.writeFieldBegin('cols', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-    for (var iter15 in this.cols)
+    for (var iter23 in this.cols)
     {
-      if (this.cols.hasOwnProperty(iter15))
+      if (this.cols.hasOwnProperty(iter23))
       {
-        iter15 = this.cols[iter15];
-        iter15.write(output);
+        iter23 = this.cols[iter23];
+        iter23.write(output);
       }
     }
     output.writeListEnd();
@@ -563,19 +602,19 @@ TRowSet.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size16 = 0;
-        var _rtmp320;
+        var _size24 = 0;
+        var _rtmp328;
         this.row_desc = [];
-        var _etype19 = 0;
-        _rtmp320 = input.readListBegin();
-        _etype19 = _rtmp320.etype;
-        _size16 = _rtmp320.size;
-        for (var _i21 = 0; _i21 < _size16; ++_i21)
+        var _etype27 = 0;
+        _rtmp328 = input.readListBegin();
+        _etype27 = _rtmp328.etype;
+        _size24 = _rtmp328.size;
+        for (var _i29 = 0; _i29 < _size24; ++_i29)
         {
-          var elem22 = null;
-          elem22 = new TColumnType();
-          elem22.read(input);
-          this.row_desc.push(elem22);
+          var elem30 = null;
+          elem30 = new TColumnType();
+          elem30.read(input);
+          this.row_desc.push(elem30);
         }
         input.readListEnd();
       } else {
@@ -584,19 +623,19 @@ TRowSet.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size23 = 0;
-        var _rtmp327;
+        var _size31 = 0;
+        var _rtmp335;
         this.rows = [];
-        var _etype26 = 0;
-        _rtmp327 = input.readListBegin();
-        _etype26 = _rtmp327.etype;
-        _size23 = _rtmp327.size;
-        for (var _i28 = 0; _i28 < _size23; ++_i28)
+        var _etype34 = 0;
+        _rtmp335 = input.readListBegin();
+        _etype34 = _rtmp335.etype;
+        _size31 = _rtmp335.size;
+        for (var _i36 = 0; _i36 < _size31; ++_i36)
         {
-          var elem29 = null;
-          elem29 = new TRow();
-          elem29.read(input);
-          this.rows.push(elem29);
+          var elem37 = null;
+          elem37 = new TRow();
+          elem37.read(input);
+          this.rows.push(elem37);
         }
         input.readListEnd();
       } else {
@@ -617,12 +656,12 @@ TRowSet.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter30 in this.row_desc)
+    for (var iter38 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter30))
+      if (this.row_desc.hasOwnProperty(iter38))
       {
-        iter30 = this.row_desc[iter30];
-        iter30.write(output);
+        iter38 = this.row_desc[iter38];
+        iter38.write(output);
       }
     }
     output.writeListEnd();
@@ -631,12 +670,12 @@ TRowSet.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter31 in this.rows)
+    for (var iter39 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter31))
+      if (this.rows.hasOwnProperty(iter39))
       {
-        iter31 = this.rows[iter31];
-        iter31.write(output);
+        iter39 = this.rows[iter39];
+        iter39.write(output);
       }
     }
     output.writeListEnd();
