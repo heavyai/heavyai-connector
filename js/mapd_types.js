@@ -19,7 +19,7 @@ TExecuteMode = {
   'GPU' : 1,
   'CPU' : 2
 };
-TDatum = function(args) {
+TDatumVal = function(args) {
   this.int_val = null;
   this.real_val = null;
   this.str_val = null;
@@ -39,8 +39,8 @@ TDatum = function(args) {
     }
   }
 };
-TDatum.prototype = {};
-TDatum.prototype.read = function(input) {
+TDatumVal.prototype = {};
+TDatumVal.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -104,8 +104,8 @@ TDatum.prototype.read = function(input) {
   return;
 };
 
-TDatum.prototype.write = function(output) {
-  output.writeStructBegin('TDatum');
+TDatumVal.prototype.write = function(output) {
+  output.writeStructBegin('TDatumVal');
   if (this.int_val !== null && this.int_val !== undefined) {
     output.writeFieldBegin('int_val', Thrift.Type.I64, 1);
     output.writeI64(this.int_val);
@@ -140,20 +140,20 @@ TDatum.prototype.write = function(output) {
   return;
 };
 
-TColumnValue = function(args) {
-  this.datum = null;
+TDatum = function(args) {
+  this.val = null;
   this.is_null = null;
   if (args) {
-    if (args.datum !== undefined) {
-      this.datum = args.datum;
+    if (args.val !== undefined) {
+      this.val = args.val;
     }
     if (args.is_null !== undefined) {
       this.is_null = args.is_null;
     }
   }
 };
-TColumnValue.prototype = {};
-TColumnValue.prototype.read = function(input) {
+TDatum.prototype = {};
+TDatum.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -168,8 +168,8 @@ TColumnValue.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.datum = new TDatum();
-        this.datum.read(input);
+        this.val = new TDatumVal();
+        this.val.read(input);
       } else {
         input.skip(ftype);
       }
@@ -190,11 +190,11 @@ TColumnValue.prototype.read = function(input) {
   return;
 };
 
-TColumnValue.prototype.write = function(output) {
-  output.writeStructBegin('TColumnValue');
-  if (this.datum !== null && this.datum !== undefined) {
-    output.writeFieldBegin('datum', Thrift.Type.STRUCT, 1);
-    this.datum.write(output);
+TDatum.prototype.write = function(output) {
+  output.writeStructBegin('TDatum');
+  if (this.val !== null && this.val !== undefined) {
+    output.writeFieldBegin('val', Thrift.Type.STRUCT, 1);
+    this.val.write(output);
     output.writeFieldEnd();
   }
   if (this.is_null !== null && this.is_null !== undefined) {
@@ -456,7 +456,7 @@ TRow.prototype.read = function(input) {
         for (var _i13 = 0; _i13 < _size8; ++_i13)
         {
           var elem14 = null;
-          elem14 = new TColumnValue();
+          elem14 = new TDatum();
           elem14.read(input);
           this.cols.push(elem14);
         }

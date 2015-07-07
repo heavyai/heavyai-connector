@@ -184,42 +184,62 @@
           var fieldType = formattedResult.fields[c].type;
           var fieldIsArray = formattedResult.fields[c].is_array;
           if (fieldIsArray) {
+            if (result.rows[r].cols[c].is_null) {
+              row[fieldName] = "NULL";
+              continue;
+            }
             row[fieldName] = [];
-            var arrayNumElems = result.rows[r].cols[c].datum.arr_val.length;
+            var arrayNumElems = result.rows[r].cols[c].val.arr_val.length;
             for (var e = 0; e < arrayNumElems; e++) {
+              var elemDatum = result.rows[r].cols[c].val.arr_val[e];
+              if (elemDatum.is_null) {
+                row[fieldName].push("NULL");
+                continue;
+              }
               switch(fieldType) {
+                case "BOOL":
+                  row[fieldName].push(elemDatum.val.int_val ? true : false);
+                  break;
                 case "INT":
-                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].int_val);
+                  row[fieldName].push(elemDatum.val.int_val);
                   break;
                 case "REAL":
-                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].real_val);
+                  row[fieldName].push(elemDatum.val.real_val);
                   break;
                 case "STR":
-                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].str_val);
+                  row[fieldName].push(elemDatum.val.str_val);
                   break;
                 case "TIME":
                 case "TIMESTAMP":
                 case "DATE":
-                  row[fieldName].push(result.rows[r].cols[c].datum.arr_val[e].int_val * 1000);
+                  row[fieldName].push(elemDatum.val.int_val * 1000);
                   break;
               }
             }
           }
           else {
+            var scalarDatum = result.rows[r].cols[c];
+            if (scalarDatum.is_null) {
+              row[fieldName] = "NULL";
+              continue;
+            }
             switch (fieldType) {
+              case "BOOL":
+                row[fieldName] = scalarDatum.val.int_val ? true : false;
+                break;
               case "INT":
-                row[fieldName] = result.rows[r].cols[c].datum.int_val;
+                row[fieldName] = scalarDatum.val.int_val;
                 break;
               case "REAL":
-                row[fieldName] = result.rows[r].cols[c].datum.real_val;
+                row[fieldName] = scalarDatum.val.real_val;
                 break;
               case "STR":
-                row[fieldName] = result.rows[r].cols[c].datum.str_val;
+                row[fieldName] = scalarDatum.val.str_val;
                 break;
               case "TIME":
               case "TIMESTAMP":
               case "DATE":
-                row[fieldName] = new Date(result.rows[r].cols[c].datum.int_val * 1000);
+                row[fieldName] = new Date(scalarDatum.val.int_val * 1000);
                 break;
             }
           }
