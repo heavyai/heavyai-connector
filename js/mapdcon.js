@@ -203,7 +203,8 @@
                 case "INT":
                   row[fieldName].push(elemDatum.val.int_val);
                   break;
-                case "REAL":
+                case "FLOAT":
+                case "DOUBLE":
                   row[fieldName].push(elemDatum.val.real_val);
                   break;
                 case "STR":
@@ -230,7 +231,8 @@
               case "INT":
                 row[fieldName] = scalarDatum.val.int_val;
                 break;
-              case "REAL":
+              case "FLOAT":
+              case "DOUBLE":
                 row[fieldName] = scalarDatum.val.real_val;
                 break;
               case "STR":

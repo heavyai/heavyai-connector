@@ -7,12 +7,13 @@
 
 TDatumType = {
   'INT' : 0,
-  'REAL' : 1,
-  'STR' : 2,
-  'TIME' : 3,
-  'TIMESTAMP' : 4,
-  'DATE' : 5,
-  'BOOL' : 6
+  'FLOAT' : 1,
+  'DOUBLE' : 2,
+  'STR' : 3,
+  'TIME' : 4,
+  'TIMESTAMP' : 5,
+  'DATE' : 6,
+  'BOOL' : 7
 };
 TExecuteMode = {
   'HYBRID' : 0,
@@ -920,6 +921,73 @@ ThriftException.prototype.write = function(output) {
   if (this.error_msg !== null && this.error_msg !== undefined) {
     output.writeFieldBegin('error_msg', Thrift.Type.STRING, 1);
     output.writeString(this.error_msg);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TRenderProperty = function(args) {
+  this.property_type = null;
+  this.property_value = null;
+  if (args) {
+    if (args.property_type !== undefined) {
+      this.property_type = args.property_type;
+    }
+    if (args.property_value !== undefined) {
+      this.property_value = args.property_value;
+    }
+  }
+};
+TRenderProperty.prototype = {};
+TRenderProperty.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.property_type = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.property_value = new TDatumVal();
+        this.property_value.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TRenderProperty.prototype.write = function(output) {
+  output.writeStructBegin('TRenderProperty');
+  if (this.property_type !== null && this.property_type !== undefined) {
+    output.writeFieldBegin('property_type', Thrift.Type.I32, 1);
+    output.writeI32(this.property_type);
+    output.writeFieldEnd();
+  }
+  if (this.property_value !== null && this.property_value !== undefined) {
+    output.writeFieldBegin('property_value', Thrift.Type.STRUCT, 2);
+    this.property_value.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

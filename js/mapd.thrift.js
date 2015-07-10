@@ -1854,6 +1854,310 @@ MapD_load_table_result.prototype.write = function(output) {
   return;
 };
 
+MapD_render_args = function(args) {
+  this.session = null;
+  this.query = null;
+  this.render_type = null;
+  this.render_properties = null;
+  this.col_render_properties = null;
+  if (args) {
+    if (args.session !== undefined) {
+      this.session = args.session;
+    }
+    if (args.query !== undefined) {
+      this.query = args.query;
+    }
+    if (args.render_type !== undefined) {
+      this.render_type = args.render_type;
+    }
+    if (args.render_properties !== undefined) {
+      this.render_properties = args.render_properties;
+    }
+    if (args.col_render_properties !== undefined) {
+      this.col_render_properties = args.col_render_properties;
+    }
+  }
+};
+MapD_render_args.prototype = {};
+MapD_render_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.query = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.render_type = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.MAP) {
+        var _size98 = 0;
+        var _rtmp3102;
+        this.render_properties = {};
+        var _ktype99 = 0;
+        var _vtype100 = 0;
+        _rtmp3102 = input.readMapBegin();
+        _ktype99 = _rtmp3102.ktype;
+        _vtype100 = _rtmp3102.vtype;
+        _size98 = _rtmp3102.size;
+        for (var _i103 = 0; _i103 < _size98; ++_i103)
+        {
+          if (_i103 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key104 = null;
+          var val105 = null;
+          key104 = input.readString().value;
+          val105 = new TRenderProperty();
+          val105.read(input);
+          this.render_properties[key104] = val105;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.MAP) {
+        var _size106 = 0;
+        var _rtmp3110;
+        this.col_render_properties = {};
+        var _ktype107 = 0;
+        var _vtype108 = 0;
+        _rtmp3110 = input.readMapBegin();
+        _ktype107 = _rtmp3110.ktype;
+        _vtype108 = _rtmp3110.vtype;
+        _size106 = _rtmp3110.size;
+        for (var _i111 = 0; _i111 < _size106; ++_i111)
+        {
+          if (_i111 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key112 = null;
+          var val113 = null;
+          key112 = input.readString().value;
+          var _size114 = 0;
+          var _rtmp3118;
+          val113 = {};
+          var _ktype115 = 0;
+          var _vtype116 = 0;
+          _rtmp3118 = input.readMapBegin();
+          _ktype115 = _rtmp3118.ktype;
+          _vtype116 = _rtmp3118.vtype;
+          _size114 = _rtmp3118.size;
+          for (var _i119 = 0; _i119 < _size114; ++_i119)
+          {
+            if (_i119 > 0 ) {
+              if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+                input.rstack.pop();
+              }
+            }
+            var key120 = null;
+            var val121 = null;
+            key120 = input.readString().value;
+            val121 = new TRenderProperty();
+            val121.read(input);
+            val113[key120] = val121;
+          }
+          input.readMapEnd();
+          this.col_render_properties[key112] = val113;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_render_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_render_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.query !== null && this.query !== undefined) {
+    output.writeFieldBegin('query', Thrift.Type.STRING, 2);
+    output.writeString(this.query);
+    output.writeFieldEnd();
+  }
+  if (this.render_type !== null && this.render_type !== undefined) {
+    output.writeFieldBegin('render_type', Thrift.Type.STRING, 3);
+    output.writeString(this.render_type);
+    output.writeFieldEnd();
+  }
+  if (this.render_properties !== null && this.render_properties !== undefined) {
+    output.writeFieldBegin('render_properties', Thrift.Type.MAP, 4);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.render_properties));
+    for (var kiter122 in this.render_properties)
+    {
+      if (this.render_properties.hasOwnProperty(kiter122))
+      {
+        var viter123 = this.render_properties[kiter122];
+        output.writeString(kiter122);
+        viter123.write(output);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.col_render_properties !== null && this.col_render_properties !== undefined) {
+    output.writeFieldBegin('col_render_properties', Thrift.Type.MAP, 5);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.col_render_properties));
+    for (var kiter124 in this.col_render_properties)
+    {
+      if (this.col_render_properties.hasOwnProperty(kiter124))
+      {
+        var viter125 = this.col_render_properties[kiter124];
+        output.writeString(kiter124);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(viter125));
+        for (var kiter126 in viter125)
+        {
+          if (viter125.hasOwnProperty(kiter126))
+          {
+            var viter127 = viter125[kiter126];
+            output.writeString(kiter126);
+            viter127.write(output);
+          }
+        }
+        output.writeMapEnd();
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_render_result = function(args) {
+  this.success = null;
+  this.e = null;
+  this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined) {
+      this.success = args.success;
+    }
+    if (args.e !== undefined) {
+      this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_render_result.prototype = {};
+MapD_render_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readBinary().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_render_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_render_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeBinary(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapDClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
@@ -2505,4 +2809,63 @@ MapDClient.prototype.recv_load_table = function() {
     throw result.te;
   }
   return;
+};
+MapDClient.prototype.render = function(session, query, render_type, render_properties, col_render_properties, callback) {
+  this.send_render(session, query, render_type, render_properties, col_render_properties, callback); 
+  if (!callback) {
+    return this.recv_render();
+  }
+};
+
+MapDClient.prototype.send_render = function(session, query, render_type, render_properties, col_render_properties, callback) {
+  this.output.writeMessageBegin('render', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_render_args();
+  args.session = session;
+  args.query = query;
+  args.render_type = render_type;
+  args.render_properties = render_properties;
+  args.col_render_properties = col_render_properties;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_render();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_render = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_render_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.te) {
+    throw result.te;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'render failed: unknown result';
 };
