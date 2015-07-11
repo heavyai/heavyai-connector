@@ -168,7 +168,6 @@
       var numCols = result.row_desc.length;
       }
       catch (err) {
-        debugger;
       }
       var colNames = [];
       for (var c = 0; c < numCols; c++) {
