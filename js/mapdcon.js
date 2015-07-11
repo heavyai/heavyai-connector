@@ -18,7 +18,10 @@
       getTables: getTables,
       getFields: getFields,
       getPlatform: getPlatform,
-      getClient: getClient
+      getClient: getClient,
+      getFrontendViews: getFrontendViews,
+      getFrontendView: getFrontendView,
+      createFrontendView: createFrontendView
     }
   
     var host = "192.168.1.8";
@@ -89,6 +92,52 @@
       protocol = null;
       transport = null;
     }
+
+    function getFrontendViews() {
+      var result = null;
+      try {
+        result = client.get_frontend_views(sessionId);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.get_frontend_views(sessionId);
+        }
+      }
+      return result;
+    }
+
+    function getFrontendView(viewName) {
+      var result = null;
+      try {
+        result = client.get_frontend_view(sessionId,viewName);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.get_frontend_views(sessionId,viewName);
+        }
+      }
+      return result;
+    }
+
+
+
+    function createFrontendView(viewName, viewState) {
+      try {
+        client.create_frontend_view(sessionId,viewName,viewState);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.get_frontend_views(sessionId,viewName,viewState);
+        }
+      }
+    }
+
 
     function queryAsync(query,callbacks) {
       testConnection();
@@ -168,7 +217,6 @@
       var numCols = result.row_desc.length;
       }
       catch (err) {
-        debugger;
       }
       var colNames = [];
       for (var c = 0; c < numCols; c++) {
