@@ -15,6 +15,14 @@ TDatumType = {
   'DATE' : 6,
   'BOOL' : 7
 };
+TEncodingType = {
+  'NONE' : 0,
+  'FIXED' : 1,
+  'RL' : 2,
+  'DIFF' : 3,
+  'DICT' : 4,
+  'SPARSE' : 5
+};
 TExecuteMode = {
   'HYBRID' : 0,
   'GPU' : 1,
@@ -276,11 +284,15 @@ TStringValue.prototype.write = function(output) {
 
 TTypeInfo = function(args) {
   this.type = null;
+  this.encoding = null;
   this.nullable = null;
   this.is_array = null;
   if (args) {
     if (args.type !== undefined) {
       this.type = args.type;
+    }
+    if (args.encoding !== undefined) {
+      this.encoding = args.encoding;
     }
     if (args.nullable !== undefined) {
       this.nullable = args.nullable;
@@ -307,6 +319,13 @@ TTypeInfo.prototype.read = function(input) {
       case 1:
       if (ftype == Thrift.Type.I32) {
         this.type = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.encoding = input.readI32().value;
       } else {
         input.skip(ftype);
       }
@@ -339,6 +358,11 @@ TTypeInfo.prototype.write = function(output) {
   if (this.type !== null && this.type !== undefined) {
     output.writeFieldBegin('type', Thrift.Type.I32, 1);
     output.writeI32(this.type);
+    output.writeFieldEnd();
+  }
+  if (this.encoding !== null && this.encoding !== undefined) {
+    output.writeFieldBegin('encoding', Thrift.Type.I32, 4);
+    output.writeI32(this.encoding);
     output.writeFieldEnd();
   }
   if (this.nullable !== null && this.nullable !== undefined) {
