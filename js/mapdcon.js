@@ -150,8 +150,11 @@
           connect();
           client.sql_execute(sessionId,query + ";", processResults.bind(this,callbacks));
         }
+        else if (err.name == "TMapDException") {
+          alert(err.error_msg);
+        }
         else {
-          throw (err);
+          throw(err);
         }
       }
     }
@@ -167,8 +170,11 @@
           connect();
           result = client.sql_execute(sessionId,query + ";");
         }
+        else if (err.name == "TMapDException") {
+          alert(err.error_msg);
+        }
         else {
-          throw (err);
+          throw(err);
         }
       }
       return processResults(undefined,result);
