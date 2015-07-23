@@ -21,7 +21,8 @@
       getClient: getClient,
       getFrontendViews: getFrontendViews,
       getFrontendView: getFrontendView,
-      createFrontendView: createFrontendView
+      createFrontendView: createFrontendView,
+      detectColumnTypes: detectColumnTypes
     }
   
     var host = "192.168.1.8";
@@ -136,6 +137,22 @@
           result = client.get_frontend_views(sessionId,viewName,viewState);
         }
       }
+    }
+
+
+    function detectColumnTypes(fileName, delimiter) {
+      delimiter = delimiter || "";
+      try {
+        result = client.detect_column_types(sessionId,fileName,delimiter);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.detect_column_types(sessionId,fileName,delimiter);
+        }
+      }
+      return result;
     }
 
 
