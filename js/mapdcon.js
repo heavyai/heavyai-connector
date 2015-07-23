@@ -327,8 +327,6 @@
         }
         formattedResult.results.push(row);
       }
-      //console.log(query);
-      //console.log(formattedResult.results);
       if (hasCallback) {
         callbacks.pop()(formattedResult.results,callbacks);
       }
