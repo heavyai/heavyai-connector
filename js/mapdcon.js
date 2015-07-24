@@ -140,16 +140,16 @@
     }
 
 
-    function detectColumnTypes(fileName, delimiter) {
+    function detectColumnTypes(fileName, delimiter, callback) {
       delimiter = delimiter || "";
       try {
-        result = client.detect_column_types(sessionId,fileName,delimiter);
+        result = client.detect_column_types(sessionId,fileName,delimiter, callback);
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.detect_column_types(sessionId,fileName,delimiter);
+          result = client.detect_column_types(sessionId,fileName,delimiter, callback);
         }
       }
       return result;
@@ -168,7 +168,11 @@
           client.sql_execute(sessionId,query + ";", processResults.bind(this,callbacks));
         }
         else if (err.name == "TMapDException") {
-          alert(err.error_msg);
+          swal({title: "Error!",   
+            text: err.error_msg,   
+            type: "error",   
+            confirmButtonText: "Okay" 
+          });
         }
         else {
           throw(err);
@@ -188,7 +192,11 @@
           result = client.sql_execute(sessionId,query + ";");
         }
         else if (err.name == "TMapDException") {
-          alert(err.error_msg);
+          swal({title: "Error!",   
+            text: err.error_msg,   
+            type: "error",   
+            confirmButtonText: "Okay" 
+          });
         }
         else {
           throw(err);
