@@ -6,14 +6,17 @@
 
 
 TDatumType = {
-  'INT' : 0,
-  'FLOAT' : 1,
-  'DOUBLE' : 2,
-  'STR' : 3,
-  'TIME' : 4,
-  'TIMESTAMP' : 5,
-  'DATE' : 6,
-  'BOOL' : 7
+  'SMALLINT' : 0,
+  'INT' : 1,
+  'BIGINT' : 2,
+  'FLOAT' : 3,
+  'DECIMAL' : 4,
+  'DOUBLE' : 5,
+  'STR' : 6,
+  'TIME' : 7,
+  'TIMESTAMP' : 8,
+  'DATE' : 9,
+  'BOOL' : 10
 };
 TEncodingType = {
   'NONE' : 0,

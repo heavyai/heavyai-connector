@@ -271,11 +271,14 @@
                 case "BOOL":
                   row[fieldName].push(elemDatum.val.int_val ? true : false);
                   break;
+                case "SMALLINT":
                 case "INT":
+                case "BIGINT":
                   row[fieldName].push(elemDatum.val.int_val);
                   break;
                 case "FLOAT":
                 case "DOUBLE":
+                case "DECIMAL":
                   row[fieldName].push(elemDatum.val.real_val);
                   break;
                 case "STR":
@@ -299,11 +302,14 @@
               case "BOOL":
                 row[fieldName] = scalarDatum.val.int_val ? true : false;
                 break;
+              case "SMALLINT":
               case "INT":
+              case "BIGINT":
                 row[fieldName] = scalarDatum.val.int_val;
                 break;
               case "FLOAT":
               case "DOUBLE":
+              case "DECIMAL":
                 row[fieldName] = scalarDatum.val.real_val;
                 break;
               case "STR":
