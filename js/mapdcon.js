@@ -6,7 +6,7 @@
     var mapdcon = {
       setPlatform: setPlatform,
       setHost: setHost,
-      setUser: setUser,
+      setUserAndPassword: setUserAndPassword,
       setPort: setPort,
       setDbName: setDbName,
       connect: connect,
@@ -14,6 +14,10 @@
       query: query,
       queryAsync: queryAsync,
       getSessionId: function() {return sessionId;},
+      getHost: function() {return host},
+      getPort: function() {return port},
+      getUser: function() {return user},
+      getDb: function() {return dbName},
       getDatabases: getDatabases,
       getTables: getTables,
       getFields: getFields,
@@ -53,8 +57,9 @@
       return mapdcon;
     }
 
-    function setUser (newUser) {
+    function setUserAndPassword (newUser,newPassword) {
       user = newUser;
+      password = newPassword;
       return mapdcon;
     }
 
@@ -325,8 +330,6 @@
         }
         formattedResult.results.push(row);
       }
-      //console.log(query);
-      //console.log(formattedResult.results);
       if (hasCallback) {
         callbacks.pop()(formattedResult.results,callbacks);
       }
