@@ -260,7 +260,9 @@
         formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type], "is_array":field.col_type.is_array});
       }
       formattedResult.results = [];
-      var numRows = result.rows.length;
+      var numRows = 0;
+      if (result.rows !== undefined && result.rows !== null)
+        numRows = result.rows.length; // so won't throw if result.rows is missing
       for (var r = 0; r < numRows; r++) {
         var row = {};
         for (var c = 0; c < numCols; c++) {
@@ -397,7 +399,7 @@
       // silly to change this from map to array 
       // - then later it turns back to map
       for (key in fields) {
-        fieldsArray.push({"name": key, "type": datumEnum[fields[key].col_type.type], "is_array":fields[key].col_type.is_array});
+        fieldsArray.push({"name": key, "type": datumEnum[fields[key].col_type.type], "is_array":fields[key].col_type.is_array, "is_dict": fields[key].col_type.encoding == TEncodingType["DICT"]});
       }
       return fieldsArray;
     }
