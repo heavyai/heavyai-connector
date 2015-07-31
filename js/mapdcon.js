@@ -26,7 +26,9 @@
       getFrontendViews: getFrontendViews,
       getFrontendView: getFrontendView,
       createFrontendView: createFrontendView,
-      detectColumnTypes: detectColumnTypes
+      detectColumnTypes: detectColumnTypes,
+      createTable: createTable,
+      importTable: importTable
     }
   
     var host = "192.168.1.8";
@@ -401,6 +403,35 @@
       }
       return fieldsArray;
     }
+
+    function createTable(tableName, rowDesc, callback) {
+      try {
+        result = client.send_create_table(sessionId, tableName, rowDesc, callback);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.send_create_table(sessionId, tableName, rowDesc, callback);
+        }
+      }
+      return result;
+    }
+
+    function importTable(tableName, fileName, callback) {
+      try {
+        result = client.send_import_table(sessionId, tableName, fileName, callback);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.send_import_table(sessionId, tableName, fileName, callback);
+        }
+      }
+      return result;
+    }
+
     invertDatumTypes();
     return mapdcon;
   }
