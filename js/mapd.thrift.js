@@ -2645,6 +2645,7 @@ MapD_detect_column_types_args = function(args) {
   this.session = null;
   this.file_name = null;
   this.delimiter = null;
+  this.quoted = null;
   if (args) {
     if (args.session !== undefined) {
       this.session = args.session;
@@ -2654,6 +2655,9 @@ MapD_detect_column_types_args = function(args) {
     }
     if (args.delimiter !== undefined) {
       this.delimiter = args.delimiter;
+    }
+    if (args.quoted !== undefined) {
+      this.quoted = args.quoted;
     }
   }
 };
@@ -2692,6 +2696,13 @@ MapD_detect_column_types_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.quoted = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -2716,6 +2727,11 @@ MapD_detect_column_types_args.prototype.write = function(output) {
   if (this.delimiter !== null && this.delimiter !== undefined) {
     output.writeFieldBegin('delimiter', Thrift.Type.STRING, 3);
     output.writeString(this.delimiter);
+    output.writeFieldEnd();
+  }
+  if (this.quoted !== null && this.quoted !== undefined) {
+    output.writeFieldBegin('quoted', Thrift.Type.BOOL, 4);
+    output.writeBool(this.quoted);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -3001,6 +3017,8 @@ MapD_import_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.file_name = null;
+  this.delimiter = null;
+  this.quoted = null;
   if (args) {
     if (args.session !== undefined) {
       this.session = args.session;
@@ -3010,6 +3028,12 @@ MapD_import_table_args = function(args) {
     }
     if (args.file_name !== undefined) {
       this.file_name = args.file_name;
+    }
+    if (args.delimiter !== undefined) {
+      this.delimiter = args.delimiter;
+    }
+    if (args.quoted !== undefined) {
+      this.quoted = args.quoted;
     }
   }
 };
@@ -3048,6 +3072,20 @@ MapD_import_table_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.delimiter = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.BOOL) {
+        this.quoted = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -3072,6 +3110,16 @@ MapD_import_table_args.prototype.write = function(output) {
   if (this.file_name !== null && this.file_name !== undefined) {
     output.writeFieldBegin('file_name', Thrift.Type.STRING, 3);
     output.writeString(this.file_name);
+    output.writeFieldEnd();
+  }
+  if (this.delimiter !== null && this.delimiter !== undefined) {
+    output.writeFieldBegin('delimiter', Thrift.Type.STRING, 4);
+    output.writeString(this.delimiter);
+    output.writeFieldEnd();
+  }
+  if (this.quoted !== null && this.quoted !== undefined) {
+    output.writeFieldBegin('quoted', Thrift.Type.BOOL, 5);
+    output.writeBool(this.quoted);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -4031,19 +4079,20 @@ MapDClient.prototype.recv_create_frontend_view = function() {
   }
   return;
 };
-MapDClient.prototype.detect_column_types = function(session, file_name, delimiter, callback) {
-  this.send_detect_column_types(session, file_name, delimiter, callback); 
+MapDClient.prototype.detect_column_types = function(session, file_name, delimiter, quoted, callback) {
+  this.send_detect_column_types(session, file_name, delimiter, quoted, callback); 
   if (!callback) {
     return this.recv_detect_column_types();
   }
 };
 
-MapDClient.prototype.send_detect_column_types = function(session, file_name, delimiter, callback) {
+MapDClient.prototype.send_detect_column_types = function(session, file_name, delimiter, quoted, callback) {
   this.output.writeMessageBegin('detect_column_types', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_detect_column_types_args();
   args.session = session;
   args.file_name = file_name;
   args.delimiter = delimiter;
+  args.quoted = quoted;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -4142,19 +4191,21 @@ MapDClient.prototype.recv_create_table = function() {
   }
   return;
 };
-MapDClient.prototype.import_table = function(session, table_name, file_name, callback) {
-  this.send_import_table(session, table_name, file_name, callback); 
+MapDClient.prototype.import_table = function(session, table_name, file_name, delimiter, quoted, callback) {
+  this.send_import_table(session, table_name, file_name, delimiter, quoted, callback); 
   if (!callback) {
   this.recv_import_table();
   }
 };
 
-MapDClient.prototype.send_import_table = function(session, table_name, file_name, callback) {
+MapDClient.prototype.send_import_table = function(session, table_name, file_name, delimiter, quoted, callback) {
   this.output.writeMessageBegin('import_table', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_import_table_args();
   args.session = session;
   args.table_name = table_name;
   args.file_name = file_name;
+  args.delimiter = delimiter;
+  args.quoted = quoted;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
