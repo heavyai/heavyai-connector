@@ -18,6 +18,7 @@
       getPort: function() {return port},
       getUser: function() {return user},
       getDb: function() {return dbName},
+      getUploadServer: function() {return ""}, // empty string: same as frontend server
       getDatabases: getDatabases,
       getTables: getTables,
       getFields: getFields,
