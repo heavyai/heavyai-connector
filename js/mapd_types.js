@@ -1022,3 +1022,281 @@ TRenderProperty.prototype.write = function(output) {
   return;
 };
 
+TCopyParams = function(args) {
+  this.delimiter = null;
+  this.null_str = null;
+  this.has_header = null;
+  this.quoted = null;
+  this.quote = null;
+  this.escape = null;
+  this.line_delim = null;
+  this.array_delim = null;
+  this.array_begin = null;
+  this.array_end = null;
+  this.threads = null;
+  if (args) {
+    if (args.delimiter !== undefined) {
+      this.delimiter = args.delimiter;
+    }
+    if (args.null_str !== undefined) {
+      this.null_str = args.null_str;
+    }
+    if (args.has_header !== undefined) {
+      this.has_header = args.has_header;
+    }
+    if (args.quoted !== undefined) {
+      this.quoted = args.quoted;
+    }
+    if (args.quote !== undefined) {
+      this.quote = args.quote;
+    }
+    if (args.escape !== undefined) {
+      this.escape = args.escape;
+    }
+    if (args.line_delim !== undefined) {
+      this.line_delim = args.line_delim;
+    }
+    if (args.array_delim !== undefined) {
+      this.array_delim = args.array_delim;
+    }
+    if (args.array_begin !== undefined) {
+      this.array_begin = args.array_begin;
+    }
+    if (args.array_end !== undefined) {
+      this.array_end = args.array_end;
+    }
+    if (args.threads !== undefined) {
+      this.threads = args.threads;
+    }
+  }
+};
+TCopyParams.prototype = {};
+TCopyParams.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.delimiter = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.null_str = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.has_header = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.quoted = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.quote = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.escape = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.line_delim = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.STRING) {
+        this.array_delim = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 9:
+      if (ftype == Thrift.Type.STRING) {
+        this.array_begin = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 10:
+      if (ftype == Thrift.Type.STRING) {
+        this.array_end = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 11:
+      if (ftype == Thrift.Type.I32) {
+        this.threads = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TCopyParams.prototype.write = function(output) {
+  output.writeStructBegin('TCopyParams');
+  if (this.delimiter !== null && this.delimiter !== undefined) {
+    output.writeFieldBegin('delimiter', Thrift.Type.STRING, 1);
+    output.writeString(this.delimiter);
+    output.writeFieldEnd();
+  }
+  if (this.null_str !== null && this.null_str !== undefined) {
+    output.writeFieldBegin('null_str', Thrift.Type.STRING, 2);
+    output.writeString(this.null_str);
+    output.writeFieldEnd();
+  }
+  if (this.has_header !== null && this.has_header !== undefined) {
+    output.writeFieldBegin('has_header', Thrift.Type.BOOL, 3);
+    output.writeBool(this.has_header);
+    output.writeFieldEnd();
+  }
+  if (this.quoted !== null && this.quoted !== undefined) {
+    output.writeFieldBegin('quoted', Thrift.Type.BOOL, 4);
+    output.writeBool(this.quoted);
+    output.writeFieldEnd();
+  }
+  if (this.quote !== null && this.quote !== undefined) {
+    output.writeFieldBegin('quote', Thrift.Type.STRING, 5);
+    output.writeString(this.quote);
+    output.writeFieldEnd();
+  }
+  if (this.escape !== null && this.escape !== undefined) {
+    output.writeFieldBegin('escape', Thrift.Type.STRING, 6);
+    output.writeString(this.escape);
+    output.writeFieldEnd();
+  }
+  if (this.line_delim !== null && this.line_delim !== undefined) {
+    output.writeFieldBegin('line_delim', Thrift.Type.STRING, 7);
+    output.writeString(this.line_delim);
+    output.writeFieldEnd();
+  }
+  if (this.array_delim !== null && this.array_delim !== undefined) {
+    output.writeFieldBegin('array_delim', Thrift.Type.STRING, 8);
+    output.writeString(this.array_delim);
+    output.writeFieldEnd();
+  }
+  if (this.array_begin !== null && this.array_begin !== undefined) {
+    output.writeFieldBegin('array_begin', Thrift.Type.STRING, 9);
+    output.writeString(this.array_begin);
+    output.writeFieldEnd();
+  }
+  if (this.array_end !== null && this.array_end !== undefined) {
+    output.writeFieldBegin('array_end', Thrift.Type.STRING, 10);
+    output.writeString(this.array_end);
+    output.writeFieldEnd();
+  }
+  if (this.threads !== null && this.threads !== undefined) {
+    output.writeFieldBegin('threads', Thrift.Type.I32, 11);
+    output.writeI32(this.threads);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TDetectResult = function(args) {
+  this.row_set = null;
+  this.copy_params = null;
+  if (args) {
+    if (args.row_set !== undefined) {
+      this.row_set = args.row_set;
+    }
+    if (args.copy_params !== undefined) {
+      this.copy_params = args.copy_params;
+    }
+  }
+};
+TDetectResult.prototype = {};
+TDetectResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.row_set = new TRowSet();
+        this.row_set.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.copy_params = new TCopyParams();
+        this.copy_params.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TDetectResult.prototype.write = function(output) {
+  output.writeStructBegin('TDetectResult');
+  if (this.row_set !== null && this.row_set !== undefined) {
+    output.writeFieldBegin('row_set', Thrift.Type.STRUCT, 1);
+    this.row_set.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.copy_params !== null && this.copy_params !== undefined) {
+    output.writeFieldBegin('copy_params', Thrift.Type.STRUCT, 2);
+    this.copy_params.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
