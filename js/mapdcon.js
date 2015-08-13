@@ -389,7 +389,7 @@
     }
 
     function invertDatumTypes() {
-      for (key in TDatumType) {
+      for (var key in TDatumType) {
         datumEnum[TDatumType[key]] = key;
       }
     }
@@ -400,7 +400,7 @@
       var fieldsArray = [];
       // silly to change this from map to array 
       // - then later it turns back to map
-      for (key in fields) {
+      for (var key in fields) {
         fieldsArray.push({"name": key, "type": datumEnum[fields[key].col_type.type], "is_array":fields[key].col_type.is_array, "is_dict": fields[key].col_type.encoding == TEncodingType["DICT"]});
       }
       return fieldsArray;
