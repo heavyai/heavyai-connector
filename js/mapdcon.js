@@ -148,16 +148,16 @@
     }
 
 
-    function detectColumnTypes(fileName, delimiter, quoted, callback) {
-      delimiter = delimiter || "";
+    function detectColumnTypes(fileName, copyParams, callback) {
+      copyParams.delimiter = copyParams.delimiter || "";
       try {
-        result = client.detect_column_types(sessionId,fileName,delimiter,quoted, callback);
+        result = client.detect_column_types(sessionId, fileName, copyParams, callback);
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.detect_column_types(sessionId,fileName,delimiter,quoted, callback);
+          result = client.detect_column_types(sessionId, fileName, copyParams, callback);
         }
       }
       return result;
@@ -421,16 +421,16 @@
       return result;
     }
 
-    function importTable(tableName, fileName, delimiter, quoted, callback) {
-      delimiter = delimiter || "";
+    function importTable(tableName, fileName, copyParams, callback) {
+      copyParams.delimiter = copyParams.delimiter || "";
       try {
-        result = client.send_import_table(sessionId, tableName, fileName, delimiter, quoted, callback);
+        result = client.send_import_table(sessionId, tableName, fileName, copyParams, callback);
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.send_import_table(sessionId, tableName, fileName, delimiter, quoted, callback);
+          result = client.send_import_table(sessionId, tableName, fileName, copyParams, callback);
         }
       }
       return result;
