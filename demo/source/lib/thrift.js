@@ -1,1 +1,1 @@
-../../lib/thrift.js
+../../../lib/thrift.js
