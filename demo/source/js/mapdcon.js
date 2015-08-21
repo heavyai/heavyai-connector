@@ -164,16 +164,16 @@
     }
 
 
-    function queryAsync(query,callbacks,columnarResults) {
-      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified 
+    function queryAsync(query,callbacks) {
+      testConnection();
       try {
-        client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,callbacks));
+        client.sql_execute(sessionId,query + ";", processResults.bind(this,callbacks));
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,callbacks));
+          client.sql_execute(sessionId,query + ";", processResults.bind(this,callbacks));
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",   
@@ -188,17 +188,16 @@
       }
     }
 
-    function query(query,columnarResults) {
-      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
+    function query(query) {
       var result = null;
       try {
-        result = client.sql_execute(sessionId,query + ";",columnarResults);
+        result = client.sql_execute(sessionId,query + ";");
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.sql_execute(sessionId,query + ";",columnarResults);
+          result = client.sql_execute(sessionId,query + ";");
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",   
@@ -214,104 +213,59 @@
       return processResults(undefined,result);
     }
 
-    function processColumnarResults(data) {
-      var formattedResult = {fields: [], results: []};
-      var numCols = data.row_desc.length;
-      var numRows = 0;
-      for (var c = 0; c < numCols; c++) {
-        var field = data.row_desc[c]; 
-        formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type], "is_array":field.col_type.is_array});
+    /*
+    function query(query, callback) {
+      testConnection();
+      var hasCallback = typeof callback !== 'undefined';
+      console.log("has callback: " + hasCallback);
+      var result = null;
+      try {
+        if (hasCallback) {
+          client.sql_execute(sessionId,query + ";", processResults);
+        }
+        else {
+          result = client.sql_execute(sessionId,query + ";");
+        }
+
       }
-      if (numCols > 0)
-        numRows = data.columns[0].nulls.length;
-      for (var r = 0; r < numRows; r++) {
-        var row = {};
-        for (var c = 0; c < numCols; c++) {
-          var fieldName = formattedResult.fields[c].name;
-          var fieldType = formattedResult.fields[c].type;
-          var fieldIsArray = formattedResult.fields[c].is_array;
-          var isNull = data.columns[c].nulls[r];
-          if (isNull) {
-            row[fieldName] = "NULL";
-            continue;
-          }
-          if (fieldIsArray) {
-            row[fieldName] = [];
-            var arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;
-            for (var e = 0; e < arrayNumElems; e++) {
-              if (data.columns[c].data.arr_col[r].nulls[e]) {
-                row[fieldName].push("NULL");
-                continue;
-              }
-              switch(fieldType) {
-                case "BOOL":
-                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] ? true : false);
-                  break;
-                case "SMALLINT":
-                case "INT":
-                case "BIGINT":
-                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e]);
-                  break;
-                case "FLOAT":
-                case "DOUBLE":
-                case "DECIMAL":
-                  row[fieldName].push(data.columns[c].data.arr_col[r].data.real_col[e]);
-                  break;
-                case "STR":
-                  row[fieldName].push(data.columns[c].data.arr_col[r].data.str_col[e]);
-                  break;
-                case "TIME":
-                case "TIMESTAMP":
-                case "DATE":
-                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] * 1000);
-                  break;
-              }
-            }
+      catch (err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          // try one more time
+          if (hasCallback) {
+            client.sql_execute(sessionId,query + ";", processResults);
           }
           else {
-            switch (fieldType) {
-              case "BOOL":
-                row[fieldName] = data.columns[c].data.int_col[r] ? true : false;
-                break;
-              case "SMALLINT":
-              case "INT":
-              case "BIGINT":
-                row[fieldName] = data.columns[c].data.int_col[r];
-                break;
-              case "FLOAT":
-              case "DOUBLE":
-              case "DECIMAL":
-                row[fieldName] = data.columns[c].data.real_col[r];
-                break;
-              case "STR":
-                row[fieldName] = data.columns[c].data.str_col[r];
-                break;
-              case "TIME":
-              case "TIMESTAMP":
-              case "DATE":
-                row[fieldName] = new Date(data.columns[c].data.int_col[r] * 1000);
-                break;
-            }
+            result = client.sql_execute(sessionId,query + ";");
           }
         }
-        formattedResult.results.push(row);
       }
-      return formattedResult;
+      if (!hasCallback) {
+        return processResults(result);
+      }
     }
+    */
 
-
-    function processRowResults(data) {
-      var numCols = data.row_desc.length;
+    function processResults(callbacks, result) {
+      result = result.row_set;
+      var hasCallback = typeof callbacks !== 'undefined';
+      var formattedResult = {};
+      formattedResult.fields = [];
+      try {
+      var numCols = result.row_desc.length;
+      }
+      catch (err) {
+      }
       var colNames = [];
-      var formattedResult = {fields: [], results: []};
       for (var c = 0; c < numCols; c++) {
-        var field = data.row_desc[c]; 
+        var field = result.row_desc[c]; 
         formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type], "is_array":field.col_type.is_array});
       }
       formattedResult.results = [];
       var numRows = 0;
-      if (data.rows !== undefined && data.rows !== null)
-        numRows = data.rows.length; // so won't throw if data.rows is missing
+      if (result.rows !== undefined && result.rows !== null)
+        numRows = result.rows.length; // so won't throw if result.rows is missing
       for (var r = 0; r < numRows; r++) {
         var row = {};
         for (var c = 0; c < numCols; c++) {
@@ -319,14 +273,14 @@
           var fieldType = formattedResult.fields[c].type;
           var fieldIsArray = formattedResult.fields[c].is_array;
           if (fieldIsArray) {
-            if (data.rows[r].cols[c].is_null) {
+            if (result.rows[r].cols[c].is_null) {
               row[fieldName] = "NULL";
               continue;
             }
             row[fieldName] = [];
-            var arrayNumElems = data.rows[r].cols[c].val.arr_val.length;
+            var arrayNumElems = result.rows[r].cols[c].val.arr_val.length;
             for (var e = 0; e < arrayNumElems; e++) {
-              var elemDatum = data.rows[r].cols[c].val.arr_val[e];
+              var elemDatum = result.rows[r].cols[c].val.arr_val[e];
               if (elemDatum.is_null) {
                 row[fieldName].push("NULL");
                 continue;
@@ -357,7 +311,7 @@
             }
           }
           else {
-            var scalarDatum = data.rows[r].cols[c];
+            var scalarDatum = result.rows[r].cols[c];
             if (scalarDatum.is_null) {
               row[fieldName] = "NULL";
               continue;
@@ -388,19 +342,6 @@
           }
         }
         formattedResult.results.push(row);
-      }
-      return formattedResult;
-    }
-
-    function processResults(callbacks, result) {
-      var hasCallback = typeof callbacks !== 'undefined';
-      result = result.row_set;
-      var formattedResult = null;
-      if (result.is_columnar) {
-        formattedResult = processColumnarResults(result);
-      }
-      else {
-        formattedResult = processRowResults(result);
       }
       if (hasCallback) {
         callbacks.pop()(formattedResult.results,callbacks);

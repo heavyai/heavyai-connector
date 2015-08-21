@@ -526,282 +526,6 @@ TRow.prototype.write = function(output) {
   return;
 };
 
-TColumnData = function(args) {
-  this.int_col = null;
-  this.real_col = null;
-  this.str_col = null;
-  this.arr_col = null;
-  if (args) {
-    if (args.int_col !== undefined) {
-      this.int_col = args.int_col;
-    }
-    if (args.real_col !== undefined) {
-      this.real_col = args.real_col;
-    }
-    if (args.str_col !== undefined) {
-      this.str_col = args.str_col;
-    }
-    if (args.arr_col !== undefined) {
-      this.arr_col = args.arr_col;
-    }
-  }
-};
-TColumnData.prototype = {};
-TColumnData.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.LIST) {
-        var _size16 = 0;
-        var _rtmp320;
-        this.int_col = [];
-        var _etype19 = 0;
-        _rtmp320 = input.readListBegin();
-        _etype19 = _rtmp320.etype;
-        _size16 = _rtmp320.size;
-        for (var _i21 = 0; _i21 < _size16; ++_i21)
-        {
-          var elem22 = null;
-          elem22 = input.readI64().value;
-          this.int_col.push(elem22);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.LIST) {
-        var _size23 = 0;
-        var _rtmp327;
-        this.real_col = [];
-        var _etype26 = 0;
-        _rtmp327 = input.readListBegin();
-        _etype26 = _rtmp327.etype;
-        _size23 = _rtmp327.size;
-        for (var _i28 = 0; _i28 < _size23; ++_i28)
-        {
-          var elem29 = null;
-          elem29 = input.readDouble().value;
-          this.real_col.push(elem29);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.LIST) {
-        var _size30 = 0;
-        var _rtmp334;
-        this.str_col = [];
-        var _etype33 = 0;
-        _rtmp334 = input.readListBegin();
-        _etype33 = _rtmp334.etype;
-        _size30 = _rtmp334.size;
-        for (var _i35 = 0; _i35 < _size30; ++_i35)
-        {
-          var elem36 = null;
-          elem36 = input.readString().value;
-          this.str_col.push(elem36);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.LIST) {
-        var _size37 = 0;
-        var _rtmp341;
-        this.arr_col = [];
-        var _etype40 = 0;
-        _rtmp341 = input.readListBegin();
-        _etype40 = _rtmp341.etype;
-        _size37 = _rtmp341.size;
-        for (var _i42 = 0; _i42 < _size37; ++_i42)
-        {
-          var elem43 = null;
-          elem43 = new TColumn();
-          elem43.read(input);
-          this.arr_col.push(elem43);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TColumnData.prototype.write = function(output) {
-  output.writeStructBegin('TColumnData');
-  if (this.int_col !== null && this.int_col !== undefined) {
-    output.writeFieldBegin('int_col', Thrift.Type.LIST, 1);
-    output.writeListBegin(Thrift.Type.I64, this.int_col.length);
-    for (var iter44 in this.int_col)
-    {
-      if (this.int_col.hasOwnProperty(iter44))
-      {
-        iter44 = this.int_col[iter44];
-        output.writeI64(iter44);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.real_col !== null && this.real_col !== undefined) {
-    output.writeFieldBegin('real_col', Thrift.Type.LIST, 2);
-    output.writeListBegin(Thrift.Type.DOUBLE, this.real_col.length);
-    for (var iter45 in this.real_col)
-    {
-      if (this.real_col.hasOwnProperty(iter45))
-      {
-        iter45 = this.real_col[iter45];
-        output.writeDouble(iter45);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.str_col !== null && this.str_col !== undefined) {
-    output.writeFieldBegin('str_col', Thrift.Type.LIST, 3);
-    output.writeListBegin(Thrift.Type.STRING, this.str_col.length);
-    for (var iter46 in this.str_col)
-    {
-      if (this.str_col.hasOwnProperty(iter46))
-      {
-        iter46 = this.str_col[iter46];
-        output.writeString(iter46);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.arr_col !== null && this.arr_col !== undefined) {
-    output.writeFieldBegin('arr_col', Thrift.Type.LIST, 4);
-    output.writeListBegin(Thrift.Type.STRUCT, this.arr_col.length);
-    for (var iter47 in this.arr_col)
-    {
-      if (this.arr_col.hasOwnProperty(iter47))
-      {
-        iter47 = this.arr_col[iter47];
-        iter47.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-TColumn = function(args) {
-  this.data = null;
-  this.nulls = null;
-  if (args) {
-    if (args.data !== undefined) {
-      this.data = args.data;
-    }
-    if (args.nulls !== undefined) {
-      this.nulls = args.nulls;
-    }
-  }
-};
-TColumn.prototype = {};
-TColumn.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.data = new TColumnData();
-        this.data.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.LIST) {
-        var _size48 = 0;
-        var _rtmp352;
-        this.nulls = [];
-        var _etype51 = 0;
-        _rtmp352 = input.readListBegin();
-        _etype51 = _rtmp352.etype;
-        _size48 = _rtmp352.size;
-        for (var _i53 = 0; _i53 < _size48; ++_i53)
-        {
-          var elem54 = null;
-          elem54 = input.readBool().value;
-          this.nulls.push(elem54);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TColumn.prototype.write = function(output) {
-  output.writeStructBegin('TColumn');
-  if (this.data !== null && this.data !== undefined) {
-    output.writeFieldBegin('data', Thrift.Type.STRUCT, 1);
-    this.data.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.nulls !== null && this.nulls !== undefined) {
-    output.writeFieldBegin('nulls', Thrift.Type.LIST, 2);
-    output.writeListBegin(Thrift.Type.BOOL, this.nulls.length);
-    for (var iter55 in this.nulls)
-    {
-      if (this.nulls.hasOwnProperty(iter55))
-      {
-        iter55 = this.nulls[iter55];
-        output.writeBool(iter55);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
 TStringRow = function(args) {
   this.cols = null;
   if (args) {
@@ -826,19 +550,19 @@ TStringRow.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size56 = 0;
-        var _rtmp360;
+        var _size16 = 0;
+        var _rtmp320;
         this.cols = [];
-        var _etype59 = 0;
-        _rtmp360 = input.readListBegin();
-        _etype59 = _rtmp360.etype;
-        _size56 = _rtmp360.size;
-        for (var _i61 = 0; _i61 < _size56; ++_i61)
+        var _etype19 = 0;
+        _rtmp320 = input.readListBegin();
+        _etype19 = _rtmp320.etype;
+        _size16 = _rtmp320.size;
+        for (var _i21 = 0; _i21 < _size16; ++_i21)
         {
-          var elem62 = null;
-          elem62 = new TStringValue();
-          elem62.read(input);
-          this.cols.push(elem62);
+          var elem22 = null;
+          elem22 = new TStringValue();
+          elem22.read(input);
+          this.cols.push(elem22);
         }
         input.readListEnd();
       } else {
@@ -862,12 +586,12 @@ TStringRow.prototype.write = function(output) {
   if (this.cols !== null && this.cols !== undefined) {
     output.writeFieldBegin('cols', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-    for (var iter63 in this.cols)
+    for (var iter23 in this.cols)
     {
-      if (this.cols.hasOwnProperty(iter63))
+      if (this.cols.hasOwnProperty(iter23))
       {
-        iter63 = this.cols[iter63];
-        iter63.write(output);
+        iter23 = this.cols[iter23];
+        iter23.write(output);
       }
     }
     output.writeListEnd();
@@ -881,20 +605,12 @@ TStringRow.prototype.write = function(output) {
 TRowSet = function(args) {
   this.row_desc = null;
   this.rows = null;
-  this.columns = null;
-  this.is_columnar = null;
   if (args) {
     if (args.row_desc !== undefined) {
       this.row_desc = args.row_desc;
     }
     if (args.rows !== undefined) {
       this.rows = args.rows;
-    }
-    if (args.columns !== undefined) {
-      this.columns = args.columns;
-    }
-    if (args.is_columnar !== undefined) {
-      this.is_columnar = args.is_columnar;
     }
   }
 };
@@ -914,19 +630,19 @@ TRowSet.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size64 = 0;
-        var _rtmp368;
+        var _size24 = 0;
+        var _rtmp328;
         this.row_desc = [];
-        var _etype67 = 0;
-        _rtmp368 = input.readListBegin();
-        _etype67 = _rtmp368.etype;
-        _size64 = _rtmp368.size;
-        for (var _i69 = 0; _i69 < _size64; ++_i69)
+        var _etype27 = 0;
+        _rtmp328 = input.readListBegin();
+        _etype27 = _rtmp328.etype;
+        _size24 = _rtmp328.size;
+        for (var _i29 = 0; _i29 < _size24; ++_i29)
         {
-          var elem70 = null;
-          elem70 = new TColumnType();
-          elem70.read(input);
-          this.row_desc.push(elem70);
+          var elem30 = null;
+          elem30 = new TColumnType();
+          elem30.read(input);
+          this.row_desc.push(elem30);
         }
         input.readListEnd();
       } else {
@@ -935,49 +651,21 @@ TRowSet.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size71 = 0;
-        var _rtmp375;
+        var _size31 = 0;
+        var _rtmp335;
         this.rows = [];
-        var _etype74 = 0;
-        _rtmp375 = input.readListBegin();
-        _etype74 = _rtmp375.etype;
-        _size71 = _rtmp375.size;
-        for (var _i76 = 0; _i76 < _size71; ++_i76)
+        var _etype34 = 0;
+        _rtmp335 = input.readListBegin();
+        _etype34 = _rtmp335.etype;
+        _size31 = _rtmp335.size;
+        for (var _i36 = 0; _i36 < _size31; ++_i36)
         {
-          var elem77 = null;
-          elem77 = new TRow();
-          elem77.read(input);
-          this.rows.push(elem77);
+          var elem37 = null;
+          elem37 = new TRow();
+          elem37.read(input);
+          this.rows.push(elem37);
         }
         input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.LIST) {
-        var _size78 = 0;
-        var _rtmp382;
-        this.columns = [];
-        var _etype81 = 0;
-        _rtmp382 = input.readListBegin();
-        _etype81 = _rtmp382.etype;
-        _size78 = _rtmp382.size;
-        for (var _i83 = 0; _i83 < _size78; ++_i83)
-        {
-          var elem84 = null;
-          elem84 = new TColumn();
-          elem84.read(input);
-          this.columns.push(elem84);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.BOOL) {
-        this.is_columnar = input.readBool().value;
       } else {
         input.skip(ftype);
       }
@@ -996,12 +684,12 @@ TRowSet.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter85 in this.row_desc)
+    for (var iter38 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter85))
+      if (this.row_desc.hasOwnProperty(iter38))
       {
-        iter85 = this.row_desc[iter85];
-        iter85.write(output);
+        iter38 = this.row_desc[iter38];
+        iter38.write(output);
       }
     }
     output.writeListEnd();
@@ -1010,34 +698,15 @@ TRowSet.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter86 in this.rows)
+    for (var iter39 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter86))
+      if (this.rows.hasOwnProperty(iter39))
       {
-        iter86 = this.rows[iter86];
-        iter86.write(output);
+        iter39 = this.rows[iter39];
+        iter39.write(output);
       }
     }
     output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.columns !== null && this.columns !== undefined) {
-    output.writeFieldBegin('columns', Thrift.Type.LIST, 3);
-    output.writeListBegin(Thrift.Type.STRUCT, this.columns.length);
-    for (var iter87 in this.columns)
-    {
-      if (this.columns.hasOwnProperty(iter87))
-      {
-        iter87 = this.columns[iter87];
-        iter87.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.is_columnar !== null && this.is_columnar !== undefined) {
-    output.writeFieldBegin('is_columnar', Thrift.Type.BOOL, 4);
-    output.writeBool(this.is_columnar);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

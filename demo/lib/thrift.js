@@ -1,1 +1,0 @@
-../../lib/thrift.js

@@ -313,16 +313,12 @@ MapD_disconnect_result.prototype.write = function(output) {
 MapD_sql_execute_args = function(args) {
   this.session = null;
   this.query = null;
-  this.column_format = null;
   if (args) {
     if (args.session !== undefined) {
       this.session = args.session;
     }
     if (args.query !== undefined) {
       this.query = args.query;
-    }
-    if (args.column_format !== undefined) {
-      this.column_format = args.column_format;
     }
   }
 };
@@ -354,13 +350,6 @@ MapD_sql_execute_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 3:
-      if (ftype == Thrift.Type.BOOL) {
-        this.column_format = input.readBool().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -380,11 +369,6 @@ MapD_sql_execute_args.prototype.write = function(output) {
   if (this.query !== null && this.query !== undefined) {
     output.writeFieldBegin('query', Thrift.Type.STRING, 2);
     output.writeString(this.query);
-    output.writeFieldEnd();
-  }
-  if (this.column_format !== null && this.column_format !== undefined) {
-    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 3);
-    output.writeBool(this.column_format);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -591,28 +575,28 @@ MapD_get_table_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.MAP) {
-        var _size88 = 0;
-        var _rtmp392;
+        var _size40 = 0;
+        var _rtmp344;
         this.success = {};
-        var _ktype89 = 0;
-        var _vtype90 = 0;
-        _rtmp392 = input.readMapBegin();
-        _ktype89 = _rtmp392.ktype;
-        _vtype90 = _rtmp392.vtype;
-        _size88 = _rtmp392.size;
-        for (var _i93 = 0; _i93 < _size88; ++_i93)
+        var _ktype41 = 0;
+        var _vtype42 = 0;
+        _rtmp344 = input.readMapBegin();
+        _ktype41 = _rtmp344.ktype;
+        _vtype42 = _rtmp344.vtype;
+        _size40 = _rtmp344.size;
+        for (var _i45 = 0; _i45 < _size40; ++_i45)
         {
-          if (_i93 > 0 ) {
+          if (_i45 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key94 = null;
-          var val95 = null;
-          key94 = input.readString().value;
-          val95 = new TColumnType();
-          val95.read(input);
-          this.success[key94] = val95;
+          var key46 = null;
+          var val47 = null;
+          key46 = input.readString().value;
+          val47 = new TColumnType();
+          val47.read(input);
+          this.success[key46] = val47;
         }
         input.readMapEnd();
       } else {
@@ -649,13 +633,13 @@ MapD_get_table_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.MAP, 0);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
-    for (var kiter96 in this.success)
+    for (var kiter48 in this.success)
     {
-      if (this.success.hasOwnProperty(kiter96))
+      if (this.success.hasOwnProperty(kiter48))
       {
-        var viter97 = this.success[kiter96];
-        output.writeString(kiter96);
-        viter97.write(output);
+        var viter49 = this.success[kiter48];
+        output.writeString(kiter48);
+        viter49.write(output);
       }
     }
     output.writeMapEnd();
@@ -782,19 +766,19 @@ MapD_get_row_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size98 = 0;
-        var _rtmp3102;
+        var _size50 = 0;
+        var _rtmp354;
         this.success = [];
-        var _etype101 = 0;
-        _rtmp3102 = input.readListBegin();
-        _etype101 = _rtmp3102.etype;
-        _size98 = _rtmp3102.size;
-        for (var _i103 = 0; _i103 < _size98; ++_i103)
+        var _etype53 = 0;
+        _rtmp354 = input.readListBegin();
+        _etype53 = _rtmp354.etype;
+        _size50 = _rtmp354.size;
+        for (var _i55 = 0; _i55 < _size50; ++_i55)
         {
-          var elem104 = null;
-          elem104 = new TColumnType();
-          elem104.read(input);
-          this.success.push(elem104);
+          var elem56 = null;
+          elem56 = new TColumnType();
+          elem56.read(input);
+          this.success.push(elem56);
         }
         input.readListEnd();
       } else {
@@ -831,12 +815,12 @@ MapD_get_row_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter105 in this.success)
+    for (var iter57 in this.success)
     {
-      if (this.success.hasOwnProperty(iter105))
+      if (this.success.hasOwnProperty(iter57))
       {
-        iter105 = this.success[iter105];
-        iter105.write(output);
+        iter57 = this.success[iter57];
+        iter57.write(output);
       }
     }
     output.writeListEnd();
@@ -1108,18 +1092,18 @@ MapD_get_tables_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size106 = 0;
-        var _rtmp3110;
+        var _size58 = 0;
+        var _rtmp362;
         this.success = [];
-        var _etype109 = 0;
-        _rtmp3110 = input.readListBegin();
-        _etype109 = _rtmp3110.etype;
-        _size106 = _rtmp3110.size;
-        for (var _i111 = 0; _i111 < _size106; ++_i111)
+        var _etype61 = 0;
+        _rtmp362 = input.readListBegin();
+        _etype61 = _rtmp362.etype;
+        _size58 = _rtmp362.size;
+        for (var _i63 = 0; _i63 < _size58; ++_i63)
         {
-          var elem112 = null;
-          elem112 = input.readString().value;
-          this.success.push(elem112);
+          var elem64 = null;
+          elem64 = input.readString().value;
+          this.success.push(elem64);
         }
         input.readListEnd();
       } else {
@@ -1156,12 +1140,12 @@ MapD_get_tables_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter113 in this.success)
+    for (var iter65 in this.success)
     {
-      if (this.success.hasOwnProperty(iter113))
+      if (this.success.hasOwnProperty(iter65))
       {
-        iter113 = this.success[iter113];
-        output.writeString(iter113);
+        iter65 = this.success[iter65];
+        output.writeString(iter65);
       }
     }
     output.writeListEnd();
@@ -1242,18 +1226,18 @@ MapD_get_users_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size114 = 0;
-        var _rtmp3118;
+        var _size66 = 0;
+        var _rtmp370;
         this.success = [];
-        var _etype117 = 0;
-        _rtmp3118 = input.readListBegin();
-        _etype117 = _rtmp3118.etype;
-        _size114 = _rtmp3118.size;
-        for (var _i119 = 0; _i119 < _size114; ++_i119)
+        var _etype69 = 0;
+        _rtmp370 = input.readListBegin();
+        _etype69 = _rtmp370.etype;
+        _size66 = _rtmp370.size;
+        for (var _i71 = 0; _i71 < _size66; ++_i71)
         {
-          var elem120 = null;
-          elem120 = input.readString().value;
-          this.success.push(elem120);
+          var elem72 = null;
+          elem72 = input.readString().value;
+          this.success.push(elem72);
         }
         input.readListEnd();
       } else {
@@ -1282,12 +1266,12 @@ MapD_get_users_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter121 in this.success)
+    for (var iter73 in this.success)
     {
-      if (this.success.hasOwnProperty(iter121))
+      if (this.success.hasOwnProperty(iter73))
       {
-        iter121 = this.success[iter121];
-        output.writeString(iter121);
+        iter73 = this.success[iter73];
+        output.writeString(iter73);
       }
     }
     output.writeListEnd();
@@ -1363,19 +1347,19 @@ MapD_get_databases_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size122 = 0;
-        var _rtmp3126;
+        var _size74 = 0;
+        var _rtmp378;
         this.success = [];
-        var _etype125 = 0;
-        _rtmp3126 = input.readListBegin();
-        _etype125 = _rtmp3126.etype;
-        _size122 = _rtmp3126.size;
-        for (var _i127 = 0; _i127 < _size122; ++_i127)
+        var _etype77 = 0;
+        _rtmp378 = input.readListBegin();
+        _etype77 = _rtmp378.etype;
+        _size74 = _rtmp378.size;
+        for (var _i79 = 0; _i79 < _size74; ++_i79)
         {
-          var elem128 = null;
-          elem128 = new TDBInfo();
-          elem128.read(input);
-          this.success.push(elem128);
+          var elem80 = null;
+          elem80 = new TDBInfo();
+          elem80.read(input);
+          this.success.push(elem80);
         }
         input.readListEnd();
       } else {
@@ -1404,12 +1388,12 @@ MapD_get_databases_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter129 in this.success)
+    for (var iter81 in this.success)
     {
-      if (this.success.hasOwnProperty(iter129))
+      if (this.success.hasOwnProperty(iter81))
       {
-        iter129 = this.success[iter129];
-        iter129.write(output);
+        iter81 = this.success[iter81];
+        iter81.write(output);
       }
     }
     output.writeListEnd();
@@ -1518,18 +1502,18 @@ MapD_get_frontend_views_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size130 = 0;
-        var _rtmp3134;
+        var _size82 = 0;
+        var _rtmp386;
         this.success = [];
-        var _etype133 = 0;
-        _rtmp3134 = input.readListBegin();
-        _etype133 = _rtmp3134.etype;
-        _size130 = _rtmp3134.size;
-        for (var _i135 = 0; _i135 < _size130; ++_i135)
+        var _etype85 = 0;
+        _rtmp386 = input.readListBegin();
+        _etype85 = _rtmp386.etype;
+        _size82 = _rtmp386.size;
+        for (var _i87 = 0; _i87 < _size82; ++_i87)
         {
-          var elem136 = null;
-          elem136 = input.readString().value;
-          this.success.push(elem136);
+          var elem88 = null;
+          elem88 = input.readString().value;
+          this.success.push(elem88);
         }
         input.readListEnd();
       } else {
@@ -1566,12 +1550,12 @@ MapD_get_frontend_views_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter137 in this.success)
+    for (var iter89 in this.success)
     {
-      if (this.success.hasOwnProperty(iter137))
+      if (this.success.hasOwnProperty(iter89))
       {
-        iter137 = this.success[iter137];
-        output.writeString(iter137);
+        iter89 = this.success[iter89];
+        output.writeString(iter89);
       }
     }
     output.writeListEnd();
@@ -1879,19 +1863,19 @@ MapD_load_table_binary_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size138 = 0;
-        var _rtmp3142;
+        var _size90 = 0;
+        var _rtmp394;
         this.rows = [];
-        var _etype141 = 0;
-        _rtmp3142 = input.readListBegin();
-        _etype141 = _rtmp3142.etype;
-        _size138 = _rtmp3142.size;
-        for (var _i143 = 0; _i143 < _size138; ++_i143)
+        var _etype93 = 0;
+        _rtmp394 = input.readListBegin();
+        _etype93 = _rtmp394.etype;
+        _size90 = _rtmp394.size;
+        for (var _i95 = 0; _i95 < _size90; ++_i95)
         {
-          var elem144 = null;
-          elem144 = new TRow();
-          elem144.read(input);
-          this.rows.push(elem144);
+          var elem96 = null;
+          elem96 = new TRow();
+          elem96.read(input);
+          this.rows.push(elem96);
         }
         input.readListEnd();
       } else {
@@ -1922,12 +1906,12 @@ MapD_load_table_binary_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter145 in this.rows)
+    for (var iter97 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter145))
+      if (this.rows.hasOwnProperty(iter97))
       {
-        iter145 = this.rows[iter145];
-        iter145.write(output);
+        iter97 = this.rows[iter97];
+        iter97.write(output);
       }
     }
     output.writeListEnd();
@@ -2060,19 +2044,19 @@ MapD_load_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size146 = 0;
-        var _rtmp3150;
+        var _size98 = 0;
+        var _rtmp3102;
         this.rows = [];
-        var _etype149 = 0;
-        _rtmp3150 = input.readListBegin();
-        _etype149 = _rtmp3150.etype;
-        _size146 = _rtmp3150.size;
-        for (var _i151 = 0; _i151 < _size146; ++_i151)
+        var _etype101 = 0;
+        _rtmp3102 = input.readListBegin();
+        _etype101 = _rtmp3102.etype;
+        _size98 = _rtmp3102.size;
+        for (var _i103 = 0; _i103 < _size98; ++_i103)
         {
-          var elem152 = null;
-          elem152 = new TStringRow();
-          elem152.read(input);
-          this.rows.push(elem152);
+          var elem104 = null;
+          elem104 = new TStringRow();
+          elem104.read(input);
+          this.rows.push(elem104);
         }
         input.readListEnd();
       } else {
@@ -2103,12 +2087,12 @@ MapD_load_table_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter153 in this.rows)
+    for (var iter105 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter153))
+      if (this.rows.hasOwnProperty(iter105))
       {
-        iter153 = this.rows[iter153];
-        iter153.write(output);
+        iter105 = this.rows[iter105];
+        iter105.write(output);
       }
     }
     output.writeListEnd();
@@ -2256,28 +2240,28 @@ MapD_render_args.prototype.read = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.MAP) {
-        var _size154 = 0;
-        var _rtmp3158;
+        var _size106 = 0;
+        var _rtmp3110;
         this.render_properties = {};
-        var _ktype155 = 0;
-        var _vtype156 = 0;
-        _rtmp3158 = input.readMapBegin();
-        _ktype155 = _rtmp3158.ktype;
-        _vtype156 = _rtmp3158.vtype;
-        _size154 = _rtmp3158.size;
-        for (var _i159 = 0; _i159 < _size154; ++_i159)
+        var _ktype107 = 0;
+        var _vtype108 = 0;
+        _rtmp3110 = input.readMapBegin();
+        _ktype107 = _rtmp3110.ktype;
+        _vtype108 = _rtmp3110.vtype;
+        _size106 = _rtmp3110.size;
+        for (var _i111 = 0; _i111 < _size106; ++_i111)
         {
-          if (_i159 > 0 ) {
+          if (_i111 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key160 = null;
-          var val161 = null;
-          key160 = input.readString().value;
-          val161 = new TRenderProperty();
-          val161.read(input);
-          this.render_properties[key160] = val161;
+          var key112 = null;
+          var val113 = null;
+          key112 = input.readString().value;
+          val113 = new TRenderProperty();
+          val113.read(input);
+          this.render_properties[key112] = val113;
         }
         input.readMapEnd();
       } else {
@@ -2286,50 +2270,50 @@ MapD_render_args.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.MAP) {
-        var _size162 = 0;
-        var _rtmp3166;
+        var _size114 = 0;
+        var _rtmp3118;
         this.col_render_properties = {};
-        var _ktype163 = 0;
-        var _vtype164 = 0;
-        _rtmp3166 = input.readMapBegin();
-        _ktype163 = _rtmp3166.ktype;
-        _vtype164 = _rtmp3166.vtype;
-        _size162 = _rtmp3166.size;
-        for (var _i167 = 0; _i167 < _size162; ++_i167)
+        var _ktype115 = 0;
+        var _vtype116 = 0;
+        _rtmp3118 = input.readMapBegin();
+        _ktype115 = _rtmp3118.ktype;
+        _vtype116 = _rtmp3118.vtype;
+        _size114 = _rtmp3118.size;
+        for (var _i119 = 0; _i119 < _size114; ++_i119)
         {
-          if (_i167 > 0 ) {
+          if (_i119 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key168 = null;
-          var val169 = null;
-          key168 = input.readString().value;
-          var _size170 = 0;
-          var _rtmp3174;
-          val169 = {};
-          var _ktype171 = 0;
-          var _vtype172 = 0;
-          _rtmp3174 = input.readMapBegin();
-          _ktype171 = _rtmp3174.ktype;
-          _vtype172 = _rtmp3174.vtype;
-          _size170 = _rtmp3174.size;
-          for (var _i175 = 0; _i175 < _size170; ++_i175)
+          var key120 = null;
+          var val121 = null;
+          key120 = input.readString().value;
+          var _size122 = 0;
+          var _rtmp3126;
+          val121 = {};
+          var _ktype123 = 0;
+          var _vtype124 = 0;
+          _rtmp3126 = input.readMapBegin();
+          _ktype123 = _rtmp3126.ktype;
+          _vtype124 = _rtmp3126.vtype;
+          _size122 = _rtmp3126.size;
+          for (var _i127 = 0; _i127 < _size122; ++_i127)
           {
-            if (_i175 > 0 ) {
+            if (_i127 > 0 ) {
               if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                 input.rstack.pop();
               }
             }
-            var key176 = null;
-            var val177 = null;
-            key176 = input.readString().value;
-            val177 = new TRenderProperty();
-            val177.read(input);
-            val169[key176] = val177;
+            var key128 = null;
+            var val129 = null;
+            key128 = input.readString().value;
+            val129 = new TRenderProperty();
+            val129.read(input);
+            val121[key128] = val129;
           }
           input.readMapEnd();
-          this.col_render_properties[key168] = val169;
+          this.col_render_properties[key120] = val121;
         }
         input.readMapEnd();
       } else {
@@ -2365,13 +2349,13 @@ MapD_render_args.prototype.write = function(output) {
   if (this.render_properties !== null && this.render_properties !== undefined) {
     output.writeFieldBegin('render_properties', Thrift.Type.MAP, 4);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.render_properties));
-    for (var kiter178 in this.render_properties)
+    for (var kiter130 in this.render_properties)
     {
-      if (this.render_properties.hasOwnProperty(kiter178))
+      if (this.render_properties.hasOwnProperty(kiter130))
       {
-        var viter179 = this.render_properties[kiter178];
-        output.writeString(kiter178);
-        viter179.write(output);
+        var viter131 = this.render_properties[kiter130];
+        output.writeString(kiter130);
+        viter131.write(output);
       }
     }
     output.writeMapEnd();
@@ -2380,20 +2364,20 @@ MapD_render_args.prototype.write = function(output) {
   if (this.col_render_properties !== null && this.col_render_properties !== undefined) {
     output.writeFieldBegin('col_render_properties', Thrift.Type.MAP, 5);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.col_render_properties));
-    for (var kiter180 in this.col_render_properties)
+    for (var kiter132 in this.col_render_properties)
     {
-      if (this.col_render_properties.hasOwnProperty(kiter180))
+      if (this.col_render_properties.hasOwnProperty(kiter132))
       {
-        var viter181 = this.col_render_properties[kiter180];
-        output.writeString(kiter180);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(viter181));
-        for (var kiter182 in viter181)
+        var viter133 = this.col_render_properties[kiter132];
+        output.writeString(kiter132);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(viter133));
+        for (var kiter134 in viter133)
         {
-          if (viter181.hasOwnProperty(kiter182))
+          if (viter133.hasOwnProperty(kiter134))
           {
-            var viter183 = viter181[kiter182];
-            output.writeString(kiter182);
-            viter183.write(output);
+            var viter135 = viter133[kiter134];
+            output.writeString(kiter134);
+            viter135.write(output);
           }
         }
         output.writeMapEnd();
@@ -2879,19 +2863,19 @@ MapD_create_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size184 = 0;
-        var _rtmp3188;
+        var _size136 = 0;
+        var _rtmp3140;
         this.row_desc = [];
-        var _etype187 = 0;
-        _rtmp3188 = input.readListBegin();
-        _etype187 = _rtmp3188.etype;
-        _size184 = _rtmp3188.size;
-        for (var _i189 = 0; _i189 < _size184; ++_i189)
+        var _etype139 = 0;
+        _rtmp3140 = input.readListBegin();
+        _etype139 = _rtmp3140.etype;
+        _size136 = _rtmp3140.size;
+        for (var _i141 = 0; _i141 < _size136; ++_i141)
         {
-          var elem190 = null;
-          elem190 = new TColumnType();
-          elem190.read(input);
-          this.row_desc.push(elem190);
+          var elem142 = null;
+          elem142 = new TColumnType();
+          elem142.read(input);
+          this.row_desc.push(elem142);
         }
         input.readListEnd();
       } else {
@@ -2922,12 +2906,12 @@ MapD_create_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter191 in this.row_desc)
+    for (var iter143 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter191))
+      if (this.row_desc.hasOwnProperty(iter143))
       {
-        iter191 = this.row_desc[iter191];
-        iter191.write(output);
+        iter143 = this.row_desc[iter143];
+        iter143.write(output);
       }
     }
     output.writeListEnd();
@@ -3196,13 +3180,9 @@ MapDClient = function(input, output) {
 };
 MapDClient.prototype = {};
 MapDClient.prototype.connect = function(user, passwd, dbname, callback) {
-  if (callback === undefined) {
-    this.send_connect(user, passwd, dbname);
+  this.send_connect(user, passwd, dbname, callback); 
+  if (!callback) {
     return this.recv_connect();
-  } else {
-    var postData = this.send_connect(user, passwd, dbname, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_connect);
   }
 };
 
@@ -3214,7 +3194,20 @@ MapDClient.prototype.send_connect = function(user, passwd, dbname, callback) {
   args.dbname = dbname;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_connect();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_connect = function() {
@@ -3244,13 +3237,9 @@ MapDClient.prototype.recv_connect = function() {
   throw 'connect failed: unknown result';
 };
 MapDClient.prototype.disconnect = function(session, callback) {
-  if (callback === undefined) {
-    this.send_disconnect(session);
-    this.recv_disconnect();
-  } else {
-    var postData = this.send_disconnect(session, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_disconnect);
+  this.send_disconnect(session, callback); 
+  if (!callback) {
+  this.recv_disconnect();
   }
 };
 
@@ -3260,7 +3249,20 @@ MapDClient.prototype.send_disconnect = function(session, callback) {
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_disconnect();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_disconnect = function() {
@@ -3286,26 +3288,34 @@ MapDClient.prototype.recv_disconnect = function() {
   }
   return;
 };
-MapDClient.prototype.sql_execute = function(session, query, column_format, callback) {
-  if (callback === undefined) {
-    this.send_sql_execute(session, query, column_format);
+MapDClient.prototype.sql_execute = function(session, query, callback) {
+  this.send_sql_execute(session, query, callback); 
+  if (!callback) {
     return this.recv_sql_execute();
-  } else {
-    var postData = this.send_sql_execute(session, query, column_format, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_sql_execute);
   }
 };
 
-MapDClient.prototype.send_sql_execute = function(session, query, column_format, callback) {
+MapDClient.prototype.send_sql_execute = function(session, query, callback) {
   this.output.writeMessageBegin('sql_execute', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_sql_execute_args();
   args.session = session;
   args.query = query;
-  args.column_format = column_format;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_sql_execute();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_sql_execute = function() {
@@ -3335,13 +3345,9 @@ MapDClient.prototype.recv_sql_execute = function() {
   throw 'sql_execute failed: unknown result';
 };
 MapDClient.prototype.get_table_descriptor = function(session, table_name, callback) {
-  if (callback === undefined) {
-    this.send_get_table_descriptor(session, table_name);
+  this.send_get_table_descriptor(session, table_name, callback); 
+  if (!callback) {
     return this.recv_get_table_descriptor();
-  } else {
-    var postData = this.send_get_table_descriptor(session, table_name, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_table_descriptor);
   }
 };
 
@@ -3352,7 +3358,20 @@ MapDClient.prototype.send_get_table_descriptor = function(session, table_name, c
   args.table_name = table_name;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_table_descriptor();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_table_descriptor = function() {
@@ -3382,13 +3401,9 @@ MapDClient.prototype.recv_get_table_descriptor = function() {
   throw 'get_table_descriptor failed: unknown result';
 };
 MapDClient.prototype.get_row_descriptor = function(session, table_name, callback) {
-  if (callback === undefined) {
-    this.send_get_row_descriptor(session, table_name);
+  this.send_get_row_descriptor(session, table_name, callback); 
+  if (!callback) {
     return this.recv_get_row_descriptor();
-  } else {
-    var postData = this.send_get_row_descriptor(session, table_name, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_row_descriptor);
   }
 };
 
@@ -3399,7 +3414,20 @@ MapDClient.prototype.send_get_row_descriptor = function(session, table_name, cal
   args.table_name = table_name;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_row_descriptor();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_row_descriptor = function() {
@@ -3429,13 +3457,9 @@ MapDClient.prototype.recv_get_row_descriptor = function() {
   throw 'get_row_descriptor failed: unknown result';
 };
 MapDClient.prototype.get_frontend_view = function(session, view_name, callback) {
-  if (callback === undefined) {
-    this.send_get_frontend_view(session, view_name);
+  this.send_get_frontend_view(session, view_name, callback); 
+  if (!callback) {
     return this.recv_get_frontend_view();
-  } else {
-    var postData = this.send_get_frontend_view(session, view_name, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_frontend_view);
   }
 };
 
@@ -3446,7 +3470,20 @@ MapDClient.prototype.send_get_frontend_view = function(session, view_name, callb
   args.view_name = view_name;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_frontend_view();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_frontend_view = function() {
@@ -3476,13 +3513,9 @@ MapDClient.prototype.recv_get_frontend_view = function() {
   throw 'get_frontend_view failed: unknown result';
 };
 MapDClient.prototype.get_tables = function(session, callback) {
-  if (callback === undefined) {
-    this.send_get_tables(session);
+  this.send_get_tables(session, callback); 
+  if (!callback) {
     return this.recv_get_tables();
-  } else {
-    var postData = this.send_get_tables(session, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_tables);
   }
 };
 
@@ -3492,7 +3525,20 @@ MapDClient.prototype.send_get_tables = function(session, callback) {
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_tables();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_tables = function() {
@@ -3522,13 +3568,9 @@ MapDClient.prototype.recv_get_tables = function() {
   throw 'get_tables failed: unknown result';
 };
 MapDClient.prototype.get_users = function(callback) {
-  if (callback === undefined) {
-    this.send_get_users();
+  this.send_get_users(callback); 
+  if (!callback) {
     return this.recv_get_users();
-  } else {
-    var postData = this.send_get_users(true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_users);
   }
 };
 
@@ -3537,7 +3579,20 @@ MapDClient.prototype.send_get_users = function(callback) {
   var args = new MapD_get_users_args();
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_users();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_users = function() {
@@ -3564,13 +3619,9 @@ MapDClient.prototype.recv_get_users = function() {
   throw 'get_users failed: unknown result';
 };
 MapDClient.prototype.get_databases = function(callback) {
-  if (callback === undefined) {
-    this.send_get_databases();
+  this.send_get_databases(callback); 
+  if (!callback) {
     return this.recv_get_databases();
-  } else {
-    var postData = this.send_get_databases(true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_databases);
   }
 };
 
@@ -3579,7 +3630,20 @@ MapDClient.prototype.send_get_databases = function(callback) {
   var args = new MapD_get_databases_args();
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_databases();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_databases = function() {
@@ -3606,13 +3670,9 @@ MapDClient.prototype.recv_get_databases = function() {
   throw 'get_databases failed: unknown result';
 };
 MapDClient.prototype.get_frontend_views = function(session, callback) {
-  if (callback === undefined) {
-    this.send_get_frontend_views(session);
+  this.send_get_frontend_views(session, callback); 
+  if (!callback) {
     return this.recv_get_frontend_views();
-  } else {
-    var postData = this.send_get_frontend_views(session, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_frontend_views);
   }
 };
 
@@ -3622,7 +3682,20 @@ MapDClient.prototype.send_get_frontend_views = function(session, callback) {
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_frontend_views();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_frontend_views = function() {
@@ -3652,13 +3725,9 @@ MapDClient.prototype.recv_get_frontend_views = function() {
   throw 'get_frontend_views failed: unknown result';
 };
 MapDClient.prototype.set_execution_mode = function(session, mode, callback) {
-  if (callback === undefined) {
-    this.send_set_execution_mode(session, mode);
-    this.recv_set_execution_mode();
-  } else {
-    var postData = this.send_set_execution_mode(session, mode, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_set_execution_mode);
+  this.send_set_execution_mode(session, mode, callback); 
+  if (!callback) {
+  this.recv_set_execution_mode();
   }
 };
 
@@ -3669,7 +3738,20 @@ MapDClient.prototype.send_set_execution_mode = function(session, mode, callback)
   args.mode = mode;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_set_execution_mode();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_set_execution_mode = function() {
@@ -3696,13 +3778,9 @@ MapDClient.prototype.recv_set_execution_mode = function() {
   return;
 };
 MapDClient.prototype.get_version = function(callback) {
-  if (callback === undefined) {
-    this.send_get_version();
+  this.send_get_version(callback); 
+  if (!callback) {
     return this.recv_get_version();
-  } else {
-    var postData = this.send_get_version(true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_get_version);
   }
 };
 
@@ -3711,7 +3789,20 @@ MapDClient.prototype.send_get_version = function(callback) {
   var args = new MapD_get_version_args();
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_version();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_get_version = function() {
@@ -3738,13 +3829,9 @@ MapDClient.prototype.recv_get_version = function() {
   throw 'get_version failed: unknown result';
 };
 MapDClient.prototype.load_table_binary = function(session, table_name, rows, callback) {
-  if (callback === undefined) {
-    this.send_load_table_binary(session, table_name, rows);
-    this.recv_load_table_binary();
-  } else {
-    var postData = this.send_load_table_binary(session, table_name, rows, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_load_table_binary);
+  this.send_load_table_binary(session, table_name, rows, callback); 
+  if (!callback) {
+  this.recv_load_table_binary();
   }
 };
 
@@ -3756,7 +3843,20 @@ MapDClient.prototype.send_load_table_binary = function(session, table_name, rows
   args.rows = rows;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_load_table_binary();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_load_table_binary = function() {
@@ -3783,13 +3883,9 @@ MapDClient.prototype.recv_load_table_binary = function() {
   return;
 };
 MapDClient.prototype.load_table = function(session, table_name, rows, callback) {
-  if (callback === undefined) {
-    this.send_load_table(session, table_name, rows);
-    this.recv_load_table();
-  } else {
-    var postData = this.send_load_table(session, table_name, rows, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_load_table);
+  this.send_load_table(session, table_name, rows, callback); 
+  if (!callback) {
+  this.recv_load_table();
   }
 };
 
@@ -3801,7 +3897,20 @@ MapDClient.prototype.send_load_table = function(session, table_name, rows, callb
   args.rows = rows;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_load_table();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_load_table = function() {
@@ -3828,13 +3937,9 @@ MapDClient.prototype.recv_load_table = function() {
   return;
 };
 MapDClient.prototype.render = function(session, query, render_type, render_properties, col_render_properties, callback) {
-  if (callback === undefined) {
-    this.send_render(session, query, render_type, render_properties, col_render_properties);
+  this.send_render(session, query, render_type, render_properties, col_render_properties, callback); 
+  if (!callback) {
     return this.recv_render();
-  } else {
-    var postData = this.send_render(session, query, render_type, render_properties, col_render_properties, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_render);
   }
 };
 
@@ -3848,7 +3953,20 @@ MapDClient.prototype.send_render = function(session, query, render_type, render_
   args.col_render_properties = col_render_properties;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_render();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_render = function() {
@@ -3878,13 +3996,9 @@ MapDClient.prototype.recv_render = function() {
   throw 'render failed: unknown result';
 };
 MapDClient.prototype.create_frontend_view = function(session, view_name, view_state, callback) {
-  if (callback === undefined) {
-    this.send_create_frontend_view(session, view_name, view_state);
-    this.recv_create_frontend_view();
-  } else {
-    var postData = this.send_create_frontend_view(session, view_name, view_state, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_create_frontend_view);
+  this.send_create_frontend_view(session, view_name, view_state, callback); 
+  if (!callback) {
+  this.recv_create_frontend_view();
   }
 };
 
@@ -3896,7 +4010,20 @@ MapDClient.prototype.send_create_frontend_view = function(session, view_name, vi
   args.view_state = view_state;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_create_frontend_view();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_create_frontend_view = function() {
@@ -3923,13 +4050,9 @@ MapDClient.prototype.recv_create_frontend_view = function() {
   return;
 };
 MapDClient.prototype.detect_column_types = function(session, file_name, copy_params, callback) {
-  if (callback === undefined) {
-    this.send_detect_column_types(session, file_name, copy_params);
+  this.send_detect_column_types(session, file_name, copy_params, callback); 
+  if (!callback) {
     return this.recv_detect_column_types();
-  } else {
-    var postData = this.send_detect_column_types(session, file_name, copy_params, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_detect_column_types);
   }
 };
 
@@ -3941,7 +4064,20 @@ MapDClient.prototype.send_detect_column_types = function(session, file_name, cop
   args.copy_params = copy_params;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_detect_column_types();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_detect_column_types = function() {
@@ -3971,13 +4107,9 @@ MapDClient.prototype.recv_detect_column_types = function() {
   throw 'detect_column_types failed: unknown result';
 };
 MapDClient.prototype.create_table = function(session, table_name, row_desc, callback) {
-  if (callback === undefined) {
-    this.send_create_table(session, table_name, row_desc);
-    this.recv_create_table();
-  } else {
-    var postData = this.send_create_table(session, table_name, row_desc, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_create_table);
+  this.send_create_table(session, table_name, row_desc, callback); 
+  if (!callback) {
+  this.recv_create_table();
   }
 };
 
@@ -3989,7 +4121,20 @@ MapDClient.prototype.send_create_table = function(session, table_name, row_desc,
   args.row_desc = row_desc;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_create_table();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_create_table = function() {
@@ -4016,13 +4161,9 @@ MapDClient.prototype.recv_create_table = function() {
   return;
 };
 MapDClient.prototype.import_table = function(session, table_name, file_name, copy_params, callback) {
-  if (callback === undefined) {
-    this.send_import_table(session, table_name, file_name, copy_params);
-    this.recv_import_table();
-  } else {
-    var postData = this.send_import_table(session, table_name, file_name, copy_params, true);
-    return this.output.getTransport()
-      .jqRequest(this, postData, arguments, this.recv_import_table);
+  this.send_import_table(session, table_name, file_name, copy_params, callback); 
+  if (!callback) {
+  this.recv_import_table();
   }
 };
 
@@ -4035,7 +4176,20 @@ MapDClient.prototype.send_import_table = function(session, table_name, file_name
   args.copy_params = copy_params;
   args.write(this.output);
   this.output.writeMessageEnd();
-  return this.output.getTransport().flush(callback);
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_import_table();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
 };
 
 MapDClient.prototype.recv_import_table = function() {
