@@ -1,1 +1,0 @@
-../../js/mapd.thrift.js
