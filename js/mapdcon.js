@@ -35,7 +35,7 @@
     var host = "192.168.1.8";
     var user = "mapd";
     var password = "HyperInteractive"; // to be changed 
-    var port = "9090";
+    var port = "9092";
     var dbName = null;
     var transport = null;
     var protocol = null;
