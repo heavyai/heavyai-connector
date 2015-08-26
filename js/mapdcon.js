@@ -29,7 +29,8 @@
       createFrontendView: createFrontendView,
       detectColumnTypes: detectColumnTypes,
       createTable: createTable,
-      importTable: importTable
+      importTable: importTable,
+      importTableStatus: importTableStatus
     }
   
     var host = "192.168.1.8";
@@ -493,6 +494,24 @@
         }
       }
       return result;
+    }
+
+    function importTableStatus(importId, callback) {
+      testConnection();
+      callback = callback || null;
+      var import_status = null;
+      try {
+        import_status = client.import_table_status(sessionId, importId, callback);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          import_status = client.import_table_status(sessionId, importId, callback);
+        }
+      }
+      console.log(import_status)
+      return import_status;
     }
 
     invertDatumTypes();
