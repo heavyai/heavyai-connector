@@ -1631,3 +1631,85 @@ TDetectResult.prototype.write = function(output) {
   return;
 };
 
+TImportStatus = function(args) {
+  this.elapsed = null;
+  this.rows_completed = null;
+  this.rows_estimated = null;
+  if (args) {
+    if (args.elapsed !== undefined) {
+      this.elapsed = args.elapsed;
+    }
+    if (args.rows_completed !== undefined) {
+      this.rows_completed = args.rows_completed;
+    }
+    if (args.rows_estimated !== undefined) {
+      this.rows_estimated = args.rows_estimated;
+    }
+  }
+};
+TImportStatus.prototype = {};
+TImportStatus.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I64) {
+        this.elapsed = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.rows_completed = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.rows_estimated = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TImportStatus.prototype.write = function(output) {
+  output.writeStructBegin('TImportStatus');
+  if (this.elapsed !== null && this.elapsed !== undefined) {
+    output.writeFieldBegin('elapsed', Thrift.Type.I64, 1);
+    output.writeI64(this.elapsed);
+    output.writeFieldEnd();
+  }
+  if (this.rows_completed !== null && this.rows_completed !== undefined) {
+    output.writeFieldBegin('rows_completed', Thrift.Type.I64, 2);
+    output.writeI64(this.rows_completed);
+    output.writeFieldEnd();
+  }
+  if (this.rows_estimated !== null && this.rows_estimated !== undefined) {
+    output.writeFieldBegin('rows_estimated', Thrift.Type.I64, 3);
+    output.writeI64(this.rows_estimated);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+

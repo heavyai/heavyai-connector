@@ -29,7 +29,8 @@
       createFrontendView: createFrontendView,
       detectColumnTypes: detectColumnTypes,
       createTable: createTable,
-      importTable: importTable
+      importTable: importTable,
+      importTableStatus: importTableStatus
     }
   
     var host = "192.168.1.8";
@@ -222,8 +223,8 @@
         var field = data.row_desc[c]; 
         formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type], "is_array":field.col_type.is_array});
       }
-      if (numCols > 0)
-        numRows = data.columns[0].nulls.length;
+      if (numCols > 0) 
+        numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
       for (var r = 0; r < numRows; r++) {
         var row = {};
         for (var c = 0; c < numCols; c++) {
@@ -493,6 +494,24 @@
         }
       }
       return result;
+    }
+
+    function importTableStatus(importId, callback) {
+      testConnection();
+      callback = callback || null;
+      var import_status = null;
+      try {
+        import_status = client.import_table_status(sessionId, importId, callback);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          import_status = client.import_table_status(sessionId, importId, callback);
+        }
+      }
+      console.log(import_status)
+      return import_status;
     }
 
     invertDatumTypes();
