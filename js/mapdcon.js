@@ -165,10 +165,10 @@
     }
 
 
-    function queryAsync(query,callbacks,columnarResults) {
+    function queryAsync(query, columnarResults, eliminateNullRows, callbacks) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified 
       try {
-        client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,callbacks));
+        client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,eliminateNullRows,callbacks));
       }
       catch(err) {
         console.log(err);
@@ -189,7 +189,7 @@
       }
     }
 
-    function query(query,columnarResults) {
+    function query(query,columnarResults,eliminateNullRows) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
       var result = null;
       try {
@@ -212,10 +212,10 @@
           throw(err);
         }
       }
-      return processResults(undefined,result);
+      return processResults(eliminateNullRows, undefined, result); // undefined is callbacks slot
     }
 
-    function processColumnarResults(data) {
+    function processColumnarResults(data,eliminateNullRows) {
       var formattedResult = {fields: [], results: []};
       var numCols = data.row_desc.length;
       var numRows = 0;
@@ -226,6 +226,17 @@
       if (numCols > 0) 
         numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
       for (var r = 0; r < numRows; r++) {
+        if (eliminateNullRows) {
+          var rowHasNull = false;
+          for (var c = 0; c < numCols; c++) {
+            if (data.columns[c].nulls[r]) {
+              rowHasNull = true;
+              break;
+            }
+          }
+          if (rowHasNull) 
+            continue;
+        }
         var row = {};
         for (var c = 0; c < numCols; c++) {
           var fieldName = formattedResult.fields[c].name;
@@ -297,11 +308,12 @@
         }
         formattedResult.results.push(row);
       }
+      console.log(formattedResult);
       return formattedResult;
     }
 
 
-    function processRowResults(data) {
+    function processRowResults(data, eliminateNullRows) {
       var numCols = data.row_desc.length;
       var colNames = [];
       var formattedResult = {fields: [], results: []};
@@ -314,6 +326,18 @@
       if (data.rows !== undefined && data.rows !== null)
         numRows = data.rows.length; // so won't throw if data.rows is missing
       for (var r = 0; r < numRows; r++) {
+        if (eliminateNullRows) {
+          var rowHasNull = false;
+          for (var c = 0; c < numCols; c++) {
+            if (data.rows[r].columns[c].is_null) {
+              rowHasNull = true;
+              break;
+            }
+          }
+          if (rowHasNull) 
+            continue;
+        }
+
         var row = {};
         for (var c = 0; c < numCols; c++) {
           var fieldName = formattedResult.fields[c].name;
@@ -393,15 +417,15 @@
       return formattedResult;
     }
 
-    function processResults(callbacks, result) {
+    function processResults(eliminateNullRows,callbacks, result) {
       var hasCallback = typeof callbacks !== 'undefined';
       result = result.row_set;
       var formattedResult = null;
       if (result.is_columnar) {
-        formattedResult = processColumnarResults(result);
+        formattedResult = processColumnarResults(result,eliminateNullRows);
       }
       else {
-        formattedResult = processRowResults(result);
+        formattedResult = processRowResults(result,eliminateNullRows);
       }
       if (hasCallback) {
         callbacks.pop()(formattedResult.results,callbacks);
