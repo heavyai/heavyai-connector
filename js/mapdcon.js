@@ -308,7 +308,6 @@
         }
         formattedResult.results.push(row);
       }
-      console.log(formattedResult);
       return formattedResult;
     }
 
