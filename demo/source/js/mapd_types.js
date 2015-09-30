@@ -1,1 +1,1 @@
-../../../js/mapd_types.js
+../../../main/source/js/mapd_types.js

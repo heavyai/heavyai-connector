@@ -135,15 +135,15 @@
 
 
 
-    function createFrontendView(viewName, viewState) {
+    function createFrontendView(viewName, viewState, imageHash) {
       try {
-        client.create_frontend_view(sessionId,viewName,viewState);
+        client.create_frontend_view(sessionId, viewName, viewState, imageHash);
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.get_frontend_views(sessionId,viewName,viewState);
+          result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
         }
       }
     }

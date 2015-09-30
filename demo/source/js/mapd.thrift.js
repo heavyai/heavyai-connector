@@ -1,1 +1,1 @@
-../../../js/mapd.thrift.js
+../../../main/source/js/mapd.thrift.js
