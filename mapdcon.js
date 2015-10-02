@@ -33,10 +33,10 @@
       importTableStatus: importTableStatus
     }
   
-    var host = "192.168.1.8";
-    var user = "mapd";
-    var password = "HyperInteractive"; // to be changed 
-    var port = "9092";
+    var host = null;
+    var user = null;
+    var password = null; // to be changed 
+    var port = null;
     var dbName = null;
     var transport = null;
     var protocol = null;
@@ -50,7 +50,7 @@
     }
 
     function getPlatform() {
-      return "mapd";
+      return "mapd";  
     }
     function getClient() {
       return client;
