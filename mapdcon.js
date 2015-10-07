@@ -533,7 +533,6 @@
           import_status = client.import_table_status(sessionId, importId, callback);
         }
       }
-      console.log(import_status)
       return import_status;
     }
 
