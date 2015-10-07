@@ -1713,3 +1713,101 @@ TImportStatus.prototype.write = function(output) {
   return;
 };
 
+TFrontendView = function(args) {
+  this.view_name = null;
+  this.view_state = null;
+  this.image_hash = null;
+  this.update_time = null;
+  if (args) {
+    if (args.view_name !== undefined) {
+      this.view_name = args.view_name;
+    }
+    if (args.view_state !== undefined) {
+      this.view_state = args.view_state;
+    }
+    if (args.image_hash !== undefined) {
+      this.image_hash = args.image_hash;
+    }
+    if (args.update_time !== undefined) {
+      this.update_time = args.update_time;
+    }
+  }
+};
+TFrontendView.prototype = {};
+TFrontendView.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.view_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.view_state = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.image_hash = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.update_time = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TFrontendView.prototype.write = function(output) {
+  output.writeStructBegin('TFrontendView');
+  if (this.view_name !== null && this.view_name !== undefined) {
+    output.writeFieldBegin('view_name', Thrift.Type.STRING, 1);
+    output.writeString(this.view_name);
+    output.writeFieldEnd();
+  }
+  if (this.view_state !== null && this.view_state !== undefined) {
+    output.writeFieldBegin('view_state', Thrift.Type.STRING, 2);
+    output.writeString(this.view_state);
+    output.writeFieldEnd();
+  }
+  if (this.image_hash !== null && this.image_hash !== undefined) {
+    output.writeFieldBegin('image_hash', Thrift.Type.STRING, 3);
+    output.writeString(this.image_hash);
+    output.writeFieldEnd();
+  }
+  if (this.update_time !== null && this.update_time !== undefined) {
+    output.writeFieldBegin('update_time', Thrift.Type.STRING, 4);
+    output.writeString(this.update_time);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+

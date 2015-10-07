@@ -962,8 +962,9 @@ MapD_get_frontend_view_result.prototype.read = function(input) {
     switch (fid)
     {
       case 0:
-      if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TFrontendView();
+        this.success.read(input);
       } else {
         input.skip(ftype);
       }
@@ -996,8 +997,8 @@ MapD_get_frontend_view_result.prototype.read = function(input) {
 MapD_get_frontend_view_result.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_frontend_view_result');
   if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
-    output.writeString(this.success);
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
     output.writeFieldEnd();
   }
   if (this.e !== null && this.e !== undefined) {
@@ -1528,7 +1529,8 @@ MapD_get_frontend_views_result.prototype.read = function(input) {
         for (var _i135 = 0; _i135 < _size130; ++_i135)
         {
           var elem136 = null;
-          elem136 = input.readString().value;
+          elem136 = new TFrontendView();
+          elem136.read(input);
           this.success.push(elem136);
         }
         input.readListEnd();
@@ -1565,13 +1567,13 @@ MapD_get_frontend_views_result.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_frontend_views_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-    output.writeListBegin(Thrift.Type.STRING, this.success.length);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
     for (var iter137 in this.success)
     {
       if (this.success.hasOwnProperty(iter137))
       {
         iter137 = this.success[iter137];
-        output.writeString(iter137);
+        iter137.write(output);
       }
     }
     output.writeListEnd();
@@ -2503,6 +2505,7 @@ MapD_create_frontend_view_args = function(args) {
   this.session = null;
   this.view_name = null;
   this.view_state = null;
+  this.image_hash = null;
   if (args) {
     if (args.session !== undefined) {
       this.session = args.session;
@@ -2512,6 +2515,9 @@ MapD_create_frontend_view_args = function(args) {
     }
     if (args.view_state !== undefined) {
       this.view_state = args.view_state;
+    }
+    if (args.image_hash !== undefined) {
+      this.image_hash = args.image_hash;
     }
   }
 };
@@ -2550,6 +2556,13 @@ MapD_create_frontend_view_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.image_hash = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -2574,6 +2587,11 @@ MapD_create_frontend_view_args.prototype.write = function(output) {
   if (this.view_state !== null && this.view_state !== undefined) {
     output.writeFieldBegin('view_state', Thrift.Type.STRING, 3);
     output.writeString(this.view_state);
+    output.writeFieldEnd();
+  }
+  if (this.image_hash !== null && this.image_hash !== undefined) {
+    output.writeFieldBegin('image_hash', Thrift.Type.STRING, 4);
+    output.writeString(this.image_hash);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -4171,19 +4189,20 @@ MapDClient.prototype.recv_render = function() {
   }
   throw 'render failed: unknown result';
 };
-MapDClient.prototype.create_frontend_view = function(session, view_name, view_state, callback) {
-  this.send_create_frontend_view(session, view_name, view_state, callback); 
+MapDClient.prototype.create_frontend_view = function(session, view_name, view_state, image_hash, callback) {
+  this.send_create_frontend_view(session, view_name, view_state, image_hash, callback); 
   if (!callback) {
   this.recv_create_frontend_view();
   }
 };
 
-MapDClient.prototype.send_create_frontend_view = function(session, view_name, view_state, callback) {
+MapDClient.prototype.send_create_frontend_view = function(session, view_name, view_state, image_hash, callback) {
   this.output.writeMessageBegin('create_frontend_view', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_create_frontend_view_args();
   args.session = session;
   args.view_name = view_name;
   args.view_state = view_state;
+  args.image_hash = image_hash;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {

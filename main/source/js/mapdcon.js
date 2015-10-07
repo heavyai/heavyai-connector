@@ -33,10 +33,10 @@
       importTableStatus: importTableStatus
     }
   
-    var host = "192.168.1.8";
-    var user = "mapd";
-    var password = "HyperInteractive"; // to be changed 
-    var port = "9092";
+    var host = null;
+    var user = null;
+    var password = null; // to be changed 
+    var port = null;
     var dbName = null;
     var transport = null;
     var protocol = null;
@@ -50,7 +50,7 @@
     }
 
     function getPlatform() {
-      return "mapd";
+      return "mapd";  
     }
     function getClient() {
       return client;
@@ -135,15 +135,15 @@
 
 
 
-    function createFrontendView(viewName, viewState) {
+    function createFrontendView(viewName, viewState, imageHash) {
       try {
-        client.create_frontend_view(sessionId,viewName,viewState);
+        client.create_frontend_view(sessionId, viewName, viewState, imageHash);
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.get_frontend_views(sessionId,viewName,viewState);
+          result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
         }
       }
     }
@@ -533,7 +533,6 @@
           import_status = client.import_table_status(sessionId, importId, callback);
         }
       }
-      console.log(import_status)
       return import_status;
     }
 

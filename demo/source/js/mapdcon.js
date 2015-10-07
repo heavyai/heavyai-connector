@@ -1,1 +1,1 @@
-../../../js/mapdcon.js
+../../../main/source/js/mapdcon.js
