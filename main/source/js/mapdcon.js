@@ -26,6 +26,7 @@
       getClient: getClient,
       getFrontendViews: getFrontendViews,
       getFrontendView: getFrontendView,
+      getServerStatus: getServerStatus,
       createFrontendView: createFrontendView,
       detectColumnTypes: detectColumnTypes,
       createTable: createTable,
@@ -133,6 +134,20 @@
       return result;
     }
 
+    function getServerStatus() {
+      var result = null;
+      try {
+        result = client.get_server_status();
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.get_server_status();
+        }
+      }
+      return result;
+    }
 
 
     function createFrontendView(viewName, viewState, imageHash) {

@@ -1811,3 +1811,69 @@ TFrontendView.prototype.write = function(output) {
   return;
 };
 
+TServerStatus = function(args) {
+  this.read_only = null;
+  this.version = null;
+  if (args) {
+    if (args.read_only !== undefined) {
+      this.read_only = args.read_only;
+    }
+    if (args.version !== undefined) {
+      this.version = args.version;
+    }
+  }
+};
+TServerStatus.prototype = {};
+TServerStatus.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.BOOL) {
+        this.read_only = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.version = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TServerStatus.prototype.write = function(output) {
+  output.writeStructBegin('TServerStatus');
+  if (this.read_only !== null && this.read_only !== undefined) {
+    output.writeFieldBegin('read_only', Thrift.Type.BOOL, 1);
+    output.writeBool(this.read_only);
+    output.writeFieldEnd();
+  }
+  if (this.version !== null && this.version !== undefined) {
+    output.writeFieldBegin('version', Thrift.Type.STRING, 2);
+    output.writeString(this.version);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
