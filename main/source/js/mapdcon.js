@@ -13,6 +13,7 @@
       disconnect: disconnect,
       query: query,
       queryAsync: queryAsync,
+      render: render,
       getSessionId: function() {return sessionId;},
       getHost: function() {return host},
       getPort: function() {return port},
@@ -35,10 +36,10 @@
       createLink: createLink,
       getLinkView: getLinkView,
     }
-  
+
     var host = null;
     var user = null;
-    var password = null; // to be changed 
+    var password = null; // to be changed
     var port = null;
     var dbName = null;
     var transport = null;
@@ -53,7 +54,7 @@
     }
 
     function getPlatform() {
-      return "mapd";  
+      return "mapd";
     }
     function getClient() {
       return client;
@@ -160,7 +161,7 @@
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
+          var result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
         }
       }
     }
@@ -194,6 +195,7 @@
     }
 
     function detectColumnTypes(fileName, copyParams, callback) {
+      var result = null;
       copyParams.delimiter = copyParams.delimiter || "";
       try {
         result = client.detect_column_types(sessionId, fileName, copyParams, callback);
@@ -208,9 +210,23 @@
       return result;
     }
 
+    function render(query,renderSpec,callbacks) {
+      var result = null;
+      try {
+        result = client.render(sessionId, query, renderSpec, {}, {});
+        console.log(result);
+
+      }
+      catch (err) {
+        console.log(err);
+      }
+
+    }
+
+  
 
     function queryAsync(query, columnarResults, eliminateNullRows, callbacks) {
-      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified 
+      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
       try {
         client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,eliminateNullRows,callbacks));
       }
@@ -221,11 +237,17 @@
           client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,callbacks));
         }
         else if (err.name == "TMapDException") {
-          swal({title: "Error!",   
-            text: err.error_msg,   
-            type: "error",   
-            confirmButtonText: "Okay" 
+          swal({title: "Error!",
+            text: err.error_msg,
+            type: "error",
+            confirmButtonText: "Okay"
           });
+
+          // google analytics send error
+          ga('send', 'event', 'error', 'async query error', err.error_msg, {
+           nonInteraction: true
+          });
+
         }
         else {
           throw(err);
@@ -246,11 +268,16 @@
           result = client.sql_execute(sessionId,query + ";",columnarResults);
         }
         else if (err.name == "TMapDException") {
-          swal({title: "Error!",   
-            text: err.error_msg,   
-            type: "error",   
-            confirmButtonText: "Okay" 
+          swal({title: "Error!",
+            text: err.error_msg,
+            type: "error",
+            confirmButtonText: "Okay"
           });
+
+          // google analytics send error
+          ga('send', 'event', 'error', 'query error', err.error_msg, {
+           nonInteraction: true
+          })
         }
         else {
           throw(err);
@@ -264,10 +291,10 @@
       var numCols = data.row_desc.length;
       var numRows = 0;
       for (var c = 0; c < numCols; c++) {
-        var field = data.row_desc[c]; 
+        var field = data.row_desc[c];
         formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type], "is_array":field.col_type.is_array});
       }
-      if (numCols > 0) 
+      if (numCols > 0)
         numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
       for (var r = 0; r < numRows; r++) {
         if (eliminateNullRows) {
@@ -278,7 +305,7 @@
               break;
             }
           }
-          if (rowHasNull) 
+          if (rowHasNull)
             continue;
         }
         var row = {};
@@ -361,7 +388,7 @@
       var colNames = [];
       var formattedResult = {fields: [], results: []};
       for (var c = 0; c < numCols; c++) {
-        var field = data.row_desc[c]; 
+        var field = data.row_desc[c];
         formattedResult.fields.push({"name": field.col_name, "type": datumEnum[field.col_type.type], "is_array":field.col_type.is_array});
       }
       formattedResult.results = [];
@@ -377,7 +404,7 @@
               break;
             }
           }
-          if (rowHasNull) 
+          if (rowHasNull)
             continue;
         }
 
@@ -513,7 +540,7 @@
       for (var t = 0; t < numTables; t++) {
         tableInfo.push({"name": tabs[t], "label": "obs"});
       }
-      return tableInfo; 
+      return tableInfo;
     }
 
     function invertDatumTypes() {
@@ -526,7 +553,7 @@
       testConnection();
       var fields = client.get_table_descriptor(sessionId,tableName);
       var fieldsArray = [];
-      // silly to change this from map to array 
+      // silly to change this from map to array
       // - then later it turns back to map
       for (var key in fields) {
         fieldsArray.push({"name": key, "type": datumEnum[fields[key].col_type.type], "is_array":fields[key].col_type.is_array, "is_dict": fields[key].col_type.encoding == TEncodingType["DICT"]});
