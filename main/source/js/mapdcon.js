@@ -26,11 +26,14 @@
       getClient: getClient,
       getFrontendViews: getFrontendViews,
       getFrontendView: getFrontendView,
+      getServerStatus: getServerStatus,
       createFrontendView: createFrontendView,
       detectColumnTypes: detectColumnTypes,
       createTable: createTable,
       importTable: importTable,
-      importTableStatus: importTableStatus
+      importTableStatus: importTableStatus,
+      createLink: createLink,
+      getLinkView: getLinkView,
     }
   
     var host = null;
@@ -133,6 +136,20 @@
       return result;
     }
 
+    function getServerStatus() {
+      var result = null;
+      try {
+        result = client.get_server_status();
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.get_server_status();
+        }
+      }
+      return result;
+    }
 
 
     function createFrontendView(viewName, viewState, imageHash) {
@@ -148,6 +165,33 @@
       }
     }
 
+    function createLink(viewState) {
+      try {
+        result = client.create_link(sessionId, viewState);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.create_link(sessionId, viewState);
+        }
+      }
+      return result;
+    }
+
+    function getLinkView(link) {
+      try {
+        result = client.get_link_view(sessionId, link);
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.get_link_view(sessionId, link);
+        }
+      }
+      return result;
+    }
 
     function detectColumnTypes(fileName, copyParams, callback) {
       copyParams.delimiter = copyParams.delimiter || "";
