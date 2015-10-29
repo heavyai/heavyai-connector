@@ -13,6 +13,7 @@
       disconnect: disconnect,
       query: query,
       queryAsync: queryAsync,
+      render: render,
       getSessionId: function() {return sessionId;},
       getHost: function() {return host},
       getPort: function() {return port},
@@ -160,7 +161,7 @@
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
+          var result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);
         }
       }
     }
@@ -194,6 +195,7 @@
     }
 
     function detectColumnTypes(fileName, copyParams, callback) {
+      var result = null;
       copyParams.delimiter = copyParams.delimiter || "";
       try {
         result = client.detect_column_types(sessionId, fileName, copyParams, callback);
@@ -208,6 +210,20 @@
       return result;
     }
 
+    function render(query,renderSpec,callbacks) {
+      var result = null;
+      try {
+        result = client.render(sessionId, query, renderSpec, {}, {});
+        console.log(result);
+
+      }
+      catch (err) {
+        console.log(err);
+      }
+
+    }
+
+  
 
     function queryAsync(query, columnarResults, eliminateNullRows, callbacks) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
