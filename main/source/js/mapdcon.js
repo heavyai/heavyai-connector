@@ -289,6 +289,7 @@
           throw(err);
         }
       }
+
       if (renderSpec !== undefined)
         return result;
       return processResults(false, eliminateNullRows, undefined, result); // undefined is callbacks slot
