@@ -210,35 +210,32 @@
       return result;
     }
 
-    function render(query,renderSpec,callbacks) {
+    function render(query, renderSpec) {
       var result = null;
       try {
         result = client.render(sessionId, query, renderSpec, {}, {});
-        console.log(result);
 
       }
       catch (err) {
         console.log(err);
       }
-
     }
-  
 
     function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified 
       try {
         if (renderSpec !== undefined) {
-          client.render(sessionId, query + ";", rrenderSpec, {}, {}, callbacks);   
+          client.render(sessionId, query + ";", renderSpec, {}, {}, processResults.bind(this, true, eliminateNullRows, callbacks));
         }
         else {
-          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,eliminateNullRows,callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this, false, eliminateNullRows,callbacks));
         }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this, false, eliminateNullRows, callbacks));
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -292,10 +289,9 @@
           throw(err);
         }
       }
-      console.log(result);
       if (renderSpec !== undefined)
         return result;
-      return processResults(eliminateNullRows, undefined, result); // undefined is callbacks slot
+      return processResults(false, eliminateNullRows, undefined, result); // undefined is callbacks slot
     }
 
     function processColumnarResults(data,eliminateNullRows) {
@@ -499,21 +495,32 @@
       return formattedResult;
     }
 
-    function processResults(eliminateNullRows,callbacks, result) {
+    function processResults(isImage, eliminateNullRows,callbacks, result) {
+
       var hasCallback = typeof callbacks !== 'undefined';
-      result = result.row_set;
-      var formattedResult = null;
-      if (result.is_columnar) {
-        formattedResult = processColumnarResults(result,eliminateNullRows);
+      if (isImage) {
+        if (hasCallback) {
+          callbacks.pop()(result,callbacks);
+        }
+        else {
+          return result;
+        }
       }
       else {
-        formattedResult = processRowResults(result,eliminateNullRows);
-      }
-      if (hasCallback) {
-        callbacks.pop()(formattedResult.results,callbacks);
-      }
-      else {
-        return formattedResult.results;
+        result = result.row_set;
+        var formattedResult = null;
+        if (result.is_columnar) {
+          formattedResult = processColumnarResults(result,eliminateNullRows);
+        }
+        else {
+          formattedResult = processRowResults(result,eliminateNullRows);
+        }
+        if (hasCallback) {
+          callbacks.pop()(formattedResult.results,callbacks);
+        }
+        else {
+          return formattedResult.results;
+        }
       }
     }
 
