@@ -222,13 +222,17 @@
       }
 
     }
-
   
 
-    function queryAsync(query, columnarResults, eliminateNullRows, callbacks) {
-      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
+    function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
+      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified 
       try {
-        client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,eliminateNullRows,callbacks));
+        if (renderSpec !== undefined) {
+          client.render(sessionId, query + ";", rrenderSpec, {}, {}, callbacks);   
+        }
+        else {
+          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this,eliminateNullRows,callbacks));
+        }
       }
       catch(err) {
         console.log(err);
@@ -255,11 +259,16 @@
       }
     }
 
-    function query(query,columnarResults,eliminateNullRows) {
+    function query(query,columnarResults,eliminateNullRows, renderSpec) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
       var result = null;
       try {
-        result = client.sql_execute(sessionId,query + ";",columnarResults);
+        if (renderSpec !== undefined) {
+          result = client.render(sessionId, query + ";", renderSpec, {}, {});
+        }
+        else {
+          result = client.sql_execute(sessionId,query + ";",columnarResults);
+        }
       }
       catch(err) {
         console.log(err);
@@ -283,6 +292,9 @@
           throw(err);
         }
       }
+      console.log(result);
+      if (renderSpec !== undefined)
+        return result;
       return processResults(eliminateNullRows, undefined, result); // undefined is callbacks slot
     }
 
