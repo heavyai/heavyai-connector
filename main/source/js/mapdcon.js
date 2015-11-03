@@ -220,10 +220,6 @@
         console.log(err);
       }
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
 
     function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
@@ -293,10 +289,7 @@
           throw(err);
         }
       }
-<<<<<<< HEAD
 
-=======
->>>>>>> Async and sync render calls working - have data displayed in image - need to fix z-order over basemap - needs to support mercrator projection
       if (renderSpec !== undefined)
         return result;
       return processResults(false, eliminateNullRows, undefined, result); // undefined is callbacks slot
