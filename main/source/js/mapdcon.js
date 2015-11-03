@@ -222,7 +222,7 @@
     }
 
     function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
-      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified 
+      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
       try {
         if (renderSpec !== undefined) {
           client.render(sessionId, query + ";", renderSpec, {}, {}, processResults.bind(this, true, eliminateNullRows, callbacks));
