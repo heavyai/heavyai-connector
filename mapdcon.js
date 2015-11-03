@@ -226,6 +226,12 @@
             type: "error",   
             confirmButtonText: "Okay" 
           });
+
+          // google analytics send error
+          ga('send', 'event', 'error', 'async query error', err.error_msg, {
+           nonInteraction: true
+          });
+
         }
         else {
           throw(err);
@@ -251,6 +257,11 @@
             type: "error",   
             confirmButtonText: "Okay" 
           });
+          
+          // google analytics send error
+          ga('send', 'event', 'error', 'query error', err.error_msg {
+           nonInteraction: true
+          })
         }
         else {
           throw(err);
