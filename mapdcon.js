@@ -35,6 +35,7 @@
       importTableStatus: importTableStatus,
       createLink: createLink,
       getLinkView: getLinkView,
+      getRowsForPixels: getRowsForPixels,
     }
 
     var host = null;
@@ -625,6 +626,27 @@
         }
       }
       return import_status;
+    }
+
+    function getRowsForPixels(pixels, col_names, callback) {
+      var widget_id = 1;  // INT
+      var col_names = ['tweet_text'];  // ARRAY
+      var column_format = true; //BOOL
+      var table_name = "tweets";  //STRING
+
+      callback = callback || null;
+      try {
+        result = client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, callback)
+        return result;
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          result = client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, callback)
+          return result;
+        }
+      }
     }
 
     invertDatumTypes();
