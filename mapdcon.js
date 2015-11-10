@@ -628,11 +628,9 @@
       return import_status;
     }
 
-    function getRowsForPixels(pixels, col_names, callbacks) {
+    function getRowsForPixels(pixels, table_name, col_names, callbacks) {
       var widget_id = 1;  // INT
       var column_format = true; //BOOL
-      var table_name = "tweets";  //STRING
-
       callbacks = callbacks || null;
       try {
         if (!callbacks) 
