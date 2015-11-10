@@ -35,6 +35,7 @@
       importTableStatus: importTableStatus,
       createLink: createLink,
       getLinkView: getLinkView,
+      getRowsForPixels: getRowsForPixels,
     }
 
     var host = null;
@@ -626,6 +627,39 @@
       }
       return import_status;
     }
+
+    function getRowsForPixels(pixels, table_name, col_names, callbacks) {
+      var widget_id = 1;  // INT
+      var column_format = true; //BOOL
+      callbacks = callbacks || null;
+      try {
+        if (!callbacks) 
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format)) ;
+        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this,callbacks));
+      }
+      catch(err) {
+        console.log(err);
+        if (err.name == "ThriftException") {
+          connect();
+          if (!callbacks) 
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format)) ;
+          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this, callbacks));
+        }
+      }
+    }
+
+    function processPixelResults(callbacks, results) {
+      var numPixels = results.length;
+      var resultsMap = {};
+      for (var p = 0; p < numPixels; p++) {
+        results[p].row_set = processResults(false, false, undefined, results[p]);
+      }
+      if (!callbacks) 
+        return results;
+      callbacks.pop()(results,callbacks);
+    }
+
+
 
     invertDatumTypes();
     return mapdcon;
