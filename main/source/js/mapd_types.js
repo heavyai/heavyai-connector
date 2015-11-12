@@ -1048,12 +1048,16 @@ TRowSet.prototype.write = function(output) {
 TQueryResult = function(args) {
   this.row_set = null;
   this.execution_time_ms = null;
+  this.nonce = null;
   if (args) {
     if (args.row_set !== undefined) {
       this.row_set = args.row_set;
     }
     if (args.execution_time_ms !== undefined) {
       this.execution_time_ms = args.execution_time_ms;
+    }
+    if (args.nonce !== undefined) {
+      this.nonce = args.nonce;
     }
   }
 };
@@ -1086,6 +1090,13 @@ TQueryResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1105,6 +1116,11 @@ TQueryResult.prototype.write = function(output) {
   if (this.execution_time_ms !== null && this.execution_time_ms !== undefined) {
     output.writeFieldBegin('execution_time_ms', Thrift.Type.I64, 2);
     output.writeI64(this.execution_time_ms);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 3);
+    output.writeString(this.nonce);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1814,12 +1830,16 @@ TFrontendView.prototype.write = function(output) {
 TServerStatus = function(args) {
   this.read_only = null;
   this.version = null;
+  this.rendering_enabled = null;
   if (args) {
     if (args.read_only !== undefined) {
       this.read_only = args.read_only;
     }
     if (args.version !== undefined) {
       this.version = args.version;
+    }
+    if (args.rendering_enabled !== undefined) {
+      this.rendering_enabled = args.rendering_enabled;
     }
   }
 };
@@ -1851,6 +1871,13 @@ TServerStatus.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.rendering_enabled = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1870,6 +1897,11 @@ TServerStatus.prototype.write = function(output) {
   if (this.version !== null && this.version !== undefined) {
     output.writeFieldBegin('version', Thrift.Type.STRING, 2);
     output.writeString(this.version);
+    output.writeFieldEnd();
+  }
+  if (this.rendering_enabled !== null && this.rendering_enabled !== undefined) {
+    output.writeFieldBegin('rendering_enabled', Thrift.Type.BOOL, 3);
+    output.writeBool(this.rendering_enabled);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -2004,6 +2036,161 @@ TPixelRows.prototype.write = function(output) {
   if (this.row_set !== null && this.row_set !== undefined) {
     output.writeFieldBegin('row_set', Thrift.Type.STRUCT, 2);
     this.row_set.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TPixelResult = function(args) {
+  this.pixel_rows = null;
+  this.nonce = null;
+  if (args) {
+    if (args.pixel_rows !== undefined) {
+      this.pixel_rows = args.pixel_rows;
+    }
+    if (args.nonce !== undefined) {
+      this.nonce = args.nonce;
+    }
+  }
+};
+TPixelResult.prototype = {};
+TPixelResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.LIST) {
+        var _size88 = 0;
+        var _rtmp392;
+        this.pixel_rows = [];
+        var _etype91 = 0;
+        _rtmp392 = input.readListBegin();
+        _etype91 = _rtmp392.etype;
+        _size88 = _rtmp392.size;
+        for (var _i93 = 0; _i93 < _size88; ++_i93)
+        {
+          var elem94 = null;
+          elem94 = new TPixelRows();
+          elem94.read(input);
+          this.pixel_rows.push(elem94);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TPixelResult.prototype.write = function(output) {
+  output.writeStructBegin('TPixelResult');
+  if (this.pixel_rows !== null && this.pixel_rows !== undefined) {
+    output.writeFieldBegin('pixel_rows', Thrift.Type.LIST, 1);
+    output.writeListBegin(Thrift.Type.STRUCT, this.pixel_rows.length);
+    for (var iter95 in this.pixel_rows)
+    {
+      if (this.pixel_rows.hasOwnProperty(iter95))
+      {
+        iter95 = this.pixel_rows[iter95];
+        iter95.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 2);
+    output.writeString(this.nonce);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TRenderResult = function(args) {
+  this.image = null;
+  this.nonce = null;
+  if (args) {
+    if (args.image !== undefined) {
+      this.image = args.image;
+    }
+    if (args.nonce !== undefined) {
+      this.nonce = args.nonce;
+    }
+  }
+};
+TRenderResult.prototype = {};
+TRenderResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.image = input.readBinary().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TRenderResult.prototype.write = function(output) {
+  output.writeStructBegin('TRenderResult');
+  if (this.image !== null && this.image !== undefined) {
+    output.writeFieldBegin('image', Thrift.Type.STRING, 1);
+    output.writeBinary(this.image);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 2);
+    output.writeString(this.nonce);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
