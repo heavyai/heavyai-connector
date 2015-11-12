@@ -226,17 +226,17 @@
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
       try {
         if (renderSpec !== undefined) {
-          client.render(sessionId, query + ";", renderSpec, {}, {}, processResults.bind(this, true, eliminateNullRows, callbacks));
+          client.render(sessionId, query + ";", renderSpec, {}, {}, "0", processResults.bind(this, true, eliminateNullRows, callbacks));
         }
         else {
-          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this, false, eliminateNullRows,callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, "0", processResults.bind(this, false, eliminateNullRows, callbacks));
         }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          client.sql_execute(sessionId,query + ";", columnarResults, processResults.bind(this, false, eliminateNullRows, callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, "0", processResults.bind(this, false, eliminateNullRows, callbacks));
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -262,17 +262,17 @@
       var result = null;
       try {
         if (renderSpec !== undefined) {
-          result = client.render(sessionId, query + ";", renderSpec, {}, {});
+          result = client.render(sessionId, query + ";", renderSpec, {}, {}, "0");
         }
         else {
-          result = client.sql_execute(sessionId,query + ";",columnarResults);
+          result = client.sql_execute(sessionId,query + ";",columnarResults, "0");
         }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.sql_execute(sessionId,query + ";",columnarResults);
+          result = client.sql_execute(sessionId,query + ";",columnarResults, "0");
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -634,21 +634,22 @@
       callbacks = callbacks || null;
       try {
         if (!callbacks) 
-            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format)) ;
-        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this,callbacks));
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, "0")) ;
+        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this, "0", callbacks));
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
           if (!callbacks) 
-            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format)) ;
-          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this, callbacks));
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, "0")) ;
+          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this, "0", callbacks));
         }
       }
     }
 
     function processPixelResults(callbacks, results) {
+      var results = results.pixel_rows;
       var numPixels = results.length;
       var resultsMap = {};
       for (var p = 0; p < numPixels; p++) {
