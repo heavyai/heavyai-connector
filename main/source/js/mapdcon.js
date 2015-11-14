@@ -48,6 +48,7 @@
     var client = null;
     var sessionId = null;
     var datumEnum = {};
+    var nonce = 0;
 
     function setPlatform(newPlatform) {
       //dummy function for now
@@ -224,19 +225,20 @@
 
     function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
+      var curNonce = (nonce++).toString();
       try {
         if (renderSpec !== undefined) {
-          client.render(sessionId, query + ";", renderSpec, {}, {}, "0", processResults.bind(this, true, eliminateNullRows, callbacks));
+          client.render(sessionId, query + ";", renderSpec, {}, {}, curNonce, processResults.bind(this, true, eliminateNullRows, callbacks));
         }
         else {
-          client.sql_execute(sessionId,query + ";", columnarResults, "0", processResults.bind(this, false, eliminateNullRows, callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, callbacks));
         }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          client.sql_execute(sessionId,query + ";", columnarResults, "0", processResults.bind(this, false, eliminateNullRows, callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, callbacks));
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -255,24 +257,26 @@
           throw(err);
         }
       }
+      return curNonce;
     }
 
     function query(query,columnarResults,eliminateNullRows, renderSpec) {
       columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified
       var result = null;
+      var curNonce = (nonce++).toString();
       try {
         if (renderSpec !== undefined) {
-          result = client.render(sessionId, query + ";", renderSpec, {}, {}, "0");
+          result = client.render(sessionId, query + ";", renderSpec, {}, {}, curNonce);
         }
         else {
-          result = client.sql_execute(sessionId,query + ";",columnarResults, "0");
+          result = client.sql_execute(sessionId,query + ";",columnarResults, curNonce);
         }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          result = client.sql_execute(sessionId,query + ";",columnarResults, "0");
+          result = client.sql_execute(sessionId,query + ";",columnarResults, curNonce);
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -632,20 +636,22 @@
       var widget_id = 1;  // INT
       var column_format = true; //BOOL
       callbacks = callbacks || null;
+      var curNonce = (nonce++).toString();
       try {
         if (!callbacks) 
-            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, "0")) ;
-        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this, "0", callbacks));
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
+        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
           if (!callbacks) 
-            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, "0")) ;
-          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, processPixelResults.bind(this, "0", callbacks));
+            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
+          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));
         }
       }
+      return curNonce;
     }
 
     function processPixelResults(callbacks, results) {
