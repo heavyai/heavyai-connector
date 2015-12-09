@@ -1,0 +1,19 @@
+{
+  "name": "@mapd/mapd-con",
+  "version": "0.0.1",
+  "description": "An npm module containing the MapDCon library",
+  "main": "mapdcon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/map-d/mapd-con.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/map-d/mapd-con/issues"
+  },
+  "homepage": "https://github.com/map-d/mapd-con#readme"
+}
