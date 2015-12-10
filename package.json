@@ -1,6 +1,6 @@
 {
   "name": "@mapd/mapd-thrift",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "An npm module containing the Thrift JS library",
   "main": "mapd.thrift.js",
   "scripts": {

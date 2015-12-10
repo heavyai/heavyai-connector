@@ -13,10 +13,7 @@ TDatumType = {
   'DECIMAL' : 4,
   'DOUBLE' : 5,
   'STR' : 6,
-  'TIME' : 7,
-  'TIMESTAMP' : 8,
-  'DATE' : 9,
-  'BOOL' : 10
+  'TIMESTAMP' : 7
 };
 TEncodingType = {
   'NONE' : 0,
