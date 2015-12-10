@@ -1,0 +1,19 @@
+{
+  "name": "@mapd/mapd-thrift",
+  "version": "0.0.0",
+  "description": "An npm module containing the Thrift JS library",
+  "main": "mapd.thrift.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/map-d/mapd-thrift.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/map-d/mapd-thrift/issues"
+  },
+  "homepage": "https://github.com/map-d/mapd-thrift#readme"
+}
