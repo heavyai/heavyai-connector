@@ -1,6 +1,6 @@
 {
   "name": "@mapd/mapd-con",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An npm module containing the MapDCon library",
   "main": "mapdcon.js",
   "scripts": {
