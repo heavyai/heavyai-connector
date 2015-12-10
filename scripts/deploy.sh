@@ -16,9 +16,9 @@ fi
 git checkout -b temp
 
 # bump the version
-SEM_VAR=`bash get_latest_semvar_tag.sh | awk 'NR==0; END{print}'`
+# SEM_VAR=`bash get_latest_semvar_tag.sh | awk 'NR==0; END{print}'`
 cd ..
-npm --no-git-tag-version version $SEM_VAR
+npm --no-git-tag-version version patch #$SEM_VAR
 
 # Add and commit the new version
 cd scripts
