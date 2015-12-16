@@ -2,7 +2,7 @@
   "name": "@mapd/mapd-con",
   "version": "0.0.2",
   "description": "An npm module containing the MapDCon library",
-  "main": "mapdcon.js",
+  "main": "mapd-con.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
