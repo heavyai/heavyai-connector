@@ -23,6 +23,10 @@ SEM_VAR=`bash get_latest_semvar_tag.sh | awk 'NR==0; END{print}'`
 cd ..
 npm --no-git-tag-version version $SEM_VAR
 
+# Build the library
+npm install
+npm run build
+
 # Add and commit the new version
 cd scripts
 git commit -a -m "`bash package_version.sh`"
