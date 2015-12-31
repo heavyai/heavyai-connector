@@ -329,7 +329,8 @@
           var fieldIsArray = formattedResult.fields[c].is_array;
           var isNull = data.columns[c].nulls[r];
           if (isNull) {
-            row[fieldName] = "NULL";
+            // row[fieldName] = "NULL";
+            row[fieldName] = null;
             continue;
           }
           if (fieldIsArray) {
