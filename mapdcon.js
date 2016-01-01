@@ -36,6 +36,7 @@
       createLink: createLink,
       getLinkView: getLinkView,
       getRowsForPixels: getRowsForPixels,
+      logging: logging 
     }
 
     var host = null;
@@ -49,6 +50,14 @@
     var sessionId = null;
     var datumEnum = {};
     var nonce = 0;
+    var _logging = false;
+
+    function logging(_) {
+      if (!arguments.length)
+        return _logging;
+      _logging = _;
+      return mapdcon;
+    }
 
     function setPlatform(newPlatform) {
       //dummy function for now
@@ -228,17 +237,17 @@
       var curNonce = (nonce++).toString();
       try {
         if (renderSpec !== undefined) {
-          client.render(sessionId, query + ";", renderSpec, {}, {}, curNonce, processResults.bind(this, true, eliminateNullRows, callbacks));
+          client.render(sessionId, query + ";", renderSpec, {}, {}, curNonce, processResults.bind(this, true, eliminateNullRows, "render: " + query, callbacks));
         }
         else {
-          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, query, callbacks));
         }
       }
       catch(err) {
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, callbacks));
+          client.sql_execute(sessionId,query + ";", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, query, callbacks));
         }
         else if (err.name == "TMapDException") {
           swal({title: "Error!",
@@ -297,7 +306,7 @@
 
       if (renderSpec !== undefined)
         return result;
-      return processResults(false, eliminateNullRows, undefined, result); // undefined is callbacks slot
+      return processResults(false, eliminateNullRows, renderSpec ? "render: " + query : query, undefined, result); // undefined is callbacks slot
     }
 
     function processColumnarResults(data,eliminateNullRows) {
@@ -502,8 +511,9 @@
       return formattedResult;
     }
 
-    function processResults(isImage, eliminateNullRows,callbacks, result) {
-
+    function processResults(isImage, eliminateNullRows, query, callbacks, result) {
+      if (_logging && result.execution_time_ms)
+        console.log(query + ": " + result.execution_time_ms + " ms");
       var hasCallback = typeof callbacks !== 'undefined';
       if (isImage) {
         if (hasCallback) {
@@ -660,7 +670,7 @@
       var numPixels = results.length;
       var resultsMap = {};
       for (var p = 0; p < numPixels; p++) {
-        results[p].row_set = processResults(false, false, undefined, results[p]);
+        results[p].row_set = processResults(false, false, undefined, "pixel request", results[p]);
       }
       if (!callbacks) 
         return results;
