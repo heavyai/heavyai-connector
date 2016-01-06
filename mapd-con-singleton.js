@@ -3,7 +3,7 @@ class MapdCon {
     this.version= "1.0";
     this.host = null;
     this.user = null;
-    this.password = null; // to be changed 
+    this.password = null; // to be changed
     this.port = null;
     this.dbName = null;
     this.transport = null;
@@ -18,7 +18,7 @@ class MapdCon {
   }
 
   getPlatform() {
-    return "mapd";  
+    return "mapd";
   }
   getClient() {
     return this.client;
@@ -552,7 +552,13 @@ class MapdCon {
     }
     return import_status;
   }
-  
+
+}
+
+// Set a global mapdcon instance when mapdcon is brought in via script tag.
+if(typeof module === "object" && module.exports){
+  window.mapdcon = new MapdCon();
 }
 
 export default new MapdCon();
+
