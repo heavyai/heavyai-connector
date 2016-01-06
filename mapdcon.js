@@ -670,7 +670,7 @@
       var numPixels = results.length;
       var resultsMap = {};
       for (var p = 0; p < numPixels; p++) {
-        results[p].row_set = processResults(false, false, undefined, "pixel request", results[p]);
+        results[p].row_set = processResults(false, false, "pixel request", undefined, results[p]);
       }
       if (!callbacks) 
         return results;
