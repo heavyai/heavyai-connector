@@ -1,5 +1,5 @@
 module.exports = {
-    entry: "./mapd-con-singleton.js",
+    entry: "./mapd-con-es6.js",
     output: {
         path: __dirname,
         filename: "mapd-con-singleton-compiled.js"
