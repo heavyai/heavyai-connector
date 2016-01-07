@@ -4,7 +4,7 @@
   "description": "An npm module containing the MapDCon library",
   "main": "mapd-con-singleton-compiled.js",
   "scripts": {
-    "build": "babel mapd-con-singleton.js -o mapd-con-singleton-compiled.js",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
