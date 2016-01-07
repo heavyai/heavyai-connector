@@ -1,8 +1,8 @@
 module.exports = {
-    entry: "./mapd-con-es6.js",
+    entry: "./src/mapd-con-es6.js",
     output: {
         path: __dirname,
-        filename: "mapd-con-singleton-compiled.js"
+        filename: "mapd-con.js"
     },
     module: {
       loaders: [

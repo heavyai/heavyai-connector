@@ -700,7 +700,7 @@
 
 // Set a global mapdcon function when mapdcon is brought in via script tag.
 if(typeof module === "object" && module.exports){
-  window.mapdcon = MapdCon;
+  window.MapdCon = MapdCon;
 }
 
 export default new MapdCon();

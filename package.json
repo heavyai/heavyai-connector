@@ -2,7 +2,7 @@
   "name": "@mapd/mapd-con",
   "version": "0.2.8",
   "description": "An npm module containing the MapDCon library",
-  "main": "mapd-con-singleton-compiled.js",
+  "main": "mapd-con.js",
   "scripts": {
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
