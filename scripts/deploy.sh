@@ -7,7 +7,8 @@ set -x
 set -e
 
 # If the last commit was from jenkins, do nothing
-if [[ `git log -1 | grep "Jenkins MapD"` ]]; then
+if [[ `git log -1 | grep "Jenkins MapD"` ]] &&
+   !([[ `git log -1 | grep "Update Thrift"` ]]); then
  echo "Ignoring superfluous build spawned by jenkins"
  exit 0
 fi
