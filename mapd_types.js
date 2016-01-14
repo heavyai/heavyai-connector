@@ -1048,6 +1048,7 @@ TRowSet.prototype.write = function(output) {
 TQueryResult = function(args) {
   this.row_set = null;
   this.execution_time_ms = null;
+  this.total_time_ms = null;
   this.nonce = null;
   if (args) {
     if (args.row_set !== undefined) {
@@ -1055,6 +1056,9 @@ TQueryResult = function(args) {
     }
     if (args.execution_time_ms !== undefined) {
       this.execution_time_ms = args.execution_time_ms;
+    }
+    if (args.total_time_ms !== undefined) {
+      this.total_time_ms = args.total_time_ms;
     }
     if (args.nonce !== undefined) {
       this.nonce = args.nonce;
@@ -1091,6 +1095,13 @@ TQueryResult.prototype.read = function(input) {
       }
       break;
       case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.total_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
       if (ftype == Thrift.Type.STRING) {
         this.nonce = input.readString().value;
       } else {
@@ -1118,8 +1129,13 @@ TQueryResult.prototype.write = function(output) {
     output.writeI64(this.execution_time_ms);
     output.writeFieldEnd();
   }
+  if (this.total_time_ms !== null && this.total_time_ms !== undefined) {
+    output.writeFieldBegin('total_time_ms', Thrift.Type.I64, 3);
+    output.writeI64(this.total_time_ms);
+    output.writeFieldEnd();
+  }
   if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 3);
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 4);
     output.writeString(this.nonce);
     output.writeFieldEnd();
   }
@@ -2135,12 +2151,24 @@ TPixelResult.prototype.write = function(output) {
 TRenderResult = function(args) {
   this.image = null;
   this.nonce = null;
+  this.execution_time_ms = null;
+  this.render_time_ms = null;
+  this.total_time_ms = null;
   if (args) {
     if (args.image !== undefined) {
       this.image = args.image;
     }
     if (args.nonce !== undefined) {
       this.nonce = args.nonce;
+    }
+    if (args.execution_time_ms !== undefined) {
+      this.execution_time_ms = args.execution_time_ms;
+    }
+    if (args.render_time_ms !== undefined) {
+      this.render_time_ms = args.render_time_ms;
+    }
+    if (args.total_time_ms !== undefined) {
+      this.total_time_ms = args.total_time_ms;
     }
   }
 };
@@ -2172,6 +2200,27 @@ TRenderResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.execution_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I64) {
+        this.render_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.I64) {
+        this.total_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -2191,6 +2240,21 @@ TRenderResult.prototype.write = function(output) {
   if (this.nonce !== null && this.nonce !== undefined) {
     output.writeFieldBegin('nonce', Thrift.Type.STRING, 2);
     output.writeString(this.nonce);
+    output.writeFieldEnd();
+  }
+  if (this.execution_time_ms !== null && this.execution_time_ms !== undefined) {
+    output.writeFieldBegin('execution_time_ms', Thrift.Type.I64, 3);
+    output.writeI64(this.execution_time_ms);
+    output.writeFieldEnd();
+  }
+  if (this.render_time_ms !== null && this.render_time_ms !== undefined) {
+    output.writeFieldBegin('render_time_ms', Thrift.Type.I64, 4);
+    output.writeI64(this.render_time_ms);
+    output.writeFieldEnd();
+  }
+  if (this.total_time_ms !== null && this.total_time_ms !== undefined) {
+    output.writeFieldBegin('total_time_ms', Thrift.Type.I64, 5);
+    output.writeI64(this.total_time_ms);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
