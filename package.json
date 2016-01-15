@@ -4,16 +4,17 @@
   "description": "An npm module containing the MapDCon library",
   "main": "mapd-con.js",
   "watch": {
-      "build":"src/*.js"
+    "build": "src/*.js"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack; npm run generate-docs",
     "watch": "npm-watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
+    "test": "bash ./scripts/test.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/map-d/mapd-con.git"
+    "url": "https://github.com/map-d/mapd-con"
   },
   "author": "",
   "license": "ISC",
@@ -28,6 +29,12 @@
   "devDependencies": {
     "babel-core": "^6.4.0",
     "babel-loader": "^6.2.1",
+    "babel-register": "^6.4.3",
+    "chai": "^3.4.1",
+    "expect": "^1.13.4",
+    "mocha": "^2.3.4",
+    "mocha-jenkins-reporter": "^0.1.9",
+    "mocha-jsdom": "^1.0.0",
     "npm-watch": "^0.1.1",
     "webpack": "^1.12.10"
   }
