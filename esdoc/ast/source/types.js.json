@@ -1,0 +1,167 @@
+{
+  "type": "Program",
+  "body": [],
+  "sourceType": "module",
+  "range": [
+    1479,
+    1479
+  ],
+  "loc": {
+    "start": {
+      "line": 33,
+      "column": 0
+    },
+    "end": {
+      "line": 33,
+      "column": 0
+    }
+  },
+  "leadingComments": [
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {TCopyParams} TCopyParams\n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        0,
+        366
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 7,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {MapDClient} MapDClient \n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        368,
+        733
+      ],
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 15,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {TFrontendView} TFrontendView\n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        735,
+        1105
+      ],
+      "loc": {
+        "start": {
+          "line": 17,
+          "column": 0
+        },
+        "end": {
+          "line": 23,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {TServerStatus} TServerStatus\n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        1107,
+        1477
+      ],
+      "loc": {
+        "start": {
+          "line": 25,
+          "column": 0
+        },
+        "end": {
+          "line": 31,
+          "column": 2
+        }
+      }
+    }
+  ],
+  "comments": [
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {TCopyParams} TCopyParams\n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        0,
+        366
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 7,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {MapDClient} MapDClient \n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        368,
+        733
+      ],
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 15,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {TFrontendView} TFrontendView\n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        735,
+        1105
+      ],
+      "loc": {
+        "start": {
+          "line": 17,
+          "column": 0
+        },
+        "end": {
+          "line": 23,
+          "column": 2
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n* The complete Triforce, or one or more components of the Triforce.\n* @typedef {TServerStatus} TServerStatus\n* @property {boolean} hasCourage - Indicates whether the Courage component is present.\n* @property {boolean} hasPower - Indicates whether the Power component is present.\n* @property {boolean} hasWisdom - Indicates whether the Wisdom component is present.\n",
+      "range": [
+        1107,
+        1477
+      ],
+      "loc": {
+        "start": {
+          "line": 25,
+          "column": 0
+        },
+        "end": {
+          "line": 31,
+          "column": 2
+        }
+      }
+    }
+  ]
+}
