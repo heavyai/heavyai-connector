@@ -483,6 +483,8 @@
 	      var isFrontendRenderingWithSync = !renderSpec && !callbacks;
 	      var curNonce = (this._nonce++).toString();
 				var conId = curNonce % this._numConnections;
+				if (renderSpec)
+					this._lastRenderCon = conId;
 
 	      try {
 	        if (isBackendRenderingWithAsync) {
