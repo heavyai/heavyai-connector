@@ -95,9 +95,13 @@
 	    this._client = null;
 	    this._sessionId = null;
 	    this._datumEnum = {};
-	    this._nonce = 0;
 	    this._logging = false;
 	    this._platform = "mapd";
+
+	    this._nonce = 0;
+	    this._numConnections = 0;
+			this._lastRenderCon = 0;
+
 
 	    // invoke initialization methods
 	    this.invertDatumTypes();
@@ -157,12 +161,45 @@
 	        this.disconnect();
 	      }
 
-	      var transportUrl = "http://" + this._host + ":" + this._port;
-	      var transport = new Thrift.Transport(transportUrl);
-	      var protocol = new Thrift.Protocol(transport);
+				var anyIsArray = Array.isArray(this._host) || Array.isArray(this._port) || Array.isArray(this._user) || Array.isArray(this._password) || Array.isArray(this._dbName);
+				var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
+				
+				// first check if only some of connection parameters are arrays and
+				// throw if so 
+				
+				if (anyIsArray && !allAreArrays) 
+					throw "All connection parameters must be arrays if any are arrays.";
 
-	      this._client = new MapDClient(protocol);
-	      this._sessionId = this._client.connect(this._user, this._password, this._dbName);
+				this._client = [];
+				this._sessionId = [];
+
+				if (allAreArrays) {
+					// now check to see if length of all arrays are the same and > 0
+					var hostLength = this._host.length;
+					if (hostLength < 1)
+						throw "Must have at least one server to connect to."; 
+					if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length)
+						throw "Array connection parameters must be of equal length.";
+
+
+					for (var h = 0; h < hostLength; h++) {
+						var transportUrl = "http://" + this._host[h] + ":" + this._port[h];
+						var transport = new Thrift.Transport(transportUrl);
+						var protocol = new Thrift.Protocol(transport);
+						var client = new MapDClient(protocol);
+						this._client.push(client);
+						this._sessionId.push(client.connect(this._user[h], this._password[h], this._dbName[h]));
+					}
+					this._numConnections = hostLength;
+				}
+				else {
+					var transportUrl = "http://" + this._host + ":" + this._port;
+					var transport = new Thrift.Transport(transportUrl);
+					var protocol = new Thrift.Protocol(transport);
+					this._client.push(new MapDClient(protocol));
+					this._sessionId.push(this._client.connect(this._user, this._password, this._dbName));
+					this._numConnections = 1;
+				}
 	      return this;
 	    }
 
@@ -251,7 +288,7 @@
 	    value: function getFrontendView(viewName) {
 	      var result = null;
 	      try {
-	        result = this._client.get_frontend_view(this._sessionId, viewName);
+	        result = this._client[0].get_frontend_view(this._sessionId[0], viewName);
 	      } catch (err) {
 	        console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
 	      }
@@ -282,7 +319,7 @@
 	    value: function getServerStatus() {
 	      var result = null;
 	      try {
-	        result = this._client.get_server_status();
+	        result = this._client[0].get_server_status();
 	      } catch (err) {
 	        console.log('ERROR: Could not get the server status. Check your connection and session id.', err);
 	      }
@@ -445,23 +482,24 @@
 	      var isBackendRenderingWithSync = renderSpec && !callbacks;
 	      var isFrontendRenderingWithSync = !renderSpec && !callbacks;
 	      var curNonce = (this._nonce++).toString();
+				var conId = curNonce % this._numConnections;
 
 	      try {
 	        if (isBackendRenderingWithAsync) {
 	          var processResults = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);
-	          this._client.render(this._sessionId, _query + ";", renderSpec, {}, {}, curNonce, processResults);
+	          this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isFrontendRenderingWithAsync) {
 	          var processResults = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);
-	          this._client.sql_execute(this._sessionId, _query + ";", columnarResults, curNonce, processResults);
+	          this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isBackendRenderingWithSync) {
-	          return this._client.render(this._sessionId, _query + ";", renderSpec, {}, {}, curNonce);
+	          return this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce);
 	        }
 	        if (isFrontendRenderingWithSync) {
-	          var _result = this._client.sql_execute(this._sessionId, _query + ";", columnarResults, curNonce);
+	          var _result = this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce);
 	          return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, _result); // undefined is callbacks slot
 	        }
 	      } catch (err) {
@@ -708,7 +746,10 @@
 	  }, {
 	    key: "processResults",
 	    value: function processResults(isImage, eliminateNullRows, query, callbacks, result) {
-	      if (this._logging && result.execution_time_ms) console.log(query + ": " + result.execution_time_ms + " ms");
+	      if (this._logging && result.execution_time_ms) {
+					var server = (parseInt(result.nonce) % this._numConnections) + 1;
+					console.log(query + " on Server " + server + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
+				}
 	      var hasCallback = typeof callbacks !== 'undefined';
 	      if (isImage) {
 	        if (hasCallback) {
@@ -748,7 +789,7 @@
 	    value: function getDatabases() {
 	      var databases = null;
 	      try {
-	        databases = this._client.get_databases();
+	        databases = this._client[0].get_databases();
 	        return databases.map(function (db, i) {
 	          return db.db_name;
 	        });
@@ -761,11 +802,11 @@
 	    value: function getTables() {
 	      var tabs = null;
 	      try {
-	        tabs = this._client.get_tables(this._sessionId);
+	        tabs = this._client[0].get_tables(this._sessionId[0]);
 	      } catch (err) {
 	        if (err.name == "ThriftException") {
 	          this.connect();
-	          tabs = this._client.get_tables(this._sessionId);
+	          tabs = this._client[0].get_tables(this._sessionId[0]);
 	        }
 	      }
 
@@ -789,7 +830,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName) {
-	      var fields = this._client.get_table_descriptor(this._sessionId, tableName);
+	      var fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
 	      var fieldsArray = [];
 	      // silly to change this from map to array
 	      // - then later it turns back to map
@@ -857,9 +898,9 @@
 	      var curNonce = (this._nonce++).toString();
 	      try {
 	        if (!callbacks) {
-	          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce));
+	          return this.processPixelResults(undefined, this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce));
 	        }
-	        this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
+	        this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
 	      } catch (err) {
 	        console.log(err);
 	        if (err.name == "ThriftException") {
