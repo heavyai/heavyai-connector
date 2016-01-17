@@ -513,7 +513,7 @@
 
     function processResults(isImage, eliminateNullRows, query, callbacks, result) {
       if (_logging && result.execution_time_ms)
-        console.log(query + ": " + result.execution_time_ms + " ms");
+        console.log(query + ": Execution time: " + result.execution_time_ms + " ms" + " Total time: " + result.total_time_ms + " ms");
       var hasCallback = typeof callbacks !== 'undefined';
       if (isImage) {
         if (hasCallback) {
