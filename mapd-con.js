@@ -87,8 +87,8 @@
 	    _classCallCheck(this, MapdCon);
 
 	    // Set up "private" variables and their defaults
-	    this._host = null;
-	    this._user = null;
+	    this._host = [];
+	    this._user = [];
 	    this._password = null;
 	    this._port = null;
 	    this._dbName = null;
@@ -184,21 +184,38 @@
 
 					for (var h = 0; h < hostLength; h++) {
 						var transportUrl = "http://" + this._host[h] + ":" + this._port[h];
+						try {
+							var transport = new Thrift.Transport(transportUrl);
+							var protocol = new Thrift.Protocol(transport);
+							var client = new MapDClient(protocol);
+							var sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
+							this._client.push(client);
+							this._sessionId.push(sessionId);
+						}
+						catch (err) {
+							console.error("Could not connect to " + this._host[h] + ":" + this._port[h]);
+						}
+					}
+					this._numConnections = this._client.length;
+					if (this._numConnections < 1)  // need at least one server to connect to
+						throw "Could not connect to any servers in list.";
+				}
+				else {
+					try {
+						var transportUrl = "http://" + this._host + ":" + this._port;
 						var transport = new Thrift.Transport(transportUrl);
 						var protocol = new Thrift.Protocol(transport);
 						var client = new MapDClient(protocol);
+						var sessionId = this._client.connect(this._user, this._password, this._dbName);
 						this._client.push(client);
-						this._sessionId.push(client.connect(this._user[h], this._password[h], this._dbName[h]));
+						this._sessionId.push(sessionId);
+						this._numConnections = 1;
 					}
-					this._numConnections = hostLength;
-				}
-				else {
-					var transportUrl = "http://" + this._host + ":" + this._port;
-					var transport = new Thrift.Transport(transportUrl);
-					var protocol = new Thrift.Protocol(transport);
-					this._client.push(new MapDClient(protocol));
-					this._sessionId.push(this._client.connect(this._user, this._password, this._dbName));
-					this._numConnections = 1;
+					catch (err) {
+						console.error("Could not connect to " + this._host + ":" + this._port); 
+						throw "Could not connect to server.";
+					}
+
 				}
 	      return this;
 	    }
@@ -506,6 +523,10 @@
 	        }
 	      } catch (err) {
 	        console.log(err);
+					// need to disable this connection
+
+
+
 	        throw err;
 	      }
 	    }
@@ -996,7 +1017,10 @@
 	      if (!arguments.length) {
 	        return this._host;
 	      }
-	      this._host = _host;
+				if (!Array.isArray(_host))
+					this._host = [_host];
+				else
+					this._host = _host;
 	      return this;
 	    }
 
@@ -1019,7 +1043,10 @@
 	      if (!arguments.length) {
 	        return this._port;
 	      }
-	      this._port = _port;
+				if (!Array.isArray(_port))
+					this._port = [_port];
+				else
+					this._port = _port;
 	      return this;
 	    }
 
@@ -1042,7 +1069,10 @@
 	      if (!arguments.length) {
 	        return this._user;
 	      }
-	      this._user = _user;
+				if (!Array.isArray(_user))
+					this._user = [_user];
+				else
+					this._user = _user;
 	      return this;
 	    }
 
@@ -1065,7 +1095,10 @@
 	      if (!arguments.length) {
 	        return this._password;
 	      }
-	      this._password = _password;
+				if (!Array.isArray(_password))
+					this._password = [_password];
+				else
+					this._password = _password;
 	      return this;
 	    }
 
@@ -1088,7 +1121,10 @@
 	      if (!arguments.length) {
 	        return this._dbName;
 	      }
-	      this._dbName = _dbName;
+				if (!Array.isArray(_dbName))
+					this._dbName = [_dbName];
+				else
+					this._dbName = _dbName;
 	      return this;
 	    }
 
