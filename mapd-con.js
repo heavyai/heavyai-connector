@@ -119,9 +119,17 @@
 	    this.setPlatform = this.platform;
 
 	    /** Deprecated */
-	    this.setUserAndPassword = function (newUser, newPassword) {
-	      _this._user = newUser;
-	      _this._password = newPassword;
+	    this.setUserAndPassword = function (_user, _password) {
+				if (!Array.isArray(_user))
+					this._user = [_user];
+				else
+					this._user = _user;
+
+				if (!Array.isArray(_password))
+					this._password = [_password];
+				else
+					this._password = _password;
+
 	      return _this;
 	    };
 
@@ -161,61 +169,40 @@
 	        this.disconnect();
 	      }
 
-				var anyIsArray = Array.isArray(this._host) || Array.isArray(this._port) || Array.isArray(this._user) || Array.isArray(this._password) || Array.isArray(this._dbName);
 				var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
+				if (!allAreArrays)
+					throw "All connection parameters must be arrays"; // should not throw now as we check parameter input and convert to arrays as needed 
 				
-				// first check if only some of connection parameters are arrays and
-				// throw if so 
-				
-				if (anyIsArray && !allAreArrays) 
-					throw "All connection parameters must be arrays if any are arrays.";
-
 				this._client = [];
 				this._sessionId = [];
 
-				if (allAreArrays) {
-					// now check to see if length of all arrays are the same and > 0
-					var hostLength = this._host.length;
-					if (hostLength < 1)
-						throw "Must have at least one server to connect to."; 
-					if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length)
-						throw "Array connection parameters must be of equal length.";
+				// now check to see if length of all arrays are the same and > 0
+				var hostLength = this._host.length;
+				if (hostLength < 1)
+					throw "Must have at least one server to connect to."; 
+				if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length)
+					throw "Array connection parameters must be of equal length.";
 
-
-					for (var h = 0; h < hostLength; h++) {
-						var transportUrl = "http://" + this._host[h] + ":" + this._port[h];
-						try {
-							var transport = new Thrift.Transport(transportUrl);
-							var protocol = new Thrift.Protocol(transport);
-							var client = new MapDClient(protocol);
-							var sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
-							this._client.push(client);
-							this._sessionId.push(sessionId);
-						}
-						catch (err) {
-							console.error("Could not connect to " + this._host[h] + ":" + this._port[h]);
-						}
-					}
-					this._numConnections = this._client.length;
-					if (this._numConnections < 1)  // need at least one server to connect to
-						throw "Could not connect to any servers in list.";
-				}
-				else {
+				for (var h = 0; h < hostLength; h++) {
+					var transportUrl = "http://" + this._host[h] + ":" + this._port[h];
 					try {
-						var transportUrl = "http://" + this._host + ":" + this._port;
 						var transport = new Thrift.Transport(transportUrl);
 						var protocol = new Thrift.Protocol(transport);
 						var client = new MapDClient(protocol);
-						var sessionId = this._client.connect(this._user, this._password, this._dbName);
+						var sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
 						this._client.push(client);
 						this._sessionId.push(sessionId);
-						this._numConnections = 1;
 					}
 					catch (err) {
-						console.error("Could not connect to " + this._host + ":" + this._port); 
-						throw "Could not connect to server.";
+						console.error("Could not connect to " + this._host[h] + ":" + this._port[h]);
 					}
-
+				}
+				this._numConnections = this._client.length;
+				if (this._numConnections < 1) {  // need at least one server to connect to
+					//clean up first
+					this._client = null;
+					this._sessionId = null;
+					throw "Could not connect to any servers in list.";
 				}
 	      return this;
 	    }
