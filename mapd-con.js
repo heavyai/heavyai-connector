@@ -480,16 +480,24 @@
 
 	  }, {
 	    key: "query",
-	    value: function query(_query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
-	      columnarResults = !columnarResults ? true : columnarResults; // make columnar results default if not specified
+	    value: function query(_query, options, callbacks) {
+				console.log(options);
+				var columnarResults = true;
+				var eliminateNullRows = false;
+				var renderSpec = null;
+				if (options) {
+					columnarResults = options.columnarResults ? options.columnarResults : true; // make columnar results default if not specified
+					eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
+					renderSpec = options.renderSpec ? options.renderSpec : undefined;
+				}
 	      var processResultsQuery = renderSpec ? 'render: ' + _query : _query; // format query for backend rendering if specified
-	      var isBackendRenderingWithAsync = renderSpec && callbacks;
-	      var isFrontendRenderingWithAsync = !renderSpec && callbacks;
-	      var isBackendRenderingWithSync = renderSpec && !callbacks;
+	      var isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
+	      var isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
+	      var isBackendRenderingWithSync = !!renderSpec && !callbacks;
 	      var isFrontendRenderingWithSync = !renderSpec && !callbacks;
 	      var curNonce = (this._nonce++).toString();
 				var conId = curNonce % this._numConnections;
-				if (renderSpec)
+				if (!!renderSpec)
 					this._lastRenderCon = conId;
 
 	      try {
