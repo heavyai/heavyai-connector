@@ -229,9 +229,11 @@
 	    key: "disconnect",
 	    value: function disconnect() {
 	      if (this._sessionId !== null) {
-	        this._client.disconnect(this._sessionId);
+					for (var c = 0; c < this._client.length; c++) 
+						this._client[c].disconnect(this._sessionId[c]);
 	        this._sessionId = null;
 	        this._client = null;
+					this._numConnections = 0;
 	      }
 	      return this;
 	    }
@@ -509,15 +511,16 @@
 	          return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, _result); // undefined is callbacks slot
 	        }
 	      } catch (err) {
-	        console.log(err);
-					// need to disable this connection
-
-
-
-	        throw err;
+						console.error(err);
+						if (err.name == "NetworkError" || err.name == "TMapDException") {
+							this.removeConnection(conId);
+							if (this._numConnections == 0) 
+								throw "No remaining database connections";
+							this.query(_query, columnarResults, eliminateNullRows, renderSpec, callbacks);
+							
+						}
+					}
 	      }
-	    }
-
 	    /**
 	     * Because it is inefficient for the server to return a row-based
 	     * data structure, it is better to process the column-based results into a row-based
@@ -527,6 +530,16 @@
 	     * @param {Boolean} eliminateNullRows
 	     * @returns {Object} processedResults 
 	     */
+
+		}, {
+			key: "removeConnection",
+			value: function removeConnection(conId) {
+				if (conId < 0 || conId > this.numConnections) 
+					throw "Remove connection id invalid"
+				this._client.splice(conId, 1);
+				this._sessionId.splice(conId, 1);
+				this._numConnections--;
+			}
 
 	  }, {
 	    key: "processColumnarResults",
