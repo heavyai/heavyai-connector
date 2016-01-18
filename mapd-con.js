@@ -101,6 +101,9 @@
 	    this._nonce = 0;
 	    this._numConnections = 0;
 			this._lastRenderCon = 0;
+			this.queryTimes = { };
+			this.serverQueueTimes = [];
+			this.DEFAULT_QUERY_TIME = 50;
 
 
 	    // invoke initialization methods
@@ -204,6 +207,7 @@
 					this._sessionId = null;
 					throw "Could not connect to any servers in list.";
 				}
+				this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
 	      return this;
 	    }
 
@@ -491,42 +495,50 @@
 					renderSpec = options.renderSpec ? options.renderSpec : undefined;
 					queryId = options.queryId ? options.queryId : null;
 				}
-				console.log(queryId);
 	      var processResultsQuery = renderSpec ? 'render: ' + _query : _query; // format query for backend rendering if specified
 
 	      var isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
 	      var isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
 	      var isBackendRenderingWithSync = !!renderSpec && !callbacks;
 	      var isFrontendRenderingWithSync = !renderSpec && !callbacks;
+				var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
+
 	      var curNonce = (this._nonce++).toString();
-				var conId = curNonce % this._numConnections;
+
+        var conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
+				//var conId = curNonce % this._numConnections;
 				if (!!renderSpec)
 					this._lastRenderCon = conId;
+
+				this.serverQueueTimes[conId] += lastQueryTime;
 
 				var processResultsOptions = {
 					isImage: !!renderSpec,
 					eliminateNullRows: eliminateNullRows,
 					query: processResultsQuery,
+					queryId: queryId,
+					conId: conId,
+					estimatedQueryTime: lastQueryTime
 				};
 
-
+				var processResults = null;
 	      try {
 	        if (isBackendRenderingWithAsync) {
-	          var processResults = this.processResults.bind(this, processResultsOptions, callbacks);
+	          processResults = this.processResults.bind(this, processResultsOptions, callbacks);
 	          this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isFrontendRenderingWithAsync) {
-	          var processResults = this.processResults.bind(this, options, callbacks);
+	          processResults = this.processResults.bind(this, processResultsOptions, callbacks);
 	          this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isBackendRenderingWithSync) {
-	          return this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce);
+	          return this.processResults(processResultsOptions, null, this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce));
 	        }
 	        if (isFrontendRenderingWithSync) {
 	          var _result = this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce);
-	          return this.processResults(options, null, _result); // null is callbacks slot
+	          return this.processResults(processResultsOptions, null, _result); // null is callbacks slot
 	        }
 	      } catch (err) {
 						console.error(err);
@@ -790,12 +802,23 @@
 				var isImage = false;
 				var eliminateNullRows = false;
 				var query = null;
+				var queryId = null;
+				var conId = null;
+				var estimatedQueryTime = null;
+
+
 				if (typeof options !== 'undefined') {
 					isImage = options.isImage ? options.isImage : false;
 					eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
 					query = options.query ? options.query : null;
+					queryId = options.queryId ? options.queryId : null; 
+					conId = typeof options.conId !== 'undefined' ? options.conId : null;
+					estimatedQueryTime = typeof options.estimatedQueryTime !== 'undefined' ? options.estimatedQueryTime : null;
 				}
-
+				if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
+					this.serverQueueTimes[conId] -= estimatedQueryTime; 
+					this.queryTimes[queryId] = result.execution_time_ms;
+				}
 
 	      if (this._logging && result.execution_time_ms) {
 					var server = (parseInt(result.nonce) % this._numConnections) + 1;
@@ -974,6 +997,7 @@
 					isImage: false,
 					eliminateNullRows: false,
 					query: "pixel request",
+					queryId: -2
 				};
 	      for (var p = 0; p < numPixels; p++) {
 	        results[p].row_set = this.processResults(processResultsOptions, null, results[p]);
