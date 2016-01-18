@@ -481,16 +481,19 @@
 	  }, {
 	    key: "query",
 	    value: function query(_query, options, callbacks) {
-				console.log(options);
 				var columnarResults = true;
 				var eliminateNullRows = false;
 				var renderSpec = null;
+				var queryId = null;
 				if (options) {
 					columnarResults = options.columnarResults ? options.columnarResults : true; // make columnar results default if not specified
 					eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
 					renderSpec = options.renderSpec ? options.renderSpec : undefined;
+					queryId = options.queryId ? options.queryId : null;
 				}
+				console.log(queryId);
 	      var processResultsQuery = renderSpec ? 'render: ' + _query : _query; // format query for backend rendering if specified
+
 	      var isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
 	      var isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
 	      var isBackendRenderingWithSync = !!renderSpec && !callbacks;
@@ -500,14 +503,21 @@
 				if (!!renderSpec)
 					this._lastRenderCon = conId;
 
+				var processResultsOptions = {
+					isImage: !!renderSpec,
+					eliminateNullRows: eliminateNullRows,
+					query: processResultsQuery,
+				};
+
+
 	      try {
 	        if (isBackendRenderingWithAsync) {
-	          var processResults = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);
+	          var processResults = this.processResults.bind(this, processResultsOptions, callbacks);
 	          this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isFrontendRenderingWithAsync) {
-	          var processResults = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);
+	          var processResults = this.processResults.bind(this, options, callbacks);
 	          this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce, processResults);
 	          return curNonce;
 	        }
@@ -516,7 +526,7 @@
 	        }
 	        if (isFrontendRenderingWithSync) {
 	          var _result = this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce);
-	          return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, _result); // undefined is callbacks slot
+	          return this.processResults(options, null, _result); // null is callbacks slot
 	        }
 	      } catch (err) {
 						console.error(err);
@@ -524,7 +534,7 @@
 							this.removeConnection(conId);
 							if (this._numConnections == 0) 
 								throw "No remaining database connections";
-							this.query(_query, columnarResults, eliminateNullRows, renderSpec, callbacks);
+							this.query(_query, options, callbacks);
 							
 						}
 					}
@@ -776,12 +786,22 @@
 	    }
 	  }, {
 	    key: "processResults",
-	    value: function processResults(isImage, eliminateNullRows, query, callbacks, result) {
+	    value: function processResults(options, callbacks, result) {
+				var isImage = false;
+				var eliminateNullRows = false;
+				var query = null;
+				if (typeof options !== 'undefined') {
+					isImage = options.isImage ? options.isImage : false;
+					eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
+					query = options.query ? options.query : null;
+				}
+
+
 	      if (this._logging && result.execution_time_ms) {
 					var server = (parseInt(result.nonce) % this._numConnections) + 1;
 					console.log(query + " on Server " + server + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
 				}
-	      var hasCallback = typeof callbacks !== 'undefined';
+	      var hasCallback = !!callbacks; 
 	      if (isImage) {
 	        if (hasCallback) {
 	          callbacks.pop()(result, callbacks);
@@ -950,8 +970,13 @@
 	      var results = results.pixel_rows;
 	      var numPixels = results.length;
 	      var resultsMap = {};
+				var processResultsOptions = {
+					isImage: false,
+					eliminateNullRows: false,
+					query: "pixel request",
+				};
 	      for (var p = 0; p < numPixels; p++) {
-	        results[p].row_set = this.processResults(false, false, "pixel request", undefined, results[p]);
+	        results[p].row_set = this.processResults(processResultsOptions, null, results[p]);
 	      }
 	      if (!callbacks) {
 	        return results;
