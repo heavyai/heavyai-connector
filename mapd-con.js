@@ -97,6 +97,7 @@
 	    this._datumEnum = {};
 	    this._logging = false;
 	    this._platform = "mapd";
+			this._balanceStrategy = "adaptive";
 
 	    this._nonce = 0;
 	    this._numConnections = 0;
@@ -241,7 +242,15 @@
 	      }
 	      return this;
 	    }
-
+		} , {
+	    key: "balanceStrategy",
+	    value: function balanceStrategy(_balanceStrategy) {
+				if (!arguments.length)
+					return this._balanceStrategy;
+				this._balanceStrategy = _balanceStrategy;
+				return this;
+			}
+	    
 	    /**
 	     * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
 	     * These objects contain a value for the <code>view_name</code> property,
@@ -266,7 +275,7 @@
 	    value: function getFrontendViews() {
 	      var result = null;
 	      try {
-	        result = this._client.get_frontend_views(this._sessionId);
+	        result = this._client[0].get_frontend_views(this._sessionId[0]);
 	      } catch (err) {
 	        console.log('ERROR: Could not get frontend views from backend. Check the session id.', err);
 	      }
@@ -358,11 +367,8 @@
 	  }, {
 	    key: "createFrontendView",
 	    value: function createFrontendView(viewName, viewState, imageHash) {
-	      try {
-	        this._client.create_frontend_view(this._sessionId, viewName, viewState, imageHash);
-	      } catch (err) {
-	        console.log('ERROR: Could not create the new frontend view. Check your session id.', err);
-	      }
+				for (var c = 0; c < this._numConnections; c++) 
+					this._client[c].create_frontend_view(this._sessionId[c], viewName, viewState, imageHash);
 	      return this;
 	    }
 
@@ -424,12 +430,12 @@
 	    value: function getLinkView(link) {
 	      var result = null;
 	      try {
-	        result = this._client.get_link_view(this._sessionId, link);
+	        result = this._client[0].get_link_view(this._sessionId[0], link);
 	      } catch (err) {
 	        console.log(err);
 	        if (err.name == "ThriftException") {
 	          this.connect();
-	          result = this._client.get_link_view(sessionId, link);
+	          result = this._client[0].get_link_view(this._sessionId[0], link);
 	        }
 	      }
 	      return result;
@@ -465,7 +471,7 @@
 	    value: function detectColumnTypes(fileName, copyParams, callback) {
 	      copyParams.delimiter = copyParams.delimiter || "";
 	      try {
-	        this._client.detect_column_types(this._sessionId, fileName, copyParams, callback);
+	        this._client[0].detect_column_types(this._sessionId[0], fileName, copyParams, callback);
 	      } catch (err) {
 	        console.log(err);
 	      }
@@ -504,9 +510,13 @@
 				var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
 
 	      var curNonce = (this._nonce++).toString();
-
-        var conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
-				//var conId = curNonce % this._numConnections;
+				var conId = null;
+				if (this._balanceStrategy === "adaptive") {
+					conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
+				}
+				else {
+					conId = curNonce % this._numConnections;
+				}
 				if (!!renderSpec)
 					this._lastRenderCon = conId;
 
@@ -921,30 +931,18 @@
 	  }, {
 	    key: "createTable",
 	    value: function createTable(tableName, rowDesc, callback) {
-	      try {
-	        result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
-	      } catch (err) {
-	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
-	        }
-	      }
+				var result = null; 
+				for (var c = 0; c < this._numConnections; c++) 
+					result = this._client[c].send_create_table(this._sessionId[c], tableName, rowDesc, callback);
 	      return result;
 	    }
 	  }, {
 	    key: "importTable",
 	    value: function importTable(tableName, fileName, copyParams, callback) {
 	      copyParams.delimiter = copyParams.delimiter || "";
-	      try {
-	        result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
-	      } catch (err) {
-	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
-	        }
-	      }
+				var result = null; 
+				for (var c = 0; c < this._numConnections; c++) 
+	        result = this._client[c].send_import_table(this._sessionId[c], tableName, fileName, copyParams, callback);
 	      return result;
 	    }
 	  }, {
@@ -952,15 +950,7 @@
 	    value: function importTableStatus(importId, callback) {
 	      callback = callback || null;
 	      var import_status = null;
-	      try {
-	        import_status = this._client.import_table_status(this._sessionId, importId, callback);
-	      } catch (err) {
-	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          import_status = this._client.import_table_status(this._sessionId, importId, callback);
-	        }
-	      }
+				import_status = this._client[0].import_table_status(this._sessionId[0], importId, callback);
 	      return import_status;
 	    }
 	  }, {
