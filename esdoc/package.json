@@ -1,6 +1,6 @@
 {
   "name": "@mapd/mapd-con",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "An npm module containing the MapDCon library",
   "main": "mapd-con.js",
   "watch": {
@@ -10,7 +10,7 @@
     "build": "webpack; npm run generate-docs",
     "watch": "npm-watch",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
-    "test": "bash ./scripts/test.sh"
+    "test": "node_modules/.bin/mocha ./test"
   },
   "repository": {
     "type": "git",
