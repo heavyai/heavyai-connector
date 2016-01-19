@@ -1,0 +1,24 @@
+{
+  "coverage": "74.41%",
+  "expectCount": 43,
+  "actualCount": 32,
+  "files": {
+    "src/mapd-con-es6.js": {
+      "expectCount": 43,
+      "actualCount": 32,
+      "undocumentLines": [
+        707,
+        691,
+        752,
+        662,
+        789,
+        721,
+        736,
+        685,
+        994,
+        776,
+        611
+      ]
+    }
+  }
+}
