@@ -95,9 +95,15 @@
 	    this._client = null;
 	    this._sessionId = null;
 	    this._datumEnum = {};
-	    this._nonce = 0;
 	    this._logging = false;
 	    this._platform = "mapd";
+	    this._nonce = 0;
+	    this._balanceStrategy = "adaptive";
+	    this._numConnections = 0;
+	    this._lastRenderCon = 0;
+	    this.queryTimes = {};
+	    this.serverQueueTimes = [];
+	    this.DEFAULT_QUERY_TIME = 50;
 
 	    // invoke initialization methods
 	    this.invertDatumTypes();
@@ -115,9 +121,11 @@
 	    this.setPlatform = this.platform;
 
 	    /** Deprecated */
-	    this.setUserAndPassword = function (newUser, newPassword) {
-	      _this._user = newUser;
-	      _this._password = newPassword;
+	    this.setUserAndPassword = function (user, password) {
+	      if (!Array.isArray(user)) _this._user = [user];else _this._user = user;
+
+	      if (!Array.isArray(password)) _this._password = [password];else _this._password = password;
+
 	      return _this;
 	    };
 
@@ -156,13 +164,40 @@
 	      if (this._sessionId) {
 	        this.disconnect();
 	      }
+	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
+	      if (!allAreArrays) throw "All connection parameters must be arrays"; // should not throw now as we check parameter input and convert to arrays as needed
 
-	      var transportUrl = "http://" + this._host + ":" + this._port;
-	      var transport = new Thrift.Transport(transportUrl);
-	      var protocol = new Thrift.Protocol(transport);
+	      this._client = [];
+	      this._sessionId = [];
 
-	      this._client = new MapDClient(protocol);
-	      this._sessionId = this._client.connect(this._user, this._password, this._dbName);
+	      // now check to see if length of all arrays are the same and > 0
+	      var hostLength = this._host.length;
+	      if (hostLength < 1) throw "Must have at least one server to connect to.";
+	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) throw "Array connection parameters must be of equal length.";
+
+	      for (var h = 0; h < hostLength; h++) {
+	        var transportUrl = "http://" + this._host[h] + ":" + this._port[h];
+	        try {
+	          var transport = new Thrift.Transport(transportUrl);
+	          var protocol = new Thrift.Protocol(transport);
+	          var client = new MapDClient(protocol);
+	          var sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
+	          this._client.push(client);
+	          this._sessionId.push(sessionId);
+	        } catch (err) {
+	          console.error("Could not connect to " + this._host[h] + ":" + this._port[h]);
+	        }
+	      }
+	      this._numConnections = this._client.length;
+	      if (this._numConnections < 1) {
+	        // need at least one server to connect to
+	        //clean up first
+	        this._client = null;
+	        this._sessionId = null;
+	        throw "Could not connect to any servers in list.";
+	      }
+	      this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf, 0);
+
 	      return this;
 	    }
 
@@ -188,10 +223,19 @@
 	    key: "disconnect",
 	    value: function disconnect() {
 	      if (this._sessionId !== null) {
-	        this._client.disconnect(this._sessionId);
-	        this._sessionId = null;
+	        for (var c = 0; c < this._client.length; c++) {
+	          this._client[c].disconnect(this._sessionId[c]);
+	        }this._sessionId = null;
 	        this._client = null;
+	        this._numConnections = 0;
 	      }
+	      return this;
+	    }
+	  }, {
+	    key: "balanceStrategy",
+	    value: function balanceStrategy(_balanceStrategy) {
+	      if (!arguments.length) return this._balanceStrategy;
+	      this._balanceStrategy = _balanceStrategy;
 	      return this;
 	    }
 
@@ -219,7 +263,7 @@
 	    value: function getFrontendViews() {
 	      var result = null;
 	      try {
-	        result = this._client.get_frontend_views(this._sessionId);
+	        result = this._client[0].get_frontend_views(this._sessionId[0]);
 	      } catch (err) {
 	        console.log('ERROR: Could not get frontend views from backend. Check the session id.', err);
 	      }
@@ -251,7 +295,7 @@
 	    value: function getFrontendView(viewName) {
 	      var result = null;
 	      try {
-	        result = this._client.get_frontend_view(this._sessionId, viewName);
+	        result = this._client[0].get_frontend_view(this._sessionId[0], viewName);
 	      } catch (err) {
 	        console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
 	      }
@@ -282,7 +326,7 @@
 	    value: function getServerStatus() {
 	      var result = null;
 	      try {
-	        result = this._client.get_server_status();
+	        result = this._client[0].get_server_status();
 	      } catch (err) {
 	        console.log('ERROR: Could not get the server status. Check your connection and session id.', err);
 	      }
@@ -312,7 +356,10 @@
 	    key: "createFrontendView",
 	    value: function createFrontendView(viewName, viewState, imageHash) {
 	      try {
-	        this._client.create_frontend_view(this._sessionId, viewName, viewState, imageHash);
+	        for (var c = 0; c < this._numConnections; c++) {
+	          // do we want to try each one individually so if we fail we keep going?
+	          this._client[c].create_frontend_view(this._sessionId[c], viewName, viewState, imageHash);
+	        }
 	      } catch (err) {
 	        console.log('ERROR: Could not create the new frontend view. Check your session id.', err);
 	      }
@@ -377,13 +424,9 @@
 	    value: function getLinkView(link) {
 	      var result = null;
 	      try {
-	        result = this._client.get_link_view(this._sessionId, link);
+	        result = this._client[0].get_link_view(this._sessionId[0], link);
 	      } catch (err) {
 	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          result = this._client.get_link_view(sessionId, link);
-	        }
 	      }
 	      return result;
 	    }
@@ -418,7 +461,7 @@
 	    value: function detectColumnTypes(fileName, copyParams, callback) {
 	      copyParams.delimiter = copyParams.delimiter || "";
 	      try {
-	        this._client.detect_column_types(this._sessionId, fileName, copyParams, callback);
+	        this._client[0].detect_column_types(this._sessionId[0], fileName, copyParams, callback);
 	      } catch (err) {
 	        console.log(err);
 	      }
@@ -437,37 +480,81 @@
 
 	  }, {
 	    key: "query",
-	    value: function query(_query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
-	      columnarResults = !columnarResults ? true : columnarResults; // make columnar results default if not specified
+	    value: function query(_query, options, callbacks) {
+
+	      var columnarResults = true;
+	      var eliminateNullRows = false;
+	      var renderSpec = null;
+	      var queryId = null;
+	      if (options) {
+	        columnarResults = options.columnarResults ? options.columnarResults : true; // make columnar results default if not specified
+	        eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
+	        renderSpec = options.renderSpec ? options.renderSpec : undefined;
+	        queryId = options.queryId ? options.queryId : null;
+	      }
 	      var processResultsQuery = renderSpec ? 'render: ' + _query : _query; // format query for backend rendering if specified
-	      var isBackendRenderingWithAsync = renderSpec && callbacks;
-	      var isFrontendRenderingWithAsync = !renderSpec && callbacks;
-	      var isBackendRenderingWithSync = renderSpec && !callbacks;
+	      var isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
+	      var isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
+	      var isBackendRenderingWithSync = !!renderSpec && !callbacks;
 	      var isFrontendRenderingWithSync = !renderSpec && !callbacks;
+	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
+
 	      var curNonce = (this._nonce++).toString();
 
+	      var conId = null;
+	      if (this._balanceStrategy === "adaptive") {
+	        conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
+	      } else {
+	        conId = curNonce % this._numConnections;
+	      }
+	      if (!!renderSpec) this._lastRenderCon = conId;
+
+	      this.serverQueueTimes[conId] += lastQueryTime;
+
+	      var processResultsOptions = {
+	        isImage: !!renderSpec,
+	        eliminateNullRows: eliminateNullRows,
+	        query: processResultsQuery,
+	        queryId: queryId,
+	        conId: conId,
+	        estimatedQueryTime: lastQueryTime
+	      };
+
+	      var processResults = null;
 	      try {
 	        if (isBackendRenderingWithAsync) {
-	          var processResults = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);
-	          this._client.render(this._sessionId, _query + ";", renderSpec, {}, {}, curNonce, processResults);
+	          processResults = this.processResults.bind(this, processResultsOptions, callbacks);
+	          this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isFrontendRenderingWithAsync) {
-	          var processResults = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);
-	          this._client.sql_execute(this._sessionId, _query + ";", columnarResults, curNonce, processResults);
+	          processResults = this.processResults.bind(this, processResultsOptions, callbacks);
+	          this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isBackendRenderingWithSync) {
-	          return this._client.render(this._sessionId, _query + ";", renderSpec, {}, {}, curNonce);
+	          return this.processResults(processResultsOptions, null, this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce));
 	        }
 	        if (isFrontendRenderingWithSync) {
-	          var _result = this._client.sql_execute(this._sessionId, _query + ";", columnarResults, curNonce);
-	          return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, _result); // undefined is callbacks slot
+	          var _result = this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce);
+	          return this.processResults(processResultsOptions, null, _result); // null is callbacks slot
 	        }
 	      } catch (err) {
-	        console.log(err);
-	        throw err;
+	        console.error(err);
+	        if (err.name == "NetworkError" || err.name == "TMapDException") {
+	          this.removeConnection(conId);
+	          if (this._numConnections == 0) throw "No remaining database connections";
+	          this.query(_query, options, callbacks);
+	        }
 	      }
+	    }
+	  }, {
+	    key: "removeConnection",
+	    value: function removeConnection(conId) {
+	      if (conId < 0 || conId >= this.numConnections) throw "Remove connection id invalid";
+	      this._client.splice(conId, 1);
+	      this._sessionId.splice(conId, 1);
+	      this._numConnections--;
 	    }
 
 	    /**
@@ -707,9 +794,34 @@
 	    }
 	  }, {
 	    key: "processResults",
-	    value: function processResults(isImage, eliminateNullRows, query, callbacks, result) {
-	      if (this._logging && result.execution_time_ms) console.log(query + ": " + result.execution_time_ms + " ms");
-	      var hasCallback = typeof callbacks !== 'undefined';
+	    value: function processResults(options, callbacks, result) {
+
+	      var isImage = false;
+	      var eliminateNullRows = false;
+	      var query = null;
+	      var queryId = null;
+	      var conId = null;
+	      var estimatedQueryTime = null;
+
+	      if (typeof options !== 'undefined') {
+	        isImage = options.isImage ? options.isImage : false;
+	        eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
+	        query = options.query ? options.query : null;
+	        queryId = options.queryId ? options.queryId : null;
+	        conId = typeof options.conId !== 'undefined' ? options.conId : null;
+	        estimatedQueryTime = typeof options.estimatedQueryTime !== 'undefined' ? options.estimatedQueryTime : null;
+	      }
+	      if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
+	        this.serverQueueTimes[conId] -= estimatedQueryTime;
+	        this.queryTimes[queryId] = result.execution_time_ms;
+	      }
+
+	      if (this._logging && result.execution_time_ms) {
+	        var server = parseInt(result.nonce) % this._numConnections + 1;
+	        console.log(query + " on Server " + server + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
+	      }
+	      var hasCallback = !!callbacks;
+
 	      if (isImage) {
 	        if (hasCallback) {
 	          callbacks.pop()(result, callbacks);
@@ -748,12 +860,13 @@
 	    value: function getDatabases() {
 	      var databases = null;
 	      try {
-	        databases = this._client.get_databases();
+	        databases = this._client[0].get_databases();
 	        return databases.map(function (db, i) {
 	          return db.db_name;
 	        });
 	      } catch (err) {
-	        console.log('ERROR: Could not get databases from backend. Check the session id.', err);
+	        console.error('ERROR: Could not get databases from backend. Check the session id.', err);
+	        throw err;
 	      }
 	    }
 	  }, {
@@ -761,12 +874,10 @@
 	    value: function getTables() {
 	      var tabs = null;
 	      try {
-	        tabs = this._client.get_tables(this._sessionId);
+	        tabs = this._client[0].get_tables(this._sessionId[0]);
 	      } catch (err) {
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          tabs = this._client.get_tables(this._sessionId);
-	        }
+	        console.error('ERROR: Could not get tables from backend', err);
+	        throw err;
 	      }
 
 	      var numTables = tabs.length;
@@ -789,7 +900,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName) {
-	      var fields = this._client.get_table_descriptor(this._sessionId, tableName);
+	      var fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
 	      var fieldsArray = [];
 	      // silly to change this from map to array
 	      // - then later it turns back to map
@@ -806,14 +917,14 @@
 	  }, {
 	    key: "createTable",
 	    value: function createTable(tableName, rowDesc, callback) {
+	      var result = null;
 	      try {
-	        result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
-	      } catch (err) {
-	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
+	        for (var c = 0; c < this._numConnections; c++) {
+	          result = this._client[c].send_create_table(this._sessionId[c], tableName, rowDesc, callback);
 	        }
+	      } catch (err) {
+	        console.error('ERROR: Could not create table', err);
+	        throw err;
 	      }
 	      return result;
 	    }
@@ -821,14 +932,14 @@
 	    key: "importTable",
 	    value: function importTable(tableName, fileName, copyParams, callback) {
 	      copyParams.delimiter = copyParams.delimiter || "";
+	      var result = null;
 	      try {
-	        result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
-	      } catch (err) {
-	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
+	        for (var c = 0; c < this._numConnections; c++) {
+	          result = this._client[c].send_import_table(this._sessionId[c], tableName, fileName, copyParams, callback);
 	        }
+	      } catch (err) {
+	        console.error('ERROR: Could not import table', err);
+	        throw err;
 	      }
 	      return result;
 	    }
@@ -838,13 +949,10 @@
 	      callback = callback || null;
 	      var import_status = null;
 	      try {
-	        import_status = this._client.import_table_status(this._sessionId, importId, callback);
+	        import_status = this._client[0].import_table_status(this._sessionId[0], importId, callback);
 	      } catch (err) {
-	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          import_status = this._client.import_table_status(this._sessionId, importId, callback);
-	        }
+	        console.error('ERROR: Could not retrieve import status', err);
+	        throw err;
 	      }
 	      return import_status;
 	    }
@@ -857,18 +965,12 @@
 	      var curNonce = (this._nonce++).toString();
 	      try {
 	        if (!callbacks) {
-	          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce));
+	          return this.processPixelResults(undefined, this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce));
 	        }
-	        this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
+	        this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
 	      } catch (err) {
-	        console.log(err);
-	        if (err.name == "ThriftException") {
-	          this.connect();
-	          if (!callbacks) {
-	            return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce));
-	          }
-	          this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
-	        }
+	        console.error('Could not get rows for pixels', err);
+	        throw err;
 	      }
 	      return curNonce;
 	    }
@@ -878,8 +980,14 @@
 	      var results = results.pixel_rows;
 	      var numPixels = results.length;
 	      var resultsMap = {};
+	      var processResultsOptions = {
+	        isImage: false,
+	        eliminateNullRows: false,
+	        query: "pixel request",
+	        queryId: -2
+	      };
 	      for (var p = 0; p < numPixels; p++) {
-	        results[p].row_set = this.processResults(false, false, "pixel request", undefined, results[p]);
+	        results[p].row_set = this.processResults(processResultsOptions, null, results[p]);
 	      }
 	      if (!callbacks) {
 	        return results;
@@ -916,23 +1024,13 @@
 
 	  }, {
 	    key: "sessionId",
-	    value: function (_sessionId) {
-	      function sessionId(_x) {
-	        return _sessionId.apply(this, arguments);
-	      }
-
-	      sessionId.toString = function () {
-	        return _sessionId.toString();
-	      };
-
-	      return sessionId;
-	    }(function (sessionId) {
+	    value: function sessionId(_sessionId) {
 	      if (!arguments.length) {
 	        return this._sessionId;
 	      }
-	      this._sessionId = sessionId;
+	      this._sessionId = _sessionId;
 	      return this;
-	    })
+	    }
 
 	    /**
 	     * Get or set the connection server hostname. This is is typically the first method called after instantiating a new MapdCon.
@@ -953,7 +1051,7 @@
 	      if (!arguments.length) {
 	        return this._host;
 	      }
-	      this._host = _host;
+	      if (!Array.isArray(_host)) this._host = [_host];else this._host = _host;
 	      return this;
 	    }
 
@@ -976,7 +1074,7 @@
 	      if (!arguments.length) {
 	        return this._port;
 	      }
-	      this._port = _port;
+	      if (!Array.isArray(_port)) this._port = [_port];else this._port = _port;
 	      return this;
 	    }
 
@@ -999,7 +1097,7 @@
 	      if (!arguments.length) {
 	        return this._user;
 	      }
-	      this._user = _user;
+	      if (!Array.isArray(_user)) this._user = [_user];else this._user = _user;
 	      return this;
 	    }
 
@@ -1022,7 +1120,7 @@
 	      if (!arguments.length) {
 	        return this._password;
 	      }
-	      this._password = _password;
+	      if (!Array.isArray(_password)) this._password = [_password];else this._password = _password;
 	      return this;
 	    }
 
@@ -1045,7 +1143,7 @@
 	      if (!arguments.length) {
 	        return this._dbName;
 	      }
-	      this._dbName = _dbName;
+	      if (!Array.isArray(_dbName)) this._dbName = [_dbName];else this._dbName = _dbName;
 	      return this;
 	    }
 
@@ -1067,7 +1165,7 @@
 	    key: "logging",
 	    value: function logging(_logging) {
 	      if (!arguments.length) {
-	        return this._logging;
+	        return this.logging;
 	      }
 	      this._logging = _logging;
 	      return this;

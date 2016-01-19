@@ -348,6 +348,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/mapd-con-es6.js~mapdcon#default_query_time",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-member-DEFAULT_QUERY_TIME",
+    "src/mapd-con-es6.js~MapdCon#DEFAULT_QUERY_TIME",
+    "member"
+  ],
+  [
+    "src/mapd-con-es6.js~mapdcon#balancestrategy",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-method-balanceStrategy",
+    "src/mapd-con-es6.js~MapdCon#balanceStrategy",
+    "method"
+  ],
+  [
     "src/mapd-con-es6.js~mapdcon#client",
     "class/src/mapd-con-es6.js~MapdCon.html#instance-method-client",
     "src/mapd-con-es6.js~MapdCon#client",
@@ -549,6 +561,24 @@ window.esdocSearchIndex = [
     "src/mapd-con-es6.js~mapdcon#queryasync",
     "class/src/mapd-con-es6.js~MapdCon.html#instance-member-queryAsync",
     "src/mapd-con-es6.js~MapdCon#queryAsync",
+    "member"
+  ],
+  [
+    "src/mapd-con-es6.js~mapdcon#querytimes",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-member-queryTimes",
+    "src/mapd-con-es6.js~MapdCon#queryTimes",
+    "member"
+  ],
+  [
+    "src/mapd-con-es6.js~mapdcon#removeconnection",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-method-removeConnection",
+    "src/mapd-con-es6.js~MapdCon#removeConnection",
+    "method"
+  ],
+  [
+    "src/mapd-con-es6.js~mapdcon#serverqueuetimes",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-member-serverQueueTimes",
+    "src/mapd-con-es6.js~MapdCon#serverQueueTimes",
     "member"
   ],
   [

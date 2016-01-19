@@ -76,9 +76,15 @@ class MapdCon {
     this._client = null;
     this._sessionId = null;
     this._datumEnum = {};
-    this._nonce = 0;
     this._logging = false;
     this._platform = &quot;mapd&quot;;
+    this._nonce = 0;
+		this._balanceStrategy = &quot;adaptive&quot;;
+	  this._numConnections = 0;
+		this._lastRenderCon = 0;
+		this.queryTimes = { };
+		this.serverQueueTimes = [];
+		this.DEFAULT_QUERY_TIME = 50;
 
     // invoke initialization methods
     this.invertDatumTypes();
@@ -96,9 +102,17 @@ class MapdCon {
     this.setPlatform = this.platform;
 
     /** Deprecated */
-    this.setUserAndPassword = (newUser, newPassword) =&gt; {
-      this._user = newUser;
-      this._password = newPassword;
+    this.setUserAndPassword = (user, password) =&gt; {
+      if (!Array.isArray(user))
+        this._user = [user];
+      else
+        this._user = user;
+
+      if (!Array.isArray(password))
+        this._password = [password];
+      else
+        this._password = password;
+
       return this;
     }
 
@@ -134,13 +148,43 @@ class MapdCon {
     if(this._sessionId){
       this.disconnect();
     }
+    let allAreArrays = Array.isArray(this._host) &amp;&amp; Array.isArray(this._port) &amp;&amp; Array.isArray(this._user) &amp;&amp; Array.isArray(this._password) &amp;&amp; Array.isArray(this._dbName);
+    if (!allAreArrays)
+            throw &quot;All connection parameters must be arrays&quot;; // should not throw now as we check parameter input and convert to arrays as needed 
+    
+    this._client = [];
+    this._sessionId = [];
 
-    let transportUrl = &quot;http://&quot; + this._host + &quot;:&quot; + this._port;
-    let transport = new Thrift.Transport(transportUrl);
-    let protocol = new Thrift.Protocol(transport);
+    // now check to see if length of all arrays are the same and &gt; 0
+    let hostLength = this._host.length;
+    if (hostLength &lt; 1)
+            throw &quot;Must have at least one server to connect to.&quot;; 
+    if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length)
+      throw &quot;Array connection parameters must be of equal length.&quot;;
 
-    this._client = new MapDClient(protocol);
-    this._sessionId = this._client.connect(this._user, this._password, this._dbName);
+    for (var h = 0; h &lt; hostLength; h++) {
+      let transportUrl = &quot;http://&quot; + this._host[h] + &quot;:&quot; + this._port[h];
+      try {
+        let transport = new Thrift.Transport(transportUrl);
+        let protocol = new Thrift.Protocol(transport);
+        let client = new MapDClient(protocol);
+        let sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
+        this._client.push(client);
+        this._sessionId.push(sessionId);
+      }
+      catch (err) {
+        console.error(&quot;Could not connect to &quot; + this._host[h] + &quot;:&quot; + this._port[h]);
+      }
+    }
+    this._numConnections = this._client.length;
+    if (this._numConnections &lt; 1) {  // need at least one server to connect to
+      //clean up first
+      this._client = null;
+      this._sessionId = null;
+      throw &quot;Could not connect to any servers in list.&quot;;
+    }
+    this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
+
     return this;
   }
 
@@ -163,12 +207,23 @@ class MapdCon {
    */
   disconnect() {
     if (this._sessionId !== null) {
-      this._client.disconnect(this._sessionId);
+      for (var c = 0; c &lt; this._client.length; c++) 
+        this._client[c].disconnect(this._sessionId[c]);
       this._sessionId = null;
       this._client = null;
+      this._numConnections = 0;
     }
     return this;
   }
+
+  balanceStrategy(balanceStrategy) {
+    if (!arguments.length)
+            return this._balanceStrategy;
+    this._balanceStrategy = balanceStrategy;
+    return this;
+  }
+
+
 
   /**
    * Get the recent dashboards as a list of &lt;code&gt;TFrontendView&lt;/code&gt; objects.
@@ -191,7 +246,7 @@ class MapdCon {
   getFrontendViews() {
     var result = null;
     try {
-      result = this._client.get_frontend_views(this._sessionId);
+      result = this._client[0].get_frontend_views(this._sessionId[0]);
     }
     catch(err) {
       console.log(&apos;ERROR: Could not get frontend views from backend. Check the session id.&apos;, err);
@@ -221,7 +276,7 @@ class MapdCon {
   getFrontendView(viewName) {
     var result = null;
     try {
-      result = this._client.get_frontend_view(this._sessionId, viewName);
+      result = this._client[0].get_frontend_view(this._sessionId[0], viewName);
     }
     catch(err) {
       console.log(&apos;ERROR: Could not get frontend view&apos;, viewName, &apos;from backend.&apos;, err);
@@ -250,7 +305,7 @@ class MapdCon {
   getServerStatus() {
     var result = null;
     try {
-      result = this._client.get_server_status();
+      result = this._client[0].get_server_status();
     }
     catch(err) {
       console.log(&apos;ERROR: Could not get the server status. Check your connection and session id.&apos;, err);
@@ -278,7 +333,8 @@ class MapdCon {
    */
   createFrontendView(viewName, viewState, imageHash) {
     try {
-      this._client.create_frontend_view(this._sessionId, viewName, viewState, imageHash);
+      for (var c = 0; c &lt; this._numConnections; c++) // do we want to try each one individually so if we fail we keep going?
+        this._client[c].create_frontend_view(this._sessionId[c], viewName, viewState, imageHash);
     }
     catch(err) {
       console.log(&apos;ERROR: Could not create the new frontend view. Check your session id.&apos;, err);
@@ -339,14 +395,10 @@ class MapdCon {
   getLinkView(link) {
     var result = null;
     try {
-      result = this._client.get_link_view(this._sessionId, link);
+      result = this._client[0].get_link_view(this._sessionId[0], link);
     }
     catch(err) {
       console.log(err);
-      if (err.name == &quot;ThriftException&quot;) {
-        this.connect();
-        result = this._client.get_link_view(sessionId, link);
-      }
     }
     return result;
   }
@@ -378,7 +430,7 @@ class MapdCon {
   detectColumnTypes(fileName, copyParams, callback) {
     copyParams.delimiter = copyParams.delimiter || &quot;&quot;;
     try {
-      this._client.detect_column_types(this._sessionId, fileName, copyParams, callback);
+      this._client[0].detect_column_types(this._sessionId[0], fileName, copyParams, callback);
     }
     catch(err) {
       console.log(err);
@@ -395,39 +447,88 @@ class MapdCon {
    * @param {String} renderSpec - The backend rendering spec, set to &lt;code&gt;undefined&lt;/code&gt; to force frontend rendering
    * @param {Array&lt;Function&gt;} callbacks
    */
-  query(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
-    columnarResults = !columnarResults ? true : columnarResults; // make columnar results default if not specified
+  query(query, options, callbacks) {
+
+		let columnarResults = true;
+		let eliminateNullRows = false;
+		let renderSpec = null;
+		let queryId = null;
+		if (options) {
+			columnarResults = options.columnarResults ? options.columnarResults : true; // make columnar results default if not specified
+			eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
+			renderSpec = options.renderSpec ? options.renderSpec : undefined;
+			queryId = options.queryId ? options.queryId : null;
+		}
     let processResultsQuery = renderSpec ? &apos;render: &apos; + query : query; // format query for backend rendering if specified
-    let isBackendRenderingWithAsync = renderSpec &amp;&amp; callbacks;
-    let isFrontendRenderingWithAsync = !renderSpec &amp;&amp; callbacks;
-    let isBackendRenderingWithSync = renderSpec &amp;&amp; !callbacks;
-    let isFrontendRenderingWithSync = !renderSpec &amp;&amp; !callbacks;
+	  let isBackendRenderingWithAsync = !!renderSpec &amp;&amp; !!callbacks;
+	  let isFrontendRenderingWithAsync = !renderSpec &amp;&amp; !!callbacks;
+	  let isBackendRenderingWithSync = !!renderSpec &amp;&amp; !callbacks;
+	  let isFrontendRenderingWithSync = !renderSpec &amp;&amp; !callbacks;
+		let lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
+    
     let curNonce = (this._nonce++).toString();
 
+		var conId = null;
+		if (this._balanceStrategy === &quot;adaptive&quot;) {
+			conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
+		}
+		else {
+			conId = curNonce % this._numConnections;
+		}
+		if (!!renderSpec)
+			this._lastRenderCon = conId;
+
+		this.serverQueueTimes[conId] += lastQueryTime;
+
+		let processResultsOptions = {
+                  isImage: !!renderSpec,
+                  eliminateNullRows: eliminateNullRows,
+                  query: processResultsQuery,
+                  queryId: queryId,
+                  conId: conId,
+                  estimatedQueryTime: lastQueryTime
+		};
+
+		let processResults = null;
     try {
       if (isBackendRenderingWithAsync) {
-        let processResults = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);
-        this._client.render(this._sessionId, query + &quot;;&quot;, renderSpec, {}, {}, curNonce, processResults);
+        processResults = this.processResults.bind(this, processResultsOptions, callbacks);
+        this._client[conId].render(this._sessionId[conId], query + &quot;;&quot;, renderSpec, {}, {}, curNonce, processResults);
         return curNonce;
       }
       if(isFrontendRenderingWithAsync) {
-        let processResults = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);
-        this._client.sql_execute(this._sessionId, query + &quot;;&quot;, columnarResults, curNonce, processResults);
+        processResults = this.processResults.bind(this, processResultsOptions, callbacks);
+        this._client[conId].sql_execute(this._sessionId[conId], query + &quot;;&quot;, columnarResults, curNonce, processResults);
         return curNonce;
       }
       if (isBackendRenderingWithSync) {
-        return this._client.render(this._sessionId, query + &quot;;&quot;, renderSpec, {}, {}, curNonce);
+        return this.processResults(processResultsOptions, null, this._client[conId].render(this._sessionId[conId], query + &quot;;&quot;, renderSpec, {}, {}, curNonce));
       }
       if (isFrontendRenderingWithSync) {
-        let result = this._client.sql_execute(this._sessionId, query + &quot;;&quot;, columnarResults, curNonce);
-        return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, result); // undefined is callbacks slot
+        var _result = this._client[conId].sql_execute(this._sessionId[conId], query + &quot;;&quot;, columnarResults, curNonce);
+        return this.processResults(processResultsOptions, null, _result); // null is callbacks slot
       }
     }
     catch(err) {
-      console.log(err);
-      throw(err);
+      console.error(err);
+      if (err.name == &quot;NetworkError&quot; || err.name == &quot;TMapDException&quot;) {
+        this.removeConnection(conId);
+        if (this._numConnections == 0) 
+                throw &quot;No remaining database connections&quot;;
+        this.query(query, options, callbacks);
+            
+      }
     }
   }
+
+  removeConnection(conId) {
+    if (conId &lt; 0 || conId &gt;= this.numConnections) 
+            throw &quot;Remove connection id invalid&quot;
+    this._client.splice(conId, 1);
+    this._sessionId.splice(conId, 1);
+    this._numConnections--;
+  }
+
 
   /**
    * Because it is inefficient for the server to return a row-based
@@ -659,10 +760,35 @@ class MapdCon {
     return formattedResult;
   }
 
-  processResults(isImage, eliminateNullRows, query, callbacks, result) {
-    if (this._logging &amp;&amp; result.execution_time_ms)
-      console.log(query + &quot;: &quot; + result.execution_time_ms + &quot; ms&quot;);
-    var hasCallback = typeof callbacks !== &apos;undefined&apos;;
+  processResults(options, callbacks, result) {
+
+    let isImage = false;
+    let eliminateNullRows = false;
+    let query = null;
+    let queryId = null;
+    let conId = null;
+    let estimatedQueryTime = null;
+
+
+    if (typeof options !== &apos;undefined&apos;) {
+      isImage = options.isImage ? options.isImage : false;
+      eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
+      query = options.query ? options.query : null;
+      queryId = options.queryId ? options.queryId : null; 
+      conId = typeof options.conId !== &apos;undefined&apos; ? options.conId : null;
+      estimatedQueryTime = typeof options.estimatedQueryTime !== &apos;undefined&apos; ? options.estimatedQueryTime : null;
+    }
+    if (result.execution_time_ms &amp;&amp; conId !== null &amp;&amp; estimatedQueryTime !== null) {
+      this.serverQueueTimes[conId] -= estimatedQueryTime; 
+      this.queryTimes[queryId] = result.execution_time_ms;
+    }
+
+    if (this._logging &amp;&amp; result.execution_time_ms) {
+      var server = (parseInt(result.nonce) % this._numConnections) + 1;
+      console.log(query + &quot; on Server &quot; + server + &quot; - Execution Time: &quot; + result.execution_time_ms + &quot; ms, Total Time: &quot; + result.total_time_ms + &quot;ms&quot;);
+    }
+    let hasCallback = !!callbacks; 
+
     if (isImage) {
       if (hasCallback) {
         callbacks.pop()(result, callbacks);
@@ -700,30 +826,29 @@ class MapdCon {
    * var con = new MapdCon().host(&apos;http://hostname.com&apos;);
    */
   getDatabases() {
-    var databases = null;
+    let databases = null;
     try {
-      databases = this._client.get_databases();
+      databases = this._client[0].get_databases();
       return databases.map((db, i) =&gt; { return db.db_name; });
     }
     catch (err) {
-      console.log(&apos;ERROR: Could not get databases from backend. Check the session id.&apos;, err);
+      console.error(&apos;ERROR: Could not get databases from backend. Check the session id.&apos;, err);
+      throw err;
     }
   }
 
   getTables() {
-    var tabs = null;
+    let tabs = null;
     try {
-      tabs = this._client.get_tables(this._sessionId);
+      tabs = this._client[0].get_tables(this._sessionId[0]);
     }
     catch (err) {
-      if (err.name == &quot;ThriftException&quot;) {
-        this.connect();
-        tabs = this._client.get_tables(this._sessionId);
-      }
+      console.error(&apos;ERROR: Could not get tables from backend&apos;, err);
+      throw err;
     }
 
-    var numTables = tabs.length;
-    var tableInfo = [];
+    let numTables = tabs.length;
+    let tableInfo = [];
     for (var t = 0; t &lt; numTables; t++) {
       tableInfo.push({
         &quot;name&quot;: tabs[t],
@@ -740,8 +865,8 @@ class MapdCon {
   }
 
   getFields(tableName) {
-    var fields = this._client.get_table_descriptor(this._sessionId, tableName);
-    var fieldsArray = [];
+    let fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+    let fieldsArray = [];
     // silly to change this from map to array
     // - then later it turns back to map
     for (var key in fields) {
@@ -756,46 +881,41 @@ class MapdCon {
   }
 
   createTable(tableName, rowDesc, callback) {
+    let result = null;
     try {
-      result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
+      for (var c = 0; c &lt; this._numConnections; c++) 
+        result = this._client[c].send_create_table(this._sessionId[c], tableName, rowDesc, callback);
     }
-    catch(err) {
-      console.log(err);
-      if (err.name == &quot;ThriftException&quot;) {
-        this.connect();
-        result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
-      }
+    catch (err) {
+      console.error(&apos;ERROR: Could not create table&apos;, err);
+      throw err;
     }
     return result;
   }
 
   importTable(tableName, fileName, copyParams, callback) {
     copyParams.delimiter = copyParams.delimiter || &quot;&quot;;
+    let result = null;
     try {
-      result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
+      for (var c = 0; c &lt; this._numConnections; c++) 
+        result = this._client[c].send_import_table(this._sessionId[c], tableName, fileName, copyParams, callback);
     }
     catch(err) {
-      console.log(err);
-      if (err.name == &quot;ThriftException&quot;) {
-        this.connect();
-        result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
-      }
+      console.error(&apos;ERROR: Could not import table&apos;, err);
+      throw (err);
     }
     return result;
   }
 
   importTableStatus(importId, callback) {
     callback = callback || null;
-    var import_status = null;
+    let import_status = null;
     try {
-      import_status = this._client.import_table_status(this._sessionId, importId, callback);
+      import_status = this._client[0].import_table_status(this._sessionId[0], importId, callback);
     }
     catch(err) {
-      console.log(err);
-      if (err.name == &quot;ThriftException&quot;) {
-        this.connect();
-        import_status = this._client.import_table_status(this._sessionId, importId, callback);
-      }
+      console.error(&apos;ERROR: Could not retrieve import status&apos;, err);
+      throw (err);
     }
     return import_status;
   }
@@ -807,19 +927,13 @@ class MapdCon {
     var curNonce = (this._nonce++).toString();
     try {
       if (!callbacks){
-          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
+        return this.processPixelResults(undefined, this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce));
       }
-      this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
+      this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
     }
     catch(err) {
-      console.log(err);
-      if (err.name == &quot;ThriftException&quot;) {
-        this.connect();
-        if (!callbacks){
-          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
-        }
-        this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
-      }
+      console.error(&apos;Could not get rows for pixels&apos;, err);
+      throw(err);
     }
     return curNonce;
   }
@@ -828,8 +942,14 @@ class MapdCon {
     var results = results.pixel_rows;
     var numPixels = results.length;
     var resultsMap = {};
+    var processResultsOptions = {
+      isImage: false,
+      eliminateNullRows: false,
+      query: &quot;pixel request&quot;,
+      queryId: -2
+    };
     for (var p = 0; p &lt; numPixels; p++) {
-      results[p].row_set = this.processResults(false, false, &quot;pixel request&quot;, undefined, results[p]);
+      results[p].row_set = this.processResults(processResultsOptions, null, results[p]);
     }
     if (!callbacks){
       return results;
@@ -886,7 +1006,10 @@ class MapdCon {
     if (!arguments.length){
       return this._host;
     }
-    this._host = host;
+    if (!Array.isArray(host))
+      this._host = [host];
+    else
+      this._host = host;
     return this;
   }
 
@@ -906,7 +1029,10 @@ class MapdCon {
     if (!arguments.length){
       return this._port;
     }
-    this._port = port;
+    if (!Array.isArray(port))
+      this._port = [port];
+    else
+      this._port = port;
     return this;
   }
 
@@ -926,7 +1052,10 @@ class MapdCon {
     if (!arguments.length){
       return this._user;
     }
-    this._user = user;
+    if (!Array.isArray(user))
+      this._user = [user];
+    else
+      this._user = user;
     return this;
   }
 
@@ -946,7 +1075,10 @@ class MapdCon {
     if (!arguments.length){
       return this._password;
     }
-    this._password = password;
+    if (!Array.isArray(password))
+      this._password = [password];
+    else
+      this._password = password;
     return this;
   }
 
@@ -966,7 +1098,10 @@ class MapdCon {
     if (!arguments.length){
       return this._dbName;
     }
-    this._dbName = dbName;
+    if (!Array.isArray(dbName))
+      this._dbName = [dbName];
+    else
+      this._dbName = dbName;
     return this;
   }
 
@@ -985,7 +1120,7 @@ class MapdCon {
    */
   logging(logging) {
     if (!arguments.length){
-      return this._logging;
+      return this.logging;
     }
     this._logging = logging;
     return this;
