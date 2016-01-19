@@ -10,7 +10,7 @@
     "build": "webpack; npm run generate-docs",
     "watch": "npm-watch",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
-    "test": "bash ./scripts/test.sh"
+    "test": "node_modules/.bin/mocha ./test"
   },
   "repository": {
     "type": "git",
