@@ -15,7 +15,7 @@ fi
 
 # remove the previous temp branch
 if [[ `git branch | grep temp` ]]; then
-    git branch -d temp
+    git branch -D temp || true
 fi
 
 # checkout a new temp branch
