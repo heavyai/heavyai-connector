@@ -594,12 +594,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/mapd-con-es6.spec.js",
-    "file/src/mapd-con-es6.spec.js.html",
-    "src/mapd-con-es6.spec.js",
-    "file"
-  ],
-  [
     "src/mapdcon-deprecated.js",
     "file/src/mapdcon-deprecated.js.html",
     "src/mapdcon-deprecated.js",

@@ -10,7 +10,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * The MapdCon class provides the necessary methods for performing queries to a MapD GPU database.\n * In order to use MapdCon, you must have the Thrift library loaded into the <code>window</code> object first.\n */\nclass MapdCon {\n\n  /**\n   * Create a new MapdCon and return it to allow method chaining.\n   * @return {MapdCon} Object\n   * \n   * @example <caption>Create a new MapdCon instance:</caption>\n   * var con = new MapdCon();\n   *\n   * @example <caption>Create a new MapdCon instance and set the host via method chaining:</caption>\n   * var con = new MapdCon().host('http://hostname.com');\n   */\n  constructor(){\n\n    // Set up \"private\" variables and their defaults\n    this._host = null;\n    this._user = null;\n    this._password = null;\n    this._port = null;\n    this._dbName = null;\n    this._client = null;\n    this._sessionId = null;\n    this._datumEnum = {};\n    this._nonce = 0;\n    this._logging = false;\n    this._platform = \"mapd\";\n\n    // invoke initialization methods\n    this.invertDatumTypes();\n\n    /** Deprecated */\n    this.setHost = this.host;\n\n    /** Deprecated */\n    this.setPort = this.port;\n\n    /** Deprecated */\n    this.setDbName = this.dbName;\n\n    /** Deprecated */\n    this.setPlatform = this.platform;\n\n    /** Deprecated */\n    this.setUserAndPassword = (newUser, newPassword) => {\n      this._user = newUser;\n      this._password = newPassword;\n      return this;\n    }\n\n    /** Deprecated */\n    this.getPlatform = this.platform;\n\n    /** Deprecated */\n    this.getSessionId = this.sessionId;\n\n    /** Deprecated */\n    this.queryAsync = this.query;\n\n    // return this to allow chaining off of instantiation\n    return this;\n  }\n\n  /**\n   * Create a connection to the server, generating a client and session id.\n   * @return {MapdCon} Object\n   *\n   * @example <caption>Connect to a MapD server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   * // con.client() instanceof MapDClient === true\n   * // con.sessionId() === 2070686863\n   */\n  connect() {\n    if(this._sessionId){\n      this.disconnect();\n    }\n\n    let transportUrl = \"http://\" + this._host + \":\" + this._port;\n    let transport = new Thrift.Transport(transportUrl);\n    let protocol = new Thrift.Protocol(transport);\n\n    this._client = new MapDClient(protocol);\n    this._sessionId = this._client.connect(this._user, this._password, this._dbName);\n    return this;\n  }\n\n  /**\n   * Disconnect from the server then clears the client and session values.\n   * @return {MapdCon} Object\n   *\n   * @example <caption>Disconnect from the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * con.disconnect();\n   * // con.client() === null;\n   * // con.sessionId() === null;\n   */\n  disconnect() {\n    if (this._sessionId !== null) {\n      this._client.disconnect(this._sessionId);\n      this._sessionId = null;\n      this._client = null;\n    }\n    return this;\n  }\n\n  /**\n   * Get the recent dashboards as a list of <code>TFrontendView</code> objects.\n   * These objects contain a value for the <code>view_name</code> property,\n   * but not for the <code>view_state</code> property.\n   * @return {Array<TFrontendView>}\n   *\n   * @example <caption>Get the list of dashboards from the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * var views = con.getFrontendViews();\n   * // views === [TFrontendView, TFrontendView]\n   */\n  getFrontendViews() {\n    var result = null;\n    try {\n      result = this._client.get_frontend_views(this._sessionId);\n    }\n    catch(err) {\n      console.log('ERROR: Could not get frontend views from backend. Check the session id.', err);\n    }\n    return result;\n  }\n\n  /**\n   * Get a dashboard object containing a value for the <code>view_state</code> property.\n   * This object contains a value for the <code>view_state</code> property,\n   * but not for the <code>view_name</code> property.\n   * @param {String} viewName - the name of the dashboard\n   * @return {TFrontendView} Object\n   *\n   * @example <caption>Get a specific dashboard from the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * var dashboard = con.getFrontendView();\n   * // dashboard instanceof TFrontendView === true\n   */\n  getFrontendView(viewName) {\n    var result = null;\n    try {\n      result = this._client.get_frontend_view(this._sessionId, viewName);\n    }\n    catch(err) {\n      console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);\n    }\n    return result;\n  }\n\n  /**\n   * Get the status of the server as a <code>TServerStatus</code> object.\n   * This includes whether the server is read-only, has backend rendering enabled, and the version number.\n   * @return {TServerStatus} Object\n   *\n   * @example <caption>Get the server status:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * var status = con.getServerStatus();\n   * // status instanceof TServerStatus === true\n   * \n   */\n  getServerStatus() {\n    var result = null;\n    try {\n      result = this._client.get_server_status();\n    }\n    catch(err) {\n      console.log('ERROR: Could not get the server status. Check your connection and session id.', err);\n    }\n    return result;\n  }\n\n  /**\n   * Add a new dashboard to the server.\n   * @param {String} viewName - the name of the new dashboard\n   * @param {String} viewState - the base64-encoded state string of the new dashboard\n   * @param {String} imageHash - the numeric hash of the dashboard thumbnail \n   * @return {MapdCon} Object\n   *\n   * @example <caption>Add a new dashboard to the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   *\n   * con.createFrontendView('newView', 'GlnaHRz...', '1906667617');\n   */\n  createFrontendView(viewName, viewState, imageHash) {\n    try {\n      this._client.create_frontend_view(this._sessionId, viewName, viewState, imageHash);\n    }\n    catch(err) {\n      console.log('ERROR: Could not create the new frontend view. Check your session id.', err);\n    }\n    return this;\n  }\n\n  /**\n   * Create a short hash to make it easy to share a link to a specific dashboard.\n   * @param {String} viewState - the base64-encoded state string of the new dashboard\n   * @return {String} link - A short hash of the dashboard used for URLs \n   *\n   * @example <caption>Create a link to the current state of a dashboard:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   *\n   * // get a dashboard\n   * var dashboards = con.getFrontendViews();\n   * var dashboard = con.getFrontendView(dashboards[0].view_name);\n   *\n   * var link = con.createLink(dashboard.view_state);\n   * // link === 'CRtzoe'\n   */\n  createLink(viewState) {\n    var result = null;\n    try {\n      result = this._client.create_link(this._sessionId, viewState);\n    }\n    catch(err) {\n      console.log(err);\n    }\n    return result;\n  }\n\n  /**\n   * Get a fully-formed dashboard object from a generated share link.\n   * This object contains the given link for the <code>view_name</code> property,\n   * @param {String} link - the short hash of the dashboard, see {@link createLink}\n   * @return {TFrontendView} Object\n   *\n   * @example <caption>Get a dashboard from a link:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   *\n   * var dashboard = con.getLinkView('CRtzoe');\n   * // dashboard instanceof TFrontendView === true\n   */\n  getLinkView(link) {\n    var result = null;\n    try {\n      result = this._client.get_link_view(this._sessionId, link);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        result = this._client.get_link_view(sessionId, link);\n      }\n    }\n    return result;\n  }\n\n  /**\n   * Asynchronously get the data from an importable file, such as a .csv or plaintext file with a header.\n   * @param {String} fileName - the name of the importable file \n   * @param {TCopyParams} copyParams - see {@link TCopyParams}\n   * @param {Function} callback - specify a callback that takes a {@link TDetectResult} as its only argument \n   *\n   * @example <caption>Get data from table_data.csv:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   * \n   * var copyParams = new TCopyParams();\n   * con.detectColumnTypes('table_data.csv', copyParams, function(tableData){\n   *   var columnHeaders = tableData.row_set.row_desc;\n   *   // columnHeaders === [TColumnType, TColumnType, ...]\n   *\n   *   var data = tableData.row_set.rows;\n   *   ...\n   * });\n   */\n  detectColumnTypes(fileName, copyParams, callback) {\n    copyParams.delimiter = copyParams.delimiter || \"\";\n    try {\n      this._client.detect_column_types(this._sessionId, fileName, copyParams, callback);\n    }\n    catch(err) {\n      console.log(err);\n    }\n  }\n\n  /**\n   * Submit a query to the database and process the results through an array of asychronous callbacks.\n   * If no callbacks are given, use synchronous instead.\n   * TODO: Refactor to use take a query and an options object\n   * @param {String} query - The query to perform\n   * @param {Boolean} columnarResults=true - Indicates whether to return the data in columnar format. This saves time on the backend.\n   * @param {Boolean} eliminateNullRows - Indicates whether rows \n   * @param {String} renderSpec - The backend rendering spec, set to <code>undefined</code> to force frontend rendering\n   * @param {Array<Function>} callbacks\n   */\n  query(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {\n    columnarResults = !columnarResults ? true : columnarResults; // make columnar results default if not specified\n    let processResultsQuery = renderSpec ? 'render: ' + query : query; // format query for backend rendering if specified\n    let isBackendRenderingWithAsync = renderSpec && callbacks;\n    let isFrontendRenderingWithAsync = !renderSpec && callbacks;\n    let isBackendRenderingWithSync = renderSpec && !callbacks;\n    let isFrontendRenderingWithSync = !renderSpec && !callbacks;\n    let curNonce = (this._nonce++).toString();\n\n    try {\n      if (isBackendRenderingWithAsync) {\n        let processResults = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);\n        this._client.render(this._sessionId, query + \";\", renderSpec, {}, {}, curNonce, processResults);\n        return curNonce;\n      }\n      if(isFrontendRenderingWithAsync) {\n        let processResults = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);\n        this._client.sql_execute(this._sessionId, query + \";\", columnarResults, curNonce, processResults);\n        return curNonce;\n      }\n      if (isBackendRenderingWithSync) {\n        return this._client.render(this._sessionId, query + \";\", renderSpec, {}, {}, curNonce);\n      }\n      if (isFrontendRenderingWithSync) {\n        let result = this._client.sql_execute(this._sessionId, query + \";\", columnarResults, curNonce);\n        return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, result); // undefined is callbacks slot\n      }\n    }\n    catch(err) {\n      console.log(err);\n      throw(err);\n    }\n  }\n\n  /**\n   * Because it is inefficient for the server to return a row-based\n   * data structure, it is better to process the column-based results into a row-based\n   * format after the fact.\n   *\n   * @param {TRowSet} data - The column-based data returned from a query\n   * @param {Boolean} eliminateNullRows\n   * @returns {Object} processedResults \n   */\n  processColumnarResults(data, eliminateNullRows) {\n\n    var formattedResult = {fields: [], results: []};\n    var numCols = data.row_desc.length;\n    var numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;\n\n    formattedResult.fields = data.row_desc.map((field, i) => {\n      return {\n        \"name\": field.col_name,\n        \"type\": this._datumEnum[field.col_type.type],\n        \"is_array\": field.col_type.is_array\n      };\n    });\n\n    for (var r = 0; r < numRows; r++) {\n      if (eliminateNullRows) {\n        var rowHasNull = false;\n        for (var c = 0; c < numCols; c++) {\n          if (data.columns[c].nulls[r]) {\n            rowHasNull = true;\n            break;\n          }\n        }\n        if (rowHasNull)\n          continue;\n      }\n      var row = {};\n      for (var c = 0; c < numCols; c++) {\n        var fieldName = formattedResult.fields[c].name;\n        var fieldType = formattedResult.fields[c].type;\n        var fieldIsArray = formattedResult.fields[c].is_array;\n        var isNull = data.columns[c].nulls[r];\n        if (isNull) {\n          // row[fieldName] = \"NULL\";\n          row[fieldName] = null;\n          continue;\n        }\n        if (fieldIsArray) {\n          row[fieldName] = [];\n          var arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;\n          for (var e = 0; e < arrayNumElems; e++) {\n            if (data.columns[c].data.arr_col[r].nulls[e]) {\n              row[fieldName].push(\"NULL\");\n              continue;\n            }\n            switch(fieldType) {\n              case \"BOOL\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] ? true : false);\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e]);\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.real_col[e]);\n                break;\n              case \"STR\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.str_col[e]);\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] * 1000);\n                break;\n            }\n          }\n        }\n        else {\n          switch (fieldType) {\n            case \"BOOL\":\n              row[fieldName] = data.columns[c].data.int_col[r] ? true : false;\n              break;\n            case \"SMALLINT\":\n            case \"INT\":\n            case \"BIGINT\":\n              row[fieldName] = data.columns[c].data.int_col[r];\n              break;\n            case \"FLOAT\":\n            case \"DOUBLE\":\n            case \"DECIMAL\":\n              row[fieldName] = data.columns[c].data.real_col[r];\n              break;\n            case \"STR\":\n              row[fieldName] = data.columns[c].data.str_col[r];\n              break;\n            case \"TIME\":\n            case \"TIMESTAMP\":\n            case \"DATE\":\n              row[fieldName] = new Date(data.columns[c].data.int_col[r] * 1000);\n              break;\n          }\n        }\n      }\n      formattedResult.results.push(row);\n    }\n    return formattedResult;\n  }\n\n  /**\n   * It should be avoided to query for row-based results from the server, howerver\n   * it can still be done. In this case, still process them into the same format as\n   * (@link processColumnarResults} to keep the output consistent.\n   * @param {TRowSet} data - The row-based data returned from a query\n   * @param {Boolean} eliminateNullRows\n   * @returns {Object} processedResults \n   */\n  processRowResults(data, eliminateNullRows) {\n    var numCols = data.row_desc.length;\n    var colNames = [];\n    var formattedResult = { fields: [], results: [] };\n\n    formattedResult.fields = data.row_desc.map((field, i) => {\n      return {\n        \"name\": field.col_name,\n        \"type\": this._datumEnum[field.col_type.type],\n        \"is_array\": field.col_type.is_array\n      };\n    });\n\n    formattedResult.results = [];\n    var numRows = 0;\n    if (data.rows !== undefined && data.rows !== null){\n      numRows = data.rows.length; // so won't throw if data.rows is missing\n    }\n\n    for (var r = 0; r < numRows; r++) {\n      if (eliminateNullRows) {\n        var rowHasNull = false;\n        for (var c = 0; c < numCols; c++) {\n          if (data.rows[r].columns[c].is_null) {\n            rowHasNull = true;\n            break;\n          }\n        }\n        if (rowHasNull){\n          continue;\n        }\n      }\n\n      var row = {};\n      for (var c = 0; c < numCols; c++) {\n        var fieldName = formattedResult.fields[c].name;\n        var fieldType = formattedResult.fields[c].type;\n        var fieldIsArray = formattedResult.fields[c].is_array;\n        if (fieldIsArray) {\n          if (data.rows[r].cols[c].is_null) {\n            row[fieldName] = \"NULL\";\n            continue;\n          }\n          row[fieldName] = [];\n          var arrayNumElems = data.rows[r].cols[c].val.arr_val.length;\n          for (var e = 0; e < arrayNumElems; e++) {\n            var elemDatum = data.rows[r].cols[c].val.arr_val[e];\n            if (elemDatum.is_null) {\n              row[fieldName].push(\"NULL\");\n              continue;\n            }\n            switch(fieldType) {\n              case \"BOOL\":\n                row[fieldName].push(elemDatum.val.int_val ? true : false);\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName].push(elemDatum.val.int_val);\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName].push(elemDatum.val.real_val);\n                break;\n              case \"STR\":\n                row[fieldName].push(elemDatum.val.str_val);\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName].push(elemDatum.val.int_val * 1000);\n                break;\n            }\n          }\n        }\n        else {\n          var scalarDatum = data.rows[r].cols[c];\n          if (scalarDatum.is_null) {\n            row[fieldName] = \"NULL\";\n            continue;\n          }\n          switch (fieldType) {\n            case \"BOOL\":\n              row[fieldName] = scalarDatum.val.int_val ? true : false;\n              break;\n            case \"SMALLINT\":\n            case \"INT\":\n            case \"BIGINT\":\n              row[fieldName] = scalarDatum.val.int_val;\n              break;\n            case \"FLOAT\":\n            case \"DOUBLE\":\n            case \"DECIMAL\":\n              row[fieldName] = scalarDatum.val.real_val;\n              break;\n            case \"STR\":\n              row[fieldName] = scalarDatum.val.str_val;\n              break;\n            case \"TIME\":\n            case \"TIMESTAMP\":\n            case \"DATE\":\n              row[fieldName] = new Date(scalarDatum.val.int_val * 1000);\n              break;\n          }\n        }\n      }\n      formattedResult.results.push(row);\n    }\n    return formattedResult;\n  }\n\n  processResults(isImage, eliminateNullRows, query, callbacks, result) {\n    if (this._logging && result.execution_time_ms)\n      console.log(query + \": \" + result.execution_time_ms + \" ms\");\n    var hasCallback = typeof callbacks !== 'undefined';\n    if (isImage) {\n      if (hasCallback) {\n        callbacks.pop()(result, callbacks);\n      }\n      else {\n        return result;\n      }\n    }\n    else {\n      result = result.row_set;\n      var formattedResult = null;\n      if (result.is_columnar) {\n        formattedResult = this.processColumnarResults(result, eliminateNullRows);\n      }\n      else {\n        formattedResult = this.processRowResults(result, eliminateNullRows);\n      }\n      if (hasCallback) {\n        callbacks.pop()(formattedResult.results, callbacks);\n      }\n      else {\n        return formattedResult.results;\n      }\n    }\n  }\n\n  /**\n   * Create a new MapdCon and return it to allow method chaining.\n   * @return {MapdCon} Object\n   * \n   * @example <caption>Create a new MapdCon instance:</caption>\n   * var con = new MapdCon();\n   *\n   * @example <caption>Create a new MapdCon instance and set the host via method chaining:</caption>\n   * var con = new MapdCon().host('http://hostname.com');\n   */\n  getDatabases() {\n    var databases = null;\n    try {\n      databases = this._client.get_databases();\n      return databases.map((db, i) => { return db.db_name; });\n    }\n    catch (err) {\n      console.log('ERROR: Could not get databases from backend. Check the session id.', err);\n    }\n  }\n\n  getTables() {\n    var tabs = null;\n    try {\n      tabs = this._client.get_tables(this._sessionId);\n    }\n    catch (err) {\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        tabs = this._client.get_tables(this._sessionId);\n      }\n    }\n\n    var numTables = tabs.length;\n    var tableInfo = [];\n    for (var t = 0; t < numTables; t++) {\n      tableInfo.push({\n        \"name\": tabs[t],\n        \"label\": \"obs\"\n      });\n    }\n    return tableInfo;\n  }\n\n  invertDatumTypes() {\n    for (var key in TDatumType) {\n      this._datumEnum[TDatumType[key]] = key;\n    }\n  }\n\n  getFields(tableName) {\n    var fields = this._client.get_table_descriptor(this._sessionId, tableName);\n    var fieldsArray = [];\n    // silly to change this from map to array\n    // - then later it turns back to map\n    for (var key in fields) {\n      fieldsArray.push({\n        \"name\": key, \n        \"type\": this._datumEnum[fields[key].col_type.type],\n        \"is_array\": fields[key].col_type.is_array,\n        \"is_dict\": fields[key].col_type.encoding == TEncodingType[\"DICT\"]\n      });\n    }\n    return fieldsArray;\n  }\n\n  createTable(tableName, rowDesc, callback) {\n    try {\n      result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);\n      }\n    }\n    return result;\n  }\n\n  importTable(tableName, fileName, copyParams, callback) {\n    copyParams.delimiter = copyParams.delimiter || \"\";\n    try {\n      result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);\n      }\n    }\n    return result;\n  }\n\n  importTableStatus(importId, callback) {\n    callback = callback || null;\n    var import_status = null;\n    try {\n      import_status = this._client.import_table_status(this._sessionId, importId, callback);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        import_status = this._client.import_table_status(this._sessionId, importId, callback);\n      }\n    }\n    return import_status;\n  }\n\n  getRowsForPixels(pixels, table_name, col_names, callbacks) {\n    var widget_id = 1;  // INT\n    var column_format = true; //BOOL\n    callbacks = callbacks || null;\n    var curNonce = (this._nonce++).toString();\n    try {\n      if (!callbacks){\n          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n      }\n      this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        if (!callbacks){\n          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n        }\n        this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));\n      }\n    }\n    return curNonce;\n  }\n\n  processPixelResults(callbacks, results) {\n    var results = results.pixel_rows;\n    var numPixels = results.length;\n    var resultsMap = {};\n    for (var p = 0; p < numPixels; p++) {\n      results[p].row_set = this.processResults(false, false, \"pixel request\", undefined, results[p]);\n    }\n    if (!callbacks){\n      return results;\n    }\n    callbacks.pop()(results, callbacks);\n  }\n\n  getUploadServer(){\n    return \"\";\n  }\n\n  /**\n   * Get or set the session ID used by the server to serve the correct data.\n   * This is typically set by {@link connect} and should not be set manually.\n   * @param {Number} [sessionId] - The session ID of the current connection\n   * @return {Number|MapdCon} - The session ID or the MapdCon itself\n   *\n   * @example <caption>Get the session id:</caption>\n   * var sessionID = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect()\n   *   .sessionId();\n   * // sessionID === 3145846410 \n   *\n   * @example <caption>Set the session id:</caption>\n   * var con = new MapdCon().connect().sessionId(3415846410);\n   * // NOTE: It is generally unsafe to set the session id manually.\n   */\n  sessionId(sessionId) {\n    if (!arguments.length){\n      return this._sessionId;\n    }\n    this._sessionId = sessionId;\n    return this;\n  }\n\n  /**\n   * Get or set the connection server hostname. This is is typically the first method called after instantiating a new MapdCon.\n   * @param {String} [host] - The hostname address\n   * @return {String|MapdCon} - The hostname or the MapdCon itself\n   *\n   * @example <caption>Set the hostname:</caption>\n   * var con = new MapdCon().host('localhost');\n   *\n   * @example <caption>Get the hostname:</caption>\n   * var host = con.host();\n   * // host === 'localhost'\n   */\n  host(host) {\n    if (!arguments.length){\n      return this._host;\n    }\n    this._host = host;\n    return this;\n  }\n\n  /**\n   * Get or set the connection port.\n   * @param {String} [port] - The port to connect on\n   * @return {String|MapdCon} - The port or the MapdCon itself\n   *\n   * @example <caption>Set the port:</caption>\n   * var con = new MapdCon().port('8080');\n   *\n   * @example <caption>Get the port:</caption>\n   * var port = con.port();\n   * // port === '8080'\n   */\n  port(port) {\n    if (!arguments.length){\n      return this._port;\n    }\n    this._port = port;\n    return this;\n  }\n\n  /**\n   * Get or set the username to authenticate with.\n   * @param {String} [user] - The username to authenticate with\n   * @return {String|MapdCon} - The username or the MapdCon itself\n   *\n   * @example <caption>Set the username:</caption>\n   * var con = new MapdCon().user('foo');\n   *\n   * @example <caption>Get the username:</caption>\n   * var username = con.user();\n   * // user === 'foo'\n   */\n  user(user) {\n    if (!arguments.length){\n      return this._user;\n    }\n    this._user = user;\n    return this;\n  }\n\n  /**\n   * Get or set the user's password to authenticate with.\n   * @param {String} [password] - The password to authenticate with\n   * @return {String|MapdCon} - The password or the MapdCon itself\n   *\n   * @example <caption>Set the password:</caption>\n   * var con = new MapdCon().password('bar');\n   *\n   * @example <caption>Get the username:</caption>\n   * var password = con.password();\n   * // password === 'bar'\n   */\n  password(password) {\n    if (!arguments.length){\n      return this._password;\n    }\n    this._password = password;\n    return this;\n  }\n\n  /**\n   * Get or set the name of the database to connect to.\n   * @param {String} [dbName] - The database to connect to\n   * @return {String|MapdCon} - The name of the database or the MapdCon itself\n   *\n   * @example <caption>Set the database name:</caption>\n   * var con = new MapdCon().dbName('myDatabase');\n   *\n   * @example <caption>Get the database name:</caption>\n   * var dbName = con.dbName();\n   * // dbName === 'myDatabase'\n   */\n  dbName(dbName) {\n    if (!arguments.length){\n      return this._dbName;\n    }\n    this._dbName = dbName;\n    return this;\n  }\n\n  /**\n   * Whether the raw queries strings will be logged to the console.\n   * Used primarily for debugging and defaults to <code>false</code>.\n   * @param {Boolean} [logging] - Set to true to enable logging\n   * @return {Boolean|MapdCon} - The current logging flag or MapdCon itself\n   *\n   * @example <caption>Set logging to true:</caption>\n   * var con = new MapdCon().logging(true);\n   *\n   * @example <caption>Get the logging flag:</caption>\n   * var isLogging = con.logging();\n   * // isLogging === true\n   */\n  logging(logging) {\n    if (!arguments.length){\n      return this._logging;\n    }\n    this._logging = logging;\n    return this;\n  }\n\n  /**\n   * The name of the platform.\n   * @param {String} [platform] - The platform, default is \"mapd\"\n   * @return {String|MapdCon} - The platform or the MapdCon itself\n   *\n   * @example <caption>Set the platform name:</caption>\n   * var con = new MapdCon().platform('myPlatform');\n   *\n   * @example <caption>Get the platform name:</caption>\n   * var platform = con.platform();\n   * // platform === 'myPlatform'\n   */\n  platform(platform) {\n    if (!arguments.length){\n      return this._platform;\n    }\n    this._platform = platform;\n    return this;\n  }\n\n  /**\n   * The MapDClient instance to perform queries with.\n   * @param {MapDClient} [client] -  \n   * @return {MapDClient|MapdCon} - MapDClient or MapdCon itself\n   *\n   * @example <caption>Set the client:</caption>\n   * var con = new MapdCon().client(lient);\n   * // NOTE: It is generally unsafe to set the client manually. Use connect() instead.\n   *\n   * @example <caption>Get the client:</caption>\n   * var client = con.client();\n   * // client instanceof MapDClient === true\n   */\n  client(client) {\n    if (!arguments.length){\n      return this._client;\n    }\n    this._client = client;\n    return this;\n  }\n\n}\n\n// Set a global mapdcon function when mapdcon is brought in via script tag.\nif(typeof module === \"object\" && module.exports){\n  if(window){\n    window.MapdCon = MapdCon;\n  }\n\n}\n\nexport default new MapdCon();\n\n"
+    "content": "/**\n * The MapdCon class provides the necessary methods for performing queries to a MapD GPU database.\n * In order to use MapdCon, you must have the Thrift library loaded into the <code>window</code> object first.\n */\nclass MapdCon {\n\n  /**\n   * Create a new MapdCon and return it to allow method chaining.\n   * @return {MapdCon} Object\n   * \n   * @example <caption>Create a new MapdCon instance:</caption>\n   * var con = new MapdCon();\n   *\n   * @example <caption>Create a new MapdCon instance and set the host via method chaining:</caption>\n   * var con = new MapdCon().host('http://hostname.com');\n   */\n  constructor(){\n\n    // Set up \"private\" variables and their defaults\n    this._host = null;\n    this._user = null;\n    this._password = null;\n    this._port = null;\n    this._dbName = null;\n    this._client = null;\n    this._sessionId = null;\n    this._datumEnum = {};\n    this._nonce = 0;\n    this._logging = false;\n    this._platform = \"mapd\";\n\n    // invoke initialization methods\n    this.invertDatumTypes();\n\n    /** Deprecated */\n    this.setHost = this.host;\n\n    /** Deprecated */\n    this.setPort = this.port;\n\n    /** Deprecated */\n    this.setDbName = this.dbName;\n\n    /** Deprecated */\n    this.setPlatform = this.platform;\n\n    /** Deprecated */\n    this.setUserAndPassword = (newUser, newPassword) => {\n      this._user = newUser;\n      this._password = newPassword;\n      return this;\n    }\n\n    /** Deprecated */\n    this.getPlatform = this.platform;\n\n    /** Deprecated */\n    this.getSessionId = this.sessionId;\n\n    /** Deprecated */\n    this.queryAsync = this.query;\n\n    // return this to allow chaining off of instantiation\n    return this;\n  }\n\n  /**\n   * Create a connection to the server, generating a client and session id.\n   * @return {MapdCon} Object\n   *\n   * @example <caption>Connect to a MapD server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   * // con.client() instanceof MapDClient === true\n   * // con.sessionId() === 2070686863\n   */\n  connect() {\n    if(this._sessionId){\n      this.disconnect();\n    }\n\n    let transportUrl = \"http://\" + this._host + \":\" + this._port;\n    let transport = new Thrift.Transport(transportUrl);\n    let protocol = new Thrift.Protocol(transport);\n\n    this._client = new MapDClient(protocol);\n    this._sessionId = this._client.connect(this._user, this._password, this._dbName);\n    return this;\n  }\n\n  /**\n   * Disconnect from the server then clears the client and session values.\n   * @return {MapdCon} Object\n   *\n   * @example <caption>Disconnect from the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * con.disconnect();\n   * // con.client() === null;\n   * // con.sessionId() === null;\n   */\n  disconnect() {\n    if (this._sessionId !== null) {\n      this._client.disconnect(this._sessionId);\n      this._sessionId = null;\n      this._client = null;\n    }\n    return this;\n  }\n\n  /**\n   * Get the recent dashboards as a list of <code>TFrontendView</code> objects.\n   * These objects contain a value for the <code>view_name</code> property,\n   * but not for the <code>view_state</code> property.\n   * @return {Array<TFrontendView>}\n   *\n   * @example <caption>Get the list of dashboards from the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * var views = con.getFrontendViews();\n   * // views === [TFrontendView, TFrontendView]\n   */\n  getFrontendViews() {\n    var result = null;\n    try {\n      result = this._client.get_frontend_views(this._sessionId);\n    }\n    catch(err) {\n      console.log('ERROR: Could not get frontend views from backend. Check the session id.', err);\n    }\n    return result;\n  }\n\n  /**\n   * Get a dashboard object containing a value for the <code>view_state</code> property.\n   * This object contains a value for the <code>view_state</code> property,\n   * but not for the <code>view_name</code> property.\n   * @param {String} viewName - the name of the dashboard\n   * @return {TFrontendView} Object\n   *\n   * @example <caption>Get a specific dashboard from the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * var dashboard = con.getFrontendView();\n   * // dashboard instanceof TFrontendView === true\n   */\n  getFrontendView(viewName) {\n    var result = null;\n    try {\n      result = this._client.get_frontend_view(this._sessionId, viewName);\n    }\n    catch(err) {\n      console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);\n    }\n    return result;\n  }\n\n  /**\n   * Get the status of the server as a <code>TServerStatus</code> object.\n   * This includes whether the server is read-only, has backend rendering enabled, and the version number.\n   * @return {TServerStatus} Object\n   *\n   * @example <caption>Get the server status:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect(); // Create a connection\n   *\n   * var status = con.getServerStatus();\n   * // status instanceof TServerStatus === true\n   * \n   */\n  getServerStatus() {\n    var result = null;\n    try {\n      result = this._client.get_server_status();\n    }\n    catch(err) {\n      console.log('ERROR: Could not get the server status. Check your connection and session id.', err);\n    }\n    return result;\n  }\n\n  /**\n   * Add a new dashboard to the server.\n   * @param {String} viewName - the name of the new dashboard\n   * @param {String} viewState - the base64-encoded state string of the new dashboard\n   * @param {String} imageHash - the numeric hash of the dashboard thumbnail \n   * @return {MapdCon} Object\n   *\n   * @example <caption>Add a new dashboard to the server:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   *\n   * con.createFrontendView('newView', 'GlnaHRz...', '1906667617');\n   */\n  createFrontendView(viewName, viewState, imageHash) {\n    try {\n      this._client.create_frontend_view(this._sessionId, viewName, viewState, imageHash);\n    }\n    catch(err) {\n      console.log('ERROR: Could not create the new frontend view. Check your session id.', err);\n    }\n    return this;\n  }\n\n  /**\n   * Create a short hash to make it easy to share a link to a specific dashboard.\n   * @param {String} viewState - the base64-encoded state string of the new dashboard\n   * @return {String} link - A short hash of the dashboard used for URLs \n   *\n   * @example <caption>Create a link to the current state of a dashboard:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   *\n   * // get a dashboard\n   * var dashboards = con.getFrontendViews();\n   * var dashboard = con.getFrontendView(dashboards[0].view_name);\n   *\n   * var link = con.createLink(dashboard.view_state);\n   * // link === 'CRtzoe'\n   */\n  createLink(viewState) {\n    var result = null;\n    try {\n      result = this._client.create_link(this._sessionId, viewState);\n    }\n    catch(err) {\n      console.log(err);\n    }\n    return result;\n  }\n\n  /**\n   * Get a fully-formed dashboard object from a generated share link.\n   * This object contains the given link for the <code>view_name</code> property,\n   * @param {String} link - the short hash of the dashboard, see {@link createLink}\n   * @return {TFrontendView} Object\n   *\n   * @example <caption>Get a dashboard from a link:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   *\n   * var dashboard = con.getLinkView('CRtzoe');\n   * // dashboard instanceof TFrontendView === true\n   */\n  getLinkView(link) {\n    var result = null;\n    try {\n      result = this._client.get_link_view(this._sessionId, link);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        result = this._client.get_link_view(sessionId, link);\n      }\n    }\n    return result;\n  }\n\n  /**\n   * Asynchronously get the data from an importable file, such as a .csv or plaintext file with a header.\n   * @param {String} fileName - the name of the importable file \n   * @param {TCopyParams} copyParams - see {@link TCopyParams}\n   * @param {Function} callback - specify a callback that takes a {@link TDetectResult} as its only argument \n   *\n   * @example <caption>Get data from table_data.csv:</caption>\n   * var con = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect();\n   * \n   * var copyParams = new TCopyParams();\n   * con.detectColumnTypes('table_data.csv', copyParams, function(tableData){\n   *   var columnHeaders = tableData.row_set.row_desc;\n   *   // columnHeaders === [TColumnType, TColumnType, ...]\n   *\n   *   var data = tableData.row_set.rows;\n   *   ...\n   * });\n   */\n  detectColumnTypes(fileName, copyParams, callback) {\n    copyParams.delimiter = copyParams.delimiter || \"\";\n    try {\n      this._client.detect_column_types(this._sessionId, fileName, copyParams, callback);\n    }\n    catch(err) {\n      console.log(err);\n    }\n  }\n\n  /**\n   * Submit a query to the database and process the results through an array of asychronous callbacks.\n   * If no callbacks are given, use synchronous instead.\n   * TODO: Refactor to use take a query and an options object\n   * @param {String} query - The query to perform\n   * @param {Boolean} columnarResults=true - Indicates whether to return the data in columnar format. This saves time on the backend.\n   * @param {Boolean} eliminateNullRows - Indicates whether rows \n   * @param {String} renderSpec - The backend rendering spec, set to <code>undefined</code> to force frontend rendering\n   * @param {Array<Function>} callbacks\n   */\n  query(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {\n    columnarResults = !columnarResults ? true : columnarResults; // make columnar results default if not specified\n    let processResultsQuery = renderSpec ? 'render: ' + query : query; // format query for backend rendering if specified\n    let isBackendRenderingWithAsync = renderSpec && callbacks;\n    let isFrontendRenderingWithAsync = !renderSpec && callbacks;\n    let isBackendRenderingWithSync = renderSpec && !callbacks;\n    let isFrontendRenderingWithSync = !renderSpec && !callbacks;\n    let curNonce = (this._nonce++).toString();\n\n    try {\n      if (isBackendRenderingWithAsync) {\n        let processResults = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);\n        this._client.render(this._sessionId, query + \";\", renderSpec, {}, {}, curNonce, processResults);\n        return curNonce;\n      }\n      if(isFrontendRenderingWithAsync) {\n        let processResults = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);\n        this._client.sql_execute(this._sessionId, query + \";\", columnarResults, curNonce, processResults);\n        return curNonce;\n      }\n      if (isBackendRenderingWithSync) {\n        return this._client.render(this._sessionId, query + \";\", renderSpec, {}, {}, curNonce);\n      }\n      if (isFrontendRenderingWithSync) {\n        let result = this._client.sql_execute(this._sessionId, query + \";\", columnarResults, curNonce);\n        return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, result); // undefined is callbacks slot\n      }\n    }\n    catch(err) {\n      console.log(err);\n      throw(err);\n    }\n  }\n\n  /**\n   * Because it is inefficient for the server to return a row-based\n   * data structure, it is better to process the column-based results into a row-based\n   * format after the fact.\n   *\n   * @param {TRowSet} data - The column-based data returned from a query\n   * @param {Boolean} eliminateNullRows\n   * @returns {Object} processedResults \n   */\n  processColumnarResults(data, eliminateNullRows) {\n\n    var formattedResult = {fields: [], results: []};\n    var numCols = data.row_desc.length;\n    var numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;\n\n    formattedResult.fields = data.row_desc.map((field, i) => {\n      return {\n        \"name\": field.col_name,\n        \"type\": this._datumEnum[field.col_type.type],\n        \"is_array\": field.col_type.is_array\n      };\n    });\n\n    for (var r = 0; r < numRows; r++) {\n      if (eliminateNullRows) {\n        var rowHasNull = false;\n        for (var c = 0; c < numCols; c++) {\n          if (data.columns[c].nulls[r]) {\n            rowHasNull = true;\n            break;\n          }\n        }\n        if (rowHasNull)\n          continue;\n      }\n      var row = {};\n      for (var c = 0; c < numCols; c++) {\n        var fieldName = formattedResult.fields[c].name;\n        var fieldType = formattedResult.fields[c].type;\n        var fieldIsArray = formattedResult.fields[c].is_array;\n        var isNull = data.columns[c].nulls[r];\n        if (isNull) {\n          // row[fieldName] = \"NULL\";\n          row[fieldName] = null;\n          continue;\n        }\n        if (fieldIsArray) {\n          row[fieldName] = [];\n          var arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;\n          for (var e = 0; e < arrayNumElems; e++) {\n            if (data.columns[c].data.arr_col[r].nulls[e]) {\n              row[fieldName].push(\"NULL\");\n              continue;\n            }\n            switch(fieldType) {\n              case \"BOOL\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] ? true : false);\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e]);\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.real_col[e]);\n                break;\n              case \"STR\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.str_col[e]);\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] * 1000);\n                break;\n            }\n          }\n        }\n        else {\n          switch (fieldType) {\n            case \"BOOL\":\n              row[fieldName] = data.columns[c].data.int_col[r] ? true : false;\n              break;\n            case \"SMALLINT\":\n            case \"INT\":\n            case \"BIGINT\":\n              row[fieldName] = data.columns[c].data.int_col[r];\n              break;\n            case \"FLOAT\":\n            case \"DOUBLE\":\n            case \"DECIMAL\":\n              row[fieldName] = data.columns[c].data.real_col[r];\n              break;\n            case \"STR\":\n              row[fieldName] = data.columns[c].data.str_col[r];\n              break;\n            case \"TIME\":\n            case \"TIMESTAMP\":\n            case \"DATE\":\n              row[fieldName] = new Date(data.columns[c].data.int_col[r] * 1000);\n              break;\n          }\n        }\n      }\n      formattedResult.results.push(row);\n    }\n    return formattedResult;\n  }\n\n  /**\n   * It should be avoided to query for row-based results from the server, howerver\n   * it can still be done. In this case, still process them into the same format as\n   * (@link processColumnarResults} to keep the output consistent.\n   * @param {TRowSet} data - The row-based data returned from a query\n   * @param {Boolean} eliminateNullRows\n   * @returns {Object} processedResults \n   */\n  processRowResults(data, eliminateNullRows) {\n    var numCols = data.row_desc.length;\n    var colNames = [];\n    var formattedResult = { fields: [], results: [] };\n\n    formattedResult.fields = data.row_desc.map((field, i) => {\n      return {\n        \"name\": field.col_name,\n        \"type\": this._datumEnum[field.col_type.type],\n        \"is_array\": field.col_type.is_array\n      };\n    });\n\n    formattedResult.results = [];\n    var numRows = 0;\n    if (data.rows !== undefined && data.rows !== null){\n      numRows = data.rows.length; // so won't throw if data.rows is missing\n    }\n\n    for (var r = 0; r < numRows; r++) {\n      if (eliminateNullRows) {\n        var rowHasNull = false;\n        for (var c = 0; c < numCols; c++) {\n          if (data.rows[r].columns[c].is_null) {\n            rowHasNull = true;\n            break;\n          }\n        }\n        if (rowHasNull){\n          continue;\n        }\n      }\n\n      var row = {};\n      for (var c = 0; c < numCols; c++) {\n        var fieldName = formattedResult.fields[c].name;\n        var fieldType = formattedResult.fields[c].type;\n        var fieldIsArray = formattedResult.fields[c].is_array;\n        if (fieldIsArray) {\n          if (data.rows[r].cols[c].is_null) {\n            row[fieldName] = \"NULL\";\n            continue;\n          }\n          row[fieldName] = [];\n          var arrayNumElems = data.rows[r].cols[c].val.arr_val.length;\n          for (var e = 0; e < arrayNumElems; e++) {\n            var elemDatum = data.rows[r].cols[c].val.arr_val[e];\n            if (elemDatum.is_null) {\n              row[fieldName].push(\"NULL\");\n              continue;\n            }\n            switch(fieldType) {\n              case \"BOOL\":\n                row[fieldName].push(elemDatum.val.int_val ? true : false);\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName].push(elemDatum.val.int_val);\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName].push(elemDatum.val.real_val);\n                break;\n              case \"STR\":\n                row[fieldName].push(elemDatum.val.str_val);\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName].push(elemDatum.val.int_val * 1000);\n                break;\n            }\n          }\n        }\n        else {\n          var scalarDatum = data.rows[r].cols[c];\n          if (scalarDatum.is_null) {\n            row[fieldName] = \"NULL\";\n            continue;\n          }\n          switch (fieldType) {\n            case \"BOOL\":\n              row[fieldName] = scalarDatum.val.int_val ? true : false;\n              break;\n            case \"SMALLINT\":\n            case \"INT\":\n            case \"BIGINT\":\n              row[fieldName] = scalarDatum.val.int_val;\n              break;\n            case \"FLOAT\":\n            case \"DOUBLE\":\n            case \"DECIMAL\":\n              row[fieldName] = scalarDatum.val.real_val;\n              break;\n            case \"STR\":\n              row[fieldName] = scalarDatum.val.str_val;\n              break;\n            case \"TIME\":\n            case \"TIMESTAMP\":\n            case \"DATE\":\n              row[fieldName] = new Date(scalarDatum.val.int_val * 1000);\n              break;\n          }\n        }\n      }\n      formattedResult.results.push(row);\n    }\n    return formattedResult;\n  }\n\n  processResults(isImage, eliminateNullRows, query, callbacks, result) {\n    if (this._logging && result.execution_time_ms)\n      console.log(query + \": \" + result.execution_time_ms + \" ms\");\n    var hasCallback = typeof callbacks !== 'undefined';\n    if (isImage) {\n      if (hasCallback) {\n        callbacks.pop()(result, callbacks);\n      }\n      else {\n        return result;\n      }\n    }\n    else {\n      result = result.row_set;\n      var formattedResult = null;\n      if (result.is_columnar) {\n        formattedResult = this.processColumnarResults(result, eliminateNullRows);\n      }\n      else {\n        formattedResult = this.processRowResults(result, eliminateNullRows);\n      }\n      if (hasCallback) {\n        callbacks.pop()(formattedResult.results, callbacks);\n      }\n      else {\n        return formattedResult.results;\n      }\n    }\n  }\n\n  /**\n   * Create a new MapdCon and return it to allow method chaining.\n   * @return {MapdCon} Object\n   * \n   * @example <caption>Create a new MapdCon instance:</caption>\n   * var con = new MapdCon();\n   *\n   * @example <caption>Create a new MapdCon instance and set the host via method chaining:</caption>\n   * var con = new MapdCon().host('http://hostname.com');\n   */\n  getDatabases() {\n    var databases = null;\n    try {\n      databases = this._client.get_databases();\n      return databases.map((db, i) => { return db.db_name; });\n    }\n    catch (err) {\n      console.log('ERROR: Could not get databases from backend. Check the session id.', err);\n    }\n  }\n\n  getTables() {\n    var tabs = null;\n    try {\n      tabs = this._client.get_tables(this._sessionId);\n    }\n    catch (err) {\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        tabs = this._client.get_tables(this._sessionId);\n      }\n    }\n\n    var numTables = tabs.length;\n    var tableInfo = [];\n    for (var t = 0; t < numTables; t++) {\n      tableInfo.push({\n        \"name\": tabs[t],\n        \"label\": \"obs\"\n      });\n    }\n    return tableInfo;\n  }\n\n  invertDatumTypes() {\n    for (var key in TDatumType) {\n      this._datumEnum[TDatumType[key]] = key;\n    }\n  }\n\n  getFields(tableName) {\n    var fields = this._client.get_table_descriptor(this._sessionId, tableName);\n    var fieldsArray = [];\n    // silly to change this from map to array\n    // - then later it turns back to map\n    for (var key in fields) {\n      fieldsArray.push({\n        \"name\": key, \n        \"type\": this._datumEnum[fields[key].col_type.type],\n        \"is_array\": fields[key].col_type.is_array,\n        \"is_dict\": fields[key].col_type.encoding == TEncodingType[\"DICT\"]\n      });\n    }\n    return fieldsArray;\n  }\n\n  createTable(tableName, rowDesc, callback) {\n    try {\n      result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);\n      }\n    }\n    return result;\n  }\n\n  importTable(tableName, fileName, copyParams, callback) {\n    copyParams.delimiter = copyParams.delimiter || \"\";\n    try {\n      result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);\n      }\n    }\n    return result;\n  }\n\n  importTableStatus(importId, callback) {\n    callback = callback || null;\n    var import_status = null;\n    try {\n      import_status = this._client.import_table_status(this._sessionId, importId, callback);\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        import_status = this._client.import_table_status(this._sessionId, importId, callback);\n      }\n    }\n    return import_status;\n  }\n\n  getRowsForPixels(pixels, table_name, col_names, callbacks) {\n    var widget_id = 1;  // INT\n    var column_format = true; //BOOL\n    callbacks = callbacks || null;\n    var curNonce = (this._nonce++).toString();\n    try {\n      if (!callbacks){\n          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n      }\n      this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));\n    }\n    catch(err) {\n      console.log(err);\n      if (err.name == \"ThriftException\") {\n        this.connect();\n        if (!callbacks){\n          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n        }\n        this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));\n      }\n    }\n    return curNonce;\n  }\n\n  processPixelResults(callbacks, results) {\n    var results = results.pixel_rows;\n    var numPixels = results.length;\n    var resultsMap = {};\n    for (var p = 0; p < numPixels; p++) {\n      results[p].row_set = this.processResults(false, false, \"pixel request\", undefined, results[p]);\n    }\n    if (!callbacks){\n      return results;\n    }\n    callbacks.pop()(results, callbacks);\n  }\n\n  getUploadServer(){\n    return \"\";\n  }\n\n  /**\n   * Get or set the session ID used by the server to serve the correct data.\n   * This is typically set by {@link connect} and should not be set manually.\n   * @param {Number} [sessionId] - The session ID of the current connection\n   * @return {Number|MapdCon} - The session ID or the MapdCon itself\n   *\n   * @example <caption>Get the session id:</caption>\n   * var sessionID = new MapdCon()\n   *   .host('localhost')\n   *   .port('8080')\n   *   .dbName('myDatabase')\n   *   .user('foo')\n   *   .password('bar')\n   *   .connect()\n   *   .sessionId();\n   * // sessionID === 3145846410 \n   *\n   * @example <caption>Set the session id:</caption>\n   * var con = new MapdCon().connect().sessionId(3415846410);\n   * // NOTE: It is generally unsafe to set the session id manually.\n   */\n  sessionId(sessionId) {\n    if (!arguments.length){\n      return this._sessionId;\n    }\n    this._sessionId = sessionId;\n    return this;\n  }\n\n  /**\n   * Get or set the connection server hostname. This is is typically the first method called after instantiating a new MapdCon.\n   * @param {String} [host] - The hostname address\n   * @return {String|MapdCon} - The hostname or the MapdCon itself\n   *\n   * @example <caption>Set the hostname:</caption>\n   * var con = new MapdCon().host('localhost');\n   *\n   * @example <caption>Get the hostname:</caption>\n   * var host = con.host();\n   * // host === 'localhost'\n   */\n  host(host) {\n    if (!arguments.length){\n      return this._host;\n    }\n    this._host = host;\n    return this;\n  }\n\n  /**\n   * Get or set the connection port.\n   * @param {String} [port] - The port to connect on\n   * @return {String|MapdCon} - The port or the MapdCon itself\n   *\n   * @example <caption>Set the port:</caption>\n   * var con = new MapdCon().port('8080');\n   *\n   * @example <caption>Get the port:</caption>\n   * var port = con.port();\n   * // port === '8080'\n   */\n  port(port) {\n    if (!arguments.length){\n      return this._port;\n    }\n    this._port = port;\n    return this;\n  }\n\n  /**\n   * Get or set the username to authenticate with.\n   * @param {String} [user] - The username to authenticate with\n   * @return {String|MapdCon} - The username or the MapdCon itself\n   *\n   * @example <caption>Set the username:</caption>\n   * var con = new MapdCon().user('foo');\n   *\n   * @example <caption>Get the username:</caption>\n   * var username = con.user();\n   * // user === 'foo'\n   */\n  user(user) {\n    if (!arguments.length){\n      return this._user;\n    }\n    this._user = user;\n    return this;\n  }\n\n  /**\n   * Get or set the user's password to authenticate with.\n   * @param {String} [password] - The password to authenticate with\n   * @return {String|MapdCon} - The password or the MapdCon itself\n   *\n   * @example <caption>Set the password:</caption>\n   * var con = new MapdCon().password('bar');\n   *\n   * @example <caption>Get the username:</caption>\n   * var password = con.password();\n   * // password === 'bar'\n   */\n  password(password) {\n    if (!arguments.length){\n      return this._password;\n    }\n    this._password = password;\n    return this;\n  }\n\n  /**\n   * Get or set the name of the database to connect to.\n   * @param {String} [dbName] - The database to connect to\n   * @return {String|MapdCon} - The name of the database or the MapdCon itself\n   *\n   * @example <caption>Set the database name:</caption>\n   * var con = new MapdCon().dbName('myDatabase');\n   *\n   * @example <caption>Get the database name:</caption>\n   * var dbName = con.dbName();\n   * // dbName === 'myDatabase'\n   */\n  dbName(dbName) {\n    if (!arguments.length){\n      return this._dbName;\n    }\n    this._dbName = dbName;\n    return this;\n  }\n\n  /**\n   * Whether the raw queries strings will be logged to the console.\n   * Used primarily for debugging and defaults to <code>false</code>.\n   * @param {Boolean} [logging] - Set to true to enable logging\n   * @return {Boolean|MapdCon} - The current logging flag or MapdCon itself\n   *\n   * @example <caption>Set logging to true:</caption>\n   * var con = new MapdCon().logging(true);\n   *\n   * @example <caption>Get the logging flag:</caption>\n   * var isLogging = con.logging();\n   * // isLogging === true\n   */\n  logging(logging) {\n    if (!arguments.length){\n      return this._logging;\n    }\n    this._logging = logging;\n    return this;\n  }\n\n  /**\n   * The name of the platform.\n   * @param {String} [platform] - The platform, default is \"mapd\"\n   * @return {String|MapdCon} - The platform or the MapdCon itself\n   *\n   * @example <caption>Set the platform name:</caption>\n   * var con = new MapdCon().platform('myPlatform');\n   *\n   * @example <caption>Get the platform name:</caption>\n   * var platform = con.platform();\n   * // platform === 'myPlatform'\n   */\n  platform(platform) {\n    if (!arguments.length){\n      return this._platform;\n    }\n    this._platform = platform;\n    return this;\n  }\n\n  /**\n   * The MapDClient instance to perform queries with.\n   * @param {MapDClient} [client] -  \n   * @return {MapDClient|MapdCon} - MapDClient or MapdCon itself\n   *\n   * @example <caption>Set the client:</caption>\n   * var con = new MapdCon().client(client);\n   * // NOTE: It is generally unsafe to set the client manually. Use connect() instead.\n   *\n   * @example <caption>Get the client:</caption>\n   * var client = con.client();\n   * // client instanceof MapDClient === true\n   */\n  client(client) {\n    if (!arguments.length){\n      return this._client;\n    }\n    this._client = client;\n    return this;\n  }\n\n}\n\n// Set a global mapdcon function when mapdcon is brought in via script tag.\nif(typeof module === \"object\" && module.exports){\n  if(window){\n    window.MapdCon = MapdCon;\n  }\n\n}\n\nexport default new MapdCon();\n\n"
   },
   {
     "__docId__": 1,
@@ -1792,7 +1792,7 @@
     "access": null,
     "description": "The MapDClient instance to perform queries with.",
     "examples": [
-      "<caption>Set the client:</caption>\nvar con = new MapdCon().client(lient);\n// NOTE: It is generally unsafe to set the client manually. Use connect() instead.",
+      "<caption>Set the client:</caption>\nvar con = new MapdCon().client(client);\n// NOTE: It is generally unsafe to set the client manually. Use connect() instead.",
       "<caption>Get the client:</caption>\nvar client = con.client();\n// client instanceof MapDClient === true"
     ],
     "lineNumber": 976,
@@ -1863,155 +1863,16 @@
     "kind": "file",
     "static": true,
     "variation": null,
-    "name": "src/mapd-con-es6.spec.js",
-    "memberof": null,
-    "longname": "src/mapd-con-es6.spec.js",
-    "access": null,
-    "description": null,
-    "lineNumber": 2,
-    "content": "// Node Dependencies\nimport { readFileSync }      from 'fs';\n\n// NPM Dependencies\nimport { expect }            from 'expect';\nimport { jsdom }             from 'jsdom';\n\n// JSDom Configuration\nconst html       = '<!doctype html><html><body></body></html>';\nconst thrift     = readFileSync(\"./thrift.js\", \"utf-8\");\nconst mapdthrift = readFileSync(\"./mapd.thrift.js\", \"utf-8\");\nconst mapdtypes  = readFileSync(\"./mapd_types.js\", \"utf-8\");\nconst mapdcon    = readFileSync(\"./mapd-con.js\", \"utf-8\");\nconst scripts    = [ thrift, mapdthrift, mapdtypes, mapdcon ];\n\ndescribe('App Actions', () => {\n\n\n  it('successful connection', () => {\n\n    var callback = (err, window) => {\n      console.log('err', err);\n      console.log('asdf', window);\n      expect(false).toEqual(true);\n    };\n    // Use JSDom to mock a browser environment,\n    // loading the necessary scripts, then executing the callback.\n    jsdom.env({\n      html,\n      src: scripts,\n      done: callback\n    });\n\n\n  });\n});\n"
-  },
-  {
-    "__docId__": 71,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "html",
-    "memberof": "src/mapd-con-es6.spec.js",
-    "longname": "src/mapd-con-es6.spec.js~html",
-    "access": null,
-    "export": false,
-    "importPath": "@mapd/mapd-con/src/mapd-con-es6.spec.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 9,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 72,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "thrift",
-    "memberof": "src/mapd-con-es6.spec.js",
-    "longname": "src/mapd-con-es6.spec.js~thrift",
-    "access": null,
-    "export": false,
-    "importPath": "@mapd/mapd-con/src/mapd-con-es6.spec.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 10,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 73,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "mapdthrift",
-    "memberof": "src/mapd-con-es6.spec.js",
-    "longname": "src/mapd-con-es6.spec.js~mapdthrift",
-    "access": null,
-    "export": false,
-    "importPath": "@mapd/mapd-con/src/mapd-con-es6.spec.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 74,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "mapdtypes",
-    "memberof": "src/mapd-con-es6.spec.js",
-    "longname": "src/mapd-con-es6.spec.js~mapdtypes",
-    "access": null,
-    "export": false,
-    "importPath": "@mapd/mapd-con/src/mapd-con-es6.spec.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 75,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "mapdcon",
-    "memberof": "src/mapd-con-es6.spec.js",
-    "longname": "src/mapd-con-es6.spec.js~mapdcon",
-    "access": null,
-    "export": false,
-    "importPath": "@mapd/mapd-con/src/mapd-con-es6.spec.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 13,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 76,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "scripts",
-    "memberof": "src/mapd-con-es6.spec.js",
-    "longname": "src/mapd-con-es6.spec.js~scripts",
-    "access": null,
-    "export": false,
-    "importPath": "@mapd/mapd-con/src/mapd-con-es6.spec.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 77,
-    "kind": "file",
-    "static": true,
-    "variation": null,
     "name": "src/mapdcon-deprecated.js",
     "memberof": null,
     "longname": "src/mapdcon-deprecated.js",
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "(function(exports){\n  mapdcon.version= \"1.0\";\n  exports.mapdcon = mapdcon;\n\n  function mapdcon() {\n    var mapdcon = {\n      setPlatform: setPlatform,\n      setHost: setHost,\n      setUserAndPassword: setUserAndPassword,\n      setPort: setPort,\n      setDbName: setDbName,\n      connect: connect,\n      disconnect: disconnect,\n      query: query,\n      queryAsync: queryAsync,\n      render: render,\n      getSessionId: function() {return sessionId;},\n      getHost: function() {return host},\n      getPort: function() {return port},\n      getUser: function() {return user},\n      getDb: function() {return dbName},\n      getUploadServer: function() {return \"\"}, // empty string: same as frontend server\n      getDatabases: getDatabases,\n      getTables: getTables,\n      getFields: getFields,\n      getPlatform: getPlatform,\n      getClient: getClient,\n      getFrontendViews: getFrontendViews,\n      getFrontendView: getFrontendView,\n      getServerStatus: getServerStatus,\n      createFrontendView: createFrontendView,\n      detectColumnTypes: detectColumnTypes,\n      createTable: createTable,\n      importTable: importTable,\n      importTableStatus: importTableStatus,\n      createLink: createLink,\n      getLinkView: getLinkView,\n      getRowsForPixels: getRowsForPixels,\n      logging: logging \n    }\n\n    var host = null;\n    var user = null;\n    var password = null; // to be changed\n    var port = null;\n    var dbName = null;\n    var transport = null;\n    var protocol = null;\n    var client = null;\n    var sessionId = null;\n    var datumEnum = {};\n    var nonce = 0;\n    var _logging = false;\n\n    function logging(_) {\n      if (!arguments.length)\n        return _logging;\n      _logging = _;\n      return mapdcon;\n    }\n\n    function setPlatform(newPlatform) {\n      //dummy function for now\n      return mapdcon;\n    }\n\n    function getPlatform() {\n      return \"mapd\";\n    }\n    function getClient() {\n      return client;\n    }\n\n    function setHost(newHost) {\n      host = newHost;\n      return mapdcon;\n    }\n\n    function setUserAndPassword (newUser,newPassword) {\n      user = newUser;\n      password = newPassword;\n      return mapdcon;\n    }\n\n    function setPort (newPort) {\n      port = newPort;\n      return mapdcon;\n    }\n\n    function setDbName (newDb) {\n      dbName = newDb;\n      return mapdcon;\n    }\n\n    function testConnection() {\n      if (sessionId == null)  {\n        return false;\n        //throw \"Client not connected\";\n      }\n      return true;\n    }\n\n    function connect() {\n      transport = new Thrift.Transport(\"http://\" + host + \":\" + port);\n      protocol = new Thrift.Protocol(transport);\n      client = new MapDClient(protocol);\n      sessionId = client.connect(user, password, dbName);\n      return mapdcon;\n    }\n\n    function disconnect() {\n      if (sessionId != null) {\n        client.disconnect(sessionId);\n        sessionId = null;\n      }\n      client = null;\n      protocol = null;\n      transport = null;\n    }\n\n    function getFrontendViews() {\n      var result = null;\n      try {\n        result = client.get_frontend_views(sessionId);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_frontend_views(sessionId);\n        }\n      }\n      return result;\n    }\n\n    function getFrontendView(viewName) {\n      var result = null;\n      try {\n        result = client.get_frontend_view(sessionId,viewName);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_frontend_views(sessionId,viewName);\n        }\n      }\n      return result;\n    }\n\n    function getServerStatus() {\n      var result = null;\n      try {\n        result = client.get_server_status();\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_server_status();\n        }\n      }\n      return result;\n    }\n\n\n    function createFrontendView(viewName, viewState, imageHash) {\n      try {\n        client.create_frontend_view(sessionId, viewName, viewState, imageHash);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          var result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);\n        }\n      }\n    }\n\n    function createLink(viewState) {\n      try {\n        result = client.create_link(sessionId, viewState);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.create_link(sessionId, viewState);\n        }\n      }\n      return result;\n    }\n\n    function getLinkView(link) {\n      try {\n        result = client.get_link_view(sessionId, link);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_link_view(sessionId, link);\n        }\n      }\n      return result;\n    }\n\n    function detectColumnTypes(fileName, copyParams, callback) {\n      var result = null;\n      copyParams.delimiter = copyParams.delimiter || \"\";\n      try {\n        result = client.detect_column_types(sessionId, fileName, copyParams, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.detect_column_types(sessionId, fileName, copyParams, callback);\n        }\n      }\n      return result;\n    }\n\n    function render(query, renderSpec) {\n      var result = null;\n      try {\n        result = client.render(sessionId, query, renderSpec, {}, {});\n\n      }\n      catch (err) {\n        console.log(err);\n      }\n    }\n\n    function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {\n      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified\n      var curNonce = (nonce++).toString();\n      try {\n        if (renderSpec !== undefined) {\n          client.render(sessionId, query + \";\", renderSpec, {}, {}, curNonce, processResults.bind(this, true, eliminateNullRows, \"render: \" + query, callbacks));\n        }\n        else {\n          client.sql_execute(sessionId,query + \";\", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, query, callbacks));\n        }\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          client.sql_execute(sessionId,query + \";\", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, query, callbacks));\n        }\n        else if (err.name == \"TMapDException\") {\n          swal({title: \"Error!\",\n            text: err.error_msg,\n            type: \"error\",\n            confirmButtonText: \"Okay\"\n          });\n\n          // google analytics send error\n          ga('send', 'event', 'error', 'async query error', err.error_msg, {\n           nonInteraction: true\n          });\n\n        }\n        else {\n          throw(err);\n        }\n      }\n      return curNonce;\n    }\n\n    function query(query,columnarResults,eliminateNullRows, renderSpec) {\n      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified\n      var result = null;\n      var curNonce = (nonce++).toString();\n      try {\n        if (renderSpec !== undefined) {\n          result = client.render(sessionId, query + \";\", renderSpec, {}, {}, curNonce);\n        }\n        else {\n          result = client.sql_execute(sessionId,query + \";\",columnarResults, curNonce);\n        }\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.sql_execute(sessionId,query + \";\",columnarResults, curNonce);\n        }\n        else if (err.name == \"TMapDException\") {\n          swal({title: \"Error!\",\n            text: err.error_msg,\n            type: \"error\",\n            confirmButtonText: \"Okay\"\n          });\n\n          // google analytics send error\n          ga('send', 'event', 'error', 'query error', err.error_msg, {\n           nonInteraction: true\n          })\n        }\n        else {\n          throw(err);\n        }\n      }\n\n      if (renderSpec !== undefined)\n        return result;\n      return processResults(false, eliminateNullRows, renderSpec ? \"render: \" + query : query, undefined, result); // undefined is callbacks slot\n    }\n\n    function processColumnarResults(data,eliminateNullRows) {\n      var formattedResult = {fields: [], results: []};\n      var numCols = data.row_desc.length;\n      var numRows = 0;\n      for (var c = 0; c < numCols; c++) {\n        var field = data.row_desc[c];\n        formattedResult.fields.push({\"name\": field.col_name, \"type\": datumEnum[field.col_type.type], \"is_array\":field.col_type.is_array});\n      }\n      if (numCols > 0)\n        numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;\n      for (var r = 0; r < numRows; r++) {\n        if (eliminateNullRows) {\n          var rowHasNull = false;\n          for (var c = 0; c < numCols; c++) {\n            if (data.columns[c].nulls[r]) {\n              rowHasNull = true;\n              break;\n            }\n          }\n          if (rowHasNull)\n            continue;\n        }\n        var row = {};\n        for (var c = 0; c < numCols; c++) {\n          var fieldName = formattedResult.fields[c].name;\n          var fieldType = formattedResult.fields[c].type;\n          var fieldIsArray = formattedResult.fields[c].is_array;\n          var isNull = data.columns[c].nulls[r];\n          if (isNull) {\n            // row[fieldName] = \"NULL\";\n            row[fieldName] = null;\n            continue;\n          }\n          if (fieldIsArray) {\n            row[fieldName] = [];\n            var arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;\n            for (var e = 0; e < arrayNumElems; e++) {\n              if (data.columns[c].data.arr_col[r].nulls[e]) {\n                row[fieldName].push(\"NULL\");\n                continue;\n              }\n              switch(fieldType) {\n                case \"BOOL\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] ? true : false);\n                  break;\n                case \"SMALLINT\":\n                case \"INT\":\n                case \"BIGINT\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e]);\n                  break;\n                case \"FLOAT\":\n                case \"DOUBLE\":\n                case \"DECIMAL\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.real_col[e]);\n                  break;\n                case \"STR\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.str_col[e]);\n                  break;\n                case \"TIME\":\n                case \"TIMESTAMP\":\n                case \"DATE\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] * 1000);\n                  break;\n              }\n            }\n          }\n          else {\n            switch (fieldType) {\n              case \"BOOL\":\n                row[fieldName] = data.columns[c].data.int_col[r] ? true : false;\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName] = data.columns[c].data.int_col[r];\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName] = data.columns[c].data.real_col[r];\n                break;\n              case \"STR\":\n                row[fieldName] = data.columns[c].data.str_col[r];\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName] = new Date(data.columns[c].data.int_col[r] * 1000);\n                break;\n            }\n          }\n        }\n        formattedResult.results.push(row);\n      }\n      return formattedResult;\n    }\n\n\n    function processRowResults(data, eliminateNullRows) {\n      var numCols = data.row_desc.length;\n      var colNames = [];\n      var formattedResult = {fields: [], results: []};\n      for (var c = 0; c < numCols; c++) {\n        var field = data.row_desc[c];\n        formattedResult.fields.push({\"name\": field.col_name, \"type\": datumEnum[field.col_type.type], \"is_array\":field.col_type.is_array});\n      }\n      formattedResult.results = [];\n      var numRows = 0;\n      if (data.rows !== undefined && data.rows !== null)\n        numRows = data.rows.length; // so won't throw if data.rows is missing\n      for (var r = 0; r < numRows; r++) {\n        if (eliminateNullRows) {\n          var rowHasNull = false;\n          for (var c = 0; c < numCols; c++) {\n            if (data.rows[r].columns[c].is_null) {\n              rowHasNull = true;\n              break;\n            }\n          }\n          if (rowHasNull)\n            continue;\n        }\n\n        var row = {};\n        for (var c = 0; c < numCols; c++) {\n          var fieldName = formattedResult.fields[c].name;\n          var fieldType = formattedResult.fields[c].type;\n          var fieldIsArray = formattedResult.fields[c].is_array;\n          if (fieldIsArray) {\n            if (data.rows[r].cols[c].is_null) {\n              row[fieldName] = \"NULL\";\n              continue;\n            }\n            row[fieldName] = [];\n            var arrayNumElems = data.rows[r].cols[c].val.arr_val.length;\n            for (var e = 0; e < arrayNumElems; e++) {\n              var elemDatum = data.rows[r].cols[c].val.arr_val[e];\n              if (elemDatum.is_null) {\n                row[fieldName].push(\"NULL\");\n                continue;\n              }\n              switch(fieldType) {\n                case \"BOOL\":\n                  row[fieldName].push(elemDatum.val.int_val ? true : false);\n                  break;\n                case \"SMALLINT\":\n                case \"INT\":\n                case \"BIGINT\":\n                  row[fieldName].push(elemDatum.val.int_val);\n                  break;\n                case \"FLOAT\":\n                case \"DOUBLE\":\n                case \"DECIMAL\":\n                  row[fieldName].push(elemDatum.val.real_val);\n                  break;\n                case \"STR\":\n                  row[fieldName].push(elemDatum.val.str_val);\n                  break;\n                case \"TIME\":\n                case \"TIMESTAMP\":\n                case \"DATE\":\n                  row[fieldName].push(elemDatum.val.int_val * 1000);\n                  break;\n              }\n            }\n          }\n          else {\n            var scalarDatum = data.rows[r].cols[c];\n            if (scalarDatum.is_null) {\n              row[fieldName] = \"NULL\";\n              continue;\n            }\n            switch (fieldType) {\n              case \"BOOL\":\n                row[fieldName] = scalarDatum.val.int_val ? true : false;\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName] = scalarDatum.val.int_val;\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName] = scalarDatum.val.real_val;\n                break;\n              case \"STR\":\n                row[fieldName] = scalarDatum.val.str_val;\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName] = new Date(scalarDatum.val.int_val * 1000);\n                break;\n            }\n          }\n        }\n        formattedResult.results.push(row);\n      }\n      return formattedResult;\n    }\n\n    function processResults(isImage, eliminateNullRows, query, callbacks, result) {\n      if (_logging && result.execution_time_ms)\n        console.log(query + \": \" + result.execution_time_ms + \" ms\");\n      var hasCallback = typeof callbacks !== 'undefined';\n      if (isImage) {\n        if (hasCallback) {\n          callbacks.pop()(result,callbacks);\n        }\n        else {\n          return result;\n        }\n      }\n      else {\n        result = result.row_set;\n        var formattedResult = null;\n        if (result.is_columnar) {\n          formattedResult = processColumnarResults(result,eliminateNullRows);\n        }\n        else {\n          formattedResult = processRowResults(result,eliminateNullRows);\n        }\n        if (hasCallback) {\n          callbacks.pop()(formattedResult.results,callbacks);\n        }\n        else {\n          return formattedResult.results;\n        }\n      }\n    }\n\n    function getDatabases () {\n      testConnection();\n      var databases = null;\n      try {\n        databases = client.get_databases();\n      }\n      catch (err) {\n        if (err.name == \"ThriftException\") {\n          connect();\n          databases = client.get_databases();\n        }\n      }\n      var dbNames = [];\n      $(databases).each(function(){dbNames.push(this.db_name)});\n      return dbNames;\n    }\n\n    function getTables() {\n      testConnection();\n      var tabs = null;\n      try {\n        tabs = client.get_tables(sessionId);\n      }\n      catch (err) {\n        if (err.name == \"ThriftException\") {\n          connect();\n          tabs = client.get_tables(sessionId);\n        }\n      }\n\n      var numTables = tabs.length;\n      var tableInfo = [];\n      for (var t = 0; t < numTables; t++) {\n        tableInfo.push({\"name\": tabs[t], \"label\": \"obs\"});\n      }\n      return tableInfo;\n    }\n\n    function invertDatumTypes() {\n      for (var key in TDatumType) {\n        datumEnum[TDatumType[key]] = key;\n      }\n    }\n\n    function getFields(tableName) {\n      testConnection();\n      var fields = client.get_table_descriptor(sessionId,tableName);\n      var fieldsArray = [];\n      // silly to change this from map to array\n      // - then later it turns back to map\n      for (var key in fields) {\n        fieldsArray.push({\"name\": key, \"type\": datumEnum[fields[key].col_type.type], \"is_array\":fields[key].col_type.is_array, \"is_dict\": fields[key].col_type.encoding == TEncodingType[\"DICT\"]});\n      }\n      return fieldsArray;\n    }\n\n    function createTable(tableName, rowDesc, callback) {\n      try {\n        result = client.send_create_table(sessionId, tableName, rowDesc, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.send_create_table(sessionId, tableName, rowDesc, callback);\n        }\n      }\n      return result;\n    }\n\n    function importTable(tableName, fileName, copyParams, callback) {\n      copyParams.delimiter = copyParams.delimiter || \"\";\n      try {\n        result = client.send_import_table(sessionId, tableName, fileName, copyParams, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.send_import_table(sessionId, tableName, fileName, copyParams, callback);\n        }\n      }\n      return result;\n    }\n\n    function importTableStatus(importId, callback) {\n      testConnection();\n      callback = callback || null;\n      var import_status = null;\n      try {\n        import_status = client.import_table_status(sessionId, importId, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          import_status = client.import_table_status(sessionId, importId, callback);\n        }\n      }\n      return import_status;\n    }\n\n    function getRowsForPixels(pixels, table_name, col_names, callbacks) {\n      var widget_id = 1;  // INT\n      var column_format = true; //BOOL\n      callbacks = callbacks || null;\n      var curNonce = (nonce++).toString();\n      try {\n        if (!callbacks) \n            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          if (!callbacks) \n            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));\n        }\n      }\n      return curNonce;\n    }\n\n    function processPixelResults(callbacks, results) {\n      var results = results.pixel_rows;\n      var numPixels = results.length;\n      var resultsMap = {};\n      for (var p = 0; p < numPixels; p++) {\n        results[p].row_set = processResults(false, false, \"pixel request\", undefined, results[p]);\n      }\n      if (!callbacks) \n        return results;\n      callbacks.pop()(results,callbacks);\n    }\n\n\n\n    invertDatumTypes();\n    return mapdcon;\n  }\n\n})(typeof exports !== 'undefined' && exports || this);\n"
+    "content": "(function(exports){\n  mapdcon.version= \"1.0\";\n  exports.mapdcon = mapdcon;\n\n  function mapdcon() {\n    var mapdcon = {\n      setPlatform: setPlatform,\n      setHost: setHost,\n      setUserAndPassword: setUserAndPassword,\n      setPort: setPort,\n      setDbName: setDbName,\n      connect: connect,\n      disconnect: disconnect,\n      query: query,\n      queryAsync: queryAsync,\n      render: render,\n      getSessionId: function() {return sessionId;},\n      getHost: function() {return host},\n      getPort: function() {return port},\n      getUser: function() {return user},\n      getDb: function() {return dbName},\n      getUploadServer: function() {return \"\"}, // empty string: same as frontend server\n      getDatabases: getDatabases,\n      getTables: getTables,\n      getFields: getFields,\n      getPlatform: getPlatform,\n      getClient: getClient,\n      getFrontendViews: getFrontendViews,\n      getFrontendView: getFrontendView,\n      getServerStatus: getServerStatus,\n      createFrontendView: createFrontendView,\n      detectColumnTypes: detectColumnTypes,\n      createTable: createTable,\n      importTable: importTable,\n      importTableStatus: importTableStatus,\n      createLink: createLink,\n      getLinkView: getLinkView,\n      getRowsForPixels: getRowsForPixels,\n      logging: logging \n    }\n\n    var host = null;\n    var user = null;\n    var password = null; // to be changed\n    var port = null;\n    var dbName = null;\n    var transport = null;\n    var protocol = null;\n    var client = null;\n    var sessionId = null;\n    var datumEnum = {};\n    var nonce = 0;\n    var _logging = false;\n\n    function logging(_) {\n      if (!arguments.length)\n        return _logging;\n      _logging = _;\n      return mapdcon;\n    }\n\n    function setPlatform(newPlatform) {\n      //dummy function for now\n      return mapdcon;\n    }\n\n    function getPlatform() {\n      return \"mapd\";\n    }\n    function getClient() {\n      return client;\n    }\n\n    function setHost(newHost) {\n      host = newHost;\n      return mapdcon;\n    }\n\n    function setUserAndPassword (newUser,newPassword) {\n      user = newUser;\n      password = newPassword;\n      return mapdcon;\n    }\n\n    function setPort (newPort) {\n      port = newPort;\n      return mapdcon;\n    }\n\n    function setDbName (newDb) {\n      dbName = newDb;\n      return mapdcon;\n    }\n\n    function testConnection() {\n      if (sessionId == null)  {\n        return false;\n        //throw \"Client not connected\";\n      }\n      return true;\n    }\n\n    function connect() {\n      transport = new Thrift.Transport(\"http://\" + host + \":\" + port);\n      protocol = new Thrift.Protocol(transport);\n      client = new MapDClient(protocol);\n      sessionId = client.connect(user, password, dbName);\n      return mapdcon;\n    }\n\n    function disconnect() {\n      if (sessionId != null) {\n        client.disconnect(sessionId);\n        sessionId = null;\n      }\n      client = null;\n      protocol = null;\n      transport = null;\n    }\n\n    function getFrontendViews() {\n      var result = null;\n      try {\n        result = client.get_frontend_views(sessionId);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_frontend_views(sessionId);\n        }\n      }\n      return result;\n    }\n\n    function getFrontendView(viewName) {\n      var result = null;\n      try {\n        result = client.get_frontend_view(sessionId,viewName);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_frontend_views(sessionId,viewName);\n        }\n      }\n      return result;\n    }\n\n    function getServerStatus() {\n      var result = null;\n      try {\n        result = client.get_server_status();\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_server_status();\n        }\n      }\n      return result;\n    }\n\n\n    function createFrontendView(viewName, viewState, imageHash) {\n      try {\n        client.create_frontend_view(sessionId, viewName, viewState, imageHash);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          var result = client.get_frontend_views(sessionId, viewName, viewState, imageHash);\n        }\n      }\n    }\n\n    function createLink(viewState) {\n      try {\n        result = client.create_link(sessionId, viewState);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.create_link(sessionId, viewState);\n        }\n      }\n      return result;\n    }\n\n    function getLinkView(link) {\n      try {\n        result = client.get_link_view(sessionId, link);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.get_link_view(sessionId, link);\n        }\n      }\n      return result;\n    }\n\n    function detectColumnTypes(fileName, copyParams, callback) {\n      var result = null;\n      copyParams.delimiter = copyParams.delimiter || \"\";\n      try {\n        result = client.detect_column_types(sessionId, fileName, copyParams, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.detect_column_types(sessionId, fileName, copyParams, callback);\n        }\n      }\n      return result;\n    }\n\n    function render(query, renderSpec) {\n      var result = null;\n      try {\n        result = client.render(sessionId, query, renderSpec, {}, {});\n\n      }\n      catch (err) {\n        console.log(err);\n      }\n    }\n\n    function queryAsync(query, columnarResults, eliminateNullRows, renderSpec, callbacks) {\n      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified\n      var curNonce = (nonce++).toString();\n      try {\n        if (renderSpec !== undefined) {\n          client.render(sessionId, query + \";\", renderSpec, {}, {}, curNonce, processResults.bind(this, true, eliminateNullRows, \"render: \" + query, callbacks));\n        }\n        else {\n          client.sql_execute(sessionId,query + \";\", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, query, callbacks));\n        }\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          client.sql_execute(sessionId,query + \";\", columnarResults, curNonce, processResults.bind(this, false, eliminateNullRows, query, callbacks));\n        }\n        else if (err.name == \"TMapDException\") {\n          swal({title: \"Error!\",\n            text: err.error_msg,\n            type: \"error\",\n            confirmButtonText: \"Okay\"\n          });\n\n          // google analytics send error\n          ga('send', 'event', 'error', 'async query error', err.error_msg, {\n           nonInteraction: true\n          });\n\n        }\n        else {\n          throw(err);\n        }\n      }\n      return curNonce;\n    }\n\n    function query(query,columnarResults,eliminateNullRows, renderSpec) {\n      columnarResults = columnarResults === undefined ? true : columnarResults; // make columnar results default if not specified\n      var result = null;\n      var curNonce = (nonce++).toString();\n      try {\n        if (renderSpec !== undefined) {\n          result = client.render(sessionId, query + \";\", renderSpec, {}, {}, curNonce);\n        }\n        else {\n          result = client.sql_execute(sessionId,query + \";\",columnarResults, curNonce);\n        }\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.sql_execute(sessionId,query + \";\",columnarResults, curNonce);\n        }\n        else if (err.name == \"TMapDException\") {\n          swal({title: \"Error!\",\n            text: err.error_msg,\n            type: \"error\",\n            confirmButtonText: \"Okay\"\n          });\n\n          // google analytics send error\n          ga('send', 'event', 'error', 'query error', err.error_msg, {\n           nonInteraction: true\n          })\n        }\n        else {\n          throw(err);\n        }\n      }\n\n      if (renderSpec !== undefined)\n        return result;\n      return processResults(false, eliminateNullRows, renderSpec ? \"render: \" + query : query, undefined, result); // undefined is callbacks slot\n    }\n\n    function processColumnarResults(data,eliminateNullRows) {\n      var formattedResult = {fields: [], results: []};\n      var numCols = data.row_desc.length;\n      var numRows = 0;\n      for (var c = 0; c < numCols; c++) {\n        var field = data.row_desc[c];\n        formattedResult.fields.push({\"name\": field.col_name, \"type\": datumEnum[field.col_type.type], \"is_array\":field.col_type.is_array});\n      }\n      if (numCols > 0)\n        numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;\n      for (var r = 0; r < numRows; r++) {\n        if (eliminateNullRows) {\n          var rowHasNull = false;\n          for (var c = 0; c < numCols; c++) {\n            if (data.columns[c].nulls[r]) {\n              rowHasNull = true;\n              break;\n            }\n          }\n          if (rowHasNull)\n            continue;\n        }\n        var row = {};\n        for (var c = 0; c < numCols; c++) {\n          var fieldName = formattedResult.fields[c].name;\n          var fieldType = formattedResult.fields[c].type;\n          var fieldIsArray = formattedResult.fields[c].is_array;\n          var isNull = data.columns[c].nulls[r];\n          if (isNull) {\n            // row[fieldName] = \"NULL\";\n            row[fieldName] = null;\n            continue;\n          }\n          if (fieldIsArray) {\n            row[fieldName] = [];\n            var arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;\n            for (var e = 0; e < arrayNumElems; e++) {\n              if (data.columns[c].data.arr_col[r].nulls[e]) {\n                row[fieldName].push(\"NULL\");\n                continue;\n              }\n              switch(fieldType) {\n                case \"BOOL\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] ? true : false);\n                  break;\n                case \"SMALLINT\":\n                case \"INT\":\n                case \"BIGINT\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e]);\n                  break;\n                case \"FLOAT\":\n                case \"DOUBLE\":\n                case \"DECIMAL\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.real_col[e]);\n                  break;\n                case \"STR\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.str_col[e]);\n                  break;\n                case \"TIME\":\n                case \"TIMESTAMP\":\n                case \"DATE\":\n                  row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] * 1000);\n                  break;\n              }\n            }\n          }\n          else {\n            switch (fieldType) {\n              case \"BOOL\":\n                row[fieldName] = data.columns[c].data.int_col[r] ? true : false;\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName] = data.columns[c].data.int_col[r];\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName] = data.columns[c].data.real_col[r];\n                break;\n              case \"STR\":\n                row[fieldName] = data.columns[c].data.str_col[r];\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName] = new Date(data.columns[c].data.int_col[r] * 1000);\n                break;\n            }\n          }\n        }\n        formattedResult.results.push(row);\n      }\n      return formattedResult;\n    }\n\n\n    function processRowResults(data, eliminateNullRows) {\n      var numCols = data.row_desc.length;\n      var colNames = [];\n      var formattedResult = {fields: [], results: []};\n      for (var c = 0; c < numCols; c++) {\n        var field = data.row_desc[c];\n        formattedResult.fields.push({\"name\": field.col_name, \"type\": datumEnum[field.col_type.type], \"is_array\":field.col_type.is_array});\n      }\n      formattedResult.results = [];\n      var numRows = 0;\n      if (data.rows !== undefined && data.rows !== null)\n        numRows = data.rows.length; // so won't throw if data.rows is missing\n      for (var r = 0; r < numRows; r++) {\n        if (eliminateNullRows) {\n          var rowHasNull = false;\n          for (var c = 0; c < numCols; c++) {\n            if (data.rows[r].columns[c].is_null) {\n              rowHasNull = true;\n              break;\n            }\n          }\n          if (rowHasNull)\n            continue;\n        }\n\n        var row = {};\n        for (var c = 0; c < numCols; c++) {\n          var fieldName = formattedResult.fields[c].name;\n          var fieldType = formattedResult.fields[c].type;\n          var fieldIsArray = formattedResult.fields[c].is_array;\n          if (fieldIsArray) {\n            if (data.rows[r].cols[c].is_null) {\n              row[fieldName] = \"NULL\";\n              continue;\n            }\n            row[fieldName] = [];\n            var arrayNumElems = data.rows[r].cols[c].val.arr_val.length;\n            for (var e = 0; e < arrayNumElems; e++) {\n              var elemDatum = data.rows[r].cols[c].val.arr_val[e];\n              if (elemDatum.is_null) {\n                row[fieldName].push(\"NULL\");\n                continue;\n              }\n              switch(fieldType) {\n                case \"BOOL\":\n                  row[fieldName].push(elemDatum.val.int_val ? true : false);\n                  break;\n                case \"SMALLINT\":\n                case \"INT\":\n                case \"BIGINT\":\n                  row[fieldName].push(elemDatum.val.int_val);\n                  break;\n                case \"FLOAT\":\n                case \"DOUBLE\":\n                case \"DECIMAL\":\n                  row[fieldName].push(elemDatum.val.real_val);\n                  break;\n                case \"STR\":\n                  row[fieldName].push(elemDatum.val.str_val);\n                  break;\n                case \"TIME\":\n                case \"TIMESTAMP\":\n                case \"DATE\":\n                  row[fieldName].push(elemDatum.val.int_val * 1000);\n                  break;\n              }\n            }\n          }\n          else {\n            var scalarDatum = data.rows[r].cols[c];\n            if (scalarDatum.is_null) {\n              row[fieldName] = \"NULL\";\n              continue;\n            }\n            switch (fieldType) {\n              case \"BOOL\":\n                row[fieldName] = scalarDatum.val.int_val ? true : false;\n                break;\n              case \"SMALLINT\":\n              case \"INT\":\n              case \"BIGINT\":\n                row[fieldName] = scalarDatum.val.int_val;\n                break;\n              case \"FLOAT\":\n              case \"DOUBLE\":\n              case \"DECIMAL\":\n                row[fieldName] = scalarDatum.val.real_val;\n                break;\n              case \"STR\":\n                row[fieldName] = scalarDatum.val.str_val;\n                break;\n              case \"TIME\":\n              case \"TIMESTAMP\":\n              case \"DATE\":\n                row[fieldName] = new Date(scalarDatum.val.int_val * 1000);\n                break;\n            }\n          }\n        }\n        formattedResult.results.push(row);\n      }\n      return formattedResult;\n    }\n\n    function processResults(isImage, eliminateNullRows, query, callbacks, result) {\n      if (_logging && result.execution_time_ms)\n        console.log(query + \": Execution time: \" + result.execution_time_ms + \" ms\" + \" Total time: \" + result.total_time_ms + \" ms\");\n      var hasCallback = typeof callbacks !== 'undefined';\n      if (isImage) {\n        if (hasCallback) {\n          callbacks.pop()(result,callbacks);\n        }\n        else {\n          return result;\n        }\n      }\n      else {\n        result = result.row_set;\n        var formattedResult = null;\n        if (result.is_columnar) {\n          formattedResult = processColumnarResults(result,eliminateNullRows);\n        }\n        else {\n          formattedResult = processRowResults(result,eliminateNullRows);\n        }\n        if (hasCallback) {\n          callbacks.pop()(formattedResult.results,callbacks);\n        }\n        else {\n          return formattedResult.results;\n        }\n      }\n    }\n\n    function getDatabases () {\n      testConnection();\n      var databases = null;\n      try {\n        databases = client.get_databases();\n      }\n      catch (err) {\n        if (err.name == \"ThriftException\") {\n          connect();\n          databases = client.get_databases();\n        }\n      }\n      var dbNames = [];\n      $(databases).each(function(){dbNames.push(this.db_name)});\n      return dbNames;\n    }\n\n    function getTables() {\n      testConnection();\n      var tabs = null;\n      try {\n        tabs = client.get_tables(sessionId);\n      }\n      catch (err) {\n        if (err.name == \"ThriftException\") {\n          connect();\n          tabs = client.get_tables(sessionId);\n        }\n      }\n\n      var numTables = tabs.length;\n      var tableInfo = [];\n      for (var t = 0; t < numTables; t++) {\n        tableInfo.push({\"name\": tabs[t], \"label\": \"obs\"});\n      }\n      return tableInfo;\n    }\n\n    function invertDatumTypes() {\n      for (var key in TDatumType) {\n        datumEnum[TDatumType[key]] = key;\n      }\n    }\n\n    function getFields(tableName) {\n      testConnection();\n      var fields = client.get_table_descriptor(sessionId,tableName);\n      var fieldsArray = [];\n      // silly to change this from map to array\n      // - then later it turns back to map\n      for (var key in fields) {\n        fieldsArray.push({\"name\": key, \"type\": datumEnum[fields[key].col_type.type], \"is_array\":fields[key].col_type.is_array, \"is_dict\": fields[key].col_type.encoding == TEncodingType[\"DICT\"]});\n      }\n      return fieldsArray;\n    }\n\n    function createTable(tableName, rowDesc, callback) {\n      try {\n        result = client.send_create_table(sessionId, tableName, rowDesc, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.send_create_table(sessionId, tableName, rowDesc, callback);\n        }\n      }\n      return result;\n    }\n\n    function importTable(tableName, fileName, copyParams, callback) {\n      copyParams.delimiter = copyParams.delimiter || \"\";\n      try {\n        result = client.send_import_table(sessionId, tableName, fileName, copyParams, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          result = client.send_import_table(sessionId, tableName, fileName, copyParams, callback);\n        }\n      }\n      return result;\n    }\n\n    function importTableStatus(importId, callback) {\n      testConnection();\n      callback = callback || null;\n      var import_status = null;\n      try {\n        import_status = client.import_table_status(sessionId, importId, callback);\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          import_status = client.import_table_status(sessionId, importId, callback);\n        }\n      }\n      return import_status;\n    }\n\n    function getRowsForPixels(pixels, table_name, col_names, callbacks) {\n      var widget_id = 1;  // INT\n      var column_format = true; //BOOL\n      callbacks = callbacks || null;\n      var curNonce = (nonce++).toString();\n      try {\n        if (!callbacks) \n            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n        client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));\n      }\n      catch(err) {\n        console.log(err);\n        if (err.name == \"ThriftException\") {\n          connect();\n          if (!callbacks) \n            return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;\n          client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));\n        }\n      }\n      return curNonce;\n    }\n\n    function processPixelResults(callbacks, results) {\n      var results = results.pixel_rows;\n      var numPixels = results.length;\n      var resultsMap = {};\n      for (var p = 0; p < numPixels; p++) {\n        results[p].row_set = processResults(false, false, \"pixel request\", undefined, results[p]);\n      }\n      if (!callbacks) \n        return results;\n      callbacks.pop()(results,callbacks);\n    }\n\n\n\n    invertDatumTypes();\n    return mapdcon;\n  }\n\n})(typeof exports !== 'undefined' && exports || this);\n"
   },
   {
-    "__docId__": 78,
+    "__docId__": 71,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2024,7 +1885,7 @@
     "content": "/**\n * The configuration needed to import a table into MapD.\n * See {@link detectColumnTypes} for usage example.\n * @typedef {TCopyParams} TCopyParams\n * @property {String} array_begin=null\n * @property {String} array_delim=null\n * @property {String} array_end=null\n * @property {String} delimiter=\"\" - The character delimiter (eg:  comma, [TAB], or pipe)\n * @property {String} escape=null\n * @property {Boolean} has_header=null\n * @property {String} line_delim=null\n * @property {String} null_str=\"\" - The token used by the table to express a null value (eg: some systems use 'nil' or 'none')\n * @property {String} quote=null\n * @property {Boolean} quoted=true - Indicates whether the String fields should be wrapped in quotes\n * @property {Number} threads=null\n */\n\n/**\n * The data stored for a given dashboard.\n * @typedef {TFrontendView} TFrontendView\n * @property {String} image_hash - The lookup hash for the dashboard thumbnail image\n * @property {String} update_time - The timestamp from the last saved update\n * @property {String} view_name - The name of the dashboard or the shortened share link hash\n * @property {String} view_state - The base64-encoded string containing all the details about the current state of the dashboard\n */\n\n/**\n * The permissions granted by the server.\n * @typedef {TServerStatus} TServerStatus\n * @property {Boolean} read_only - Indicates whether server accepts write operations, eg: save dashboard\n * @property {Boolean} rendering_enabled - Indicates whether the server has backend rendering enabled\n * @property {String} version - the current version\n */\n\n/**\n * Contains parsed table data.\n * @typedef {TRowSet} TRowSet\n * @property {Array} columns \n * @property {Boolean} is_columnar \n * @property {Array<TColumnType>} row_desc - A list of field names and their associated information.\n * @property {Array<TRow>} rows\n */\n\n/**\n * @typedef {TColumnType} TColumnType\n * @property {String} col_name - The name of the table field\n * @property {TTypeInfo} col_type - The information about the field\n */\n\n/**\n * A row of data in a table.\n * @typedef {TRow} TRow\n * @property {Array<TDatum>} cols - The array of individual data cells in a table.\n */\n\n/**\n * The value and state of an individual data cell in a table.\n * @typedef {TDatum} TDatum\n * @property {Boolean} is_null\n * @property {TDatumVal} val\n */\n\n/**\n * The value of an individual cell in a table.\n * @typedef {TDatumVal} TDatumVal\n * @property {Array} arr_val\n * @property {Number} int_val\n * @property {Number} real_val\n * @property {String} str_val\n */\n\n/**\n * The information about a particular field in a given table. \n * @typedef {TTypeInfo} TTypeInfo\n * @property {Number} encoding\n * @property {Boolean} is_array\n * @property {Boolean} nullable\n * @property {Number} type\n */\n\n/**\n * Contains the result from calling {@link detectColumnTypes}.\n * @typedef {TDetectResult} TDetectResult\n * @property {TCopyParams} copy_params\n * @property {TRowSet} row_set\n */\n"
   },
   {
-    "__docId__": 79,
+    "__docId__": 72,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2176,7 +2037,7 @@
     }
   },
   {
-    "__docId__": 80,
+    "__docId__": 73,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2236,7 +2097,7 @@
     }
   },
   {
-    "__docId__": 81,
+    "__docId__": 74,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2286,7 +2147,7 @@
     }
   },
   {
-    "__docId__": 82,
+    "__docId__": 75,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2346,7 +2207,7 @@
     }
   },
   {
-    "__docId__": 83,
+    "__docId__": 76,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2386,7 +2247,7 @@
     }
   },
   {
-    "__docId__": 84,
+    "__docId__": 77,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2416,7 +2277,7 @@
     }
   },
   {
-    "__docId__": 85,
+    "__docId__": 78,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2456,7 +2317,7 @@
     }
   },
   {
-    "__docId__": 86,
+    "__docId__": 79,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2516,7 +2377,7 @@
     }
   },
   {
-    "__docId__": 87,
+    "__docId__": 80,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2576,7 +2437,7 @@
     }
   },
   {
-    "__docId__": 88,
+    "__docId__": 81,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -2616,7 +2477,7 @@
     }
   },
   {
-    "__docId__": 90,
+    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2629,7 +2490,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
+    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2642,7 +2503,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
+    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2655,7 +2516,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
+    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2668,7 +2529,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
+    "__docId__": 87,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2681,7 +2542,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
+    "__docId__": 88,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2694,7 +2555,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
+    "__docId__": 89,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2707,7 +2568,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
+    "__docId__": 90,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2720,7 +2581,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
+    "__docId__": 91,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2733,7 +2594,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
+    "__docId__": 92,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2746,7 +2607,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
+    "__docId__": 93,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2759,7 +2620,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 101,
+    "__docId__": 94,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2772,7 +2633,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
+    "__docId__": 95,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2785,7 +2646,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
+    "__docId__": 96,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2798,7 +2659,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
+    "__docId__": 97,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2811,7 +2672,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
+    "__docId__": 98,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2824,7 +2685,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
+    "__docId__": 99,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2837,7 +2698,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
+    "__docId__": 100,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2850,7 +2711,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
+    "__docId__": 101,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2863,7 +2724,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
+    "__docId__": 102,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2876,7 +2737,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 110,
+    "__docId__": 103,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2889,7 +2750,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 111,
+    "__docId__": 104,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2902,7 +2763,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 112,
+    "__docId__": 105,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2915,7 +2776,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 113,
+    "__docId__": 106,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2928,7 +2789,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 114,
+    "__docId__": 107,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2941,7 +2802,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 115,
+    "__docId__": 108,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2954,7 +2815,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
+    "__docId__": 109,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2967,7 +2828,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
+    "__docId__": 110,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2980,7 +2841,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 118,
+    "__docId__": 111,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2993,7 +2854,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 119,
+    "__docId__": 112,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3006,7 +2867,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 120,
+    "__docId__": 113,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3019,7 +2880,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 121,
+    "__docId__": 114,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3032,7 +2893,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 122,
+    "__docId__": 115,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3045,7 +2906,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 123,
+    "__docId__": 116,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3058,7 +2919,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 124,
+    "__docId__": 117,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3071,7 +2932,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 125,
+    "__docId__": 118,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3084,7 +2945,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 126,
+    "__docId__": 119,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3097,7 +2958,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 127,
+    "__docId__": 120,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3110,7 +2971,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 128,
+    "__docId__": 121,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3123,7 +2984,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 129,
+    "__docId__": 122,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3136,7 +2997,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 130,
+    "__docId__": 123,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3149,7 +3010,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 131,
+    "__docId__": 124,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3162,7 +3023,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 132,
+    "__docId__": 125,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3175,7 +3036,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 133,
+    "__docId__": 126,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3188,7 +3049,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 134,
+    "__docId__": 127,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3201,7 +3062,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 135,
+    "__docId__": 128,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3214,7 +3075,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 136,
+    "__docId__": 129,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3227,7 +3088,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 138,
+    "__docId__": 131,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3240,7 +3101,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 139,
+    "__docId__": 132,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3253,7 +3114,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 140,
+    "__docId__": 133,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3266,7 +3127,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 141,
+    "__docId__": 134,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3279,7 +3140,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 142,
+    "__docId__": 135,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3292,7 +3153,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 143,
+    "__docId__": 136,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3305,7 +3166,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 144,
+    "__docId__": 137,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3318,7 +3179,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 145,
+    "__docId__": 138,
     "kind": "external",
     "static": true,
     "variation": null,
