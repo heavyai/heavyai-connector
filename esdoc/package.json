@@ -1,6 +1,6 @@
 {
   "name": "@mapd/mapd-con",
-  "version": "0.2.6",
+  "version": "0.2.10",
   "description": "An npm module containing the MapDCon library",
   "main": "mapd-con.js",
   "watch": {
@@ -34,6 +34,7 @@
     "expect": "^1.13.4",
     "mocha": "^2.3.4",
     "mocha-jenkins-reporter": "^0.1.9",
+    "mocha-jsdom": "^1.0.0",
     "npm-watch": "^0.1.1",
     "webpack": "^1.12.10"
   }

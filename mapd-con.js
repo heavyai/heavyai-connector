@@ -87,25 +87,17 @@
 	    _classCallCheck(this, MapdCon);
 
 	    // Set up "private" variables and their defaults
-	    this._host = [];
-	    this._user = [];
+	    this._host = null;
+	    this._user = null;
 	    this._password = null;
 	    this._port = null;
 	    this._dbName = null;
 	    this._client = null;
 	    this._sessionId = null;
 	    this._datumEnum = {};
+	    this._nonce = 0;
 	    this._logging = false;
 	    this._platform = "mapd";
-			this._balanceStrategy = "adaptive";
-
-	    this._nonce = 0;
-	    this._numConnections = 0;
-			this._lastRenderCon = 0;
-			this.queryTimes = { };
-			this.serverQueueTimes = [];
-			this.DEFAULT_QUERY_TIME = 50;
-
 
 	    // invoke initialization methods
 	    this.invertDatumTypes();
@@ -123,17 +115,9 @@
 	    this.setPlatform = this.platform;
 
 	    /** Deprecated */
-	    this.setUserAndPassword = function (_user, _password) {
-				if (!Array.isArray(_user))
-					this._user = [_user];
-				else
-					this._user = _user;
-
-				if (!Array.isArray(_password))
-					this._password = [_password];
-				else
-					this._password = _password;
-
+	    this.setUserAndPassword = function (newUser, newPassword) {
+	      _this._user = newUser;
+	      _this._password = newPassword;
 	      return _this;
 	    };
 
@@ -173,42 +157,12 @@
 	        this.disconnect();
 	      }
 
-				var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
-				if (!allAreArrays)
-					throw "All connection parameters must be arrays"; // should not throw now as we check parameter input and convert to arrays as needed 
-				
-				this._client = [];
-				this._sessionId = [];
+	      var transportUrl = "http://" + this._host + ":" + this._port;
+	      var transport = new Thrift.Transport(transportUrl);
+	      var protocol = new Thrift.Protocol(transport);
 
-				// now check to see if length of all arrays are the same and > 0
-				var hostLength = this._host.length;
-				if (hostLength < 1)
-					throw "Must have at least one server to connect to."; 
-				if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length)
-					throw "Array connection parameters must be of equal length.";
-
-				for (var h = 0; h < hostLength; h++) {
-					var transportUrl = "http://" + this._host[h] + ":" + this._port[h];
-					try {
-						var transport = new Thrift.Transport(transportUrl);
-						var protocol = new Thrift.Protocol(transport);
-						var client = new MapDClient(protocol);
-						var sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
-						this._client.push(client);
-						this._sessionId.push(sessionId);
-					}
-					catch (err) {
-						console.error("Could not connect to " + this._host[h] + ":" + this._port[h]);
-					}
-				}
-				this._numConnections = this._client.length;
-				if (this._numConnections < 1) {  // need at least one server to connect to
-					//clean up first
-					this._client = null;
-					this._sessionId = null;
-					throw "Could not connect to any servers in list.";
-				}
-				this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
+	      this._client = new MapDClient(protocol);
+	      this._sessionId = this._client.connect(this._user, this._password, this._dbName);
 	      return this;
 	    }
 
@@ -234,23 +188,13 @@
 	    key: "disconnect",
 	    value: function disconnect() {
 	      if (this._sessionId !== null) {
-					for (var c = 0; c < this._client.length; c++) 
-						this._client[c].disconnect(this._sessionId[c]);
+	        this._client.disconnect(this._sessionId);
 	        this._sessionId = null;
 	        this._client = null;
-					this._numConnections = 0;
 	      }
 	      return this;
 	    }
-		} , {
-	    key: "balanceStrategy",
-	    value: function balanceStrategy(_balanceStrategy) {
-				if (!arguments.length)
-					return this._balanceStrategy;
-				this._balanceStrategy = _balanceStrategy;
-				return this;
-			}
-	    
+
 	    /**
 	     * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
 	     * These objects contain a value for the <code>view_name</code> property,
@@ -275,7 +219,7 @@
 	    value: function getFrontendViews() {
 	      var result = null;
 	      try {
-	        result = this._client[0].get_frontend_views(this._sessionId[0]);
+	        result = this._client.get_frontend_views(this._sessionId);
 	      } catch (err) {
 	        console.log('ERROR: Could not get frontend views from backend. Check the session id.', err);
 	      }
@@ -307,7 +251,7 @@
 	    value: function getFrontendView(viewName) {
 	      var result = null;
 	      try {
-	        result = this._client[0].get_frontend_view(this._sessionId[0], viewName);
+	        result = this._client.get_frontend_view(this._sessionId, viewName);
 	      } catch (err) {
 	        console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
 	      }
@@ -338,7 +282,7 @@
 	    value: function getServerStatus() {
 	      var result = null;
 	      try {
-	        result = this._client[0].get_server_status();
+	        result = this._client.get_server_status();
 	      } catch (err) {
 	        console.log('ERROR: Could not get the server status. Check your connection and session id.', err);
 	      }
@@ -367,8 +311,11 @@
 	  }, {
 	    key: "createFrontendView",
 	    value: function createFrontendView(viewName, viewState, imageHash) {
-				for (var c = 0; c < this._numConnections; c++) 
-					this._client[c].create_frontend_view(this._sessionId[c], viewName, viewState, imageHash);
+	      try {
+	        this._client.create_frontend_view(this._sessionId, viewName, viewState, imageHash);
+	      } catch (err) {
+	        console.log('ERROR: Could not create the new frontend view. Check your session id.', err);
+	      }
 	      return this;
 	    }
 
@@ -430,12 +377,12 @@
 	    value: function getLinkView(link) {
 	      var result = null;
 	      try {
-	        result = this._client[0].get_link_view(this._sessionId[0], link);
+	        result = this._client.get_link_view(this._sessionId, link);
 	      } catch (err) {
 	        console.log(err);
 	        if (err.name == "ThriftException") {
 	          this.connect();
-	          result = this._client[0].get_link_view(this._sessionId[0], link);
+	          result = this._client.get_link_view(sessionId, link);
 	        }
 	      }
 	      return result;
@@ -471,7 +418,7 @@
 	    value: function detectColumnTypes(fileName, copyParams, callback) {
 	      copyParams.delimiter = copyParams.delimiter || "";
 	      try {
-	        this._client[0].detect_column_types(this._sessionId[0], fileName, copyParams, callback);
+	        this._client.detect_column_types(this._sessionId, fileName, copyParams, callback);
 	      } catch (err) {
 	        console.log(err);
 	      }
@@ -490,77 +437,39 @@
 
 	  }, {
 	    key: "query",
-	    value: function query(_query, options, callbacks) {
-				var columnarResults = true;
-				var eliminateNullRows = false;
-				var renderSpec = null;
-				var queryId = null;
-				if (options) {
-					columnarResults = options.columnarResults ? options.columnarResults : true; // make columnar results default if not specified
-					eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
-					renderSpec = options.renderSpec ? options.renderSpec : undefined;
-					queryId = options.queryId ? options.queryId : null;
-				}
+	    value: function query(_query, columnarResults, eliminateNullRows, renderSpec, callbacks) {
+	      columnarResults = !columnarResults ? true : columnarResults; // make columnar results default if not specified
 	      var processResultsQuery = renderSpec ? 'render: ' + _query : _query; // format query for backend rendering if specified
-
-	      var isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
-	      var isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
-	      var isBackendRenderingWithSync = !!renderSpec && !callbacks;
+	      var isBackendRenderingWithAsync = renderSpec && callbacks;
+	      var isFrontendRenderingWithAsync = !renderSpec && callbacks;
+	      var isBackendRenderingWithSync = renderSpec && !callbacks;
 	      var isFrontendRenderingWithSync = !renderSpec && !callbacks;
-				var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
-
 	      var curNonce = (this._nonce++).toString();
-				var conId = null;
-				if (this._balanceStrategy === "adaptive") {
-					conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
-				}
-				else {
-					conId = curNonce % this._numConnections;
-				}
-				if (!!renderSpec)
-					this._lastRenderCon = conId;
 
-				this.serverQueueTimes[conId] += lastQueryTime;
-
-				var processResultsOptions = {
-					isImage: !!renderSpec,
-					eliminateNullRows: eliminateNullRows,
-					query: processResultsQuery,
-					queryId: queryId,
-					conId: conId,
-					estimatedQueryTime: lastQueryTime
-				};
-
-				var processResults = null;
 	      try {
 	        if (isBackendRenderingWithAsync) {
-	          processResults = this.processResults.bind(this, processResultsOptions, callbacks);
-	          this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce, processResults);
+	          var processResults = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);
+	          this._client.render(this._sessionId, _query + ";", renderSpec, {}, {}, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isFrontendRenderingWithAsync) {
-	          processResults = this.processResults.bind(this, processResultsOptions, callbacks);
-	          this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce, processResults);
+	          var processResults = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);
+	          this._client.sql_execute(this._sessionId, _query + ";", columnarResults, curNonce, processResults);
 	          return curNonce;
 	        }
 	        if (isBackendRenderingWithSync) {
-	          return this.processResults(processResultsOptions, null, this._client[conId].render(this._sessionId[conId], _query + ";", renderSpec, {}, {}, curNonce));
+	          return this._client.render(this._sessionId, _query + ";", renderSpec, {}, {}, curNonce);
 	        }
 	        if (isFrontendRenderingWithSync) {
-	          var _result = this._client[conId].sql_execute(this._sessionId[conId], _query + ";", columnarResults, curNonce);
-	          return this.processResults(processResultsOptions, null, _result); // null is callbacks slot
+	          var _result = this._client.sql_execute(this._sessionId, _query + ";", columnarResults, curNonce);
+	          return this.processResults(false, eliminateNullRows, processResultsQuery, undefined, _result); // undefined is callbacks slot
 	        }
 	      } catch (err) {
-						console.error(err);
-						if (err.name == "NetworkError" || err.name == "TMapDException") {
-							this.removeConnection(conId);
-							if (this._numConnections == 0) 
-								throw "No remaining database connections";
-							this.query(_query, options, callbacks);
-							
-						}
-					}
+	        console.log(err);
+	        throw err;
 	      }
+	    }
+
 	    /**
 	     * Because it is inefficient for the server to return a row-based
 	     * data structure, it is better to process the column-based results into a row-based
@@ -570,16 +479,6 @@
 	     * @param {Boolean} eliminateNullRows
 	     * @returns {Object} processedResults 
 	     */
-
-		}, {
-			key: "removeConnection",
-			value: function removeConnection(conId) {
-				if (conId < 0 || conId > this.numConnections) 
-					throw "Remove connection id invalid"
-				this._client.splice(conId, 1);
-				this._sessionId.splice(conId, 1);
-				this._numConnections--;
-			}
 
 	  }, {
 	    key: "processColumnarResults",
@@ -808,33 +707,9 @@
 	    }
 	  }, {
 	    key: "processResults",
-	    value: function processResults(options, callbacks, result) {
-				var isImage = false;
-				var eliminateNullRows = false;
-				var query = null;
-				var queryId = null;
-				var conId = null;
-				var estimatedQueryTime = null;
-
-
-				if (typeof options !== 'undefined') {
-					isImage = options.isImage ? options.isImage : false;
-					eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
-					query = options.query ? options.query : null;
-					queryId = options.queryId ? options.queryId : null; 
-					conId = typeof options.conId !== 'undefined' ? options.conId : null;
-					estimatedQueryTime = typeof options.estimatedQueryTime !== 'undefined' ? options.estimatedQueryTime : null;
-				}
-				if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
-					this.serverQueueTimes[conId] -= estimatedQueryTime; 
-					this.queryTimes[queryId] = result.execution_time_ms;
-				}
-
-	      if (this._logging && result.execution_time_ms) {
-					var server = (parseInt(result.nonce) % this._numConnections) + 1;
-					console.log(query + " on Server " + server + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
-				}
-	      var hasCallback = !!callbacks; 
+	    value: function processResults(isImage, eliminateNullRows, query, callbacks, result) {
+	      if (this._logging && result.execution_time_ms) console.log(query + ": " + result.execution_time_ms + " ms");
+	      var hasCallback = typeof callbacks !== 'undefined';
 	      if (isImage) {
 	        if (hasCallback) {
 	          callbacks.pop()(result, callbacks);
@@ -873,7 +748,7 @@
 	    value: function getDatabases() {
 	      var databases = null;
 	      try {
-	        databases = this._client[0].get_databases();
+	        databases = this._client.get_databases();
 	        return databases.map(function (db, i) {
 	          return db.db_name;
 	        });
@@ -886,11 +761,11 @@
 	    value: function getTables() {
 	      var tabs = null;
 	      try {
-	        tabs = this._client[0].get_tables(this._sessionId[0]);
+	        tabs = this._client.get_tables(this._sessionId);
 	      } catch (err) {
 	        if (err.name == "ThriftException") {
 	          this.connect();
-	          tabs = this._client[0].get_tables(this._sessionId[0]);
+	          tabs = this._client.get_tables(this._sessionId);
 	        }
 	      }
 
@@ -914,7 +789,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName) {
-	      var fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+	      var fields = this._client.get_table_descriptor(this._sessionId, tableName);
 	      var fieldsArray = [];
 	      // silly to change this from map to array
 	      // - then later it turns back to map
@@ -931,18 +806,30 @@
 	  }, {
 	    key: "createTable",
 	    value: function createTable(tableName, rowDesc, callback) {
-				var result = null; 
-				for (var c = 0; c < this._numConnections; c++) 
-					result = this._client[c].send_create_table(this._sessionId[c], tableName, rowDesc, callback);
+	      try {
+	        result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
+	      } catch (err) {
+	        console.log(err);
+	        if (err.name == "ThriftException") {
+	          this.connect();
+	          result = this._client.send_create_table(this._sessionId, tableName, rowDesc, callback);
+	        }
+	      }
 	      return result;
 	    }
 	  }, {
 	    key: "importTable",
 	    value: function importTable(tableName, fileName, copyParams, callback) {
 	      copyParams.delimiter = copyParams.delimiter || "";
-				var result = null; 
-				for (var c = 0; c < this._numConnections; c++) 
-	        result = this._client[c].send_import_table(this._sessionId[c], tableName, fileName, copyParams, callback);
+	      try {
+	        result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
+	      } catch (err) {
+	        console.log(err);
+	        if (err.name == "ThriftException") {
+	          this.connect();
+	          result = this._client.send_import_table(this._sessionId, tableName, fileName, copyParams, callback);
+	        }
+	      }
 	      return result;
 	    }
 	  }, {
@@ -950,7 +837,15 @@
 	    value: function importTableStatus(importId, callback) {
 	      callback = callback || null;
 	      var import_status = null;
-				import_status = this._client[0].import_table_status(this._sessionId[0], importId, callback);
+	      try {
+	        import_status = this._client.import_table_status(this._sessionId, importId, callback);
+	      } catch (err) {
+	        console.log(err);
+	        if (err.name == "ThriftException") {
+	          this.connect();
+	          import_status = this._client.import_table_status(this._sessionId, importId, callback);
+	        }
+	      }
 	      return import_status;
 	    }
 	  }, {
@@ -962,9 +857,9 @@
 	      var curNonce = (this._nonce++).toString();
 	      try {
 	        if (!callbacks) {
-	          return this.processPixelResults(undefined, this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce));
+	          return this.processPixelResults(undefined, this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce));
 	        }
-	        this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
+	        this._client.get_rows_for_pixels(this._sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, this.processPixelResults.bind(this, callbacks));
 	      } catch (err) {
 	        console.log(err);
 	        if (err.name == "ThriftException") {
@@ -983,14 +878,8 @@
 	      var results = results.pixel_rows;
 	      var numPixels = results.length;
 	      var resultsMap = {};
-				var processResultsOptions = {
-					isImage: false,
-					eliminateNullRows: false,
-					query: "pixel request",
-					queryId: -2
-				};
 	      for (var p = 0; p < numPixels; p++) {
-	        results[p].row_set = this.processResults(processResultsOptions, null, results[p]);
+	        results[p].row_set = this.processResults(false, false, "pixel request", undefined, results[p]);
 	      }
 	      if (!callbacks) {
 	        return results;
@@ -1064,10 +953,7 @@
 	      if (!arguments.length) {
 	        return this._host;
 	      }
-				if (!Array.isArray(_host))
-					this._host = [_host];
-				else
-					this._host = _host;
+	      this._host = _host;
 	      return this;
 	    }
 
@@ -1090,10 +976,7 @@
 	      if (!arguments.length) {
 	        return this._port;
 	      }
-				if (!Array.isArray(_port))
-					this._port = [_port];
-				else
-					this._port = _port;
+	      this._port = _port;
 	      return this;
 	    }
 
@@ -1116,10 +999,7 @@
 	      if (!arguments.length) {
 	        return this._user;
 	      }
-				if (!Array.isArray(_user))
-					this._user = [_user];
-				else
-					this._user = _user;
+	      this._user = _user;
 	      return this;
 	    }
 
@@ -1142,10 +1022,7 @@
 	      if (!arguments.length) {
 	        return this._password;
 	      }
-				if (!Array.isArray(_password))
-					this._password = [_password];
-				else
-					this._password = _password;
+	      this._password = _password;
 	      return this;
 	    }
 
@@ -1168,10 +1045,7 @@
 	      if (!arguments.length) {
 	        return this._dbName;
 	      }
-				if (!Array.isArray(_dbName))
-					this._dbName = [_dbName];
-				else
-					this._dbName = _dbName;
+	      this._dbName = _dbName;
 	      return this;
 	    }
 
@@ -1228,7 +1102,7 @@
 	     * @return {MapDClient|MapdCon} - MapDClient or MapdCon itself
 	     *
 	     * @example <caption>Set the client:</caption>
-	     * var con = new MapdCon().client(lient);
+	     * var con = new MapdCon().client(client);
 	     * // NOTE: It is generally unsafe to set the client manually. Use connect() instead.
 	     *
 	     * @example <caption>Get the client:</caption>
