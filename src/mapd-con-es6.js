@@ -51,18 +51,18 @@ class MapdCon {
     this.setPlatform = this.platform;
 
     /** Deprecated */
-    this.setUserAndPassword = (newUser, newPassword) => {
-      if (!Array.isArray(_user))
-				this._user = [_user];
-			else
-				this._user = _user;
+    this.setUserAndPassword = (user, password) => {
+      if (!Array.isArray(user))
+        this._user = [user];
+      else
+        this._user = user;
 
-			if (!Array.isArray(_password))
-				this._password = [_password];
-			else
-				this._password = _password;
+      if (!Array.isArray(password))
+        this._password = [password];
+      else
+        this._password = password;
 
-      return _this;
+      return this;
     }
 
     /** Deprecated */
@@ -97,42 +97,42 @@ class MapdCon {
     if(this._sessionId){
       this.disconnect();
     }
-		let allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
-		if (!allAreArrays)
-			throw "All connection parameters must be arrays"; // should not throw now as we check parameter input and convert to arrays as needed 
-		
-		this._client = [];
-		this._sessionId = [];
+    let allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
+    if (!allAreArrays)
+            throw "All connection parameters must be arrays"; // should not throw now as we check parameter input and convert to arrays as needed 
+    
+    this._client = [];
+    this._sessionId = [];
 
-		// now check to see if length of all arrays are the same and > 0
-		let hostLength = this._host.length;
-		if (hostLength < 1)
-			throw "Must have at least one server to connect to."; 
-		if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length)
-			throw "Array connection parameters must be of equal length.";
+    // now check to see if length of all arrays are the same and > 0
+    let hostLength = this._host.length;
+    if (hostLength < 1)
+            throw "Must have at least one server to connect to."; 
+    if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length)
+      throw "Array connection parameters must be of equal length.";
 
-		for (var h = 0; h < hostLength; h++) {
-			let transportUrl = "http://" + this._host[h] + ":" + this._port[h];
-			try {
-				let transport = new Thrift.Transport(transportUrl);
-				let protocol = new Thrift.Protocol(transport);
-				let client = new MapDClient(protocol);
-				let sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
-				this._client.push(client);
-				this._sessionId.push(sessionId);
-			}
-			catch (err) {
-				console.error("Could not connect to " + this._host[h] + ":" + this._port[h]);
-			}
-		}
-		this._numConnections = this._client.length;
-		if (this._numConnections < 1) {  // need at least one server to connect to
-			//clean up first
-			this._client = null;
-			this._sessionId = null;
-			throw "Could not connect to any servers in list.";
-		}
-		this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
+    for (var h = 0; h < hostLength; h++) {
+      let transportUrl = "http://" + this._host[h] + ":" + this._port[h];
+      try {
+        let transport = new Thrift.Transport(transportUrl);
+        let protocol = new Thrift.Protocol(transport);
+        let client = new MapDClient(protocol);
+        let sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
+        this._client.push(client);
+        this._sessionId.push(sessionId);
+      }
+      catch (err) {
+        console.error("Could not connect to " + this._host[h] + ":" + this._port[h]);
+      }
+    }
+    this._numConnections = this._client.length;
+    if (this._numConnections < 1) {  // need at least one server to connect to
+      //clean up first
+      this._client = null;
+      this._sessionId = null;
+      throw "Could not connect to any servers in list.";
+    }
+    this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
 
     return this;
   }
@@ -166,10 +166,10 @@ class MapdCon {
   }
 
   balanceStrategy(balanceStrategy) {
-		if (!arguments.length)
-			return this._balanceStrategy;
-		this._balanceStrategy = balanceStrategy;
-		return this;
+    if (!arguments.length)
+            return this._balanceStrategy;
+    this._balanceStrategy = balanceStrategy;
+    return this;
   }
 
 
@@ -430,12 +430,12 @@ class MapdCon {
 		this.serverQueueTimes[conId] += lastQueryTime;
 
 		let processResultsOptions = {
-			isImage: !!renderSpec,
-			eliminateNullRows: eliminateNullRows,
-			query: processResultsQuery,
-			queryId: queryId,
-			conId: conId,
-			estimatedQueryTime: lastQueryTime
+                  isImage: !!renderSpec,
+                  eliminateNullRows: eliminateNullRows,
+                  query: processResultsQuery,
+                  queryId: queryId,
+                  conId: conId,
+                  estimatedQueryTime: lastQueryTime
 		};
 
 		let processResults = null;
@@ -459,24 +459,24 @@ class MapdCon {
       }
     }
     catch(err) {
-			console.error(err);
-			if (err.name == "NetworkError" || err.name == "TMapDException") {
-				this.removeConnection(conId);
-				if (this._numConnections == 0) 
-					throw "No remaining database connections";
-				this.query(query, options, callbacks);
-				
-			}
-		}
+      console.error(err);
+      if (err.name == "NetworkError" || err.name == "TMapDException") {
+        this.removeConnection(conId);
+        if (this._numConnections == 0) 
+                throw "No remaining database connections";
+        this.query(query, options, callbacks);
+            
+      }
+    }
   }
 
   removeConnection(conId) {
-		if (conId < 0 || conId >= this.numConnections) 
-			throw "Remove connection id invalid"
-		this._client.splice(conId, 1);
-		this._sessionId.splice(conId, 1);
-		this._numConnections--;
-	}
+    if (conId < 0 || conId >= this.numConnections) 
+            throw "Remove connection id invalid"
+    this._client.splice(conId, 1);
+    this._sessionId.splice(conId, 1);
+    this._numConnections--;
+  }
 
 
   /**
@@ -891,6 +891,12 @@ class MapdCon {
     var results = results.pixel_rows;
     var numPixels = results.length;
     var resultsMap = {};
+    var processResultsOptions = {
+      isImage: false,
+      eliminateNullRows: false,
+      query: "pixel request",
+      queryId: -2
+    };
     for (var p = 0; p < numPixels; p++) {
       results[p].row_set = this.processResults(processResultsOptions, null, results[p]);
     }
@@ -949,10 +955,10 @@ class MapdCon {
     if (!arguments.length){
       return this._host;
     }
-    if (!Array.isArray(_host))
-      this._host = [_host];
+    if (!Array.isArray(host))
+      this._host = [host];
     else
-      this._host = _host;
+      this._host = host;
     return this;
   }
 
@@ -972,10 +978,10 @@ class MapdCon {
     if (!arguments.length){
       return this._port;
     }
-		if (!Array.isArray(_port))
-			this._port = [_port];
-		else
-			this._port = _port;
+    if (!Array.isArray(port))
+      this._port = [port];
+    else
+      this._port = port;
     return this;
   }
 
@@ -995,10 +1001,10 @@ class MapdCon {
     if (!arguments.length){
       return this._user;
     }
-		if (!Array.isArray(_user))
-			this._user = [_user];
-		else
-			this._user = _user;
+    if (!Array.isArray(user))
+      this._user = [user];
+    else
+      this._user = user;
     return this;
   }
 
@@ -1018,10 +1024,10 @@ class MapdCon {
     if (!arguments.length){
       return this._password;
     }
-		if (!Array.isArray(_password))
-			this._password = [_password];
-		else
-			this._password = _password;
+    if (!Array.isArray(password))
+      this._password = [password];
+    else
+      this._password = password;
     return this;
   }
 
@@ -1041,10 +1047,10 @@ class MapdCon {
     if (!arguments.length){
       return this._dbName;
     }
-		if (!Array.isArray(_dbName))
-			this._dbName = [_dbName];
-		else
-			this._dbName = _dbName;
+    if (!Array.isArray(dbName))
+      this._dbName = [dbName];
+    else
+      this._dbName = dbName;
     return this;
   }
 
@@ -1063,7 +1069,7 @@ class MapdCon {
    */
   logging(logging) {
     if (!arguments.length){
-      return this._logging;
+      return this.logging;
     }
     this._logging = logging;
     return this;
