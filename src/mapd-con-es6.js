@@ -238,12 +238,15 @@ class MapdCon {
    * // views === [TFrontendView, TFrontendView]
    */
   getFrontendViews() {
-    var result = null;
-    try {
-      result = this._client[0].get_frontend_views(this._sessionId[0]);
-    }
-    catch(err) {
-      console.log('ERROR: Could not get frontend views from backend. Check the session id.', err);
+    let result = null;
+    if (this._sessionId) {
+      try {
+        result = this._client.get_frontend_views(this._sessionId);
+      }
+      catch (err) {
+        console.log('ERROR: Could not get frontend views from backend. Check the session id.', err);
+        throw(err);
+      }
     }
     return result;
   }
@@ -268,12 +271,15 @@ class MapdCon {
    * // dashboard instanceof TFrontendView === true
    */
   getFrontendView(viewName) {
-    var result = null;
-    try {
-      result = this._client[0].get_frontend_view(this._sessionId[0], viewName);
-    }
-    catch(err) {
-      console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
+    let result = null;
+    if(this._sessionId && viewName){
+      try {
+        result = this._client.get_frontend_view(this._sessionId, viewName);
+      }
+      catch(err) {
+        console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
+        throw(err);
+      }
     }
     return result;
   }
@@ -294,17 +300,52 @@ class MapdCon {
    *
    * var status = con.getServerStatus();
    * // status instanceof TServerStatus === true
-   * 
+   *
    */
   getServerStatus() {
-    var result = null;
+    let result = null;
     try {
       result = this._client[0].get_server_status();
     }
     catch(err) {
       console.log('ERROR: Could not get the server status. Check your connection and session id.', err);
+      throw(err);
     }
     return result;
+  }
+
+  /**
+   * Generate the image thumbnail hash used for saving frontend view.
+   * @param {String} input - The string input to hash
+   * @return {Number} hash - Numerical hash used for saving dashboards
+   *
+   * @example <caption>Generate an hash</caption>
+   * var hash = generateImageThumbnailHashCode(Math.random().toString());
+   * // hash === 3003444
+   */
+  generateImageThumbnailHashCode(input) {
+    return input.split("").reduce((a,b) => {
+      a = ((a<<5)-a) + b.charCodeAt(0);
+      return a&a;
+    }, 0);              
+  }
+
+  /**
+   * Generate the state string used for saving frontend view.
+   * @param {Object} state - The object containing the state
+   * @param {Boolean} encode=false - Indicates whether to base64 encode the output string
+   * @return {String} stateString - The string representation of the state object 
+   *
+   * @example <caption>Generate a raw state string:</caption>
+   * var state = generateViewStateString({id: 5});
+   * // state === ''
+   *
+   * @example <caption>Generate an encoded state string:</caption>
+   * var state = generateViewStateString({id: 5}, true);
+   * // state === ''
+   */
+  generateViewStateString(state, encode){
+    // TODO 
   }
 
   /**
@@ -387,7 +428,7 @@ class MapdCon {
    * // dashboard instanceof TFrontendView === true
    */
   getLinkView(link) {
-    var result = null;
+    let result = null;
     try {
       result = this._client[0].get_link_view(this._sessionId[0], link);
     }
@@ -428,6 +469,7 @@ class MapdCon {
     }
     catch(err) {
       console.log(err);
+      throw(err);
     }
   }
 
@@ -487,13 +529,13 @@ class MapdCon {
     let processResults = null;
     try {
       if (isBackendRenderingWithAsync) {
-        processResults = this.processResults.bind(this, processResultsOptions, callbacks);
-        this._client[conId].render(this._sessionId[conId], query + ";", renderSpec, {}, {}, curNonce, processResults);
+        let callback = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);
+        this._client.render(this._sessionId, query + ";", renderSpec, {}, {}, curNonce, callback);
         return curNonce;
       }
       if(isFrontendRenderingWithAsync) {
-        processResults = this.processResults.bind(this, processResultsOptions, callbacks);
-        this._client[conId].sql_execute(this._sessionId[conId], query + ";", columnarResults, curNonce, processResults);
+        let callback = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);
+        this._client.sql_execute(this._sessionId, query + ";", columnarResults, curNonce, callback);
         return curNonce;
       }
       if (isBackendRenderingWithSync) {
@@ -539,9 +581,9 @@ class MapdCon {
    */
   processColumnarResults(data, eliminateNullRows) {
 
-    var formattedResult = {fields: [], results: []};
-    var numCols = data.row_desc.length;
-    var numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
+    let formattedResult = {fields: [], results: []};
+    let numCols = data.row_desc.length;
+    let numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
 
     formattedResult.fields = data.row_desc.map((field, i) => {
       return {
@@ -551,10 +593,10 @@ class MapdCon {
       };
     });
 
-    for (var r = 0; r < numRows; r++) {
+    for (let r = 0; r < numRows; r++) {
       if (eliminateNullRows) {
-        var rowHasNull = false;
-        for (var c = 0; c < numCols; c++) {
+        let rowHasNull = false;
+        for (let c = 0; c < numCols; c++) {
           if (data.columns[c].nulls[r]) {
             rowHasNull = true;
             break;
@@ -563,12 +605,12 @@ class MapdCon {
         if (rowHasNull)
           continue;
       }
-      var row = {};
-      for (var c = 0; c < numCols; c++) {
-        var fieldName = formattedResult.fields[c].name;
-        var fieldType = formattedResult.fields[c].type;
-        var fieldIsArray = formattedResult.fields[c].is_array;
-        var isNull = data.columns[c].nulls[r];
+      let row = {};
+      for (let c = 0; c < numCols; c++) {
+        let fieldName = formattedResult.fields[c].name;
+        let fieldType = formattedResult.fields[c].type;
+        let fieldIsArray = formattedResult.fields[c].is_array;
+        let isNull = data.columns[c].nulls[r];
         if (isNull) {
           // row[fieldName] = "NULL";
           row[fieldName] = null;
@@ -576,7 +618,7 @@ class MapdCon {
         }
         if (fieldIsArray) {
           row[fieldName] = [];
-          var arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;
+          let arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;
           for (var e = 0; e < arrayNumElems; e++) {
             if (data.columns[c].data.arr_col[r].nulls[e]) {
               row[fieldName].push("NULL");
@@ -783,12 +825,12 @@ class MapdCon {
       isImage = options.isImage ? options.isImage : false;
       eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
       query = options.query ? options.query : null;
-      queryId = options.queryId ? options.queryId : null; 
+      queryId = options.queryId ? options.queryId : null;
       conId = typeof options.conId !== 'undefined' ? options.conId : null;
       estimatedQueryTime = typeof options.estimatedQueryTime !== 'undefined' ? options.estimatedQueryTime : null;
     }
     if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
-      this.serverQueueTimes[conId] -= estimatedQueryTime; 
+      this.serverQueueTimes[conId] -= estimatedQueryTime;
       //console.log("Down: " + this.serverQueueTimes);
       this.queryTimes[queryId] = result.execution_time_ms;
     }
@@ -796,7 +838,7 @@ class MapdCon {
     if (this._logging && result.execution_time_ms) {
       console.log(query + " on Server " + conId + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
     }
-    let hasCallback = !!callbacks; 
+    let hasCallback = !!callbacks;
 
     if (isImage) {
       if (hasCallback) {
@@ -808,7 +850,7 @@ class MapdCon {
     }
     else {
       result = result.row_set;
-      var formattedResult = null;
+      let formattedResult = null;
       if (result.is_columnar) {
         formattedResult = this.processColumnarResults(result, eliminateNullRows);
       }
@@ -825,14 +867,19 @@ class MapdCon {
   }
 
   /**
-   * Create a new MapdCon and return it to allow method chaining.
-   * @return {MapdCon} Object
-   * 
-   * @example <caption>Create a new MapdCon instance:</caption>
-   * var con = new MapdCon();
+   * Get the names of the databases that exist on the current session's connectdion.
+   * @return {Array<String>} list of database names
    *
    * @example <caption>Create a new MapdCon instance and set the host via method chaining:</caption>
-   * var con = new MapdCon().host('http://hostname.com');
+   * var databases = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect()
+   *   .getDatabases();
+   * // databases === ['databasename', 'databasename', ...]
    */
   getDatabases() {
     let databases = null;
@@ -953,14 +1000,13 @@ class MapdCon {
   createTable(tableName, rowDesc, callback) {
     let result = null;
     try {
-      for (var c = 0; c < this._numConnections; c++) 
+      for (var c = 0; c < this._numConnections; c++)
         result = this._client[c].send_create_table(this._sessionId[c], tableName, rowDesc, callback);
     }
     catch (err) {
       console.error('ERROR: Could not create table', err);
       throw err;
     }
-    return result;
   }
 
   /**
@@ -974,14 +1020,13 @@ class MapdCon {
     copyParams.delimiter = copyParams.delimiter || "";
     let result = null;
     try {
-      for (var c = 0; c < this._numConnections; c++) 
+      for (var c = 0; c < this._numConnections; c++)
         result = this._client[c].send_import_table(this._sessionId[c], tableName, fileName, copyParams, callback);
     }
     catch(err) {
       console.error('ERROR: Could not import table', err);
       throw (err);
     }
-    return result;
   }
 
   /**
@@ -999,7 +1044,6 @@ class MapdCon {
       console.error('ERROR: Could not retrieve import status', err);
       throw (err);
     }
-    return import_status;
   }
 
   /**
@@ -1054,6 +1098,9 @@ class MapdCon {
     callbacks.pop()(results, callbacks);
   }
 
+  /**
+   * TODO: Returns an empty String.
+   */
   getUploadServer(){
     return "";
   }
