@@ -28,12 +28,12 @@ class MapdCon {
     this._logging = false;
     this._platform = "mapd";
     this._nonce = 0;
-		this._balanceStrategy = "adaptive";
-	  this._numConnections = 0;
-		this._lastRenderCon = 0;
-		this.queryTimes = { };
-		this.serverQueueTimes = [];
-		this.DEFAULT_QUERY_TIME = 50;
+    this._balanceStrategy = "adaptive";
+    this._numConnections = 0;
+    this._lastRenderCon = 0;
+    this.queryTimes = { };
+    this.serverQueueTimes = [];
+    this.DEFAULT_QUERY_TIME = 50;
 
     // invoke initialization methods
     this.invertDatumTypes();
@@ -398,47 +398,47 @@ class MapdCon {
    */
   query(query, options, callbacks) {
 
-		let columnarResults = true;
-		let eliminateNullRows = false;
-		let renderSpec = null;
-		let queryId = null;
-		if (options) {
-			columnarResults = options.columnarResults ? options.columnarResults : true; // make columnar results default if not specified
-			eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
-			renderSpec = options.renderSpec ? options.renderSpec : undefined;
-			queryId = options.queryId ? options.queryId : null;
-		}
+    let columnarResults = true;
+    let eliminateNullRows = false;
+    let renderSpec = null;
+    let queryId = null;
+    if (options) {
+      columnarResults = options.columnarResults ? options.columnarResults : true; // make columnar results default if not specified
+      eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
+      renderSpec = options.renderSpec ? options.renderSpec : undefined;
+      queryId = options.queryId ? options.queryId : null;
+    }
     let processResultsQuery = renderSpec ? 'render: ' + query : query; // format query for backend rendering if specified
-	  let isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
-	  let isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
-	  let isBackendRenderingWithSync = !!renderSpec && !callbacks;
-	  let isFrontendRenderingWithSync = !renderSpec && !callbacks;
-		let lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
+    let isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
+    let isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
+    let isBackendRenderingWithSync = !!renderSpec && !callbacks;
+    let isFrontendRenderingWithSync = !renderSpec && !callbacks;
+    let lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
     
     let curNonce = (this._nonce++).toString();
 
-		var conId = null;
-		if (this._balanceStrategy === "adaptive") {
-			conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
-		}
-		else {
-			conId = curNonce % this._numConnections;
-		}
-		if (!!renderSpec)
-			this._lastRenderCon = conId;
+    var conId = null;
+    if (this._balanceStrategy === "adaptive") {
+            conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
+    }
+    else {
+            conId = curNonce % this._numConnections;
+    }
+    if (!!renderSpec)
+            this._lastRenderCon = conId;
 
-		this.serverQueueTimes[conId] += lastQueryTime;
+    this.serverQueueTimes[conId] += lastQueryTime;
 
-		let processResultsOptions = {
-                  isImage: !!renderSpec,
-                  eliminateNullRows: eliminateNullRows,
-                  query: processResultsQuery,
-                  queryId: queryId,
-                  conId: conId,
-                  estimatedQueryTime: lastQueryTime
-		};
+    let processResultsOptions = {
+      isImage: !!renderSpec,
+      eliminateNullRows: eliminateNullRows,
+      query: processResultsQuery,
+      queryId: queryId,
+      conId: conId,
+      estimatedQueryTime: lastQueryTime
+    };
 
-		let processResults = null;
+    let processResults = null;
     try {
       if (isBackendRenderingWithAsync) {
         processResults = this.processResults.bind(this, processResultsOptions, callbacks);
