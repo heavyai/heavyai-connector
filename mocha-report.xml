@@ -1,5 +1,0 @@
-<testsuites name="Mocha Tests">
-<testsuite name="App Actions" tests="1" failures="0" skipped="0" timestamp="Thu, 14 Jan 2016 23:46:54 GMT" time="0.025">
-<testcase classname="App Actions" name="successful connection" time="0.023"/>
-</testsuite>
-</testsuites>
