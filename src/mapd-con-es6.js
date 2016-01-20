@@ -1292,7 +1292,7 @@ class MapdCon {
 
   /**
    * The MapDClient instance to perform queries with.
-   * @param {MapDClient} [client] -  
+   * @param {MapDClient} [client] - Thrift object used for communicating with the server
    * @return {MapDClient|MapdCon} - MapDClient or MapdCon itself
    *
    * @example <caption>Set the client:</caption>
