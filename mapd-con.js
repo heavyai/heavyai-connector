@@ -102,8 +102,11 @@
 	    this._numConnections = 0;
 	    this._lastRenderCon = 0;
 	    this.queryTimes = {};
-	    this.serverQueueTimes = [];
+	    this.serverQueueTimes = null;
+	    this.serverPingTimes = null;
+	    this.pingCount = null;
 	    this.DEFAULT_QUERY_TIME = 50;
+	    this.NUM_PINGS_PER_SERVER = 4;
 
 	    // invoke initialization methods
 	    this.invertDatumTypes();
@@ -160,7 +163,7 @@
 
 	  _createClass(MapdCon, [{
 	    key: "connect",
-	    value: function connect() {
+	    value: function connect(callback) {
 	      if (this._sessionId) {
 	        this.disconnect();
 	      }
@@ -197,7 +200,8 @@
 	        throw "Could not connect to any servers in list.";
 	      }
 	      this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf, 0);
-
+	      if (callback) // only run ping servers if the caller gives a callback - this is a promise by them to wait until the callback returns to query the database to avoid skewing the results
+	        this.pingServers(callback);
 	      return this;
 	    }
 
@@ -228,8 +232,41 @@
 	        }this._sessionId = null;
 	        this._client = null;
 	        this._numConnections = 0;
+	        this.serverPingTimes = null;
 	      }
 	      return this;
+	    }
+	  }, {
+	    key: "pingServers",
+	    value: function pingServers(callback) {
+	      if (this._sessionId !== null) {
+	        this.serverPingTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf, 0);
+	        this.pingCount = 0;
+	        for (var c = 0; c < this._numConnections; c++) {
+	          var pingSum = 0;
+	          for (var i = 0; i < this.NUM_PINGS_PER_SERVER; i++) {
+	            var startTime = new Date();
+	            this._client[c].get_server_status(this._sessionId[c], this.pingServersCallback.bind(this, startTime, c, callback));
+	          }
+	        }
+	      }
+	    }
+	  }, {
+	    key: "pingServersCallback",
+	    value: function pingServersCallback(startTime, serverNum, callback) {
+	      var now = new Date();
+	      var duration = now - startTime;
+	      this.serverPingTimes[serverNum] += duration;
+	      this.pingCount++;
+	      if (this.pingCount == this._numConnections * this.NUM_PINGS_PER_SERVER) {
+	        this.pingCount = 0;
+	        for (var c = 0; c < this._numConnections; c++) {
+	          this.serverPingTimes[c] /= this.NUM_PINGS_PER_SERVER;
+	          this.serverQueueTimes[c] += this.serverPingTimes[c]; // handicap each server based on its ping time - this should be persistent as we never zero our times
+	        }
+	        console.log(this.serverQueueTimes);
+	        if (typeof callback !== 'undefined') callback();
+	      }
 	    }
 	  }, {
 	    key: "balanceStrategy",
@@ -510,6 +547,7 @@
 	      if (!!renderSpec) this._lastRenderCon = conId;
 
 	      this.serverQueueTimes[conId] += lastQueryTime;
+	      //console.log("Up: " + this.serverQueueTimes);
 
 	      var processResultsOptions = {
 	        isImage: !!renderSpec,
@@ -813,12 +851,12 @@
 	      }
 	      if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
 	        this.serverQueueTimes[conId] -= estimatedQueryTime;
+	        //console.log("Down: " + this.serverQueueTimes);
 	        this.queryTimes[queryId] = result.execution_time_ms;
 	      }
 
 	      if (this._logging && result.execution_time_ms) {
-	        var server = parseInt(result.nonce) % this._numConnections + 1;
-	        console.log(query + " on Server " + server + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
+	        console.log(query + " on Server " + conId + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
 	      }
 	      var hasCallback = !!callbacks;
 
