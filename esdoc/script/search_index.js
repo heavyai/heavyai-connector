@@ -354,6 +354,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/mapd-con-es6.js~mapdcon#num_pings_per_server",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-member-NUM_PINGS_PER_SERVER",
+    "src/mapd-con-es6.js~MapdCon#NUM_PINGS_PER_SERVER",
+    "member"
+  ],
+  [
     "src/mapd-con-es6.js~mapdcon#balancestrategy",
     "class/src/mapd-con-es6.js~MapdCon.html#instance-method-balanceStrategy",
     "src/mapd-con-es6.js~MapdCon#balanceStrategy",
@@ -516,6 +522,24 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/mapd-con-es6.js~mapdcon#pingcount",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-member-pingCount",
+    "src/mapd-con-es6.js~MapdCon#pingCount",
+    "member"
+  ],
+  [
+    "src/mapd-con-es6.js~mapdcon#pingservers",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-method-pingServers",
+    "src/mapd-con-es6.js~MapdCon#pingServers",
+    "method"
+  ],
+  [
+    "src/mapd-con-es6.js~mapdcon#pingserverscallback",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-method-pingServersCallback",
+    "src/mapd-con-es6.js~MapdCon#pingServersCallback",
+    "method"
+  ],
+  [
     "src/mapd-con-es6.js~mapdcon#platform",
     "class/src/mapd-con-es6.js~MapdCon.html#instance-method-platform",
     "src/mapd-con-es6.js~MapdCon#platform",
@@ -574,6 +598,12 @@ window.esdocSearchIndex = [
     "class/src/mapd-con-es6.js~MapdCon.html#instance-method-removeConnection",
     "src/mapd-con-es6.js~MapdCon#removeConnection",
     "method"
+  ],
+  [
+    "src/mapd-con-es6.js~mapdcon#serverpingtimes",
+    "class/src/mapd-con-es6.js~MapdCon.html#instance-member-serverPingTimes",
+    "src/mapd-con-es6.js~MapdCon#serverPingTimes",
+    "member"
   ],
   [
     "src/mapd-con-es6.js~mapdcon#serverqueuetimes",
