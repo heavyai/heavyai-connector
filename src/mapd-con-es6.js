@@ -32,8 +32,11 @@ class MapdCon {
     this._numConnections = 0;
     this._lastRenderCon = 0;
     this.queryTimes = { };
-    this.serverQueueTimes = [];
+    this.serverQueueTimes = null
+    this.serverPingTimes = null
+    this.pingCount = null;
     this.DEFAULT_QUERY_TIME = 50;
+    this.NUM_PINGS_PER_SERVER = 4;
 
     // invoke initialization methods
     this.invertDatumTypes();
@@ -93,7 +96,7 @@ class MapdCon {
    * // con.client() instanceof MapDClient === true
    * // con.sessionId() === 2070686863
    */
-  connect() {
+  connect(callback) {
     if(this._sessionId){
       this.disconnect();
     }
@@ -133,7 +136,8 @@ class MapdCon {
       throw "Could not connect to any servers in list.";
     }
     this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
-
+    if (callback) // only run ping servers if the caller gives a callback - this is a promise by them to wait until the callback returns to query the database to avoid skewing the results
+      this.pingServers(callback);
     return this;
   }
 
@@ -161,13 +165,45 @@ class MapdCon {
       this._sessionId = null;
       this._client = null;
       this._numConnections = 0;
+      this.serverPingTimes = null;
     }
     return this;
   }
 
+  pingServers(callback) {
+    if (this._sessionId !== null) {
+      this.serverPingTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
+      this.pingCount = 0;
+      for (var c = 0; c < this._numConnections; c++) {
+        var pingSum = 0;
+        for (var i = 0; i < this.NUM_PINGS_PER_SERVER; i++) {
+          var startTime = new Date();
+          this._client[c].get_server_status(this._sessionId[c], this.pingServersCallback.bind(this, startTime, c, callback));
+        }
+      }
+    }
+  }
+
+  pingServersCallback (startTime, serverNum, callback) {
+    var now = new Date();
+    var duration = now - startTime;
+    this.serverPingTimes[serverNum] += duration;
+    this.pingCount++;
+    if (this.pingCount == this._numConnections * this.NUM_PINGS_PER_SERVER) {
+      this.pingCount = 0;
+      for (var c = 0; c < this._numConnections; c++) {
+        this.serverPingTimes[c] /= this.NUM_PINGS_PER_SERVER;
+        this.serverQueueTimes[c] += this.serverPingTimes[c]; // handicap each server based on its ping time - this should be persistent as we never zero our times
+      }
+      console.log(this.serverQueueTimes);
+      if (typeof callback !== 'undefined')
+        callback();
+    }
+  }
+
   balanceStrategy(balanceStrategy) {
     if (!arguments.length)
-            return this._balanceStrategy;
+      return this._balanceStrategy;
     this._balanceStrategy = balanceStrategy;
     return this;
   }
@@ -419,15 +455,16 @@ class MapdCon {
 
     var conId = null;
     if (this._balanceStrategy === "adaptive") {
-            conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
+      conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
     }
     else {
-            conId = curNonce % this._numConnections;
+      conId = curNonce % this._numConnections;
     }
     if (!!renderSpec)
-            this._lastRenderCon = conId;
+      this._lastRenderCon = conId;
 
     this.serverQueueTimes[conId] += lastQueryTime;
+    //console.log("Up: " + this.serverQueueTimes);
 
     let processResultsOptions = {
       isImage: !!renderSpec,
@@ -463,7 +500,7 @@ class MapdCon {
       if (err.name == "NetworkError" || err.name == "TMapDException") {
         this.removeConnection(conId);
         if (this._numConnections == 0) 
-                throw "No remaining database connections";
+          throw "No remaining database connections";
         this.query(query, options, callbacks);
             
       }
@@ -729,12 +766,12 @@ class MapdCon {
     }
     if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
       this.serverQueueTimes[conId] -= estimatedQueryTime; 
+      //console.log("Down: " + this.serverQueueTimes);
       this.queryTimes[queryId] = result.execution_time_ms;
     }
 
     if (this._logging && result.execution_time_ms) {
-      var server = (parseInt(result.nonce) % this._numConnections) + 1;
-      console.log(query + " on Server " + server + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
+      console.log(query + " on Server " + conId + " - Execution Time: " + result.execution_time_ms + " ms, Total Time: " + result.total_time_ms + "ms");
     }
     let hasCallback = !!callbacks; 
 
