@@ -70,6 +70,30 @@
  */
 
 /**
+ * The value of an individual cell in a table.
+ * @typedef {TImportStatus} TImportStatus
+ * @property {Number} elapsed 
+ * @property {Number} rows_completed
+ * @property {Number} rows_estimated
+ */
+
+/**
+ * The valid types for database field values.
+ * @typedef {Object} TDatumType
+ * @property {Number} SMALLINT=0
+ * @property {Number} INT=1
+ * @property {Number} BIGINT=2
+ * @property {Number} FLOAT=3
+ * @property {Number} DECIMAL=4
+ * @property {Number} DOUBLE=5
+ * @property {Number} STR=6
+ * @property {Number} TIME=7
+ * @property {Number} TIMESTAMP=8
+ * @property {Number} DATE=9
+ * @property {Number} BOOL=10
+ */
+
+/**
  * The information about a particular field in a given table. 
  * @typedef {TTypeInfo} TTypeInfo
  * @property {Number} encoding
@@ -84,3 +108,4 @@
  * @property {TCopyParams} copy_params
  * @property {TRowSet} row_set
  */
+
