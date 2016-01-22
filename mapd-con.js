@@ -73,7 +73,7 @@
 	  /**
 	   * Create a new MapdCon and return it to allow method chaining.
 	   * @return {MapdCon} Object
-	   * 
+	   *
 	   * @example <caption>Create a new MapdCon instance:</caption>
 	   * var con = new MapdCon();
 	   *
@@ -236,6 +236,11 @@
 	      }
 	      return this;
 	    }
+
+	    /**
+	     * TODO
+	     */
+
 	  }, {
 	    key: "pingServers",
 	    value: function pingServers(callback) {
@@ -251,6 +256,11 @@
 	        }
 	      }
 	    }
+
+	    /**
+	     * TODO
+	     */
+
 	  }, {
 	    key: "pingServersCallback",
 	    value: function pingServersCallback(startTime, serverNum, callback) {
@@ -268,6 +278,11 @@
 	        if (typeof callback !== 'undefined') callback();
 	      }
 	    }
+
+	    /**
+	     * TODO
+	     */
+
 	  }, {
 	    key: "balanceStrategy",
 	    value: function balanceStrategy(_balanceStrategy) {
@@ -430,7 +445,7 @@
 	    value: function createLink(viewState) {
 	      var result = null;
 	      try {
-	        result = this._client.create_link(this._sessionId, viewState);
+	        result = this._client[0].create_link(this._sessionId, viewState);
 	      } catch (err) {
 	        console.log(err);
 	      }
@@ -586,6 +601,11 @@
 	        }
 	      }
 	    }
+
+	    /**
+	     * TODO
+	     */
+
 	  }, {
 	    key: "removeConnection",
 	    value: function removeConnection(conId) {
@@ -830,6 +850,19 @@
 	      }
 	      return formattedResult;
 	    }
+
+	    /**
+	     * TODO: Fix docs
+	     * Decides how to process raw results once they come back from the server.
+	     *
+	     * @param {Boolean} isImage - Set to true when querying for backend rendered images
+	     * @param {Boolean} eliminateNullRows
+	     * @param {String} query - The SQL query string used only for logging
+	     * @param {Array<Function>} callbacks
+	     * @param {Object} result - The query result used to decide whether to process as column or row results. 
+	     * @return {Object} null if image with callbacks, result if image with callbacks, otherwise formatted results
+	     */
+
 	  }, {
 	    key: "processResults",
 	    value: function processResults(options, callbacks, result) {
@@ -907,6 +940,26 @@
 	        throw err;
 	      }
 	    }
+
+	    /**
+	     * Get the names of the databases that exist on the current session's connectdion.
+	     * @return {Array<Object>} list of table objects containing the label (deprecated) and table names.  
+	     *
+	     * @example <caption>Get the list of tables from a connection:</caption>
+	     * var tables = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect()
+	     *   .getTables();
+	     * // tables === [{
+	     *    label: 'obs', // deprecated property
+	     *    name: 'myDatabaseName'
+	     *  }, ...]
+	     */
+
 	  }, {
 	    key: "getTables",
 	    value: function getTables() {
@@ -928,6 +981,12 @@
 	      }
 	      return tableInfo;
 	    }
+
+	    /**
+	     * Create an array-like object from {@link TDatumType} by
+	     * flipping the string key and numerical value around.
+	     */
+
 	  }, {
 	    key: "invertDatumTypes",
 	    value: function invertDatumTypes() {
@@ -935,6 +994,31 @@
 	        this._datumEnum[TDatumType[key]] = key;
 	      }
 	    }
+
+	    /**
+	     * Get a list of field objects for a given table.
+	     * @param {String} tableName - name of table containing field names
+	     * @return {Array<Object>} fields - the formmatted list of field objects
+	     *
+	     * @example <caption>Get the list of fields from a specific table:</caption>
+	     * var tables = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect()
+	     *   .getTables();
+	     *
+	     * var fields = con.getFields(tables[0].name);
+	     * // fields === [{
+	     *   name: 'fieldName',
+	     *   type: 'BIGINT',
+	     *   is_array: false,
+	     *   is_dict: false
+	     * }, ...]
+	     */
+
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName) {
@@ -952,6 +1036,24 @@
 	      }
 	      return fieldsArray;
 	    }
+
+	    /**
+	     * Create a table and persist it to the backend.
+	     * @param {String} tableName - desired name of the new table
+	     * @param {Array<TColumnType>} rowDesc - fields of the new table 
+	     * @param {Function} callback 
+	     *
+	     * @example <caption>Create a new table:</caption>
+	     * var result = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect()
+	     *   .createTable('mynewtable', [TColumnType, TColumnType, ...], cb);
+	     */
+
 	  }, {
 	    key: "createTable",
 	    value: function createTable(tableName, rowDesc, callback) {
@@ -966,6 +1068,15 @@
 	      }
 	      return result;
 	    }
+
+	    /**
+	     * Import a table from a file.
+	     * @param {String} tableName - desired name of the new table
+	     * @param {String} fileName
+	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
+	     * @param {Function} callback
+	     */
+
 	  }, {
 	    key: "importTable",
 	    value: function importTable(tableName, fileName, copyParams, callback) {
@@ -981,6 +1092,13 @@
 	      }
 	      return result;
 	    }
+
+	    /**
+	     * Get the status of the table import operation.
+	     * @param {TCopyParams} importId
+	     * @param {Function} callback
+	     */
+
 	  }, {
 	    key: "importTableStatus",
 	    value: function importTableStatus(importId, callback) {
@@ -994,6 +1112,17 @@
 	      }
 	      return import_status;
 	    }
+
+	    /**
+	     * Used primarily for backend rendered maps, this method will fetch the rows
+	     * that correspond to longitude/latitude points.
+	     *
+	     * @param {Array<TPixel>} pixels
+	     * @param {String} table_name - the table containing the geo data
+	     * @param {Array<String>} col_names - the fields to fetch
+	     * @param {Array<Function>} callbacks
+	     */
+
 	  }, {
 	    key: "getRowsForPixels",
 	    value: function getRowsForPixels(pixels, table_name, col_names, callbacks) {
@@ -1012,6 +1141,14 @@
 	      }
 	      return curNonce;
 	    }
+
+	    /**
+	     * Formats the pixel results into the same pattern as textual results.
+	     *
+	     * @param {Array<Function>} callbacks
+	     * @param {Object} results
+	     */
+
 	  }, {
 	    key: "processPixelResults",
 	    value: function processPixelResults(callbacks, results) {
