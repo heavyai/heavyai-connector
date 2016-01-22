@@ -1,7 +1,7 @@
 let connect = (con) => {
   return con
-    .host('athena.mapd.com')
-    .port('8100')
+    .host('kali.mapd.com')
+    .port('9092')
     .dbName('mapd')
     .user('mapd')
     .password('HyperInteractive')
