@@ -7,7 +7,7 @@ class MapdCon {
   /**
    * Create a new MapdCon and return it to allow method chaining.
    * @return {MapdCon} Object
-   * 
+   *
    * @example <caption>Create a new MapdCon instance:</caption>
    * var con = new MapdCon();
    *
@@ -170,6 +170,9 @@ class MapdCon {
     return this;
   }
 
+  /**
+   * TODO
+   */
   pingServers(callback) {
     if (this._sessionId !== null) {
       this.serverPingTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf,0);
@@ -184,6 +187,9 @@ class MapdCon {
     }
   }
 
+  /**
+   * TODO
+   */
   pingServersCallback (startTime, serverNum, callback) {
     var now = new Date();
     var duration = now - startTime;
@@ -201,6 +207,9 @@ class MapdCon {
     }
   }
 
+  /**
+   * TODO
+   */
   balanceStrategy(balanceStrategy) {
     if (!arguments.length)
       return this._balanceStrategy;
@@ -507,6 +516,9 @@ class MapdCon {
     }
   }
 
+  /**
+   * TODO
+   */
   removeConnection(conId) {
     if (conId < 0 || conId >= this.numConnections) 
             throw "Remove connection id invalid"
@@ -746,6 +758,17 @@ class MapdCon {
     return formattedResult;
   }
 
+  /**
+   * TODO: Fix docs
+   * Decides how to process raw results once they come back from the server.
+   *
+   * @param {Boolean} isImage - Set to true when querying for backend rendered images
+   * @param {Boolean} eliminateNullRows
+   * @param {String} query - The SQL query string used only for logging
+   * @param {Array<Function>} callbacks
+   * @param {Object} result - The query result used to decide whether to process as column or row results. 
+   * @return {Object} null if image with callbacks, result if image with callbacks, otherwise formatted results
+   */
   processResults(options, callbacks, result) {
 
     let isImage = false;
@@ -823,6 +846,24 @@ class MapdCon {
     }
   }
 
+  /**
+   * Get the names of the databases that exist on the current session's connectdion.
+   * @return {Array<Object>} list of table objects containing the label (deprecated) and table names.  
+   *
+   * @example <caption>Get the list of tables from a connection:</caption>
+   * var tables = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect()
+   *   .getTables();
+   * // tables === [{
+   *    label: 'obs', // deprecated property
+   *    name: 'myDatabaseName'
+   *  }, ...]
+   */
   getTables() {
     let tabs = null;
     try {
@@ -844,12 +885,39 @@ class MapdCon {
     return tableInfo;
   }
 
+  /**
+   * Create an array-like object from {@link TDatumType} by
+   * flipping the string key and numerical value around.
+   */
   invertDatumTypes() {
     for (var key in TDatumType) {
       this._datumEnum[TDatumType[key]] = key;
     }
   }
 
+  /**
+   * Get a list of field objects for a given table.
+   * @param {String} tableName - name of table containing field names
+   * @return {Array<Object>} fields - the formmatted list of field objects
+   *
+   * @example <caption>Get the list of fields from a specific table:</caption>
+   * var tables = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect()
+   *   .getTables();
+   *
+   * var fields = con.getFields(tables[0].name);
+   * // fields === [{
+   *   name: 'fieldName',
+   *   type: 'BIGINT',
+   *   is_array: false,
+   *   is_dict: false
+   * }, ...]
+   */
   getFields(tableName) {
     let fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
     let fieldsArray = [];
@@ -866,6 +934,22 @@ class MapdCon {
     return fieldsArray;
   }
 
+  /**
+   * Create a table and persist it to the backend.
+   * @param {String} tableName - desired name of the new table
+   * @param {Array<TColumnType>} rowDesc - fields of the new table 
+   * @param {Function} callback 
+   *
+   * @example <caption>Create a new table:</caption>
+   * var result = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect()
+   *   .createTable('mynewtable', [TColumnType, TColumnType, ...], cb);
+   */
   createTable(tableName, rowDesc, callback) {
     let result = null;
     try {
@@ -879,6 +963,13 @@ class MapdCon {
     return result;
   }
 
+  /**
+   * Import a table from a file.
+   * @param {String} tableName - desired name of the new table
+   * @param {String} fileName
+   * @param {TCopyParams} copyParams - see {@link TCopyParams}
+   * @param {Function} callback
+   */
   importTable(tableName, fileName, copyParams, callback) {
     copyParams.delimiter = copyParams.delimiter || "";
     let result = null;
@@ -893,6 +984,11 @@ class MapdCon {
     return result;
   }
 
+  /**
+   * Get the status of the table import operation.
+   * @param {TCopyParams} importId
+   * @param {Function} callback
+   */
   importTableStatus(importId, callback) {
     callback = callback || null;
     let import_status = null;
@@ -906,6 +1002,15 @@ class MapdCon {
     return import_status;
   }
 
+  /**
+   * Used primarily for backend rendered maps, this method will fetch the rows
+   * that correspond to longitude/latitude points.
+   *
+   * @param {Array<TPixel>} pixels
+   * @param {String} table_name - the table containing the geo data
+   * @param {Array<String>} col_names - the fields to fetch
+   * @param {Array<Function>} callbacks
+   */
   getRowsForPixels(pixels, table_name, col_names, callbacks) {
     var widget_id = 1;  // INT
     var column_format = true; //BOOL
@@ -924,6 +1029,12 @@ class MapdCon {
     return curNonce;
   }
 
+  /**
+   * Formats the pixel results into the same pattern as textual results.
+   *
+   * @param {Array<Function>} callbacks
+   * @param {Object} results
+   */
   processPixelResults(callbacks, results) {
     var results = results.pixel_rows;
     var numPixels = results.length;
