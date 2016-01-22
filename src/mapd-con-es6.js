@@ -360,7 +360,7 @@ class MapdCon {
   createLink(viewState) {
     var result = null;
     try {
-      result = this._client.create_link(this._sessionId, viewState);
+      result = this._client[0].create_link(this._sessionId, viewState);
     }
     catch(err) {
       console.log(err);
