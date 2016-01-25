@@ -293,7 +293,7 @@ class MapdCon {
     let result = null;
     if (this._sessionId && viewName) {
       try {
-        result = this._client.get_frontend_view(this._sessionId, viewName);
+        result = this._client[0].get_frontend_view(this._sessionId, viewName);
       } catch (err) {
         console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
         throw err;
