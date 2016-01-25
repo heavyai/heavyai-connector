@@ -19,7 +19,7 @@ describe('MapdCon Setters/Getters', () => {
     var test = (err, window) => {
       var mapdcon = new window.MapdCon();
       mapdcon.host('newhost');
-      expect(mapdcon.host()).toEqual('newhost');
+      expect(mapdcon.host()).toEqual(['newhost']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
@@ -29,7 +29,7 @@ describe('MapdCon Setters/Getters', () => {
     var test = (err, window) => {
       var mapdcon = new window.MapdCon();
       mapdcon.port('3333');
-      expect(mapdcon.port()).toEqual('3333');
+      expect(mapdcon.port()).toEqual(['3333']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
@@ -39,7 +39,7 @@ describe('MapdCon Setters/Getters', () => {
     var test = (err, window) => {
       var mapdcon = new window.MapdCon();
       mapdcon.port('myUserName');
-      expect(mapdcon.port()).toEqual('myUserName');
+      expect(mapdcon.port()).toEqual(['myUserName']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
@@ -49,7 +49,7 @@ describe('MapdCon Setters/Getters', () => {
     var test = (err, window) => {
       var mapdcon = new window.MapdCon();
       mapdcon.password('****');
-      expect(mapdcon.password()).toEqual('****');
+      expect(mapdcon.password()).toEqual(['****']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
@@ -59,7 +59,7 @@ describe('MapdCon Setters/Getters', () => {
     var test = (err, window) => {
       var mapdcon = new window.MapdCon();
       mapdcon.dbName('dbName');
-      expect(mapdcon.dbName()).toEqual('dbName');
+      expect(mapdcon.dbName()).toEqual(['dbName']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });

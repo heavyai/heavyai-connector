@@ -17,7 +17,7 @@ const mapdcon    = readFileSync("./mapd-con.js", "utf-8");
 const scripts    = [ thrift, mapdthrift, mapdtypes, mapdcon ];
 
 
-describe('MapdCon Instance', () => {
+describe('MapdCon Connection', () => {
 
   it('should create an instance of MapdCon', (done) => {
     let test = (err, window) => {
@@ -31,8 +31,8 @@ describe('MapdCon Instance', () => {
   it('should create a connection', (done) => {
     let test = (err, window) => {
       let mapdcon = connect(new window.MapdCon());
-      expect(mapdcon.sessionId()).toBeA('number');
-      expect(mapdcon.client()).toBeA(window.MapDClient);
+      expect(Array.isArray(mapdcon.sessionId())).toEqual(true);
+      expect(Array.isArray(mapdcon.client())).toEqual(true);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
