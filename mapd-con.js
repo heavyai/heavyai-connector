@@ -1449,7 +1449,7 @@
 	    key: 'logging',
 	    value: function logging(_logging) {
 	      if (!arguments.length) {
-	        return this.logging;
+	        return this._logging;
 	      }
 	      this._logging = _logging;
 	      return this;
