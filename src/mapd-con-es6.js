@@ -1350,7 +1350,7 @@ class MapdCon {
    */
   logging(logging) {
     if (!arguments.length) {
-      return this.logging;
+      return this._logging;
     }
     this._logging = logging;
     return this;
