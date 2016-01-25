@@ -7,7 +7,7 @@
     "build": "src/*.js"
   },
   "scripts": {
-    "build": "webpack; npm run generate-docs",
+    "build": "webpack; npm run test; npm run generate-docs",
     "watch": "npm-watch",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
     "test": "node_modules/.bin/mocha ./test"

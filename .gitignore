@@ -1,4 +1,5 @@
 node_modules/
+esdoc/
 mocha-report.xml
 npm-debug.log
 .DS_Store
