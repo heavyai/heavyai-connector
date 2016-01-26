@@ -551,22 +551,20 @@ class MapdCon {
       if (isBackendRenderingWithAsync) {
         const callback = this.processResults.bind(
           this,
-          true,
-          eliminateNullRows,
-          processResultsQuery,
+          processResultsOptions,
           callbacks
         );
-        this._client.render(this._sessionId, query + ';', renderSpec, {}, {}, curNonce, callback);
+        this._client[conId].render(this._sessionId[conId], query + ';',
+            renderSpec, {}, {}, curNonce, callback);
         return curNonce;
       } else if (isFrontendRenderingWithAsync) {
         const callback = this.processResults.bind(
           this,
-          false,
-          eliminateNullRows,
-          processResultsQuery,
+          processResultsOptions,
           callbacks
         );
-        this._client.sql_execute(this._sessionId, query + ';', columnarResults, curNonce, callback);
+        this._client[conId].sql_execute(this._sessionId[conId], query + ';',
+            columnarResults, curNonce, callback);
         return curNonce;
       } else if (isBackendRenderingWithSync) {
         return this.processResults(
