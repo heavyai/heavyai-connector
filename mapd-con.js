@@ -647,12 +647,12 @@
 
 	      try {
 	        if (isBackendRenderingWithAsync) {
-	          var callback = this.processResults.bind(this, true, eliminateNullRows, processResultsQuery, callbacks);
-	          this._client.render(this._sessionId, _query + ';', renderSpec, {}, {}, curNonce, callback);
+	          var callback = this.processResults.bind(this, processResultsOptions, callbacks);
+	          this._client[conId].render(this._sessionId[conId], _query + ';', renderSpec, {}, {}, curNonce, callback);
 	          return curNonce;
 	        } else if (isFrontendRenderingWithAsync) {
-	          var callback = this.processResults.bind(this, false, eliminateNullRows, processResultsQuery, callbacks);
-	          this._client.sql_execute(this._sessionId, _query + ';', columnarResults, curNonce, callback);
+	          var callback = this.processResults.bind(this, processResultsOptions, callbacks);
+	          this._client[conId].sql_execute(this._sessionId[conId], _query + ';', columnarResults, curNonce, callback);
 	          return curNonce;
 	        } else if (isBackendRenderingWithSync) {
 	          return this.processResults(processResultsOptions, null, this._client[conId].render( // probably should assign this to a variable
