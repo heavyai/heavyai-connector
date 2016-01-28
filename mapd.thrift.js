@@ -1178,6 +1178,148 @@ MapD_get_frontend_view_result.prototype.write = function(output) {
   return;
 };
 
+MapD_delete_frontend_view_args = function(args) {
+  this.session = null;
+  this.view_name = null;
+  if (args) {
+    if (args.session !== undefined) {
+      this.session = args.session;
+    }
+    if (args.view_name !== undefined) {
+      this.view_name = args.view_name;
+    }
+  }
+};
+MapD_delete_frontend_view_args.prototype = {};
+MapD_delete_frontend_view_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.view_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_delete_frontend_view_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_frontend_view_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.view_name !== null && this.view_name !== undefined) {
+    output.writeFieldBegin('view_name', Thrift.Type.STRING, 2);
+    output.writeString(this.view_name);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_delete_frontend_view_result = function(args) {
+  this.e = null;
+  this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined) {
+      this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_delete_frontend_view_result.prototype = {};
+MapD_delete_frontend_view_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_delete_frontend_view_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_frontend_view_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapD_get_tables_args = function(args) {
   this.session = null;
   if (args) {
@@ -4699,6 +4841,59 @@ MapDClient.prototype.recv_get_frontend_view = function() {
     return result.success;
   }
   throw 'get_frontend_view failed: unknown result';
+};
+MapDClient.prototype.delete_frontend_view = function(session, view_name, callback) {
+  this.send_delete_frontend_view(session, view_name, callback); 
+  if (!callback) {
+  this.recv_delete_frontend_view();
+  }
+};
+
+MapDClient.prototype.send_delete_frontend_view = function(session, view_name, callback) {
+  this.output.writeMessageBegin('delete_frontend_view', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_delete_frontend_view_args();
+  args.session = session;
+  args.view_name = view_name;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_delete_frontend_view();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_delete_frontend_view = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_delete_frontend_view_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.te) {
+    throw result.te;
+  }
+  return;
 };
 MapDClient.prototype.get_tables = function(session, callback) {
   this.send_get_tables(session, callback); 
