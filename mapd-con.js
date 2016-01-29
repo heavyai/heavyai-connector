@@ -663,9 +663,10 @@
 	        }
 	      } catch (err) {
 	        console.error(err);
-	        if (err.name === 'NetworkError' || err.name === 'TMapDException') {
+	        if (err.name === 'NetworkError') {
 	          this.removeConnection(conId);
 	          if (this._numConnections === 0) {
+	            // should we try to reconnect?
 	            err.msg = 'No remaining database connections';
 	            throw err;
 	          }
