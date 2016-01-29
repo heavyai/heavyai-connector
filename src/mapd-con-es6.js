@@ -418,13 +418,26 @@ class MapdCon {
    * // link === 'CRtzoe'
    */
   createLink(viewState) {
-    let result = null;
     try {
-      result = this._client[0].create_link(this._sessionId, viewState);
+      const result = this._client
+        .map((client, i) => {
+          return client.create_link(this._sessionId[i], viewState);
+        })
+        .reduce((links, link) => {
+          if (links.indexOf(link) === -1) {
+            links.push(link);
+          }
+          return links;
+        }, []);
+      if (result.length !== 1) {
+        const error = { message: 'Different links were created on each connection' };
+        throw error;
+      } else {
+        return result.join();
+      }
     } catch (err) {
       console.log(err);
     }
-    return result;
   }
 
   /**
@@ -1373,6 +1386,26 @@ class MapdCon {
     }
     this._platform = platform;
     return this;
+  }
+
+  /**
+   * Get the number of connections that are currently open.
+   * @return {Number} - number of open connections
+   *
+   * @example <caption>Get the number of connections:</caption>
+   * var con = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect();
+   *
+   * var numConnections = con.numConnections();
+   * // numConnections === 1
+   */
+  numConnections() {
+    return this._numConnections;
   }
 
   /**
