@@ -509,13 +509,26 @@
 	  }, {
 	    key: 'createLink',
 	    value: function createLink(viewState) {
-	      var result = null;
+	      var _this2 = this;
+
 	      try {
-	        result = this._client[0].create_link(this._sessionId, viewState);
+	        var result = this._client.map(function (client, i) {
+	          return client.create_link(_this2._sessionId[i], viewState);
+	        }).reduce(function (links, link) {
+	          if (links.indexOf(link) === -1) {
+	            links.push(link);
+	          }
+	          return links;
+	        }, []);
+	        if (result.length !== 1) {
+	          var error = { message: 'Different links were created on each connection' };
+	          throw error;
+	        } else {
+	          return result.join();
+	        }
 	      } catch (err) {
 	        console.log(err);
 	      }
-	      return result;
 	    }
 
 	    /**
@@ -706,7 +719,7 @@
 	  }, {
 	    key: 'processColumnarResults',
 	    value: function processColumnarResults(data, eliminateNullRows) {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      var formattedResult = { fields: [], results: [] };
 	      var numCols = data.row_desc.length;
@@ -715,7 +728,7 @@
 	      formattedResult.fields = data.row_desc.map(function (field) {
 	        return {
 	          name: field.col_name,
-	          type: _this2._datumEnum[field.col_type.type],
+	          type: _this3._datumEnum[field.col_type.type],
 	          is_array: field.col_type.is_array
 	        };
 	      });
@@ -823,7 +836,7 @@
 	  }, {
 	    key: 'processRowResults',
 	    value: function processRowResults(data, eliminateNullRows) {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      var numCols = data.row_desc.length;
 	      var formattedResult = { fields: [], results: [] };
@@ -831,7 +844,7 @@
 	      formattedResult.fields = data.row_desc.map(function (field) {
 	        return {
 	          name: field.col_name,
-	          type: _this3._datumEnum[field.col_type.type],
+	          type: _this4._datumEnum[field.col_type.type],
 	          is_array: field.col_type.is_array
 	        };
 	      });
@@ -1477,6 +1490,29 @@
 	      }
 	      this._platform = _platform;
 	      return this;
+	    }
+
+	    /**
+	     * Get the number of connections that are currently open.
+	     * @return {Number} - number of open connections
+	     *
+	     * @example <caption>Get the number of connections:</caption>
+	     * var con = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect();
+	     *
+	     * var numConnections = con.numConnections();
+	     * // numConnections === 1
+	     */
+
+	  }, {
+	    key: 'numConnections',
+	    value: function numConnections() {
+	      return this._numConnections;
 	    }
 
 	    /**
