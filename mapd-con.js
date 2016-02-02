@@ -168,8 +168,7 @@
 	      // TODO: should be its own function
 	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
 	      if (!allAreArrays) {
-	        var err = { msg: 'All connection parameters must be arrays.' };
-	        throw err; // should not throw now as we check parameter input and convert to arrays as needed
+	        throw new Error('All connection parameters must be arrays.');
 	      }
 
 	      this._client = [];
@@ -178,12 +177,10 @@
 	      // now check to see if length of all arrays are the same and > 0
 	      var hostLength = this._host.length;
 	      if (hostLength < 1) {
-	        var err = { msg: 'Must have at least one server to connect to.' };
-	        throw err;
+	        throw new Error('Must have at least one server to connect to.');
 	      }
 	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) {
-	        var err = { msg: 'Array connection parameters must be of equal length.' };
-	        throw err;
+	        throw new Error('Array connection parameters must be of equal length.');
 	      }
 
 	      for (var h = 0; h < hostLength; h++) {
@@ -196,7 +193,7 @@
 	          this._client.push(client);
 	          this._sessionId.push(sessionId);
 	        } catch (err) {
-	          console.error('Could not connect to', this._host[h] + ':' + this._port[h]);
+	          throw err;
 	        }
 	      }
 	      this._numConnections = this._client.length;
@@ -205,8 +202,7 @@
 	        // clean up first
 	        this._client = null;
 	        this._sessionId = null;
-	        var err = { msg: 'Could not connect to any servers in list.' };
-	        throw err;
+	        throw new Error('Could not connect to any servers in list.');
 	      }
 	      this.serverQueueTimes = Array.apply(null, Array(this._numConnections)).map(Number.prototype.valueOf, 0);
 	      // only run ping servers if the caller gives a callback
@@ -337,7 +333,6 @@
 	        try {
 	          result = this._client[0].get_frontend_views(this._sessionId);
 	        } catch (err) {
-	          console.log('Could not get frontend views from backend. Check the session id.', err);
 	          throw err;
 	        }
 	      }
@@ -372,7 +367,6 @@
 	        try {
 	          result = this._client[0].get_frontend_view(this._sessionId, viewName);
 	        } catch (err) {
-	          console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
 	          throw err;
 	        }
 	      }
@@ -406,7 +400,6 @@
 	      try {
 	        result = this._client[0].get_server_status();
 	      } catch (err) {
-	        console.log('Could not get the server status. Check your connection and session id.', err);
 	        throw err;
 	      }
 	      return result;
@@ -479,7 +472,7 @@
 	          this._client[c].create_frontend_view(this._sessionId[c], viewName, viewState, imageHash);
 	        }
 	      } catch (err) {
-	        console.log('ERROR: Could not create the new frontend view. Check your session id.', err);
+	        throw err;
 	      }
 	      return this;
 	    }
@@ -521,13 +514,12 @@
 	          return links;
 	        }, []);
 	        if (result.length !== 1) {
-	          var error = { message: 'Different links were created on each connection' };
-	          throw error;
+	          throw new Error('Different links were created on each connection');
 	        } else {
 	          return result.join();
 	        }
 	      } catch (err) {
-	        console.log(err);
+	        throw err;
 	      }
 	    }
 
@@ -557,7 +549,7 @@
 	      try {
 	        result = this._client[0].get_link_view(this._sessionId[0], link);
 	      } catch (err) {
-	        console.log(err);
+	        throw err;
 	      }
 	      return result;
 	    }
@@ -596,7 +588,6 @@
 	      try {
 	        this._client[0].detect_column_types(this._sessionId[0], fileName, copyParams, callback);
 	      } catch (err) {
-	        console.log(err);
 	        throw err;
 	      }
 	    }
@@ -622,10 +613,10 @@
 	      var renderSpec = null;
 	      var queryId = null;
 	      if (options) {
-	        columnarResults = options.columnarResults ? options.columnarResults : true;
-	        eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
-	        renderSpec = options.renderSpec ? options.renderSpec : undefined;
-	        queryId = options.queryId ? options.queryId : null;
+	        columnarResults = options.hasOwnProperty(columnarResults) ? options.columnarResults : true;
+	        eliminateNullRows = options.hasOwnProperty(eliminateNullRows) ? options.eliminateNullRows : false;
+	        renderSpec = options.hasOwnProperty(renderSpec) ? options.renderSpec : undefined;
+	        queryId = options.hasOwnProperty(queryId) ? options.queryId : null;
 	      }
 	      var processResultsQuery = renderSpec ? 'render: ' + _query : _query;
 	      var isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
@@ -1040,7 +1031,6 @@
 	          return db.db_name;
 	        });
 	      } catch (err) {
-	        console.error('ERROR: Could not get databases from backend. Check the session id.', err);
 	        throw err;
 	      }
 	    }
@@ -1071,7 +1061,6 @@
 	      try {
 	        tabs = this._client[0].get_tables(this._sessionId[0]);
 	      } catch (err) {
-	        console.error('ERROR: Could not get tables from backend', err);
 	        throw err;
 	      }
 
@@ -1128,7 +1117,11 @@
 	  }, {
 	    key: 'getFields',
 	    value: function getFields(tableName) {
-	      var fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+	      try {
+	        var _fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+	      } catch (err) {
+	        throw new Error('Table (' + tableName + ') not found');
+	      }
 	      var fieldsArray = [];
 	      // silly to change this from map to array
 	      // - then later it turns back to map
@@ -1171,7 +1164,6 @@
 	          result = this._client[c].send_create_table(this._sessionId[c], tableName, rowDesc, callback);
 	        }
 	      } catch (err) {
-	        console.error('ERROR: Could not create table', err);
 	        throw err;
 	      }
 	    }
@@ -1194,7 +1186,6 @@
 	          result = this._client[c].send_import_table(this._sessionId[c], tableName, fileName, copyParams, callback);
 	        }
 	      } catch (err) {
-	        console.error('ERROR: Could not import table', err);
 	        throw err;
 	      }
 	    }
@@ -1212,7 +1203,6 @@
 	      try {
 	        importStatus = this._client[0].import_table_status(this._sessionId[0], importId, callback);
 	      } catch (err) {
-	        console.error('ERROR: Could not retrieve import status', err);
 	        throw err;
 	      }
 	    }
@@ -1239,7 +1229,6 @@
 	        }
 	        this._client[this._lastRenderCon].get_rows_for_pixels(this._sessionId[this._lastRenderCon], widgetId, pixels, tableName, colNames, columnFormat, curNonce, this.processPixelResults.bind(this, callbacks));
 	      } catch (err) {
-	        console.error('Could not get rows for pixels', err);
 	        throw err;
 	      }
 	      return curNonce;
