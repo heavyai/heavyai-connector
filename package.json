@@ -2,7 +2,7 @@
   "name": "@mapd/mapd-con",
   "version": "0.2.31",
   "description": "An npm module containing the MapDCon library",
-  "main": "mapd-con.js",
+  "main": "build/MapdCon.js",
   "watch": {
     "build": "src/*.js"
   },
