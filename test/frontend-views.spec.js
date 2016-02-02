@@ -1,27 +1,26 @@
 // Node Dependencies
-import { readFileSync }    from 'fs';
+import { readFileSync } from 'fs';
 
 // NPM Dependencies
-import  expect             from 'expect';
-import { jsdom }           from 'jsdom';
+import expect from 'expect';
+import { jsdom } from 'jsdom';
 
 // Custom Dependences
-import { connect }     from './utils';
+import { connect } from './utils';
 
 // JSDom Configuration
-const html       = '<!doctype html><html><body></body></html>';
-const thrift     = readFileSync("./thrift.js", "utf-8");
-const mapdthrift = readFileSync("./mapd.thrift.js", "utf-8");
-const mapdtypes  = readFileSync("./mapd_types.js", "utf-8");
-const mapdcon    = readFileSync("./mapd-con.js", "utf-8");
-const scripts    = [ thrift, mapdthrift, mapdtypes, mapdcon ];
+const html = '<!doctype html><html><body></body></html>';
+const thrift = readFileSync('./dist/thrift.js', 'utf-8');
+const mapdthrift = readFileSync('./dist/mapd.thrift.js', 'utf-8');
+const mapdtypes = readFileSync('./dist/mapd_types.js', 'utf-8');
+const mapdcon = readFileSync('./dist/MapdCon.js', 'utf-8');
+const scripts = [thrift, mapdthrift, mapdtypes, mapdcon];
 
 describe('MapdCon#getFrontendViews', () => {
-
   it('should get an array of frontend views', (done) => {
-    let test = (err, window) => {
-      let mapdcon = connect(new window.MapdCon());
-      let views = mapdcon.getFrontendViews();
+    const test = (err, window) => {
+      const con = connect(new window.MapdCon());
+      const views = con.getFrontendViews();
       views.forEach((view) => {
         expect(view).toBeA(window.TFrontendView);
       });
@@ -29,21 +28,19 @@ describe('MapdCon#getFrontendViews', () => {
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should return null if not connected', (done) => {
-    let test = (err, window) => {
-      let mapdcon = new window.MapdCon();
-      let result = mapdcon.getFrontendViews();
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      const result = con.getFrontendViews();
       expect(result).toBe(null);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should contain an empty string view state for each view in the array', (done) => {
-    let test = (err, window) => {
-      let mapdcon = connect(new window.MapdCon());
-      let views = mapdcon.getFrontendViews();
+    const test = (err, window) => {
+      const con = connect(new window.MapdCon());
+      const views = con.getFrontendViews();
       views.forEach((view) => {
         expect(view.view_state).toEqual('');
       });
@@ -51,11 +48,10 @@ describe('MapdCon#getFrontendViews', () => {
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should contain a view name for each view in the array', (done) => {
-    let test = (err, window) => {
-      let mapdcon = connect(new window.MapdCon());
-      let views = mapdcon.getFrontendViews();
+    const test = (err, window) => {
+      const con = connect(new window.MapdCon());
+      const views = con.getFrontendViews();
       views.forEach((view) => {
         expect(view.view_name.length).toBeGreaterThan(0);
       });
@@ -66,49 +62,43 @@ describe('MapdCon#getFrontendViews', () => {
 });
 
 describe('MapdCon#getFrontendView', () => {
-
   it('should get an frontend view by name', (done) => {
-    let test = (err, window) => {
-      let mapdcon = connect(new window.MapdCon());
-      let views = mapdcon.getFrontendViews();
-      let view = mapdcon.getFrontendView(views[0].view_name);
+    const test = (err, window) => {
+      const con = connect(new window.MapdCon());
+      const views = con.getFrontendViews();
+      const view = con.getFrontendView(views[0].view_name);
       expect(view).toBeA(window.TFrontendView);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should return null if not connected', (done) => {
-    let test = (err, window) => {
-      let mapdcon = new window.MapdCon();
-      let result = mapdcon.getFrontendView();
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      const result = con.getFrontendView();
       expect(result).toBe(null);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should contain a view_state', (done) => {
-    let test = (err, window) => {
-      let mapdcon = connect(new window.MapdCon());
-      let views = mapdcon.getFrontendViews();
-      let view = mapdcon.getFrontendView(views[0].view_name);
+    const test = (err, window) => {
+      const con = connect(new window.MapdCon());
+      const views = con.getFrontendViews();
+      const view = con.getFrontendView(views[0].view_name);
       expect(view.view_state.length).toBeGreaterThan(0);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should contain a valid view_name property', (done) => {
     const test = (err, window) => {
-      const mapdcon = connect(new window.MapdCon());
-      const views = mapdcon.getFrontendViews();
-      const view = mapdcon.getFrontendView(views[0].view_name);
+      const con = connect(new window.MapdCon());
+      const views = con.getFrontendViews();
+      const view = con.getFrontendView(views[0].view_name);
       expect(view.view_name).toEqual(views[0].view_name);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
 });
-

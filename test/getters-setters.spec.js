@@ -1,89 +1,80 @@
 // Node Dependencies
-import { readFileSync }      from 'fs';
+import { readFileSync } from 'fs';
 
 // NPM Dependencies
-import  expect             from 'expect';
-import { jsdom }             from 'jsdom';
+import expect from 'expect';
+import { jsdom } from 'jsdom';
 
 // JSDom Configuration
-const html       = '<!doctype html><html><body></body></html>';
-const thrift     = readFileSync("./thrift.js", "utf-8");
-const mapdthrift = readFileSync("./mapd.thrift.js", "utf-8");
-const mapdtypes  = readFileSync("./mapd_types.js", "utf-8");
-const mapdcon    = readFileSync("./mapd-con.js", "utf-8");
-const scripts    = [ thrift, mapdthrift, mapdtypes, mapdcon ];
+const html = '<!doctype html><html><body></body></html>';
+const thrift = readFileSync('./dist/thrift.js', 'utf-8');
+const mapdthrift = readFileSync('./dist/mapd.thrift.js', 'utf-8');
+const mapdtypes = readFileSync('./dist/mapd_types.js', 'utf-8');
+const mapdcon = readFileSync('./dist/MapdCon.js', 'utf-8');
+const scripts = [thrift, mapdthrift, mapdtypes, mapdcon];
 
 describe('MapdCon Setters/Getters', () => {
-
   it('should set/get a hostname', (done) => {
-    var test = (err, window) => {
-      var mapdcon = new window.MapdCon();
-      mapdcon.host('newhost');
-      expect(mapdcon.host()).toEqual(['newhost']);
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      con.host('newhost');
+      expect(con.host()).toEqual(['newhost']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should set/get a port', (done) => {
-    var test = (err, window) => {
-      var mapdcon = new window.MapdCon();
-      mapdcon.port('3333');
-      expect(mapdcon.port()).toEqual(['3333']);
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      con.port('3333');
+      expect(con.port()).toEqual(['3333']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should set/get a username', (done) => {
-    var test = (err, window) => {
-      var mapdcon = new window.MapdCon();
-      mapdcon.port('myUserName');
-      expect(mapdcon.port()).toEqual(['myUserName']);
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      con.user('myUserName');
+      expect(con.user()).toEqual(['myUserName']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should set/get a password', (done) => {
-    var test = (err, window) => {
-      var mapdcon = new window.MapdCon();
-      mapdcon.password('****');
-      expect(mapdcon.password()).toEqual(['****']);
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      con.password('****');
+      expect(con.password()).toEqual(['****']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should set/get the database name', (done) => {
-    var test = (err, window) => {
-      var mapdcon = new window.MapdCon();
-      mapdcon.dbName('dbName');
-      expect(mapdcon.dbName()).toEqual(['dbName']);
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      con.dbName('dbName');
+      expect(con.dbName()).toEqual(['dbName']);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should set/get the logging flag', (done) => {
-    var test = (err, window) => {
-      var mapdcon = new window.MapdCon();
-      mapdcon.logging(true);
-      expect(mapdcon.logging()).toEqual(true);
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      con.logging(true);
+      expect(con.logging()).toEqual(true);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
   it('should set/get the platform', (done) => {
-    var test = (err, window) => {
-      var mapdcon = new window.MapdCon();
-      mapdcon.platform('platform');
-      expect(mapdcon.platform()).toEqual('platform');
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      con.platform('platform');
+      expect(con.platform()).toEqual('platform');
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
   });
-
 });
-
