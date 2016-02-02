@@ -1,0 +1,4 @@
+src/mapdcon-deprecated.js
+src/typedefs.js
+test/mocha.opts
+test/config.js
