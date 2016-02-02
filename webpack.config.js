@@ -1,10 +1,10 @@
 module.exports = {
     entry: [
-      "./src/mapd-con-es6.js"
+      './src/mapd-con-es6.js'
     ],
     output: {
-        path: __dirname,
-        filename: "mapd-con.js"
+        path: __dirname +'/dist/',
+        filename: 'MapdCon.js'
     },
     module: { 
       preLoaders: [
