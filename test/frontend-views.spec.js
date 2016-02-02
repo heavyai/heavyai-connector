@@ -99,12 +99,12 @@ describe('MapdCon#getFrontendView', () => {
     jsdom.env({ html, src: scripts, done: test });
   });
 
-  it('should contain an empty string for the view_name', (done) => {
-    let test = (err, window) => {
-      let mapdcon = connect(new window.MapdCon());
-      let views = mapdcon.getFrontendViews();
-      let view = mapdcon.getFrontendView(views[0].view_name);
-      expect(view.view_name.length).toEqual(0);
+  it('should contain a valid view_name property', (done) => {
+    const test = (err, window) => {
+      const mapdcon = connect(new window.MapdCon());
+      const views = mapdcon.getFrontendViews();
+      const view = mapdcon.getFrontendView(views[0].view_name);
+      expect(view.view_name).toEqual(views[0].view_name);
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
