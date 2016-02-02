@@ -98,8 +98,7 @@ class MapdCon {
       Array.isArray(this._password) &&
       Array.isArray(this._dbName);
     if (!allAreArrays) {
-      const err = { msg: 'All connection parameters must be arrays.' };
-      throw err; // should not throw now as we check parameter input and convert to arrays as needed
+      throw new Error('All connection parameters must be arrays.');
     }
 
     this._client = [];
@@ -108,15 +107,13 @@ class MapdCon {
     // now check to see if length of all arrays are the same and > 0
     const hostLength = this._host.length;
     if (hostLength < 1) {
-      const err = { msg: 'Must have at least one server to connect to.' };
-      throw err;
+      throw new Error('Must have at least one server to connect to.');
     }
     if (hostLength !== this._port.length ||
         hostLength !== this._user.length ||
         hostLength !== this._password.length ||
         hostLength !== this._dbName.length) {
-      const err = { msg: 'Array connection parameters must be of equal length.' };
-      throw err;
+      throw new Error('Array connection parameters must be of equal length.');
     }
 
     for (let h = 0; h < hostLength; h++) {
@@ -129,7 +126,7 @@ class MapdCon {
         this._client.push(client);
         this._sessionId.push(sessionId);
       } catch (err) {
-        console.error('Could not connect to', this._host[h] + ':' + this._port[h]);
+        throw err;
       }
     }
     this._numConnections = this._client.length;
@@ -137,8 +134,7 @@ class MapdCon {
       // clean up first
       this._client = null;
       this._sessionId = null;
-      const err = { msg: 'Could not connect to any servers in list.' };
-      throw err;
+      throw new Error('Could not connect to any servers in list.');
     }
     this.serverQueueTimes = Array.apply(
       null,
@@ -263,7 +259,6 @@ class MapdCon {
       try {
         result = this._client[0].get_frontend_views(this._sessionId);
       } catch (err) {
-        console.log('Could not get frontend views from backend. Check the session id.', err);
         throw err;
       }
     }
@@ -295,7 +290,6 @@ class MapdCon {
       try {
         result = this._client[0].get_frontend_view(this._sessionId, viewName);
       } catch (err) {
-        console.log('ERROR: Could not get frontend view', viewName, 'from backend.', err);
         throw err;
       }
     }
@@ -326,7 +320,6 @@ class MapdCon {
     try {
       result = this._client[0].get_server_status();
     } catch (err) {
-      console.log('Could not get the server status. Check your connection and session id.', err);
       throw err;
     }
     return result;
@@ -391,7 +384,7 @@ class MapdCon {
         this._client[c].create_frontend_view(this._sessionId[c], viewName, viewState, imageHash);
       }
     } catch (err) {
-      console.log('ERROR: Could not create the new frontend view. Check your session id.', err);
+      throw err;
     }
     return this;
   }
@@ -430,13 +423,12 @@ class MapdCon {
           return links;
         }, []);
       if (result.length !== 1) {
-        const error = { message: 'Different links were created on each connection' };
-        throw error;
+        throw new Error('Different links were created on each connection');
       } else {
         return result.join();
       }
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -463,7 +455,7 @@ class MapdCon {
     try {
       result = this._client[0].get_link_view(this._sessionId[0], link);
     } catch (err) {
-      console.log(err);
+      throw err;
     }
     return result;
   }
@@ -499,7 +491,6 @@ class MapdCon {
     try {
       this._client[0].detect_column_types(this._sessionId[0], fileName, copyParams, callback);
     } catch (err) {
-      console.log(err);
       throw err;
     }
   }
@@ -961,7 +952,6 @@ class MapdCon {
       databases = this._client[0].get_databases();
       return databases.map((db) => { return db.db_name; });
     } catch (err) {
-      console.error('ERROR: Could not get databases from backend. Check the session id.', err);
       throw err;
     }
   }
@@ -989,7 +979,6 @@ class MapdCon {
     try {
       tabs = this._client[0].get_tables(this._sessionId[0]);
     } catch (err) {
-      console.error('ERROR: Could not get tables from backend', err);
       throw err;
     }
 
@@ -1040,7 +1029,11 @@ class MapdCon {
    * }, ...]
    */
   getFields(tableName) {
-    const fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+    try {
+      const fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+    } catch (err) {
+      throw new Error('Table (' + tableName + ') not found');
+    }
     const fieldsArray = [];
     // silly to change this from map to array
     // - then later it turns back to map
@@ -1085,7 +1078,6 @@ class MapdCon {
         );
       }
     } catch (err) {
-      console.error('ERROR: Could not create table', err);
       throw err;
     }
   }
@@ -1111,7 +1103,6 @@ class MapdCon {
         );
       }
     } catch (err) {
-      console.error('ERROR: Could not import table', err);
       throw err;
     }
   }
@@ -1126,7 +1117,6 @@ class MapdCon {
     try {
       importStatus = this._client[0].import_table_status(this._sessionId[0], importId, callback);
     } catch (err) {
-      console.error('ERROR: Could not retrieve import status', err);
       throw err;
     }
   }
@@ -1169,7 +1159,6 @@ class MapdCon {
         this.processPixelResults.bind(this, callbacks)
       );
     } catch (err) {
-      console.error('Could not get rows for pixels', err);
       throw err;
     }
     return curNonce;
