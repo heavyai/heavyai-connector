@@ -411,8 +411,9 @@ class MapdCon {
    * // link === 'CRtzoe'
    */
   createLink(viewState) {
+    let result = null;
     try {
-      const result = this._client
+      result = this._client
         .map((client, i) => {
           return client.create_link(this._sessionId[i], viewState);
         })
@@ -422,7 +423,7 @@ class MapdCon {
           }
           return links;
         }, []);
-      if (result.length !== 1) {
+      if (!result || result.length !== 1) {
         throw new Error('Different links were created on each connection');
       } else {
         return result.join();
@@ -1029,8 +1030,9 @@ class MapdCon {
    * }, ...]
    */
   getFields(tableName) {
+    let fields = null;
     try {
-      const fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+      fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
     } catch (err) {
       throw new Error('Table (' + tableName + ') not found');
     }
