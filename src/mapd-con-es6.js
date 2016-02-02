@@ -514,14 +514,10 @@ class MapdCon {
     let renderSpec = null;
     let queryId = null;
     if (options) {
-      columnarResults = options.hasOwnProperty(columnarResults) ?
-        options.columnarResults : true;
-      eliminateNullRows = options.hasOwnProperty(eliminateNullRows) ?
-        options.eliminateNullRows : false;
-      renderSpec = options.hasOwnProperty(renderSpec) ?
-        options.renderSpec : undefined;
-      queryId = options.hasOwnProperty(queryId) ?
-        options.queryId : null;
+      columnarResults = options.columnarResults ? options.columnarResults : true;
+      eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
+      renderSpec = options.renderSpec ? options.renderSpec : undefined;
+      queryId = options.queryId ? options.queryId : null;
     }
     const processResultsQuery = renderSpec ? 'render: ' + query : query;
     const isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
