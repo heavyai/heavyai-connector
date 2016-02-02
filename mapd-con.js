@@ -504,8 +504,9 @@
 	    value: function createLink(viewState) {
 	      var _this2 = this;
 
+	      var result = null;
 	      try {
-	        var result = this._client.map(function (client, i) {
+	        result = this._client.map(function (client, i) {
 	          return client.create_link(_this2._sessionId[i], viewState);
 	        }).reduce(function (links, link) {
 	          if (links.indexOf(link) === -1) {
@@ -513,7 +514,7 @@
 	          }
 	          return links;
 	        }, []);
-	        if (result.length !== 1) {
+	        if (!result || result.length !== 1) {
 	          throw new Error('Different links were created on each connection');
 	        } else {
 	          return result.join();
@@ -1117,8 +1118,9 @@
 	  }, {
 	    key: 'getFields',
 	    value: function getFields(tableName) {
+	      var fields = null;
 	      try {
-	        var _fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+	        fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
 	      } catch (err) {
 	        throw new Error('Table (' + tableName + ') not found');
 	      }
