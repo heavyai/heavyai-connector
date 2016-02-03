@@ -1,4 +1,4 @@
-let connect = (con) => {
+const connect = (con) => {
   return con
     .host('kali.mapd.com')
     .port('9092')
@@ -6,7 +6,5 @@ let connect = (con) => {
     .user('mapd')
     .password('HyperInteractive')
     .connect();
-}
-
-module.exports = { connect }
-
+};
+module.exports = { connect };
