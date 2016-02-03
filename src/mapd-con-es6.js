@@ -117,7 +117,7 @@ class MapdCon {
     }
 
     for (let h = 0; h < hostLength; h++) {
-      const transportUrl = 'http://' + this._host[h] + ':' + this._port[h];
+      const transportUrl = '//' + this._host[h] + ':' + this._port[h];
       try {
         const transport = new Thrift.Transport(transportUrl);
         const protocol = new Thrift.Protocol(transport);
