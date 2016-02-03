@@ -11,7 +11,7 @@ while read commit; do
     MESSAGE=`echo $commit | cut -d '|' -f2`
 
     # Print out the commit
-    # echo $i. $'\t' $HASH $MESSAGE
+    echo $i. $'\t' $HASH $MESSAGE
 
     # Check the commit for semver tag
     SEM_VER=$(echo $MESSAGE \
@@ -24,7 +24,7 @@ while read commit; do
         break
     fi
 
-done < <( git log --pretty="%H|%B" --skip=1 )
+done < <( git log --pretty="%H|%B" )
 
 #print the variable
 echo $SEM_VER_TAG
