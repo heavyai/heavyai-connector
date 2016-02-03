@@ -598,11 +598,12 @@
 	     * of asychronous callbacks. If no callbacks are given, use synchronous instead.
 	     * TODO: Refactor to use take a query and an options object
 	     * @param {String} query - The query to perform
-	     * @param {Boolean} columnarResults=true - Indicates whether to return the data
-	     *                                         in columnar format. This saves time on the backend.
-	     * @param {Boolean} eliminateNullRows - Indicates whether rows
-	     * @param {String} renderSpec - The backend rendering spec,
-	     *                              set to <code>undefined</code> to force frontend rendering
+	     * @param {Object} options - the options for the query
+	     * @param {Boolean} options.columnarResults=true - Indicates whether to return the data
+	     *                                             in columnar format. This saves time on the backend.
+	     * @param {Boolean} options.eliminateNullRows
+	     * @param {String} options.renderSpec - The backend rendering spec,
+	     *                                      set to <code>null</code> to force frontend rendering
 	     * @param {Array<Function>} callbacks
 	     */
 
@@ -614,10 +615,10 @@
 	      var renderSpec = null;
 	      var queryId = null;
 	      if (options) {
-	        columnarResults = options.columnarResults ? options.columnarResults : true;
-	        eliminateNullRows = options.eliminateNullRows ? options.columnarResults : false;
-	        renderSpec = options.renderSpec ? options.renderSpec : undefined;
-	        queryId = options.queryId ? options.queryId : null;
+	        columnarResults = options.hasOwnProperty('columnarResults') ? options.columnarResults : columnarResults;
+	        eliminateNullRows = options.hasOwnProperty('eliminateNullRows') ? options.eliminateNullRows : eliminateNullRows;
+	        renderSpec = options.hasOwnProperty('renderSpec') ? options.renderSpec : renderSpec;
+	        queryId = options.hasOwnProperty('queryId') ? options.queryId : queryId;
 	      }
 	      var processResultsQuery = renderSpec ? 'render: ' + _query : _query;
 	      var isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
