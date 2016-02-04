@@ -1,5 +1,7 @@
-node_modules/
+build/
+dist/MapdCon.js
 esdoc/
+node_modules/
 mocha-report.xml
 npm-debug.log
 .DS_Store
