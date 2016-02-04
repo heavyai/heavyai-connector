@@ -5,6 +5,7 @@ const connect = (con) => {
     .dbName('mapd')
     .user('mapd')
     .password('HyperInteractive')
+    .protocol('http')
     .connect();
 };
 module.exports = { connect };
