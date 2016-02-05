@@ -397,6 +397,34 @@ class MapdCon {
   }
 
   /**
+   * Delete a dashboard object containing a value for the <code>view_state</code> property.
+   * @param {String} viewName - the name of the dashboard
+   * @param {Function} callback
+   * @return {TFrontendView} Object
+   *
+   * @example <caption>Delete a specific dashboard from the server:</caption>
+   * var con = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect(); // Create a connection
+   *
+   * con.deleteFrontendView(viewName);
+   */
+  deleteFrontendView(viewName, callback) {
+    try {
+      this._client.forEach((client, i) => {
+        // do we want to try each one individually so if we fail we keep going?
+        client.delete_frontend_view(this._sessionId[i], viewName, callback);
+      });
+    } catch (err) {
+      console.log('ERROR: Could not delete the frontend view. Check your session id.', err);
+    }
+  }
+
+  /**
    * Create a short hash to make it easy to share a link to a specific dashboard.
    * @param {String} viewState - the base64-encoded state string of the new dashboard
    * @return {String} link - A short hash of the dashboard used for URLs
