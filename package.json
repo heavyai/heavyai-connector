@@ -4,7 +4,11 @@
   "description": "An npm module containing the MapDCon library",
   "main": "build/MapdCon.js",
   "watch": {
-    "build": "src/*.js"
+    "start": {
+       "patterns": ["src/", "test/"],
+       "extensions": "js",
+       "ignore": ""
+     }
   },
   "scripts": {
     "start": "npm run lint && npm run build && npm run dist && npm run test && npm run generate-docs",
