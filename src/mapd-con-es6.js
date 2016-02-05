@@ -23,6 +23,7 @@ class MapdCon {
     this._dbName = null;
     this._client = null;
     this._sessionId = null;
+    this._protocol = null;
     this._datumEnum = {};
     this._logging = false;
     this._platform = 'mapd';
@@ -116,10 +117,16 @@ class MapdCon {
       throw new Error('Array connection parameters must be of equal length.');
     }
 
+    if (!this._protocol) {
+      this._protocol = this._host.map((host, i) => {
+        return window.location.protocol.replace(':', '');
+      });
+    }
+
+    const transportUrls = this.getEndpoints();
     for (let h = 0; h < hostLength; h++) {
-      const transportUrl = '//' + this._host[h] + ':' + this._port[h];
       try {
-        const transport = new Thrift.Transport(transportUrl);
+        const transport = new Thrift.Transport(transportUrls[h]);
         const protocol = new Thrift.Protocol(transport);
         const client = new MapDClient(protocol);
         const sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
@@ -864,12 +871,15 @@ class MapdCon {
   }
 
   /**
-   * TODO: Fix docs
    * Decides how to process raw results once they come back from the server.
    *
-   * @param {Boolean} isImage - Set to true when querying for backend rendered images
-   * @param {Boolean} eliminateNullRows
-   * @param {String} query - The SQL query string used only for logging
+   * @param {Object} options
+   * @param {Boolean} options.isImage - Set to true when querying for backend rendered images
+   * @param {Boolean} options.eliminateNullRows
+   * @param {String} options.query - The SQL query string used only for logging
+   * @param {Number} options.queryId
+   * @param {Number} options.conId
+   * @param {String} options.estimatedQueryTime
    * @param {Array<Function>} callbacks
    * @param {Object} result - The query result used to decide whether to process
    *                          as column or row results.
@@ -1423,6 +1433,44 @@ class MapdCon {
     }
     this._client = client;
     return this;
+  }
+
+  /**
+   * The protocol to use for requests.
+   * @param {String} [protocol] - http or https
+   * @return {String|MapdCon} - protocol or MapdCon itself
+   *
+   * @example <caption>Set the protocol:</caption>
+   * var con = new MapdCon().protocol('http');
+   *
+   * @example <caption>Get the protocol:</caption>
+   * var protocol = con.protocol();
+   * // protocol === 'http'
+   */
+  protocol(protocol) {
+    if (!arguments.length) {
+      return this._protocol;
+    } else if (!Array.isArray(protocol)) {
+      this._protocol = [protocol];
+    } else {
+      this._protocol = protocol;
+    }
+    return this;
+  }
+
+  /**
+   * Generates a list of endpoints from the connection params.
+   * @return {Array<String>} - list of endpoints
+   *
+   * @example <caption>Get the endpoints:</caption>
+   * var con = new MapdCon().protocol('http').host('localhost').port('8000');
+   * var endpoints = con.getEndpoints();
+   * // endpoints === [ 'http://localhost:8000' ]
+   */
+  getEndpoints() {
+    return this._host.map((host, i) => {
+      return this._protocol[i] + '://' + host + ':' + this._port[i];
+    });
   }
 }
 

@@ -9,12 +9,11 @@
   "scripts": {
     "start": "npm run lint && npm run build && npm run dist && npm run test && npm run generate-docs",
     "lint": "node_modules/eslint/bin/eslint.js src/ test/",
-    "build": "node_modules/babel-cli/bin/babel.js ./src/mapd-con-es6.js -o ./build/MapdCon.js",
-    "dist": "node_modules/webpack/bin/webpack.js",
+    "build": "mkdir -p build; node_modules/babel-cli/bin/babel.js ./src/mapd-con-es6.js -o ./build/MapdCon.js",
+    "dist": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
     "test": "node_modules/.bin/mocha ./test",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
-    "watch": "npm-watch",
-    "prestart": "mkdir -p build; mkdir -p dist"
+    "watch": "npm-watch"
   },
   "repository": {
     "type": "git",
