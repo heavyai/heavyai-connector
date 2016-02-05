@@ -226,7 +226,7 @@ class MapdCon {
       }
       console.log(this.serverQueueTimes);
       if (typeof callback !== 'undefined') {
-        callback();
+        callback(this, this.serverQueueTimes);
       }
     }
   }
