@@ -1,4 +1,6 @@
+import needle from 'needle';
 import { readFileSync } from 'fs';
+import { uploadUrl, deleteUploadUrl } from '../mocks';
 
 export const connect = (con, callback) => {
   con
@@ -41,4 +43,32 @@ export const randomString = (len, an) => {
     str += String.fromCharCode(r += t);
   }
   return str;
+};
+
+
+export const uploadFile = (sessionId, filename, callback) => {
+  const options = {
+    headers: { sessionId },
+    multipart: true,
+  };
+  const postData = {
+    data: {
+      file: filename,
+      content_type: 'multipart/form-data',
+    },
+  };
+  needle.post(uploadUrl, postData, options, callback);
+};
+
+export const deleteUploadedFile = (sessionId, filename, callback) => {
+  const options = {
+    headers: { sessionId },
+    multipart: true,
+  };
+  const postData = {
+    data: {
+      file: filename,
+    },
+  };
+  needle.post(deleteUploadUrl, postData, options, callback);
 };
