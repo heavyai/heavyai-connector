@@ -4,9 +4,9 @@ import { jsdom } from 'jsdom';
 
 // Custom Dependences
 import { connect, loadScripts } from './utils';
+import { html } from './mocks';
 
 // JSDom Configuration
-const html = '<!doctype html><html><body></body></html>';
 const scripts = loadScripts();
 
 describe('MapdCon#getFrontendViews', () => {
