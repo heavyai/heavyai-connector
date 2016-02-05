@@ -15,6 +15,7 @@ while read commit; do
 
     # Check the commit for semver tag
     SEM_VER=$(echo $MESSAGE \
+            | awk '{print tolower($0)}' \
             | grep -o '\[\(patch\|major\|minor\)\]')
 
     # Set semver tag to variable
