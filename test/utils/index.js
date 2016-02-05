@@ -1,14 +1,14 @@
 import { readFileSync } from 'fs';
 
-export const connect = (con) => {
-  return con
+export const connect = (con, callback) => {
+  con
     .protocol('http')
     .host('kali.mapd.com')
     .port('9092')
     .dbName('mapd')
     .user('mapd')
-    .password('HyperInteractive')
-    .connect();
+    .password('HyperInteractive');
+  return callback ? con.connect(callback) : con.connect();
 };
 
 export const loadScripts = () => {

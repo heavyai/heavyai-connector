@@ -29,8 +29,17 @@ describe('MapdCon Connection Methods', () => {
       };
       jsdom.env({ html, src: scripts, done: test });
     });
+    it('should create a connection with async callback', (done) => {
+      const test = (err, window) => {
+        connect(new window.MapdCon(), (con) => {
+          expect(Array.isArray(con.sessionId())).toEqual(true);
+          expect(Array.isArray(con.client())).toEqual(true);
+          done();
+        });
+      };
+      jsdom.env({ html, src: scripts, done: test });
+    });
   });
-
   describe('#disconnect', () => {
     it('should disconnect if connected', (done) => {
       const test = (err, window) => {
