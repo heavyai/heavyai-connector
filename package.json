@@ -5,10 +5,13 @@
   "main": "build/MapdCon.js",
   "watch": {
     "start": {
-       "patterns": ["src/", "test/"],
-       "extensions": "js",
-       "ignore": ""
-     }
+      "patterns": [
+        "src/",
+        "test/"
+      ],
+      "extensions": "js",
+      "ignore": ""
+    }
   },
   "scripts": {
     "start": "npm run lint && npm run build && npm run dist && npm run test && npm run generate-docs",
@@ -31,10 +34,10 @@
   "homepage": "https://github.com/map-d/mapd-con#readme",
   "devDependencies": {
     "babel-cli": "^6.3.17",
-    "babel-preset-es2015": "^6.3.13",
     "babel-core": "^6.4.0",
     "babel-eslint": "^4.1.6",
     "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.4.3",
     "esdoc": "^0.4.3",
     "eslint": "^1.10.3",
@@ -45,6 +48,7 @@
     "jsdom": "^1.0.0",
     "mocha": "^2.3.4",
     "mocha-jenkins-reporter": "^0.1.9",
+    "needle": "^1.0.0",
     "npm-watch": "^0.1.1",
     "webpack": "^1.12.10"
   }
