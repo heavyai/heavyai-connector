@@ -9,7 +9,7 @@ import { html } from './mocks';
 // JSDom Configuration
 const scripts = loadScripts();
 
-describe('MapdCon#createFrontendView', () => {
+describe('#createFrontendView', () => {
   it('should create a new frontend view with name "test_view"', (done) => {
     const test = (err, window) => {
       const viewState = randomString(10);

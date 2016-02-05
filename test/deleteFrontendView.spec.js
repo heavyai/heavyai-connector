@@ -9,7 +9,7 @@ import { html } from './mocks';
 // JSDom Configuration
 const scripts = loadScripts();
 
-describe('MapdCon#deleteFrontendView', () => {
+describe('#deleteFrontendView', () => {
   it('should delete a frontend view with name "test_view"', (done) => {
     const test = (err, window) => {
       const mapdcon = connect(new window.MapdCon());

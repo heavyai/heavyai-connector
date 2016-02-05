@@ -9,7 +9,7 @@ import { html } from './mocks';
 // JSDom Configuration
 const scripts = loadScripts();
 
-describe('Setters/Getters', () => {
+describe('MapdCon Setters/Getters', () => {
   it('should set/get a hostname', (done) => {
     const test = (err, window) => {
       const con = new window.MapdCon();

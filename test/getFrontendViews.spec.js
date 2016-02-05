@@ -9,7 +9,7 @@ import { html } from './mocks';
 // JSDom Configuration
 const scripts = loadScripts();
 
-describe('MapdCon#getFrontendViews', () => {
+describe('#getFrontendViews', () => {
   it('should get an array of frontend views', (done) => {
     const test = (err, window) => {
       const con = connect(new window.MapdCon());
