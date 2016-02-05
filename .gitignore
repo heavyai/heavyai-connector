@@ -5,3 +5,4 @@ node_modules/
 mocha-report.xml
 npm-debug.log
 .DS_Store
+.node-xmlhttprequest-*
