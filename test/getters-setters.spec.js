@@ -1,17 +1,13 @@
-// Node Dependencies
-import { readFileSync } from 'fs';
-
 // NPM Dependencies
 import expect from 'expect';
 import { jsdom } from 'jsdom';
 
+// Custom Dependences
+import { loadScripts } from './utils';
+
 // JSDom Configuration
 const html = '<!doctype html><html><body></body></html>';
-const thrift = readFileSync('./dist/thrift.js', 'utf-8');
-const mapdthrift = readFileSync('./dist/mapd.thrift.js', 'utf-8');
-const mapdtypes = readFileSync('./dist/mapd_types.js', 'utf-8');
-const mapdcon = readFileSync('./dist/MapdCon.js', 'utf-8');
-const scripts = [thrift, mapdthrift, mapdtypes, mapdcon];
+const scripts = loadScripts();
 
 describe('MapdCon Setters/Getters', () => {
   it('should set/get a hostname', (done) => {

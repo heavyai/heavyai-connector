@@ -1,18 +1,11 @@
-// Node Dependencies
-import { readFileSync } from 'fs';
-
 // NPM Dependencies
 import expect from 'expect';
 import { jsdom } from 'jsdom';
-import { connect } from './utils';
+import { connect, loadScripts } from './utils';
 
 // JSDom Configuration
 const html = '<!doctype html><html><body></body></html>';
-const thrift = readFileSync('./dist/thrift.js', 'utf-8');
-const mapdthrift = readFileSync('./dist/mapd.thrift.js', 'utf-8');
-const mapdtypes = readFileSync('./dist/mapd_types.js', 'utf-8');
-const mapdcon = readFileSync('./dist/MapdCon.js', 'utf-8');
-const scripts = [thrift, mapdthrift, mapdtypes, mapdcon];
+const scripts = loadScripts();
 
 describe('MapdCon Connection', () => {
   it('should create an instance of MapdCon', (done) => {
