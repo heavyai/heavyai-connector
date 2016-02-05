@@ -117,6 +117,12 @@ class MapdCon {
       throw new Error('Array connection parameters must be of equal length.');
     }
 
+    if (!this._protocol) {
+      this._protocol = this._host.map((host, i) => {
+        return window.location.protocol.replace(':', '');
+      });
+    }
+
     const transportUrls = this.getEndpoints();
     for (let h = 0; h < hostLength; h++) {
       try {
