@@ -9,7 +9,7 @@ import { html } from './mocks';
 // JSDom Configuration
 const scripts = loadScripts();
 
-describe('MapdCon Setters/Getters', () => {
+describe('Setters/Getters', () => {
   it('should set/get a hostname', (done) => {
     const test = (err, window) => {
       const con = new window.MapdCon();
@@ -69,6 +69,15 @@ describe('MapdCon Setters/Getters', () => {
       const con = new window.MapdCon();
       con.platform('platform');
       expect(con.platform()).toEqual('platform');
+      done();
+    };
+    jsdom.env({ html, src: scripts, done: test });
+  });
+  it('should set/get the balance strategy', (done) => {
+    const test = (err, window) => {
+      const mapdcon = new window.MapdCon();
+      mapdcon.balanceStrategy('foo');
+      expect(mapdcon.balanceStrategy()).toEqual('foo');
       done();
     };
     jsdom.env({ html, src: scripts, done: test });
