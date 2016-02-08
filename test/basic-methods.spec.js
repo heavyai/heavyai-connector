@@ -9,6 +9,14 @@ import { html } from './mocks';
 const scripts = loadScripts();
 
 describe('MapdCon Basic Methods', () => {
+  it('should create an instance of MapdCon', (done) => {
+    const test = (err, window) => {
+      const con = new window.MapdCon();
+      expect(con).toBeA(window.MapdCon);
+      done();
+    };
+    jsdom.env({ html, src: scripts, done: test });
+  });
   it('should generate an image thumbnail hash', (done) => {
     const test = (err, window) => {
       const con = new window.MapdCon();

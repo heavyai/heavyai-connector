@@ -7,16 +7,6 @@ import { html } from './mocks';
 // JSDom Configuration
 const scripts = loadScripts();
 
-describe('MapdCon Instantiation', () => {
-  it('should create an instance of MapdCon', (done) => {
-    const test = (err, window) => {
-      const con = new window.MapdCon();
-      expect(con).toBeA(window.MapdCon);
-      done();
-    };
-    jsdom.env({ html, src: scripts, done: test });
-  });
-});
 
 describe('MapdCon Connection Methods', () => {
   describe('#connect', () => {
