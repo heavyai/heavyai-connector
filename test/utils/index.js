@@ -4,12 +4,12 @@ import { uploadUrl, deleteUploadUrl } from '../mocks';
 
 export const connect = (con, callback) => {
   con
-    .protocol('http')
-    .host('kali.mapd.com')
-    .port('9092')
-    .dbName('mapd')
-    .user('mapd')
-    .password('HyperInteractive');
+    .protocol(process.env.PROTOCOL)
+    .host(process.env.HOST)
+    .port(process.env.PORT)
+    .dbName(process.env.DB_NAME)
+    .user(process.env.USER)
+    .password(process.env.PASSWORD);
   return callback ? con.connect(callback) : con.connect();
 };
 

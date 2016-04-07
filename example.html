@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">MapdCon Example</title>
+</head>
+  <body>
+    <p id="result-sync"></p>
+    <p id="result-async"></p>
+    <script src="dist/thrift.js"></script>
+    <script src="dist/mapd.thrift.js"></script>
+    <script src="dist/mapd_types.js"></script>
+    <script src="dist/MapdCon.js"></script>
+    <script>
+
+       // The total number of tweets from Columbia
+       var query = "SELECT count(*) AS n FROM tweets WHERE country='CO'";
+
+       exampleSync();
+       exampleAsync();
+
+       function exampleSync(){
+         var conSync = new MapdCon()
+           .protocol("http")
+           .host("kali.mapd.com")
+           .port("9092")
+           .dbName("mapd")
+           .user("mapd")
+           .password("HyperInteractive")
+           .connect();
+         var result = conSync.query(query, {});
+         document
+           .getElementById("result-sync")
+           .innerHTML = "There are " + result[0].n + " tweets from Columbia.";
+       }
+
+      function exampleAsync() {
+       var conAsync = new MapdCon()
+         .protocol("http")
+         .host("kali.mapd.com")
+         .port("9092")
+         .dbName("mapd")
+         .user("mapd")
+         .password("HyperInteractive");
+       var options = {};
+       conAsync.connect(function(con){
+         con.query(query, options, [function(result){
+           document
+             .getElementById("result-async")
+             .innerHTML = "There are " + result[0].n + " tweets from Columbia.";
+         }]);
+       });
+      }
+    </script>
+  </body>
+</html>

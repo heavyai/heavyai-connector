@@ -1,10 +1,10 @@
 {
   "name": "@mapd/mapd-con",
-  "version": "1.0.3",
+  "version": "1.4.3",
   "description": "An npm module containing the MapDCon library",
   "main": "build/MapdCon.js",
   "watch": {
-    "start": {
+    "build": {
       "patterns": [
         "src/",
         "test/"
@@ -14,13 +14,16 @@
     }
   },
   "scripts": {
-    "start": "npm run lint && npm run build && npm run dist && npm run test && npm run generate-docs",
+    "fullbuild": "npm run lint && npm run build && npm test && npm run generate-docs",
     "lint": "node_modules/eslint/bin/eslint.js src/ test/",
-    "build": "mkdir -p build; node_modules/babel-cli/bin/babel.js ./src/mapd-con-es6.js -o ./build/MapdCon.js",
-    "dist": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
+    "build": "bash scripts/build.sh",
+    "babel": "mkdir -p build; node_modules/babel-cli/bin/babel.js ./src/mapd-con-es6.js -o ./build/MapdCon.js",
+    "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
     "test": "node_modules/.bin/mocha ./test/index.js",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "jenkins:bump-and-publish": "bash scripts/bump-and-publish.sh",
+    "jenkins:copy-scripts": "bash node_modules/@mapd/npm-deploy-scripts/packages/copy-scripts.sh"
   },
   "repository": {
     "type": "git",
