@@ -18,7 +18,7 @@
     "lint": "node_modules/eslint/bin/eslint.js src/ test/",
     "build": "bash scripts/build.sh",
     "babel": "mkdir -p build; node_modules/babel-cli/bin/babel.js ./src/mapd-con-es6.js -o ./build/MapdCon.js",
-    "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js --bail",
+    "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
     "test": "node_modules/.bin/mocha ./test/index.js",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
     "watch": "npm-watch",
