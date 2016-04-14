@@ -21,9 +21,7 @@
     "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
     "test": "node_modules/.bin/mocha ./test/index.js",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
-    "watch": "npm-watch",
-    "jenkins:bump-and-publish": "bash scripts/bump-and-publish.sh",
-    "jenkins:copy-scripts": "bash node_modules/@mapd/npm-deploy-scripts/packages/copy-scripts.sh"
+    "watch": "npm-watch"
   },
   "repository": {
     "type": "git",
