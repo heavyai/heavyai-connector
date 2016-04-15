@@ -4288,20 +4288,44 @@ MapD_get_rows_for_pixels_result.prototype.write = function(output) {
   return;
 };
 
-MapD_get_row_count_args = function(args) {
+MapD_get_row_for_pixel_args = function(args) {
   this.session = null;
+  this.widget_id = null;
+  this.pixel = null;
   this.table_name = null;
+  this.col_names = null;
+  this.column_format = null;
+  this.pixelRadius = null;
+  this.nonce = null;
   if (args) {
     if (args.session !== undefined) {
       this.session = args.session;
     }
+    if (args.widget_id !== undefined) {
+      this.widget_id = args.widget_id;
+    }
+    if (args.pixel !== undefined) {
+      this.pixel = args.pixel;
+    }
     if (args.table_name !== undefined) {
       this.table_name = args.table_name;
     }
+    if (args.col_names !== undefined) {
+      this.col_names = args.col_names;
+    }
+    if (args.column_format !== undefined) {
+      this.column_format = args.column_format;
+    }
+    if (args.pixelRadius !== undefined) {
+      this.pixelRadius = args.pixelRadius;
+    }
+    if (args.nonce !== undefined) {
+      this.nonce = args.nonce;
+    }
   }
 };
-MapD_get_row_count_args.prototype = {};
-MapD_get_row_count_args.prototype.read = function(input) {
+MapD_get_row_for_pixel_args.prototype = {};
+MapD_get_row_for_pixel_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4322,8 +4346,64 @@ MapD_get_row_count_args.prototype.read = function(input) {
       }
       break;
       case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.widget_id = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.pixel = new TPixel();
+        this.pixel.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
       if (ftype == Thrift.Type.STRING) {
         this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.LIST) {
+        var _size216 = 0;
+        var _rtmp3220;
+        this.col_names = [];
+        var _etype219 = 0;
+        _rtmp3220 = input.readListBegin();
+        _etype219 = _rtmp3220.etype;
+        _size216 = _rtmp3220.size;
+        for (var _i221 = 0; _i221 < _size216; ++_i221)
+        {
+          var elem222 = null;
+          elem222 = input.readString().value;
+          this.col_names.push(elem222);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.BOOL) {
+        this.column_format = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.I32) {
+        this.pixelRadius = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -4337,16 +4417,55 @@ MapD_get_row_count_args.prototype.read = function(input) {
   return;
 };
 
-MapD_get_row_count_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_row_count_args');
+MapD_get_row_for_pixel_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_row_for_pixel_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.I32, 1);
     output.writeI32(this.session);
     output.writeFieldEnd();
   }
+  if (this.widget_id !== null && this.widget_id !== undefined) {
+    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
+    output.writeI64(this.widget_id);
+    output.writeFieldEnd();
+  }
+  if (this.pixel !== null && this.pixel !== undefined) {
+    output.writeFieldBegin('pixel', Thrift.Type.STRUCT, 3);
+    this.pixel.write(output);
+    output.writeFieldEnd();
+  }
   if (this.table_name !== null && this.table_name !== undefined) {
-    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 4);
     output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  if (this.col_names !== null && this.col_names !== undefined) {
+    output.writeFieldBegin('col_names', Thrift.Type.LIST, 5);
+    output.writeListBegin(Thrift.Type.STRING, this.col_names.length);
+    for (var iter223 in this.col_names)
+    {
+      if (this.col_names.hasOwnProperty(iter223))
+      {
+        iter223 = this.col_names[iter223];
+        output.writeString(iter223);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.column_format !== null && this.column_format !== undefined) {
+    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 6);
+    output.writeBool(this.column_format);
+    output.writeFieldEnd();
+  }
+  if (this.pixelRadius !== null && this.pixelRadius !== undefined) {
+    output.writeFieldBegin('pixelRadius', Thrift.Type.I32, 7);
+    output.writeI32(this.pixelRadius);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 8);
+    output.writeString(this.nonce);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -4354,7 +4473,7 @@ MapD_get_row_count_args.prototype.write = function(output) {
   return;
 };
 
-MapD_get_row_count_result = function(args) {
+MapD_get_row_for_pixel_result = function(args) {
   this.success = null;
   this.e = null;
   this.te = null;
@@ -4378,8 +4497,8 @@ MapD_get_row_count_result = function(args) {
     }
   }
 };
-MapD_get_row_count_result.prototype = {};
-MapD_get_row_count_result.prototype.read = function(input) {
+MapD_get_row_for_pixel_result.prototype = {};
+MapD_get_row_for_pixel_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4393,8 +4512,9 @@ MapD_get_row_count_result.prototype.read = function(input) {
     switch (fid)
     {
       case 0:
-      if (ftype == Thrift.Type.I64) {
-        this.success = input.readI64().value;
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TPixelRowResult();
+        this.success.read(input);
       } else {
         input.skip(ftype);
       }
@@ -4424,11 +4544,11 @@ MapD_get_row_count_result.prototype.read = function(input) {
   return;
 };
 
-MapD_get_row_count_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_row_count_result');
+MapD_get_row_for_pixel_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_row_for_pixel_result');
   if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.I64, 0);
-    output.writeI64(this.success);
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
     output.writeFieldEnd();
   }
   if (this.e !== null && this.e !== undefined) {
@@ -6157,18 +6277,24 @@ MapDClient.prototype.recv_get_rows_for_pixels = function() {
   }
   throw 'get_rows_for_pixels failed: unknown result';
 };
-MapDClient.prototype.get_row_count = function(session, table_name, callback) {
-  this.send_get_row_count(session, table_name, callback); 
+MapDClient.prototype.get_row_for_pixel = function(session, widget_id, pixel, table_name, col_names, column_format, pixelRadius, nonce, callback) {
+  this.send_get_row_for_pixel(session, widget_id, pixel, table_name, col_names, column_format, pixelRadius, nonce, callback); 
   if (!callback) {
-    return this.recv_get_row_count();
+    return this.recv_get_row_for_pixel();
   }
 };
 
-MapDClient.prototype.send_get_row_count = function(session, table_name, callback) {
-  this.output.writeMessageBegin('get_row_count', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_row_count_args();
+MapDClient.prototype.send_get_row_for_pixel = function(session, widget_id, pixel, table_name, col_names, column_format, pixelRadius, nonce, callback) {
+  this.output.writeMessageBegin('get_row_for_pixel', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_row_for_pixel_args();
   args.session = session;
+  args.widget_id = widget_id;
+  args.pixel = pixel;
   args.table_name = table_name;
+  args.col_names = col_names;
+  args.column_format = column_format;
+  args.pixelRadius = pixelRadius;
+  args.nonce = nonce;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -6176,7 +6302,7 @@ MapDClient.prototype.send_get_row_count = function(session, table_name, callback
     this.output.getTransport().flush(true, function() {
       var result = null;
       try {
-        result = self.recv_get_row_count();
+        result = self.recv_get_row_for_pixel();
       } catch (e) {
         result = e;
       }
@@ -6187,7 +6313,7 @@ MapDClient.prototype.send_get_row_count = function(session, table_name, callback
   }
 };
 
-MapDClient.prototype.recv_get_row_count = function() {
+MapDClient.prototype.recv_get_row_for_pixel = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -6198,7 +6324,7 @@ MapDClient.prototype.recv_get_row_count = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_get_row_count_result();
+  var result = new MapD_get_row_for_pixel_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -6211,7 +6337,7 @@ MapDClient.prototype.recv_get_row_count = function() {
   if (null !== result.success) {
     return result.success;
   }
-  throw 'get_row_count failed: unknown result';
+  throw 'get_row_for_pixel failed: unknown result';
 };
 MapDClient.prototype.start_heap_profile = function(callback) {
   this.send_start_heap_profile(callback); 
