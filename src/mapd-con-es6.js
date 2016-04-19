@@ -1206,13 +1206,59 @@ class MapdCon {
   }
 
   /**
+   * Used primarily for backend rendered maps, this method will fetch the row
+   * that corresponds to longitude/latitude points.
+   *
+   * @param {TPixel} pixel
+   * @param {String} tableName - the table containing the geo data
+   * @param {Array<String>} colNames - the fields to fetch
+   * @param {Array<Function>} callbacks
+   * @param {Number} [pixelRadius=2] - the radius around the primary pixel to search
+   */
+  getRowForPixel(pixel, tableName, colNames, callbacks, pixelRadius = 2) {
+    const widgetId = 1;  // INT
+    const columnFormat = true; // BOOL
+    const curNonce = (this._nonce++).toString();
+    try {
+      if (!callbacks) {
+        return this.processResults(
+          undefined,
+          this._client[this._lastRenderCon].get_row_for_pixel(
+            this._sessionId[this._lastRenderCon],
+            widgetId,
+            pixel,
+            tableName,
+            colNames,
+            columnFormat,
+            pixelRadius,
+            curNonce
+          ));
+      }
+      this._client[this._lastRenderCon].get_row_for_pixel(
+        this._sessionId[this._lastRenderCon],
+        widgetId,
+        pixel,
+        tableName,
+        colNames,
+        columnFormat,
+        pixelRadius,
+        curNonce,
+        this.processPixelResults.bind(this, callbacks)
+      );
+    } catch (err) {
+      throw err;
+    }
+    return curNonce;
+  }
+
+  /**
    * Formats the pixel results into the same pattern as textual results.
    *
    * @param {Array<Function>} callbacks
    * @param {Object} results
    */
   processPixelResults(callbacks, results) {
-    results = results.pixel_rows;
+    results = Array.isArray(results) ? results.pixel_rows : [results];
     const numPixels = results.length;
     const processResultsOptions = {
       isImage: false,
