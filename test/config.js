@@ -1,10 +1,10 @@
 // TEST SERVER CONNECTION PARAMETERS
-process.env.PROTOCOL = '';
-process.env.HOST = '';
-process.env.PORT = '';
-process.env.DB_NAME = '';
-process.env.USER = '';
-process.env.PASSWORD = '';
+process.env.PROTOCOL = 'https';
+process.env.HOST = 'kali.mapd.com';
+process.env.PORT = 9092;
+process.env.DB_NAME = 'mapd';
+process.env.USER = 'mapd';
+process.env.PASSWORD = 'mapd';
 
 // DO NOT EDIT BELOW THIS LINE
 process.env.NODE_ENV = 'test';

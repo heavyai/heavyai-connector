@@ -1,5 +1,4 @@
 build/
-test/config.js
 dist/MapdCon.js
 esdoc/
 node_modules/
