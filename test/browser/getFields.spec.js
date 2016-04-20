@@ -9,8 +9,11 @@ describe('#getFields', () => {
     const browserTest = (err, window) => {
       const con = new window.MapdCon();
       let fields;
-      try { fields = con.getFields('contributions'); console.log(fields); }
-      catch (e) { expect(!!e).toEqual(true); done(); }
+      try { fields = con.getFields(process.env.TABLE_NAME); }
+      catch (e) {
+        expect(!!e).toEqual(true);
+        done();
+      }
     }
     jsdom.env({ html, src: scripts, done: browserTest });
   });
@@ -18,7 +21,10 @@ describe('#getFields', () => {
   it('sync - should get the field names of the given table', (done) => {
     const browserTest = (err, window) => {
       const con = utils.connect(new window.MapdCon());
-      const fields = con.getFields('contributions');
+      expect(true).toEqual(true);
+      let fields;
+      try { fields = con.getFields(process.env.TABLE_NAME); }
+      catch (e) { console.log(e); }
       expect(fields).toBeAn('array');
       done();
     };
