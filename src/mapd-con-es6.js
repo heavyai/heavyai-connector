@@ -385,7 +385,7 @@ class MapdCon {
    * con.createFrontendView('newView', 'GlnaHRz...', '1906667617');
    */
   createFrontendView(viewName, viewState, imageHash) {
-    if (this._sessionId) {
+    if (!this._sessionId) {
       throw new Error('You are not connected to a server. Try running the connect method first.');
     }
     try {
@@ -417,6 +417,9 @@ class MapdCon {
    * con.deleteFrontendView(viewName);
    */
   deleteFrontendView(viewName, callback) {
+    if (!this._sessionId) {
+      throw new Error('You are not connected to a server. Try running the connect method first.');
+    }
     try {
       this._client.forEach((client, i) => {
         // do we want to try each one individually so if we fail we keep going?
@@ -1024,7 +1027,7 @@ class MapdCon {
     } catch (err) {
       throw err;
     }
-    return tabs.map((table) => ({ name: table, label: 'obs' }));
+    return tables.map((table) => ({ name: table, label: 'obs' }));
   }
 
   /**
