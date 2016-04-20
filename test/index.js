@@ -10,6 +10,8 @@ describe('MapdCon Browser Tests', () => {
   require('./browser/getFrontendView.spec.js');
   require('./browser/deleteFrontendView.spec.js'); // must be last!
 
+  require('./browser/createLink.spec.js');
+  // require('./browser/getLinkView.spec.js');
   require('./browser/getDatabases.spec.js');
   require('./browser/getFields.spec.js');
   require('./browser/getTables.spec.js');
