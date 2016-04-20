@@ -1,6 +1,6 @@
-require('./getters-setters.spec.js');
 
 describe('MapdCon Browser Tests', () => {
+  require('./browser/getters-setters.spec.js');
   require('./browser/connect.spec.js');
   require('./browser/disconnect.spec.js');
   require('./browser/getServerStatus.spec.js');
@@ -11,7 +11,7 @@ describe('MapdCon Browser Tests', () => {
   require('./browser/deleteFrontendView.spec.js'); // must be last!
 
   require('./browser/createLink.spec.js');
-  // require('./browser/getLinkView.spec.js');
+  require('./browser/getLinkView.spec.js');
   require('./browser/getDatabases.spec.js');
   require('./browser/getFields.spec.js');
   require('./browser/getTables.spec.js');
