@@ -1015,22 +1015,13 @@ class MapdCon {
    *  }, ...]
    */
   getTables() {
-    let tabs = null;
+    let tables;
     try {
-      tabs = this._client[0].get_tables(this._sessionId[0]);
+      tables = this._client[0].get_tables(this._sessionId[0]);
     } catch (err) {
       throw err;
     }
-
-    const numTables = tabs.length;
-    const tableInfo = [];
-    for (let t = 0; t < numTables; t++) {
-      tableInfo.push({
-        name: tabs[t],
-        label: 'obs',
-      });
-    }
-    return tableInfo;
+    return tabs.map((table) => ({ name: table, label: 'obs' }));
   }
 
   /**
