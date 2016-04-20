@@ -6,6 +6,8 @@ describe('MapdCon Browser Tests', () => {
   require('./browser/getServerStatus.spec.js');
 
   require('./browser/createFrontendView.spec.js'); // must be first for the following methods
+  require('./browser/getFrontendViews.spec.js');
+
   require('./browser/deleteFrontendView.spec.js'); // must be last!
 
   require('./browser/getDatabases.spec.js');
