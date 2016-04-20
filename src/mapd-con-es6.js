@@ -385,11 +385,14 @@ class MapdCon {
    * con.createFrontendView('newView', 'GlnaHRz...', '1906667617');
    */
   createFrontendView(viewName, viewState, imageHash) {
+    if (this._sessionId) {
+      throw new Error('You are not connected to a server. Try running the connect method first.');
+    }
     try {
-      for (let c = 0; c < this._numConnections; c++) {
-        // do we want to try each one individually so if we fail we keep going?
-        this._client[c].create_frontend_view(this._sessionId[c], viewName, viewState, imageHash);
-      }
+      // do we want to try each one individually so if we fail we keep going?
+      this._client.forEach((client, i) => {
+        client.create_frontend_view(this._sessionId[i], viewName, viewState, imageHash);
+      });
     } catch (err) {
       throw err;
     }
