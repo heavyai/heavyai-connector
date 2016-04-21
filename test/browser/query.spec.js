@@ -2,6 +2,7 @@ import expect from 'expect';
 import { jsdom } from 'jsdom';
 import { connect, loadScripts } from '../utils';
 import { html, query } from '../mocks';
+
 const scripts = loadScripts();
 
 describe('#query', () => {

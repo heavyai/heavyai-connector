@@ -1,13 +1,11 @@
-module.exports = {
-  html: '<!doctype html><html><body></body></html>',
-  viewNameSync: 'test_view',
-  viewNameAsync: 'test_view_async',
-  tableNameSync: 'test_table' + _randomString(5, 'N'),
-  tableNameAsync: 'test_table_async' + _randomString(5, 'N'),
-  viewState: JSON.stringify({ foo: 'bar' }), 
-  viewLink: '183264ed',
-  query: 'SELECT count(*) AS n FROM contributions',
-};
+export const html = '<!doctype html><html><body></body></html>';
+export const viewNameSync = 'test_view';
+export const viewNameAsync = 'test_view_async';
+export const tableNameSync = 'test_table' + _randomString(5, 'N');
+export const tableNameAsync = 'test_table_async' + _randomString(5, 'N');
+export const viewState = JSON.stringify({ foo: 'bar' });
+export const viewLink = '183264ed';
+export const query = 'SELECT count(*) AS n FROM contributions';
 
 /**
  * Return a random alpha-numeric string.

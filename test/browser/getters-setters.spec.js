@@ -1,12 +1,8 @@
-// NPM Dependencies
 import expect from 'expect';
 import { jsdom } from 'jsdom';
-
-// Custom Dependences
 import { loadScripts } from '../utils';
 import { html } from '../mocks';
 
-// JSDom Configuration
 const scripts = loadScripts();
 
 describe('MapdCon Setters/Getters', () => {

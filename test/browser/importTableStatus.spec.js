@@ -1,7 +1,6 @@
 import expect from 'expect';
 import { jsdom } from 'jsdom';
 import { loadScripts, connect } from '../utils';
-
 import { html } from '../mocks';
 
 const scripts = loadScripts();
@@ -12,8 +11,10 @@ describe('#importTableStatus', () => {
     const browserTest = (err, window) => {
       const con = new window.MapdCon();
       try  { con.importTableStatus(fileName, (importStatus) => { /* no-op */ }); }
-      catch (e) { expect(!!e).toEqual(true); }
-      finally { done(); }
+      catch (e) {
+        expect(!!e).toEqual(true);
+        done();
+      }
     };
     jsdom.env({ html, src: scripts, done: browserTest });
   });

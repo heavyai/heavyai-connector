@@ -1,8 +1,9 @@
-const expect = require('expect');
-const utils = require('../utils');
-const jsdom = require('jsdom').jsdom;
-const html = require('../mocks').html;
-const scripts = utils.loadScripts();
+import expect from 'expect';
+import { jsdom } from 'jsdom';
+import { connect, loadScripts } from '../utils';
+import { html } from '../mocks';
+
+const scripts = loadScripts();
 
 describe('#getFields', () => {
   it('should throw an error if not connected to a server', (done) => {
@@ -20,7 +21,7 @@ describe('#getFields', () => {
 
   it('sync - should get the field names of the given table', (done) => {
     const browserTest = (err, window) => {
-      const con = utils.connect(new window.MapdCon());
+      const con = connect(new window.MapdCon());
       expect(true).toEqual(true);
       let fields;
       try { fields = con.getFields(process.env.TABLE_NAME); }
@@ -34,7 +35,7 @@ describe('#getFields', () => {
   xit('async - should get the field names of the given table', (done) => {
     const browserTest = (err, window) => {
       const con = new window.MapdCon();
-      utils.connect(con, (sessionId) => {
+      connect(con, (sessionId) => {
         con.getFields('tweets', (fields) => {
           expect(fields).toBeAn('array');
           done();

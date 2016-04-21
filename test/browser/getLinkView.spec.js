@@ -2,6 +2,7 @@ import expect from 'expect';
 import { jsdom } from 'jsdom';
 import { loadScripts, connect } from '../utils';
 import { html, viewLink } from '../mocks';
+
 const scripts = loadScripts();
 
 describe('#getLinkView', () => {

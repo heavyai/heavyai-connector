@@ -1,8 +1,9 @@
-const expect = require('expect');
-const utils = require('../utils');
-const jsdom = require('jsdom').jsdom;
-const html = require('../mocks').html;
-const scripts = utils.loadScripts();
+import expect from 'expect';
+import { jsdom } from 'jsdom';
+import { connect, loadScripts } from '../utils';
+import { html } from '../mocks';
+
+const scripts = loadScripts();
 
 describe('#getServerStatus', () => {
   it('should throw an error if not connected to a server', (done) => {
@@ -21,7 +22,7 @@ describe('#getServerStatus', () => {
 
   it('sync - should get the connected server status', (done) => {
     const browserTest = (err, window) => {
-      const con = utils.connect(new window.MapdCon());
+      const con = connect(new window.MapdCon());
       const serverStatus = con.getServerStatus();
       expect(serverStatus).toBeA(window.TServerStatus);
       done();
@@ -32,7 +33,7 @@ describe('#getServerStatus', () => {
   xit('async - should get the connected server status with a callback', (done) => {
     const browserTest = (err, window) => {
       const con = new window.MapdCon();
-      utils.connect(con, (sessionId) => {
+      connect(con, (sessionId) => {
         con.getServerStatus((serverStatus) => {
           expect(serverStatus).toBeA(window.TServerStatus);
           done();

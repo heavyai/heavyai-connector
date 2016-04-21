@@ -1,6 +1,6 @@
 import needle from 'needle';
 import { readFileSync } from 'fs';
-import { uploadUrl, deleteUploadUrl } from '../mocks';
+import { uploadUrl, deleteUploadUrl } from './mocks';
 
 export const connect = (con, callback) => {
   con
