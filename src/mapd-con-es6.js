@@ -1105,10 +1105,12 @@ class MapdCon {
    *   .createTable('mynewtable', [TColumnType, TColumnType, ...], cb);
    */
   createTable(tableName, rowDesc, callback) {
-    let result = null;
+    if (!this._sessionId) {
+      throw new Error('You are not connected to a server. Try running the connect method first.');
+    }
     try {
       for (let c = 0; c < this._numConnections; c++) {
-        result = this._client[c].send_create_table(
+        this._client[c].send_create_table(
           this._sessionId[c],
           tableName,
           rowDesc,

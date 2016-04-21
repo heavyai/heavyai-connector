@@ -17,7 +17,7 @@ describe('MapdCon Browser Tests', () => {
   require('./browser/getTables.spec.js');
   
   require('./browser/detectColumnTypes.spec.js');
-  // require('./browser/createTable.spec.js');
+  require('./browser/createTable.spec.js');
   // require('./browser/importTable.spec.js');
   // require('./browser/importTableStatus.spec.js');
   // require('./browser/query.spec.js');
