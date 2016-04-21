@@ -1,4 +1,3 @@
-
 describe('MapdCon Browser Tests', () => {
   require('./browser/getters-setters.spec.js');
   require('./browser/connect.spec.js');
@@ -19,7 +18,6 @@ describe('MapdCon Browser Tests', () => {
   require('./browser/detectColumnTypes.spec.js');
   require('./browser/createTable.spec.js');
   require('./browser/importTable.spec.js');
-  // require('./browser/importTableStatus.spec.js');
+  require('./browser/importTableStatus.spec.js');
   // require('./browser/query.spec.js');
 });
-

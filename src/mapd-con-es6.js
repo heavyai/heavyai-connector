@@ -1156,9 +1156,8 @@ class MapdCon {
    * @param {Function} callback
    */
   importTableStatus(importId, callback) {
-    let importStatus = null;
     try {
-      importStatus = this._client[0].import_table_status(this._sessionId[0], importId, callback);
+      this._client[0].import_table_status(this._sessionId[0], importId, callback);
     } catch (err) {
       throw err;
     }
