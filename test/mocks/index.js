@@ -1,4 +1,4 @@
-// var MapdTypes = require('../../dist/node/mapd_types');
+// const MapdTypes = require('../../dist/node/mapd_types');
 // var rowDesc = [
 //   new MapdTypes.TColumnType({
 //     col_name: 'Sequence',
@@ -90,17 +90,9 @@ module.exports = {
     'SELECT count(*) AS n FROM tweets WHERE country=\'CO\'',
     'SELECT country, avg(followers) AS num_followers FROM tweets GROUP BY country',
   ],
-  // copyParams: _makeCopyParams(),
   // rowDesc: rowDesc
 };
 
-// function _makeCopyParams() {
-//   var copyParams = new MapdTypes.TCopyParams();
-//   copyParams.delimiter = ',';
-//   copyParams.quoted = false;
-//   copyParams.null_str = 'null';
-//   return copyParams;
-// }
 
 /**
  * Return a random alpha-numeric string.
