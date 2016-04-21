@@ -57,7 +57,7 @@ export const uploadFile = (sessionId, filename, callback) => {
       content_type: 'multipart/form-data',
     },
   };
-  needle.post(uploadUrl, postData, options, callback);
+  needle.post(process.env.UPLOAD_URL, postData, options, callback);
 };
 
 export const deleteUploadedFile = (sessionId, filename, callback) => {
@@ -70,5 +70,5 @@ export const deleteUploadedFile = (sessionId, filename, callback) => {
       file: filename,
     },
   };
-  needle.post(deleteUploadUrl, postData, options, callback);
+  needle.post(process.env.DELETE_URL, postData, options, callback);
 };
