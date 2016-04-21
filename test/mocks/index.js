@@ -6,10 +6,7 @@ module.exports = {
   tableNameAsync: 'test_table_async' + _randomString(5, 'N'),
   viewState: JSON.stringify({ foo: 'bar' }), 
   viewLink: '183264ed',
-  queries: [
-    'SELECT count(*) AS n FROM tweets WHERE country=\'CO\'',
-    'SELECT country, avg(followers) AS num_followers FROM tweets GROUP BY country',
-  ],
+  query: 'SELECT count(*) AS n FROM contributions',
 };
 
 /**

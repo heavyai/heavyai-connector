@@ -19,5 +19,5 @@ describe('MapdCon Browser Tests', () => {
   require('./browser/createTable.spec.js');
   require('./browser/importTable.spec.js');
   require('./browser/importTableStatus.spec.js');
-  // require('./browser/query.spec.js');
+  require('./browser/query.spec.js');
 });
