@@ -72,3 +72,11 @@ export const deleteUploadedFile = (sessionId, filename, callback) => {
   };
   needle.post(process.env.DELETE_URL, postData, options, callback);
 };
+
+export const makeCopyParams = (context) => {
+  let copyParams = new context.TCopyParams();
+  copyParams.delimiter = ',';
+  copyParams.quoted = false;
+  copyParams.null_str = 'null';
+  return copyParams;
+};

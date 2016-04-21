@@ -1130,6 +1130,9 @@ class MapdCon {
    * @param {Function} callback
    */
   importTable(tableName, fileName, copyParams, callback) {
+    if (!this._sessionId) {
+      throw new Error('You are not connected to a server. Try running the connect method first.');
+    }
     copyParams.delimiter = copyParams.delimiter || '';
     let result = null;
     try {
