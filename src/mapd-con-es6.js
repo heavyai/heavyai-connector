@@ -606,7 +606,7 @@ class MapdCon {
           callbacks
         );
         this._client[conId].render(this._sessionId[conId], query + ';',
-            renderSpec, {}, {}, curNonce, callback);
+            renderSpec, curNonce, callback);
         return curNonce;
       } else if (isFrontendRenderingWithAsync) {
         const callback = this.processResults.bind(
@@ -625,8 +625,6 @@ class MapdCon {
             this._sessionId[conId],
             query + ';',
             renderSpec,
-            {},
-            {},
             curNonce
           )
         );
