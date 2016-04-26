@@ -2504,8 +2504,6 @@ MapD_render_args = function(args) {
   this.session = null;
   this.query = null;
   this.render_type = null;
-  this.render_properties = null;
-  this.col_render_properties = null;
   this.nonce = null;
   if (args) {
     if (args.session !== undefined) {
@@ -2516,12 +2514,6 @@ MapD_render_args = function(args) {
     }
     if (args.render_type !== undefined) {
       this.render_type = args.render_type;
-    }
-    if (args.render_properties !== undefined) {
-      this.render_properties = args.render_properties;
-    }
-    if (args.col_render_properties !== undefined) {
-      this.col_render_properties = args.col_render_properties;
     }
     if (args.nonce !== undefined) {
       this.nonce = args.nonce;
@@ -2564,73 +2556,6 @@ MapD_render_args.prototype.read = function(input) {
       }
       break;
       case 4:
-      if (ftype == Thrift.Type.MAP) {
-        var _size162 = 0;
-        var _rtmp3166;
-        this.render_properties = {};
-        var _ktype163 = 0;
-        var _vtype164 = 0;
-        _rtmp3166 = input.readMapBegin();
-        _ktype163 = _rtmp3166.ktype;
-        _vtype164 = _rtmp3166.vtype;
-        _size162 = _rtmp3166.size;
-        for (var _i167 = 0; _i167 < _size162; ++_i167)
-        {
-          var key168 = null;
-          var val169 = null;
-          key168 = input.readString();
-          val169 = new ttypes.TRenderProperty();
-          val169.read(input);
-          this.render_properties[key168] = val169;
-        }
-        input.readMapEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.MAP) {
-        var _size170 = 0;
-        var _rtmp3174;
-        this.col_render_properties = {};
-        var _ktype171 = 0;
-        var _vtype172 = 0;
-        _rtmp3174 = input.readMapBegin();
-        _ktype171 = _rtmp3174.ktype;
-        _vtype172 = _rtmp3174.vtype;
-        _size170 = _rtmp3174.size;
-        for (var _i175 = 0; _i175 < _size170; ++_i175)
-        {
-          var key176 = null;
-          var val177 = null;
-          key176 = input.readString();
-          var _size178 = 0;
-          var _rtmp3182;
-          val177 = {};
-          var _ktype179 = 0;
-          var _vtype180 = 0;
-          _rtmp3182 = input.readMapBegin();
-          _ktype179 = _rtmp3182.ktype;
-          _vtype180 = _rtmp3182.vtype;
-          _size178 = _rtmp3182.size;
-          for (var _i183 = 0; _i183 < _size178; ++_i183)
-          {
-            var key184 = null;
-            var val185 = null;
-            key184 = input.readString();
-            val185 = new ttypes.TRenderProperty();
-            val185.read(input);
-            val177[key184] = val185;
-          }
-          input.readMapEnd();
-          this.col_render_properties[key176] = val177;
-        }
-        input.readMapEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
       if (ftype == Thrift.Type.STRING) {
         this.nonce = input.readString();
       } else {
@@ -2663,48 +2588,8 @@ MapD_render_args.prototype.write = function(output) {
     output.writeString(this.render_type);
     output.writeFieldEnd();
   }
-  if (this.render_properties !== null && this.render_properties !== undefined) {
-    output.writeFieldBegin('render_properties', Thrift.Type.MAP, 4);
-    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.render_properties));
-    for (var kiter186 in this.render_properties)
-    {
-      if (this.render_properties.hasOwnProperty(kiter186))
-      {
-        var viter187 = this.render_properties[kiter186];
-        output.writeString(kiter186);
-        viter187.write(output);
-      }
-    }
-    output.writeMapEnd();
-    output.writeFieldEnd();
-  }
-  if (this.col_render_properties !== null && this.col_render_properties !== undefined) {
-    output.writeFieldBegin('col_render_properties', Thrift.Type.MAP, 5);
-    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.col_render_properties));
-    for (var kiter188 in this.col_render_properties)
-    {
-      if (this.col_render_properties.hasOwnProperty(kiter188))
-      {
-        var viter189 = this.col_render_properties[kiter188];
-        output.writeString(kiter188);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(viter189));
-        for (var kiter190 in viter189)
-        {
-          if (viter189.hasOwnProperty(kiter190))
-          {
-            var viter191 = viter189[kiter190];
-            output.writeString(kiter190);
-            viter191.write(output);
-          }
-        }
-        output.writeMapEnd();
-      }
-    }
-    output.writeMapEnd();
-    output.writeFieldEnd();
-  }
   if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 6);
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 4);
     output.writeString(this.nonce);
     output.writeFieldEnd();
   }
@@ -3202,19 +3087,19 @@ MapD_create_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size192 = 0;
-        var _rtmp3196;
+        var _size162 = 0;
+        var _rtmp3166;
         this.row_desc = [];
-        var _etype195 = 0;
-        _rtmp3196 = input.readListBegin();
-        _etype195 = _rtmp3196.etype;
-        _size192 = _rtmp3196.size;
-        for (var _i197 = 0; _i197 < _size192; ++_i197)
+        var _etype165 = 0;
+        _rtmp3166 = input.readListBegin();
+        _etype165 = _rtmp3166.etype;
+        _size162 = _rtmp3166.size;
+        for (var _i167 = 0; _i167 < _size162; ++_i167)
         {
-          var elem198 = null;
-          elem198 = new ttypes.TColumnType();
-          elem198.read(input);
-          this.row_desc.push(elem198);
+          var elem168 = null;
+          elem168 = new ttypes.TColumnType();
+          elem168.read(input);
+          this.row_desc.push(elem168);
         }
         input.readListEnd();
       } else {
@@ -3245,12 +3130,12 @@ MapD_create_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter199 in this.row_desc)
+    for (var iter169 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter199))
+      if (this.row_desc.hasOwnProperty(iter169))
       {
-        iter199 = this.row_desc[iter199];
-        iter199.write(output);
+        iter169 = this.row_desc[iter169];
+        iter169.write(output);
       }
     }
     output.writeListEnd();
@@ -4050,19 +3935,19 @@ MapD_get_rows_for_pixels_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size200 = 0;
-        var _rtmp3204;
+        var _size170 = 0;
+        var _rtmp3174;
         this.pixels = [];
-        var _etype203 = 0;
-        _rtmp3204 = input.readListBegin();
-        _etype203 = _rtmp3204.etype;
-        _size200 = _rtmp3204.size;
-        for (var _i205 = 0; _i205 < _size200; ++_i205)
+        var _etype173 = 0;
+        _rtmp3174 = input.readListBegin();
+        _etype173 = _rtmp3174.etype;
+        _size170 = _rtmp3174.size;
+        for (var _i175 = 0; _i175 < _size170; ++_i175)
         {
-          var elem206 = null;
-          elem206 = new ttypes.TPixel();
-          elem206.read(input);
-          this.pixels.push(elem206);
+          var elem176 = null;
+          elem176 = new ttypes.TPixel();
+          elem176.read(input);
+          this.pixels.push(elem176);
         }
         input.readListEnd();
       } else {
@@ -4078,18 +3963,18 @@ MapD_get_rows_for_pixels_args.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.LIST) {
-        var _size207 = 0;
-        var _rtmp3211;
+        var _size177 = 0;
+        var _rtmp3181;
         this.col_names = [];
-        var _etype210 = 0;
-        _rtmp3211 = input.readListBegin();
-        _etype210 = _rtmp3211.etype;
-        _size207 = _rtmp3211.size;
-        for (var _i212 = 0; _i212 < _size207; ++_i212)
+        var _etype180 = 0;
+        _rtmp3181 = input.readListBegin();
+        _etype180 = _rtmp3181.etype;
+        _size177 = _rtmp3181.size;
+        for (var _i182 = 0; _i182 < _size177; ++_i182)
         {
-          var elem213 = null;
-          elem213 = input.readString();
-          this.col_names.push(elem213);
+          var elem183 = null;
+          elem183 = input.readString();
+          this.col_names.push(elem183);
         }
         input.readListEnd();
       } else {
@@ -4134,12 +4019,12 @@ MapD_get_rows_for_pixels_args.prototype.write = function(output) {
   if (this.pixels !== null && this.pixels !== undefined) {
     output.writeFieldBegin('pixels', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.pixels.length);
-    for (var iter214 in this.pixels)
+    for (var iter184 in this.pixels)
     {
-      if (this.pixels.hasOwnProperty(iter214))
+      if (this.pixels.hasOwnProperty(iter184))
       {
-        iter214 = this.pixels[iter214];
-        iter214.write(output);
+        iter184 = this.pixels[iter184];
+        iter184.write(output);
       }
     }
     output.writeListEnd();
@@ -4153,12 +4038,12 @@ MapD_get_rows_for_pixels_args.prototype.write = function(output) {
   if (this.col_names !== null && this.col_names !== undefined) {
     output.writeFieldBegin('col_names', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.STRING, this.col_names.length);
-    for (var iter215 in this.col_names)
+    for (var iter185 in this.col_names)
     {
-      if (this.col_names.hasOwnProperty(iter215))
+      if (this.col_names.hasOwnProperty(iter185))
       {
-        iter215 = this.col_names[iter215];
-        output.writeString(iter215);
+        iter185 = this.col_names[iter185];
+        output.writeString(iter185);
       }
     }
     output.writeListEnd();
@@ -4353,18 +4238,18 @@ MapD_get_row_for_pixel_args.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.LIST) {
-        var _size216 = 0;
-        var _rtmp3220;
+        var _size186 = 0;
+        var _rtmp3190;
         this.col_names = [];
-        var _etype219 = 0;
-        _rtmp3220 = input.readListBegin();
-        _etype219 = _rtmp3220.etype;
-        _size216 = _rtmp3220.size;
-        for (var _i221 = 0; _i221 < _size216; ++_i221)
+        var _etype189 = 0;
+        _rtmp3190 = input.readListBegin();
+        _etype189 = _rtmp3190.etype;
+        _size186 = _rtmp3190.size;
+        for (var _i191 = 0; _i191 < _size186; ++_i191)
         {
-          var elem222 = null;
-          elem222 = input.readString();
-          this.col_names.push(elem222);
+          var elem192 = null;
+          elem192 = input.readString();
+          this.col_names.push(elem192);
         }
         input.readListEnd();
       } else {
@@ -4426,12 +4311,12 @@ MapD_get_row_for_pixel_args.prototype.write = function(output) {
   if (this.col_names !== null && this.col_names !== undefined) {
     output.writeFieldBegin('col_names', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.STRING, this.col_names.length);
-    for (var iter223 in this.col_names)
+    for (var iter193 in this.col_names)
     {
-      if (this.col_names.hasOwnProperty(iter223))
+      if (this.col_names.hasOwnProperty(iter193))
       {
-        iter223 = this.col_names[iter223];
-        output.writeString(iter223);
+        iter193 = this.col_names[iter193];
+        output.writeString(iter193);
       }
     }
     output.writeListEnd();
@@ -5722,7 +5607,7 @@ MapDClient.prototype.recv_load_table = function(input,mtype,rseqid) {
   }
   callback(null)
 };
-MapDClient.prototype.render = function(session, query, render_type, render_properties, col_render_properties, nonce, callback) {
+MapDClient.prototype.render = function(session, query, render_type, nonce, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -5733,23 +5618,21 @@ MapDClient.prototype.render = function(session, query, render_type, render_prope
         _defer.resolve(result);
       }
     };
-    this.send_render(session, query, render_type, render_properties, col_render_properties, nonce);
+    this.send_render(session, query, render_type, nonce);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_render(session, query, render_type, render_properties, col_render_properties, nonce);
+    this.send_render(session, query, render_type, nonce);
   }
 };
 
-MapDClient.prototype.send_render = function(session, query, render_type, render_properties, col_render_properties, nonce) {
+MapDClient.prototype.send_render = function(session, query, render_type, nonce) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('render', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_render_args();
   args.session = session;
   args.query = query;
   args.render_type = render_type;
-  args.render_properties = render_properties;
-  args.col_render_properties = col_render_properties;
   args.nonce = nonce;
   args.write(output);
   output.writeMessageEnd();
@@ -6926,8 +6809,8 @@ MapDProcessor.prototype.process_render = function(seqid, input, output) {
   var args = new MapD_render_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.render.length === 6) {
-    Q.fcall(this._handler.render, args.session, args.query, args.render_type, args.render_properties, args.col_render_properties, args.nonce)
+  if (this._handler.render.length === 4) {
+    Q.fcall(this._handler.render, args.session, args.query, args.render_type, args.nonce)
       .then(function(result) {
         var result = new MapD_render_result({success: result});
         output.writeMessageBegin("render", Thrift.MessageType.REPLY, seqid);
@@ -6942,7 +6825,7 @@ MapDProcessor.prototype.process_render = function(seqid, input, output) {
         output.flush();
       });
   } else {
-    this._handler.render(args.session, args.query, args.render_type, args.render_properties, args.col_render_properties, args.nonce,  function (err, result) {
+    this._handler.render(args.session, args.query, args.render_type, args.nonce,  function (err, result) {
       var result = new MapD_render_result((err != null ? err : {success: result}));
       output.writeMessageBegin("render", Thrift.MessageType.REPLY, seqid);
       result.write(output);
