@@ -1,36 +1,31 @@
 import expect from 'expect';
-import { jsdom } from 'jsdom';
-import { loadScripts, connect } from '../utils';
-import { html, viewNameSync, viewNameAsync } from '../mocks';
-
-const scripts = loadScripts();
+import { connect, browserTest } from '../utils/utils-transpiled';
+import { viewNameSync, viewNameAsync } from '../mocks/mocks-transpiled';
 
 describe('#getFrontendView', () => {
   let testViewSync;
   // let testViewAsync;
-  it('should return null if not connected', (done) => {
-    const browserTest = (err, window) => {
+  it('should return null if not connected',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       const view = con.getFrontendView();
       expect(view).toEqual(null);
       done();
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  it('sync - should get a frontend view with name "test_view"', (done) => {
-    const browserTest = (err, window) => {
+  it('sync - should get a frontend view with name "test_view"',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const view = con.getFrontendView(viewNameSync);
       testViewSync = view;
       expect(view).toBeA(window.TFrontendView);
       done();
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  xit('async - should get a frontend view with name "test_view_async"', (done) => {
-    const browserTest = (err, window) => {
+  xit('async - should get a frontend view with name "test_view_async"',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       connect(con, (sessionId) => {
         con.getFrontendView(viewNameAsync, (view) => {
@@ -39,9 +34,8 @@ describe('#getFrontendView', () => {
           done();
         });
       });
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
   it('should contain a view_state', () => {
     expect(testViewSync.view_state.length).toBeGreaterThan(0);

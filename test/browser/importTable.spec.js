@@ -1,15 +1,19 @@
 import expect from 'expect';
-import { jsdom } from 'jsdom';
-import { loadScripts, connect, makeCopyParams, uploadFile, deleteUploadedFile } from '../utils';
-import { html, tableNameSync, tableNameAsync } from '../mocks';
+import {
+  connect,
+  browserTest,
+  makeCopyParams,
+  uploadFile,
+  deleteUploadedFile
+} from '../utils/utils-transpiled';
+import { tableNameSync, tableNameAsync } from '../mocks/mocks-transpiled';
 
 const fileName = 'data.csv';
 const filePath = './test/mocks/data.csv';
-const scripts = loadScripts();
 
 describe('#importTable', () => {
-  it('should throw an error if not connected to a server', (done) => {
-    const browserTest = (err, window) => {
+  it('should throw an error if not connected to a server',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       try {
         con.importTable(tableNameSync, fileName, makeCopyParams(window), () => { /* no-op */ });
@@ -17,12 +21,11 @@ describe('#importTable', () => {
         expect(!!e).toEqual(true);
         done();
       }
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  xit('sync - should import a table', (done) => {
-    const browserTest = (err, window) => {
+  xit('sync - should import a table',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const sessionId = con.sessionId()[0];
       uploadFile(sessionId, filePath, (uploadError, res) => {
@@ -33,12 +36,11 @@ describe('#importTable', () => {
           done();
         });
       });
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  it('async - should import a table', (done) => {
-    const browserTest = (err, window) => {
+  it('async - should import a table',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const sessionId = con.sessionId()[0];
       uploadFile(sessionId, filePath, (uploadError, res) => {
@@ -49,11 +51,6 @@ describe('#importTable', () => {
           });
         });
       });
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 });
-
-
-
-

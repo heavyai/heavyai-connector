@@ -1,13 +1,10 @@
 import expect from 'expect';
-import { jsdom } from 'jsdom';
-import { loadScripts, connect } from '../utils';
-import { html, tableNameSync, tableNameAsync } from '../mocks';
-
-const scripts = loadScripts();
+import { connect, browserTest } from '../utils/utils-transpiled';
+import { tableNameSync, tableNameAsync } from '../mocks/mocks-transpiled';
 
 describe('#createTable', () => {
-  it('should throw an error if not connected to a server', (done) => {
-    const browserTest = (err, window) => {
+  it('should throw an error if not connected to a server',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       const rowDesc = _createRowDesc(window);
       try {
@@ -16,29 +13,26 @@ describe('#createTable', () => {
         expect(!!e).toEqual(true);
         done();
       }
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  xit('sync - should create the table', (done) => {
-    const browserTest = (err, window) => {
+  xit('sync - should create the table',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const rowDesc = _createRowDesc(window);
       const tableName = con.createTable(tableNameSync, rowDesc);
       expect(tableName).toEqual(tableNameSync);
       done();
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  it('async - should create the table', (done) => {
-    const browserTest = (err, window) => {
+  it('async - should create the table',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const rowDesc = _createRowDesc(window);
       con.createTable(tableNameSync, rowDesc, done);
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 });
 
 function _createRowDesc(context) {

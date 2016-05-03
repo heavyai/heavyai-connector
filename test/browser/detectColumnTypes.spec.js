@@ -1,15 +1,12 @@
 import expect from 'expect';
-import { jsdom } from 'jsdom';
-import { loadScripts, connect, uploadFile, deleteUploadedFile, makeCopyParams } from '../utils';
-import { html } from '../mocks';
+import { connect, browserTest, uploadFile, deleteUploadedFile, makeCopyParams } from '../utils/utils-transpiled';
 
-const scripts = loadScripts();
 const filePath = './test/mocks/data.csv';
 const fileName = 'data.csv';
 
 describe('#detectColumnTypes', () => {
-  it('should throw an error if not connected to a server', (done) => {
-    const browserTest = (err, window) => {
+  it('should throw an error if not connected to a server',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       try {
         con.detectColumnTypes(fileName, makeCopyParams(window), (tableData) => { /* no-op */ });
@@ -17,12 +14,11 @@ describe('#detectColumnTypes', () => {
         expect(!!e).toEqual(true);
         done();
       }
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  xit('sync - should get the field names of the given table', (done) => {
-    const browserTest = (err, window) => {
+  xit('sync - should get the field names of the given table',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const sessionId = con.sessionId()[0];
       uploadFile(sessionId, filePath, (uploadError, res) => {
@@ -38,12 +34,11 @@ describe('#detectColumnTypes', () => {
           done();
         });
       });
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  it('async - should get the field names of the given table', (done) => {
-    const browserTest = (err, window) => {
+  it('async - should get the field names of the given table',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       uploadFile(con.sessionId()[0], filePath, (uploadError, res) => {
         con.detectColumnTypes(fileName, makeCopyParams(window), (tableData) => {
@@ -59,11 +54,6 @@ describe('#detectColumnTypes', () => {
           });
         });
       });
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 });
-
-
-
-

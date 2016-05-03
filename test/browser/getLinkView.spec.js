@@ -1,16 +1,13 @@
 import expect from 'expect';
-import { jsdom } from 'jsdom';
-import { loadScripts, connect } from '../utils';
-import { html, viewLink } from '../mocks';
-
-const scripts = loadScripts();
+import { connect, browserTest, randomString } from '../utils/utils-transpiled';
+import { viewLink } from '../mocks/mocks-transpiled';
 
 describe('#getLinkView', () => {
   let testViewSync;
   // let testViewAsync;
 
-  it('should throw an error if not connected', (done) => {
-    const browserTest = (err, window) => {
+  it('should throw an error if not connected',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       let view;
       try {
@@ -19,23 +16,21 @@ describe('#getLinkView', () => {
         expect(!!e).toEqual(true);
         done();
       }
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  it('sync - should get a frontend view by link', (done) => {
-    const browserTest = (err, window) => {
+  it('sync - should get a frontend view by link',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const view = con.getLinkView(viewLink);
       testViewSync = view;
       expect(view).toBeA(window.TFrontendView);
       done();
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  xit('async - should get a frontend view by link', (done) => {
-    const browserTest = (err, window) => {
+  xit('async - should get a frontend view by link',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       connect(con, (connectError, sessionId) => {
         con.getLinkView(viewLink, (view) => {
@@ -44,9 +39,8 @@ describe('#getLinkView', () => {
           done();
         });
       });
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
   it('should contain a view_state', () => {
     expect(testViewSync.view_state.length).toBeGreaterThan(0);

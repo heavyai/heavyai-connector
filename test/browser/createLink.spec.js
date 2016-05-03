@@ -1,13 +1,10 @@
 import expect from 'expect';
-import { jsdom } from 'jsdom';
-import { loadScripts, connect } from '../utils';
-import { html, viewState, viewLink } from '../mocks';
-
-const scripts = loadScripts();
+import { connect, browserTest, } from '../utils/utils-transpiled';
+import { viewState, viewLink } from '../mocks/mocks-transpiled';
 
 describe('#createLink', () => {
-  it('should throw an error if not connected', (done) => {
-    const browserTest = (err, window) => {
+  it('should throw an error if not connected',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       let link;
       try {
@@ -16,23 +13,21 @@ describe('#createLink', () => {
         expect(!!e).toEqual(true);
         done();
       }
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  it('sync - should create a short link', (done) => {
-    const browserTest = (err, window) => {
+  it('sync - should create a short link',
+    browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const link = con.createLink(viewState);
       expect(link).toBeA('string');
       expect(link).toEqual(viewLink);
       done();
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 
-  xit('async - should create a short link', (done) => {
-    const browserTest = (err, window) => {
+  xit('async - should create a short link',
+    browserTest((done, window) => {
       const con = new window.MapdCon();
       connect(con, (sessionId) => {
         con.createLink(viewState, (link) => {
@@ -41,7 +36,6 @@ describe('#createLink', () => {
           done();
         });
       });
-    };
-    jsdom.env({ html, src: scripts, done: browserTest });
-  });
+    })
+  );
 });
