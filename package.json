@@ -15,11 +15,11 @@
   },
   "scripts": {
     "fullbuild": "npm run lint && npm run build && npm test && npm run generate-docs",
-    "lint": "node_modules/eslint/bin/eslint.js src/ test/",
+    "lint": "node_modules/eslint/bin/eslint.js src/mapd-con-es6.js",
     "build": "bash scripts/build.sh",
-    "babel": "mkdir -p build; node_modules/babel-cli/bin/babel.js ./src/mapd-con-es6.js -o ./build/MapdCon.js",
+    "babel": "bash scripts/babel.sh",
     "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
-    "test": "node_modules/.bin/mocha ./test/index.js",
+    "test": "bash scripts/test.sh",
     "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
     "watch": "npm-watch"
   },
