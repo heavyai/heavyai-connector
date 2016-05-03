@@ -88,6 +88,10 @@ export const deleteUploadedFile = (sessionId, filename, callback) => {
 };
 
 export const makeCopyParams = (context) => {
+
+  // node context shim
+  context = context || { TCopyParams: require('../../dist/node/mapd_types').TCopyParams };
+
   let copyParams = new context.TCopyParams();
   copyParams.delimiter = ',';
   copyParams.quoted = false;
