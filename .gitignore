@@ -6,3 +6,4 @@ mocha-report.xml
 npm-debug.log
 .DS_Store
 .node-xmlhttprequest-*
+*-transpiled.js
