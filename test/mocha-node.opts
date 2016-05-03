@@ -1,0 +1,5 @@
+--require ./test/config.js
+--recursive
+--colors
+--timeout 15000
+
