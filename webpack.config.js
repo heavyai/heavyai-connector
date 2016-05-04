@@ -6,7 +6,7 @@ module.exports = {
         path: __dirname +'/dist/',
         filename: 'MapdCon.js'
     },
-    module: { 
+    module: {
       loaders: [
         {test: /\.js$/, loader: "babel-loader", exclude: /node_modules/}
       ]

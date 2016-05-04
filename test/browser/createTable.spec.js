@@ -13,7 +13,7 @@ describe('#createTable', () => {
       try {
         con.createTable(tableNameSync, rowDesc, () => { /* no-op */ });
       } catch (e) {
-        expect(!!e).toEqual(true);  
+        expect(!!e).toEqual(true);
         done();
       }
     };

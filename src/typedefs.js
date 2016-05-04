@@ -35,8 +35,8 @@
 /**
  * Contains parsed table data.
  * @typedef {TRowSet} TRowSet
- * @property {Array} columns 
- * @property {Boolean} is_columnar 
+ * @property {Array} columns
+ * @property {Boolean} is_columnar
  * @property {Array<TColumnType>} row_desc - A list of field names and their associated information.
  * @property {Array<TRow>} rows
  */
@@ -72,7 +72,7 @@
 /**
  * The value of an individual cell in a table.
  * @typedef {TImportStatus} TImportStatus
- * @property {Number} elapsed 
+ * @property {Number} elapsed
  * @property {Number} rows_completed
  * @property {Number} rows_estimated
  */
@@ -94,7 +94,7 @@
  */
 
 /**
- * The information about a particular field in a given table. 
+ * The information about a particular field in a given table.
  * @typedef {TTypeInfo} TTypeInfo
  * @property {Number} encoding
  * @property {Boolean} is_array

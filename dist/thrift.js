@@ -20,15 +20,15 @@
 /*jshint evil:true*/
 
 /**
- * The Thrift namespace houses the Apache Thrift JavaScript library 
- * elements providing JavaScript bindings for the Apache Thrift RPC 
- * system. End users will typically only directly make use of the 
- * Transport (TXHRTransport/TWebSocketTransport) and Protocol 
+ * The Thrift namespace houses the Apache Thrift JavaScript library
+ * elements providing JavaScript bindings for the Apache Thrift RPC
+ * system. End users will typically only directly make use of the
+ * Transport (TXHRTransport/TWebSocketTransport) and Protocol
  * (TJSONPRotocol/TBinaryProtocol) constructors.
- * 
- * Object methods beginning with a __ (e.g. __onOpen()) are internal 
+ *
+ * Object methods beginning with a __ (e.g. __onOpen()) are internal
  * and should not be called outside of the object's own methods.
- * 
+ *
  * This library creates one global object: Thrift
  * Code in this library must never create additional global identifiers,
  * all features must be scoped within the Thrift namespace.
@@ -55,7 +55,7 @@ Thrift = {
      * @property {number}  VOID   - No value (only legal for return types).
      * @property {number}  BOOL   - True/False integer.
      * @property {number}  BYTE   - Signed 8 bit integer.
-     * @property {number}  I08    - Signed 8 bit integer.     
+     * @property {number}  I08    - Signed 8 bit integer.
      * @property {number}  DOUBLE - 64 bit IEEE 854 floating point.
      * @property {number}  I16    - Signed 16 bit integer.
      * @property {number}  I32    - Signed 32 bit integer.
@@ -279,8 +279,8 @@ Thrift.TApplicationException.prototype.getCode = function() {
  * for backward compatibility.
  * @constructor
  * @param {string} [url] - The URL to connect to.
- * @classdesc The Apache Thrift Transport layer performs byte level I/O 
- * between RPC clients and servers. The JavaScript TXHRTransport object 
+ * @classdesc The Apache Thrift Transport layer performs byte level I/O
+ * between RPC clients and servers. The JavaScript TXHRTransport object
  * uses Http[s]/XHR. Target servers must implement the http[s] transport
  * (see: node.js example server_http.js).
  * @example
@@ -309,12 +309,12 @@ Thrift.TXHRTransport.prototype = {
     },
 
     /**
-     * Sends the current XRH request if the transport was created with a URL 
+     * Sends the current XRH request if the transport was created with a URL
      * and the async parameter is false. If the transport was not created with
-     * a URL, or the async parameter is True and no callback is provided, or 
+     * a URL, or the async parameter is True and no callback is provided, or
      * the URL is an empty string, the current send buffer is returned.
      * @param {object} async - If true the current send buffer is returned.
-     * @param {object} callback - Optional async completion callback 
+     * @param {object} callback - Optional async completion callback
      * @returns {undefined|string} Nothing or the current send buffer.
      * @throws {string} If XHR fails.
      */
@@ -333,9 +333,9 @@ Thrift.TXHRTransport.prototype = {
         if (callback) {
             //Ignore XHR callbacks until the data arrives, then call the
             //  client's callback
-            xreq.onreadystatechange = 
+            xreq.onreadystatechange =
               (function() {
-                var clientCallback = callback;    
+                var clientCallback = callback;
                 return function() {
                   if (this.readyState == 4 && this.status == 200) {
                     self.setRecvBuffer(this.responseText);
@@ -418,19 +418,19 @@ Thrift.TXHRTransport.prototype = {
      * Returns true if the transport is open, XHR always returns true.
      * @readonly
      * @returns {boolean} Always True.
-     */    
+     */
     isOpen: function() {
         return true;
     },
 
     /**
      * Opens the transport connection, with XHR this is a nop.
-     */    
+     */
     open: function() {},
 
     /**
      * Closes the transport connection, with XHR this is a nop.
-     */    
+     */
     close: function() {},
 
     /**
@@ -470,7 +470,7 @@ Thrift.TXHRTransport.prototype = {
     /**
      * Sets the send buffer to buf.
      * @param {string} buf - The buffer to send.
-     */    
+     */
     write: function(buf) {
         this.send_buf = buf;
     },
@@ -479,7 +479,7 @@ Thrift.TXHRTransport.prototype = {
      * Returns the send buffer.
      * @readonly
      * @returns {string} The send buffer.
-     */ 
+     */
     getSendBuffer: function() {
         return this.send_buf;
     }
@@ -491,8 +491,8 @@ Thrift.TXHRTransport.prototype = {
  * Constructor Function for the WebSocket transport.
  * @constructor
  * @param {string} [url] - The URL to connect to.
- * @classdesc The Apache Thrift Transport layer performs byte level I/O 
- * between RPC clients and servers. The JavaScript TWebSocketTransport object 
+ * @classdesc The Apache Thrift Transport layer performs byte level I/O
+ * between RPC clients and servers. The JavaScript TWebSocketTransport object
  * uses the WebSocket protocol. Target servers must implement WebSocket.
  * (see: node.js example server_http.js).
  * @example
@@ -515,20 +515,20 @@ Thrift.TWebSocketTransport.prototype = {
     },
 
     /**
-     * Sends the current WS request and registers callback. The async 
-     * parameter is ignored (WS flush is always async) and the callback 
+     * Sends the current WS request and registers callback. The async
+     * parameter is ignored (WS flush is always async) and the callback
      * function parameter is required.
      * @param {object} async - Ignored.
      * @param {object} callback - The client completion callback.
-     * @returns {undefined|string} Nothing (undefined) 
+     * @returns {undefined|string} Nothing (undefined)
      */
     flush: function(async, callback) {
       var self = this;
       if (this.isOpen()) {
         //Send data and register a callback to invoke the client callback
-        this.socket.send(this.send_buf); 
+        this.socket.send(this.send_buf);
         this.callbacks.push((function() {
-          var clientCallback = callback;    
+          var clientCallback = callback;
           return function(msg) {
             self.setRecvBuffer(msg);
             clientCallback();
@@ -543,15 +543,15 @@ Thrift.TWebSocketTransport.prototype = {
       }
     },
 
-    __onOpen: function() { 
+    __onOpen: function() {
        var self = this;
        if (this.send_pending.length > 0) {
-          //If the user made calls before the connection was fully 
+          //If the user made calls before the connection was fully
           //open, send them now
           this.send_pending.forEach(function(elem) {
              this.socket.send(elem.buf);
              this.callbacks.push((function() {
-               var clientCallback = elem.cb;    
+               var clientCallback = elem.cb;
                return function(msg) {
                   self.setRecvBuffer(msg);
                   clientCallback();
@@ -561,18 +561,18 @@ Thrift.TWebSocketTransport.prototype = {
           this.send_pending = [];
        }
     },
-    
-    __onClose: function(evt) { 
+
+    __onClose: function(evt) {
       this.__reset(this.url);
     },
-     
+
     __onMessage: function(evt) {
       if (this.callbacks.length) {
         this.callbacks.shift()(evt.data);
       }
     },
-     
-    __onError: function(evt) { 
+
+    __onError: function(evt) {
       console.log("Thrift WebSocket Error: " + evt.toString());
       this.socket.close();
     },
@@ -591,15 +591,15 @@ Thrift.TWebSocketTransport.prototype = {
     /**
      * Returns true if the transport is open
      * @readonly
-     * @returns {boolean} 
-     */    
+     * @returns {boolean}
+     */
     isOpen: function() {
         return this.socket && this.socket.readyState == this.socket.OPEN;
     },
 
     /**
      * Opens the transport connection
-     */    
+     */
     open: function() {
       //If OPEN/CONNECTING/CLOSING ignore additional opens
       if (this.socket && this.socket.readyState != this.socket.CLOSED) {
@@ -607,15 +607,15 @@ Thrift.TWebSocketTransport.prototype = {
       }
       //If there is no socket or the socket is closed:
       this.socket = new WebSocket(this.url);
-      this.socket.onopen = this.__onOpen.bind(this); 
-      this.socket.onmessage = this.__onMessage.bind(this); 
-      this.socket.onerror = this.__onError.bind(this); 
-      this.socket.onclose = this.__onClose.bind(this); 
+      this.socket.onopen = this.__onOpen.bind(this);
+      this.socket.onmessage = this.__onMessage.bind(this);
+      this.socket.onerror = this.__onError.bind(this);
+      this.socket.onclose = this.__onClose.bind(this);
     },
 
     /**
      * Closes the transport connection
-     */    
+     */
     close: function() {
       this.socket.close();
     },
@@ -657,7 +657,7 @@ Thrift.TWebSocketTransport.prototype = {
     /**
      * Sets the send buffer to buf.
      * @param {string} buf - The buffer to send.
-     */    
+     */
     write: function(buf) {
         this.send_buf = buf;
     },
@@ -666,7 +666,7 @@ Thrift.TWebSocketTransport.prototype = {
      * Returns the send buffer.
      * @readonly
      * @returns {string} The send buffer.
-     */ 
+     */
     getSendBuffer: function() {
         return this.send_buf;
     }
@@ -677,8 +677,8 @@ Thrift.TWebSocketTransport.prototype = {
  * Initializes a Thrift JSON protocol instance.
  * @constructor
  * @param {Thrift.Transport} transport - The transport to serialize to/from.
- * @classdesc Apache Thrift Protocols perform serialization which enables cross 
- * language RPC. The Protocol type is the JavaScript browser implementation 
+ * @classdesc Apache Thrift Protocols perform serialization which enables cross
+ * language RPC. The Protocol type is the JavaScript browser implementation
  * of the Apache Thrift TJSONProtocol.
  * @example
  *     var protocol  = new Thrift.Protocol(transport);
@@ -736,7 +736,7 @@ Thrift.Protocol.prototype = {
      * Returns the underlying transport.
      * @readonly
      * @returns {Thrift.Transport} The underlying transport.
-     */ 
+     */
     getTransport: function() {
         return this.transport;
     },
@@ -978,7 +978,7 @@ Thrift.Protocol.prototype = {
                 if (ch === '\"') {
                     escapedString += '\\\"'; // write out as: \"
                 } else if (ch === '\\') {    // a single backslash
-                    escapedString += '\\\\'; // write out as double backslash 
+                    escapedString += '\\\\'; // write out as double backslash
                 } else if (ch === '\b') {    // a single backspace: invisible
                     escapedString += '\\b';  // write out as: \b"
                 } else if (ch === '\f') {    // a single formfeed: invisible
@@ -1009,8 +1009,8 @@ Thrift.Protocol.prototype = {
        @property {Thrift.MessageType} mtype - The type of message call.
        @property {number} rseqid - The sequence number of the message (0 in Thrift RPC).
      */
-    /** 
-     * Deserializes the beginning of a message. 
+    /**
+     * Deserializes the beginning of a message.
      * @returns {AnonReadMessageBeginReturn}
      */
     readMessageBegin: function() {
@@ -1047,11 +1047,11 @@ Thrift.Protocol.prototype = {
     readMessageEnd: function() {
     },
 
-    /** 
-     * Deserializes the beginning of a struct. 
+    /**
+     * Deserializes the beginning of a struct.
      * @param {string} [name] - The name of the struct (ignored)
      * @returns {object} - An object with an empty string fname property
-     */    
+     */
     readStructBegin: function(name) {
         var r = {};
         r.fname = '';
@@ -1078,8 +1078,8 @@ Thrift.Protocol.prototype = {
        @property {Thrift.Type} ftype - The data type of the field.
        @property {number} fid - The unique identifier of the field.
      */
-    /** 
-     * Deserializes the beginning of a field. 
+    /**
+     * Deserializes the beginning of a field.
      * @returns {AnonReadFieldBeginReturn}
      */
     readFieldBegin: function() {
@@ -1147,8 +1147,8 @@ Thrift.Protocol.prototype = {
        @property {Thrift.Type} vtype - The data type of the value.
        @property {number} size - The number of elements in the map.
      */
-    /** 
-     * Deserializes the beginning of a map. 
+    /**
+     * Deserializes the beginning of a map.
      * @returns {AnonReadMapBeginReturn}
      */
     readMapBegin: function() {
@@ -1183,8 +1183,8 @@ Thrift.Protocol.prototype = {
        @property {Thrift.Type} etype - The data type of the element.
        @property {number} size - The number of elements in the collection.
      */
-    /** 
-     * Deserializes the beginning of a list. 
+    /**
+     * Deserializes the beginning of a list.
      * @returns {AnonReadColBeginReturn}
      */
     readListBegin: function() {
@@ -1205,8 +1205,8 @@ Thrift.Protocol.prototype = {
         this.readFieldEnd();
     },
 
-    /** 
-     * Deserializes the beginning of a set. 
+    /**
+     * Deserializes the beginning of a set.
      * @returns {AnonReadColBeginReturn}
      */
     readSetBegin: function(elemType, size) {
@@ -1218,8 +1218,8 @@ Thrift.Protocol.prototype = {
         return this.readListEnd();
     },
 
-    /** Returns an object with a value property set to 
-     *  False unless the next number in the protocol buffer 
+    /** Returns an object with a value property set to
+     *  False unless the next number in the protocol buffer
      *  is 1, in which case teh value property is True */
     readBool: function() {
         var r = this.readI32();
@@ -1233,19 +1233,19 @@ Thrift.Protocol.prototype = {
         return r;
     },
 
-    /** Returns the an object with a value property set to the 
+    /** Returns the an object with a value property set to the
         next value found in the protocol buffer */
     readByte: function() {
         return this.readI32();
     },
 
-    /** Returns the an object with a value property set to the 
+    /** Returns the an object with a value property set to the
         next value found in the protocol buffer */
     readI16: function() {
         return this.readI32();
     },
 
-    /** Returns the an object with a value property set to the 
+    /** Returns the an object with a value property set to the
         next value found in the protocol buffer */
     readI32: function(f) {
         if (f === undefined) {
@@ -1279,32 +1279,32 @@ Thrift.Protocol.prototype = {
         return r;
     },
 
-    /** Returns the an object with a value property set to the 
+    /** Returns the an object with a value property set to the
         next value found in the protocol buffer */
     readI64: function() {
         return this.readI32();
     },
 
-    /** Returns the an object with a value property set to the 
+    /** Returns the an object with a value property set to the
         next value found in the protocol buffer */
     readDouble: function() {
         return this.readI32();
     },
 
-    /** Returns the an object with a value property set to the 
+    /** Returns the an object with a value property set to the
         next value found in the protocol buffer */
     readString: function() {
         var r = this.readI32();
         return r;
     },
 
-    /** Returns the an object with a value property set to the 
+    /** Returns the an object with a value property set to the
         next value found in the protocol buffer */
     readBinary: function() {
         return this.readString();
     },
 
-    /** 
+    /**
      * Method to arbitrarily skip over data */
     skip: function(type) {
         var ret, i;

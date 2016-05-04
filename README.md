@@ -1,12 +1,12 @@
-```                           
-                           _                   
-                          | |                  
- _ __ ___   __ _ _ __   __| |   ___ ___  _ __  
-| '_ ` _ \ / _` | '_ \ / _` |  / __/ _ \| '_ \ 
+```
+                           _
+                          | |
+ _ __ ___   __ _ _ __   __| |   ___ ___  _ __
+| '_ ` _ \ / _` | '_ \ / _` |  / __/ _ \| '_ \
 | | | | | | (_| | |_) | (_| | | (_| (_) | | | |
 |_| |_| |_|\__,_| .__/ \__,_|  \___\___/|_| |_|
-                | |                            
-                |_|                            
+                | |
+                |_|
 ```
 A JavaScript library for connecting to a MapD GPU database and running queries.
 
@@ -80,7 +80,7 @@ Command | Description
 --- | ---
 `npm run fullbuild` | Lint, build, run tests, and generate documentation
 `npm run lint` | Lint the source and tests against AirBnB style guide
-`npm run build` | Runs `babel` and `webpack` scripts 
+`npm run build` | Runs `babel` and `webpack` scripts
 `npm run babel` | Transpile to ES5 and output to build/ directory (usage: import/require statements)
 `npm run webpack` | Generate webpack bundle and output to dist/ directory (usage: script tags)
 `npm test` | Runs mocha tests

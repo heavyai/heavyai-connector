@@ -1,6 +1,6 @@
 import expect from 'expect';
 import { jsdom } from 'jsdom';
-import { loadScripts, connect, makeCopyParams, uploadFile, deleteUploadedFile } from '../utils'; 
+import { loadScripts, connect, makeCopyParams, uploadFile, deleteUploadedFile } from '../utils';
 import { html, tableNameSync, tableNameAsync } from '../mocks';
 
 const fileName = 'data.csv';

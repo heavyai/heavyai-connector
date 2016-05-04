@@ -36,7 +36,7 @@
       createLink: createLink,
       getLinkView: getLinkView,
       getRowsForPixels: getRowsForPixels,
-      logging: logging 
+      logging: logging
     }
 
     var host = null;
@@ -649,7 +649,7 @@
       callbacks = callbacks || null;
       var curNonce = (nonce++).toString();
       try {
-        if (!callbacks) 
+        if (!callbacks)
             return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
         client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));
       }
@@ -657,7 +657,7 @@
         console.log(err);
         if (err.name == "ThriftException") {
           connect();
-          if (!callbacks) 
+          if (!callbacks)
             return processPixelResults(undefined, client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce)) ;
           client.get_rows_for_pixels(sessionId, widget_id, pixels, table_name, col_names, column_format, curNonce, processPixelResults.bind(this, callbacks));
         }
@@ -672,7 +672,7 @@
       for (var p = 0; p < numPixels; p++) {
         results[p].row_set = processResults(false, false, "pixel request", undefined, results[p]);
       }
-      if (!callbacks) 
+      if (!callbacks)
         return results;
       callbacks.pop()(results,callbacks);
     }
