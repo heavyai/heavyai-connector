@@ -52,5 +52,8 @@
     "needle": "^1.0.0",
     "npm-watch": "^0.1.1",
     "webpack": "^1.12.10"
+  },
+  "dependencies": {
+    "thrift": "^0.9.3"
   }
 }
