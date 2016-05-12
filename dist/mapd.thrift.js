@@ -2695,6 +2695,7 @@ MapD_render_result.prototype.write = function(output) {
 MapD_testRenderSimplePolys_args = function(args) {
   this.session = null;
   this.query = null;
+  this.render_type = null;
   this.nonce = null;
   if (args) {
     if (args.session !== undefined) {
@@ -2702,6 +2703,9 @@ MapD_testRenderSimplePolys_args = function(args) {
     }
     if (args.query !== undefined) {
       this.query = args.query;
+    }
+    if (args.render_type !== undefined) {
+      this.render_type = args.render_type;
     }
     if (args.nonce !== undefined) {
       this.nonce = args.nonce;
@@ -2738,6 +2742,13 @@ MapD_testRenderSimplePolys_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
+        this.render_type = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
         this.nonce = input.readString().value;
       } else {
         input.skip(ftype);
@@ -2764,8 +2775,13 @@ MapD_testRenderSimplePolys_args.prototype.write = function(output) {
     output.writeString(this.query);
     output.writeFieldEnd();
   }
+  if (this.render_type !== null && this.render_type !== undefined) {
+    output.writeFieldBegin('render_type', Thrift.Type.STRING, 3);
+    output.writeString(this.render_type);
+    output.writeFieldEnd();
+  }
   if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 3);
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 4);
     output.writeString(this.nonce);
     output.writeFieldEnd();
   }
@@ -5870,18 +5886,19 @@ MapDClient.prototype.recv_render = function() {
   }
   throw 'render failed: unknown result';
 };
-MapDClient.prototype.testRenderSimplePolys = function(session, query, nonce, callback) {
-  this.send_testRenderSimplePolys(session, query, nonce, callback); 
+MapDClient.prototype.testRenderSimplePolys = function(session, query, render_type, nonce, callback) {
+  this.send_testRenderSimplePolys(session, query, render_type, nonce, callback); 
   if (!callback) {
     return this.recv_testRenderSimplePolys();
   }
 };
 
-MapDClient.prototype.send_testRenderSimplePolys = function(session, query, nonce, callback) {
+MapDClient.prototype.send_testRenderSimplePolys = function(session, query, render_type, nonce, callback) {
   this.output.writeMessageBegin('testRenderSimplePolys', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_testRenderSimplePolys_args();
   args.session = session;
   args.query = query;
+  args.render_type = render_type;
   args.nonce = nonce;
   args.write(this.output);
   this.output.writeMessageEnd();
