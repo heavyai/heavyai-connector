@@ -4955,6 +4955,181 @@ MapD_get_heap_profile_result.prototype.write = function(output) {
   return;
 };
 
+MapD_import_geo_table_args = function(args) {
+  this.session = null;
+  this.file_name = null;
+  this.table_name = null;
+  this.copy_params = null;
+  if (args) {
+    if (args.session !== undefined) {
+      this.session = args.session;
+    }
+    if (args.file_name !== undefined) {
+      this.file_name = args.file_name;
+    }
+    if (args.table_name !== undefined) {
+      this.table_name = args.table_name;
+    }
+    if (args.copy_params !== undefined) {
+      this.copy_params = args.copy_params;
+    }
+  }
+};
+MapD_import_geo_table_args.prototype = {};
+MapD_import_geo_table_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.file_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.copy_params = new TCopyParams();
+        this.copy_params.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_import_geo_table_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_geo_table_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.file_name !== null && this.file_name !== undefined) {
+    output.writeFieldBegin('file_name', Thrift.Type.STRING, 2);
+    output.writeString(this.file_name);
+    output.writeFieldEnd();
+  }
+  if (this.table_name !== null && this.table_name !== undefined) {
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 3);
+    output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  if (this.copy_params !== null && this.copy_params !== undefined) {
+    output.writeFieldBegin('copy_params', Thrift.Type.STRUCT, 4);
+    this.copy_params.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_import_geo_table_result = function(args) {
+  this.e = null;
+  this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined) {
+      this.e = args.e;
+    }
+    if (args.te !== undefined) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_import_geo_table_result.prototype = {};
+MapD_import_geo_table_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_import_geo_table_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_geo_table_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapDClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
@@ -6609,4 +6784,59 @@ MapDClient.prototype.recv_get_heap_profile = function() {
     return result.success;
   }
   throw 'get_heap_profile failed: unknown result';
+};
+MapDClient.prototype.import_geo_table = function(session, file_name, table_name, copy_params, callback) {
+  this.send_import_geo_table(session, file_name, table_name, copy_params, callback); 
+  if (!callback) {
+  this.recv_import_geo_table();
+  }
+};
+
+MapDClient.prototype.send_import_geo_table = function(session, file_name, table_name, copy_params, callback) {
+  this.output.writeMessageBegin('import_geo_table', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_import_geo_table_args();
+  args.session = session;
+  args.file_name = file_name;
+  args.table_name = table_name;
+  args.copy_params = copy_params;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_import_geo_table();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_import_geo_table = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_import_geo_table_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.te) {
+    throw result.te;
+  }
+  return;
 };
