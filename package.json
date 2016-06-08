@@ -20,7 +20,7 @@
     "babel": "bash scripts/babel.sh",
     "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
     "test": "bash scripts/test.sh",
-    "generate-docs": "node_modules/.bin/esdoc -c esdoc.json",
+    "generate-docs": "node_modules/esdoc/out/src/ESDocCLI.js -c esdoc.json",
     "watch": "npm-watch"
   },
   "repository": {
