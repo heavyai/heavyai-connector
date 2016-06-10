@@ -21,7 +21,8 @@
     "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
     "test": "bash scripts/test.sh",
     "generate-docs": "node_modules/esdoc/out/src/ESDocCLI.js -c esdoc.json",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "clean": "bash scripts/clean.sh"
   },
   "repository": {
     "type": "git",
