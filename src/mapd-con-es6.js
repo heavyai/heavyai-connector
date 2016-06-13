@@ -956,38 +956,23 @@ class MapdCon {
     }
 
     if (isImage && hasCallback) {
-      var CFAsyncCallback = callbacks.pop()
-      var errorHandler = callbacks.pop()
-      var renderCallback = callbacks.pop()
-      CFAsyncCallback(formattedResult.results, [renderCallback]);
+      callbacks.pop()(formattedResult.results, callbacks);
     } else if (isImage && !hasCallback) {
       return result;
     } else {
       result = result.row_set;
       var formattedResult = null;
 
-      try {
-        if (result.is_columnar) {
-          formattedResult = this.processColumnarResults(result, eliminateNullRows);
-        } else {
-          formattedResult = this.processRowResults(result, eliminateNullRows);
-        }
-      } catch (error) {
-        if (hasCallback) {
-          var errorHandler = callbacks[1]
-          errorHandler(error)
-        } else {
-          throw error
-        }
-        console.log(error)
-        return
+      if (!result) {
+        formattedResult = { results: new Error() }
+      } else if (result.is_columnar) {
+        formattedResult = this.processColumnarResults(result, eliminateNullRows);
+      } else {
+        formattedResult = this.processRowResults(result, eliminateNullRows);
       }
 
       if (hasCallback) {
-        var CFAsyncCallback = callbacks.pop()
-        var errorHandler = callbacks.pop()
-        var renderCallback = callbacks.pop()
-        CFAsyncCallback(formattedResult.results, [renderCallback]);
+        callbacks.pop()(formattedResult.results, callbacks);
       } else {
         return formattedResult.results;
       }
