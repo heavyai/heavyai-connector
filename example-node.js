@@ -4,9 +4,8 @@
  * App/ 
  *   build/MapdConNode.js <-- import this in your application
  *   build/MapdConUtils.js <-- dependency of MapdConNode, must live in build directory
- *   dist/node/mapd.thrift.js <-- dependency of MapdConNode, must live in dist directory
- *   dist/node/mapd_types.js <-- dependency of MapdConNode, must live in dist directory
- *   dist/thrift.js <-- dependency of MapdConNode, must live in dist directory
+ *   thrift/node/mapd.thrift.js <-- dependency of MapdConNode, must live in dist directory
+ *   thrift/node/mapd_types.js <-- dependency of MapdConNode, must live in dist directory
  */
 var MapdCon = require("./build/MapdConNode").MapdCon;
 
