@@ -55,7 +55,7 @@ describe('#getFrontendViews', () => {
     utils.connect(con, (connectError, sessionId) => {
       con.getFrontendViews((viewsError, views) => {
         views.forEach((view) => {
-          expect(view.view_name.length).toBeGreaterThan(0);
+          expect(view.view_name).toBeA('string');
         });
         done();
       });

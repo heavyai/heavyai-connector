@@ -49,7 +49,7 @@ describe('#getFrontendViews', () => {
     browserTest((done, window) => {
       const con = connect(new window.MapdCon());
       const views = con.getFrontendViews();
-      views.forEach((view) => { expect(view.view_name.length).toBeGreaterThan(0); });
+      views.forEach((view) => { expect(view.view_name).toBeA('string'); });
       done();
     })
   );
