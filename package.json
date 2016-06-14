@@ -15,7 +15,7 @@
   },
   "scripts": {
     "fullbuild": "npm run lint && npm run build && npm test && npm run generate-docs",
-    "lint": "node_modules/eslint/bin/eslint.js src/mapd-con-es6.js",
+    "lint": "node_modules/eslint/bin/eslint.js src/mapd-con-es6.js src/mapd-con-node-support.js",
     "build": "bash scripts/build.sh",
     "babel": "bash scripts/babel.sh",
     "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
