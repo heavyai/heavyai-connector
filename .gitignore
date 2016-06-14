@@ -1,5 +1,5 @@
 build/
-dist/MapdCon.js
+dist/
 esdoc/
 node_modules/
 mocha-report.xml
