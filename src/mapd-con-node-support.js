@@ -249,7 +249,7 @@ export class MapdCon {
         } catch (err) {
           throw err;
         } finally {
-          return this;
+          return this; // eslint-disable-line consistent-return
         }
       }
 
@@ -263,7 +263,7 @@ export class MapdCon {
         );
       }
 
-      function _cb(result) {
+      function _cb(result) { // eslint-disable-line no-loop-func, no-inner-declarations
         if (result instanceof Error) {
           callback(result);
           return;
@@ -274,7 +274,7 @@ export class MapdCon {
         callback(_sessionId);
       }
 
-      function _cbNode(error, sessionId) {
+      function _cbNode(error, sessionId) { // eslint-disable-line no-loop-func, no-inner-declarations, max-len
         if (error) {
           callback(error, null);
           return;
@@ -1618,7 +1618,7 @@ export class MapdCon {
       return result;
     } else if (result instanceof Error) {
       callbacks.pop()(result, callbacks);
-      return;
+      return; // eslint-disable-line consistent-return
     } else {
       result = result.row_set;
       let formattedResult = null;
@@ -2516,4 +2516,3 @@ export class MapdCon {
 if (typeof module !== 'undefined' && module.exports && typeof window !== 'undefined') {
   window.MapdCon = MapdCon;
 }
-
