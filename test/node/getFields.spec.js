@@ -1,7 +1,7 @@
 var expect = require('expect');
 var utils = require('../utils/utils-transpiled');
 var MapdCon = require('../../build/MapdConNode').MapdCon;
-var MapdTypes = require('../../dist/node/mapd_types');
+var MapdTypes = require('../../thrift/node/mapd_types');
 
 describe('#getFields', () => {
   it('should throw an error if not connected to a server', () => {

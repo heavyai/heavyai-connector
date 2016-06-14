@@ -28,9 +28,9 @@ export const connect = (con, callback) => {
 };
 
 export const loadScripts = () => {
-  const thrift = readFileSync('./dist/thrift.js', 'utf-8');
-  const mapdthrift = readFileSync('./dist/mapd.thrift.js', 'utf-8');
-  const mapdtypes = readFileSync('./dist/mapd_types.js', 'utf-8');
+  const thrift = readFileSync('./thrift/browser/thrift.js', 'utf-8');
+  const mapdthrift = readFileSync('./thrift/browser/mapd.thrift.js', 'utf-8');
+  const mapdtypes = readFileSync('./thrift/browser/mapd_types.js', 'utf-8');
   const mapdcon = readFileSync('./dist/MapdCon.js', 'utf-8');
   return [thrift, mapdthrift, mapdtypes, mapdcon];
 };
@@ -90,7 +90,7 @@ export const deleteUploadedFile = (sessionId, filename, callback) => {
 export const makeCopyParams = (context) => {
 
   // node context shim
-  context = context || { TCopyParams: require('../../dist/node/mapd_types').TCopyParams };
+  context = context || { TCopyParams: require('../../thrift/node/mapd_types').TCopyParams };
 
   let copyParams = new context.TCopyParams();
   copyParams.delimiter = ',';

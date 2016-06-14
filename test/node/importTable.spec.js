@@ -6,7 +6,7 @@ var utils = require('../utils/utils-transpiled');
 var MapdCon = require('../../build/MapdConNode').MapdCon;
 
 var mocks = require('../mocks/mocks-transpiled');
-var MapdTypes = require('../../dist/node/mapd_types');
+var MapdTypes = require('../../thrift/node/mapd_types');
 
 describe('#importTable', () => {
   it('should throw an error if not connected to a server', () => {

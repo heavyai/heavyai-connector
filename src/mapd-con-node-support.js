@@ -14,7 +14,7 @@ if (isNode &&
     typeof TDatumType === 'undefined' &&
     typeof TEncodingType === 'undefined' &&
     typeof TDatumVal === 'undefined') {
-  var MapdTypes = require('../dist/node/mapd_types');
+  var MapdTypes = require('../thrift/node/mapd_types');
   var TDatumType = MapdTypes.TDatumType;
   var TDatumVal = MapdTypes.TDatumVal;
   var TEncodingType = MapdTypes.TEncodingType;
@@ -25,7 +25,7 @@ if (isNode &&
 }
 
 if (isNode && typeof MapD === 'undefined') {
-  var MapD = require('../dist/node/mapd.thrift');
+  var MapD = require('../thrift/node/mapd.thrift');
 }
 
 import { bindArgsFromN } from './MapdConUtils';
