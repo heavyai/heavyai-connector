@@ -956,12 +956,12 @@ class MapdCon {
     }
 
     if (isImage && hasCallback) {
-      callbacks.pop()(formattedResult.results, callbacks);
+      callbacks.pop()(results, callbacks);
     } else if (isImage && !hasCallback) {
       return result;
     } else {
       result = result.row_set;
-      var formattedResult = null;
+      let formattedResult = null;
 
       if (!result) {
         formattedResult = { results: new Error() }
