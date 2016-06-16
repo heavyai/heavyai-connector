@@ -926,6 +926,7 @@ class MapdCon {
     let conId = null;
     let estimatedQueryTime = null;
     const hasCallback = !!callbacks;
+    const callbackStack = Array.isArray(callbacks) ? callbacks : [callbacks]
 
     if (typeof options !== 'undefined') {
       isImage = options.isImage ? options.isImage : false;
@@ -956,7 +957,7 @@ class MapdCon {
     }
 
     if (isImage && hasCallback) {
-      callbacks.pop()(result, callbacks);
+      callbackStack.pop()(result, callbackStack);
     } else if (isImage && !hasCallback) {
       return result;
     } else {
@@ -972,7 +973,7 @@ class MapdCon {
       }
 
       if (hasCallback) {
-        callbacks.pop()(formattedResult.results, callbacks);
+        callbackStack.pop()(formattedResult.results, callbackStack);
       } else {
         return formattedResult.results;
       }
