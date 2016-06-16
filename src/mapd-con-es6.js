@@ -956,7 +956,7 @@ class MapdCon {
     }
 
     if (isImage && hasCallback) {
-      callbacks.pop()(results, callbacks);
+      callbacks.pop()(result, callbacks);
     } else if (isImage && !hasCallback) {
       return result;
     } else {
@@ -964,7 +964,7 @@ class MapdCon {
       let formattedResult = null;
 
       if (!result) {
-        formattedResult = { results: new Error() }
+        formattedResult = { results: new Error('No result to process') }
       } else if (result.is_columnar) {
         formattedResult = this.processColumnarResults(result, eliminateNullRows);
       } else {
