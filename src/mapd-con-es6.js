@@ -371,6 +371,7 @@ class MapdCon {
    * @param {String} viewName - the name of the new dashboard
    * @param {String} viewState - the base64-encoded state string of the new dashboard
    * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+   * @param {String} metaData - Stringified metaData related to the view
    * @return {MapdCon} Object
    *
    * @example <caption>Add a new dashboard to the server:</caption>
@@ -384,14 +385,14 @@ class MapdCon {
    *
    * con.createFrontendView('newView', 'GlnaHRz...', '1906667617');
    */
-  createFrontendView(viewName, viewState, imageHash) {
+  createFrontendView(viewName, viewState, imageHash, metaData) {
     if (!this._sessionId) {
       throw new Error('You are not connected to a server. Try running the connect method first.');
     }
     try {
       // do we want to try each one individually so if we fail we keep going?
       this._client.forEach((client, i) => {
-        client.create_frontend_view(this._sessionId[i], viewName, viewState, imageHash);
+        client.create_frontend_view(this._sessionId[i], viewName, viewState, imageHash, metaData);
       });
     } catch (err) {
       throw err;
@@ -433,6 +434,7 @@ class MapdCon {
   /**
    * Create a short hash to make it easy to share a link to a specific dashboard.
    * @param {String} viewState - the base64-encoded state string of the new dashboard
+   * @param {String} metaData - Stringified metaData related to the link
    * @return {String} link - A short hash of the dashboard used for URLs
    *
    * @example <caption>Create a link to the current state of a dashboard:</caption>
@@ -451,12 +453,12 @@ class MapdCon {
    * var link = con.createLink(dashboard.view_state);
    * // link === 'CRtzoe'
    */
-  createLink(viewState) {
+  createLink(viewState, metaData) {
     let result = null;
     try {
       result = this._client
         .map((client, i) => {
-          return client.create_link(this._sessionId[i], viewState);
+          return client.create_link(this._sessionId[i], viewState, metaData);
         })
         .reduce((links, link) => {
           if (links.indexOf(link) === -1) {
