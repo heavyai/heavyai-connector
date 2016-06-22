@@ -324,14 +324,11 @@ class MapdCon {
    */
    getServerStatus = (callback) => {
      this._client[0].get_server_status(null, (result) => {
-       if (typeof result === 'object') {
-         if (!result.hasOwnProperty('read_only') ||
-             !result.hasOwnProperty('rendering_enabled') ||
-             !result.hasOwnProperty('version')) {
-           callback(result, null)
-         } else {
-           callback(null, result)
-         }
+       if (typeof result === 'object' &&
+           result.hasOwnProperty('read_only') &&
+           result.hasOwnProperty('rendering_enabled') &&
+           result.hasOwnProperty('version')) {
+         callback(null, result)
        } else {
          callback(result, null)
        }
