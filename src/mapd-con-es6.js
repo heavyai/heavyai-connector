@@ -322,15 +322,31 @@ class MapdCon {
    * // status instanceof TServerStatus === true
    *
    */
-  getServerStatus() {
-    let result = null;
-    try {
-      result = this._client[0].get_server_status();
-    } catch (err) {
-      throw err;
-    }
-    return result;
-  }
+   getServerStatus = (callback) => {
+     this._client[0].get_server_status(null, (result) => {
+       if (typeof result === 'object') {
+         if (!result.hasOwnProperty('read_only') ||
+             !result.hasOwnProperty('rendering_enabled') ||
+             !result.hasOwnProperty('version')) {
+           callback(result, null)
+         } else {
+           callback(null, result)
+         }
+       } else {
+         callback(result, null)
+       }
+     });
+   }
+
+   getServerStatusAsync = () => new Promise((resolve, reject) => {
+     this.getServerStatus((err, result) => {
+       if (err) {
+         reject(err)
+       } else {
+         resolve(result)
+       }
+     })
+   })
 
   /**
    * Generate the image thumbnail hash used for saving frontend view.
