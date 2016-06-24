@@ -260,16 +260,26 @@ class MapdCon {
    * var views = con.getFrontendViews();
    * // views === [TFrontendView, TFrontendView]
    */
-  getFrontendViews() {
-    let result = null;
+  getFrontendViews = (callback) => {
     if (this._sessionId) {
-      try {
-        result = this._client[0].get_frontend_views(this._sessionId);
-      } catch (err) {
-        throw err;
-      }
+      this._client[0].get_frontend_views(this._sessionId, (views) => {
+        callback(null, views)
+      });
+    } else {
+      callback(new Error('No Session ID'))
     }
-    return result;
+  }
+
+  getFrontendViewsAsync = () => {
+    return new Promise((resolve, reject) => {
+      this.getFrontendViews((error, views) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(views)
+        }
+      })
+    })
   }
 
   /**
@@ -1038,14 +1048,13 @@ class MapdCon {
    *    name: 'myDatabaseName'
    *  }, ...]
    */
-  getTables() {
-    let tables;
-    try {
-      tables = this._client[0].get_tables(this._sessionId[0]);
-    } catch (err) {
-      throw err;
-    }
-    return tables.map((table) => ({ name: table, label: 'obs' }));
+  getTables(callback) {
+    this._client[0].get_tables(this._sessionId[0], (tables) => {
+      callback(null, tables.map((table) => ({
+        name: table,
+        label: 'obs'
+      })))
+    });
   }
 
   /**
