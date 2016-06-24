@@ -1048,13 +1048,25 @@ class MapdCon {
    *    name: 'myDatabaseName'
    *  }, ...]
    */
-  getTables(callback) {
+  getTables (callback) {
     this._client[0].get_tables(this._sessionId[0], (tables) => {
       callback(null, tables.map((table) => ({
         name: table,
         label: 'obs'
       })))
     });
+  }
+
+  getTablesAsync () {
+    return new Promise((resolve, reject) => {
+      this.getTables.bind(this)((error, tables) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(tables)
+        }
+      })
+    })
   }
 
   /**
