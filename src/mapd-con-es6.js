@@ -260,7 +260,7 @@ class MapdCon {
    * var views = con.getFrontendViews();
    * // views === [TFrontendView, TFrontendView]
    */
-  getFrontendViews = (callback) => {
+  getFrontendViews (callback) {
     if (this._sessionId) {
       this._client[0].get_frontend_views(this._sessionId, (views) => {
         callback(null, views)
@@ -270,9 +270,9 @@ class MapdCon {
     }
   }
 
-  getFrontendViewsAsync = () => {
+  getFrontendViewsAsync () {
     return new Promise((resolve, reject) => {
-      this.getFrontendViews((error, views) => {
+      this.getFrontendViews.bind(this)((error, views) => {
         if (error) {
           reject(error)
         } else {
