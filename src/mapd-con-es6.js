@@ -260,7 +260,7 @@ class MapdCon {
    * var views = con.getFrontendViews();
    * // views === [TFrontendView, TFrontendView]
    */
-  getFrontendViews (callback) {
+  getFrontendViews = (callback) => {
     if (this._sessionId) {
       this._client[0].get_frontend_views(this._sessionId, (views) => {
         callback(null, views)
@@ -270,9 +270,9 @@ class MapdCon {
     }
   }
 
-  getFrontendViewsAsync () {
-    return new Promise((resolve, reject) => {
-      this.getFrontendViews.bind(this)((error, views) => {
+  getFrontendViewsAsync = () => (
+    new Promise((resolve, reject) => {
+      this.getFrontendViews((error, views) => {
         if (error) {
           reject(error)
         } else {
@@ -280,7 +280,7 @@ class MapdCon {
         }
       })
     })
-  }
+  )
 
   /**
    * Get a dashboard object containing a value for the <code>view_state</code> property.
@@ -301,17 +301,26 @@ class MapdCon {
    * var dashboard = con.getFrontendView();
    * // dashboard instanceof TFrontendView === true
    */
-  getFrontendView(viewName) {
-    let result = null;
+  getFrontendView = (viewName, callback) => {
     if (this._sessionId && viewName) {
-      try {
-        result = this._client[0].get_frontend_view(this._sessionId, viewName);
-      } catch (err) {
-        throw err;
-      }
+      this._client[0].get_frontend_view(this._sessionId, viewName, (view) => {
+        console.log(view)
+        callback(null, view)
+      });
+    } else {
+      callback(new Error('No Session ID'))
     }
-    return result;
   }
+
+  getFrontendViewAsync = (viewName) => new Promise((resolve, reject) => {
+    this.getFrontendView(viewName, (err, view) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(view)
+      }
+    })
+  })
 
   /**
    * Get the status of the server as a <code>TServerStatus</code> object.
@@ -345,15 +354,17 @@ class MapdCon {
      });
    }
 
-   getServerStatusAsync = () => new Promise((resolve, reject) => {
-     this.getServerStatus((err, result) => {
-       if (err) {
-         reject(err)
-       } else {
-         resolve(result)
-       }
+   getServerStatusAsync = () => (
+     new Promise((resolve, reject) => {
+       this.getServerStatus((err, result) => {
+         if (err) {
+           reject(err)
+         } else {
+           resolve(result)
+         }
+       })
      })
-   })
+   )
 
   /**
    * Generate the image thumbnail hash used for saving frontend view.
@@ -421,6 +432,26 @@ class MapdCon {
       throw err;
     }
     return this;
+  }
+
+  createFrontendViewAsync = (viewName, viewState, imageHash, metaData) => {
+    if (!this._sessionId) {
+      return new Promise((resolve, reject) => {
+        reject(new Error('You are not connected to a server. Try running the connect method first.'))
+      })
+    }
+
+    return Promise.all(this._client.map((client, i) => {
+      return new Promise((resolve, reject) => {
+        try {
+          client.create_frontend_view(this._sessionId[i], viewName, viewState, imageHash, metaData, () => {
+            resolve()
+          })
+        } catch (e) {
+          reject(e)
+        }
+      })
+    }))
   }
 
   /**
@@ -499,6 +530,28 @@ class MapdCon {
     }
   }
 
+  createLinkAsync (viewState, metaData) {
+    return Promise.all(this._client.map((client, i) => {
+      return new Promise((resolve, reject) => {
+        client.create_link(this._sessionId[i], viewState, metaData, (data) => {
+          if (!data) {
+            reject(new Error('No Result Returned'))
+          } else {
+            const result = result.reduce((links, link) => {
+              if (links.indexOf(link) === -1) links.push(link);
+              return links;
+            }, []);
+            if (!result || result.length !== 1) {
+              reject(new Error('Different links were created on connection'));
+            } else {
+              resolve(result.join());
+            }
+          }
+        })
+      })
+    }))
+  }
+
   /**
    * Get a fully-formed dashboard object from a generated share link.
    * This object contains the given link for the <code>view_name</code> property,
@@ -517,15 +570,21 @@ class MapdCon {
    * var dashboard = con.getLinkView('CRtzoe');
    * // dashboard instanceof TFrontendView === true
    */
-  getLinkView(link) {
-    let result = null;
-    try {
-      result = this._client[0].get_link_view(this._sessionId[0], link);
-    } catch (err) {
-      throw err;
-    }
-    return result;
+  getLinkView = (link, callback) => {
+    this._client[0].get_link_view(this._sessionId[0], link, (link) => {
+      callback(null, link)
+    });
   }
+
+  getLinkViewAsync = (link) => new Promise((resolve, reject) => {
+    this.getLinkView(link, (err, link) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(link)
+      }
+    })
+  })
 
   /**
    * Asynchronously get the data from an importable file,
@@ -1104,28 +1163,53 @@ class MapdCon {
    *   is_dict: false
    * }, ...]
    */
-  getFields(tableName) {
-    let fields = null;
-    try {
-      fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
-    } catch (err) {
-      throw new Error('Table (' + tableName + ') not found');
-    }
-    const fieldsArray = [];
-    // silly to change this from map to array
-    // - then later it turns back to map
-    for (const key in fields) {
-      if (fields.hasOwnProperty(key)) {
-        fieldsArray.push({
-          name: key,
-          type: this._datumEnum[fields[key].col_type.type],
-          is_array: fields[key].col_type.is_array,
-          is_dict: fields[key].col_type.encoding === TEncodingType.DICT,
-        });
+  getFields(tableName, callback) {
+    if (callback) {
+      this._client[0].get_table_descriptor(this._sessionId[0], tableName, (fields) => {
+        if (!fields) {
+          callback(new Error('Table (' + tableName + ') not found'))
+        } else {
+          const fieldsArray = [];
+          // silly to change this from map to array
+          // - then later it turns back to map
+          for (const key in fields) {
+            if (fields.hasOwnProperty(key)) {
+              fieldsArray.push({
+                name: key,
+                type: this._datumEnum[fields[key].col_type.type],
+                is_array: fields[key].col_type.is_array,
+                is_dict: fields[key].col_type.encoding === TEncodingType.DICT,
+              });
+            }
+          }
+          callback(null, fieldsArray)
+        }
+      })
+    } else {
+      console.warn('WARNING: You are using a synchronous method that will be deprecated')
+      let fields = null;
+      try {
+        fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
+      } catch (err) {
+        throw new Error('Table (' + tableName + ') not found');
       }
+      const fieldsArray = [];
+      // silly to change this from map to array
+      // - then later it turns back to map
+      for (const key in fields) {
+        if (fields.hasOwnProperty(key)) {
+          fieldsArray.push({
+            name: key,
+            type: this._datumEnum[fields[key].col_type.type],
+            is_array: fields[key].col_type.is_array,
+            is_dict: fields[key].col_type.encoding === TEncodingType.DICT,
+          });
+        }
+      }
+      return fieldsArray;
     }
-    return fieldsArray;
   }
+
 
   /**
    * Create a table and persist it to the backend.
