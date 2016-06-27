@@ -634,7 +634,7 @@ class MapdCon {
    *                                      set to <code>null</code> to force frontend rendering
    * @param {Array<Function>} callbacks
    */
-  query(query, options, callbacks) {
+  query(query, options, callback) {
     let columnarResults = true;
     let eliminateNullRows = false;
     let renderSpec = null;
@@ -650,10 +650,10 @@ class MapdCon {
         options.queryId : queryId;
     }
     const processResultsQuery = renderSpec ? 'render: ' + query : query;
-    const isBackendRenderingWithAsync = !!renderSpec && !!callbacks;
-    const isFrontendRenderingWithAsync = !renderSpec && !!callbacks;
-    const isBackendRenderingWithSync = !!renderSpec && !callbacks;
-    const isFrontendRenderingWithSync = !renderSpec && !callbacks;
+    const isBackendRenderingWithAsync = !!renderSpec && !!callback;
+    const isFrontendRenderingWithAsync = !renderSpec && !!callback;
+    const isBackendRenderingWithSync = !!renderSpec && !callback;
+    const isFrontendRenderingWithSync = !renderSpec && !callback;
     const lastQueryTime = queryId in this.queryTimes
       ? this.queryTimes[queryId]
       : this.DEFAULT_QUERY_TIME;
@@ -684,22 +684,14 @@ class MapdCon {
 
     try {
       if (isBackendRenderingWithAsync) {
-        const callback = this.processResults.bind(
-          this,
-          processResultsOptions,
-          callbacks
-        );
-        this._client[conId].render(this._sessionId[conId], query + ';',
-            renderSpec, curNonce, callback);
+        this._client[conId].render(this._sessionId[conId], query + ';', renderSpec, curNonce, (result) => {
+          this.processResults(processResultsOptions, callback, result)
+        });
         return curNonce;
       } else if (isFrontendRenderingWithAsync) {
-        const callback = this.processResults.bind(
-          this,
-          processResultsOptions,
-          callbacks
-        );
-        this._client[conId].sql_execute(this._sessionId[conId], query + ';',
-            columnarResults, curNonce, callback);
+        this._client[conId].sql_execute(this._sessionId[conId], query + ';', columnarResults, curNonce, (result) => {
+          this.processResults(processResultsOptions, callback, result)
+        });
         return curNonce;
       } else if (isBackendRenderingWithSync) {
         return this.processResults(
@@ -719,7 +711,7 @@ class MapdCon {
           columnarResults,
           curNonce
         );
-        return this.processResults(processResultsOptions, null, _result); // null is callbacks slot
+        return this.processResults(processResultsOptions, null, _result); // null is callback slot
       }
     } catch (err) {
       console.error(err);
@@ -730,7 +722,7 @@ class MapdCon {
           err.msg = 'No remaining database connections';
           throw err;
         }
-        this.query(query, options, callbacks);
+        this.query(query, options, callback);
       }
     }
   }
@@ -1002,15 +994,14 @@ class MapdCon {
    * @return {Object} null if image with callbacks, result if image with callbacks,
    *                  otherwise formatted results
    */
-  processResults(options, callbacks, result) {
+  processResults(options, callback, result) {
     let isImage = false;
     let eliminateNullRows = false;
     let query = null;
     let queryId = null;
     let conId = null;
     let estimatedQueryTime = null;
-    const hasCallback = !!callbacks;
-    const callbackStack = Array.isArray(callbacks) ? callbacks : [callbacks]
+    const hasCallback = !!callback;
 
     if (typeof options !== 'undefined') {
       isImage = options.isImage ? options.isImage : false;
@@ -1041,7 +1032,7 @@ class MapdCon {
     }
 
     if (isImage && hasCallback) {
-      callbackStack.pop()(result, callbackStack);
+      callback(result);
     } else if (isImage && !hasCallback) {
       return result;
     } else {
@@ -1057,7 +1048,7 @@ class MapdCon {
       }
 
       if (hasCallback) {
-        callbackStack.pop()(formattedResult.results, callbackStack);
+        callback(formattedResult.results);
       } else {
         return formattedResult.results;
       }
