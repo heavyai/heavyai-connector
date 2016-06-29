@@ -1,3 +1,4 @@
+import MapDClientWithErrorHandling from './enhance-client-with-error-handling'
 /**
  * The MapdCon class provides the necessary methods for performing queries to a
  * MapD GPU database. In order to use MapdCon, you must have the Thrift library
@@ -128,7 +129,7 @@ class MapdCon {
       try {
         const transport = new Thrift.Transport(transportUrls[h]);
         const protocol = new Thrift.Protocol(transport);
-        const client = new MapDClient(protocol);
+        const client = new MapDClientWithErrorHandling(protocol);
         const sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
         this._client.push(client);
         this._sessionId.push(sessionId);
@@ -671,7 +672,6 @@ class MapdCon {
     }
 
     this.serverQueueTimes[conId] += lastQueryTime;
-    // console.log("Up: " + this.serverQueueTimes);
 
     const processResultsOptions = {
       isImage: !!renderSpec,
@@ -684,13 +684,21 @@ class MapdCon {
 
     try {
       if (isBackendRenderingWithAsync) {
-        this._client[conId].render(this._sessionId[conId], query + ';', renderSpec, curNonce, (result) => {
-          this.processResults(processResultsOptions, callback, result)
+        this._client[conId].render(this._sessionId[conId], query + ';', renderSpec, curNonce, (error, result) => {
+          if (error) {
+            callback(error) 
+          } else {
+            this.processResults(processResultsOptions, callback, result)
+          }
         });
         return curNonce;
       } else if (isFrontendRenderingWithAsync) {
-        this._client[conId].sql_execute(this._sessionId[conId], query + ';', columnarResults, curNonce, (result) => {
-          this.processResults(processResultsOptions, callback, result)
+        this._client[conId].sql_execute(this._sessionId[conId], query + ';', columnarResults, curNonce, (error, result) => {
+          if (error) {
+            callback(error)
+          } else {
+             this.processResults(processResultsOptions, callback, result)
+          }
         });
         return curNonce;
       } else if (isBackendRenderingWithSync) {
@@ -1035,36 +1043,12 @@ class MapdCon {
       );
     }
 
-    const error = result instanceof Thrift.TApplicationException || typeof result === 'string'
-
     if (isImage && hasCallback) {
-      if (error) {
-        callback(result)
-      } else {
-        callback(null, result)
-      }
+      callback(null, result)
     } else if (isImage && !hasCallback) {
-      if (error) {
-        throw result
-      } else {
-        return result;
-      }
+      return result;
     } else {
       let formattedResult = null;
-
-      if (error) {
-        if (hasCallback) {
-          if (typeof result === 'string') {
-            callback(new Error(result))
-          } else {
-            console.log(result)
-            callback(new Error(result))
-          }
-        } else {
-          throw result
-        }
-        return
-      }
 
       if (!result.row_set) {
         if (hasCallback) {
