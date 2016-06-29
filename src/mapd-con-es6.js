@@ -714,7 +714,6 @@ class MapdCon {
         return this.processResults(processResultsOptions, null, _result); // null is callback slot
       }
     } catch (err) {
-      console.error(err);
       if (err.name === 'NetworkError') {
         this.removeConnection(conId);
         if (this._numConnections === 0) {
@@ -723,6 +722,10 @@ class MapdCon {
           throw err;
         }
         this.query(query, options, callback);
+      } else if (callback) {
+        callback(err)
+      } else {
+        throw err
       }
     }
   }
@@ -753,6 +756,7 @@ class MapdCon {
    * @returns {Object} processedResults
    */
   processColumnarResults(data, eliminateNullRows) {
+    console.log(data)
     const formattedResult = { fields: [], results: [] };
     const numCols = data.row_desc.length;
     const numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
@@ -1031,24 +1035,54 @@ class MapdCon {
       );
     }
 
+    const error = result instanceof Thrift.TApplicationException || typeof result === 'string'
+
     if (isImage && hasCallback) {
-      callback(result);
+      if (error) {
+        callback(result)
+      } else {
+        callback(null, result)
+      }
     } else if (isImage && !hasCallback) {
-      return result;
+      if (error) {
+        throw result
+      } else {
+        return result;
+      }
     } else {
-      result = result.row_set;
       let formattedResult = null;
 
-      if (!result) {
-        formattedResult = { results: new Error('No result to process') }
-      } else if (result.is_columnar) {
-        formattedResult = this.processColumnarResults(result, eliminateNullRows);
+      if (error) {
+        if (hasCallback) {
+          if (typeof result === 'string') {
+            callback(new Error(result))
+          } else {
+            console.log(result)
+            callback(new Error(result))
+          }
+        } else {
+          throw result
+        }
+        return
+      }
+
+      if (!result.row_set) {
+        if (hasCallback) {
+          callback(new Error('No result to process'))
+        } else {
+          throw new Error('No result to process')
+        }
+        return
+      }
+
+      if (result.row_set.is_columnar) {
+        formattedResult = this.processColumnarResults(result.row_set, eliminateNullRows);
       } else {
-        formattedResult = this.processRowResults(result, eliminateNullRows);
+        formattedResult = this.processRowResults(result.row_set, eliminateNullRows);
       }
 
       if (hasCallback) {
-        callback(formattedResult.results);
+        callback(null, formattedResult.results);
       } else {
         return formattedResult.results;
       }
