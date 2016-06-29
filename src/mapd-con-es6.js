@@ -1,4 +1,6 @@
-import MapDClientWithErrorHandling from './enhance-client-with-error-handling'
+/*global Thrift*/
+
+import MapDClientV2 from './mapd-client-v2'
 /**
  * The MapdCon class provides the necessary methods for performing queries to a
  * MapD GPU database. In order to use MapdCon, you must have the Thrift library
@@ -129,7 +131,7 @@ class MapdCon {
       try {
         const transport = new Thrift.Transport(transportUrls[h]);
         const protocol = new Thrift.Protocol(transport);
-        const client = new MapDClientWithErrorHandling(protocol);
+        const client = new MapDClientV2(protocol);
         const sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
         this._client.push(client);
         this._sessionId.push(sessionId);
@@ -225,7 +227,7 @@ class MapdCon {
         // - this should be persistent as we never zero our times
         this.serverQueueTimes[c] += this.serverPingTimes[c];
       }
-      console.log(this.serverQueueTimes);
+
       if (typeof callback !== 'undefined') {
         callback(this, this.serverQueueTimes);
       }
@@ -688,7 +690,7 @@ class MapdCon {
           if (error) {
             callback(error) 
           } else {
-            this.processResults(processResultsOptions, callback, result)
+            this.processResults(processResultsOptions, result, callback)
           }
         });
         return curNonce;
@@ -697,29 +699,26 @@ class MapdCon {
           if (error) {
             callback(error)
           } else {
-             this.processResults(processResultsOptions, callback, result)
+             this.processResults(processResultsOptions, result, callback)
           }
         });
         return curNonce;
       } else if (isBackendRenderingWithSync) {
-        return this.processResults(
-          processResultsOptions,
-          null,
-          this._client[conId].render( // probably should assign this to a variable
-            this._sessionId[conId],
-            query + ';',
-            renderSpec,
-            curNonce
-          )
+        const renderResult = this._client[conId].render(
+          this._sessionId[conId],
+          query + ';',
+          renderSpec,
+          curNonce
         );
+        return this.processResults(processResultsOptions, renderResult);
       } else if (isFrontendRenderingWithSync) {
-        const _result = this._client[conId].sql_execute(
+        const SQLExecuteResult = this._client[conId].sql_execute(
           this._sessionId[conId],
           query + ';',
           columnarResults,
           curNonce
         );
-        return this.processResults(processResultsOptions, null, _result); // null is callback slot
+        return this.processResults(processResultsOptions, SQLExecuteResult);
       }
     } catch (err) {
       if (err.name === 'NetworkError') {
@@ -764,7 +763,6 @@ class MapdCon {
    * @returns {Object} processedResults
    */
   processColumnarResults(data, eliminateNullRows) {
-    console.log(data)
     const formattedResult = { fields: [], results: [] };
     const numCols = data.row_desc.length;
     const numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
@@ -1006,7 +1004,7 @@ class MapdCon {
    * @return {Object} null if image with callbacks, result if image with callbacks,
    *                  otherwise formatted results
    */
-  processResults(options, callback, result) {
+  processResults(options, result, callback) {
     let isImage = false;
     let eliminateNullRows = false;
     let query = null;
@@ -1027,7 +1025,6 @@ class MapdCon {
     }
     if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
       this.serverQueueTimes[conId] -= estimatedQueryTime;
-      // console.log("Down: " + this.serverQueueTimes);
       this.queryTimes[queryId] = result.execution_time_ms;
     }
 
@@ -1400,7 +1397,7 @@ class MapdCon {
       queryId: -2,
     };
     for (let p = 0; p < numPixels; p++) {
-      results[p].row_set = this.processResults(processResultsOptions, null, results[p]);
+      results[p].row_set = this.processResults(processResultsOptions, results[p]);
     }
     if (!callbacks) {
       return results;

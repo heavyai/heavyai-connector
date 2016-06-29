@@ -28,14 +28,13 @@ describe('#query', () => {
     browserTest((done, window) => {
       const con = new window.MapdCon();
       const options = {};
-      const callbacks = [
-        (result) => {
-          expect(result[0].n).toEqual(28143638);
-          done();
-        }
-      ];
+      const callback = (error, result) => {
+        expect(result[0].n).toEqual(28143638);
+        done();
+      }
+  
       connect(con, (sessionId) => {
-        con.query(query, options, callbacks);
+        con.query(query, options, callback);
       });
     })
   );
@@ -44,17 +43,16 @@ describe('#query', () => {
     browserTest((done, window) => {
       const con = new window.MapdCon();
       const options = {};
-      const callbacks = [
-        (result) => {
-          expect(result[0].n).toEqual(28143638);
-        },
-        (result) => {
-          expect(result[0].n).toEqual(28143638);
-          done();
-        },
-      ];
+      const doneCallback = (result) => {
+        expect(result[0].n).toEqual(28143638);
+        done();
+      }
+      const callback = (error, result) => {
+        expect(result[0].n).toEqual(28143638);
+        doneCallback(result)
+      }
       connect(con, (connectError, sessionId) => {
-        con.query(query, options, callbacks);
+        con.query(query, options, callback);
       });
     })
   );

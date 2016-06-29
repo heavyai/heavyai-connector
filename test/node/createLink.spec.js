@@ -22,7 +22,7 @@ describe('#createLink', () => {
     });
   });
 
-  it('async - should create a short link', (done) => {
+  xit('async - should create a short link', (done) => {
     var con = new MapdCon();
     utils.connect(con, (connectError, sessionId) => {
       con.createLink(viewState, (error, link) => {
