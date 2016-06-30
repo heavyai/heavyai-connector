@@ -1186,7 +1186,7 @@ class MapdCon {
         }
       })
     } else {
-      console.warn('WARNING: You are using a synchronous method that will be deprecated')
+      console.warn('WARNING: You are using a synchronous method getFields() that will be deprecated')
       let fields = null;
       try {
         fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
