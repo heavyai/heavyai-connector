@@ -1,6 +1,7 @@
 /*global Thrift*/
 
 import MapDClientV2 from './mapd-client-v2'
+import processQueryResults from './process-query-results'
 /**
  * The MapdCon class provides the necessary methods for performing queries to a
  * MapD GPU database. In order to use MapdCon, you must have the Thrift library
@@ -71,6 +72,11 @@ class MapdCon {
 
     /** Deprecated */
     this.queryAsync = this.query;
+
+    this.processResults = (options, result, callback) => {
+      const processor = processQueryResults(this._logging, this.updateQueryTimes)
+      return processor(options, this._datumEnum, result, callback)
+    }
 
     // return this to allow chaining off of instantiation
     return this;
@@ -243,6 +249,11 @@ class MapdCon {
     }
     this._balanceStrategy = balanceStrategy;
     return this;
+  }
+
+  updateQueryTimes = (conId, queryId, estimatedQueryTime, execution_time_ms) => {
+    this.serverQueueTimes[conId] -= estimatedQueryTime;
+    this.queryTimes[queryId] = execution_time_ms;
   }
 
   /**
@@ -750,324 +761,6 @@ class MapdCon {
     this._client.splice(conId, 1);
     this._sessionId.splice(conId, 1);
     this._numConnections--;
-  }
-
-
-  /**
-   * Because it is inefficient for the server to return a row-based
-   * data structure, it is better to process the column-based results into a row-based
-   * format after the fact.
-   *
-   * @param {TRowSet} data - The column-based data returned from a query
-   * @param {Boolean} eliminateNullRows
-   * @returns {Object} processedResults
-   */
-  processColumnarResults(data, eliminateNullRows) {
-    const formattedResult = { fields: [], results: [] };
-    const numCols = data.row_desc.length;
-    const numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
-
-    formattedResult.fields = data.row_desc.map((field) => {
-      return {
-        name: field.col_name,
-        type: this._datumEnum[field.col_type.type],
-        is_array: field.col_type.is_array,
-      };
-    });
-
-    for (let r = 0; r < numRows; r++) {
-      if (eliminateNullRows) {
-        let rowHasNull = false;
-        for (let c = 0; c < numCols; c++) {
-          if (data.columns[c].nulls[r]) {
-            rowHasNull = true;
-            break;
-          }
-        }
-        if (rowHasNull) {
-          continue;
-        }
-      }
-      const row = {};
-      for (let c = 0; c < numCols; c++) {
-        const fieldName = formattedResult.fields[c].name;
-        const fieldType = formattedResult.fields[c].type;
-        const fieldIsArray = formattedResult.fields[c].is_array;
-        const isNull = data.columns[c].nulls[r];
-        if (isNull) {
-          // row[fieldName] = "NULL";
-          row[fieldName] = null;
-          continue;
-        }
-        if (fieldIsArray) {
-          row[fieldName] = [];
-          const arrayNumElems = data.columns[c].data.arr_col[r].nulls.length;
-          for (let e = 0; e < arrayNumElems; e++) {
-            if (data.columns[c].data.arr_col[r].nulls[e]) {
-              row[fieldName].push('NULL');
-              continue;
-            }
-            switch (fieldType) {
-              case 'BOOL':
-                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] ? true : false);
-                break;
-              case 'SMALLINT':
-              case 'INT':
-              case 'BIGINT':
-                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e]);
-                break;
-              case 'FLOAT':
-              case 'DOUBLE':
-              case 'DECIMAL':
-                row[fieldName].push(data.columns[c].data.arr_col[r].data.real_col[e]);
-                break;
-              case 'STR':
-                row[fieldName].push(data.columns[c].data.arr_col[r].data.str_col[e]);
-                break;
-              case 'TIME':
-              case 'TIMESTAMP':
-              case 'DATE':
-                row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] * 1000);
-                break;
-              default:
-                break;
-            }
-          }
-        } else {
-          switch (fieldType) {
-            case 'BOOL':
-              row[fieldName] = data.columns[c].data.int_col[r] ? true : false;
-              break;
-            case 'SMALLINT':
-            case 'INT':
-            case 'BIGINT':
-              row[fieldName] = data.columns[c].data.int_col[r];
-              break;
-            case 'FLOAT':
-            case 'DOUBLE':
-            case 'DECIMAL':
-              row[fieldName] = data.columns[c].data.real_col[r];
-              break;
-            case 'STR':
-              row[fieldName] = data.columns[c].data.str_col[r];
-              break;
-            case 'TIME':
-            case 'TIMESTAMP':
-            case 'DATE':
-              row[fieldName] = new Date(data.columns[c].data.int_col[r] * 1000);
-              break;
-            default:
-              break;
-          }
-        }
-      }
-      formattedResult.results.push(row);
-    }
-    return formattedResult;
-  }
-
-  /**
-   * It should be avoided to query for row-based results from the server, howerver
-   * it can still be done. In this case, still process them into the same format as
-   * (@link processColumnarResults} to keep the output consistent.
-   * @param {TRowSet} data - The row-based data returned from a query
-   * @param {Boolean} eliminateNullRows
-   * @returns {Object} processedResults
-   */
-  processRowResults(data, eliminateNullRows) {
-    const numCols = data.row_desc.length;
-    const formattedResult = { fields: [], results: [] };
-
-    formattedResult.fields = data.row_desc.map((field) => {
-      return {
-        name: field.col_name,
-        type: this._datumEnum[field.col_type.type],
-        is_array: field.col_type.is_array,
-      };
-    });
-
-    formattedResult.results = [];
-    let numRows = 0;
-    if (data.rows !== undefined && data.rows !== null) {
-      numRows = data.rows.length; // so won't throw if data.rows is missing
-    }
-
-    for (let r = 0; r < numRows; r++) {
-      if (eliminateNullRows) {
-        let rowHasNull = false;
-        for (let c = 0; c < numCols; c++) {
-          if (data.rows[r].columns[c].is_null) {
-            rowHasNull = true;
-            break;
-          }
-        }
-        if (rowHasNull) {
-          continue;
-        }
-      }
-
-      const row = {};
-      for (let c = 0; c < numCols; c++) {
-        const fieldName = formattedResult.fields[c].name;
-        const fieldType = formattedResult.fields[c].type;
-        const fieldIsArray = formattedResult.fields[c].is_array;
-        if (fieldIsArray) {
-          if (data.rows[r].cols[c].is_null) {
-            row[fieldName] = 'NULL';
-            continue;
-          }
-          row[fieldName] = [];
-          const arrayNumElems = data.rows[r].cols[c].val.arr_val.length;
-          for (let e = 0; e < arrayNumElems; e++) {
-            const elemDatum = data.rows[r].cols[c].val.arr_val[e];
-            if (elemDatum.is_null) {
-              row[fieldName].push('NULL');
-              continue;
-            }
-            switch (fieldType) {
-              case 'BOOL':
-                row[fieldName].push(elemDatum.val.int_val ? true : false);
-                break;
-              case 'SMALLINT':
-              case 'INT':
-              case 'BIGINT':
-                row[fieldName].push(elemDatum.val.int_val);
-                break;
-              case 'FLOAT':
-              case 'DOUBLE':
-              case 'DECIMAL':
-                row[fieldName].push(elemDatum.val.real_val);
-                break;
-              case 'STR':
-                row[fieldName].push(elemDatum.val.str_val);
-                break;
-              case 'TIME':
-              case 'TIMESTAMP':
-              case 'DATE':
-                row[fieldName].push(elemDatum.val.int_val * 1000);
-                break;
-              default:
-                break;
-            }
-          }
-        } else {
-          const scalarDatum = data.rows[r].cols[c];
-          if (scalarDatum.is_null) {
-            row[fieldName] = 'NULL';
-            continue;
-          }
-          switch (fieldType) {
-            case 'BOOL':
-              row[fieldName] = scalarDatum.val.int_val ? true : false;
-              break;
-            case 'SMALLINT':
-            case 'INT':
-            case 'BIGINT':
-              row[fieldName] = scalarDatum.val.int_val;
-              break;
-            case 'FLOAT':
-            case 'DOUBLE':
-            case 'DECIMAL':
-              row[fieldName] = scalarDatum.val.real_val;
-              break;
-            case 'STR':
-              row[fieldName] = scalarDatum.val.str_val;
-              break;
-            case 'TIME':
-            case 'TIMESTAMP':
-            case 'DATE':
-              row[fieldName] = new Date(scalarDatum.val.int_val * 1000);
-              break;
-            default:
-              break;
-          }
-        }
-      }
-      formattedResult.results.push(row);
-    }
-    return formattedResult;
-  }
-
-  /**
-   * Decides how to process raw results once they come back from the server.
-   *
-   * @param {Object} options
-   * @param {Boolean} options.isImage - Set to true when querying for backend rendered images
-   * @param {Boolean} options.eliminateNullRows
-   * @param {String} options.query - The SQL query string used only for logging
-   * @param {Number} options.queryId
-   * @param {Number} options.conId
-   * @param {String} options.estimatedQueryTime
-   * @param {Array<Function>} callbacks
-   * @param {Object} result - The query result used to decide whether to process
-   *                          as column or row results.
-   * @return {Object} null if image with callbacks, result if image with callbacks,
-   *                  otherwise formatted results
-   */
-  processResults(options, result, callback) {
-    let isImage = false;
-    let eliminateNullRows = false;
-    let query = null;
-    let queryId = null;
-    let conId = null;
-    let estimatedQueryTime = null;
-    const hasCallback = !!callback;
-
-    if (typeof options !== 'undefined') {
-      isImage = options.isImage ? options.isImage : false;
-      eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
-      query = options.query ? options.query : null;
-      queryId = options.queryId ? options.queryId : null;
-      conId = typeof options.conId !== 'undefined' ? options.conId : null;
-      estimatedQueryTime = typeof options.estimatedQueryTime !== 'undefined'
-        ? options.estimatedQueryTime
-        : null;
-    }
-    if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
-      this.serverQueueTimes[conId] -= estimatedQueryTime;
-      this.queryTimes[queryId] = result.execution_time_ms;
-    }
-
-    if (this._logging && result.execution_time_ms) {
-      console.log(
-        query,
-        'on Server',
-        conId,
-        '- Execution Time:',
-        result.execution_time_ms,
-        ' ms, Total Time:',
-        result.total_time_ms + 'ms'
-      );
-    }
-
-    if (isImage && hasCallback) {
-      callback(null, result)
-    } else if (isImage && !hasCallback) {
-      return result;
-    } else {
-      let formattedResult = null;
-
-      if (!result.row_set) {
-        if (hasCallback) {
-          callback(new Error('No result to process'))
-        } else {
-          throw new Error('No result to process')
-        }
-        return
-      }
-
-      if (result.row_set.is_columnar) {
-        formattedResult = this.processColumnarResults(result.row_set, eliminateNullRows);
-      } else {
-        formattedResult = this.processRowResults(result.row_set, eliminateNullRows);
-      }
-
-      if (hasCallback) {
-        callback(null, formattedResult.results);
-      } else {
-        return formattedResult.results;
-      }
-    }
   }
 
   /**
