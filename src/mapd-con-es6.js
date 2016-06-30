@@ -318,7 +318,6 @@ class MapdCon {
   getFrontendView = (viewName, callback) => {
     if (this._sessionId && viewName) {
       this._client[0].get_frontend_view(this._sessionId, viewName, (view) => {
-        console.log(view)
         callback(null, view)
       });
     } else {
@@ -699,7 +698,7 @@ class MapdCon {
       if (isBackendRenderingWithAsync) {
         this._client[conId].render(this._sessionId[conId], query + ';', renderSpec, curNonce, (error, result) => {
           if (error) {
-            callback(error) 
+            callback(error)
           } else {
             this.processResults(processResultsOptions, result, callback)
           }

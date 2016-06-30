@@ -17,13 +17,19 @@ MapDClientV2.prototype.render = function (...args) {
 }
 
 function isError (result) {
-  return result instanceof Thrift.TApplicationException || typeof result === 'string'
+  return (
+    result instanceof Thrift.TApplicationException ||
+    result instanceof TMapDException ||
+    typeof result === 'string'
+  )
 }
 
 function createResultError (result) {
   let errorMessage
   if (result instanceof Thrift.TApplicationException) {
     errorMessage = result.message
+  } else if (result instanceof TMapDException) {
+    errorMessage = result.error_msg
   } else if (typeof result === 'string') {
     errorMessage = result
   } else {
