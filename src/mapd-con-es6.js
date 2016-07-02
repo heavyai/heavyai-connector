@@ -537,7 +537,7 @@ class MapdCon {
           if (!data) {
             reject(new Error('No Result Returned'))
           } else {
-            const result = result.reduce((links, link) => {
+            const result = data.split(',').reduce((links, link) => {
               if (links.indexOf(link) === -1) links.push(link);
               return links;
             }, []);
