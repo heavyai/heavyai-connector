@@ -507,7 +507,6 @@ class MapdCon {
           resolve(viewName)
         }
       })
-
     })
   }
 

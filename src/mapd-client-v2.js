@@ -1,8 +1,5 @@
 /*global MapDClient, Thrift*/
 
-const ARITY_TWO = 2
-const ARITY_FIVE = 5
-
 // Subclass with error handling
 
 export default function MapDClientV2 (protocol) {
@@ -14,17 +11,17 @@ export default function MapDClientV2 (protocol) {
 MapDClientV2.prototype = Object.create(MapDClient.prototype)
 
 MapDClientV2.prototype.sql_execute = function (...args) {
-  const SQLExecuteWithErrorHandling = wrapMapDMethodWithErrorHanding(this, 'sql_execute', ARITY_FIVE)
+  const SQLExecuteWithErrorHandling = wrapMapDMethodWithErrorHanding(this, 'sql_execute')
   return SQLExecuteWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.render = function (...args) {
-  const renderWithErrorHandling = wrapMapDMethodWithErrorHanding(this, 'render', ARITY_FIVE)
+  const renderWithErrorHandling = wrapMapDMethodWithErrorHanding(this, 'render')
   return renderWithErrorHandling(...args)
 }
 
-MapDClientV2.prototype.deleteFrontendView = function (...args) {
-  const deleteFrontendViewWithErrorHandling = wrapMapDMethodWithErrorHanding(this, 'deleteFrontendView', ARITY_TWO)
+MapDClientV2.prototype.delete_frontend_view = function (...args) {
+  const deleteFrontendViewWithErrorHandling = wrapMapDMethodWithErrorHanding(this, 'delete_frontend_view')
   return deleteFrontendViewWithErrorHandling(...args)
 }
 
@@ -52,8 +49,9 @@ function createResultError (result) {
   return new Error(errorMessage)
 }
 
-function wrapMapDMethodWithErrorHanding (context, method, arity) {
+function wrapMapDMethodWithErrorHanding (context, method) {
   return function wrapped (...args) {
+    const arity = MapDClient.prototype[method].length
     if (args.length === arity) {
       const callback = args.pop()
       MapDClient.prototype[method].call(context, ...args, (result) => {
