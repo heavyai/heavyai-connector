@@ -8,9 +8,6 @@
    * @returns {Object} processedResults
    */
 export default function processColumnarResults(data, eliminateNullRows, dataEnum) {
-  // console.log(data, eliminateNullRows, dataEnum)
-  // console.log(JSON.stringify(data, null, 2))
-  // console.log(JSON.stringify(dataEnum, null, 2))
   const formattedResult = { fields: [], results: [] };
   const numCols = data.row_desc.length;
   const numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
@@ -111,6 +108,5 @@ export default function processColumnarResults(data, eliminateNullRows, dataEnum
     }
     formattedResult.results.push(row);
   }
-  // console.log(JSON.stringify(formattedResult, null, 2))
   return formattedResult;
 }
