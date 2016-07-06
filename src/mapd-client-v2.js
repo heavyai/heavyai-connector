@@ -16,6 +16,11 @@ MapDClientV2.prototype.render = function (...args) {
   return renderWithErrorHandling(...args)
 }
 
+MapDClientV2.prototype.deleteFrontendView = function (...args) {
+  const deleteFrontendViewWithErrorHandling = wrapMapDMethodWithErrorHanding(this, 'deleteFrontendView', 2)
+  return deleteFrontendViewWithErrorHandling(...args)
+}
+
 function isError (result) {
   return (
     result instanceof Thrift.TApplicationException ||

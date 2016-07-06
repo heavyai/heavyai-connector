@@ -484,7 +484,7 @@ class MapdCon {
    *
    * con.deleteFrontendView(viewName);
    */
-  deleteFrontendView(viewName, callback) {
+  deleteFrontendView = (viewName, callback) => {
     if (!this._sessionId) {
       throw new Error('You are not connected to a server. Try running the connect method first.');
     }
@@ -496,6 +496,19 @@ class MapdCon {
     } catch (err) {
       console.log('ERROR: Could not delete the frontend view. Check your session id.', err);
     }
+  }
+
+  deleteFrontendViewAsync = (viewName) => {
+    return new Promise((resolve, reject) => {
+      this.deleteFrontendView(viewName, (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(viewName)
+        }
+      })
+
+    })
   }
 
   /**
