@@ -14,21 +14,11 @@ describe('#getTables', () => {
     })
   );
 
-  it('sync - should get the names of the tables in the database',
-    browserTest((done, window) => {
-      const con = connect(new window.MapdCon());
-      const tables = con.getTables();
-      expect(tables).toBeAn('array');
-      expect(tables[0]).toIncludeKeys(['name', 'label']);
-      done();
-    })
-  );
-
-  xit('async - should get the names of the tables in the database',
+  it('async - should get the names of the tables in the database',
     browserTest((done, window) => {
       const con = new window.MapdCon();
       connect(con, (sessionId) => {
-        con.getTables((tables) => {
+        con.getTables((error, tables) => {
           expect(tables[0]).toIncludeKeys(['name', 'label']);
           done();
         });

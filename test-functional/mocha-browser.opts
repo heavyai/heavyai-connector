@@ -1,4 +1,4 @@
---require ./test/config.js
+--require ./test-functional/config.js
 --compilers js:babel-register
 --recursive
 --colors

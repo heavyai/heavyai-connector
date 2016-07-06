@@ -9,7 +9,7 @@ import {
 import { tableNameSync, tableNameAsync } from '../mocks/mocks-transpiled';
 
 const fileName = 'data.csv';
-const filePath = './test/mocks/data.csv';
+const filePath = './test-functional/mocks/data.csv';
 
 describe('#importTable', () => {
   it('should throw an error if not connected to a server',
@@ -21,21 +21,6 @@ describe('#importTable', () => {
         expect(!!e).toEqual(true);
         done();
       }
-    })
-  );
-
-  xit('sync - should import a table',
-    browserTest((done, window) => {
-      const con = connect(new window.MapdCon());
-      const sessionId = con.sessionId()[0];
-      uploadFile(sessionId, filePath, (uploadError, res) => {
-        const tableName = con.importTable(tableNameSync, fileName, makeCopyParams(window));
-        expect(tableName).toEqual(tableNameSync);
-        deleteUploadedFile(sessionId, fileName, (deleteError, res) => {
-          expect(res.statusCode).toBe(200);
-          done();
-        });
-      });
     })
   );
 

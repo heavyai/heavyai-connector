@@ -1,5 +1,5 @@
 var fileName = 'data.csv';
-var filePath = './test/mocks/' + fileName;
+var filePath = './test-functional/mocks/' + fileName;
 
 var expect = require('expect');
 var utils = require('../utils/utils-transpiled');

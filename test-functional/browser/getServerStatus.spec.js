@@ -15,20 +15,11 @@ describe('#getServerStatus', () => {
     })
   );
 
-  it('sync - should get the connected server status', 
-    browserTest((done, window) => {
-      const con = connect(new window.MapdCon());
-      const serverStatus = con.getServerStatus();
-      expect(serverStatus).toBeA(window.TServerStatus);
-      done();
-    })
-  );
-
-  xit('async - should get the connected server status with a callback', 
+  it('async - should get the connected server status with a callback', 
     browserTest((done, window) => {
       const con = new window.MapdCon();
       connect(con, (sessionId) => {
-        con.getServerStatus((serverStatus) => {
+        con.getServerStatus((error, serverStatus) => {
           expect(serverStatus).toBeA(window.TServerStatus);
           done();
         });
