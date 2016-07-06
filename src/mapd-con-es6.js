@@ -276,8 +276,12 @@ class MapdCon {
    */
   getFrontendViews = (callback) => {
     if (this._sessionId) {
-      this._client[0].get_frontend_views(this._sessionId, (views) => {
-        callback(null, views)
+      this._client[0].get_frontend_views(this._sessionId, (error, views) => {
+        if (error) {
+          callback(error)
+        } else {
+          callback(null, views)
+        }
       });
     } else {
       callback(new Error('No Session ID'))
@@ -317,8 +321,12 @@ class MapdCon {
    */
   getFrontendView = (viewName, callback) => {
     if (this._sessionId && viewName) {
-      this._client[0].get_frontend_view(this._sessionId, viewName, (view) => {
-        callback(null, view)
+      this._client[0].get_frontend_view(this._sessionId, viewName, (error, view) => {
+        if (error) {
+          callback(error)
+        } else {
+          callback(null, view)
+        }
       });
     } else {
       callback(new Error('No Session ID'))
@@ -456,13 +464,13 @@ class MapdCon {
 
     return Promise.all(this._client.map((client, i) => {
       return new Promise((resolve, reject) => {
-        try {
-          client.create_frontend_view(this._sessionId[i], viewName, viewState, imageHash, metaData, () => {
-            resolve()
-          })
-        } catch (e) {
-          reject(e)
-        }
+        client.create_frontend_view(this._sessionId[i], viewName, viewState, imageHash, metaData, (error, data) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(data)
+          }
+        })
       })
     }))
   }
@@ -532,35 +540,12 @@ class MapdCon {
    * var link = con.createLink(dashboard.view_state);
    * // link === 'CRtzoe'
    */
-  createLink(viewState, metaData) {
-    let result = null;
-    try {
-      result = this._client
-        .map((client, i) => {
-          return client.create_link(this._sessionId[i], viewState, metaData);
-        })
-        .reduce((links, link) => {
-          if (links.indexOf(link) === -1) {
-            links.push(link);
-          }
-          return links;
-        }, []);
-      if (!result || result.length !== 1) {
-        throw new Error('Different links were created on each connection');
-      } else {
-        return result.join();
-      }
-    } catch (err) {
-      throw err;
-    }
-  }
-
   createLinkAsync (viewState, metaData) {
     return Promise.all(this._client.map((client, i) => {
       return new Promise((resolve, reject) => {
-        client.create_link(this._sessionId[i], viewState, metaData, (data) => {
-          if (!data) {
-            reject(new Error('No Result Returned'))
+        client.create_link(this._sessionId[i], viewState, metaData, (error, data) => {
+          if (error) {
+            reject(error)
           } else {
             const result = data.split(',').reduce((links, link) => {
               if (links.indexOf(link) === -1) links.push(link);
@@ -818,11 +803,15 @@ class MapdCon {
    *  }, ...]
    */
   getTables (callback) {
-    this._client[0].get_tables(this._sessionId[0], (tables) => {
-      callback(null, tables.map((table) => ({
-        name: table,
-        label: 'obs'
-      })))
+    this._client[0].get_tables(this._sessionId[0], (error, tables) => {
+      if (error) {
+        callback(error)
+      } else {
+        callback(null, tables.map((table) => ({
+          name: table,
+          label: 'obs'
+        })))
+      }
     });
   }
 
