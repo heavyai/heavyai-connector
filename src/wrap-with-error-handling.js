@@ -1,6 +1,6 @@
 /*global Thrift*/
 
-function isError (result) {
+export function isError (result) {
   return (
     result instanceof Thrift.TApplicationException ||
     result instanceof TMapDException ||
@@ -8,7 +8,7 @@ function isError (result) {
   )
 }
 
-function createResultError (result) {
+export function createResultError (result) {
   let errorMessage
   if (result instanceof Thrift.TApplicationException) {
     errorMessage = result.message

@@ -19,7 +19,7 @@
     "build": "bash scripts/build.sh",
     "babel": "bash scripts/babel.sh",
     "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js",
-    "test:unit": "mocha ./test-unit --compilers js:babel-register",
+    "test:unit": "mocha ./test-unit --compilers js:babel-register --require ./test-unit/setup.js",
     "test:functional": "bash scripts/test-functional.sh",
     "generate-docs": "node_modules/esdoc/out/src/ESDocCLI.js -c esdoc.json",
     "watch": "npm-watch",
