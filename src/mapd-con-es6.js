@@ -137,8 +137,6 @@ class MapdCon {
       try {
         const transport = new Thrift.Transport(transportUrls[h]);
         const protocol = new Thrift.Protocol(transport);
-        console.log(transportUrls[h])
-        console.log(transport)
         const client = new MapDClientV2(protocol);
         const sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
         this._client.push(client);
