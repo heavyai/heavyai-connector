@@ -10,7 +10,7 @@ export function isResultError (result) {
   )
 }
 
-export const isCreatLinkErrorString = (result) => (
+export const isCreateLinkErrorString = (result) => (
   typeof result === 'string' &&
   result === CREATE_LINK_ERROR_STRING
 )
@@ -19,7 +19,7 @@ export function isCreateLinkError (result) {
   return (
     result instanceof Thrift.TApplicationException ||
     result instanceof TMapDException ||
-    isCreatLinkErrorString(result)
+    isCreateLinkErrorString(result)
   )
 }
 
