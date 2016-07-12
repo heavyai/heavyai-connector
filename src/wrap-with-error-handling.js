@@ -1,10 +1,25 @@
-/*global Thrift*/
+/*global Thrift, TMapDException, MapDClient*/
 
-export function isError (result) {
+export const CREATE_LINK_ERROR_STRING = 'create_link failed: unknown result'
+
+export function isResultError (result) {
   return (
     result instanceof Thrift.TApplicationException ||
     result instanceof TMapDException ||
     typeof result === 'string'
+  )
+}
+
+export const isCreatLinkErrorString = (result) => (
+  typeof result === 'string' &&
+  result === CREATE_LINK_ERROR_STRING
+)
+
+export function isCreateLinkError (result) {
+  return (
+    result instanceof Thrift.TApplicationException ||
+    result instanceof TMapDException ||
+    isCreatLinkErrorString(result)
   )
 }
 
@@ -22,7 +37,7 @@ export function createResultError (result) {
   return new Error(errorMessage)
 }
 
-export default function wrapWithErrorHandling (context, method) {
+export function wrapMethod(context, method, isError) {
   return function wrapped (...args) {
     const arity = MapDClient.prototype[method].length
     if (args.length === arity) {
@@ -44,4 +59,12 @@ export default function wrapWithErrorHandling (context, method) {
       throw new Error ('Insufficient arguments to run this method ' + method)
     }
   }
+}
+
+export function wrapWithErrorHandling (context, method) {
+  return wrapMethod(context, method, isResultError)
+}
+
+export function wrapWithCreateLinkErrorHandling (context, method) {
+  return wrapMethod(context, method, isCreateLinkError)
 }
