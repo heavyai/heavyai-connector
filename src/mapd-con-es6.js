@@ -631,6 +631,18 @@ class MapdCon {
     }
   }
 
+  detectColumnTypesAsync(fileName, copyParams) {
+    return new Promise((resolve, reject) => {
+      this.detectColumnTypes.bind(this, fileName, copyParams)((response) => {
+        if (!response.row_set) {
+          reject(response)
+        } else {
+          resolve(response)
+        }
+      })
+    })
+  }
+
   /**
    * Submit a query to the database and process the results through an array
    * of asychronous callbacks. If no callbacks are given, use synchronous instead.
@@ -944,6 +956,16 @@ class MapdCon {
     }
   }
 
+  createTableAsync = (tableName, rowDesc) => new Promise((resolve, reject) => {
+    this.createTable(tableName, rowDesc, (err) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+
   /**
    * Import a table from a file.
    * @param {String} tableName - desired name of the new table
@@ -971,6 +993,17 @@ class MapdCon {
       throw err;
     }
   }
+
+  importTableAsync = (tableName, fileName, copyParams) => new Promise((resolve, reject) => {
+    this.importTable(tableName, fileName, copyParams, (err, link) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(link)
+      }
+    })
+  })
+
 
   /**
    * Get the status of the table import operation.
