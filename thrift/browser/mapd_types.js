@@ -386,12 +386,16 @@ TTypeInfo.prototype.write = function(output) {
 TColumnType = function(args) {
   this.col_name = null;
   this.col_type = null;
+  this.is_reserved_keyword = null;
   if (args) {
     if (args.col_name !== undefined && args.col_name !== null) {
       this.col_name = args.col_name;
     }
     if (args.col_type !== undefined && args.col_type !== null) {
       this.col_type = new TTypeInfo(args.col_type);
+    }
+    if (args.is_reserved_keyword !== undefined && args.is_reserved_keyword !== null) {
+      this.is_reserved_keyword = args.is_reserved_keyword;
     }
   }
 };
@@ -424,6 +428,13 @@ TColumnType.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_reserved_keyword = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -443,6 +454,11 @@ TColumnType.prototype.write = function(output) {
   if (this.col_type !== null && this.col_type !== undefined) {
     output.writeFieldBegin('col_type', Thrift.Type.STRUCT, 2);
     this.col_type.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.is_reserved_keyword !== null && this.is_reserved_keyword !== undefined) {
+    output.writeFieldBegin('is_reserved_keyword', Thrift.Type.BOOL, 3);
+    output.writeBool(this.is_reserved_keyword);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
