@@ -16,7 +16,9 @@ TDatumType = {
   'TIME' : 7,
   'TIMESTAMP' : 8,
   'DATE' : 9,
-  'BOOL' : 10
+  'BOOL' : 10,
+  'INTERVAL_DAY_TIME' : 11,
+  'INTERVAL_YEAR_MONTH' : 12
 };
 TEncodingType = {
   'NONE' : 0,
