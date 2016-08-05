@@ -2,6 +2,7 @@
 
 import MapDClientV2 from './mapd-client-v2'
 import processQueryResults from './process-query-results'
+import * as helpers from './helpers'
 /**
  * The MapdCon class provides the necessary methods for performing queries to a
  * MapD GPU database. In order to use MapdCon, you must have the Thrift library
@@ -623,9 +624,9 @@ class MapdCon {
    * });
    */
   detectColumnTypes(fileName, copyParams, callback) {
-    copyParams.delimiter = copyParams.delimiter || '';
+    const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
     try {
-      this._client[0].detect_column_types(this._sessionId[0], fileName, copyParams, callback);
+      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
     } catch (err) {
       throw err;
     }
@@ -977,7 +978,7 @@ class MapdCon {
     if (!this._sessionId) {
       throw new Error('You are not connected to a server. Try running the connect method first.');
     }
-    copyParams.delimiter = copyParams.delimiter || '';
+    const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
     let result = null;
     try {
       for (let c = 0; c < this._numConnections; c++) {
@@ -985,7 +986,7 @@ class MapdCon {
           this._sessionId[c],
           tableName,
           fileName,
-          copyParams,
+          thriftCopyParams,
           callback
         );
       }
