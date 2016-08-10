@@ -42,6 +42,7 @@ class MapdCon {
     this.pingCount = null;
     this.DEFAULT_QUERY_TIME = 50;
     this.NUM_PINGS_PER_SERVER = 4;
+    this.importerRowDesc = null;
 
     // invoke initialization methods
     this.invertDatumTypes();
@@ -638,6 +639,7 @@ class MapdCon {
         if (!response.row_set) {
           reject(response)
         } else {
+          this.importerRowDesc = response.row_set.row_desc;
           resolve(response)
         }
       })
@@ -939,16 +941,19 @@ class MapdCon {
    *   .connect()
    *   .createTable('mynewtable', [TColumnType, TColumnType, ...], cb);
    */
-  createTable(tableName, rowDesc, callback) {
+  createTable(tableName, rowDescObj, callback) {
     if (!this._sessionId) {
       throw new Error('You are not connected to a server. Try running the connect method first.');
     }
+
+    const thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
+
     try {
       for (let c = 0; c < this._numConnections; c++) {
         this._client[c].send_create_table(
           this._sessionId[c],
           tableName,
-          rowDesc,
+          thriftRowDesc,
           callback
         );
       }
@@ -957,8 +962,8 @@ class MapdCon {
     }
   }
 
-  createTableAsync = (tableName, rowDesc) => new Promise((resolve, reject) => {
-    this.createTable(tableName, rowDesc, (err) => {
+  createTableAsync = (tableName, rowDescObj) => new Promise((resolve, reject) => {
+    this.createTable(tableName, rowDescObj, (err) => {
       if (err) {
         reject(err)
       } else {
