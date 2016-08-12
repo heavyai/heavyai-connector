@@ -48,31 +48,6 @@ class MapdCon {
     this.invertDatumTypes();
 
     /** Deprecated */
-    this.setHost = this.host;
-
-    /** Deprecated */
-    this.setPort = this.port;
-
-    /** Deprecated */
-    this.setDbName = this.dbName;
-
-    /** Deprecated */
-    this.setPlatform = this.platform;
-
-    /** Deprecated */
-    this.setUserAndPassword = (user, password) => {
-      this._user = !Array.isArray(user) ? [user] : user;
-      this._password = !Array.isArray(password) ? [password] : password;
-      return this;
-    };
-
-    /** Deprecated */
-    this.getPlatform = this.platform;
-
-    /** Deprecated */
-    this.getSessionId = this.sessionId;
-
-    /** Deprecated */
     this.queryAsync = this.query;
 
     this.processResults = (options, result, callback) => {
