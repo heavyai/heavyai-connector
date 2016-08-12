@@ -136,34 +136,20 @@ class MapdCon {
 
     const transportUrls = this.getEndpoints();
     for (let h = 0; h < hostLength; h++) {
-      try {
-        const transport = new Thrift.Transport(transportUrls[h]);
-        const protocol = new Thrift.Protocol(transport);
-        const client = new MapDClientV2(protocol);
-        const sessionId = client.connect(this._user[h], this._password[h], this._dbName[h]);
+      const transport = new Thrift.Transport(transportUrls[h]);
+      const protocol = new Thrift.Protocol(transport);
+      const client = new MapDClientV2(protocol);
+      client.connect(this._user[h], this._password[h], this._dbName[h], (error, sessionId) => {
+        if (error) {
+          callback(error)
+          return
+        }
         this._client.push(client);
         this._sessionId.push(sessionId);
-      } catch (err) {
-        throw err;
-      }
+        callback(null, this)
+      });
     }
-    this._numConnections = this._client.length;
-    if (this._numConnections < 1) {  // need at least one server to connect to
-      // clean up first
-      this._client = null;
-      this._sessionId = null;
-      throw new Error('Could not connect to any servers in list.');
-    }
-    this.serverQueueTimes = Array.apply(
-      null,
-      Array(this._numConnections)
-    ).map(Number.prototype.valueOf, 0);
-    // only run ping servers if the caller gives a callback
-    // - this is a promise by them to wait until the callback returns to query
-    //   the database to avoid skewing the results
-    if (callback) {
-      this.pingServers(callback);
-    }
+
     return this;
   }
 
@@ -254,7 +240,6 @@ class MapdCon {
   }
 
   updateQueryTimes = (conId, queryId, estimatedQueryTime, execution_time_ms) => {
-    this.serverQueueTimes[conId] -= estimatedQueryTime;
     this.queryTimes[queryId] = execution_time_ms;
   }
 
@@ -685,17 +670,10 @@ class MapdCon {
 
     const curNonce = (this._nonce++).toString();
 
-    let conId = null;
-    if (this._balanceStrategy === 'adaptive') {
-      conId = this.serverQueueTimes.indexOf(Math.min.apply(Math, this.serverQueueTimes));
-    } else {
-      conId = curNonce % this._numConnections;
-    }
+    let conId = 0
     if (!!renderSpec) {
       this._lastRenderCon = conId;
     }
-
-    this.serverQueueTimes[conId] += lastQueryTime;
 
     const processResultsOptions = {
       isImage: !!renderSpec,
