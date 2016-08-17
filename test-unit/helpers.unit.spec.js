@@ -15,7 +15,7 @@ describe('helpers', () => {
   describe('mutateThriftRowDesc', () => {
     it('should mutate a thriftArray to a v2array properly', () => {
       const v2array = [{
-        col_name: 'father',
+        clean_col_name: 'father',
         is_reserved_keyword: null,
         col_type: {
           encoding: 0,
@@ -24,7 +24,7 @@ describe('helpers', () => {
           nullable: false
         }
       }, {
-        col_name: 'mother',
+        clean_col_name: 'mother',
         is_reserved_keyword: null,
         col_type: {
           encoding: 0,
@@ -54,7 +54,25 @@ describe('helpers', () => {
         }
       }]
 
-      expect(helpers.mutateThriftRowDesc(v2array, thriftArray)).to.deep.equal(v2array)
+      expect(helpers.mutateThriftRowDesc(v2array, thriftArray)).to.deep.equal([{
+        col_name: 'father',
+        is_reserved_keyword: null,
+        col_type: {
+          encoding: 0,
+          type: 0,
+          is_array: false,
+          nullable: false
+        }
+      }, {
+        col_name: 'mother',
+        is_reserved_keyword: null,
+        col_type: {
+          encoding: 0,
+          type: 0,
+          is_array: false,
+          nullable: false
+        }
+      }])
     })
   })
 })
