@@ -11,6 +11,11 @@ export default function MapDClientV2 (protocol) {
 
 MapDClientV2.prototype = Object.create(MapDClient.prototype)
 
+MapDClientV2.prototype.connect = function (...args) {
+  const connectWithErrorHandling = wrapWithErrorHandling(this, 'connect')
+  return connectWithErrorHandling(...args)
+}
+
 MapDClientV2.prototype.sql_execute = function (...args) {
   const SQLExecuteWithErrorHandling = wrapWithErrorHandling(this, 'sql_execute')
   return SQLExecuteWithErrorHandling(...args)
