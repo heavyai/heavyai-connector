@@ -121,6 +121,7 @@ class MapdCon {
         }
         this._client.push(client);
         this._sessionId.push(sessionId);
+        this._numConnections = this._client.length;
         callback(null, this)
       });
     }
