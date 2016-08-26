@@ -78,6 +78,7 @@ class MapdCon {
     if (this._sessionId) {
       this.disconnect();
     }
+
     // TODO: should be its own function
     const allAreArrays = Array.isArray(this._host) &&
       Array.isArray(this._port) &&
@@ -85,22 +86,35 @@ class MapdCon {
       Array.isArray(this._password) &&
       Array.isArray(this._dbName);
     if (!allAreArrays) {
-      throw new Error('All connection parameters must be arrays.');
+      return callback('All connection parameters must be arrays.');
     }
 
     this._client = [];
     this._sessionId = [];
 
+    // TODO: 
+    if (!this._user[0]) {
+      return callback(`Please enter a username.`);
+    } else if (!this._password[0]) {
+      return callback(`Please enter a password.`);
+    } else if (!this._dbName[0]) {
+      return callback(`Please enter a database.`);
+    } else if (!this._host[0]) {
+      return callback(`Please enter a host name.`);
+    } else if (!this._port[0]) {
+      return callback(`Please enter a port.`);
+    }
+
     // now check to see if length of all arrays are the same and > 0
     const hostLength = this._host.length;
     if (hostLength < 1) {
-      throw new Error('Must have at least one server to connect to.');
+      return callback('Must have at least one server to connect to.');
     }
     if (hostLength !== this._port.length ||
         hostLength !== this._user.length ||
         hostLength !== this._password.length ||
         hostLength !== this._dbName.length) {
-      throw new Error('Array connection parameters must be of equal length.');
+      return callback('Array connection parameters must be of equal length.');
     }
 
     if (!this._protocol) {
