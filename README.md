@@ -10,69 +10,70 @@
 ```
 A JavaScript library for connecting to a MapD GPU database and running queries.
 
-## Installation
+## Overview
 
-```bash
-git clone https://github.com/map-d/mapd-con.git
-npm install
-```
+MapdCon is
 
-## Building MapdCon
+## Documentation
 
-- Rename `test/config.example.js` -> `test/config.js`
-- Fill in your test server connection parameters in `test/config.js`
-- Run `npm start`
+The current `esdoc` generated documentation is outdated. For now, treat it as a rough guideline.
 
-## Getting Started
+## Development Guidelines
 
-#### In the browser
+### Use Asynchronous Methods
 
-Add the following scripts to your page:
+Asynchronous Thrift client methods must always be used. Synchronous methods are deprecated and cause a bad user experience.
 
-```
-<script src="dist/thrift.js"></script>
-<script src="dist/mapd.thrift.js"></script>
-<script src="dist/mapd_types.js"></script>
-<script src="dist/MapdCon.js"></script>
-```
+To ensure that the asynchronous version of the method is called, simply pass in a callback.
 
-**Asynchronous Usage:**
+```js
+// Bad
+try {
+  const response = client.query(query, options)
+} catch (e) {
+  throw e
+}
 
-```
-var query = "SELECT count(*) AS n FROM tweets WHERE country='CO'";
-
-var conAsync = new MapdCon()
-  .protocol("http")
-  .host("myinstance.mapd.com")
-  .port("8080")
-  .dbName("mapd_twitter_data")
-  .user("foo")
-  .password("bar");
-
-conAsync.connect(function(con){
-  con.query(query, {}, [callback]);
-  function callback(result){
-    // result === [{"n":5730}]
+// Good
+client.query(query, options, (error, response) => {
+  if (error) {
+    callback(error)
+  }  else {
+    callback(null, response)
   }
-});
+})
 ```
 
-**Synchronous Usage:**
-```
-var query = "SELECT count(*) AS n FROM tweets WHERE country='CO'";
+You can even go one step further and wrap this in a Promise.
 
-var con = new MapdCon()
-  .protocol("http")
-  .host("myinstance.mapd.com")
-  .port("8080")
-  .dbName("mapd_twitter_data")
-  .user("foo")
-  .password("bar")
-  .connect();
-
-var result = con.query(query, {});
-// result === [{"n":5730}]
+```js
+// better
+new Promise ((resolve, reject) => {
+  client.query(query, options, (error, response) => {
+    if (error) {
+      reject(error)
+    }  else {
+      resolve(response)
+    }
+  })
+})
 ```
+
+### Error Handling
+
+By default, the callback signature of a Thrift client method is just `(response) =>`. This means that the response can either be the success response or a Thrift Exception.
+
+Since this not idiomatic JS callback style, we wrap our Thrift client methods in `wrapWithErrorHandling`, making their signature `(error, response) =>`. Refer to `/src/mapd-client-v2` for examples of how to wrap Thrift client methods in the proper error handling style.
+
+### Testing
+
+Everything in MapdCon must be unit tested. You can find these tests in `/test-unit`.
+
+The folders `/test` and `/test-functional` are deprecated.
+
+### Linting
+
+It's our eventual goal to fully lint the files in `mapd-con/src`. Try to write `libraries/mapd-con` using the `projects/dashboard-v2` Es6/7 style to make this goal easier to achieve.
 
 ## npm Scripts
 
@@ -83,25 +84,6 @@ Command | Description
 `npm run build` | Runs `babel` and `webpack` scripts
 `npm run babel` | Transpile to ES5 and output to build/ directory (usage: import/require statements)
 `npm run webpack` | Generate webpack bundle and output to dist/ directory (usage: script tags)
-`npm test` | Runs mocha tests
+`npm test:unit` | Runs mocha unit tests
 `npm run watch` | Watches the `src/` directory for changes are runs `fullbuild` automatically
 `npm run generate-docs` | Generates docs via esdoc
-
-## Pull Requests:
-
-Attach the appropriate semvar label below to the **title of your pull request**. This allows Jenkins to publish to npm automatically.
-
-Semvar Tag | Description
---- | ---
-`[major]` | Breaking changes, api changes, moving files
-`[minor]` | New features (additive only!)
-`[patch]` | Bugfixes, documentation
-
-Jenkins will not let you merge a pull request that contains a missing or multiple semvar label.
-
-**Forgot to add a semvar label?**
-
-1. Update the PR Title
-2. Close the PR
-3. Re-open it to force Jenkins to retest the new title.
-
