@@ -160,15 +160,22 @@ class MapdCon {
    * // con.client() === null;
    * // con.sessionId() === null;
    */
-  disconnect() {
+  disconnect(callback) {
     if (this._sessionId !== null) {
       for (let c = 0; c < this._client.length; c++) {
-        this._client[c].disconnect(this._sessionId[c]);
+        this._client[c].disconnect(this._sessionId[c], (error, success) => {
+          // Success will return NULL
+
+          if (error) {
+            return callback(error)
+          }
+          this._sessionId = null;
+          this._client = null;
+          this._numConnections = 0;
+          this.serverPingTimes = null;
+          return callback()
+        });
       }
-      this._sessionId = null;
-      this._client = null;
-      this._numConnections = 0;
-      this.serverPingTimes = null;
     }
     return this;
   }
