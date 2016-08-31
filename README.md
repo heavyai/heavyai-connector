@@ -10,10 +10,6 @@
 ```
 A JavaScript library for connecting to a MapD GPU database and running queries.
 
-## Overview
-
-MapdCon is
-
 ## Documentation
 
 The current `esdoc` generated documentation is outdated. For now, treat it as a rough guideline.
