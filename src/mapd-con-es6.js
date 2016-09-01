@@ -608,21 +608,23 @@ class MapdCon {
    */
   detectColumnTypes(fileName, copyParams, callback) {
     const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
-    try {
-      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
-    } catch (err) {
-      throw err;
-    }
+      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, (err, res) => {
+        if (err) {
+          callback(err)
+        } else {
+          callback(null, res)
+        }
+      });
   }
 
   detectColumnTypesAsync(fileName, copyParams) {
     return new Promise((resolve, reject) => {
-      this.detectColumnTypes.bind(this, fileName, copyParams)((response) => {
-        if (!response.row_set) {
-          reject(response)
+      this.detectColumnTypes.bind(this, fileName, copyParams)((err, res) => {
+        if (err) {
+          reject(err)
         } else {
-          this.importerRowDesc = response.row_set.row_desc;
-          resolve(response)
+          this.importerRowDesc = res.row_set.row_desc;
+          resolve(res)
         }
       })
     })
@@ -923,18 +925,21 @@ class MapdCon {
 
     const thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
 
-    try {
-      for (let c = 0; c < this._numConnections; c++) {
-        this._client[c].send_create_table(
-          this._sessionId[c],
-          tableName,
-          thriftRowDesc,
-          callback
-        );
-      }
-    } catch (err) {
-      throw err;
+    for (let c = 0; c < this._numConnections; c++) {
+      this._client[c].send_create_table(
+        this._sessionId[c],
+        tableName,
+        thriftRowDesc,
+        (err) => {
+          if (err) {
+            callback(err)
+          } else {
+            callback()
+          }
+        }
+      );
     }
+
   }
 
   createTableAsync = (tableName, rowDescObj) => new Promise((resolve, reject) => {
@@ -960,18 +965,21 @@ class MapdCon {
     }
     const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
     let result = null;
-    try {
-      for (let c = 0; c < this._numConnections; c++) {
-        result = this._client[c].send_import_table(
-          this._sessionId[c],
-          tableName,
-          fileName,
-          thriftCopyParams,
-          callback
-        );
-      }
-    } catch (err) {
-      throw err;
+
+    for (let c = 0; c < this._numConnections; c++) {
+      result = this._client[c].send_import_table(
+        this._sessionId[c],
+        tableName,
+        fileName,
+        thriftCopyParams,
+        (err, res) => {
+          if (err) {
+            callback(err)
+          } else {
+            callback(null, res)
+          }
+        }
+      );
     }
   }
 

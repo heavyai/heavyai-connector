@@ -55,3 +55,18 @@ MapDClientV2.prototype.create_frontend_view = function (...args) {
   const createFrontEndViewWithErrorHandling = wrapWithErrorHandling(this, 'create_frontend_view')
   return createFrontEndViewWithErrorHandling(...args)
 }
+
+MapDClientV2.prototype.send_create_table = function (...args) {
+  const sendCreateTableWithErrorHandling = wrapWithErrorHandling(this, 'send_create_table')
+  return sendCreateTableWithErrorHandling(...args)
+}
+
+MapDClientV2.prototype.send_import_table = function (...args) {
+  const sendImportTableWithErrorHandling = wrapWithErrorHandling(this, 'send_import_table')
+  return sendImportTableWithErrorHandling(...args)
+}
+
+MapDClientV2.prototype.detect_column_types = function (...args) {
+  const detectColumnTypesWithErrorHandling = wrapWithErrorHandling(this, 'detect_column_types')
+  return detectColumnTypesWithErrorHandling(...args)
+}
