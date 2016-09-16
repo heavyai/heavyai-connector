@@ -1685,6 +1685,7 @@ TImportStatus = function(args) {
   this.elapsed = null;
   this.rows_completed = null;
   this.rows_estimated = null;
+  this.rows_rejected = null;
   if (args) {
     if (args.elapsed !== undefined && args.elapsed !== null) {
       this.elapsed = args.elapsed;
@@ -1694,6 +1695,9 @@ TImportStatus = function(args) {
     }
     if (args.rows_estimated !== undefined && args.rows_estimated !== null) {
       this.rows_estimated = args.rows_estimated;
+    }
+    if (args.rows_rejected !== undefined && args.rows_rejected !== null) {
+      this.rows_rejected = args.rows_rejected;
     }
   }
 };
@@ -1732,6 +1736,13 @@ TImportStatus.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.I64) {
+        this.rows_rejected = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1756,6 +1767,11 @@ TImportStatus.prototype.write = function(output) {
   if (this.rows_estimated !== null && this.rows_estimated !== undefined) {
     output.writeFieldBegin('rows_estimated', Thrift.Type.I64, 3);
     output.writeI64(this.rows_estimated);
+    output.writeFieldEnd();
+  }
+  if (this.rows_rejected !== null && this.rows_rejected !== undefined) {
+    output.writeFieldBegin('rows_rejected', Thrift.Type.I64, 4);
+    output.writeI64(this.rows_rejected);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
