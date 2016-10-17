@@ -2149,6 +2149,122 @@ TPixelRowResult.prototype.write = function(output) {
   return;
 };
 
+TPixelTableRowResult = module.exports.TPixelTableRowResult = function(args) {
+  this.pixel = null;
+  this.table_id = null;
+  this.row_id = null;
+  this.row_set = null;
+  this.nonce = null;
+  if (args) {
+    if (args.pixel !== undefined && args.pixel !== null) {
+      this.pixel = new ttypes.TPixel(args.pixel);
+    }
+    if (args.table_id !== undefined && args.table_id !== null) {
+      this.table_id = args.table_id;
+    }
+    if (args.row_id !== undefined && args.row_id !== null) {
+      this.row_id = args.row_id;
+    }
+    if (args.row_set !== undefined && args.row_set !== null) {
+      this.row_set = new ttypes.TRowSet(args.row_set);
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
+    }
+  }
+};
+TPixelTableRowResult.prototype = {};
+TPixelTableRowResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.pixel = new ttypes.TPixel();
+        this.pixel.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.table_id = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.row_id = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.row_set = new ttypes.TRowSet();
+        this.row_set.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TPixelTableRowResult.prototype.write = function(output) {
+  output.writeStructBegin('TPixelTableRowResult');
+  if (this.pixel !== null && this.pixel !== undefined) {
+    output.writeFieldBegin('pixel', Thrift.Type.STRUCT, 1);
+    this.pixel.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.table_id !== null && this.table_id !== undefined) {
+    output.writeFieldBegin('table_id', Thrift.Type.I64, 2);
+    output.writeI64(this.table_id);
+    output.writeFieldEnd();
+  }
+  if (this.row_id !== null && this.row_id !== undefined) {
+    output.writeFieldBegin('row_id', Thrift.Type.I64, 3);
+    output.writeI64(this.row_id);
+    output.writeFieldEnd();
+  }
+  if (this.row_set !== null && this.row_set !== undefined) {
+    output.writeFieldBegin('row_set', Thrift.Type.STRUCT, 4);
+    this.row_set.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 5);
+    output.writeString(this.nonce);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TPixelRows = module.exports.TPixelRows = function(args) {
   this.pixel = null;
   this.row_set = null;
