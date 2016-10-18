@@ -92,7 +92,7 @@ class MapdCon {
     this._client = [];
     this._sessionId = [];
 
-    // TODO: 
+    // TODO:
     if (!this._user[0]) {
       return callback(`Please enter a username.`);
     } else if (!this._password[0]) {
@@ -1008,6 +1008,72 @@ class MapdCon {
   }
 
   /**
+   * Use for backend rendering. This method will fetch a PNG image
+   * that is a render of the vega json object.
+   *
+   * @param {Number} widgetId - the widget id of the calling widget
+   * @param {String} vega - the vega json
+   * @param {Object} options - the options for the render query
+   * @param {Number} options.compressionLevel - the png compression level.
+   *                  range 1 (low compression, faster) to 10 (high compression, slower).
+   *                  Default 3.
+   * @param {Function} callback
+   */
+
+  renderVega (widgetid, vega, options, callback) /* istanbul ignore next */ {
+    let queryId = null;
+    let compressionLevel = 3;
+    if (options) {
+      queryId = options.hasOwnProperty('queryId') ?
+        options.queryId : queryId;
+      compressionLevel = options.hasOwnProperty('compressionLevel') ?
+        options.compressionLevel : compressionLevel;
+    }
+
+    const lastQueryTime = queryId in this.queryTimes
+      ? this.queryTimes[queryId]
+      : this.DEFAULT_QUERY_TIME;
+
+    const curNonce = (this._nonce++).toString();
+
+    let conId = 0
+    this._lastRenderCon = conId;
+
+    const processResultsOptions = {
+      isImage: true,
+      query: 'render: ' + vega,
+      queryId,
+      conId,
+      estimatedQueryTime: lastQueryTime,
+    };
+
+    try {
+      if (!callback) {
+        const renderResult = this._client[conId].render_vega(
+          this._sessionId[conId],
+          widgetid,
+          vega,
+          compressionLevel,
+          curNonce
+        );
+        return this.processResults(processResultsOptions, renderResult);
+      }
+
+      this._client[conId].render_vega(this._sessionId[conId], widgetid, vega, compressionLevel, curNonce, (error, result) => {
+        if (error) {
+          callback(error)
+        } else {
+          this.processResults(processResultsOptions, result, callback)
+        }
+      });
+    } catch (err) {
+      throw err;
+    }
+
+    return curNonce;
+  }
+
+  /**
    * Used primarily for backend rendered maps, this method will fetch the rows
    * that correspond to longitude/latitude points.
    *
@@ -1095,6 +1161,52 @@ class MapdCon {
     }
     return curNonce;
   }
+
+  /**
+   * Used primarily for backend rendered maps, this method will fetch the row
+   * for a specific table that was last rendered at a pixel.
+   *
+   * @param {widgetId} Number - the widget id of the caller
+   * @param {TPixel} pixel - the pixel (lower left-hand corner is pixel (0,0))
+   * @param {String} tableName - the table containing the geo data
+   * @param {Object} tableColNamesMap - object of tableName -> array of col names
+   * @param {Array<Function>} callbacks
+   * @param {Number} [pixelRadius=2] - the radius around the primary pixel to search
+   */
+
+  getResultRowForPixel (widgetId, pixel, tableColNamesMap, callbacks, pixelRadius = 2) /* istanbul ignore next */ {
+    const columnFormat = true; // BOOL
+    const curNonce = (this._nonce++).toString();
+    try {
+      if (!callbacks) {
+        return this.processPixelResults(
+          undefined,
+          this._client[this._lastRenderCon].get_result_row_for_pixel(
+            this._sessionId[this._lastRenderCon],
+            widgetId,
+            pixel,
+            tableColNamesMap,
+            columnFormat,
+            pixelRadius,
+            curNonce
+          ));
+      }
+      this._client[this._lastRenderCon].get_result_row_for_pixel(
+        this._sessionId[this._lastRenderCon],
+        widgetId,
+        pixel,
+        tableColNamesMap,
+        columnFormat,
+        pixelRadius,
+        curNonce,
+        this.processPixelResults.bind(this, callbacks)
+      );
+    } catch (err) {
+      throw err;
+    }
+    return curNonce;
+  }
+
 
   /**
    * Formats the pixel results into the same pattern as textual results.

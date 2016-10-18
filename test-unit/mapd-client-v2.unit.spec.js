@@ -26,6 +26,7 @@ describe("MapDClientV2", () => {
   const methods = [
     'sql_execute',
     'render',
+    'render_vega',
     'delete_frontend_view',
     'get_tables',
     'get_frontend_views',

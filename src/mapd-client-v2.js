@@ -26,6 +26,12 @@ MapDClientV2.prototype.render = function (...args) {
   return renderWithErrorHandling(...args)
 }
 
+/* istanbul ignore next */
+MapDClientV2.prototype.render_vega = function (...args) {
+  const renderVegaWithErrorHandling = wrapWithErrorHandling(this, 'render_vega')
+  return renderVegaWithErrorHandling(...args)
+}
+
 MapDClientV2.prototype.delete_frontend_view = function (...args) {
   const deleteFrontendViewWithErrorHandling = wrapWithErrorHandling(this, 'delete_frontend_view')
   return deleteFrontendViewWithErrorHandling(...args)
