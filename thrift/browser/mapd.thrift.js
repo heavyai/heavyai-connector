@@ -2330,6 +2330,204 @@ MapD_get_version_result.prototype.write = function(output) {
   return;
 };
 
+MapD_get_memory_gpu_args = function(args) {
+};
+MapD_get_memory_gpu_args.prototype = {};
+MapD_get_memory_gpu_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_gpu_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_result = function(args) {
+  this.success = null;
+  this.te = null;
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.te !== undefined && args.te !== null) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_get_memory_gpu_result.prototype = {};
+MapD_get_memory_gpu_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_gpu_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_args = function(args) {
+};
+MapD_get_memory_summary_args.prototype = {};
+MapD_get_memory_summary_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_summary_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_result = function(args) {
+  this.success = null;
+  this.te = null;
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.te !== undefined && args.te !== null) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_get_memory_summary_result.prototype = {};
+MapD_get_memory_summary_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_summary_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapD_load_table_binary_args = function(args) {
   this.session = null;
   this.table_name = null;
@@ -6483,6 +6681,108 @@ MapDClient.prototype.recv_get_version = function() {
     return result.success;
   }
   throw 'get_version failed: unknown result';
+};
+MapDClient.prototype.get_memory_gpu = function(callback) {
+  this.send_get_memory_gpu(callback); 
+  if (!callback) {
+    return this.recv_get_memory_gpu();
+  }
+};
+
+MapDClient.prototype.send_get_memory_gpu = function(callback) {
+  this.output.writeMessageBegin('get_memory_gpu', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_memory_gpu_args();
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_memory_gpu();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_memory_gpu = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_memory_gpu_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.te) {
+    throw result.te;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_memory_gpu failed: unknown result';
+};
+MapDClient.prototype.get_memory_summary = function(callback) {
+  this.send_get_memory_summary(callback); 
+  if (!callback) {
+    return this.recv_get_memory_summary();
+  }
+};
+
+MapDClient.prototype.send_get_memory_summary = function(callback) {
+  this.output.writeMessageBegin('get_memory_summary', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_memory_summary_args();
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_memory_summary();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_memory_summary = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_memory_summary_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.te) {
+    throw result.te;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_memory_summary failed: unknown result';
 };
 MapDClient.prototype.load_table_binary = function(session, table_name, rows, callback) {
   this.send_load_table_binary(session, table_name, rows, callback); 

@@ -2324,6 +2324,204 @@ MapD_get_version_result.prototype.write = function(output) {
   return;
 };
 
+MapD_get_memory_gpu_args = function(args) {
+};
+MapD_get_memory_gpu_args.prototype = {};
+MapD_get_memory_gpu_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_gpu_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_result = function(args) {
+  this.success = null;
+  this.te = null;
+  if (args instanceof ttypes.ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.te !== undefined && args.te !== null) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_get_memory_gpu_result.prototype = {};
+MapD_get_memory_gpu_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ttypes.ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_gpu_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_args = function(args) {
+};
+MapD_get_memory_summary_args.prototype = {};
+MapD_get_memory_summary_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_summary_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_result = function(args) {
+  this.success = null;
+  this.te = null;
+  if (args instanceof ttypes.ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.te !== undefined && args.te !== null) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_get_memory_summary_result.prototype = {};
+MapD_get_memory_summary_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ttypes.ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_summary_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapD_load_table_binary_args = function(args) {
   this.session = null;
   this.table_name = null;
@@ -6446,6 +6644,104 @@ MapDClient.prototype.recv_get_version = function(input,mtype,rseqid) {
   }
   return callback('get_version failed: unknown result');
 };
+MapDClient.prototype.get_memory_gpu = function(callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_get_memory_gpu();
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_get_memory_gpu();
+  }
+};
+
+MapDClient.prototype.send_get_memory_gpu = function() {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('get_memory_gpu', Thrift.MessageType.CALL, this.seqid());
+  var args = new MapD_get_memory_gpu_args();
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+MapDClient.prototype.recv_get_memory_gpu = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new MapD_get_memory_gpu_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.te) {
+    return callback(result.te);
+  }
+  if (null !== result.success) {
+    return callback(null, result.success);
+  }
+  return callback('get_memory_gpu failed: unknown result');
+};
+MapDClient.prototype.get_memory_summary = function(callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_get_memory_summary();
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_get_memory_summary();
+  }
+};
+
+MapDClient.prototype.send_get_memory_summary = function() {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('get_memory_summary', Thrift.MessageType.CALL, this.seqid());
+  var args = new MapD_get_memory_summary_args();
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+MapDClient.prototype.recv_get_memory_summary = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new MapD_get_memory_summary_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.te) {
+    return callback(result.te);
+  }
+  if (null !== result.success) {
+    return callback(null, result.success);
+  }
+  return callback('get_memory_summary failed: unknown result');
+};
 MapDClient.prototype.load_table_binary = function(session, table_name, rows, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
@@ -8031,6 +8327,86 @@ MapDProcessor.prototype.process_get_version = function(seqid, input, output) {
       } else {
         var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
         output.writeMessageBegin("get_version", Thrift.MessageType.EXCEPTION, seqid);
+      }
+      result.write(output);
+      output.writeMessageEnd();
+      output.flush();
+    });
+  }
+}
+
+MapDProcessor.prototype.process_get_memory_gpu = function(seqid, input, output) {
+  var args = new MapD_get_memory_gpu_args();
+  args.read(input);
+  input.readMessageEnd();
+  if (this._handler.get_memory_gpu.length === 0) {
+    Q.fcall(this._handler.get_memory_gpu)
+      .then(function(result) {
+        var result = new MapD_get_memory_gpu_result({success: result});
+        output.writeMessageBegin("get_memory_gpu", Thrift.MessageType.REPLY, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }, function (err) {
+        if (err instanceof ttypes.ThriftException) {
+          var result = new MapD_get_memory_gpu_result(err);
+          output.writeMessageBegin("get_memory_gpu", Thrift.MessageType.REPLY, seqid);
+        } else {
+          var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_memory_gpu", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+  } else {
+    this._handler.get_memory_gpu(function (err, result) {
+      if (err == null || err instanceof ttypes.ThriftException) {
+        var result = new MapD_get_memory_gpu_result((err != null ? err : {success: result}));
+        output.writeMessageBegin("get_memory_gpu", Thrift.MessageType.REPLY, seqid);
+      } else {
+        var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("get_memory_gpu", Thrift.MessageType.EXCEPTION, seqid);
+      }
+      result.write(output);
+      output.writeMessageEnd();
+      output.flush();
+    });
+  }
+}
+
+MapDProcessor.prototype.process_get_memory_summary = function(seqid, input, output) {
+  var args = new MapD_get_memory_summary_args();
+  args.read(input);
+  input.readMessageEnd();
+  if (this._handler.get_memory_summary.length === 0) {
+    Q.fcall(this._handler.get_memory_summary)
+      .then(function(result) {
+        var result = new MapD_get_memory_summary_result({success: result});
+        output.writeMessageBegin("get_memory_summary", Thrift.MessageType.REPLY, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }, function (err) {
+        if (err instanceof ttypes.ThriftException) {
+          var result = new MapD_get_memory_summary_result(err);
+          output.writeMessageBegin("get_memory_summary", Thrift.MessageType.REPLY, seqid);
+        } else {
+          var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_memory_summary", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+  } else {
+    this._handler.get_memory_summary(function (err, result) {
+      if (err == null || err instanceof ttypes.ThriftException) {
+        var result = new MapD_get_memory_summary_result((err != null ? err : {success: result}));
+        output.writeMessageBegin("get_memory_summary", Thrift.MessageType.REPLY, seqid);
+      } else {
+        var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("get_memory_summary", Thrift.MessageType.EXCEPTION, seqid);
       }
       result.write(output);
       output.writeMessageEnd();
