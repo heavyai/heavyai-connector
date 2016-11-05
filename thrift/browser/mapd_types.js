@@ -2528,3 +2528,158 @@ TRenderResult.prototype.write = function(output) {
   return;
 };
 
+TGpuMemorySummary = function(args) {
+  this.gpu_memory_max = null;
+  this.gpu_memory_in_use = null;
+  if (args) {
+    if (args.gpu_memory_max !== undefined && args.gpu_memory_max !== null) {
+      this.gpu_memory_max = args.gpu_memory_max;
+    }
+    if (args.gpu_memory_in_use !== undefined && args.gpu_memory_in_use !== null) {
+      this.gpu_memory_in_use = args.gpu_memory_in_use;
+    }
+  }
+};
+TGpuMemorySummary.prototype = {};
+TGpuMemorySummary.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I64) {
+        this.gpu_memory_max = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.gpu_memory_in_use = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TGpuMemorySummary.prototype.write = function(output) {
+  output.writeStructBegin('TGpuMemorySummary');
+  if (this.gpu_memory_max !== null && this.gpu_memory_max !== undefined) {
+    output.writeFieldBegin('gpu_memory_max', Thrift.Type.I64, 1);
+    output.writeI64(this.gpu_memory_max);
+    output.writeFieldEnd();
+  }
+  if (this.gpu_memory_in_use !== null && this.gpu_memory_in_use !== undefined) {
+    output.writeFieldBegin('gpu_memory_in_use', Thrift.Type.I64, 2);
+    output.writeI64(this.gpu_memory_in_use);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TMemorySummary = function(args) {
+  this.cpu_memory_in_use = null;
+  this.gpu_summary = null;
+  if (args) {
+    if (args.cpu_memory_in_use !== undefined && args.cpu_memory_in_use !== null) {
+      this.cpu_memory_in_use = args.cpu_memory_in_use;
+    }
+    if (args.gpu_summary !== undefined && args.gpu_summary !== null) {
+      this.gpu_summary = Thrift.copyList(args.gpu_summary, [TGpuMemorySummary]);
+    }
+  }
+};
+TMemorySummary.prototype = {};
+TMemorySummary.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I64) {
+        this.cpu_memory_in_use = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.LIST) {
+        var _size96 = 0;
+        var _rtmp3100;
+        this.gpu_summary = [];
+        var _etype99 = 0;
+        _rtmp3100 = input.readListBegin();
+        _etype99 = _rtmp3100.etype;
+        _size96 = _rtmp3100.size;
+        for (var _i101 = 0; _i101 < _size96; ++_i101)
+        {
+          var elem102 = null;
+          elem102 = new TGpuMemorySummary();
+          elem102.read(input);
+          this.gpu_summary.push(elem102);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TMemorySummary.prototype.write = function(output) {
+  output.writeStructBegin('TMemorySummary');
+  if (this.cpu_memory_in_use !== null && this.cpu_memory_in_use !== undefined) {
+    output.writeFieldBegin('cpu_memory_in_use', Thrift.Type.I64, 1);
+    output.writeI64(this.cpu_memory_in_use);
+    output.writeFieldEnd();
+  }
+  if (this.gpu_summary !== null && this.gpu_summary !== undefined) {
+    output.writeFieldBegin('gpu_summary', Thrift.Type.LIST, 2);
+    output.writeListBegin(Thrift.Type.STRUCT, this.gpu_summary.length);
+    for (var iter103 in this.gpu_summary)
+    {
+      if (this.gpu_summary.hasOwnProperty(iter103))
+      {
+        iter103 = this.gpu_summary[iter103];
+        iter103.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
