@@ -296,6 +296,9 @@ TTypeInfo = module.exports.TTypeInfo = function(args) {
   this.encoding = null;
   this.nullable = null;
   this.is_array = null;
+  this.precision = null;
+  this.scale = null;
+  this.comp_param = null;
   if (args) {
     if (args.type !== undefined && args.type !== null) {
       this.type = args.type;
@@ -308,6 +311,15 @@ TTypeInfo = module.exports.TTypeInfo = function(args) {
     }
     if (args.is_array !== undefined && args.is_array !== null) {
       this.is_array = args.is_array;
+    }
+    if (args.precision !== undefined && args.precision !== null) {
+      this.precision = args.precision;
+    }
+    if (args.scale !== undefined && args.scale !== null) {
+      this.scale = args.scale;
+    }
+    if (args.comp_param !== undefined && args.comp_param !== null) {
+      this.comp_param = args.comp_param;
     }
   }
 };
@@ -353,6 +365,27 @@ TTypeInfo.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.I32) {
+        this.precision = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.I32) {
+        this.scale = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.I32) {
+        this.comp_param = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -382,6 +415,21 @@ TTypeInfo.prototype.write = function(output) {
   if (this.is_array !== null && this.is_array !== undefined) {
     output.writeFieldBegin('is_array', Thrift.Type.BOOL, 3);
     output.writeBool(this.is_array);
+    output.writeFieldEnd();
+  }
+  if (this.precision !== null && this.precision !== undefined) {
+    output.writeFieldBegin('precision', Thrift.Type.I32, 5);
+    output.writeI32(this.precision);
+    output.writeFieldEnd();
+  }
+  if (this.scale !== null && this.scale !== undefined) {
+    output.writeFieldBegin('scale', Thrift.Type.I32, 6);
+    output.writeI32(this.scale);
+    output.writeFieldEnd();
+  }
+  if (this.comp_param !== null && this.comp_param !== undefined) {
+    output.writeFieldBegin('comp_param', Thrift.Type.I32, 7);
+    output.writeI32(this.comp_param);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
