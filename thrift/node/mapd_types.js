@@ -948,6 +948,72 @@ TStringRow.prototype.write = function(output) {
   return;
 };
 
+TStepResult = module.exports.TStepResult = function(args) {
+  this.serialized_rows = null;
+  this.execution_finished = null;
+  if (args) {
+    if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
+      this.serialized_rows = args.serialized_rows;
+    }
+    if (args.execution_finished !== undefined && args.execution_finished !== null) {
+      this.execution_finished = args.execution_finished;
+    }
+  }
+};
+TStepResult.prototype = {};
+TStepResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.serialized_rows = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.BOOL) {
+        this.execution_finished = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TStepResult.prototype.write = function(output) {
+  output.writeStructBegin('TStepResult');
+  if (this.serialized_rows !== null && this.serialized_rows !== undefined) {
+    output.writeFieldBegin('serialized_rows', Thrift.Type.STRING, 1);
+    output.writeString(this.serialized_rows);
+    output.writeFieldEnd();
+  }
+  if (this.execution_finished !== null && this.execution_finished !== undefined) {
+    output.writeFieldBegin('execution_finished', Thrift.Type.BOOL, 2);
+    output.writeBool(this.execution_finished);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TRowSet = module.exports.TRowSet = function(args) {
   this.row_desc = null;
   this.rows = null;
