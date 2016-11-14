@@ -2257,6 +2257,7 @@ TPixelRowResult.prototype.write = function(output) {
 
 TPixelTableRowResult = function(args) {
   this.pixel = null;
+  this.vega_table_name = null;
   this.table_id = null;
   this.row_id = null;
   this.row_set = null;
@@ -2264,6 +2265,9 @@ TPixelTableRowResult = function(args) {
   if (args) {
     if (args.pixel !== undefined && args.pixel !== null) {
       this.pixel = new TPixel(args.pixel);
+    }
+    if (args.vega_table_name !== undefined && args.vega_table_name !== null) {
+      this.vega_table_name = args.vega_table_name;
     }
     if (args.table_id !== undefined && args.table_id !== null) {
       this.table_id = args.table_id;
@@ -2302,20 +2306,27 @@ TPixelTableRowResult.prototype.read = function(input) {
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.I64) {
-        this.table_id = input.readI64().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.vega_table_name = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.row_id = input.readI64().value;
+        this.table_id = input.readI64().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
+      if (ftype == Thrift.Type.I64) {
+        this.row_id = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
       if (ftype == Thrift.Type.STRUCT) {
         this.row_set = new TRowSet();
         this.row_set.read(input);
@@ -2323,7 +2334,7 @@ TPixelTableRowResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 5:
+      case 6:
       if (ftype == Thrift.Type.STRING) {
         this.nonce = input.readString().value;
       } else {
@@ -2346,23 +2357,28 @@ TPixelTableRowResult.prototype.write = function(output) {
     this.pixel.write(output);
     output.writeFieldEnd();
   }
+  if (this.vega_table_name !== null && this.vega_table_name !== undefined) {
+    output.writeFieldBegin('vega_table_name', Thrift.Type.STRING, 2);
+    output.writeString(this.vega_table_name);
+    output.writeFieldEnd();
+  }
   if (this.table_id !== null && this.table_id !== undefined) {
-    output.writeFieldBegin('table_id', Thrift.Type.I64, 2);
+    output.writeFieldBegin('table_id', Thrift.Type.I64, 3);
     output.writeI64(this.table_id);
     output.writeFieldEnd();
   }
   if (this.row_id !== null && this.row_id !== undefined) {
-    output.writeFieldBegin('row_id', Thrift.Type.I64, 3);
+    output.writeFieldBegin('row_id', Thrift.Type.I64, 4);
     output.writeI64(this.row_id);
     output.writeFieldEnd();
   }
   if (this.row_set !== null && this.row_set !== undefined) {
-    output.writeFieldBegin('row_set', Thrift.Type.STRUCT, 4);
+    output.writeFieldBegin('row_set', Thrift.Type.STRUCT, 5);
     this.row_set.write(output);
     output.writeFieldEnd();
   }
   if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 5);
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 6);
     output.writeString(this.nonce);
     output.writeFieldEnd();
   }
