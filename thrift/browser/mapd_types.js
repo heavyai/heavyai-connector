@@ -33,6 +33,10 @@ TExecuteMode = {
   'GPU' : 1,
   'CPU' : 2
 };
+TMergeType = {
+  'UNION' : 0,
+  'REDUCE' : 1
+};
 TDatumVal = function(args) {
   this.int_val = null;
   this.real_val = null;
@@ -947,12 +951,20 @@ TStringRow.prototype.write = function(output) {
 TStepResult = function(args) {
   this.serialized_rows = null;
   this.execution_finished = null;
+  this.merge_type = null;
+  this.sharded = null;
   if (args) {
     if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
       this.serialized_rows = args.serialized_rows;
     }
     if (args.execution_finished !== undefined && args.execution_finished !== null) {
       this.execution_finished = args.execution_finished;
+    }
+    if (args.merge_type !== undefined && args.merge_type !== null) {
+      this.merge_type = args.merge_type;
+    }
+    if (args.sharded !== undefined && args.sharded !== null) {
+      this.sharded = args.sharded;
     }
   }
 };
@@ -984,6 +996,20 @@ TStepResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.merge_type = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.sharded = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1003,6 +1029,16 @@ TStepResult.prototype.write = function(output) {
   if (this.execution_finished !== null && this.execution_finished !== undefined) {
     output.writeFieldBegin('execution_finished', Thrift.Type.BOOL, 2);
     output.writeBool(this.execution_finished);
+    output.writeFieldEnd();
+  }
+  if (this.merge_type !== null && this.merge_type !== undefined) {
+    output.writeFieldBegin('merge_type', Thrift.Type.I32, 3);
+    output.writeI32(this.merge_type);
+    output.writeFieldEnd();
+  }
+  if (this.sharded !== null && this.sharded !== undefined) {
+    output.writeFieldBegin('sharded', Thrift.Type.BOOL, 4);
+    output.writeBool(this.sharded);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

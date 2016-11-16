@@ -6187,6 +6187,87 @@ MapD_execute_step_result.prototype.write = function(output) {
   return;
 };
 
+MapD_broadcast_serialized_rows_args = function(args) {
+  this.serialized_rows = null;
+  if (args) {
+    if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
+      this.serialized_rows = args.serialized_rows;
+    }
+  }
+};
+MapD_broadcast_serialized_rows_args.prototype = {};
+MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.serialized_rows = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_broadcast_serialized_rows_args');
+  if (this.serialized_rows !== null && this.serialized_rows !== undefined) {
+    output.writeFieldBegin('serialized_rows', Thrift.Type.STRING, 1);
+    output.writeString(this.serialized_rows);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_broadcast_serialized_rows_result = function(args) {
+};
+MapD_broadcast_serialized_rows_result.prototype = {};
+MapD_broadcast_serialized_rows_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_broadcast_serialized_rows_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_broadcast_serialized_rows_result');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapDClient = exports.Client = function(output, pClass) {
     this.output = output;
     this.pClass = pClass;
@@ -8163,6 +8244,50 @@ MapDClient.prototype.recv_execute_step = function(input,mtype,rseqid) {
   }
   return callback('execute_step failed: unknown result');
 };
+MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_broadcast_serialized_rows(serialized_rows);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_broadcast_serialized_rows(serialized_rows);
+  }
+};
+
+MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows) {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('broadcast_serialized_rows', Thrift.MessageType.CALL, this.seqid());
+  var args = new MapD_broadcast_serialized_rows_args();
+  args.serialized_rows = serialized_rows;
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+MapDClient.prototype.recv_broadcast_serialized_rows = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new MapD_broadcast_serialized_rows_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  callback(null)
+};
 MapDProcessor = exports.Processor = function(handler) {
   this._handler = handler
 }
@@ -9653,6 +9778,41 @@ MapDProcessor.prototype.process_execute_step = function(seqid, input, output) {
       } else {
         var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
         output.writeMessageBegin("execute_step", Thrift.MessageType.EXCEPTION, seqid);
+      }
+      result.write(output);
+      output.writeMessageEnd();
+      output.flush();
+    });
+  }
+}
+
+MapDProcessor.prototype.process_broadcast_serialized_rows = function(seqid, input, output) {
+  var args = new MapD_broadcast_serialized_rows_args();
+  args.read(input);
+  input.readMessageEnd();
+  if (this._handler.broadcast_serialized_rows.length === 1) {
+    Q.fcall(this._handler.broadcast_serialized_rows, args.serialized_rows)
+      .then(function(result) {
+        var result = new MapD_broadcast_serialized_rows_result({success: result});
+        output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }, function (err) {
+        var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.EXCEPTION, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+  } else {
+    this._handler.broadcast_serialized_rows(args.serialized_rows, function (err, result) {
+      if (err == null) {
+        var result = new MapD_broadcast_serialized_rows_result((err != null ? err : {success: result}));
+        output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
+      } else {
+        var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.EXCEPTION, seqid);
       }
       result.write(output);
       output.writeMessageEnd();
