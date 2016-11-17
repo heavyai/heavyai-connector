@@ -2703,14 +2703,22 @@ TRenderResult.prototype.write = function(output) {
 };
 
 TGpuMemorySummary = module.exports.TGpuMemorySummary = function(args) {
-  this.gpu_memory_max = null;
-  this.gpu_memory_in_use = null;
+  this.max = null;
+  this.in_use = null;
+  this.allocated = null;
+  this.is_allocation_capped = null;
   if (args) {
-    if (args.gpu_memory_max !== undefined && args.gpu_memory_max !== null) {
-      this.gpu_memory_max = args.gpu_memory_max;
+    if (args.max !== undefined && args.max !== null) {
+      this.max = args.max;
     }
-    if (args.gpu_memory_in_use !== undefined && args.gpu_memory_in_use !== null) {
-      this.gpu_memory_in_use = args.gpu_memory_in_use;
+    if (args.in_use !== undefined && args.in_use !== null) {
+      this.in_use = args.in_use;
+    }
+    if (args.allocated !== undefined && args.allocated !== null) {
+      this.allocated = args.allocated;
+    }
+    if (args.is_allocation_capped !== undefined && args.is_allocation_capped !== null) {
+      this.is_allocation_capped = args.is_allocation_capped;
     }
   }
 };
@@ -2730,14 +2738,28 @@ TGpuMemorySummary.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.I64) {
-        this.gpu_memory_max = input.readI64();
+        this.max = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.gpu_memory_in_use = input.readI64();
+        this.in_use = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.allocated = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_allocation_capped = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -2753,14 +2775,24 @@ TGpuMemorySummary.prototype.read = function(input) {
 
 TGpuMemorySummary.prototype.write = function(output) {
   output.writeStructBegin('TGpuMemorySummary');
-  if (this.gpu_memory_max !== null && this.gpu_memory_max !== undefined) {
-    output.writeFieldBegin('gpu_memory_max', Thrift.Type.I64, 1);
-    output.writeI64(this.gpu_memory_max);
+  if (this.max !== null && this.max !== undefined) {
+    output.writeFieldBegin('max', Thrift.Type.I64, 1);
+    output.writeI64(this.max);
     output.writeFieldEnd();
   }
-  if (this.gpu_memory_in_use !== null && this.gpu_memory_in_use !== undefined) {
-    output.writeFieldBegin('gpu_memory_in_use', Thrift.Type.I64, 2);
-    output.writeI64(this.gpu_memory_in_use);
+  if (this.in_use !== null && this.in_use !== undefined) {
+    output.writeFieldBegin('in_use', Thrift.Type.I64, 2);
+    output.writeI64(this.in_use);
+    output.writeFieldEnd();
+  }
+  if (this.allocated !== null && this.allocated !== undefined) {
+    output.writeFieldBegin('allocated', Thrift.Type.I64, 3);
+    output.writeI64(this.allocated);
+    output.writeFieldEnd();
+  }
+  if (this.is_allocation_capped !== null && this.is_allocation_capped !== undefined) {
+    output.writeFieldBegin('is_allocation_capped', Thrift.Type.BOOL, 4);
+    output.writeBool(this.is_allocation_capped);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -2850,6 +2882,88 @@ TMemorySummary.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TTableDetails = module.exports.TTableDetails = function(args) {
+  this.fragment_size = null;
+  this.page_size = null;
+  this.max_rows = null;
+  if (args) {
+    if (args.fragment_size !== undefined && args.fragment_size !== null) {
+      this.fragment_size = args.fragment_size;
+    }
+    if (args.page_size !== undefined && args.page_size !== null) {
+      this.page_size = args.page_size;
+    }
+    if (args.max_rows !== undefined && args.max_rows !== null) {
+      this.max_rows = args.max_rows;
+    }
+  }
+};
+TTableDetails.prototype = {};
+TTableDetails.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.fragment_size = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.page_size = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I64) {
+        this.max_rows = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TTableDetails.prototype.write = function(output) {
+  output.writeStructBegin('TTableDetails');
+  if (this.fragment_size !== null && this.fragment_size !== undefined) {
+    output.writeFieldBegin('fragment_size', Thrift.Type.I64, 2);
+    output.writeI64(this.fragment_size);
+    output.writeFieldEnd();
+  }
+  if (this.page_size !== null && this.page_size !== undefined) {
+    output.writeFieldBegin('page_size', Thrift.Type.I64, 3);
+    output.writeI64(this.page_size);
+    output.writeFieldEnd();
+  }
+  if (this.max_rows !== null && this.max_rows !== undefined) {
+    output.writeFieldBegin('max_rows', Thrift.Type.I64, 4);
+    output.writeI64(this.max_rows);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
