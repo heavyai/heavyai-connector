@@ -1141,7 +1141,7 @@ class MapdCon {
             tableName,
             colNames,
             columnFormat,
-            pixelRadius,
+            Math.round(pixelRadius),
             curNonce
           ));
       }
@@ -1152,7 +1152,7 @@ class MapdCon {
         tableName,
         colNames,
         columnFormat,
-        pixelRadius,
+        Math.round(pixelRadius),
         curNonce,
         this.processPixelResults.bind(this, callbacks)
       );
