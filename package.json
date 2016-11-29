@@ -25,7 +25,7 @@
     "test:unit": "mocha ./test-unit --compilers js:babel-register --require ./test-unit/setup.js",
     "generate-docs": "node_modules/esdoc/out/src/ESDocCLI.js -c esdoc.json",
     "watch": "npm-watch",
-    "webpack": "mkdir -p dist; node_modules/webpack/bin/webpack.js"
+    "webpack": "mkdir -p dist; node_modules/.bin/webpack --config ./webpack.config.es6.js && node_modules/.bin/webpack --config ./webpack.config.node.js"
   },
   "repository": {
     "type": "git",

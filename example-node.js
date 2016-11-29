@@ -1,13 +1,4 @@
-/*
- * For this module to resolve properly, the file tree must look like this:
- *
- * App/ 
- *   build/MapdConNode.js <-- import this in your application
- *   build/MapdConUtils.js <-- dependency of MapdConNode, must live in build directory
- *   thrift/node/mapd.thrift.js <-- dependency of MapdConNode, must live in dist directory
- *   thrift/node/mapd_types.js <-- dependency of MapdConNode, must live in dist directory
- */
-var MapdCon = require("./build/MapdConNode").MapdCon;
+var MapdCon = require("./dist/MapdConNode").MapdCon;
 
 // Create an instance of MapdCon and set the connection parameters
 var conAsync = new MapdCon()
@@ -19,7 +10,7 @@ var conAsync = new MapdCon()
   .password("HyperInteractive");
 
 // Connect to MapD. Has node-style callback.
-conAsync.connect(function(err, sessionId){ 
+conAsync.connect(function(err, sessionId){
   if (err) { console.error(err); return; }
 
   // NOTE: sessionId is set on conAsync upon a successful connection,
