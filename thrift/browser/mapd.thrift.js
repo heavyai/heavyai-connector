@@ -6438,6 +6438,110 @@ MapD_get_table_details_result.prototype.write = function(output) {
   return;
 };
 
+MapD_clear_gpu_memory_args = function(args) {
+};
+MapD_clear_gpu_memory_args.prototype = {};
+MapD_clear_gpu_memory_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_result = function(args) {
+  this.e = null;
+  this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args instanceof ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+    if (args.te !== undefined && args.te !== null) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_clear_gpu_memory_result.prototype = {};
+MapD_clear_gpu_memory_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapDClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
@@ -8586,4 +8690,55 @@ MapDClient.prototype.recv_get_table_details = function() {
     return result.success;
   }
   throw 'get_table_details failed: unknown result';
+};
+MapDClient.prototype.clear_gpu_memory = function(callback) {
+  this.send_clear_gpu_memory(callback); 
+  if (!callback) {
+  this.recv_clear_gpu_memory();
+  }
+};
+
+MapDClient.prototype.send_clear_gpu_memory = function(callback) {
+  this.output.writeMessageBegin('clear_gpu_memory', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_clear_gpu_memory_args();
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_clear_gpu_memory();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_clear_gpu_memory = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_clear_gpu_memory_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.te) {
+    throw result.te;
+  }
+  return;
 };

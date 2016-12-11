@@ -6427,6 +6427,110 @@ MapD_get_table_details_result.prototype.write = function(output) {
   return;
 };
 
+MapD_clear_gpu_memory_args = function(args) {
+};
+MapD_clear_gpu_memory_args.prototype = {};
+MapD_clear_gpu_memory_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_result = function(args) {
+  this.e = null;
+  this.te = null;
+  if (args instanceof ttypes.TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args instanceof ttypes.ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+    if (args.te !== undefined && args.te !== null) {
+      this.te = args.te;
+    }
+  }
+};
+MapD_clear_gpu_memory_result.prototype = {};
+MapD_clear_gpu_memory_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new ttypes.TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ttypes.ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapDClient = exports.Client = function(output, pClass) {
     this.output = output;
     this.pClass = pClass;
@@ -8501,6 +8605,55 @@ MapDClient.prototype.recv_get_table_details = function(input,mtype,rseqid) {
   }
   return callback('get_table_details failed: unknown result');
 };
+MapDClient.prototype.clear_gpu_memory = function(callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_clear_gpu_memory();
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_clear_gpu_memory();
+  }
+};
+
+MapDClient.prototype.send_clear_gpu_memory = function() {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('clear_gpu_memory', Thrift.MessageType.CALL, this.seqid());
+  var args = new MapD_clear_gpu_memory_args();
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+MapDClient.prototype.recv_clear_gpu_memory = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new MapD_clear_gpu_memory_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.e) {
+    return callback(result.e);
+  }
+  if (null !== result.te) {
+    return callback(result.te);
+  }
+  callback(null)
+};
 MapDProcessor = exports.Processor = function(handler) {
   this._handler = handler
 }
@@ -10066,6 +10219,46 @@ MapDProcessor.prototype.process_get_table_details = function(seqid, input, outpu
       } else {
         var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
         output.writeMessageBegin("get_table_details", Thrift.MessageType.EXCEPTION, seqid);
+      }
+      result.write(output);
+      output.writeMessageEnd();
+      output.flush();
+    });
+  }
+}
+
+MapDProcessor.prototype.process_clear_gpu_memory = function(seqid, input, output) {
+  var args = new MapD_clear_gpu_memory_args();
+  args.read(input);
+  input.readMessageEnd();
+  if (this._handler.clear_gpu_memory.length === 0) {
+    Q.fcall(this._handler.clear_gpu_memory)
+      .then(function(result) {
+        var result = new MapD_clear_gpu_memory_result({success: result});
+        output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }, function (err) {
+        if (err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
+          var result = new MapD_clear_gpu_memory_result(err);
+          output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
+        } else {
+          var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+  } else {
+    this._handler.clear_gpu_memory(function (err, result) {
+      if (err == null || err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
+        var result = new MapD_clear_gpu_memory_result((err != null ? err : {success: result}));
+        output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
+      } else {
+        var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+        output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.EXCEPTION, seqid);
       }
       result.write(output);
       output.writeMessageEnd();
