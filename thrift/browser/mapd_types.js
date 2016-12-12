@@ -954,6 +954,7 @@ TStepResult = function(args) {
   this.merge_type = null;
   this.sharded = null;
   this.row_desc = null;
+  this.node_id = null;
   if (args) {
     if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
       this.serialized_rows = args.serialized_rows;
@@ -969,6 +970,9 @@ TStepResult = function(args) {
     }
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
+    }
+    if (args.node_id !== undefined && args.node_id !== null) {
+      this.node_id = args.node_id;
     }
   }
 };
@@ -1035,6 +1039,13 @@ TStepResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.I32) {
+        this.node_id = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1078,6 +1089,11 @@ TStepResult.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.node_id !== null && this.node_id !== undefined) {
+    output.writeFieldBegin('node_id', Thrift.Type.I32, 6);
+    output.writeI32(this.node_id);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
