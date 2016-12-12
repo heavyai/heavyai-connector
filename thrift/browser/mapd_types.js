@@ -953,6 +953,7 @@ TStepResult = function(args) {
   this.execution_finished = null;
   this.merge_type = null;
   this.sharded = null;
+  this.row_desc = null;
   if (args) {
     if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
       this.serialized_rows = args.serialized_rows;
@@ -965,6 +966,9 @@ TStepResult = function(args) {
     }
     if (args.sharded !== undefined && args.sharded !== null) {
       this.sharded = args.sharded;
+    }
+    if (args.row_desc !== undefined && args.row_desc !== null) {
+      this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
     }
   }
 };
@@ -1010,6 +1014,27 @@ TStepResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.LIST) {
+        var _size64 = 0;
+        var _rtmp368;
+        this.row_desc = [];
+        var _etype67 = 0;
+        _rtmp368 = input.readListBegin();
+        _etype67 = _rtmp368.etype;
+        _size64 = _rtmp368.size;
+        for (var _i69 = 0; _i69 < _size64; ++_i69)
+        {
+          var elem70 = null;
+          elem70 = new TColumnType();
+          elem70.read(input);
+          this.row_desc.push(elem70);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1039,6 +1064,20 @@ TStepResult.prototype.write = function(output) {
   if (this.sharded !== null && this.sharded !== undefined) {
     output.writeFieldBegin('sharded', Thrift.Type.BOOL, 4);
     output.writeBool(this.sharded);
+    output.writeFieldEnd();
+  }
+  if (this.row_desc !== null && this.row_desc !== undefined) {
+    output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
+    output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
+    for (var iter71 in this.row_desc)
+    {
+      if (this.row_desc.hasOwnProperty(iter71))
+      {
+        iter71 = this.row_desc[iter71];
+        iter71.write(output);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1082,19 +1121,19 @@ TRowSet.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size64 = 0;
-        var _rtmp368;
+        var _size72 = 0;
+        var _rtmp376;
         this.row_desc = [];
-        var _etype67 = 0;
-        _rtmp368 = input.readListBegin();
-        _etype67 = _rtmp368.etype;
-        _size64 = _rtmp368.size;
-        for (var _i69 = 0; _i69 < _size64; ++_i69)
+        var _etype75 = 0;
+        _rtmp376 = input.readListBegin();
+        _etype75 = _rtmp376.etype;
+        _size72 = _rtmp376.size;
+        for (var _i77 = 0; _i77 < _size72; ++_i77)
         {
-          var elem70 = null;
-          elem70 = new TColumnType();
-          elem70.read(input);
-          this.row_desc.push(elem70);
+          var elem78 = null;
+          elem78 = new TColumnType();
+          elem78.read(input);
+          this.row_desc.push(elem78);
         }
         input.readListEnd();
       } else {
@@ -1103,19 +1142,19 @@ TRowSet.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size71 = 0;
-        var _rtmp375;
+        var _size79 = 0;
+        var _rtmp383;
         this.rows = [];
-        var _etype74 = 0;
-        _rtmp375 = input.readListBegin();
-        _etype74 = _rtmp375.etype;
-        _size71 = _rtmp375.size;
-        for (var _i76 = 0; _i76 < _size71; ++_i76)
+        var _etype82 = 0;
+        _rtmp383 = input.readListBegin();
+        _etype82 = _rtmp383.etype;
+        _size79 = _rtmp383.size;
+        for (var _i84 = 0; _i84 < _size79; ++_i84)
         {
-          var elem77 = null;
-          elem77 = new TRow();
-          elem77.read(input);
-          this.rows.push(elem77);
+          var elem85 = null;
+          elem85 = new TRow();
+          elem85.read(input);
+          this.rows.push(elem85);
         }
         input.readListEnd();
       } else {
@@ -1124,19 +1163,19 @@ TRowSet.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size78 = 0;
-        var _rtmp382;
+        var _size86 = 0;
+        var _rtmp390;
         this.columns = [];
-        var _etype81 = 0;
-        _rtmp382 = input.readListBegin();
-        _etype81 = _rtmp382.etype;
-        _size78 = _rtmp382.size;
-        for (var _i83 = 0; _i83 < _size78; ++_i83)
+        var _etype89 = 0;
+        _rtmp390 = input.readListBegin();
+        _etype89 = _rtmp390.etype;
+        _size86 = _rtmp390.size;
+        for (var _i91 = 0; _i91 < _size86; ++_i91)
         {
-          var elem84 = null;
-          elem84 = new TColumn();
-          elem84.read(input);
-          this.columns.push(elem84);
+          var elem92 = null;
+          elem92 = new TColumn();
+          elem92.read(input);
+          this.columns.push(elem92);
         }
         input.readListEnd();
       } else {
@@ -1164,12 +1203,12 @@ TRowSet.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter85 in this.row_desc)
+    for (var iter93 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter85))
+      if (this.row_desc.hasOwnProperty(iter93))
       {
-        iter85 = this.row_desc[iter85];
-        iter85.write(output);
+        iter93 = this.row_desc[iter93];
+        iter93.write(output);
       }
     }
     output.writeListEnd();
@@ -1178,12 +1217,12 @@ TRowSet.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter86 in this.rows)
+    for (var iter94 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter86))
+      if (this.rows.hasOwnProperty(iter94))
       {
-        iter86 = this.rows[iter86];
-        iter86.write(output);
+        iter94 = this.rows[iter94];
+        iter94.write(output);
       }
     }
     output.writeListEnd();
@@ -1192,12 +1231,12 @@ TRowSet.prototype.write = function(output) {
   if (this.columns !== null && this.columns !== undefined) {
     output.writeFieldBegin('columns', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.columns.length);
-    for (var iter87 in this.columns)
+    for (var iter95 in this.columns)
     {
-      if (this.columns.hasOwnProperty(iter87))
+      if (this.columns.hasOwnProperty(iter95))
       {
-        iter87 = this.columns[iter87];
-        iter87.write(output);
+        iter95 = this.columns[iter95];
+        iter95.write(output);
       }
     }
     output.writeListEnd();
@@ -2519,19 +2558,19 @@ TPixelResult.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
-        var _size88 = 0;
-        var _rtmp392;
+        var _size96 = 0;
+        var _rtmp3100;
         this.pixel_rows = [];
-        var _etype91 = 0;
-        _rtmp392 = input.readListBegin();
-        _etype91 = _rtmp392.etype;
-        _size88 = _rtmp392.size;
-        for (var _i93 = 0; _i93 < _size88; ++_i93)
+        var _etype99 = 0;
+        _rtmp3100 = input.readListBegin();
+        _etype99 = _rtmp3100.etype;
+        _size96 = _rtmp3100.size;
+        for (var _i101 = 0; _i101 < _size96; ++_i101)
         {
-          var elem94 = null;
-          elem94 = new TPixelRows();
-          elem94.read(input);
-          this.pixel_rows.push(elem94);
+          var elem102 = null;
+          elem102 = new TPixelRows();
+          elem102.read(input);
+          this.pixel_rows.push(elem102);
         }
         input.readListEnd();
       } else {
@@ -2559,12 +2598,12 @@ TPixelResult.prototype.write = function(output) {
   if (this.pixel_rows !== null && this.pixel_rows !== undefined) {
     output.writeFieldBegin('pixel_rows', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRUCT, this.pixel_rows.length);
-    for (var iter95 in this.pixel_rows)
+    for (var iter103 in this.pixel_rows)
     {
-      if (this.pixel_rows.hasOwnProperty(iter95))
+      if (this.pixel_rows.hasOwnProperty(iter103))
       {
-        iter95 = this.pixel_rows[iter95];
-        iter95.write(output);
+        iter103 = this.pixel_rows[iter103];
+        iter103.write(output);
       }
     }
     output.writeListEnd();
@@ -2827,19 +2866,19 @@ TMemorySummary.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size96 = 0;
-        var _rtmp3100;
+        var _size104 = 0;
+        var _rtmp3108;
         this.gpu_summary = [];
-        var _etype99 = 0;
-        _rtmp3100 = input.readListBegin();
-        _etype99 = _rtmp3100.etype;
-        _size96 = _rtmp3100.size;
-        for (var _i101 = 0; _i101 < _size96; ++_i101)
+        var _etype107 = 0;
+        _rtmp3108 = input.readListBegin();
+        _etype107 = _rtmp3108.etype;
+        _size104 = _rtmp3108.size;
+        for (var _i109 = 0; _i109 < _size104; ++_i109)
         {
-          var elem102 = null;
-          elem102 = new TGpuMemorySummary();
-          elem102.read(input);
-          this.gpu_summary.push(elem102);
+          var elem110 = null;
+          elem110 = new TGpuMemorySummary();
+          elem110.read(input);
+          this.gpu_summary.push(elem110);
         }
         input.readListEnd();
       } else {
@@ -2865,12 +2904,12 @@ TMemorySummary.prototype.write = function(output) {
   if (this.gpu_summary !== null && this.gpu_summary !== undefined) {
     output.writeFieldBegin('gpu_summary', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.gpu_summary.length);
-    for (var iter103 in this.gpu_summary)
+    for (var iter111 in this.gpu_summary)
     {
-      if (this.gpu_summary.hasOwnProperty(iter103))
+      if (this.gpu_summary.hasOwnProperty(iter111))
       {
-        iter103 = this.gpu_summary[iter103];
-        iter103.write(output);
+        iter111 = this.gpu_summary[iter111];
+        iter111.write(output);
       }
     }
     output.writeListEnd();
