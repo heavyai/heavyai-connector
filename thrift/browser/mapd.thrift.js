@@ -1733,7 +1733,12 @@ MapD_get_users_args.prototype.write = function(output) {
 
 MapD_get_users_result = function(args) {
   this.success = null;
+  this.e = null;
   this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
   if (args instanceof ThriftException) {
     this.te = args;
     return;
@@ -1741,6 +1746,9 @@ MapD_get_users_result = function(args) {
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [null]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
     }
     if (args.te !== undefined && args.te !== null) {
       this.te = args.te;
@@ -1783,6 +1791,14 @@ MapD_get_users_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
         this.te = new ThriftException();
         this.te.read(input);
       } else {
@@ -1814,8 +1830,13 @@ MapD_get_users_result.prototype.write = function(output) {
     output.writeListEnd();
     output.writeFieldEnd();
   }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
   if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
     this.te.write(output);
     output.writeFieldEnd();
   }
@@ -1879,7 +1900,12 @@ MapD_get_databases_args.prototype.write = function(output) {
 
 MapD_get_databases_result = function(args) {
   this.success = null;
+  this.e = null;
   this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
   if (args instanceof ThriftException) {
     this.te = args;
     return;
@@ -1887,6 +1913,9 @@ MapD_get_databases_result = function(args) {
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = Thrift.copyList(args.success, [TDBInfo]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
     }
     if (args.te !== undefined && args.te !== null) {
       this.te = args.te;
@@ -1930,6 +1959,14 @@ MapD_get_databases_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
         this.te = new ThriftException();
         this.te.read(input);
       } else {
@@ -1961,8 +1998,13 @@ MapD_get_databases_result.prototype.write = function(output) {
     output.writeListEnd();
     output.writeFieldEnd();
   }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
   if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
     this.te.write(output);
     output.writeFieldEnd();
   }
@@ -2311,7 +2353,12 @@ MapD_get_version_args.prototype.write = function(output) {
 
 MapD_get_version_result = function(args) {
   this.success = null;
+  this.e = null;
   this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
   if (args instanceof ThriftException) {
     this.te = args;
     return;
@@ -2319,6 +2366,9 @@ MapD_get_version_result = function(args) {
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
     }
     if (args.te !== undefined && args.te !== null) {
       this.te = args.te;
@@ -2348,6 +2398,14 @@ MapD_get_version_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
         this.te = new ThriftException();
         this.te.read(input);
       } else {
@@ -2370,8 +2428,13 @@ MapD_get_version_result.prototype.write = function(output) {
     output.writeString(this.success);
     output.writeFieldEnd();
   }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
   if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
     this.te.write(output);
     output.writeFieldEnd();
   }
@@ -2435,7 +2498,12 @@ MapD_get_memory_gpu_args.prototype.write = function(output) {
 
 MapD_get_memory_gpu_result = function(args) {
   this.success = null;
+  this.e = null;
   this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
   if (args instanceof ThriftException) {
     this.te = args;
     return;
@@ -2443,6 +2511,9 @@ MapD_get_memory_gpu_result = function(args) {
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
     }
     if (args.te !== undefined && args.te !== null) {
       this.te = args.te;
@@ -2472,6 +2543,14 @@ MapD_get_memory_gpu_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
         this.te = new ThriftException();
         this.te.read(input);
       } else {
@@ -2494,8 +2573,13 @@ MapD_get_memory_gpu_result.prototype.write = function(output) {
     output.writeString(this.success);
     output.writeFieldEnd();
   }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
   if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
     this.te.write(output);
     output.writeFieldEnd();
   }
@@ -2559,7 +2643,12 @@ MapD_get_memory_summary_args.prototype.write = function(output) {
 
 MapD_get_memory_summary_result = function(args) {
   this.success = null;
+  this.e = null;
   this.te = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
   if (args instanceof ThriftException) {
     this.te = args;
     return;
@@ -2567,6 +2656,9 @@ MapD_get_memory_summary_result = function(args) {
   if (args) {
     if (args.success !== undefined && args.success !== null) {
       this.success = new TMemorySummary(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
     }
     if (args.te !== undefined && args.te !== null) {
       this.te = args.te;
@@ -2597,6 +2689,14 @@ MapD_get_memory_summary_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
         this.te = new ThriftException();
         this.te.read(input);
       } else {
@@ -2619,8 +2719,13 @@ MapD_get_memory_summary_result.prototype.write = function(output) {
     this.success.write(output);
     output.writeFieldEnd();
   }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
   if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 1);
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
     this.te.write(output);
     output.writeFieldEnd();
   }
@@ -7201,6 +7306,9 @@ MapDClient.prototype.recv_get_users = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.e) {
+    throw result.e;
+  }
   if (null !== result.te) {
     throw result.te;
   }
@@ -7253,6 +7361,9 @@ MapDClient.prototype.recv_get_databases = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.e) {
+    throw result.e;
+  }
   if (null !== result.te) {
     throw result.te;
   }
@@ -7412,6 +7523,9 @@ MapDClient.prototype.recv_get_version = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.e) {
+    throw result.e;
+  }
   if (null !== result.te) {
     throw result.te;
   }
@@ -7464,6 +7578,9 @@ MapDClient.prototype.recv_get_memory_gpu = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.e) {
+    throw result.e;
+  }
   if (null !== result.te) {
     throw result.te;
   }
@@ -7516,6 +7633,9 @@ MapDClient.prototype.recv_get_memory_summary = function() {
   result.read(this.input);
   this.input.readMessageEnd();
 
+  if (null !== result.e) {
+    throw result.e;
+  }
   if (null !== result.te) {
     throw result.te;
   }
