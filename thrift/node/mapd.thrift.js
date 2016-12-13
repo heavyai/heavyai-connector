@@ -1673,6 +1673,12 @@ MapD_get_tables_result.prototype.write = function(output) {
 };
 
 MapD_get_users_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_get_users_args.prototype = {};
 MapD_get_users_args.prototype.read = function(input) {
@@ -1686,7 +1692,21 @@ MapD_get_users_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -1695,6 +1715,11 @@ MapD_get_users_args.prototype.read = function(input) {
 
 MapD_get_users_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_users_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -1794,6 +1819,12 @@ MapD_get_users_result.prototype.write = function(output) {
 };
 
 MapD_get_databases_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_get_databases_args.prototype = {};
 MapD_get_databases_args.prototype.read = function(input) {
@@ -1807,7 +1838,21 @@ MapD_get_databases_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -1816,6 +1861,11 @@ MapD_get_databases_args.prototype.read = function(input) {
 
 MapD_get_databases_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_databases_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -2325,6 +2375,12 @@ MapD_get_version_result.prototype.write = function(output) {
 };
 
 MapD_get_memory_gpu_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_get_memory_gpu_args.prototype = {};
 MapD_get_memory_gpu_args.prototype.read = function(input) {
@@ -2338,7 +2394,21 @@ MapD_get_memory_gpu_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -2347,6 +2417,11 @@ MapD_get_memory_gpu_args.prototype.read = function(input) {
 
 MapD_get_memory_gpu_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_memory_gpu_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -2424,6 +2499,12 @@ MapD_get_memory_gpu_result.prototype.write = function(output) {
 };
 
 MapD_get_memory_summary_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_get_memory_summary_args.prototype = {};
 MapD_get_memory_summary_args.prototype.read = function(input) {
@@ -2437,7 +2518,21 @@ MapD_get_memory_summary_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -2446,6 +2541,11 @@ MapD_get_memory_summary_args.prototype.read = function(input) {
 
 MapD_get_memory_summary_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_memory_summary_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -5349,6 +5449,12 @@ MapD_get_result_row_for_pixel_result.prototype.write = function(output) {
 };
 
 MapD_start_heap_profile_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_start_heap_profile_args.prototype = {};
 MapD_start_heap_profile_args.prototype.read = function(input) {
@@ -5362,7 +5468,21 @@ MapD_start_heap_profile_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -5371,6 +5491,11 @@ MapD_start_heap_profile_args.prototype.read = function(input) {
 
 MapD_start_heap_profile_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_start_heap_profile_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -5453,6 +5578,12 @@ MapD_start_heap_profile_result.prototype.write = function(output) {
 };
 
 MapD_stop_heap_profile_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_stop_heap_profile_args.prototype = {};
 MapD_stop_heap_profile_args.prototype.read = function(input) {
@@ -5466,7 +5597,21 @@ MapD_stop_heap_profile_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -5475,6 +5620,11 @@ MapD_stop_heap_profile_args.prototype.read = function(input) {
 
 MapD_stop_heap_profile_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_stop_heap_profile_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -5557,6 +5707,12 @@ MapD_stop_heap_profile_result.prototype.write = function(output) {
 };
 
 MapD_get_heap_profile_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_get_heap_profile_args.prototype = {};
 MapD_get_heap_profile_args.prototype.read = function(input) {
@@ -5570,7 +5726,21 @@ MapD_get_heap_profile_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -5579,6 +5749,11 @@ MapD_get_heap_profile_args.prototype.read = function(input) {
 
 MapD_get_heap_profile_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_heap_profile_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -6283,6 +6458,12 @@ MapD_get_table_details_result.prototype.write = function(output) {
 };
 
 MapD_clear_gpu_memory_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_clear_gpu_memory_args.prototype = {};
 MapD_clear_gpu_memory_args.prototype.read = function(input) {
@@ -6296,7 +6477,21 @@ MapD_clear_gpu_memory_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -6305,6 +6500,11 @@ MapD_clear_gpu_memory_args.prototype.read = function(input) {
 
 MapD_clear_gpu_memory_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_clear_gpu_memory_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -6929,7 +7129,7 @@ MapDClient.prototype.recv_get_tables = function(input,mtype,rseqid) {
   }
   return callback('get_tables failed: unknown result');
 };
-MapDClient.prototype.get_users = function(callback) {
+MapDClient.prototype.get_users = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -6940,18 +7140,19 @@ MapDClient.prototype.get_users = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_get_users();
+    this.send_get_users(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_get_users();
+    this.send_get_users(session);
   }
 };
 
-MapDClient.prototype.send_get_users = function() {
+MapDClient.prototype.send_get_users = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('get_users', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_get_users_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -6978,7 +7179,7 @@ MapDClient.prototype.recv_get_users = function(input,mtype,rseqid) {
   }
   return callback('get_users failed: unknown result');
 };
-MapDClient.prototype.get_databases = function(callback) {
+MapDClient.prototype.get_databases = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -6989,18 +7190,19 @@ MapDClient.prototype.get_databases = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_get_databases();
+    this.send_get_databases(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_get_databases();
+    this.send_get_databases(session);
   }
 };
 
-MapDClient.prototype.send_get_databases = function() {
+MapDClient.prototype.send_get_databases = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('get_databases', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_get_databases_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -7180,7 +7382,7 @@ MapDClient.prototype.recv_get_version = function(input,mtype,rseqid) {
   }
   return callback('get_version failed: unknown result');
 };
-MapDClient.prototype.get_memory_gpu = function(callback) {
+MapDClient.prototype.get_memory_gpu = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -7191,18 +7393,19 @@ MapDClient.prototype.get_memory_gpu = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_get_memory_gpu();
+    this.send_get_memory_gpu(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_get_memory_gpu();
+    this.send_get_memory_gpu(session);
   }
 };
 
-MapDClient.prototype.send_get_memory_gpu = function() {
+MapDClient.prototype.send_get_memory_gpu = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('get_memory_gpu', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_get_memory_gpu_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -7229,7 +7432,7 @@ MapDClient.prototype.recv_get_memory_gpu = function(input,mtype,rseqid) {
   }
   return callback('get_memory_gpu failed: unknown result');
 };
-MapDClient.prototype.get_memory_summary = function(callback) {
+MapDClient.prototype.get_memory_summary = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -7240,18 +7443,19 @@ MapDClient.prototype.get_memory_summary = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_get_memory_summary();
+    this.send_get_memory_summary(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_get_memory_summary();
+    this.send_get_memory_summary(session);
   }
 };
 
-MapDClient.prototype.send_get_memory_summary = function() {
+MapDClient.prototype.send_get_memory_summary = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('get_memory_summary', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_get_memory_summary_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -8050,7 +8254,7 @@ MapDClient.prototype.recv_get_result_row_for_pixel = function(input,mtype,rseqid
   }
   return callback('get_result_row_for_pixel failed: unknown result');
 };
-MapDClient.prototype.start_heap_profile = function(callback) {
+MapDClient.prototype.start_heap_profile = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -8061,18 +8265,19 @@ MapDClient.prototype.start_heap_profile = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_start_heap_profile();
+    this.send_start_heap_profile(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_start_heap_profile();
+    this.send_start_heap_profile(session);
   }
 };
 
-MapDClient.prototype.send_start_heap_profile = function() {
+MapDClient.prototype.send_start_heap_profile = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('start_heap_profile', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_start_heap_profile_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -8099,7 +8304,7 @@ MapDClient.prototype.recv_start_heap_profile = function(input,mtype,rseqid) {
   }
   callback(null)
 };
-MapDClient.prototype.stop_heap_profile = function(callback) {
+MapDClient.prototype.stop_heap_profile = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -8110,18 +8315,19 @@ MapDClient.prototype.stop_heap_profile = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_stop_heap_profile();
+    this.send_stop_heap_profile(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_stop_heap_profile();
+    this.send_stop_heap_profile(session);
   }
 };
 
-MapDClient.prototype.send_stop_heap_profile = function() {
+MapDClient.prototype.send_stop_heap_profile = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('stop_heap_profile', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_stop_heap_profile_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -8148,7 +8354,7 @@ MapDClient.prototype.recv_stop_heap_profile = function(input,mtype,rseqid) {
   }
   callback(null)
 };
-MapDClient.prototype.get_heap_profile = function(callback) {
+MapDClient.prototype.get_heap_profile = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -8159,18 +8365,19 @@ MapDClient.prototype.get_heap_profile = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_get_heap_profile();
+    this.send_get_heap_profile(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_get_heap_profile();
+    this.send_get_heap_profile(session);
   }
 };
 
-MapDClient.prototype.send_get_heap_profile = function() {
+MapDClient.prototype.send_get_heap_profile = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('get_heap_profile', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_get_heap_profile_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -8407,7 +8614,7 @@ MapDClient.prototype.recv_get_table_details = function(input,mtype,rseqid) {
   }
   return callback('get_table_details failed: unknown result');
 };
-MapDClient.prototype.clear_gpu_memory = function(callback) {
+MapDClient.prototype.clear_gpu_memory = function(session, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -8418,18 +8625,19 @@ MapDClient.prototype.clear_gpu_memory = function(callback) {
         _defer.resolve(result);
       }
     };
-    this.send_clear_gpu_memory();
+    this.send_clear_gpu_memory(session);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_clear_gpu_memory();
+    this.send_clear_gpu_memory(session);
   }
 };
 
-MapDClient.prototype.send_clear_gpu_memory = function() {
+MapDClient.prototype.send_clear_gpu_memory = function(session) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('clear_gpu_memory', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_clear_gpu_memory_args();
+  args.session = session;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -8878,8 +9086,8 @@ MapDProcessor.prototype.process_get_users = function(seqid, input, output) {
   var args = new MapD_get_users_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.get_users.length === 0) {
-    Q.fcall(this._handler.get_users)
+  if (this._handler.get_users.length === 1) {
+    Q.fcall(this._handler.get_users, args.session)
       .then(function(result) {
         var result = new MapD_get_users_result({success: result});
         output.writeMessageBegin("get_users", Thrift.MessageType.REPLY, seqid);
@@ -8899,7 +9107,7 @@ MapDProcessor.prototype.process_get_users = function(seqid, input, output) {
         output.flush();
       });
   } else {
-    this._handler.get_users(function (err, result) {
+    this._handler.get_users(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.ThriftException) {
         var result = new MapD_get_users_result((err != null ? err : {success: result}));
         output.writeMessageBegin("get_users", Thrift.MessageType.REPLY, seqid);
@@ -8918,8 +9126,8 @@ MapDProcessor.prototype.process_get_databases = function(seqid, input, output) {
   var args = new MapD_get_databases_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.get_databases.length === 0) {
-    Q.fcall(this._handler.get_databases)
+  if (this._handler.get_databases.length === 1) {
+    Q.fcall(this._handler.get_databases, args.session)
       .then(function(result) {
         var result = new MapD_get_databases_result({success: result});
         output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
@@ -8939,7 +9147,7 @@ MapDProcessor.prototype.process_get_databases = function(seqid, input, output) {
         output.flush();
       });
   } else {
-    this._handler.get_databases(function (err, result) {
+    this._handler.get_databases(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.ThriftException) {
         var result = new MapD_get_databases_result((err != null ? err : {success: result}));
         output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
@@ -9078,8 +9286,8 @@ MapDProcessor.prototype.process_get_memory_gpu = function(seqid, input, output) 
   var args = new MapD_get_memory_gpu_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.get_memory_gpu.length === 0) {
-    Q.fcall(this._handler.get_memory_gpu)
+  if (this._handler.get_memory_gpu.length === 1) {
+    Q.fcall(this._handler.get_memory_gpu, args.session)
       .then(function(result) {
         var result = new MapD_get_memory_gpu_result({success: result});
         output.writeMessageBegin("get_memory_gpu", Thrift.MessageType.REPLY, seqid);
@@ -9099,7 +9307,7 @@ MapDProcessor.prototype.process_get_memory_gpu = function(seqid, input, output) 
         output.flush();
       });
   } else {
-    this._handler.get_memory_gpu(function (err, result) {
+    this._handler.get_memory_gpu(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.ThriftException) {
         var result = new MapD_get_memory_gpu_result((err != null ? err : {success: result}));
         output.writeMessageBegin("get_memory_gpu", Thrift.MessageType.REPLY, seqid);
@@ -9118,8 +9326,8 @@ MapDProcessor.prototype.process_get_memory_summary = function(seqid, input, outp
   var args = new MapD_get_memory_summary_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.get_memory_summary.length === 0) {
-    Q.fcall(this._handler.get_memory_summary)
+  if (this._handler.get_memory_summary.length === 1) {
+    Q.fcall(this._handler.get_memory_summary, args.session)
       .then(function(result) {
         var result = new MapD_get_memory_summary_result({success: result});
         output.writeMessageBegin("get_memory_summary", Thrift.MessageType.REPLY, seqid);
@@ -9139,7 +9347,7 @@ MapDProcessor.prototype.process_get_memory_summary = function(seqid, input, outp
         output.flush();
       });
   } else {
-    this._handler.get_memory_summary(function (err, result) {
+    this._handler.get_memory_summary(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.ThriftException) {
         var result = new MapD_get_memory_summary_result((err != null ? err : {success: result}));
         output.writeMessageBegin("get_memory_summary", Thrift.MessageType.REPLY, seqid);
@@ -9718,8 +9926,8 @@ MapDProcessor.prototype.process_start_heap_profile = function(seqid, input, outp
   var args = new MapD_start_heap_profile_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.start_heap_profile.length === 0) {
-    Q.fcall(this._handler.start_heap_profile)
+  if (this._handler.start_heap_profile.length === 1) {
+    Q.fcall(this._handler.start_heap_profile, args.session)
       .then(function(result) {
         var result = new MapD_start_heap_profile_result({success: result});
         output.writeMessageBegin("start_heap_profile", Thrift.MessageType.REPLY, seqid);
@@ -9739,7 +9947,7 @@ MapDProcessor.prototype.process_start_heap_profile = function(seqid, input, outp
         output.flush();
       });
   } else {
-    this._handler.start_heap_profile(function (err, result) {
+    this._handler.start_heap_profile(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
         var result = new MapD_start_heap_profile_result((err != null ? err : {success: result}));
         output.writeMessageBegin("start_heap_profile", Thrift.MessageType.REPLY, seqid);
@@ -9758,8 +9966,8 @@ MapDProcessor.prototype.process_stop_heap_profile = function(seqid, input, outpu
   var args = new MapD_stop_heap_profile_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.stop_heap_profile.length === 0) {
-    Q.fcall(this._handler.stop_heap_profile)
+  if (this._handler.stop_heap_profile.length === 1) {
+    Q.fcall(this._handler.stop_heap_profile, args.session)
       .then(function(result) {
         var result = new MapD_stop_heap_profile_result({success: result});
         output.writeMessageBegin("stop_heap_profile", Thrift.MessageType.REPLY, seqid);
@@ -9779,7 +9987,7 @@ MapDProcessor.prototype.process_stop_heap_profile = function(seqid, input, outpu
         output.flush();
       });
   } else {
-    this._handler.stop_heap_profile(function (err, result) {
+    this._handler.stop_heap_profile(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
         var result = new MapD_stop_heap_profile_result((err != null ? err : {success: result}));
         output.writeMessageBegin("stop_heap_profile", Thrift.MessageType.REPLY, seqid);
@@ -9798,8 +10006,8 @@ MapDProcessor.prototype.process_get_heap_profile = function(seqid, input, output
   var args = new MapD_get_heap_profile_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.get_heap_profile.length === 0) {
-    Q.fcall(this._handler.get_heap_profile)
+  if (this._handler.get_heap_profile.length === 1) {
+    Q.fcall(this._handler.get_heap_profile, args.session)
       .then(function(result) {
         var result = new MapD_get_heap_profile_result({success: result});
         output.writeMessageBegin("get_heap_profile", Thrift.MessageType.REPLY, seqid);
@@ -9819,7 +10027,7 @@ MapDProcessor.prototype.process_get_heap_profile = function(seqid, input, output
         output.flush();
       });
   } else {
-    this._handler.get_heap_profile(function (err, result) {
+    this._handler.get_heap_profile(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
         var result = new MapD_get_heap_profile_result((err != null ? err : {success: result}));
         output.writeMessageBegin("get_heap_profile", Thrift.MessageType.REPLY, seqid);
@@ -9993,8 +10201,8 @@ MapDProcessor.prototype.process_clear_gpu_memory = function(seqid, input, output
   var args = new MapD_clear_gpu_memory_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.clear_gpu_memory.length === 0) {
-    Q.fcall(this._handler.clear_gpu_memory)
+  if (this._handler.clear_gpu_memory.length === 1) {
+    Q.fcall(this._handler.clear_gpu_memory, args.session)
       .then(function(result) {
         var result = new MapD_clear_gpu_memory_result({success: result});
         output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
@@ -10014,7 +10222,7 @@ MapDProcessor.prototype.process_clear_gpu_memory = function(seqid, input, output
         output.flush();
       });
   } else {
-    this._handler.clear_gpu_memory(function (err, result) {
+    this._handler.clear_gpu_memory(args.session, function (err, result) {
       if (err == null || err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
         var result = new MapD_clear_gpu_memory_result((err != null ? err : {success: result}));
         output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
