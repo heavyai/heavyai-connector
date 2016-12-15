@@ -1,3 +1,4 @@
+require("babel-register")
 // TEST SERVER CONNECTION PARAMETERS
 process.env.PROTOCOL = 'http';
 process.env.HOST = 'kali.mapd.com';
