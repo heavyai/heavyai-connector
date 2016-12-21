@@ -6583,9 +6583,17 @@ MapD_execute_step_result.prototype.write = function(output) {
 
 MapD_broadcast_serialized_rows_args = function(args) {
   this.serialized_rows = null;
+  this.row_desc = null;
+  this.query_id = null;
   if (args) {
     if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
       this.serialized_rows = args.serialized_rows;
+    }
+    if (args.row_desc !== undefined && args.row_desc !== null) {
+      this.row_desc = Thrift.copyList(args.row_desc, [ttypes.TColumnType]);
+    }
+    if (args.query_id !== undefined && args.query_id !== null) {
+      this.query_id = args.query_id;
     }
   }
 };
@@ -6610,9 +6618,34 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 2:
+      if (ftype == Thrift.Type.LIST) {
+        var _size238 = 0;
+        var _rtmp3242;
+        this.row_desc = [];
+        var _etype241 = 0;
+        _rtmp3242 = input.readListBegin();
+        _etype241 = _rtmp3242.etype;
+        _size238 = _rtmp3242.size;
+        for (var _i243 = 0; _i243 < _size238; ++_i243)
+        {
+          var elem244 = null;
+          elem244 = new ttypes.TColumnType();
+          elem244.read(input);
+          this.row_desc.push(elem244);
+        }
+        input.readListEnd();
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.query_id = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -6629,12 +6662,49 @@ MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
     output.writeString(this.serialized_rows);
     output.writeFieldEnd();
   }
+  if (this.row_desc !== null && this.row_desc !== undefined) {
+    output.writeFieldBegin('row_desc', Thrift.Type.LIST, 2);
+    output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
+    for (var iter245 in this.row_desc)
+    {
+      if (this.row_desc.hasOwnProperty(iter245))
+      {
+        iter245 = this.row_desc[iter245];
+        iter245.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.query_id !== null && this.query_id !== undefined) {
+    output.writeFieldBegin('query_id', Thrift.Type.I64, 3);
+    output.writeI64(this.query_id);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
 MapD_broadcast_serialized_rows_result = function(args) {
+  this.e = null;
+  this.te = null;
+  if (args instanceof ttypes.TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args instanceof ttypes.ThriftException) {
+    this.te = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+    if (args.te !== undefined && args.te !== null) {
+      this.te = args.te;
+    }
+  }
 };
 MapD_broadcast_serialized_rows_result.prototype = {};
 MapD_broadcast_serialized_rows_result.prototype.read = function(input) {
@@ -6648,7 +6718,27 @@ MapD_broadcast_serialized_rows_result.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new ttypes.TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.te = new ttypes.ThriftException();
+        this.te.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -6657,6 +6747,16 @@ MapD_broadcast_serialized_rows_result.prototype.read = function(input) {
 
 MapD_broadcast_serialized_rows_result.prototype.write = function(output) {
   output.writeStructBegin('MapD_broadcast_serialized_rows_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.te !== null && this.te !== undefined) {
+    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
+    this.te.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -8999,7 +9099,7 @@ MapDClient.prototype.recv_execute_step = function(input,mtype,rseqid) {
   }
   return callback('execute_step failed: unknown result');
 };
-MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, callback) {
+MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -9010,19 +9110,21 @@ MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, callb
         _defer.resolve(result);
       }
     };
-    this.send_broadcast_serialized_rows(serialized_rows);
+    this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_broadcast_serialized_rows(serialized_rows);
+    this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id);
   }
 };
 
-MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows) {
+MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows, row_desc, query_id) {
   var output = new this.pClass(this.output);
   output.writeMessageBegin('broadcast_serialized_rows', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_broadcast_serialized_rows_args();
   args.serialized_rows = serialized_rows;
+  args.row_desc = row_desc;
+  args.query_id = query_id;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -9041,6 +9143,12 @@ MapDClient.prototype.recv_broadcast_serialized_rows = function(input,mtype,rseqi
   result.read(input);
   input.readMessageEnd();
 
+  if (null !== result.e) {
+    return callback(result.e);
+  }
+  if (null !== result.te) {
+    return callback(result.te);
+  }
   callback(null)
 };
 MapDClient.prototype.get_table_details = function(session, table_name, callback) {
@@ -10689,8 +10797,8 @@ MapDProcessor.prototype.process_broadcast_serialized_rows = function(seqid, inpu
   var args = new MapD_broadcast_serialized_rows_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.broadcast_serialized_rows.length === 1) {
-    Q.fcall(this._handler.broadcast_serialized_rows, args.serialized_rows)
+  if (this._handler.broadcast_serialized_rows.length === 3) {
+    Q.fcall(this._handler.broadcast_serialized_rows, args.serialized_rows, args.row_desc, args.query_id)
       .then(function(result) {
         var result = new MapD_broadcast_serialized_rows_result({success: result});
         output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
@@ -10698,15 +10806,20 @@ MapDProcessor.prototype.process_broadcast_serialized_rows = function(seqid, inpu
         output.writeMessageEnd();
         output.flush();
       }, function (err) {
-        var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
-        output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.EXCEPTION, seqid);
+        if (err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
+          var result = new MapD_broadcast_serialized_rows_result(err);
+          output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
+        } else {
+          var result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.EXCEPTION, seqid);
+        }
         result.write(output);
         output.writeMessageEnd();
         output.flush();
       });
   } else {
-    this._handler.broadcast_serialized_rows(args.serialized_rows, function (err, result) {
-      if (err == null) {
+    this._handler.broadcast_serialized_rows(args.serialized_rows, args.row_desc, args.query_id, function (err, result) {
+      if (err == null || err instanceof ttypes.TMapDException || err instanceof ttypes.ThriftException) {
         var result = new MapD_broadcast_serialized_rows_result((err != null ? err : {success: result}));
         output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
       } else {
