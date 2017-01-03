@@ -41,6 +41,11 @@ ttypes.TMergeType = {
   'UNION' : 0,
   'REDUCE' : 1
 };
+ttypes.TExpressionRangeType = {
+  'INVALID' : 0,
+  'INTEGER' : 1,
+  'FLOATINGPOINT' : 2
+};
 TDatumVal = module.exports.TDatumVal = function(args) {
   this.int_val = null;
   this.real_val = null;
@@ -3019,6 +3024,273 @@ TTableDetails.prototype.write = function(output) {
   if (this.max_rows !== null && this.max_rows !== undefined) {
     output.writeFieldBegin('max_rows', Thrift.Type.I64, 4);
     output.writeI64(this.max_rows);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TColumnRange = module.exports.TColumnRange = function(args) {
+  this.type = null;
+  this.col_id = null;
+  this.table_id = null;
+  this.has_nulls = null;
+  this.int_min = null;
+  this.int_max = null;
+  this.bucket = null;
+  this.fp_min = null;
+  this.fp_max = null;
+  if (args) {
+    if (args.type !== undefined && args.type !== null) {
+      this.type = args.type;
+    }
+    if (args.col_id !== undefined && args.col_id !== null) {
+      this.col_id = args.col_id;
+    }
+    if (args.table_id !== undefined && args.table_id !== null) {
+      this.table_id = args.table_id;
+    }
+    if (args.has_nulls !== undefined && args.has_nulls !== null) {
+      this.has_nulls = args.has_nulls;
+    }
+    if (args.int_min !== undefined && args.int_min !== null) {
+      this.int_min = args.int_min;
+    }
+    if (args.int_max !== undefined && args.int_max !== null) {
+      this.int_max = args.int_max;
+    }
+    if (args.bucket !== undefined && args.bucket !== null) {
+      this.bucket = args.bucket;
+    }
+    if (args.fp_min !== undefined && args.fp_min !== null) {
+      this.fp_min = args.fp_min;
+    }
+    if (args.fp_max !== undefined && args.fp_max !== null) {
+      this.fp_max = args.fp_max;
+    }
+  }
+};
+TColumnRange.prototype = {};
+TColumnRange.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.type = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.col_id = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.table_id = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.has_nulls = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.I64) {
+        this.int_min = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.I64) {
+        this.int_max = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.I64) {
+        this.bucket = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.fp_min = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 9:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.fp_max = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TColumnRange.prototype.write = function(output) {
+  output.writeStructBegin('TColumnRange');
+  if (this.type !== null && this.type !== undefined) {
+    output.writeFieldBegin('type', Thrift.Type.I32, 1);
+    output.writeI32(this.type);
+    output.writeFieldEnd();
+  }
+  if (this.col_id !== null && this.col_id !== undefined) {
+    output.writeFieldBegin('col_id', Thrift.Type.I32, 2);
+    output.writeI32(this.col_id);
+    output.writeFieldEnd();
+  }
+  if (this.table_id !== null && this.table_id !== undefined) {
+    output.writeFieldBegin('table_id', Thrift.Type.I32, 3);
+    output.writeI32(this.table_id);
+    output.writeFieldEnd();
+  }
+  if (this.has_nulls !== null && this.has_nulls !== undefined) {
+    output.writeFieldBegin('has_nulls', Thrift.Type.BOOL, 4);
+    output.writeBool(this.has_nulls);
+    output.writeFieldEnd();
+  }
+  if (this.int_min !== null && this.int_min !== undefined) {
+    output.writeFieldBegin('int_min', Thrift.Type.I64, 5);
+    output.writeI64(this.int_min);
+    output.writeFieldEnd();
+  }
+  if (this.int_max !== null && this.int_max !== undefined) {
+    output.writeFieldBegin('int_max', Thrift.Type.I64, 6);
+    output.writeI64(this.int_max);
+    output.writeFieldEnd();
+  }
+  if (this.bucket !== null && this.bucket !== undefined) {
+    output.writeFieldBegin('bucket', Thrift.Type.I64, 7);
+    output.writeI64(this.bucket);
+    output.writeFieldEnd();
+  }
+  if (this.fp_min !== null && this.fp_min !== undefined) {
+    output.writeFieldBegin('fp_min', Thrift.Type.DOUBLE, 8);
+    output.writeDouble(this.fp_min);
+    output.writeFieldEnd();
+  }
+  if (this.fp_max !== null && this.fp_max !== undefined) {
+    output.writeFieldBegin('fp_max', Thrift.Type.DOUBLE, 9);
+    output.writeDouble(this.fp_max);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TPendingQuery = module.exports.TPendingQuery = function(args) {
+  this.id = null;
+  this.column_ranges = null;
+  if (args) {
+    if (args.id !== undefined && args.id !== null) {
+      this.id = args.id;
+    }
+    if (args.column_ranges !== undefined && args.column_ranges !== null) {
+      this.column_ranges = Thrift.copyList(args.column_ranges, [ttypes.TColumnRange]);
+    }
+  }
+};
+TPendingQuery.prototype = {};
+TPendingQuery.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I64) {
+        this.id = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.LIST) {
+        var _size112 = 0;
+        var _rtmp3116;
+        this.column_ranges = [];
+        var _etype115 = 0;
+        _rtmp3116 = input.readListBegin();
+        _etype115 = _rtmp3116.etype;
+        _size112 = _rtmp3116.size;
+        for (var _i117 = 0; _i117 < _size112; ++_i117)
+        {
+          var elem118 = null;
+          elem118 = new ttypes.TColumnRange();
+          elem118.read(input);
+          this.column_ranges.push(elem118);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TPendingQuery.prototype.write = function(output) {
+  output.writeStructBegin('TPendingQuery');
+  if (this.id !== null && this.id !== undefined) {
+    output.writeFieldBegin('id', Thrift.Type.I64, 1);
+    output.writeI64(this.id);
+    output.writeFieldEnd();
+  }
+  if (this.column_ranges !== null && this.column_ranges !== undefined) {
+    output.writeFieldBegin('column_ranges', Thrift.Type.LIST, 2);
+    output.writeListBegin(Thrift.Type.STRUCT, this.column_ranges.length);
+    for (var iter119 in this.column_ranges)
+    {
+      if (this.column_ranges.hasOwnProperty(iter119))
+      {
+        iter119 = this.column_ranges[iter119];
+        iter119.write(output);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();
