@@ -2107,6 +2107,7 @@ TServerStatus = function(args) {
   this.read_only = null;
   this.version = null;
   this.rendering_enabled = null;
+  this.start_time = null;
   if (args) {
     if (args.read_only !== undefined && args.read_only !== null) {
       this.read_only = args.read_only;
@@ -2116,6 +2117,9 @@ TServerStatus = function(args) {
     }
     if (args.rendering_enabled !== undefined && args.rendering_enabled !== null) {
       this.rendering_enabled = args.rendering_enabled;
+    }
+    if (args.start_time !== undefined && args.start_time !== null) {
+      this.start_time = args.start_time;
     }
   }
 };
@@ -2154,6 +2158,13 @@ TServerStatus.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.I64) {
+        this.start_time = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -2178,6 +2189,11 @@ TServerStatus.prototype.write = function(output) {
   if (this.rendering_enabled !== null && this.rendering_enabled !== undefined) {
     output.writeFieldBegin('rendering_enabled', Thrift.Type.BOOL, 3);
     output.writeBool(this.rendering_enabled);
+    output.writeFieldEnd();
+  }
+  if (this.start_time !== null && this.start_time !== undefined) {
+    output.writeFieldBegin('start_time', Thrift.Type.I64, 4);
+    output.writeI64(this.start_time);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
