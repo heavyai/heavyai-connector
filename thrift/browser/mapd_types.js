@@ -40,7 +40,8 @@ TMergeType = {
 TExpressionRangeType = {
   'INVALID' : 0,
   'INTEGER' : 1,
-  'FLOATINGPOINT' : 2
+  'FLOAT' : 2,
+  'DOUBLE' : 3
 };
 TDatumVal = function(args) {
   this.int_val = null;
