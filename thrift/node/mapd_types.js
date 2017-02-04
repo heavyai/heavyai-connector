@@ -3226,15 +3226,85 @@ TColumnRange.prototype.write = function(output) {
   return;
 };
 
+TDictionaryGeneration = module.exports.TDictionaryGeneration = function(args) {
+  this.dict_id = null;
+  this.entry_count = null;
+  if (args) {
+    if (args.dict_id !== undefined && args.dict_id !== null) {
+      this.dict_id = args.dict_id;
+    }
+    if (args.entry_count !== undefined && args.entry_count !== null) {
+      this.entry_count = args.entry_count;
+    }
+  }
+};
+TDictionaryGeneration.prototype = {};
+TDictionaryGeneration.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.dict_id = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.entry_count = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TDictionaryGeneration.prototype.write = function(output) {
+  output.writeStructBegin('TDictionaryGeneration');
+  if (this.dict_id !== null && this.dict_id !== undefined) {
+    output.writeFieldBegin('dict_id', Thrift.Type.I32, 1);
+    output.writeI32(this.dict_id);
+    output.writeFieldEnd();
+  }
+  if (this.entry_count !== null && this.entry_count !== undefined) {
+    output.writeFieldBegin('entry_count', Thrift.Type.I64, 2);
+    output.writeI64(this.entry_count);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TPendingQuery = module.exports.TPendingQuery = function(args) {
   this.id = null;
   this.column_ranges = null;
+  this.dictionary_generations = null;
   if (args) {
     if (args.id !== undefined && args.id !== null) {
       this.id = args.id;
     }
     if (args.column_ranges !== undefined && args.column_ranges !== null) {
       this.column_ranges = Thrift.copyList(args.column_ranges, [ttypes.TColumnRange]);
+    }
+    if (args.dictionary_generations !== undefined && args.dictionary_generations !== null) {
+      this.dictionary_generations = Thrift.copyList(args.dictionary_generations, [ttypes.TDictionaryGeneration]);
     }
   }
 };
@@ -3280,6 +3350,27 @@ TPendingQuery.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.LIST) {
+        var _size119 = 0;
+        var _rtmp3123;
+        this.dictionary_generations = [];
+        var _etype122 = 0;
+        _rtmp3123 = input.readListBegin();
+        _etype122 = _rtmp3123.etype;
+        _size119 = _rtmp3123.size;
+        for (var _i124 = 0; _i124 < _size119; ++_i124)
+        {
+          var elem125 = null;
+          elem125 = new ttypes.TDictionaryGeneration();
+          elem125.read(input);
+          this.dictionary_generations.push(elem125);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -3299,12 +3390,26 @@ TPendingQuery.prototype.write = function(output) {
   if (this.column_ranges !== null && this.column_ranges !== undefined) {
     output.writeFieldBegin('column_ranges', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.column_ranges.length);
-    for (var iter119 in this.column_ranges)
+    for (var iter126 in this.column_ranges)
     {
-      if (this.column_ranges.hasOwnProperty(iter119))
+      if (this.column_ranges.hasOwnProperty(iter126))
       {
-        iter119 = this.column_ranges[iter119];
-        iter119.write(output);
+        iter126 = this.column_ranges[iter126];
+        iter126.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.dictionary_generations !== null && this.dictionary_generations !== undefined) {
+    output.writeFieldBegin('dictionary_generations', Thrift.Type.LIST, 3);
+    output.writeListBegin(Thrift.Type.STRUCT, this.dictionary_generations.length);
+    for (var iter127 in this.dictionary_generations)
+    {
+      if (this.dictionary_generations.hasOwnProperty(iter127))
+      {
+        iter127 = this.dictionary_generations[iter127];
+        iter127.write(output);
       }
     }
     output.writeListEnd();
