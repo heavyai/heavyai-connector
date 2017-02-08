@@ -33,6 +33,10 @@ TExecuteMode = {
   'GPU' : 1,
   'CPU' : 2
 };
+TTableType = {
+  'DELIMITED' : 0,
+  'POLYGON' : 1
+};
 TMergeType = {
   'UNION' : 0,
   'REDUCE' : 1
@@ -447,6 +451,7 @@ TColumnType = function(args) {
   this.col_name = null;
   this.col_type = null;
   this.is_reserved_keyword = null;
+  this.src_name = null;
   if (args) {
     if (args.col_name !== undefined && args.col_name !== null) {
       this.col_name = args.col_name;
@@ -456,6 +461,9 @@ TColumnType = function(args) {
     }
     if (args.is_reserved_keyword !== undefined && args.is_reserved_keyword !== null) {
       this.is_reserved_keyword = args.is_reserved_keyword;
+    }
+    if (args.src_name !== undefined && args.src_name !== null) {
+      this.src_name = args.src_name;
     }
   }
 };
@@ -495,6 +503,13 @@ TColumnType.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.src_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -519,6 +534,11 @@ TColumnType.prototype.write = function(output) {
   if (this.is_reserved_keyword !== null && this.is_reserved_keyword !== undefined) {
     output.writeFieldBegin('is_reserved_keyword', Thrift.Type.BOOL, 3);
     output.writeBool(this.is_reserved_keyword);
+    output.writeFieldEnd();
+  }
+  if (this.src_name !== null && this.src_name !== undefined) {
+    output.writeFieldBegin('src_name', Thrift.Type.STRING, 4);
+    output.writeString(this.src_name);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1626,6 +1646,7 @@ TCopyParams = function(args) {
   this.array_begin = null;
   this.array_end = null;
   this.threads = null;
+  this.table_type = 0;
   if (args) {
     if (args.delimiter !== undefined && args.delimiter !== null) {
       this.delimiter = args.delimiter;
@@ -1659,6 +1680,9 @@ TCopyParams = function(args) {
     }
     if (args.threads !== undefined && args.threads !== null) {
       this.threads = args.threads;
+    }
+    if (args.table_type !== undefined && args.table_type !== null) {
+      this.table_type = args.table_type;
     }
   }
 };
@@ -1753,6 +1777,13 @@ TCopyParams.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 12:
+      if (ftype == Thrift.Type.I32) {
+        this.table_type = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1817,6 +1848,11 @@ TCopyParams.prototype.write = function(output) {
   if (this.threads !== null && this.threads !== undefined) {
     output.writeFieldBegin('threads', Thrift.Type.I32, 11);
     output.writeI32(this.threads);
+    output.writeFieldEnd();
+  }
+  if (this.table_type !== null && this.table_type !== undefined) {
+    output.writeFieldBegin('table_type', Thrift.Type.I32, 12);
+    output.writeI32(this.table_type);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

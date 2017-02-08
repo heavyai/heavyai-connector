@@ -3864,6 +3864,7 @@ MapD_create_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.row_desc = null;
+  this.table_type = 0;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -3873,6 +3874,9 @@ MapD_create_table_args = function(args) {
     }
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
+    }
+    if (args.table_type !== undefined && args.table_type !== null) {
+      this.table_type = args.table_type;
     }
   }
 };
@@ -3925,6 +3929,13 @@ MapD_create_table_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.table_type = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -3958,6 +3969,11 @@ MapD_create_table_args.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.table_type !== null && this.table_type !== undefined) {
+    output.writeFieldBegin('table_type', Thrift.Type.I32, 4);
+    output.writeI32(this.table_type);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -5972,6 +5988,7 @@ MapD_import_geo_table_args = function(args) {
   this.table_name = null;
   this.file_name = null;
   this.copy_params = null;
+  this.row_desc = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -5984,6 +6001,9 @@ MapD_import_geo_table_args = function(args) {
     }
     if (args.copy_params !== undefined && args.copy_params !== null) {
       this.copy_params = new TCopyParams(args.copy_params);
+    }
+    if (args.row_desc !== undefined && args.row_desc !== null) {
+      this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
     }
   }
 };
@@ -6030,6 +6050,27 @@ MapD_import_geo_table_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.LIST) {
+        var _size254 = 0;
+        var _rtmp3258;
+        this.row_desc = [];
+        var _etype257 = 0;
+        _rtmp3258 = input.readListBegin();
+        _etype257 = _rtmp3258.etype;
+        _size254 = _rtmp3258.size;
+        for (var _i259 = 0; _i259 < _size254; ++_i259)
+        {
+          var elem260 = null;
+          elem260 = new TColumnType();
+          elem260.read(input);
+          this.row_desc.push(elem260);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -6059,6 +6100,20 @@ MapD_import_geo_table_args.prototype.write = function(output) {
   if (this.copy_params !== null && this.copy_params !== undefined) {
     output.writeFieldBegin('copy_params', Thrift.Type.STRUCT, 4);
     this.copy_params.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.row_desc !== null && this.row_desc !== undefined) {
+    output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
+    output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
+    for (var iter261 in this.row_desc)
+    {
+      if (this.row_desc.hasOwnProperty(iter261))
+      {
+        iter261 = this.row_desc[iter261];
+        iter261.write(output);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6487,19 +6542,19 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size254 = 0;
-        var _rtmp3258;
+        var _size262 = 0;
+        var _rtmp3266;
         this.row_desc = [];
-        var _etype257 = 0;
-        _rtmp3258 = input.readListBegin();
-        _etype257 = _rtmp3258.etype;
-        _size254 = _rtmp3258.size;
-        for (var _i259 = 0; _i259 < _size254; ++_i259)
+        var _etype265 = 0;
+        _rtmp3266 = input.readListBegin();
+        _etype265 = _rtmp3266.etype;
+        _size262 = _rtmp3266.size;
+        for (var _i267 = 0; _i267 < _size262; ++_i267)
         {
-          var elem260 = null;
-          elem260 = new TColumnType();
-          elem260.read(input);
-          this.row_desc.push(elem260);
+          var elem268 = null;
+          elem268 = new TColumnType();
+          elem268.read(input);
+          this.row_desc.push(elem268);
         }
         input.readListEnd();
       } else {
@@ -6532,12 +6587,12 @@ MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter261 in this.row_desc)
+    for (var iter269 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter261))
+      if (this.row_desc.hasOwnProperty(iter269))
       {
-        iter261 = this.row_desc[iter261];
-        iter261.write(output);
+        iter269 = this.row_desc[iter269];
+        iter269.write(output);
       }
     }
     output.writeListEnd();
@@ -8197,19 +8252,20 @@ MapDClient.prototype.recv_detect_column_types = function() {
   }
   throw 'detect_column_types failed: unknown result';
 };
-MapDClient.prototype.create_table = function(session, table_name, row_desc, callback) {
-  this.send_create_table(session, table_name, row_desc, callback); 
+MapDClient.prototype.create_table = function(session, table_name, row_desc, table_type, callback) {
+  this.send_create_table(session, table_name, row_desc, table_type, callback); 
   if (!callback) {
   this.recv_create_table();
   }
 };
 
-MapDClient.prototype.send_create_table = function(session, table_name, row_desc, callback) {
+MapDClient.prototype.send_create_table = function(session, table_name, row_desc, table_type, callback) {
   this.output.writeMessageBegin('create_table', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_create_table_args();
   args.session = session;
   args.table_name = table_name;
   args.row_desc = row_desc;
+  args.table_type = table_type;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -8818,20 +8874,21 @@ MapDClient.prototype.recv_get_heap_profile = function() {
   }
   throw 'get_heap_profile failed: unknown result';
 };
-MapDClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, callback) {
-  this.send_import_geo_table(session, table_name, file_name, copy_params, callback); 
+MapDClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
+  this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, callback); 
   if (!callback) {
   this.recv_import_geo_table();
   }
 };
 
-MapDClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, callback) {
+MapDClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
   this.output.writeMessageBegin('import_geo_table', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_import_geo_table_args();
   args.session = session;
   args.table_name = table_name;
   args.file_name = file_name;
   args.copy_params = copy_params;
+  args.row_desc = row_desc;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
