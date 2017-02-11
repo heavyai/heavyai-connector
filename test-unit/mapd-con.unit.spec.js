@@ -28,4 +28,12 @@ describe("MapdCon", () => {
     })
 
   })
+
+  describe("logging", () => {
+    it('logging should return true', function() {
+      mapdcon.logging(true)
+      expect(mapdcon.logging()).to.deep.equal(true)
+    })
+
+  })
 })

@@ -918,7 +918,7 @@ class MapdCon {
    *   .connect()
    *   .createTable('mynewtable', [TColumnType, TColumnType, ...], cb);
    */
-  createTable(tableName, rowDescObj, callback) {
+  createTable(tableName, rowDescObj, tableType, callback) {
     if (!this._sessionId) {
       throw new Error('You are not connected to a server. Try running the connect method first.');
     }
@@ -926,10 +926,11 @@ class MapdCon {
     const thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
 
     for (let c = 0; c < this._numConnections; c++) {
-      this._client[c].send_create_table(
+      this._client[c].create_table(
         this._sessionId[c],
         tableName,
         thriftRowDesc,
+        tableType,
         (err) => {
           if (err) {
             callback(err)
@@ -942,8 +943,8 @@ class MapdCon {
 
   }
 
-  createTableAsync = (tableName, rowDescObj) => new Promise((resolve, reject) => {
-    this.createTable(tableName, rowDescObj, (err) => {
+  createTableAsync = (tableName, rowDescObj, tableType) => new Promise((resolve, reject) => {
+    this.createTable(tableName, rowDescObj, tableType, (err) => {
       if (err) {
         reject(err)
       } else {
@@ -959,40 +960,58 @@ class MapdCon {
    * @param {TCopyParams} copyParams - see {@link TCopyParams}
    * @param {Function} callback
    */
-  importTable(tableName, fileName, copyParams, callback) {
+  importTable(tableName, fileName, copyParams, rowDescObj, isShapeFile, callback) {
     if (!this._sessionId) {
       throw new Error('You are not connected to a server. Try running the connect method first.');
     }
+
     const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
-    let result = null;
+    const thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
+
+    const thriftCallBack = (err, res) => {
+        if (err) {
+          callback(err)
+        } else {
+          callback(null, res)
+        }
+      }
 
     for (let c = 0; c < this._numConnections; c++) {
-      result = this._client[c].send_import_table(
-        this._sessionId[c],
-        tableName,
-        fileName,
-        thriftCopyParams,
-        (err, res) => {
-          if (err) {
-            callback(err)
-          } else {
-            callback(null, res)
-          }
-        }
-      );
+      if (isShapeFile) {
+        this._client[c].import_geo_table(
+          this._sessionId[c],
+          tableName,
+          fileName,
+          thriftCopyParams,
+          thriftRowDesc,
+          thriftCallBack
+        );
+      } else {
+        this._client[c].import_table(
+          this._sessionId[c],
+          tableName,
+          fileName,
+          thriftCopyParams,
+          thriftCallBack
+        );
+      }
     }
   }
 
-  importTableAsync = (tableName, fileName, copyParams) => new Promise((resolve, reject) => {
-    this.importTable(tableName, fileName, copyParams, (err, link) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(link)
-      }
+  importTableAsyncWrapper(isShapeFile) {
+    return (tableName, fileName, copyParams, headers) => new Promise((resolve, reject) => {
+      this.importTable(tableName, fileName, copyParams, headers, isShapeFile, (err, link) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(link)
+        }
+      })
     })
-  })
+  }
 
+  importTableAsync = this.importTableAsyncWrapper(false)
+  importTableGeoAsync = this.importTableAsyncWrapper(true)
 
   /**
    * Get the status of the table import operation.
