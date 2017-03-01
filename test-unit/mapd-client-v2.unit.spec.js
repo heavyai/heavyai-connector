@@ -25,6 +25,7 @@ function createMapDClientStub (methods) {
 describe("MapDClientV2", () => {
   const methods = [
     'sql_execute',
+    'sql_validate',
     'render',
     'render_vega',
     'delete_frontend_view',

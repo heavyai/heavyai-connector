@@ -143,6 +143,23 @@ class MapdCon {
     return this;
   }
 
+  convertFromThriftTypes(fields) {
+    const fieldsArray = [];
+    // silly to change this from map to array
+    // - then later it turns back to map
+    for (const key in fields) {
+      if (fields.hasOwnProperty(key)) {
+        fieldsArray.push({
+          name: key,
+          type: this._datumEnum[fields[key].col_type.type],
+          is_array: fields[key].col_type.is_array,
+          is_dict: fields[key].col_type.encoding === TEncodingType.DICT,
+        });
+      }
+    }
+    return fieldsArray
+  }
+
   /**
    * Disconnect from the server then clears the client and session values.
    * @return {MapdCon} Object
@@ -736,6 +753,18 @@ class MapdCon {
     }
   }
 
+
+  validateQuery(query) {
+    return new Promise((resolve, reject) => {
+      this._client[0].sql_validate(this._sessionId[0], query, (err, res) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(this.convertFromThriftTypes(res))
+        }
+      });
+    })
+  }
   /**
    * TODO
    */
@@ -860,20 +889,7 @@ class MapdCon {
         if (!fields) {
           callback(new Error('Table (' + tableName + ') not found'))
         } else {
-          const fieldsArray = [];
-          // silly to change this from map to array
-          // - then later it turns back to map
-          for (const key in fields) {
-            if (fields.hasOwnProperty(key)) {
-              fieldsArray.push({
-                name: key,
-                type: this._datumEnum[fields[key].col_type.type],
-                is_array: fields[key].col_type.is_array,
-                is_dict: fields[key].col_type.encoding === TEncodingType.DICT,
-              });
-            }
-          }
-          callback(null, fieldsArray)
+          callback(null, this.convertFromThriftTypes(fields))
         }
       })
     } else {

@@ -21,6 +21,11 @@ MapDClientV2.prototype.sql_execute = function (...args) {
   return SQLExecuteWithErrorHandling(...args)
 }
 
+MapDClientV2.prototype.sql_validate = function (...args) {
+  const SQLValidateWithErrorHandling = wrapWithErrorHandling(this, 'sql_validate')
+  return SQLValidateWithErrorHandling(...args)
+}
+
 MapDClientV2.prototype.render = function (...args) {
   const renderWithErrorHandling = wrapWithErrorHandling(this, 'render')
   return renderWithErrorHandling(...args)

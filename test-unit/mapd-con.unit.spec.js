@@ -36,4 +36,32 @@ describe("MapdCon", () => {
     })
 
   })
+
+  describe("convertFromThriftTypes", () => {
+    it("converts trift types to readable types", () => {
+        const thriftType = {
+          arrtime: {
+            col_name: "arrtime",
+            col_type: {
+              comp_param: 0,
+              encoding: 0,
+              is_array: false,
+              nullable: true,
+              precision: 0,
+              scale: 0,
+              type: 0
+            }
+          }
+        }
+
+      expect(mapdcon.convertFromThriftTypes(thriftType)).to.deep.equal([
+        {
+          name: 'arrtime',
+          type: 'SMALLINT',
+          is_array: false,
+          is_dict: false
+        }
+      ])
+    })
+  })
 })
