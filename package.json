@@ -22,6 +22,7 @@
     "shjs": "node --harmony_destructuring ../../node_modules/.bin/shjs",
     "test:cover": "../../node_modules/.bin/istanbul cover ../../node_modules/mocha/bin/_mocha -- ./test-unit --require ./test-unit/config.js --require ./test-unit/setup.js",
     "test:check-cover": "npm run shjs ../../scripts/check-coverage.js",
+    "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
     "test:unit": "../../node_modules/.bin/mocha ./test-unit --require ./test-unit/config.js --require ./test-unit/setup.js",
     "generate-docs": "../../node_modules/esdoc/out/src/ESDocCLI.js -c esdoc.json",
     "watch": "npm-watch",
