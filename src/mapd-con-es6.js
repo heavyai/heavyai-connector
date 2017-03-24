@@ -1433,11 +1433,14 @@ class MapdCon {
    * // isLogging === true
    */
   logging(logging) {
-    if (!arguments.length) {
+    if (typeof logging === "undefined") {
       return this._logging;
+    } else if(typeof(logging) !== "boolean"){
+      return 'logging can only be set with boolean values'
     }
     this._logging = logging;
-    return this;
+    const isEnabledTxt = logging ? "enabled" : "disabled"
+    return `SQL logging is now ${isEnabledTxt}`
   }
 
   /**
