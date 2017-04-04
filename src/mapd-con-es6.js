@@ -665,6 +665,7 @@ class MapdCon {
     let eliminateNullRows = false;
     let renderSpec = null;
     let queryId = null;
+    let limit = -1
     if (options) {
       columnarResults = options.hasOwnProperty('columnarResults') ?
         options.columnarResults : columnarResults;
@@ -674,6 +675,8 @@ class MapdCon {
         options.renderSpec : renderSpec;
       queryId = options.hasOwnProperty('queryId') ?
         options.queryId : queryId;
+      limit = options.hasOwnProperty('limit') ?
+        options.limit : limit;
     }
     const processResultsQuery = renderSpec ? 'render: ' + query : query;
     const isBackendRenderingWithAsync = !!renderSpec && !!callback;
@@ -702,7 +705,7 @@ class MapdCon {
 
     try {
       if (isBackendRenderingWithAsync) {
-        this._client[conId].render(this._sessionId[conId], query + ';', renderSpec, curNonce, (error, result) => {
+        this._client[conId].render(this._sessionId[conId], query + ';', renderSpec, curNonce, limit, (error, result) => {
           if (error) {
             callback(error)
           } else {
@@ -711,7 +714,7 @@ class MapdCon {
         });
         return curNonce;
       } else if (isFrontendRenderingWithAsync) {
-        this._client[conId].sql_execute(this._sessionId[conId], query + ';', columnarResults, curNonce, (error, result) => {
+        this._client[conId].sql_execute(this._sessionId[conId], query + ';', columnarResults, curNonce, limit, (error, result) => {
           if (error) {
             callback(error)
           } else {
@@ -724,7 +727,8 @@ class MapdCon {
           this._sessionId[conId],
           query + ';',
           renderSpec,
-          curNonce
+          curNonce,
+          limit
         );
         return this.processResults(processResultsOptions, renderResult);
       } else if (isFrontendRenderingWithSync) {
@@ -732,7 +736,8 @@ class MapdCon {
           this._sessionId[conId],
           query + ';',
           columnarResults,
-          curNonce
+          curNonc,
+          limit
         );
         return this.processResults(processResultsOptions, SQLExecuteResult);
       }
