@@ -75,13 +75,16 @@ export default function processQueryResults (logging, updateQueryTimes) {
         formattedResult = processRowResults(result.row_set, eliminateNullRows, _datumEnum);
       }
 
+      formattedResult.timing = {
+        execution_time_ms: result.execution_time_ms,
+        total_time_ms: result.total_time_ms
+      };
+
       if (hasCallback) {
-        callback(null, formattedResult.results);
+        callback(null, formattedResult);
       } else {
-        return formattedResult.results;
+        return formattedResult;
       }
     }
   }
 }
-
-

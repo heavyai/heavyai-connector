@@ -50,9 +50,10 @@ class MapdCon {
     /** Deprecated */
     this.queryAsync = this.query;
 
-    this.processResults = (options, result, callback) => {
+    this.processResults = (options = {}, result, callback) => {
       const processor = processQueryResults(this._logging, this.updateQueryTimes)
-      return processor(options, this._datumEnum, result, callback)
+      const processResultsObject = processor(options, this._datumEnum, result, callback)
+      return options.returnTiming ? processResultsObject : processResultsObject.results
     }
 
     // return this to allow chaining off of instantiation
@@ -665,6 +666,7 @@ class MapdCon {
     let eliminateNullRows = false;
     let renderSpec = null;
     let queryId = null;
+    let returnTiming = false;
     let limit = -1
     if (options) {
       columnarResults = options.hasOwnProperty('columnarResults') ?
@@ -675,6 +677,8 @@ class MapdCon {
         options.renderSpec : renderSpec;
       queryId = options.hasOwnProperty('queryId') ?
         options.queryId : queryId;
+      returnTiming = options.hasOwnProperty('returnTiming') ?
+        options.returnTiming : returnTiming;
       limit = options.hasOwnProperty('limit') ?
         options.limit : limit;
     }
@@ -696,6 +700,7 @@ class MapdCon {
 
     const processResultsOptions = {
       isImage: !!renderSpec,
+      returnTiming,
       eliminateNullRows,
       query: processResultsQuery,
       queryId,

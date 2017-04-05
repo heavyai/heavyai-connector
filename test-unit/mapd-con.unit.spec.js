@@ -37,6 +37,22 @@ describe("MapdCon", () => {
 
   })
 
+  describe("results processer", () => {
+    const results = {row_set: {columns: [], is_columnar: true, row_desc: [], rows: []}, execution_time_ms: 107, total_time_ms: 107, nonce: "1"}
+    const options = {query: "SELECT * FROM flights LIMIT 10", queryId: null}
+
+    it('should return an array when no timing flag is passed', function() {
+      mapdcon.logging(false)
+      expect(mapdcon.processResults(options, results)).to.be.an('array')
+    })
+
+    it('should return an object when timing flag is passed', function() {
+      options.returnTiming = true
+      expect(mapdcon.processResults(options, results)).to.be.an('object')
+    })
+
+  })
+
   describe("convertFromThriftTypes", () => {
     it("converts trift types to readable types", () => {
         const thriftType = {
