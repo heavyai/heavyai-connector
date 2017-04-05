@@ -705,7 +705,7 @@ class MapdCon {
 
     try {
       if (isBackendRenderingWithAsync) {
-        this._client[conId].render(this._sessionId[conId], query + ';', renderSpec, curNonce, limit, (error, result) => {
+        this._client[conId].render(this._sessionId[conId], query, renderSpec, curNonce, limit, (error, result) => {
           if (error) {
             callback(error)
           } else {
@@ -714,7 +714,7 @@ class MapdCon {
         });
         return curNonce;
       } else if (isFrontendRenderingWithAsync) {
-        this._client[conId].sql_execute(this._sessionId[conId], query + ';', columnarResults, curNonce, limit, (error, result) => {
+        this._client[conId].sql_execute(this._sessionId[conId], query, columnarResults, curNonce, limit, (error, result) => {
           if (error) {
             callback(error)
           } else {
@@ -725,7 +725,7 @@ class MapdCon {
       } else if (isBackendRenderingWithSync) {
         const renderResult = this._client[conId].render(
           this._sessionId[conId],
-          query + ';',
+          query,
           renderSpec,
           curNonce,
           limit
@@ -734,7 +734,7 @@ class MapdCon {
       } else if (isFrontendRenderingWithSync) {
         const SQLExecuteResult = this._client[conId].sql_execute(
           this._sessionId[conId],
-          query + ';',
+          query,
           columnarResults,
           curNonc,
           limit
