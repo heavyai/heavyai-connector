@@ -53,7 +53,7 @@ class MapdCon {
     this.processResults = (options = {}, result, callback) => {
       const processor = processQueryResults(this._logging, this.updateQueryTimes)
       const processResultsObject = processor(options, this._datumEnum, result, callback)
-      return options.returnTiming ? processResultsObject : processResultsObject.results
+      return processResultsObject
     }
 
     // return this to allow chaining off of instantiation

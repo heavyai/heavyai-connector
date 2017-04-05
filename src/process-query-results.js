@@ -81,9 +81,9 @@ export default function processQueryResults (logging, updateQueryTimes) {
       };
 
       if (hasCallback) {
-        callback(null, formattedResult);
+        callback(null, options.returnTiming ? formattedResult : formattedResult.results);
       } else {
-        return formattedResult;
+        return options.returnTiming ? formattedResult : formattedResult.results;
       }
     }
   }
