@@ -741,7 +741,7 @@ class MapdCon {
           this._sessionId[conId],
           query,
           columnarResults,
-          curNonc,
+          curNonce,
           limit
         );
         return this.processResults(processResultsOptions, SQLExecuteResult);
