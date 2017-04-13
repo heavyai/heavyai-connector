@@ -1,7 +1,6 @@
 /*global MapDClient*/
 
 import {
-  wrapWithCreateLinkErrorHandling,
   wrapWithErrorHandling
 } from './wrap-with-error-handling'
 
@@ -58,7 +57,7 @@ MapDClientV2.prototype.get_frontend_view = function (...args) {
 }
 
 MapDClientV2.prototype.create_link = function (...args) {
-  const createLinkWithErrorHandling = wrapWithCreateLinkErrorHandling(this, 'create_link')
+  const createLinkWithErrorHandling = wrapWithErrorHandling(this, 'create_link')
   return createLinkWithErrorHandling(...args)
 }
 

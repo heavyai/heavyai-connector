@@ -1,36 +1,18 @@
 /*global Thrift, TMapDException, MapDClient*/
 
-export const CREATE_LINK_ERROR_STRING = 'create_link failed: unknown result'
-
 export function isResultError (result) {
   return (
-    result instanceof Thrift.TApplicationException ||
-    result instanceof TMapDException ||
-    typeof result === 'string'
-  )
-}
-
-export const isCreateLinkErrorString = (result) => (
-  typeof result === 'string' &&
-  result === CREATE_LINK_ERROR_STRING
-)
-
-export function isCreateLinkError (result) {
-  return (
-    result instanceof Thrift.TApplicationException ||
-    result instanceof TMapDException ||
-    isCreateLinkErrorString(result)
+    result instanceof Thrift.TException ||
+    result instanceof Error
   )
 }
 
 export function createResultError (result) {
   let errorMessage
-  if (result instanceof Thrift.TApplicationException) {
-    errorMessage = result.message
-  } else if (result instanceof TMapDException) {
+  if (result instanceof TMapDException) {
     errorMessage = result.error_msg
-  } else if (typeof result === 'string') {
-    errorMessage = result
+  } else if (result.message !== undefined) {
+    errorMessage = result.message
   } else {
     errorMessage = 'Unspecified Error'
   }
@@ -63,8 +45,4 @@ export function wrapMethod(context, method, isError) {
 
 export function wrapWithErrorHandling (context, method) {
   return wrapMethod(context, method, isResultError)
-}
-
-export function wrapWithCreateLinkErrorHandling (context, method) {
-  return wrapMethod(context, method, isCreateLinkError)
 }

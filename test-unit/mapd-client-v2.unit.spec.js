@@ -13,7 +13,7 @@ function createMapDClientStub (methods) {
   methods.forEach((method) => {
     stub.prototype[method] = (triggerError, cb) => {
       if (triggerError) {
-        cb('error')
+        cb(new Error('Error'))
       } else {
         cb(MOCK_DATA)
       }
