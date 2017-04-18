@@ -1,6 +1,6 @@
 build/
 dist/
-esdoc/
+docs/
 node_modules/
 mocha-report.xml
 npm-debug.log

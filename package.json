@@ -14,17 +14,17 @@
     }
   },
   "scripts": {
-    "build": "bash scripts/build.sh",
     "babel": "bash scripts/babel.sh",
+    "build": "bash scripts/build.sh",
+    "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
     "clean": "bash scripts/clean.sh",
-    "fullbuild": "npm run lint && npm run build && npm test && npm run generate-docs",
+    "docs": "../../node_modules/.bin/esdoc -c .esdoc.json && open docs/index.html",
+    "fullbuild": "npm run lint && npm run build && npm test && npm run docs",
     "lint": "../../node_modules/eslint/bin/eslint.js src/mapd-con-es6.js src/mapd-con-node-support.js",
     "shjs": "node --harmony_destructuring ../../node_modules/.bin/shjs",
-    "test:cover": "../../node_modules/.bin/istanbul cover ../../node_modules/mocha/bin/_mocha -- ./test-unit --require ./test-unit/config.js --require ./test-unit/setup.js",
     "test:check-cover": "npm run shjs ../../scripts/check-coverage.js",
-    "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
+    "test:cover": "../../node_modules/.bin/istanbul cover ../../node_modules/mocha/bin/_mocha -- ./test-unit --require ./test-unit/config.js --require ./test-unit/setup.js",
     "test:unit": "../../node_modules/.bin/mocha ./test-unit --require ./test-unit/config.js --require ./test-unit/setup.js",
-    "generate-docs": "../../node_modules/esdoc/out/src/ESDocCLI.js -c esdoc.json",
     "watch": "npm-watch",
     "webpack": "mkdir -p dist; ../../node_modules/.bin/webpack --config ./webpack.config.es6.js && ../../node_modules/.bin/webpack --config ./webpack.config.node.js"
   },
@@ -37,7 +37,5 @@
   "bugs": {
     "url": "https://github.com/map-d/mapd-con/issues"
   },
-  "homepage": "https://github.com/map-d/mapd-con#readme",
-  "dependencies": {
-  }
+  "homepage": "https://github.com/map-d/mapd-con#readme"
 }

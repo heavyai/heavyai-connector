@@ -1,7 +1,6 @@
 {
   "source": "./src",
-  "destination": "./esdoc",
+  "destination": "./docs",
   "includes": ["\\.(js|es6)$"],
   "excludes": ["\\deprecated.(js|es6)$"]
 }
-
