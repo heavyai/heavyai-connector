@@ -92,13 +92,8 @@ MapD_connect_args.prototype.write = function(output) {
 MapD_connect_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -107,9 +102,6 @@ MapD_connect_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -142,14 +134,6 @@ MapD_connect_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -169,11 +153,6 @@ MapD_connect_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -236,21 +215,13 @@ MapD_disconnect_args.prototype.write = function(output) {
 
 MapD_disconnect_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -276,14 +247,9 @@ MapD_disconnect_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -298,140 +264,6 @@ MapD_disconnect_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_interrupt_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_interrupt_args.prototype = {};
-MapD_interrupt_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_interrupt_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_interrupt_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_interrupt_result = function(args) {
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_interrupt_result.prototype = {};
-MapD_interrupt_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_interrupt_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_interrupt_result');
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -495,13 +327,8 @@ MapD_get_server_status_args.prototype.write = function(output) {
 MapD_get_server_status_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -510,9 +337,6 @@ MapD_get_server_status_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -546,14 +370,6 @@ MapD_get_server_status_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -575,9 +391,1497 @@ MapD_get_server_status_result.prototype.write = function(output) {
     this.e.write(output);
     output.writeFieldEnd();
   }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_tables_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_tables_args.prototype = {};
+MapD_get_tables_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_tables_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_tables_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [null]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_tables_result.prototype = {};
+MapD_get_tables_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size168 = 0;
+        var _rtmp3172;
+        this.success = [];
+        var _etype171 = 0;
+        _rtmp3172 = input.readListBegin();
+        _etype171 = _rtmp3172.etype;
+        _size168 = _rtmp3172.size;
+        for (var _i173 = 0; _i173 < _size168; ++_i173)
+        {
+          var elem174 = null;
+          elem174 = input.readString().value;
+          this.success.push(elem174);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_tables_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRING, this.success.length);
+    for (var iter175 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter175))
+      {
+        iter175 = this.success[iter175];
+        output.writeString(iter175);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_table_details_args = function(args) {
+  this.session = null;
+  this.table_name = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.table_name !== undefined && args.table_name !== null) {
+      this.table_name = args.table_name;
+    }
+  }
+};
+MapD_get_table_details_args.prototype = {};
+MapD_get_table_details_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_table_details_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_details_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.table_name !== null && this.table_name !== undefined) {
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
+    output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_table_details_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TTableDetails(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_table_details_result.prototype = {};
+MapD_get_table_details_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TTableDetails();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_table_details_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_details_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_users_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_users_args.prototype = {};
+MapD_get_users_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_users_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_users_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_users_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [null]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_users_result.prototype = {};
+MapD_get_users_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size176 = 0;
+        var _rtmp3180;
+        this.success = [];
+        var _etype179 = 0;
+        _rtmp3180 = input.readListBegin();
+        _etype179 = _rtmp3180.etype;
+        _size176 = _rtmp3180.size;
+        for (var _i181 = 0; _i181 < _size176; ++_i181)
+        {
+          var elem182 = null;
+          elem182 = input.readString().value;
+          this.success.push(elem182);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_users_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_users_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRING, this.success.length);
+    for (var iter183 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter183))
+      {
+        iter183 = this.success[iter183];
+        output.writeString(iter183);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_databases_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_databases_args.prototype = {};
+MapD_get_databases_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_databases_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_databases_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_databases_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [TDBInfo]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_databases_result.prototype = {};
+MapD_get_databases_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size184 = 0;
+        var _rtmp3188;
+        this.success = [];
+        var _etype187 = 0;
+        _rtmp3188 = input.readListBegin();
+        _etype187 = _rtmp3188.etype;
+        _size184 = _rtmp3188.size;
+        for (var _i189 = 0; _i189 < _size184; ++_i189)
+        {
+          var elem190 = null;
+          elem190 = new TDBInfo();
+          elem190.read(input);
+          this.success.push(elem190);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_databases_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_databases_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter191 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter191))
+      {
+        iter191 = this.success[iter191];
+        iter191.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_version_args = function(args) {
+};
+MapD_get_version_args.prototype = {};
+MapD_get_version_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_version_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_version_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_version_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_version_result.prototype = {};
+MapD_get_version_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_version_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_version_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_start_heap_profile_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_start_heap_profile_args.prototype = {};
+MapD_start_heap_profile_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_start_heap_profile_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_heap_profile_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_start_heap_profile_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_start_heap_profile_result.prototype = {};
+MapD_start_heap_profile_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_start_heap_profile_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_heap_profile_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_stop_heap_profile_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_stop_heap_profile_args.prototype = {};
+MapD_stop_heap_profile_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_stop_heap_profile_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_stop_heap_profile_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_stop_heap_profile_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_stop_heap_profile_result.prototype = {};
+MapD_stop_heap_profile_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_stop_heap_profile_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_stop_heap_profile_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_heap_profile_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_heap_profile_args.prototype = {};
+MapD_get_heap_profile_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_heap_profile_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_heap_profile_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_heap_profile_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_heap_profile_result.prototype = {};
+MapD_get_heap_profile_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_heap_profile_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_heap_profile_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_memory_gpu_args.prototype = {};
+MapD_get_memory_gpu_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_gpu_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_memory_gpu_result.prototype = {};
+MapD_get_memory_gpu_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_gpu_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_gpu_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_memory_summary_args.prototype = {};
+MapD_get_memory_summary_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_summary_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TMemorySummary(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_memory_summary_result.prototype = {};
+MapD_get_memory_summary_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TMemorySummary();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_memory_summary_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_summary_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_clear_cpu_memory_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_clear_cpu_memory_args.prototype = {};
+MapD_clear_cpu_memory_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_cpu_memory_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_cpu_memory_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_clear_cpu_memory_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_clear_cpu_memory_result.prototype = {};
+MapD_clear_cpu_memory_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_cpu_memory_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_cpu_memory_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_clear_gpu_memory_args.prototype = {};
+MapD_clear_gpu_memory_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_clear_gpu_memory_result.prototype = {};
+MapD_clear_gpu_memory_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_clear_gpu_memory_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -702,13 +2006,8 @@ MapD_sql_execute_args.prototype.write = function(output) {
 MapD_sql_execute_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -717,9 +2016,6 @@ MapD_sql_execute_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -753,14 +2049,6 @@ MapD_sql_execute_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -782,9 +2070,115 @@ MapD_sql_execute_result.prototype.write = function(output) {
     this.e.write(output);
     output.writeFieldEnd();
   }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_interrupt_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_interrupt_args.prototype = {};
+MapD_interrupt_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_interrupt_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_interrupt_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_interrupt_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_interrupt_result.prototype = {};
+MapD_interrupt_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_interrupt_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_interrupt_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -861,13 +2255,8 @@ MapD_sql_validate_args.prototype.write = function(output) {
 MapD_sql_validate_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -876,9 +2265,6 @@ MapD_sql_validate_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -898,28 +2284,28 @@ MapD_sql_validate_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.MAP) {
-        var _size160 = 0;
-        var _rtmp3164;
+        var _size192 = 0;
+        var _rtmp3196;
         this.success = {};
-        var _ktype161 = 0;
-        var _vtype162 = 0;
-        _rtmp3164 = input.readMapBegin();
-        _ktype161 = _rtmp3164.ktype;
-        _vtype162 = _rtmp3164.vtype;
-        _size160 = _rtmp3164.size;
-        for (var _i165 = 0; _i165 < _size160; ++_i165)
+        var _ktype193 = 0;
+        var _vtype194 = 0;
+        _rtmp3196 = input.readMapBegin();
+        _ktype193 = _rtmp3196.ktype;
+        _vtype194 = _rtmp3196.vtype;
+        _size192 = _rtmp3196.size;
+        for (var _i197 = 0; _i197 < _size192; ++_i197)
         {
-          if (_i165 > 0 ) {
+          if (_i197 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key166 = null;
-          var val167 = null;
-          key166 = input.readString().value;
-          val167 = new TColumnType();
-          val167.read(input);
-          this.success[key166] = val167;
+          var key198 = null;
+          var val199 = null;
+          key198 = input.readString().value;
+          val199 = new TColumnType();
+          val199.read(input);
+          this.success[key198] = val199;
         }
         input.readMapEnd();
       } else {
@@ -930,14 +2316,6 @@ MapD_sql_validate_result.prototype.read = function(input) {
       if (ftype == Thrift.Type.STRUCT) {
         this.e = new TMapDException();
         this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
       } else {
         input.skip(ftype);
       }
@@ -956,13 +2334,13 @@ MapD_sql_validate_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.MAP, 0);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
-    for (var kiter168 in this.success)
+    for (var kiter200 in this.success)
     {
-      if (this.success.hasOwnProperty(kiter168))
+      if (this.success.hasOwnProperty(kiter200))
       {
-        var viter169 = this.success[kiter168];
-        output.writeString(kiter168);
-        viter169.write(output);
+        var viter201 = this.success[kiter200];
+        output.writeString(kiter200);
+        viter201.write(output);
       }
     }
     output.writeMapEnd();
@@ -971,1354 +2349,6 @@ MapD_sql_validate_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_table_descriptor_args = function(args) {
-  this.session = null;
-  this.table_name = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.table_name !== undefined && args.table_name !== null) {
-      this.table_name = args.table_name;
-    }
-  }
-};
-MapD_get_table_descriptor_args.prototype = {};
-MapD_get_table_descriptor_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_table_descriptor_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_table_descriptor_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.table_name !== null && this.table_name !== undefined) {
-    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
-    output.writeString(this.table_name);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_table_descriptor_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = Thrift.copyMap(args.success, [TColumnType]);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_table_descriptor_result.prototype = {};
-MapD_get_table_descriptor_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.MAP) {
-        var _size170 = 0;
-        var _rtmp3174;
-        this.success = {};
-        var _ktype171 = 0;
-        var _vtype172 = 0;
-        _rtmp3174 = input.readMapBegin();
-        _ktype171 = _rtmp3174.ktype;
-        _vtype172 = _rtmp3174.vtype;
-        _size170 = _rtmp3174.size;
-        for (var _i175 = 0; _i175 < _size170; ++_i175)
-        {
-          if (_i175 > 0 ) {
-            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
-              input.rstack.pop();
-            }
-          }
-          var key176 = null;
-          var val177 = null;
-          key176 = input.readString().value;
-          val177 = new TColumnType();
-          val177.read(input);
-          this.success[key176] = val177;
-        }
-        input.readMapEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_table_descriptor_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_table_descriptor_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.MAP, 0);
-    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
-    for (var kiter178 in this.success)
-    {
-      if (this.success.hasOwnProperty(kiter178))
-      {
-        var viter179 = this.success[kiter178];
-        output.writeString(kiter178);
-        viter179.write(output);
-      }
-    }
-    output.writeMapEnd();
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_row_descriptor_args = function(args) {
-  this.session = null;
-  this.table_name = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.table_name !== undefined && args.table_name !== null) {
-      this.table_name = args.table_name;
-    }
-  }
-};
-MapD_get_row_descriptor_args.prototype = {};
-MapD_get_row_descriptor_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_row_descriptor_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_row_descriptor_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.table_name !== null && this.table_name !== undefined) {
-    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
-    output.writeString(this.table_name);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_row_descriptor_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = Thrift.copyList(args.success, [TColumnType]);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_row_descriptor_result.prototype = {};
-MapD_get_row_descriptor_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.LIST) {
-        var _size180 = 0;
-        var _rtmp3184;
-        this.success = [];
-        var _etype183 = 0;
-        _rtmp3184 = input.readListBegin();
-        _etype183 = _rtmp3184.etype;
-        _size180 = _rtmp3184.size;
-        for (var _i185 = 0; _i185 < _size180; ++_i185)
-        {
-          var elem186 = null;
-          elem186 = new TColumnType();
-          elem186.read(input);
-          this.success.push(elem186);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_row_descriptor_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_row_descriptor_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter187 in this.success)
-    {
-      if (this.success.hasOwnProperty(iter187))
-      {
-        iter187 = this.success[iter187];
-        iter187.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_frontend_view_args = function(args) {
-  this.session = null;
-  this.view_name = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.view_name !== undefined && args.view_name !== null) {
-      this.view_name = args.view_name;
-    }
-  }
-};
-MapD_get_frontend_view_args.prototype = {};
-MapD_get_frontend_view_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.view_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_frontend_view_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_frontend_view_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.view_name !== null && this.view_name !== undefined) {
-    output.writeFieldBegin('view_name', Thrift.Type.STRING, 2);
-    output.writeString(this.view_name);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_frontend_view_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TFrontendView(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_frontend_view_result.prototype = {};
-MapD_get_frontend_view_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TFrontendView();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_frontend_view_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_frontend_view_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_delete_frontend_view_args = function(args) {
-  this.session = null;
-  this.view_name = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.view_name !== undefined && args.view_name !== null) {
-      this.view_name = args.view_name;
-    }
-  }
-};
-MapD_delete_frontend_view_args.prototype = {};
-MapD_delete_frontend_view_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.view_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_delete_frontend_view_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_delete_frontend_view_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.view_name !== null && this.view_name !== undefined) {
-    output.writeFieldBegin('view_name', Thrift.Type.STRING, 2);
-    output.writeString(this.view_name);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_delete_frontend_view_result = function(args) {
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_delete_frontend_view_result.prototype = {};
-MapD_delete_frontend_view_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_delete_frontend_view_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_delete_frontend_view_result');
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_tables_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_get_tables_args.prototype = {};
-MapD_get_tables_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_tables_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_tables_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_tables_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = Thrift.copyList(args.success, [null]);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_tables_result.prototype = {};
-MapD_get_tables_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.LIST) {
-        var _size188 = 0;
-        var _rtmp3192;
-        this.success = [];
-        var _etype191 = 0;
-        _rtmp3192 = input.readListBegin();
-        _etype191 = _rtmp3192.etype;
-        _size188 = _rtmp3192.size;
-        for (var _i193 = 0; _i193 < _size188; ++_i193)
-        {
-          var elem194 = null;
-          elem194 = input.readString().value;
-          this.success.push(elem194);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_tables_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_tables_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-    output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter195 in this.success)
-    {
-      if (this.success.hasOwnProperty(iter195))
-      {
-        iter195 = this.success[iter195];
-        output.writeString(iter195);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_users_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_get_users_args.prototype = {};
-MapD_get_users_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_users_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_users_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_users_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = Thrift.copyList(args.success, [null]);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_users_result.prototype = {};
-MapD_get_users_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.LIST) {
-        var _size196 = 0;
-        var _rtmp3200;
-        this.success = [];
-        var _etype199 = 0;
-        _rtmp3200 = input.readListBegin();
-        _etype199 = _rtmp3200.etype;
-        _size196 = _rtmp3200.size;
-        for (var _i201 = 0; _i201 < _size196; ++_i201)
-        {
-          var elem202 = null;
-          elem202 = input.readString().value;
-          this.success.push(elem202);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_users_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_users_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-    output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter203 in this.success)
-    {
-      if (this.success.hasOwnProperty(iter203))
-      {
-        iter203 = this.success[iter203];
-        output.writeString(iter203);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_databases_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_get_databases_args.prototype = {};
-MapD_get_databases_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_databases_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_databases_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_databases_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = Thrift.copyList(args.success, [TDBInfo]);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_databases_result.prototype = {};
-MapD_get_databases_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.LIST) {
-        var _size204 = 0;
-        var _rtmp3208;
-        this.success = [];
-        var _etype207 = 0;
-        _rtmp3208 = input.readListBegin();
-        _etype207 = _rtmp3208.etype;
-        _size204 = _rtmp3208.size;
-        for (var _i209 = 0; _i209 < _size204; ++_i209)
-        {
-          var elem210 = null;
-          elem210 = new TDBInfo();
-          elem210.read(input);
-          this.success.push(elem210);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_databases_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_databases_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter211 in this.success)
-    {
-      if (this.success.hasOwnProperty(iter211))
-      {
-        iter211 = this.success[iter211];
-        iter211.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_frontend_views_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_get_frontend_views_args.prototype = {};
-MapD_get_frontend_views_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_frontend_views_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_frontend_views_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_frontend_views_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = Thrift.copyList(args.success, [TFrontendView]);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_frontend_views_result.prototype = {};
-MapD_get_frontend_views_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.LIST) {
-        var _size212 = 0;
-        var _rtmp3216;
-        this.success = [];
-        var _etype215 = 0;
-        _rtmp3216 = input.readListBegin();
-        _etype215 = _rtmp3216.etype;
-        _size212 = _rtmp3216.size;
-        for (var _i217 = 0; _i217 < _size212; ++_i217)
-        {
-          var elem218 = null;
-          elem218 = new TFrontendView();
-          elem218.read(input);
-          this.success.push(elem218);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_frontend_views_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_frontend_views_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter219 in this.success)
-    {
-      if (this.success.hasOwnProperty(iter219))
-      {
-        iter219 = this.success[iter219];
-        iter219.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -2394,21 +2424,13 @@ MapD_set_execution_mode_args.prototype.write = function(output) {
 
 MapD_set_execution_mode_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -2434,14 +2456,9 @@ MapD_set_execution_mode_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -2456,975 +2473,6 @@ MapD_set_execution_mode_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_version_args = function(args) {
-};
-MapD_get_version_args.prototype = {};
-MapD_get_version_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    input.skip(ftype);
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_version_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_version_args');
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_version_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = args.success;
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_version_result.prototype = {};
-MapD_get_version_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_version_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_version_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
-    output.writeString(this.success);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_memory_gpu_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_get_memory_gpu_args.prototype = {};
-MapD_get_memory_gpu_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_memory_gpu_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_memory_gpu_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_memory_gpu_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = args.success;
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_memory_gpu_result.prototype = {};
-MapD_get_memory_gpu_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_memory_gpu_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_memory_gpu_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
-    output.writeString(this.success);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_memory_summary_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_get_memory_summary_args.prototype = {};
-MapD_get_memory_summary_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_memory_summary_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_memory_summary_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_memory_summary_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TMemorySummary(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_memory_summary_result.prototype = {};
-MapD_get_memory_summary_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TMemorySummary();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_memory_summary_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_memory_summary_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_load_table_binary_args = function(args) {
-  this.session = null;
-  this.table_name = null;
-  this.rows = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.table_name !== undefined && args.table_name !== null) {
-      this.table_name = args.table_name;
-    }
-    if (args.rows !== undefined && args.rows !== null) {
-      this.rows = Thrift.copyList(args.rows, [TRow]);
-    }
-  }
-};
-MapD_load_table_binary_args.prototype = {};
-MapD_load_table_binary_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.LIST) {
-        var _size220 = 0;
-        var _rtmp3224;
-        this.rows = [];
-        var _etype223 = 0;
-        _rtmp3224 = input.readListBegin();
-        _etype223 = _rtmp3224.etype;
-        _size220 = _rtmp3224.size;
-        for (var _i225 = 0; _i225 < _size220; ++_i225)
-        {
-          var elem226 = null;
-          elem226 = new TRow();
-          elem226.read(input);
-          this.rows.push(elem226);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_load_table_binary_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_load_table_binary_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.table_name !== null && this.table_name !== undefined) {
-    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
-    output.writeString(this.table_name);
-    output.writeFieldEnd();
-  }
-  if (this.rows !== null && this.rows !== undefined) {
-    output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
-    output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter227 in this.rows)
-    {
-      if (this.rows.hasOwnProperty(iter227))
-      {
-        iter227 = this.rows[iter227];
-        iter227.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_load_table_binary_result = function(args) {
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_load_table_binary_result.prototype = {};
-MapD_load_table_binary_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_load_table_binary_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_load_table_binary_result');
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_load_table_args = function(args) {
-  this.session = null;
-  this.table_name = null;
-  this.rows = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.table_name !== undefined && args.table_name !== null) {
-      this.table_name = args.table_name;
-    }
-    if (args.rows !== undefined && args.rows !== null) {
-      this.rows = Thrift.copyList(args.rows, [TStringRow]);
-    }
-  }
-};
-MapD_load_table_args.prototype = {};
-MapD_load_table_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.LIST) {
-        var _size228 = 0;
-        var _rtmp3232;
-        this.rows = [];
-        var _etype231 = 0;
-        _rtmp3232 = input.readListBegin();
-        _etype231 = _rtmp3232.etype;
-        _size228 = _rtmp3232.size;
-        for (var _i233 = 0; _i233 < _size228; ++_i233)
-        {
-          var elem234 = null;
-          elem234 = new TStringRow();
-          elem234.read(input);
-          this.rows.push(elem234);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_load_table_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_load_table_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.table_name !== null && this.table_name !== undefined) {
-    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
-    output.writeString(this.table_name);
-    output.writeFieldEnd();
-  }
-  if (this.rows !== null && this.rows !== undefined) {
-    output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
-    output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter235 in this.rows)
-    {
-      if (this.rows.hasOwnProperty(iter235))
-      {
-        iter235 = this.rows[iter235];
-        iter235.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_load_table_result = function(args) {
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_load_table_result.prototype = {};
-MapD_load_table_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_load_table_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_load_table_result');
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_render_args = function(args) {
-  this.session = null;
-  this.query = null;
-  this.render_type = null;
-  this.nonce = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.query !== undefined && args.query !== null) {
-      this.query = args.query;
-    }
-    if (args.render_type !== undefined && args.render_type !== null) {
-      this.render_type = args.render_type;
-    }
-    if (args.nonce !== undefined && args.nonce !== null) {
-      this.nonce = args.nonce;
-    }
-  }
-};
-MapD_render_args.prototype = {};
-MapD_render_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.query = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRING) {
-        this.render_type = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_render_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_render_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.query !== null && this.query !== undefined) {
-    output.writeFieldBegin('query', Thrift.Type.STRING, 2);
-    output.writeString(this.query);
-    output.writeFieldEnd();
-  }
-  if (this.render_type !== null && this.render_type !== undefined) {
-    output.writeFieldBegin('render_type', Thrift.Type.STRING, 3);
-    output.writeString(this.render_type);
-    output.writeFieldEnd();
-  }
-  if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 4);
-    output.writeString(this.nonce);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_render_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TRenderResult(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_render_result.prototype = {};
-MapD_render_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TRenderResult();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_render_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_render_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -3549,13 +2597,8 @@ MapD_render_vega_args.prototype.write = function(output) {
 MapD_render_vega_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -3564,9 +2607,6 @@ MapD_render_vega_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -3600,14 +2640,6 @@ MapD_render_vega_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -3629,9 +2661,562 @@ MapD_render_vega_result.prototype.write = function(output) {
     this.e.write(output);
     output.writeFieldEnd();
   }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_result_row_for_pixel_args = function(args) {
+  this.session = null;
+  this.widget_id = null;
+  this.pixel = null;
+  this.table_col_names = null;
+  this.column_format = null;
+  this.pixelRadius = null;
+  this.nonce = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.widget_id !== undefined && args.widget_id !== null) {
+      this.widget_id = args.widget_id;
+    }
+    if (args.pixel !== undefined && args.pixel !== null) {
+      this.pixel = new TPixel(args.pixel);
+    }
+    if (args.table_col_names !== undefined && args.table_col_names !== null) {
+      this.table_col_names = Thrift.copyMap(args.table_col_names, [Thrift.copyList, null]);
+    }
+    if (args.column_format !== undefined && args.column_format !== null) {
+      this.column_format = args.column_format;
+    }
+    if (args.pixelRadius !== undefined && args.pixelRadius !== null) {
+      this.pixelRadius = args.pixelRadius;
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
+    }
+  }
+};
+MapD_get_result_row_for_pixel_args.prototype = {};
+MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.widget_id = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.pixel = new TPixel();
+        this.pixel.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.MAP) {
+        var _size202 = 0;
+        var _rtmp3206;
+        this.table_col_names = {};
+        var _ktype203 = 0;
+        var _vtype204 = 0;
+        _rtmp3206 = input.readMapBegin();
+        _ktype203 = _rtmp3206.ktype;
+        _vtype204 = _rtmp3206.vtype;
+        _size202 = _rtmp3206.size;
+        for (var _i207 = 0; _i207 < _size202; ++_i207)
+        {
+          if (_i207 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key208 = null;
+          var val209 = null;
+          key208 = input.readString().value;
+          var _size210 = 0;
+          var _rtmp3214;
+          val209 = [];
+          var _etype213 = 0;
+          _rtmp3214 = input.readListBegin();
+          _etype213 = _rtmp3214.etype;
+          _size210 = _rtmp3214.size;
+          for (var _i215 = 0; _i215 < _size210; ++_i215)
+          {
+            var elem216 = null;
+            elem216 = input.readString().value;
+            val209.push(elem216);
+          }
+          input.readListEnd();
+          this.table_col_names[key208] = val209;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.BOOL) {
+        this.column_format = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.I32) {
+        this.pixelRadius = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_result_row_for_pixel_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_result_row_for_pixel_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.widget_id !== null && this.widget_id !== undefined) {
+    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
+    output.writeI64(this.widget_id);
+    output.writeFieldEnd();
+  }
+  if (this.pixel !== null && this.pixel !== undefined) {
+    output.writeFieldBegin('pixel', Thrift.Type.STRUCT, 3);
+    this.pixel.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.table_col_names !== null && this.table_col_names !== undefined) {
+    output.writeFieldBegin('table_col_names', Thrift.Type.MAP, 4);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(this.table_col_names));
+    for (var kiter217 in this.table_col_names)
+    {
+      if (this.table_col_names.hasOwnProperty(kiter217))
+      {
+        var viter218 = this.table_col_names[kiter217];
+        output.writeString(kiter217);
+        output.writeListBegin(Thrift.Type.STRING, viter218.length);
+        for (var iter219 in viter218)
+        {
+          if (viter218.hasOwnProperty(iter219))
+          {
+            iter219 = viter218[iter219];
+            output.writeString(iter219);
+          }
+        }
+        output.writeListEnd();
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.column_format !== null && this.column_format !== undefined) {
+    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 5);
+    output.writeBool(this.column_format);
+    output.writeFieldEnd();
+  }
+  if (this.pixelRadius !== null && this.pixelRadius !== undefined) {
+    output.writeFieldBegin('pixelRadius', Thrift.Type.I32, 6);
+    output.writeI32(this.pixelRadius);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 7);
+    output.writeString(this.nonce);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_result_row_for_pixel_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TPixelTableRowResult(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_result_row_for_pixel_result.prototype = {};
+MapD_get_result_row_for_pixel_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TPixelTableRowResult();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_result_row_for_pixel_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_result_row_for_pixel_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_frontend_view_args = function(args) {
+  this.session = null;
+  this.view_name = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.view_name !== undefined && args.view_name !== null) {
+      this.view_name = args.view_name;
+    }
+  }
+};
+MapD_get_frontend_view_args.prototype = {};
+MapD_get_frontend_view_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.view_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_frontend_view_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_frontend_view_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.view_name !== null && this.view_name !== undefined) {
+    output.writeFieldBegin('view_name', Thrift.Type.STRING, 2);
+    output.writeString(this.view_name);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_frontend_view_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TFrontendView(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_frontend_view_result.prototype = {};
+MapD_get_frontend_view_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TFrontendView();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_frontend_view_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_frontend_view_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_frontend_views_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_frontend_views_args.prototype = {};
+MapD_get_frontend_views_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_frontend_views_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_frontend_views_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_frontend_views_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [TFrontendView]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_frontend_views_result.prototype = {};
+MapD_get_frontend_views_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size220 = 0;
+        var _rtmp3224;
+        this.success = [];
+        var _etype223 = 0;
+        _rtmp3224 = input.readListBegin();
+        _etype223 = _rtmp3224.etype;
+        _size220 = _rtmp3224.size;
+        for (var _i225 = 0; _i225 < _size220; ++_i225)
+        {
+          var elem226 = null;
+          elem226 = new TFrontendView();
+          elem226.read(input);
+          this.success.push(elem226);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_frontend_views_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_frontend_views_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter227 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter227))
+      {
+        iter227 = this.success[iter227];
+        iter227.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -3755,21 +3340,13 @@ MapD_create_frontend_view_args.prototype.write = function(output) {
 
 MapD_create_frontend_view_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -3795,14 +3372,9 @@ MapD_create_frontend_view_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -3819,9 +3391,745 @@ MapD_create_frontend_view_result.prototype.write = function(output) {
     this.e.write(output);
     output.writeFieldEnd();
   }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_delete_frontend_view_args = function(args) {
+  this.session = null;
+  this.view_name = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.view_name !== undefined && args.view_name !== null) {
+      this.view_name = args.view_name;
+    }
+  }
+};
+MapD_delete_frontend_view_args.prototype = {};
+MapD_delete_frontend_view_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.view_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_delete_frontend_view_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_frontend_view_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.view_name !== null && this.view_name !== undefined) {
+    output.writeFieldBegin('view_name', Thrift.Type.STRING, 2);
+    output.writeString(this.view_name);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_delete_frontend_view_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_delete_frontend_view_result.prototype = {};
+MapD_delete_frontend_view_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_delete_frontend_view_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_frontend_view_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_link_view_args = function(args) {
+  this.session = null;
+  this.link = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.link !== undefined && args.link !== null) {
+      this.link = args.link;
+    }
+  }
+};
+MapD_get_link_view_args.prototype = {};
+MapD_get_link_view_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.link = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_link_view_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_link_view_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.link !== null && this.link !== undefined) {
+    output.writeFieldBegin('link', Thrift.Type.STRING, 2);
+    output.writeString(this.link);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_link_view_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TFrontendView(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_link_view_result.prototype = {};
+MapD_get_link_view_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TFrontendView();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_link_view_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_link_view_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_create_link_args = function(args) {
+  this.session = null;
+  this.view_state = null;
+  this.view_metadata = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.view_state !== undefined && args.view_state !== null) {
+      this.view_state = args.view_state;
+    }
+    if (args.view_metadata !== undefined && args.view_metadata !== null) {
+      this.view_metadata = args.view_metadata;
+    }
+  }
+};
+MapD_create_link_args.prototype = {};
+MapD_create_link_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.view_state = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.view_metadata = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_create_link_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_link_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.view_state !== null && this.view_state !== undefined) {
+    output.writeFieldBegin('view_state', Thrift.Type.STRING, 2);
+    output.writeString(this.view_state);
+    output.writeFieldEnd();
+  }
+  if (this.view_metadata !== null && this.view_metadata !== undefined) {
+    output.writeFieldBegin('view_metadata', Thrift.Type.STRING, 3);
+    output.writeString(this.view_metadata);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_create_link_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_create_link_result.prototype = {};
+MapD_create_link_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_create_link_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_link_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_load_table_binary_args = function(args) {
+  this.session = null;
+  this.table_name = null;
+  this.rows = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.table_name !== undefined && args.table_name !== null) {
+      this.table_name = args.table_name;
+    }
+    if (args.rows !== undefined && args.rows !== null) {
+      this.rows = Thrift.copyList(args.rows, [TRow]);
+    }
+  }
+};
+MapD_load_table_binary_args.prototype = {};
+MapD_load_table_binary_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.LIST) {
+        var _size228 = 0;
+        var _rtmp3232;
+        this.rows = [];
+        var _etype231 = 0;
+        _rtmp3232 = input.readListBegin();
+        _etype231 = _rtmp3232.etype;
+        _size228 = _rtmp3232.size;
+        for (var _i233 = 0; _i233 < _size228; ++_i233)
+        {
+          var elem234 = null;
+          elem234 = new TRow();
+          elem234.read(input);
+          this.rows.push(elem234);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_load_table_binary_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.table_name !== null && this.table_name !== undefined) {
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
+    output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  if (this.rows !== null && this.rows !== undefined) {
+    output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
+    output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
+    for (var iter235 in this.rows)
+    {
+      if (this.rows.hasOwnProperty(iter235))
+      {
+        iter235 = this.rows[iter235];
+        iter235.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_load_table_binary_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_load_table_binary_result.prototype = {};
+MapD_load_table_binary_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_load_table_binary_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_load_table_args = function(args) {
+  this.session = null;
+  this.table_name = null;
+  this.rows = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.table_name !== undefined && args.table_name !== null) {
+      this.table_name = args.table_name;
+    }
+    if (args.rows !== undefined && args.rows !== null) {
+      this.rows = Thrift.copyList(args.rows, [TStringRow]);
+    }
+  }
+};
+MapD_load_table_args.prototype = {};
+MapD_load_table_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.LIST) {
+        var _size236 = 0;
+        var _rtmp3240;
+        this.rows = [];
+        var _etype239 = 0;
+        _rtmp3240 = input.readListBegin();
+        _etype239 = _rtmp3240.etype;
+        _size236 = _rtmp3240.size;
+        for (var _i241 = 0; _i241 < _size236; ++_i241)
+        {
+          var elem242 = null;
+          elem242 = new TStringRow();
+          elem242.read(input);
+          this.rows.push(elem242);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_load_table_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.table_name !== null && this.table_name !== undefined) {
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
+    output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  if (this.rows !== null && this.rows !== undefined) {
+    output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
+    output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
+    for (var iter243 in this.rows)
+    {
+      if (this.rows.hasOwnProperty(iter243))
+      {
+        iter243 = this.rows[iter243];
+        iter243.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_load_table_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_load_table_result.prototype = {};
+MapD_load_table_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_load_table_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -3915,13 +4223,8 @@ MapD_detect_column_types_args.prototype.write = function(output) {
 MapD_detect_column_types_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -3930,9 +4233,6 @@ MapD_detect_column_types_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -3966,14 +4266,6 @@ MapD_detect_column_types_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -3993,11 +4285,6 @@ MapD_detect_column_types_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -4055,19 +4342,19 @@ MapD_create_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size236 = 0;
-        var _rtmp3240;
+        var _size244 = 0;
+        var _rtmp3248;
         this.row_desc = [];
-        var _etype239 = 0;
-        _rtmp3240 = input.readListBegin();
-        _etype239 = _rtmp3240.etype;
-        _size236 = _rtmp3240.size;
-        for (var _i241 = 0; _i241 < _size236; ++_i241)
+        var _etype247 = 0;
+        _rtmp3248 = input.readListBegin();
+        _etype247 = _rtmp3248.etype;
+        _size244 = _rtmp3248.size;
+        for (var _i249 = 0; _i249 < _size244; ++_i249)
         {
-          var elem242 = null;
-          elem242 = new TColumnType();
-          elem242.read(input);
-          this.row_desc.push(elem242);
+          var elem250 = null;
+          elem250 = new TColumnType();
+          elem250.read(input);
+          this.row_desc.push(elem250);
         }
         input.readListEnd();
       } else {
@@ -4105,12 +4392,12 @@ MapD_create_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter243 in this.row_desc)
+    for (var iter251 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter243))
+      if (this.row_desc.hasOwnProperty(iter251))
       {
-        iter243 = this.row_desc[iter243];
-        iter243.write(output);
+        iter251 = this.row_desc[iter251];
+        iter251.write(output);
       }
     }
     output.writeListEnd();
@@ -4128,21 +4415,13 @@ MapD_create_table_args.prototype.write = function(output) {
 
 MapD_create_table_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -4168,14 +4447,9 @@ MapD_create_table_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -4190,11 +4464,6 @@ MapD_create_table_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -4303,21 +4572,13 @@ MapD_import_table_args.prototype.write = function(output) {
 
 MapD_import_table_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -4343,14 +4604,9 @@ MapD_import_table_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -4365,1762 +4621,6 @@ MapD_import_table_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_import_table_status_args = function(args) {
-  this.session = null;
-  this.import_id = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.import_id !== undefined && args.import_id !== null) {
-      this.import_id = args.import_id;
-    }
-  }
-};
-MapD_import_table_status_args.prototype = {};
-MapD_import_table_status_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.import_id = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_import_table_status_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_import_table_status_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.import_id !== null && this.import_id !== undefined) {
-    output.writeFieldBegin('import_id', Thrift.Type.STRING, 2);
-    output.writeString(this.import_id);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_import_table_status_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TImportStatus(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_import_table_status_result.prototype = {};
-MapD_import_table_status_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TImportStatus();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_import_table_status_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_import_table_status_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_link_view_args = function(args) {
-  this.session = null;
-  this.link = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.link !== undefined && args.link !== null) {
-      this.link = args.link;
-    }
-  }
-};
-MapD_get_link_view_args.prototype = {};
-MapD_get_link_view_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.link = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_link_view_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_link_view_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.link !== null && this.link !== undefined) {
-    output.writeFieldBegin('link', Thrift.Type.STRING, 2);
-    output.writeString(this.link);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_link_view_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TFrontendView(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_link_view_result.prototype = {};
-MapD_get_link_view_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TFrontendView();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_link_view_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_link_view_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_create_link_args = function(args) {
-  this.session = null;
-  this.view_state = null;
-  this.view_metadata = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.view_state !== undefined && args.view_state !== null) {
-      this.view_state = args.view_state;
-    }
-    if (args.view_metadata !== undefined && args.view_metadata !== null) {
-      this.view_metadata = args.view_metadata;
-    }
-  }
-};
-MapD_create_link_args.prototype = {};
-MapD_create_link_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.view_state = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRING) {
-        this.view_metadata = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_create_link_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_create_link_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.view_state !== null && this.view_state !== undefined) {
-    output.writeFieldBegin('view_state', Thrift.Type.STRING, 2);
-    output.writeString(this.view_state);
-    output.writeFieldEnd();
-  }
-  if (this.view_metadata !== null && this.view_metadata !== undefined) {
-    output.writeFieldBegin('view_metadata', Thrift.Type.STRING, 3);
-    output.writeString(this.view_metadata);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_create_link_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = args.success;
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_create_link_result.prototype = {};
-MapD_create_link_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_create_link_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_create_link_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
-    output.writeString(this.success);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_rows_for_pixels_args = function(args) {
-  this.session = null;
-  this.widget_id = null;
-  this.pixels = null;
-  this.table_name = null;
-  this.col_names = null;
-  this.column_format = null;
-  this.nonce = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.widget_id !== undefined && args.widget_id !== null) {
-      this.widget_id = args.widget_id;
-    }
-    if (args.pixels !== undefined && args.pixels !== null) {
-      this.pixels = Thrift.copyList(args.pixels, [TPixel]);
-    }
-    if (args.table_name !== undefined && args.table_name !== null) {
-      this.table_name = args.table_name;
-    }
-    if (args.col_names !== undefined && args.col_names !== null) {
-      this.col_names = Thrift.copyList(args.col_names, [null]);
-    }
-    if (args.column_format !== undefined && args.column_format !== null) {
-      this.column_format = args.column_format;
-    }
-    if (args.nonce !== undefined && args.nonce !== null) {
-      this.nonce = args.nonce;
-    }
-  }
-};
-MapD_get_rows_for_pixels_args.prototype = {};
-MapD_get_rows_for_pixels_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.I64) {
-        this.widget_id = input.readI64().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.LIST) {
-        var _size244 = 0;
-        var _rtmp3248;
-        this.pixels = [];
-        var _etype247 = 0;
-        _rtmp3248 = input.readListBegin();
-        _etype247 = _rtmp3248.etype;
-        _size244 = _rtmp3248.size;
-        for (var _i249 = 0; _i249 < _size244; ++_i249)
-        {
-          var elem250 = null;
-          elem250 = new TPixel();
-          elem250.read(input);
-          this.pixels.push(elem250);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.LIST) {
-        var _size251 = 0;
-        var _rtmp3255;
-        this.col_names = [];
-        var _etype254 = 0;
-        _rtmp3255 = input.readListBegin();
-        _etype254 = _rtmp3255.etype;
-        _size251 = _rtmp3255.size;
-        for (var _i256 = 0; _i256 < _size251; ++_i256)
-        {
-          var elem257 = null;
-          elem257 = input.readString().value;
-          this.col_names.push(elem257);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.BOOL) {
-        this.column_format = input.readBool().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_rows_for_pixels_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_rows_for_pixels_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.widget_id !== null && this.widget_id !== undefined) {
-    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
-    output.writeI64(this.widget_id);
-    output.writeFieldEnd();
-  }
-  if (this.pixels !== null && this.pixels !== undefined) {
-    output.writeFieldBegin('pixels', Thrift.Type.LIST, 3);
-    output.writeListBegin(Thrift.Type.STRUCT, this.pixels.length);
-    for (var iter258 in this.pixels)
-    {
-      if (this.pixels.hasOwnProperty(iter258))
-      {
-        iter258 = this.pixels[iter258];
-        iter258.write(output);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.table_name !== null && this.table_name !== undefined) {
-    output.writeFieldBegin('table_name', Thrift.Type.STRING, 4);
-    output.writeString(this.table_name);
-    output.writeFieldEnd();
-  }
-  if (this.col_names !== null && this.col_names !== undefined) {
-    output.writeFieldBegin('col_names', Thrift.Type.LIST, 5);
-    output.writeListBegin(Thrift.Type.STRING, this.col_names.length);
-    for (var iter259 in this.col_names)
-    {
-      if (this.col_names.hasOwnProperty(iter259))
-      {
-        iter259 = this.col_names[iter259];
-        output.writeString(iter259);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.column_format !== null && this.column_format !== undefined) {
-    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 6);
-    output.writeBool(this.column_format);
-    output.writeFieldEnd();
-  }
-  if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 7);
-    output.writeString(this.nonce);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_rows_for_pixels_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TPixelResult(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_rows_for_pixels_result.prototype = {};
-MapD_get_rows_for_pixels_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TPixelResult();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_rows_for_pixels_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_rows_for_pixels_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_row_for_pixel_args = function(args) {
-  this.session = null;
-  this.widget_id = null;
-  this.pixel = null;
-  this.table_name = null;
-  this.col_names = null;
-  this.column_format = null;
-  this.pixelRadius = null;
-  this.nonce = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.widget_id !== undefined && args.widget_id !== null) {
-      this.widget_id = args.widget_id;
-    }
-    if (args.pixel !== undefined && args.pixel !== null) {
-      this.pixel = new TPixel(args.pixel);
-    }
-    if (args.table_name !== undefined && args.table_name !== null) {
-      this.table_name = args.table_name;
-    }
-    if (args.col_names !== undefined && args.col_names !== null) {
-      this.col_names = Thrift.copyList(args.col_names, [null]);
-    }
-    if (args.column_format !== undefined && args.column_format !== null) {
-      this.column_format = args.column_format;
-    }
-    if (args.pixelRadius !== undefined && args.pixelRadius !== null) {
-      this.pixelRadius = args.pixelRadius;
-    }
-    if (args.nonce !== undefined && args.nonce !== null) {
-      this.nonce = args.nonce;
-    }
-  }
-};
-MapD_get_row_for_pixel_args.prototype = {};
-MapD_get_row_for_pixel_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.I64) {
-        this.widget_id = input.readI64().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.pixel = new TPixel();
-        this.pixel.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.LIST) {
-        var _size260 = 0;
-        var _rtmp3264;
-        this.col_names = [];
-        var _etype263 = 0;
-        _rtmp3264 = input.readListBegin();
-        _etype263 = _rtmp3264.etype;
-        _size260 = _rtmp3264.size;
-        for (var _i265 = 0; _i265 < _size260; ++_i265)
-        {
-          var elem266 = null;
-          elem266 = input.readString().value;
-          this.col_names.push(elem266);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.BOOL) {
-        this.column_format = input.readBool().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.I32) {
-        this.pixelRadius = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 8:
-      if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_row_for_pixel_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_row_for_pixel_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.widget_id !== null && this.widget_id !== undefined) {
-    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
-    output.writeI64(this.widget_id);
-    output.writeFieldEnd();
-  }
-  if (this.pixel !== null && this.pixel !== undefined) {
-    output.writeFieldBegin('pixel', Thrift.Type.STRUCT, 3);
-    this.pixel.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.table_name !== null && this.table_name !== undefined) {
-    output.writeFieldBegin('table_name', Thrift.Type.STRING, 4);
-    output.writeString(this.table_name);
-    output.writeFieldEnd();
-  }
-  if (this.col_names !== null && this.col_names !== undefined) {
-    output.writeFieldBegin('col_names', Thrift.Type.LIST, 5);
-    output.writeListBegin(Thrift.Type.STRING, this.col_names.length);
-    for (var iter267 in this.col_names)
-    {
-      if (this.col_names.hasOwnProperty(iter267))
-      {
-        iter267 = this.col_names[iter267];
-        output.writeString(iter267);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.column_format !== null && this.column_format !== undefined) {
-    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 6);
-    output.writeBool(this.column_format);
-    output.writeFieldEnd();
-  }
-  if (this.pixelRadius !== null && this.pixelRadius !== undefined) {
-    output.writeFieldBegin('pixelRadius', Thrift.Type.I32, 7);
-    output.writeI32(this.pixelRadius);
-    output.writeFieldEnd();
-  }
-  if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 8);
-    output.writeString(this.nonce);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_row_for_pixel_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TPixelRowResult(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_row_for_pixel_result.prototype = {};
-MapD_get_row_for_pixel_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TPixelRowResult();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_row_for_pixel_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_row_for_pixel_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_result_row_for_pixel_args = function(args) {
-  this.session = null;
-  this.widget_id = null;
-  this.pixel = null;
-  this.table_col_names = null;
-  this.column_format = null;
-  this.pixelRadius = null;
-  this.nonce = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.widget_id !== undefined && args.widget_id !== null) {
-      this.widget_id = args.widget_id;
-    }
-    if (args.pixel !== undefined && args.pixel !== null) {
-      this.pixel = new TPixel(args.pixel);
-    }
-    if (args.table_col_names !== undefined && args.table_col_names !== null) {
-      this.table_col_names = Thrift.copyMap(args.table_col_names, [Thrift.copyList, null]);
-    }
-    if (args.column_format !== undefined && args.column_format !== null) {
-      this.column_format = args.column_format;
-    }
-    if (args.pixelRadius !== undefined && args.pixelRadius !== null) {
-      this.pixelRadius = args.pixelRadius;
-    }
-    if (args.nonce !== undefined && args.nonce !== null) {
-      this.nonce = args.nonce;
-    }
-  }
-};
-MapD_get_result_row_for_pixel_args.prototype = {};
-MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.I64) {
-        this.widget_id = input.readI64().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.pixel = new TPixel();
-        this.pixel.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.MAP) {
-        var _size268 = 0;
-        var _rtmp3272;
-        this.table_col_names = {};
-        var _ktype269 = 0;
-        var _vtype270 = 0;
-        _rtmp3272 = input.readMapBegin();
-        _ktype269 = _rtmp3272.ktype;
-        _vtype270 = _rtmp3272.vtype;
-        _size268 = _rtmp3272.size;
-        for (var _i273 = 0; _i273 < _size268; ++_i273)
-        {
-          if (_i273 > 0 ) {
-            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
-              input.rstack.pop();
-            }
-          }
-          var key274 = null;
-          var val275 = null;
-          key274 = input.readString().value;
-          var _size276 = 0;
-          var _rtmp3280;
-          val275 = [];
-          var _etype279 = 0;
-          _rtmp3280 = input.readListBegin();
-          _etype279 = _rtmp3280.etype;
-          _size276 = _rtmp3280.size;
-          for (var _i281 = 0; _i281 < _size276; ++_i281)
-          {
-            var elem282 = null;
-            elem282 = input.readString().value;
-            val275.push(elem282);
-          }
-          input.readListEnd();
-          this.table_col_names[key274] = val275;
-        }
-        input.readMapEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.BOOL) {
-        this.column_format = input.readBool().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.I32) {
-        this.pixelRadius = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_result_row_for_pixel_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_result_row_for_pixel_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.widget_id !== null && this.widget_id !== undefined) {
-    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
-    output.writeI64(this.widget_id);
-    output.writeFieldEnd();
-  }
-  if (this.pixel !== null && this.pixel !== undefined) {
-    output.writeFieldBegin('pixel', Thrift.Type.STRUCT, 3);
-    this.pixel.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.table_col_names !== null && this.table_col_names !== undefined) {
-    output.writeFieldBegin('table_col_names', Thrift.Type.MAP, 4);
-    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(this.table_col_names));
-    for (var kiter283 in this.table_col_names)
-    {
-      if (this.table_col_names.hasOwnProperty(kiter283))
-      {
-        var viter284 = this.table_col_names[kiter283];
-        output.writeString(kiter283);
-        output.writeListBegin(Thrift.Type.STRING, viter284.length);
-        for (var iter285 in viter284)
-        {
-          if (viter284.hasOwnProperty(iter285))
-          {
-            iter285 = viter284[iter285];
-            output.writeString(iter285);
-          }
-        }
-        output.writeListEnd();
-      }
-    }
-    output.writeMapEnd();
-    output.writeFieldEnd();
-  }
-  if (this.column_format !== null && this.column_format !== undefined) {
-    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 5);
-    output.writeBool(this.column_format);
-    output.writeFieldEnd();
-  }
-  if (this.pixelRadius !== null && this.pixelRadius !== undefined) {
-    output.writeFieldBegin('pixelRadius', Thrift.Type.I32, 6);
-    output.writeI32(this.pixelRadius);
-    output.writeFieldEnd();
-  }
-  if (this.nonce !== null && this.nonce !== undefined) {
-    output.writeFieldBegin('nonce', Thrift.Type.STRING, 7);
-    output.writeString(this.nonce);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_result_row_for_pixel_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = new TPixelTableRowResult(args.success);
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_result_row_for_pixel_result.prototype = {};
-MapD_get_result_row_for_pixel_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TPixelTableRowResult();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_result_row_for_pixel_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_result_row_for_pixel_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_start_heap_profile_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_start_heap_profile_args.prototype = {};
-MapD_start_heap_profile_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_start_heap_profile_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_start_heap_profile_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_start_heap_profile_result = function(args) {
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_start_heap_profile_result.prototype = {};
-MapD_start_heap_profile_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_start_heap_profile_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_start_heap_profile_result');
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_stop_heap_profile_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_stop_heap_profile_args.prototype = {};
-MapD_stop_heap_profile_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_stop_heap_profile_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_stop_heap_profile_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_stop_heap_profile_result = function(args) {
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_stop_heap_profile_result.prototype = {};
-MapD_stop_heap_profile_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_stop_heap_profile_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_stop_heap_profile_result');
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_heap_profile_args = function(args) {
-  this.session = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-  }
-};
-MapD_get_heap_profile_args.prototype = {};
-MapD_get_heap_profile_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_heap_profile_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_heap_profile_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_heap_profile_result = function(args) {
-  this.success = null;
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined && args.success !== null) {
-      this.success = args.success;
-    }
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_get_heap_profile_result.prototype = {};
-MapD_get_heap_profile_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_get_heap_profile_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_heap_profile_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
-    output.writeString(this.success);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6197,19 +4697,19 @@ MapD_import_geo_table_args.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.LIST) {
-        var _size286 = 0;
-        var _rtmp3290;
+        var _size252 = 0;
+        var _rtmp3256;
         this.row_desc = [];
-        var _etype289 = 0;
-        _rtmp3290 = input.readListBegin();
-        _etype289 = _rtmp3290.etype;
-        _size286 = _rtmp3290.size;
-        for (var _i291 = 0; _i291 < _size286; ++_i291)
+        var _etype255 = 0;
+        _rtmp3256 = input.readListBegin();
+        _etype255 = _rtmp3256.etype;
+        _size252 = _rtmp3256.size;
+        for (var _i257 = 0; _i257 < _size252; ++_i257)
         {
-          var elem292 = null;
-          elem292 = new TColumnType();
-          elem292.read(input);
-          this.row_desc.push(elem292);
+          var elem258 = null;
+          elem258 = new TColumnType();
+          elem258.read(input);
+          this.row_desc.push(elem258);
         }
         input.readListEnd();
       } else {
@@ -6250,12 +4750,12 @@ MapD_import_geo_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter293 in this.row_desc)
+    for (var iter259 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter293))
+      if (this.row_desc.hasOwnProperty(iter259))
       {
-        iter293 = this.row_desc[iter293];
-        iter293.write(output);
+        iter259 = this.row_desc[iter259];
+        iter259.write(output);
       }
     }
     output.writeListEnd();
@@ -6268,21 +4768,13 @@ MapD_import_geo_table_args.prototype.write = function(output) {
 
 MapD_import_geo_table_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -6308,14 +4800,9 @@ MapD_import_geo_table_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -6332,9 +4819,142 @@ MapD_import_geo_table_result.prototype.write = function(output) {
     this.e.write(output);
     output.writeFieldEnd();
   }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_import_table_status_args = function(args) {
+  this.session = null;
+  this.import_id = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.import_id !== undefined && args.import_id !== null) {
+      this.import_id = args.import_id;
+    }
+  }
+};
+MapD_import_table_status_args.prototype = {};
+MapD_import_table_status_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.import_id = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_import_table_status_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_table_status_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.import_id !== null && this.import_id !== undefined) {
+    output.writeFieldBegin('import_id', Thrift.Type.STRING, 2);
+    output.writeString(this.import_id);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_import_table_status_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TImportStatus(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_import_table_status_result.prototype = {};
+MapD_import_table_status_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TImportStatus();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_import_table_status_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_table_status_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6427,13 +5047,8 @@ MapD_start_query_args.prototype.write = function(output) {
 MapD_start_query_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -6442,9 +5057,6 @@ MapD_start_query_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -6478,14 +5090,6 @@ MapD_start_query_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -6505,11 +5109,6 @@ MapD_start_query_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6574,13 +5173,8 @@ MapD_execute_first_step_args.prototype.write = function(output) {
 MapD_execute_first_step_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -6589,9 +5183,6 @@ MapD_execute_first_step_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -6625,14 +5216,6 @@ MapD_execute_first_step_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -6652,11 +5235,6 @@ MapD_execute_first_step_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6703,19 +5281,19 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size294 = 0;
-        var _rtmp3298;
+        var _size260 = 0;
+        var _rtmp3264;
         this.row_desc = [];
-        var _etype297 = 0;
-        _rtmp3298 = input.readListBegin();
-        _etype297 = _rtmp3298.etype;
-        _size294 = _rtmp3298.size;
-        for (var _i299 = 0; _i299 < _size294; ++_i299)
+        var _etype263 = 0;
+        _rtmp3264 = input.readListBegin();
+        _etype263 = _rtmp3264.etype;
+        _size260 = _rtmp3264.size;
+        for (var _i265 = 0; _i265 < _size260; ++_i265)
         {
-          var elem300 = null;
-          elem300 = new TColumnType();
-          elem300.read(input);
-          this.row_desc.push(elem300);
+          var elem266 = null;
+          elem266 = new TColumnType();
+          elem266.read(input);
+          this.row_desc.push(elem266);
         }
         input.readListEnd();
       } else {
@@ -6748,12 +5326,12 @@ MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter301 in this.row_desc)
+    for (var iter267 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter301))
+      if (this.row_desc.hasOwnProperty(iter267))
       {
-        iter301 = this.row_desc[iter301];
-        iter301.write(output);
+        iter267 = this.row_desc[iter267];
+        iter267.write(output);
       }
     }
     output.writeListEnd();
@@ -6771,21 +5349,13 @@ MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
 
 MapD_broadcast_serialized_rows_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -6811,14 +5381,9 @@ MapD_broadcast_serialized_rows_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -6833,11 +5398,6 @@ MapD_broadcast_serialized_rows_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6930,13 +5490,8 @@ MapD_render_vega_raw_pixels_args.prototype.write = function(output) {
 MapD_render_vega_raw_pixels_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
@@ -6945,9 +5500,6 @@ MapD_render_vega_raw_pixels_result = function(args) {
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -6981,14 +5533,6 @@ MapD_render_vega_raw_pixels_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -7008,11 +5552,6 @@ MapD_render_vega_raw_pixels_result.prototype.write = function(output) {
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -7089,21 +5628,13 @@ MapD_insert_data_args.prototype.write = function(output) {
 
 MapD_insert_data_result = function(args) {
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
     return;
   }
   if (args) {
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
     }
   }
 };
@@ -7129,14 +5660,9 @@ MapD_insert_data_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -7153,175 +5679,12 @@ MapD_insert_data_result.prototype.write = function(output) {
     this.e.write(output);
     output.writeFieldEnd();
   }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
-MapD_checkpoint_args = function(args) {
-  this.session = null;
-  this.db_id = null;
-  this.table_id = null;
-  if (args) {
-    if (args.session !== undefined && args.session !== null) {
-      this.session = args.session;
-    }
-    if (args.db_id !== undefined && args.db_id !== null) {
-      this.db_id = args.db_id;
-    }
-    if (args.table_id !== undefined && args.table_id !== null) {
-      this.table_id = args.table_id;
-    }
-  }
-};
-MapD_checkpoint_args.prototype = {};
-MapD_checkpoint_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_checkpoint_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_checkpoint_args');
-  if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
-    output.writeFieldEnd();
-  }
-  if (this.db_id !== null && this.db_id !== undefined) {
-    output.writeFieldBegin('db_id', Thrift.Type.I32, 2);
-    output.writeI32(this.db_id);
-    output.writeFieldEnd();
-  }
-  if (this.table_id !== null && this.table_id !== undefined) {
-    output.writeFieldBegin('table_id', Thrift.Type.I32, 3);
-    output.writeI32(this.table_id);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_checkpoint_result = function(args) {
-  this.e = null;
-  this.te = null;
-  if (args instanceof TMapDException) {
-    this.e = args;
-    return;
-  }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
-  if (args) {
-    if (args.e !== undefined && args.e !== null) {
-      this.e = args.e;
-    }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
-  }
-};
-MapD_checkpoint_result.prototype = {};
-MapD_checkpoint_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-MapD_checkpoint_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_checkpoint_result');
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-MapD_get_table_details_args = function(args) {
+MapD_get_table_descriptor_args = function(args) {
   this.session = null;
   this.table_name = null;
   if (args) {
@@ -7333,8 +5696,8 @@ MapD_get_table_details_args = function(args) {
     }
   }
 };
-MapD_get_table_details_args.prototype = {};
-MapD_get_table_details_args.prototype.read = function(input) {
+MapD_get_table_descriptor_args.prototype = {};
+MapD_get_table_descriptor_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7370,8 +5733,8 @@ MapD_get_table_details_args.prototype.read = function(input) {
   return;
 };
 
-MapD_get_table_details_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_table_details_args');
+MapD_get_table_descriptor_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_descriptor_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.I32, 1);
     output.writeI32(this.session);
@@ -7387,32 +5750,386 @@ MapD_get_table_details_args.prototype.write = function(output) {
   return;
 };
 
-MapD_get_table_details_result = function(args) {
+MapD_get_table_descriptor_result = function(args) {
   this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
-      this.success = new TTableDetails(args.success);
+      this.success = Thrift.copyMap(args.success, [TColumnType]);
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
     }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
+  }
+};
+MapD_get_table_descriptor_result.prototype = {};
+MapD_get_table_descriptor_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.MAP) {
+        var _size268 = 0;
+        var _rtmp3272;
+        this.success = {};
+        var _ktype269 = 0;
+        var _vtype270 = 0;
+        _rtmp3272 = input.readMapBegin();
+        _ktype269 = _rtmp3272.ktype;
+        _vtype270 = _rtmp3272.vtype;
+        _size268 = _rtmp3272.size;
+        for (var _i273 = 0; _i273 < _size268; ++_i273)
+        {
+          if (_i273 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key274 = null;
+          var val275 = null;
+          key274 = input.readString().value;
+          val275 = new TColumnType();
+          val275.read(input);
+          this.success[key274] = val275;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_table_descriptor_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_descriptor_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.MAP, 0);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
+    for (var kiter276 in this.success)
+    {
+      if (this.success.hasOwnProperty(kiter276))
+      {
+        var viter277 = this.success[kiter276];
+        output.writeString(kiter276);
+        viter277.write(output);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_row_descriptor_args = function(args) {
+  this.session = null;
+  this.table_name = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.table_name !== undefined && args.table_name !== null) {
+      this.table_name = args.table_name;
     }
   }
 };
-MapD_get_table_details_result.prototype = {};
-MapD_get_table_details_result.prototype.read = function(input) {
+MapD_get_row_descriptor_args.prototype = {};
+MapD_get_row_descriptor_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_row_descriptor_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_row_descriptor_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.table_name !== null && this.table_name !== undefined) {
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
+    output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_row_descriptor_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [TColumnType]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_row_descriptor_result.prototype = {};
+MapD_get_row_descriptor_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size278 = 0;
+        var _rtmp3282;
+        this.success = [];
+        var _etype281 = 0;
+        _rtmp3282 = input.readListBegin();
+        _etype281 = _rtmp3282.etype;
+        _size278 = _rtmp3282.size;
+        for (var _i283 = 0; _i283 < _size278; ++_i283)
+        {
+          var elem284 = null;
+          elem284 = new TColumnType();
+          elem284.read(input);
+          this.success.push(elem284);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_row_descriptor_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_row_descriptor_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter285 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter285))
+      {
+        iter285 = this.success[iter285];
+        iter285.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_render_args = function(args) {
+  this.session = null;
+  this.query = null;
+  this.render_type = null;
+  this.nonce = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.query !== undefined && args.query !== null) {
+      this.query = args.query;
+    }
+    if (args.render_type !== undefined && args.render_type !== null) {
+      this.render_type = args.render_type;
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
+    }
+  }
+};
+MapD_render_args.prototype = {};
+MapD_render_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.session = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.query = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.render_type = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_render_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_render_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.I32, 1);
+    output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.query !== null && this.query !== undefined) {
+    output.writeFieldBegin('query', Thrift.Type.STRING, 2);
+    output.writeString(this.query);
+    output.writeFieldEnd();
+  }
+  if (this.render_type !== null && this.render_type !== undefined) {
+    output.writeFieldBegin('render_type', Thrift.Type.STRING, 3);
+    output.writeString(this.render_type);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 4);
+    output.writeString(this.nonce);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_render_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TRenderResult(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_render_result.prototype = {};
+MapD_render_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7427,7 +6144,7 @@ MapD_get_table_details_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.STRUCT) {
-        this.success = new TTableDetails();
+        this.success = new TRenderResult();
         this.success.read(input);
       } else {
         input.skip(ftype);
@@ -7441,14 +6158,6 @@ MapD_get_table_details_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -7458,8 +6167,8 @@ MapD_get_table_details_result.prototype.read = function(input) {
   return;
 };
 
-MapD_get_table_details_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_get_table_details_result');
+MapD_render_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_render_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -7470,26 +6179,45 @@ MapD_get_table_details_result.prototype.write = function(output) {
     this.e.write(output);
     output.writeFieldEnd();
   }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
-    output.writeFieldEnd();
-  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
-MapD_clear_gpu_memory_args = function(args) {
+MapD_get_rows_for_pixels_args = function(args) {
   this.session = null;
+  this.widget_id = null;
+  this.pixels = null;
+  this.table_name = null;
+  this.col_names = null;
+  this.column_format = null;
+  this.nonce = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
     }
+    if (args.widget_id !== undefined && args.widget_id !== null) {
+      this.widget_id = args.widget_id;
+    }
+    if (args.pixels !== undefined && args.pixels !== null) {
+      this.pixels = Thrift.copyList(args.pixels, [TPixel]);
+    }
+    if (args.table_name !== undefined && args.table_name !== null) {
+      this.table_name = args.table_name;
+    }
+    if (args.col_names !== undefined && args.col_names !== null) {
+      this.col_names = Thrift.copyList(args.col_names, [null]);
+    }
+    if (args.column_format !== undefined && args.column_format !== null) {
+      this.column_format = args.column_format;
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
+    }
   }
 };
-MapD_clear_gpu_memory_args.prototype = {};
-MapD_clear_gpu_memory_args.prototype.read = function(input) {
+MapD_get_rows_for_pixels_args.prototype = {};
+MapD_get_rows_for_pixels_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7509,9 +6237,75 @@ MapD_clear_gpu_memory_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.widget_id = input.readI64().value;
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.LIST) {
+        var _size286 = 0;
+        var _rtmp3290;
+        this.pixels = [];
+        var _etype289 = 0;
+        _rtmp3290 = input.readListBegin();
+        _etype289 = _rtmp3290.etype;
+        _size286 = _rtmp3290.size;
+        for (var _i291 = 0; _i291 < _size286; ++_i291)
+        {
+          var elem292 = null;
+          elem292 = new TPixel();
+          elem292.read(input);
+          this.pixels.push(elem292);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.LIST) {
+        var _size293 = 0;
+        var _rtmp3297;
+        this.col_names = [];
+        var _etype296 = 0;
+        _rtmp3297 = input.readListBegin();
+        _etype296 = _rtmp3297.etype;
+        _size293 = _rtmp3297.size;
+        for (var _i298 = 0; _i298 < _size293; ++_i298)
+        {
+          var elem299 = null;
+          elem299 = input.readString().value;
+          this.col_names.push(elem299);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.BOOL) {
+        this.column_format = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -7521,11 +6315,59 @@ MapD_clear_gpu_memory_args.prototype.read = function(input) {
   return;
 };
 
-MapD_clear_gpu_memory_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_clear_gpu_memory_args');
+MapD_get_rows_for_pixels_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_rows_for_pixels_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.I32, 1);
     output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.widget_id !== null && this.widget_id !== undefined) {
+    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
+    output.writeI64(this.widget_id);
+    output.writeFieldEnd();
+  }
+  if (this.pixels !== null && this.pixels !== undefined) {
+    output.writeFieldBegin('pixels', Thrift.Type.LIST, 3);
+    output.writeListBegin(Thrift.Type.STRUCT, this.pixels.length);
+    for (var iter300 in this.pixels)
+    {
+      if (this.pixels.hasOwnProperty(iter300))
+      {
+        iter300 = this.pixels[iter300];
+        iter300.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.table_name !== null && this.table_name !== undefined) {
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 4);
+    output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  if (this.col_names !== null && this.col_names !== undefined) {
+    output.writeFieldBegin('col_names', Thrift.Type.LIST, 5);
+    output.writeListBegin(Thrift.Type.STRING, this.col_names.length);
+    for (var iter301 in this.col_names)
+    {
+      if (this.col_names.hasOwnProperty(iter301))
+      {
+        iter301 = this.col_names[iter301];
+        output.writeString(iter301);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.column_format !== null && this.column_format !== undefined) {
+    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 6);
+    output.writeBool(this.column_format);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 7);
+    output.writeString(this.nonce);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -7533,28 +6375,24 @@ MapD_clear_gpu_memory_args.prototype.write = function(output) {
   return;
 };
 
-MapD_clear_gpu_memory_result = function(args) {
+MapD_get_rows_for_pixels_result = function(args) {
+  this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
   if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TPixelResult(args.success);
+    }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
     }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
   }
 };
-MapD_clear_gpu_memory_result.prototype = {};
-MapD_clear_gpu_memory_result.prototype.read = function(input) {
+MapD_get_rows_for_pixels_result.prototype = {};
+MapD_get_rows_for_pixels_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7567,18 +6405,18 @@ MapD_clear_gpu_memory_result.prototype.read = function(input) {
     }
     switch (fid)
     {
-      case 1:
+      case 0:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
+        this.success = new TPixelResult();
+        this.success.read(input);
       } else {
         input.skip(ftype);
       }
       break;
-      case 2:
+      case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
+        this.e = new TMapDException();
+        this.e.read(input);
       } else {
         input.skip(ftype);
       }
@@ -7592,16 +6430,16 @@ MapD_clear_gpu_memory_result.prototype.read = function(input) {
   return;
 };
 
-MapD_clear_gpu_memory_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_clear_gpu_memory_result');
+MapD_get_rows_for_pixels_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_rows_for_pixels_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -7609,16 +6447,44 @@ MapD_clear_gpu_memory_result.prototype.write = function(output) {
   return;
 };
 
-MapD_clear_cpu_memory_args = function(args) {
+MapD_get_row_for_pixel_args = function(args) {
   this.session = null;
+  this.widget_id = null;
+  this.pixel = null;
+  this.table_name = null;
+  this.col_names = null;
+  this.column_format = null;
+  this.pixelRadius = null;
+  this.nonce = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
     }
+    if (args.widget_id !== undefined && args.widget_id !== null) {
+      this.widget_id = args.widget_id;
+    }
+    if (args.pixel !== undefined && args.pixel !== null) {
+      this.pixel = new TPixel(args.pixel);
+    }
+    if (args.table_name !== undefined && args.table_name !== null) {
+      this.table_name = args.table_name;
+    }
+    if (args.col_names !== undefined && args.col_names !== null) {
+      this.col_names = Thrift.copyList(args.col_names, [null]);
+    }
+    if (args.column_format !== undefined && args.column_format !== null) {
+      this.column_format = args.column_format;
+    }
+    if (args.pixelRadius !== undefined && args.pixelRadius !== null) {
+      this.pixelRadius = args.pixelRadius;
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
+    }
   }
 };
-MapD_clear_cpu_memory_args.prototype = {};
-MapD_clear_cpu_memory_args.prototype.read = function(input) {
+MapD_get_row_for_pixel_args.prototype = {};
+MapD_get_row_for_pixel_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7638,9 +6504,69 @@ MapD_clear_cpu_memory_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.widget_id = input.readI64().value;
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.pixel = new TPixel();
+        this.pixel.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.LIST) {
+        var _size302 = 0;
+        var _rtmp3306;
+        this.col_names = [];
+        var _etype305 = 0;
+        _rtmp3306 = input.readListBegin();
+        _etype305 = _rtmp3306.etype;
+        _size302 = _rtmp3306.size;
+        for (var _i307 = 0; _i307 < _size302; ++_i307)
+        {
+          var elem308 = null;
+          elem308 = input.readString().value;
+          this.col_names.push(elem308);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.BOOL) {
+        this.column_format = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.I32) {
+        this.pixelRadius = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -7650,11 +6576,55 @@ MapD_clear_cpu_memory_args.prototype.read = function(input) {
   return;
 };
 
-MapD_clear_cpu_memory_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_clear_cpu_memory_args');
+MapD_get_row_for_pixel_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_row_for_pixel_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.I32, 1);
     output.writeI32(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.widget_id !== null && this.widget_id !== undefined) {
+    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
+    output.writeI64(this.widget_id);
+    output.writeFieldEnd();
+  }
+  if (this.pixel !== null && this.pixel !== undefined) {
+    output.writeFieldBegin('pixel', Thrift.Type.STRUCT, 3);
+    this.pixel.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.table_name !== null && this.table_name !== undefined) {
+    output.writeFieldBegin('table_name', Thrift.Type.STRING, 4);
+    output.writeString(this.table_name);
+    output.writeFieldEnd();
+  }
+  if (this.col_names !== null && this.col_names !== undefined) {
+    output.writeFieldBegin('col_names', Thrift.Type.LIST, 5);
+    output.writeListBegin(Thrift.Type.STRING, this.col_names.length);
+    for (var iter309 in this.col_names)
+    {
+      if (this.col_names.hasOwnProperty(iter309))
+      {
+        iter309 = this.col_names[iter309];
+        output.writeString(iter309);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.column_format !== null && this.column_format !== undefined) {
+    output.writeFieldBegin('column_format', Thrift.Type.BOOL, 6);
+    output.writeBool(this.column_format);
+    output.writeFieldEnd();
+  }
+  if (this.pixelRadius !== null && this.pixelRadius !== undefined) {
+    output.writeFieldBegin('pixelRadius', Thrift.Type.I32, 7);
+    output.writeI32(this.pixelRadius);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 8);
+    output.writeString(this.nonce);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -7662,28 +6632,24 @@ MapD_clear_cpu_memory_args.prototype.write = function(output) {
   return;
 };
 
-MapD_clear_cpu_memory_result = function(args) {
+MapD_get_row_for_pixel_result = function(args) {
+  this.success = null;
   this.e = null;
-  this.te = null;
   if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
-  if (args instanceof ThriftException) {
-    this.te = args;
-    return;
-  }
   if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TPixelRowResult(args.success);
+    }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
     }
-    if (args.te !== undefined && args.te !== null) {
-      this.te = args.te;
-    }
   }
 };
-MapD_clear_cpu_memory_result.prototype = {};
-MapD_clear_cpu_memory_result.prototype.read = function(input) {
+MapD_get_row_for_pixel_result.prototype = {};
+MapD_get_row_for_pixel_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7696,18 +6662,18 @@ MapD_clear_cpu_memory_result.prototype.read = function(input) {
     }
     switch (fid)
     {
-      case 1:
+      case 0:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TMapDException();
-        this.e.read(input);
+        this.success = new TPixelRowResult();
+        this.success.read(input);
       } else {
         input.skip(ftype);
       }
       break;
-      case 2:
+      case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.te = new ThriftException();
-        this.te.read(input);
+        this.e = new TMapDException();
+        this.e.read(input);
       } else {
         input.skip(ftype);
       }
@@ -7721,16 +6687,16 @@ MapD_clear_cpu_memory_result.prototype.read = function(input) {
   return;
 };
 
-MapD_clear_cpu_memory_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_clear_cpu_memory_result');
+MapD_get_row_for_pixel_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_row_for_pixel_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.te !== null && this.te !== undefined) {
-    output.writeFieldBegin('te', Thrift.Type.STRUCT, 2);
-    this.te.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -7793,9 +6759,6 @@ MapDClient.prototype.recv_connect = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
@@ -7848,61 +6811,6 @@ MapDClient.prototype.recv_disconnect = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.interrupt = function(session, callback) {
-  this.send_interrupt(session, callback); 
-  if (!callback) {
-  this.recv_interrupt();
-  }
-};
-
-MapDClient.prototype.send_interrupt = function(session, callback) {
-  this.output.writeMessageBegin('interrupt', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_interrupt_args();
-  args.session = session;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_interrupt();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_interrupt = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_interrupt_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
   return;
 };
 MapDClient.prototype.get_server_status = function(session, callback) {
@@ -7952,349 +6860,10 @@ MapDClient.prototype.recv_get_server_status = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'get_server_status failed: unknown result';
-};
-MapDClient.prototype.sql_execute = function(session, query, column_format, nonce, first_n, callback) {
-  this.send_sql_execute(session, query, column_format, nonce, first_n, callback); 
-  if (!callback) {
-    return this.recv_sql_execute();
-  }
-};
-
-MapDClient.prototype.send_sql_execute = function(session, query, column_format, nonce, first_n, callback) {
-  this.output.writeMessageBegin('sql_execute', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_sql_execute_args();
-  args.session = session;
-  args.query = query;
-  args.column_format = column_format;
-  args.nonce = nonce;
-  args.first_n = first_n;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_sql_execute();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_sql_execute = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_sql_execute_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'sql_execute failed: unknown result';
-};
-MapDClient.prototype.sql_validate = function(session, query, callback) {
-  this.send_sql_validate(session, query, callback); 
-  if (!callback) {
-    return this.recv_sql_validate();
-  }
-};
-
-MapDClient.prototype.send_sql_validate = function(session, query, callback) {
-  this.output.writeMessageBegin('sql_validate', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_sql_validate_args();
-  args.session = session;
-  args.query = query;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_sql_validate();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_sql_validate = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_sql_validate_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'sql_validate failed: unknown result';
-};
-MapDClient.prototype.get_table_descriptor = function(session, table_name, callback) {
-  this.send_get_table_descriptor(session, table_name, callback); 
-  if (!callback) {
-    return this.recv_get_table_descriptor();
-  }
-};
-
-MapDClient.prototype.send_get_table_descriptor = function(session, table_name, callback) {
-  this.output.writeMessageBegin('get_table_descriptor', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_table_descriptor_args();
-  args.session = session;
-  args.table_name = table_name;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_get_table_descriptor();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_get_table_descriptor = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_get_table_descriptor_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'get_table_descriptor failed: unknown result';
-};
-MapDClient.prototype.get_row_descriptor = function(session, table_name, callback) {
-  this.send_get_row_descriptor(session, table_name, callback); 
-  if (!callback) {
-    return this.recv_get_row_descriptor();
-  }
-};
-
-MapDClient.prototype.send_get_row_descriptor = function(session, table_name, callback) {
-  this.output.writeMessageBegin('get_row_descriptor', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_row_descriptor_args();
-  args.session = session;
-  args.table_name = table_name;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_get_row_descriptor();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_get_row_descriptor = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_get_row_descriptor_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'get_row_descriptor failed: unknown result';
-};
-MapDClient.prototype.get_frontend_view = function(session, view_name, callback) {
-  this.send_get_frontend_view(session, view_name, callback); 
-  if (!callback) {
-    return this.recv_get_frontend_view();
-  }
-};
-
-MapDClient.prototype.send_get_frontend_view = function(session, view_name, callback) {
-  this.output.writeMessageBegin('get_frontend_view', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_frontend_view_args();
-  args.session = session;
-  args.view_name = view_name;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_get_frontend_view();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_get_frontend_view = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_get_frontend_view_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'get_frontend_view failed: unknown result';
-};
-MapDClient.prototype.delete_frontend_view = function(session, view_name, callback) {
-  this.send_delete_frontend_view(session, view_name, callback); 
-  if (!callback) {
-  this.recv_delete_frontend_view();
-  }
-};
-
-MapDClient.prototype.send_delete_frontend_view = function(session, view_name, callback) {
-  this.output.writeMessageBegin('delete_frontend_view', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_delete_frontend_view_args();
-  args.session = session;
-  args.view_name = view_name;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_delete_frontend_view();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_delete_frontend_view = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_delete_frontend_view_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
 };
 MapDClient.prototype.get_tables = function(session, callback) {
   this.send_get_tables(session, callback); 
@@ -8343,13 +6912,63 @@ MapDClient.prototype.recv_get_tables = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'get_tables failed: unknown result';
+};
+MapDClient.prototype.get_table_details = function(session, table_name, callback) {
+  this.send_get_table_details(session, table_name, callback); 
+  if (!callback) {
+    return this.recv_get_table_details();
+  }
+};
+
+MapDClient.prototype.send_get_table_details = function(session, table_name, callback) {
+  this.output.writeMessageBegin('get_table_details', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_table_details_args();
+  args.session = session;
+  args.table_name = table_name;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_table_details();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_table_details = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_table_details_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_table_details failed: unknown result';
 };
 MapDClient.prototype.get_users = function(session, callback) {
   this.send_get_users(session, callback); 
@@ -8397,9 +7016,6 @@ MapDClient.prototype.recv_get_users = function() {
 
   if (null !== result.e) {
     throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
   }
   if (null !== result.success) {
     return result.success;
@@ -8453,121 +7069,10 @@ MapDClient.prototype.recv_get_databases = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'get_databases failed: unknown result';
-};
-MapDClient.prototype.get_frontend_views = function(session, callback) {
-  this.send_get_frontend_views(session, callback); 
-  if (!callback) {
-    return this.recv_get_frontend_views();
-  }
-};
-
-MapDClient.prototype.send_get_frontend_views = function(session, callback) {
-  this.output.writeMessageBegin('get_frontend_views', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_frontend_views_args();
-  args.session = session;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_get_frontend_views();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_get_frontend_views = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_get_frontend_views_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'get_frontend_views failed: unknown result';
-};
-MapDClient.prototype.set_execution_mode = function(session, mode, callback) {
-  this.send_set_execution_mode(session, mode, callback); 
-  if (!callback) {
-  this.recv_set_execution_mode();
-  }
-};
-
-MapDClient.prototype.send_set_execution_mode = function(session, mode, callback) {
-  this.output.writeMessageBegin('set_execution_mode', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_set_execution_mode_args();
-  args.session = session;
-  args.mode = mode;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_set_execution_mode();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_set_execution_mode = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_set_execution_mode_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
 };
 MapDClient.prototype.get_version = function(callback) {
   this.send_get_version(callback); 
@@ -8615,13 +7120,160 @@ MapDClient.prototype.recv_get_version = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'get_version failed: unknown result';
+};
+MapDClient.prototype.start_heap_profile = function(session, callback) {
+  this.send_start_heap_profile(session, callback); 
+  if (!callback) {
+  this.recv_start_heap_profile();
+  }
+};
+
+MapDClient.prototype.send_start_heap_profile = function(session, callback) {
+  this.output.writeMessageBegin('start_heap_profile', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_start_heap_profile_args();
+  args.session = session;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_start_heap_profile();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_start_heap_profile = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_start_heap_profile_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.stop_heap_profile = function(session, callback) {
+  this.send_stop_heap_profile(session, callback); 
+  if (!callback) {
+  this.recv_stop_heap_profile();
+  }
+};
+
+MapDClient.prototype.send_stop_heap_profile = function(session, callback) {
+  this.output.writeMessageBegin('stop_heap_profile', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_stop_heap_profile_args();
+  args.session = session;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_stop_heap_profile();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_stop_heap_profile = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_stop_heap_profile_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.get_heap_profile = function(session, callback) {
+  this.send_get_heap_profile(session, callback); 
+  if (!callback) {
+    return this.recv_get_heap_profile();
+  }
+};
+
+MapDClient.prototype.send_get_heap_profile = function(session, callback) {
+  this.output.writeMessageBegin('get_heap_profile', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_heap_profile_args();
+  args.session = session;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_heap_profile();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_heap_profile = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_heap_profile_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_heap_profile failed: unknown result';
 };
 MapDClient.prototype.get_memory_gpu = function(session, callback) {
   this.send_get_memory_gpu(session, callback); 
@@ -8669,9 +7321,6 @@ MapDClient.prototype.recv_get_memory_gpu = function() {
 
   if (null !== result.e) {
     throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
   }
   if (null !== result.success) {
     return result.success;
@@ -8725,27 +7374,22 @@ MapDClient.prototype.recv_get_memory_summary = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'get_memory_summary failed: unknown result';
 };
-MapDClient.prototype.load_table_binary = function(session, table_name, rows, callback) {
-  this.send_load_table_binary(session, table_name, rows, callback); 
+MapDClient.prototype.clear_cpu_memory = function(session, callback) {
+  this.send_clear_cpu_memory(session, callback); 
   if (!callback) {
-  this.recv_load_table_binary();
+  this.recv_clear_cpu_memory();
   }
 };
 
-MapDClient.prototype.send_load_table_binary = function(session, table_name, rows, callback) {
-  this.output.writeMessageBegin('load_table_binary', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_load_table_binary_args();
+MapDClient.prototype.send_clear_cpu_memory = function(session, callback) {
+  this.output.writeMessageBegin('clear_cpu_memory', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_clear_cpu_memory_args();
   args.session = session;
-  args.table_name = table_name;
-  args.rows = rows;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -8753,7 +7397,7 @@ MapDClient.prototype.send_load_table_binary = function(session, table_name, rows
     this.output.getTransport().flush(true, function() {
       var result = null;
       try {
-        result = self.recv_load_table_binary();
+        result = self.recv_clear_cpu_memory();
       } catch (e) {
         result = e;
       }
@@ -8764,7 +7408,7 @@ MapDClient.prototype.send_load_table_binary = function(session, table_name, rows
   }
 };
 
-MapDClient.prototype.recv_load_table_binary = function() {
+MapDClient.prototype.recv_clear_cpu_memory = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -8775,31 +7419,26 @@ MapDClient.prototype.recv_load_table_binary = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_load_table_binary_result();
+  var result = new MapD_clear_cpu_memory_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   return;
 };
-MapDClient.prototype.load_table = function(session, table_name, rows, callback) {
-  this.send_load_table(session, table_name, rows, callback); 
+MapDClient.prototype.clear_gpu_memory = function(session, callback) {
+  this.send_clear_gpu_memory(session, callback); 
   if (!callback) {
-  this.recv_load_table();
+  this.recv_clear_gpu_memory();
   }
 };
 
-MapDClient.prototype.send_load_table = function(session, table_name, rows, callback) {
-  this.output.writeMessageBegin('load_table', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_load_table_args();
+MapDClient.prototype.send_clear_gpu_memory = function(session, callback) {
+  this.output.writeMessageBegin('clear_gpu_memory', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_clear_gpu_memory_args();
   args.session = session;
-  args.table_name = table_name;
-  args.rows = rows;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -8807,7 +7446,7 @@ MapDClient.prototype.send_load_table = function(session, table_name, rows, callb
     this.output.getTransport().flush(true, function() {
       var result = null;
       try {
-        result = self.recv_load_table();
+        result = self.recv_clear_gpu_memory();
       } catch (e) {
         result = e;
       }
@@ -8818,7 +7457,7 @@ MapDClient.prototype.send_load_table = function(session, table_name, rows, callb
   }
 };
 
-MapDClient.prototype.recv_load_table = function() {
+MapDClient.prototype.recv_clear_gpu_memory = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -8829,32 +7468,30 @@ MapDClient.prototype.recv_load_table = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_load_table_result();
+  var result = new MapD_clear_gpu_memory_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   return;
 };
-MapDClient.prototype.render = function(session, query, render_type, nonce, callback) {
-  this.send_render(session, query, render_type, nonce, callback); 
+MapDClient.prototype.sql_execute = function(session, query, column_format, nonce, first_n, callback) {
+  this.send_sql_execute(session, query, column_format, nonce, first_n, callback); 
   if (!callback) {
-    return this.recv_render();
+    return this.recv_sql_execute();
   }
 };
 
-MapDClient.prototype.send_render = function(session, query, render_type, nonce, callback) {
-  this.output.writeMessageBegin('render', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_render_args();
+MapDClient.prototype.send_sql_execute = function(session, query, column_format, nonce, first_n, callback) {
+  this.output.writeMessageBegin('sql_execute', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_sql_execute_args();
   args.session = session;
   args.query = query;
-  args.render_type = render_type;
+  args.column_format = column_format;
   args.nonce = nonce;
+  args.first_n = first_n;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -8862,7 +7499,7 @@ MapDClient.prototype.send_render = function(session, query, render_type, nonce, 
     this.output.getTransport().flush(true, function() {
       var result = null;
       try {
-        result = self.recv_render();
+        result = self.recv_sql_execute();
       } catch (e) {
         result = e;
       }
@@ -8873,7 +7510,7 @@ MapDClient.prototype.send_render = function(session, query, render_type, nonce, 
   }
 };
 
-MapDClient.prototype.recv_render = function() {
+MapDClient.prototype.recv_sql_execute = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -8884,20 +7521,169 @@ MapDClient.prototype.recv_render = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_render_result();
+  var result = new MapD_sql_execute_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
   if (null !== result.e) {
     throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
   }
   if (null !== result.success) {
     return result.success;
   }
-  throw 'render failed: unknown result';
+  throw 'sql_execute failed: unknown result';
+};
+MapDClient.prototype.interrupt = function(session, callback) {
+  this.send_interrupt(session, callback); 
+  if (!callback) {
+  this.recv_interrupt();
+  }
+};
+
+MapDClient.prototype.send_interrupt = function(session, callback) {
+  this.output.writeMessageBegin('interrupt', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_interrupt_args();
+  args.session = session;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_interrupt();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_interrupt = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_interrupt_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.sql_validate = function(session, query, callback) {
+  this.send_sql_validate(session, query, callback); 
+  if (!callback) {
+    return this.recv_sql_validate();
+  }
+};
+
+MapDClient.prototype.send_sql_validate = function(session, query, callback) {
+  this.output.writeMessageBegin('sql_validate', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_sql_validate_args();
+  args.session = session;
+  args.query = query;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_sql_validate();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_sql_validate = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_sql_validate_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'sql_validate failed: unknown result';
+};
+MapDClient.prototype.set_execution_mode = function(session, mode, callback) {
+  this.send_set_execution_mode(session, mode, callback); 
+  if (!callback) {
+  this.recv_set_execution_mode();
+  }
+};
+
+MapDClient.prototype.send_set_execution_mode = function(session, mode, callback) {
+  this.output.writeMessageBegin('set_execution_mode', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_set_execution_mode_args();
+  args.session = session;
+  args.mode = mode;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_set_execution_mode();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_set_execution_mode = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_set_execution_mode_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
 };
 MapDClient.prototype.render_vega = function(session, widget_id, vega_json, compression_level, nonce, callback) {
   this.send_render_vega(session, widget_id, vega_json, compression_level, nonce, callback); 
@@ -8950,13 +7736,173 @@ MapDClient.prototype.recv_render_vega = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'render_vega failed: unknown result';
+};
+MapDClient.prototype.get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
+  this.send_get_result_row_for_pixel(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback); 
+  if (!callback) {
+    return this.recv_get_result_row_for_pixel();
+  }
+};
+
+MapDClient.prototype.send_get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
+  this.output.writeMessageBegin('get_result_row_for_pixel', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_result_row_for_pixel_args();
+  args.session = session;
+  args.widget_id = widget_id;
+  args.pixel = pixel;
+  args.table_col_names = table_col_names;
+  args.column_format = column_format;
+  args.pixelRadius = pixelRadius;
+  args.nonce = nonce;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_result_row_for_pixel();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_result_row_for_pixel = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_result_row_for_pixel_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_result_row_for_pixel failed: unknown result';
+};
+MapDClient.prototype.get_frontend_view = function(session, view_name, callback) {
+  this.send_get_frontend_view(session, view_name, callback); 
+  if (!callback) {
+    return this.recv_get_frontend_view();
+  }
+};
+
+MapDClient.prototype.send_get_frontend_view = function(session, view_name, callback) {
+  this.output.writeMessageBegin('get_frontend_view', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_frontend_view_args();
+  args.session = session;
+  args.view_name = view_name;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_frontend_view();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_frontend_view = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_frontend_view_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_frontend_view failed: unknown result';
+};
+MapDClient.prototype.get_frontend_views = function(session, callback) {
+  this.send_get_frontend_views(session, callback); 
+  if (!callback) {
+    return this.recv_get_frontend_views();
+  }
+};
+
+MapDClient.prototype.send_get_frontend_views = function(session, callback) {
+  this.output.writeMessageBegin('get_frontend_views', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_frontend_views_args();
+  args.session = session;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_frontend_views();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_frontend_views = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_frontend_views_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_frontend_views failed: unknown result';
 };
 MapDClient.prototype.create_frontend_view = function(session, view_name, view_state, image_hash, view_metadata, callback) {
   this.send_create_frontend_view(session, view_name, view_state, image_hash, view_metadata, callback); 
@@ -9009,8 +7955,264 @@ MapDClient.prototype.recv_create_frontend_view = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
+  return;
+};
+MapDClient.prototype.delete_frontend_view = function(session, view_name, callback) {
+  this.send_delete_frontend_view(session, view_name, callback); 
+  if (!callback) {
+  this.recv_delete_frontend_view();
+  }
+};
+
+MapDClient.prototype.send_delete_frontend_view = function(session, view_name, callback) {
+  this.output.writeMessageBegin('delete_frontend_view', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_delete_frontend_view_args();
+  args.session = session;
+  args.view_name = view_name;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_delete_frontend_view();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_delete_frontend_view = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_delete_frontend_view_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.get_link_view = function(session, link, callback) {
+  this.send_get_link_view(session, link, callback); 
+  if (!callback) {
+    return this.recv_get_link_view();
+  }
+};
+
+MapDClient.prototype.send_get_link_view = function(session, link, callback) {
+  this.output.writeMessageBegin('get_link_view', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_link_view_args();
+  args.session = session;
+  args.link = link;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_link_view();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_link_view = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_link_view_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_link_view failed: unknown result';
+};
+MapDClient.prototype.create_link = function(session, view_state, view_metadata, callback) {
+  this.send_create_link(session, view_state, view_metadata, callback); 
+  if (!callback) {
+    return this.recv_create_link();
+  }
+};
+
+MapDClient.prototype.send_create_link = function(session, view_state, view_metadata, callback) {
+  this.output.writeMessageBegin('create_link', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_create_link_args();
+  args.session = session;
+  args.view_state = view_state;
+  args.view_metadata = view_metadata;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_create_link();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_create_link = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_create_link_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'create_link failed: unknown result';
+};
+MapDClient.prototype.load_table_binary = function(session, table_name, rows, callback) {
+  this.send_load_table_binary(session, table_name, rows, callback); 
+  if (!callback) {
+  this.recv_load_table_binary();
+  }
+};
+
+MapDClient.prototype.send_load_table_binary = function(session, table_name, rows, callback) {
+  this.output.writeMessageBegin('load_table_binary', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_load_table_binary_args();
+  args.session = session;
+  args.table_name = table_name;
+  args.rows = rows;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_load_table_binary();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_load_table_binary = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_load_table_binary_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.load_table = function(session, table_name, rows, callback) {
+  this.send_load_table(session, table_name, rows, callback); 
+  if (!callback) {
+  this.recv_load_table();
+  }
+};
+
+MapDClient.prototype.send_load_table = function(session, table_name, rows, callback) {
+  this.output.writeMessageBegin('load_table', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_load_table_args();
+  args.session = session;
+  args.table_name = table_name;
+  args.rows = rows;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_load_table();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_load_table = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_load_table_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
   }
   return;
 };
@@ -9062,9 +8264,6 @@ MapDClient.prototype.recv_detect_column_types = function() {
 
   if (null !== result.e) {
     throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
   }
   if (null !== result.success) {
     return result.success;
@@ -9121,9 +8320,6 @@ MapDClient.prototype.recv_create_table = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   return;
 };
 MapDClient.prototype.import_table = function(session, table_name, file_name, copy_params, callback) {
@@ -9176,8 +8372,58 @@ MapDClient.prototype.recv_import_table = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
+  return;
+};
+MapDClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
+  this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, callback); 
+  if (!callback) {
+  this.recv_import_geo_table();
+  }
+};
+
+MapDClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
+  this.output.writeMessageBegin('import_geo_table', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_import_geo_table_args();
+  args.session = session;
+  args.table_name = table_name;
+  args.file_name = file_name;
+  args.copy_params = copy_params;
+  args.row_desc = row_desc;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_import_geo_table();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_import_geo_table = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_import_geo_table_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
   }
   return;
 };
@@ -9229,26 +8475,24 @@ MapDClient.prototype.recv_import_table_status = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'import_table_status failed: unknown result';
 };
-MapDClient.prototype.get_link_view = function(session, link, callback) {
-  this.send_get_link_view(session, link, callback); 
+MapDClient.prototype.start_query = function(session, query_ra, just_explain, callback) {
+  this.send_start_query(session, query_ra, just_explain, callback); 
   if (!callback) {
-    return this.recv_get_link_view();
+    return this.recv_start_query();
   }
 };
 
-MapDClient.prototype.send_get_link_view = function(session, link, callback) {
-  this.output.writeMessageBegin('get_link_view', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_link_view_args();
+MapDClient.prototype.send_start_query = function(session, query_ra, just_explain, callback) {
+  this.output.writeMessageBegin('start_query', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_start_query_args();
   args.session = session;
-  args.link = link;
+  args.query_ra = query_ra;
+  args.just_explain = just_explain;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -9256,7 +8500,7 @@ MapDClient.prototype.send_get_link_view = function(session, link, callback) {
     this.output.getTransport().flush(true, function() {
       var result = null;
       try {
-        result = self.recv_get_link_view();
+        result = self.recv_start_query();
       } catch (e) {
         result = e;
       }
@@ -9267,7 +8511,7 @@ MapDClient.prototype.send_get_link_view = function(session, link, callback) {
   }
 };
 
-MapDClient.prototype.recv_get_link_view = function() {
+MapDClient.prototype.recv_start_query = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -9278,34 +8522,29 @@ MapDClient.prototype.recv_get_link_view = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_get_link_view_result();
+  var result = new MapD_start_query_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
-  throw 'get_link_view failed: unknown result';
+  throw 'start_query failed: unknown result';
 };
-MapDClient.prototype.create_link = function(session, view_state, view_metadata, callback) {
-  this.send_create_link(session, view_state, view_metadata, callback); 
+MapDClient.prototype.execute_first_step = function(pending_query, callback) {
+  this.send_execute_first_step(pending_query, callback); 
   if (!callback) {
-    return this.recv_create_link();
+    return this.recv_execute_first_step();
   }
 };
 
-MapDClient.prototype.send_create_link = function(session, view_state, view_metadata, callback) {
-  this.output.writeMessageBegin('create_link', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_create_link_args();
-  args.session = session;
-  args.view_state = view_state;
-  args.view_metadata = view_metadata;
+MapDClient.prototype.send_execute_first_step = function(pending_query, callback) {
+  this.output.writeMessageBegin('execute_first_step', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_execute_first_step_args();
+  args.pending_query = pending_query;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -9313,7 +8552,7 @@ MapDClient.prototype.send_create_link = function(session, view_state, view_metad
     this.output.getTransport().flush(true, function() {
       var result = null;
       try {
-        result = self.recv_create_link();
+        result = self.recv_execute_first_step();
       } catch (e) {
         result = e;
       }
@@ -9324,7 +8563,7 @@ MapDClient.prototype.send_create_link = function(session, view_state, view_metad
   }
 };
 
-MapDClient.prototype.recv_create_link = function() {
+MapDClient.prototype.recv_execute_first_step = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -9335,20 +8574,333 @@ MapDClient.prototype.recv_create_link = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_create_link_result();
+  var result = new MapD_execute_first_step_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'execute_first_step failed: unknown result';
+};
+MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
+  this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id, callback); 
+  if (!callback) {
+  this.recv_broadcast_serialized_rows();
+  }
+};
+
+MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
+  this.output.writeMessageBegin('broadcast_serialized_rows', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_broadcast_serialized_rows_args();
+  args.serialized_rows = serialized_rows;
+  args.row_desc = row_desc;
+  args.query_id = query_id;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_broadcast_serialized_rows();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_broadcast_serialized_rows = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_broadcast_serialized_rows_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.render_vega_raw_pixels = function(session, widget_id, vega_json, callback) {
+  this.send_render_vega_raw_pixels(session, widget_id, vega_json, callback); 
+  if (!callback) {
+    return this.recv_render_vega_raw_pixels();
+  }
+};
+
+MapDClient.prototype.send_render_vega_raw_pixels = function(session, widget_id, vega_json, callback) {
+  this.output.writeMessageBegin('render_vega_raw_pixels', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_render_vega_raw_pixels_args();
+  args.session = session;
+  args.widget_id = widget_id;
+  args.vega_json = vega_json;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_render_vega_raw_pixels();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_render_vega_raw_pixels = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_render_vega_raw_pixels_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
   }
   if (null !== result.success) {
     return result.success;
   }
-  throw 'create_link failed: unknown result';
+  throw 'render_vega_raw_pixels failed: unknown result';
+};
+MapDClient.prototype.insert_data = function(session, insert_data, callback) {
+  this.send_insert_data(session, insert_data, callback); 
+  if (!callback) {
+  this.recv_insert_data();
+  }
+};
+
+MapDClient.prototype.send_insert_data = function(session, insert_data, callback) {
+  this.output.writeMessageBegin('insert_data', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_insert_data_args();
+  args.session = session;
+  args.insert_data = insert_data;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_insert_data();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_insert_data = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_insert_data_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.get_table_descriptor = function(session, table_name, callback) {
+  this.send_get_table_descriptor(session, table_name, callback); 
+  if (!callback) {
+    return this.recv_get_table_descriptor();
+  }
+};
+
+MapDClient.prototype.send_get_table_descriptor = function(session, table_name, callback) {
+  this.output.writeMessageBegin('get_table_descriptor', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_table_descriptor_args();
+  args.session = session;
+  args.table_name = table_name;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_table_descriptor();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_table_descriptor = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_table_descriptor_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_table_descriptor failed: unknown result';
+};
+MapDClient.prototype.get_row_descriptor = function(session, table_name, callback) {
+  this.send_get_row_descriptor(session, table_name, callback); 
+  if (!callback) {
+    return this.recv_get_row_descriptor();
+  }
+};
+
+MapDClient.prototype.send_get_row_descriptor = function(session, table_name, callback) {
+  this.output.writeMessageBegin('get_row_descriptor', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_row_descriptor_args();
+  args.session = session;
+  args.table_name = table_name;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_row_descriptor();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_row_descriptor = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_row_descriptor_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_row_descriptor failed: unknown result';
+};
+MapDClient.prototype.render = function(session, query, render_type, nonce, callback) {
+  this.send_render(session, query, render_type, nonce, callback); 
+  if (!callback) {
+    return this.recv_render();
+  }
+};
+
+MapDClient.prototype.send_render = function(session, query, render_type, nonce, callback) {
+  this.output.writeMessageBegin('render', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_render_args();
+  args.session = session;
+  args.query = query;
+  args.render_type = render_type;
+  args.nonce = nonce;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_render();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_render = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_render_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'render failed: unknown result';
 };
 MapDClient.prototype.get_rows_for_pixels = function(session, widget_id, pixels, table_name, col_names, column_format, nonce, callback) {
   this.send_get_rows_for_pixels(session, widget_id, pixels, table_name, col_names, column_format, nonce, callback); 
@@ -9402,9 +8954,6 @@ MapDClient.prototype.recv_get_rows_for_pixels = function() {
 
   if (null !== result.e) {
     throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
   }
   if (null !== result.success) {
     return result.success;
@@ -9465,777 +9014,8 @@ MapDClient.prototype.recv_get_row_for_pixel = function() {
   if (null !== result.e) {
     throw result.e;
   }
-  if (null !== result.te) {
-    throw result.te;
-  }
   if (null !== result.success) {
     return result.success;
   }
   throw 'get_row_for_pixel failed: unknown result';
-};
-MapDClient.prototype.get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
-  this.send_get_result_row_for_pixel(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback); 
-  if (!callback) {
-    return this.recv_get_result_row_for_pixel();
-  }
-};
-
-MapDClient.prototype.send_get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
-  this.output.writeMessageBegin('get_result_row_for_pixel', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_result_row_for_pixel_args();
-  args.session = session;
-  args.widget_id = widget_id;
-  args.pixel = pixel;
-  args.table_col_names = table_col_names;
-  args.column_format = column_format;
-  args.pixelRadius = pixelRadius;
-  args.nonce = nonce;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_get_result_row_for_pixel();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_get_result_row_for_pixel = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_get_result_row_for_pixel_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'get_result_row_for_pixel failed: unknown result';
-};
-MapDClient.prototype.start_heap_profile = function(session, callback) {
-  this.send_start_heap_profile(session, callback); 
-  if (!callback) {
-  this.recv_start_heap_profile();
-  }
-};
-
-MapDClient.prototype.send_start_heap_profile = function(session, callback) {
-  this.output.writeMessageBegin('start_heap_profile', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_start_heap_profile_args();
-  args.session = session;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_start_heap_profile();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_start_heap_profile = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_start_heap_profile_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.stop_heap_profile = function(session, callback) {
-  this.send_stop_heap_profile(session, callback); 
-  if (!callback) {
-  this.recv_stop_heap_profile();
-  }
-};
-
-MapDClient.prototype.send_stop_heap_profile = function(session, callback) {
-  this.output.writeMessageBegin('stop_heap_profile', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_stop_heap_profile_args();
-  args.session = session;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_stop_heap_profile();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_stop_heap_profile = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_stop_heap_profile_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.get_heap_profile = function(session, callback) {
-  this.send_get_heap_profile(session, callback); 
-  if (!callback) {
-    return this.recv_get_heap_profile();
-  }
-};
-
-MapDClient.prototype.send_get_heap_profile = function(session, callback) {
-  this.output.writeMessageBegin('get_heap_profile', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_heap_profile_args();
-  args.session = session;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_get_heap_profile();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_get_heap_profile = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_get_heap_profile_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'get_heap_profile failed: unknown result';
-};
-MapDClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
-  this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, callback); 
-  if (!callback) {
-  this.recv_import_geo_table();
-  }
-};
-
-MapDClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
-  this.output.writeMessageBegin('import_geo_table', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_import_geo_table_args();
-  args.session = session;
-  args.table_name = table_name;
-  args.file_name = file_name;
-  args.copy_params = copy_params;
-  args.row_desc = row_desc;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_import_geo_table();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_import_geo_table = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_import_geo_table_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.start_query = function(session, query_ra, just_explain, callback) {
-  this.send_start_query(session, query_ra, just_explain, callback); 
-  if (!callback) {
-    return this.recv_start_query();
-  }
-};
-
-MapDClient.prototype.send_start_query = function(session, query_ra, just_explain, callback) {
-  this.output.writeMessageBegin('start_query', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_start_query_args();
-  args.session = session;
-  args.query_ra = query_ra;
-  args.just_explain = just_explain;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_start_query();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_start_query = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_start_query_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'start_query failed: unknown result';
-};
-MapDClient.prototype.execute_first_step = function(pending_query, callback) {
-  this.send_execute_first_step(pending_query, callback); 
-  if (!callback) {
-    return this.recv_execute_first_step();
-  }
-};
-
-MapDClient.prototype.send_execute_first_step = function(pending_query, callback) {
-  this.output.writeMessageBegin('execute_first_step', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_execute_first_step_args();
-  args.pending_query = pending_query;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_execute_first_step();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_execute_first_step = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_execute_first_step_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'execute_first_step failed: unknown result';
-};
-MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
-  this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id, callback); 
-  if (!callback) {
-  this.recv_broadcast_serialized_rows();
-  }
-};
-
-MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
-  this.output.writeMessageBegin('broadcast_serialized_rows', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_broadcast_serialized_rows_args();
-  args.serialized_rows = serialized_rows;
-  args.row_desc = row_desc;
-  args.query_id = query_id;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_broadcast_serialized_rows();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_broadcast_serialized_rows = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_broadcast_serialized_rows_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.render_vega_raw_pixels = function(session, widget_id, vega_json, callback) {
-  this.send_render_vega_raw_pixels(session, widget_id, vega_json, callback); 
-  if (!callback) {
-    return this.recv_render_vega_raw_pixels();
-  }
-};
-
-MapDClient.prototype.send_render_vega_raw_pixels = function(session, widget_id, vega_json, callback) {
-  this.output.writeMessageBegin('render_vega_raw_pixels', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_render_vega_raw_pixels_args();
-  args.session = session;
-  args.widget_id = widget_id;
-  args.vega_json = vega_json;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_render_vega_raw_pixels();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_render_vega_raw_pixels = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_render_vega_raw_pixels_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'render_vega_raw_pixels failed: unknown result';
-};
-MapDClient.prototype.insert_data = function(session, insert_data, callback) {
-  this.send_insert_data(session, insert_data, callback); 
-  if (!callback) {
-  this.recv_insert_data();
-  }
-};
-
-MapDClient.prototype.send_insert_data = function(session, insert_data, callback) {
-  this.output.writeMessageBegin('insert_data', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_insert_data_args();
-  args.session = session;
-  args.insert_data = insert_data;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_insert_data();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_insert_data = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_insert_data_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.checkpoint = function(session, db_id, table_id, callback) {
-  this.send_checkpoint(session, db_id, table_id, callback); 
-  if (!callback) {
-  this.recv_checkpoint();
-  }
-};
-
-MapDClient.prototype.send_checkpoint = function(session, db_id, table_id, callback) {
-  this.output.writeMessageBegin('checkpoint', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_checkpoint_args();
-  args.session = session;
-  args.db_id = db_id;
-  args.table_id = table_id;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_checkpoint();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_checkpoint = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_checkpoint_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.get_table_details = function(session, table_name, callback) {
-  this.send_get_table_details(session, table_name, callback); 
-  if (!callback) {
-    return this.recv_get_table_details();
-  }
-};
-
-MapDClient.prototype.send_get_table_details = function(session, table_name, callback) {
-  this.output.writeMessageBegin('get_table_details', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_get_table_details_args();
-  args.session = session;
-  args.table_name = table_name;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_get_table_details();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_get_table_details = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_get_table_details_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  if (null !== result.success) {
-    return result.success;
-  }
-  throw 'get_table_details failed: unknown result';
-};
-MapDClient.prototype.clear_gpu_memory = function(session, callback) {
-  this.send_clear_gpu_memory(session, callback); 
-  if (!callback) {
-  this.recv_clear_gpu_memory();
-  }
-};
-
-MapDClient.prototype.send_clear_gpu_memory = function(session, callback) {
-  this.output.writeMessageBegin('clear_gpu_memory', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_clear_gpu_memory_args();
-  args.session = session;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_clear_gpu_memory();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_clear_gpu_memory = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_clear_gpu_memory_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
-};
-MapDClient.prototype.clear_cpu_memory = function(session, callback) {
-  this.send_clear_cpu_memory(session, callback); 
-  if (!callback) {
-  this.recv_clear_cpu_memory();
-  }
-};
-
-MapDClient.prototype.send_clear_cpu_memory = function(session, callback) {
-  this.output.writeMessageBegin('clear_cpu_memory', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_clear_cpu_memory_args();
-  args.session = session;
-  args.write(this.output);
-  this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_clear_cpu_memory();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
-};
-
-MapDClient.prototype.recv_clear_cpu_memory = function() {
-  var ret = this.input.readMessageBegin();
-  var fname = ret.fname;
-  var mtype = ret.mtype;
-  var rseqid = ret.rseqid;
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(this.input);
-    this.input.readMessageEnd();
-    throw x;
-  }
-  var result = new MapD_clear_cpu_memory_result();
-  result.read(this.input);
-  this.input.readMessageEnd();
-
-  if (null !== result.e) {
-    throw result.e;
-  }
-  if (null !== result.te) {
-    throw result.te;
-  }
-  return;
 };
