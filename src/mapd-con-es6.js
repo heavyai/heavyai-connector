@@ -278,7 +278,7 @@ class MapdCon {
    */
   getFrontendViews = (callback) => {
     if (this._sessionId) {
-      this._client[0].get_frontend_views(this._sessionId, (error, views) => {
+      this._client[0].get_frontend_views(this._sessionId[0], (error, views) => {
         if (error) {
           callback(error)
         } else {
@@ -323,7 +323,7 @@ class MapdCon {
    */
   getFrontendView = (viewName, callback) => {
     if (this._sessionId && viewName) {
-      this._client[0].get_frontend_view(this._sessionId, viewName, (error, view) => {
+      this._client[0].get_frontend_view(this._sessionId[0], viewName, (error, view) => {
         if (error) {
           callback(error)
         } else {
@@ -365,7 +365,7 @@ class MapdCon {
    *
    */
    getServerStatus = (callback) => {
-     this._client[0].get_server_status(null, (result) => {
+     this._client[0].get_server_status(this._sessionId[0], (result) => {
        if (typeof result === 'object' &&
            result.hasOwnProperty('read_only') &&
            result.hasOwnProperty('rendering_enabled') &&

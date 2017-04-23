@@ -39,14 +39,14 @@
  *     var client = new MyThriftSvcClient(protocol);
  *     var result = client.MyMethod();
  */
-Thrift = {
+var Thrift = {
     /**
      * Thrift JavaScript library version.
      * @readonly
      * @const {string} Version
      * @memberof Thrift
      */
-    Version: '0.9.2',
+    Version: '0.9.3',
 
     /**
      * Thrift IDL type string to Id mapping.
@@ -327,7 +327,7 @@ Thrift.TXHRTransport.prototype = {
         var xreq = this.getXmlHttpRequestObject();
 
         if (xreq.overrideMimeType) {
-            xreq.overrideMimeType('application/json');
+            xreq.overrideMimeType('application/vnd.apache.thrift.json; charset=utf-8');
         }
 
         if (callback) {
@@ -346,6 +346,12 @@ Thrift.TXHRTransport.prototype = {
         }
 
         xreq.open('POST', this.url, !!async);
+
+        if (xreq.setRequestHeader) {
+            xreq.setRequestHeader('Accept', 'application/vnd.apache.thrift.json; charset=utf-8');
+            xreq.setRequestHeader('Content-Type', 'application/vnd.apache.thrift.json; charset=utf-8');
+        }
+
         xreq.send(this.send_buf);
         if (async && callback) {
             return;
@@ -387,7 +393,7 @@ Thrift.TXHRTransport.prototype = {
             data: postData,
             type: 'POST',
             cache: false,
-            contentType: 'application/json',
+            contentType: 'application/vnd.apache.thrift.json; charset=utf-8',
             dataType: 'text thrift',
             converters: {
                 'text thrift' : function(responseData) {
@@ -684,6 +690,8 @@ Thrift.TWebSocketTransport.prototype = {
  *     var protocol  = new Thrift.Protocol(transport);
  */
 Thrift.TJSONProtocol = Thrift.Protocol = function(transport) {
+    this.tstack = [];
+    this.tpos = [];
     this.transport = transport;
 };
 
@@ -1195,7 +1203,7 @@ Thrift.Protocol.prototype = {
         r.size = list.shift();
 
         this.rpos.push(this.rstack.length);
-        this.rstack.push(list);
+        this.rstack.push(list.shift());
 
         return r;
     },
@@ -1220,7 +1228,7 @@ Thrift.Protocol.prototype = {
 
     /** Returns an object with a value property set to
      *  False unless the next number in the protocol buffer
-     *  is 1, in which case teh value property is True */
+     *  is 1, in which case the value property is True */
     readBool: function() {
         var r = this.readI32();
 
@@ -1431,3 +1439,69 @@ Thrift.Multiplexer.prototype.createClient = function (serviceName, SCl, transpor
 
 
 
+var copyList, copyMap;
+
+copyList = function(lst, types) {
+
+  if (!lst) {return lst; }
+
+  var type;
+
+  if (types.shift === undefined) {
+    type = types;
+  }
+  else {
+    type = types[0];
+  }
+  var Type = type;
+
+  var len = lst.length, result = [], i, val;
+  for (i = 0; i < len; i++) {
+    val = lst[i];
+    if (type === null) {
+      result.push(val);
+    }
+    else if (type === copyMap || type === copyList) {
+      result.push(type(val, types.slice(1)));
+    }
+    else {
+      result.push(new Type(val));
+    }
+  }
+  return result;
+};
+
+copyMap = function(obj, types){
+
+  if (!obj) {return obj; }
+
+  var type;
+
+  if (types.shift === undefined) {
+    type = types;
+  }
+  else {
+    type = types[0];
+  }
+  var Type = type;
+
+  var result = {}, val;
+  for(var prop in obj) {
+    if(obj.hasOwnProperty(prop)) {
+      val = obj[prop];
+      if (type === null) {
+        result[prop] = val;
+      }
+      else if (type === copyMap || type === copyList) {
+        result[prop] = type(val, types.slice(1));
+      }
+      else {
+        result[prop] = new Type(val);
+      }
+    }
+  }
+  return result;
+};
+
+Thrift.copyMap = copyMap;
+Thrift.copyList = copyList;

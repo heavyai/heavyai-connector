@@ -120,8 +120,8 @@ MapD_connect_result.prototype.read = function(input) {
     switch (fid)
     {
       case 0:
-      if (ftype == Thrift.Type.I32) {
-        this.success = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.success = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -146,8 +146,8 @@ MapD_connect_result.prototype.read = function(input) {
 MapD_connect_result.prototype.write = function(output) {
   output.writeStructBegin('MapD_connect_result');
   if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.I32, 0);
-    output.writeI32(this.success);
+    output.writeFieldBegin('success', Thrift.Type.STRING, 0);
+    output.writeString(this.success);
     output.writeFieldEnd();
   }
   if (this.e !== null && this.e !== undefined) {
@@ -183,8 +183,8 @@ MapD_disconnect_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -204,8 +204,8 @@ MapD_disconnect_args.prototype.read = function(input) {
 MapD_disconnect_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_disconnect_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -294,8 +294,8 @@ MapD_get_server_status_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -315,8 +315,8 @@ MapD_get_server_status_args.prototype.read = function(input) {
 MapD_get_server_status_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_server_status_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -419,8 +419,8 @@ MapD_get_tables_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -440,8 +440,8 @@ MapD_get_tables_args.prototype.read = function(input) {
 MapD_get_tables_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_tables_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -569,8 +569,8 @@ MapD_get_table_details_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -594,8 +594,8 @@ MapD_get_table_details_args.prototype.read = function(input) {
 MapD_get_table_details_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_table_details_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -703,8 +703,8 @@ MapD_get_users_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -724,8 +724,8 @@ MapD_get_users_args.prototype.read = function(input) {
 MapD_get_users_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_users_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -849,8 +849,8 @@ MapD_get_databases_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -870,8 +870,8 @@ MapD_get_databases_args.prototype.read = function(input) {
 MapD_get_databases_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_databases_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1095,8 +1095,8 @@ MapD_start_heap_profile_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1116,8 +1116,8 @@ MapD_start_heap_profile_args.prototype.read = function(input) {
 MapD_start_heap_profile_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_start_heap_profile_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1206,8 +1206,8 @@ MapD_stop_heap_profile_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1227,8 +1227,8 @@ MapD_stop_heap_profile_args.prototype.read = function(input) {
 MapD_stop_heap_profile_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_stop_heap_profile_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1317,8 +1317,8 @@ MapD_get_heap_profile_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1338,8 +1338,8 @@ MapD_get_heap_profile_args.prototype.read = function(input) {
 MapD_get_heap_profile_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_heap_profile_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1441,8 +1441,8 @@ MapD_get_memory_gpu_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1462,8 +1462,8 @@ MapD_get_memory_gpu_args.prototype.read = function(input) {
 MapD_get_memory_gpu_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_memory_gpu_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1565,8 +1565,8 @@ MapD_get_memory_summary_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1586,8 +1586,8 @@ MapD_get_memory_summary_args.prototype.read = function(input) {
 MapD_get_memory_summary_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_memory_summary_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1690,8 +1690,8 @@ MapD_clear_cpu_memory_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1711,8 +1711,8 @@ MapD_clear_cpu_memory_args.prototype.read = function(input) {
 MapD_clear_cpu_memory_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_clear_cpu_memory_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1801,8 +1801,8 @@ MapD_clear_gpu_memory_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1822,8 +1822,8 @@ MapD_clear_gpu_memory_args.prototype.read = function(input) {
 MapD_clear_gpu_memory_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_clear_gpu_memory_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1928,8 +1928,8 @@ MapD_sql_execute_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -1974,8 +1974,8 @@ MapD_sql_execute_args.prototype.read = function(input) {
 MapD_sql_execute_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_sql_execute_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.query !== null && this.query !== undefined) {
@@ -2098,8 +2098,8 @@ MapD_interrupt_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -2119,8 +2119,8 @@ MapD_interrupt_args.prototype.read = function(input) {
 MapD_interrupt_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_interrupt_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -2213,8 +2213,8 @@ MapD_sql_validate_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -2238,8 +2238,8 @@ MapD_sql_validate_args.prototype.read = function(input) {
 MapD_sql_validate_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_sql_validate_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.query !== null && this.query !== undefined) {
@@ -2383,8 +2383,8 @@ MapD_set_execution_mode_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -2408,8 +2408,8 @@ MapD_set_execution_mode_args.prototype.read = function(input) {
 MapD_set_execution_mode_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_set_execution_mode_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.mode !== null && this.mode !== undefined) {
@@ -2519,8 +2519,8 @@ MapD_render_vega_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -2565,8 +2565,8 @@ MapD_render_vega_args.prototype.read = function(input) {
 MapD_render_vega_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_render_vega_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.widget_id !== null && this.widget_id !== undefined) {
@@ -2713,8 +2713,8 @@ MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -2809,8 +2809,8 @@ MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
 MapD_get_result_row_for_pixel_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_result_row_for_pixel_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.widget_id !== null && this.widget_id !== undefined) {
@@ -2966,8 +2966,8 @@ MapD_get_frontend_view_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -2991,8 +2991,8 @@ MapD_get_frontend_view_args.prototype.read = function(input) {
 MapD_get_frontend_view_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_frontend_view_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.view_name !== null && this.view_name !== undefined) {
@@ -3100,8 +3100,8 @@ MapD_get_frontend_views_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -3121,8 +3121,8 @@ MapD_get_frontend_views_args.prototype.read = function(input) {
 MapD_get_frontend_views_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_frontend_views_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -3263,8 +3263,8 @@ MapD_create_frontend_view_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -3309,8 +3309,8 @@ MapD_create_frontend_view_args.prototype.read = function(input) {
 MapD_create_frontend_view_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_create_frontend_view_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.view_name !== null && this.view_name !== undefined) {
@@ -3423,8 +3423,8 @@ MapD_delete_frontend_view_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -3448,8 +3448,8 @@ MapD_delete_frontend_view_args.prototype.read = function(input) {
 MapD_delete_frontend_view_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_delete_frontend_view_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.view_name !== null && this.view_name !== undefined) {
@@ -3547,8 +3547,8 @@ MapD_get_link_view_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -3572,8 +3572,8 @@ MapD_get_link_view_args.prototype.read = function(input) {
 MapD_get_link_view_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_link_view_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.link !== null && this.link !== undefined) {
@@ -3689,8 +3689,8 @@ MapD_create_link_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -3721,8 +3721,8 @@ MapD_create_link_args.prototype.read = function(input) {
 MapD_create_link_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_create_link_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.view_state !== null && this.view_state !== undefined) {
@@ -3842,8 +3842,8 @@ MapD_load_table_binary_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -3888,8 +3888,8 @@ MapD_load_table_binary_args.prototype.read = function(input) {
 MapD_load_table_binary_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_load_table_binary_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -4005,8 +4005,8 @@ MapD_load_table_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -4051,8 +4051,8 @@ MapD_load_table_args.prototype.read = function(input) {
 MapD_load_table_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_load_table_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -4168,8 +4168,8 @@ MapD_detect_column_types_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -4201,8 +4201,8 @@ MapD_detect_column_types_args.prototype.read = function(input) {
 MapD_detect_column_types_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_detect_column_types_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.file_name !== null && this.file_name !== undefined) {
@@ -4327,8 +4327,8 @@ MapD_create_table_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -4380,8 +4380,8 @@ MapD_create_table_args.prototype.read = function(input) {
 MapD_create_table_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_create_table_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -4506,8 +4506,8 @@ MapD_import_table_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -4546,8 +4546,8 @@ MapD_import_table_args.prototype.read = function(input) {
 MapD_import_table_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_import_table_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -4667,8 +4667,8 @@ MapD_import_geo_table_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -4728,8 +4728,8 @@ MapD_import_geo_table_args.prototype.read = function(input) {
 MapD_import_geo_table_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_import_geo_table_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -4851,8 +4851,8 @@ MapD_import_table_status_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -4876,8 +4876,8 @@ MapD_import_table_status_args.prototype.read = function(input) {
 MapD_import_table_status_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_import_table_status_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.import_id !== null && this.import_id !== undefined) {
@@ -4993,8 +4993,8 @@ MapD_start_query_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -5025,8 +5025,8 @@ MapD_start_query_args.prototype.read = function(input) {
 MapD_start_query_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_start_query_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.query_ra !== null && this.query_ra !== undefined) {
@@ -5436,8 +5436,8 @@ MapD_render_vega_raw_pixels_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -5468,8 +5468,8 @@ MapD_render_vega_raw_pixels_args.prototype.read = function(input) {
 MapD_render_vega_raw_pixels_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_render_vega_raw_pixels_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.widget_id !== null && this.widget_id !== undefined) {
@@ -5586,8 +5586,8 @@ MapD_insert_data_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -5612,8 +5612,8 @@ MapD_insert_data_args.prototype.read = function(input) {
 MapD_insert_data_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_insert_data_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.insert_data !== null && this.insert_data !== undefined) {
@@ -5711,8 +5711,8 @@ MapD_get_table_descriptor_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -5736,8 +5736,8 @@ MapD_get_table_descriptor_args.prototype.read = function(input) {
 MapD_get_table_descriptor_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_table_descriptor_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -5881,8 +5881,8 @@ MapD_get_row_descriptor_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -5906,8 +5906,8 @@ MapD_get_row_descriptor_args.prototype.read = function(input) {
 MapD_get_row_descriptor_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_row_descriptor_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.table_name !== null && this.table_name !== undefined) {
@@ -6049,8 +6049,8 @@ MapD_render_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -6088,8 +6088,8 @@ MapD_render_args.prototype.read = function(input) {
 MapD_render_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_render_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.query !== null && this.query !== undefined) {
@@ -6231,8 +6231,8 @@ MapD_get_rows_for_pixels_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -6318,8 +6318,8 @@ MapD_get_rows_for_pixels_args.prototype.read = function(input) {
 MapD_get_rows_for_pixels_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_rows_for_pixels_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.widget_id !== null && this.widget_id !== undefined) {
@@ -6498,8 +6498,8 @@ MapD_get_row_for_pixel_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.session = input.readI32().value;
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -6579,8 +6579,8 @@ MapD_get_row_for_pixel_args.prototype.read = function(input) {
 MapD_get_row_for_pixel_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_row_for_pixel_args');
   if (this.session !== null && this.session !== undefined) {
-    output.writeFieldBegin('session', Thrift.Type.I32, 1);
-    output.writeI32(this.session);
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
     output.writeFieldEnd();
   }
   if (this.widget_id !== null && this.widget_id !== undefined) {
