@@ -93,7 +93,6 @@ class MapdCon {
     this._client = [];
     this._sessionId = [];
 
-    // TODO:
     if (!this._user[0]) {
       return callback(`Please enter a username.`);
     } else if (!this._password[0]) {
@@ -195,62 +194,6 @@ class MapdCon {
         });
       }
     }
-    return this;
-  }
-
-  /**
-   * TODO
-   */
-  pingServers(callback) {
-    if (this._sessionId !== null) {
-      this.serverPingTimes = Array.apply(
-        null,
-        Array(this._numConnections)
-      ).map(Number.prototype.valueOf, 0);
-      this.pingCount = 0;
-      for (let c = 0; c < this._numConnections; c++) {
-        for (let i = 0; i < this.NUM_PINGS_PER_SERVER; i++) {
-          const startTime = new Date();
-          this._client[c].get_server_status(
-            this._sessionId[c],
-            this.pingServersCallback.bind(this, startTime, c, callback)
-          );
-        }
-      }
-    }
-  }
-
-  /**
-   * TODO
-   */
-  pingServersCallback(startTime, serverNum, callback) {
-    const now = new Date();
-    const duration = now - startTime;
-    this.serverPingTimes[serverNum] += duration;
-    this.pingCount++;
-    if (this.pingCount === this._numConnections * this.NUM_PINGS_PER_SERVER) {
-      this.pingCount = 0;
-      for (let c = 0; c < this._numConnections; c++) {
-        this.serverPingTimes[c] /= this.NUM_PINGS_PER_SERVER;
-        // handicap each server based on its ping time
-        // - this should be persistent as we never zero our times
-        this.serverQueueTimes[c] += this.serverPingTimes[c];
-      }
-
-      if (typeof callback !== 'undefined') {
-        callback(this, this.serverQueueTimes);
-      }
-    }
-  }
-
-  /**
-   * TODO
-   */
-  balanceStrategy(balanceStrategy) {
-    if (!arguments.length) {
-      return this._balanceStrategy;
-    }
-    this._balanceStrategy = balanceStrategy;
     return this;
   }
 
@@ -390,40 +333,6 @@ class MapdCon {
    )
 
   /**
-   * Generate the image thumbnail hash used for saving frontend view.
-   * @param {String} input - The string input to hash
-   * @return {Number} hash - Numerical hash used for saving dashboards
-   *
-   * @example <caption>Generate an hash</caption>
-   * var hash = generateImageThumbnailHashCode(Math.random().toString());
-   * // hash === 3003444
-   */
-  generateImageThumbnailHashCode(input) {
-    return input.split('').reduce((a, b) => {
-      a = ((a << 5) - a) + b.charCodeAt(0);
-      return a & a;
-    }, 0);
-  }
-
-  /**
-   * Generate the state string used for saving frontend view.
-   * @param {Object} state - The object containing the state
-   * @param {Boolean} encode=false - Indicates whether to base64 encode the output string
-   * @return {String} stateString - The string representation of the state object
-   *
-   * @example <caption>Generate a raw state string:</caption>
-   * var state = generateViewStateString({id: 5});
-   * // state === ''
-   *
-   * @example <caption>Generate an encoded state string:</caption>
-   * var state = generateViewStateString({id: 5}, true);
-   * // state === ''
-   */
-  generateViewStateString(state, encode) {
-    // TODO
-  }
-
-  /**
    * Add a new dashboard to the server.
    * @param {String} viewName - the name of the new dashboard
    * @param {String} viewState - the base64-encoded state string of the new dashboard
@@ -442,21 +351,6 @@ class MapdCon {
    *
    * con.createFrontendView('newView', 'GlnaHRz...', '1906667617');
    */
-  createFrontendView(viewName, viewState, imageHash, metaData) {
-    if (!this._sessionId) {
-      throw new Error('You are not connected to a server. Try running the connect method first.');
-    }
-    try {
-      // do we want to try each one individually so if we fail we keep going?
-      this._client.forEach((client, i) => {
-        client.create_frontend_view(this._sessionId[i], viewName, viewState, imageHash, metaData);
-      });
-    } catch (err) {
-      throw err;
-    }
-    return this;
-  }
-
   createFrontendViewAsync = (viewName, viewState, imageHash, metaData) => {
     if (!this._sessionId) {
       return new Promise((resolve, reject) => {
@@ -651,20 +545,16 @@ class MapdCon {
   /**
    * Submit a query to the database and process the results through an array
    * of asychronous callbacks. If no callbacks are given, use synchronous instead.
-   * TODO: Refactor to use take a query and an options object
    * @param {String} query - The query to perform
    * @param {Object} options - the options for the query
    * @param {Boolean} options.columnarResults=true - Indicates whether to return the data
    *                                             in columnar format. This saves time on the backend.
    * @param {Boolean} options.eliminateNullRows
-   * @param {String} options.renderSpec - The backend rendering spec,
-   *                                      set to <code>null</code> to force frontend rendering
    * @param {Array<Function>} callbacks
    */
   query(query, options, callback) {
     let columnarResults = true;
     let eliminateNullRows = false;
-    let renderSpec = null;
     let queryId = null;
     let returnTiming = false;
     let limit = -1
@@ -673,8 +563,6 @@ class MapdCon {
         options.columnarResults : columnarResults;
       eliminateNullRows = options.hasOwnProperty('eliminateNullRows') ?
         options.eliminateNullRows : eliminateNullRows;
-      renderSpec = options.hasOwnProperty('renderSpec') ?
-        options.renderSpec : renderSpec;
       queryId = options.hasOwnProperty('queryId') ?
         options.queryId : queryId;
       returnTiming = options.hasOwnProperty('returnTiming') ?
@@ -682,11 +570,7 @@ class MapdCon {
       limit = options.hasOwnProperty('limit') ?
         options.limit : limit;
     }
-    const processResultsQuery = renderSpec ? 'render: ' + query : query;
-    const isBackendRenderingWithAsync = !!renderSpec && !!callback;
-    const isFrontendRenderingWithAsync = !renderSpec && !!callback;
-    const isBackendRenderingWithSync = !!renderSpec && !callback;
-    const isFrontendRenderingWithSync = !renderSpec && !callback;
+
     const lastQueryTime = queryId in this.queryTimes
       ? this.queryTimes[queryId]
       : this.DEFAULT_QUERY_TIME;
@@ -694,31 +578,18 @@ class MapdCon {
     const curNonce = (this._nonce++).toString();
 
     let conId = 0
-    if (!!renderSpec) {
-      this._lastRenderCon = conId;
-    }
 
     const processResultsOptions = {
-      isImage: !!renderSpec,
       returnTiming,
       eliminateNullRows,
-      query: processResultsQuery,
+      query,
       queryId,
       conId,
       estimatedQueryTime: lastQueryTime,
     };
 
     try {
-      if (isBackendRenderingWithAsync) {
-        this._client[conId].render(this._sessionId[conId], query, renderSpec, curNonce, limit, (error, result) => {
-          if (error) {
-            callback(error)
-          } else {
-            this.processResults(processResultsOptions, result, callback)
-          }
-        });
-        return curNonce;
-      } else if (isFrontendRenderingWithAsync) {
+      if (!!callback) {
         this._client[conId].sql_execute(this._sessionId[conId], query, columnarResults, curNonce, limit, (error, result) => {
           if (error) {
             callback(error)
@@ -727,16 +598,7 @@ class MapdCon {
           }
         });
         return curNonce;
-      } else if (isBackendRenderingWithSync) {
-        const renderResult = this._client[conId].render(
-          this._sessionId[conId],
-          query,
-          renderSpec,
-          curNonce,
-          limit
-        );
-        return this.processResults(processResultsOptions, renderResult);
-      } else if (isFrontendRenderingWithSync) {
+      } else if (!callback) {
         const SQLExecuteResult = this._client[conId].sql_execute(
           this._sessionId[conId],
           query,
@@ -750,7 +612,6 @@ class MapdCon {
       if (err.name === 'NetworkError') {
         this.removeConnection(conId);
         if (this._numConnections === 0) {
-          // should we try to reconnect?
           err.msg = 'No remaining database connections';
           throw err;
         }
@@ -775,6 +636,7 @@ class MapdCon {
       });
     })
   }
+
   /**
    * TODO
    */
@@ -788,31 +650,6 @@ class MapdCon {
     this._client.splice(conId, 1);
     this._sessionId.splice(conId, 1);
     this._numConnections--;
-  }
-
-  /**
-   * Get the names of the databases that exist on the current session's connectdion.
-   * @return {Array<String>} list of database names
-   *
-   * @example <caption>Create a new MapdCon instance and set the host via method chaining:</caption>
-   * var databases = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect()
-   *   .getDatabases();
-   * // databases === ['databasename', 'databasename', ...]
-   */
-  getDatabases() {
-    let databases = null;
-    try {
-      databases = this._client[0].get_databases();
-      return databases.map((db) => { return db.db_name; });
-    } catch (err) {
-      throw err;
-    }
   }
 
   /**
@@ -894,37 +731,19 @@ class MapdCon {
    * }, ...]
    */
   getFields(tableName, callback) {
-    if (callback) {
-      this._client[0].get_table_descriptor(this._sessionId[0], tableName, (fields) => {
-        if (!fields) {
-          callback(new Error('Table (' + tableName + ') not found'))
-        } else {
-          callback(null, this.convertFromThriftTypes(fields))
-        }
-      })
-    } else {
-      console.warn('WARNING: You are using a synchronous method getFields() that will be deprecated')
-      let fields = null;
-      try {
-        fields = this._client[0].get_table_descriptor(this._sessionId[0], tableName);
-      } catch (err) {
-        throw new Error('Table (' + tableName + ') not found');
+    this._client[0].get_table_details(this._sessionId[0], tableName, (fields) => {
+      if (!fields) {
+        callback(new Error('Table (' + tableName + ') not found'))
+      } else {
+
+        const rowDict = fields.row_desc.reduce((accum, value) => {
+          accum[value.col_name] = value
+          return accum
+        }, {})
+
+        callback(null, this.convertFromThriftTypes(rowDict))
       }
-      const fieldsArray = [];
-      // silly to change this from map to array
-      // - then later it turns back to map
-      for (const key in fields) {
-        if (fields.hasOwnProperty(key)) {
-          fieldsArray.push({
-            name: key,
-            type: this._datumEnum[fields[key].col_type.type],
-            is_array: fields[key].col_type.is_array,
-            is_dict: fields[key].col_type.encoding === TEncodingType.DICT,
-          });
-        }
-      }
-      return fieldsArray;
-    }
+    })
   }
 
 
@@ -1040,19 +859,6 @@ class MapdCon {
   importTableGeoAsync = this.importTableAsyncWrapper(true)
 
   /**
-   * Get the status of the table import operation.
-   * @param {TCopyParams} importId
-   * @param {Function} callback
-   */
-  importTableStatus(importId, callback) {
-    try {
-      this._client[0].import_table_status(this._sessionId[0], importId, callback);
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  /**
    * Use for backend rendering. This method will fetch a PNG image
    * that is a render of the vega json object.
    *
@@ -1115,95 +921,6 @@ class MapdCon {
       throw err;
     }
 
-    return curNonce;
-  }
-
-  /**
-   * Used primarily for backend rendered maps, this method will fetch the rows
-   * that correspond to longitude/latitude points.
-   *
-   * @param {Array<TPixel>} pixels
-   * @param {String} tableName - the table containing the geo data
-   * @param {Array<String>} colNames - the fields to fetch
-   * @param {Array<Function>} callbacks
-   */
-  getRowsForPixels(pixels, tableName, colNames, callbacks) {
-    const widgetId = 1;  // INT
-    const columnFormat = true; // BOOL
-    const curNonce = (this._nonce++).toString();
-    try {
-      if (!callbacks) {
-        return this.processPixelResults(
-          undefined,
-          this._client[this._lastRenderCon].get_rows_for_pixels(
-            this._sessionId[this._lastRenderCon],
-            widgetId,
-            pixels,
-            tableName,
-            colNames,
-            columnFormat,
-            curNonce
-          ));
-      }
-      this._client[this._lastRenderCon].get_rows_for_pixels(
-        this._sessionId[this._lastRenderCon],
-        widgetId,
-        pixels,
-        tableName,
-        colNames,
-        columnFormat,
-        curNonce,
-        this.processPixelResults.bind(this, callbacks)
-      );
-    } catch (err) {
-      throw err;
-    }
-    return curNonce;
-  }
-
-  /**
-   * Used primarily for backend rendered maps, this method will fetch the row
-   * that corresponds to longitude/latitude points.
-   *
-   * @param {TPixel} pixel
-   * @param {String} tableName - the table containing the geo data
-   * @param {Array<String>} colNames - the fields to fetch
-   * @param {Array<Function>} callbacks
-   * @param {Number} [pixelRadius=2] - the radius around the primary pixel to search
-   */
-  getRowForPixel(pixel, tableName, colNames, callbacks, pixelRadius = 2) {
-    const widgetId = 1;  // INT
-    const columnFormat = true; // BOOL
-    const curNonce = (this._nonce++).toString();
-    try {
-      if (!callbacks) {
-        return this.processResults(
-          undefined,
-          this._client[this._lastRenderCon].get_row_for_pixel(
-            this._sessionId[this._lastRenderCon],
-            widgetId,
-            pixel,
-            tableName,
-            colNames,
-            columnFormat,
-            Math.round(pixelRadius),
-            curNonce
-          ));
-      }
-      this._client[this._lastRenderCon].get_row_for_pixel(
-        this._sessionId[this._lastRenderCon],
-        widgetId,
-        pixel,
-        tableName,
-        colNames,
-        columnFormat,
-        Math.round(pixelRadius),
-        curNonce,
-        this.processPixelResults.bind(this, callbacks)
-      );
-    } catch (err) {
-      throw err;
-    }
     return curNonce;
   }
 
@@ -1275,13 +992,6 @@ class MapdCon {
       return results;
     }
     callbacks.pop()(results, callbacks);
-  }
-
-  /**
-   * TODO: Returns an empty String.
-   */
-  getUploadServer() {
-    return '';
   }
 
   /**
@@ -1491,27 +1201,6 @@ class MapdCon {
    */
   numConnections() {
     return this._numConnections;
-  }
-
-  /**
-   * The MapDClient instance to perform queries with.
-   * @param {MapDClient} [client] - Thrift object used for communicating with the server
-   * @return {MapDClient|MapdCon} - MapDClient or MapdCon itself
-   *
-   * @example <caption>Set the client:</caption>
-   * var con = new MapdCon().client(client);
-   * // NOTE: It is generally unsafe to set the client manually. Use connect() instead.
-   *
-   * @example <caption>Get the client:</caption>
-   * var client = con.client();
-   * // client instanceof MapDClient === true
-   */
-  client(client) {
-    if (!arguments.length) {
-      return this._client;
-    }
-    this._client = client;
-    return this;
   }
 
   /**

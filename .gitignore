@@ -1,5 +1,4 @@
 build/
-dist/
 docs/
 node_modules/
 mocha-report.xml

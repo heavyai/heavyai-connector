@@ -1,5 +1,0 @@
---require ./test-functional/config.js
---recursive
---colors
---timeout 15000
-

@@ -14,19 +14,25 @@
     }
   },
   "scripts": {
-    "babel": "bash scripts/babel.sh",
-    "build": "bash scripts/build.sh",
-    "bump": "npm run shjs ../../scripts/check-coverage.js -- --bump",
-    "clean": "bash scripts/clean.sh",
-    "docs": "../../node_modules/.bin/esdoc -c .esdoc.json && open docs/index.html",
+    "docs": "esdoc -c .esdoc.json && open docs/index.html",
     "fullbuild": "npm run lint && npm run build && npm test && npm run docs",
-    "lint": "../../node_modules/eslint/bin/eslint.js src/mapd-con-es6.js src/mapd-con-node-support.js",
-    "shjs": "node --harmony_destructuring ../../node_modules/.bin/shjs",
-    "test:check-cover": "npm run shjs ../../scripts/check-coverage.js",
-    "test:cover": "../../node_modules/.bin/istanbul cover ../../node_modules/mocha/bin/_mocha -- ./test-unit --require ./test-unit/config.js --require ./test-unit/setup.js",
-    "test:unit": "../../node_modules/.bin/mocha ./test-unit --require ./test-unit/config.js --require ./test-unit/setup.js",
-    "watch": "npm-watch",
-    "webpack": "mkdir -p dist; ../../node_modules/.bin/webpack --config ./webpack.config.es6.js && ../../node_modules/.bin/webpack --config ./webpack.config.node.js"
+    "lint": "eslint src/mapd-con-es6.js src/mapd-con-node-support.js",
+    "test:cover": "istanbul cover _mocha -- ./test --require ./test/config.js --require ./test/setup.js",
+    "test": "mocha ./test --require ./test/config.js --require ./test/setup.js",
+    "build": "mkdir -p dist; webpack"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-1": "^6.5.0",
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
+    "esdoc": "^0.4.8",
+    "eslint": "^3.0.1",
+    "istanbul": "1.0.0-alpha.2",
+    "mocha": "^2.5.3",
+    "webpack": "^1.13.1"
   },
   "repository": {
     "type": "git",

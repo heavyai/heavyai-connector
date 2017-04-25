@@ -4,7 +4,7 @@ module.exports = {
     ],
     output: {
         path: __dirname +'/dist/',
-        filename: 'MapdCon.js'
+        filename: 'mapd-connection.js'
     },
     module: {
       loaders: [
