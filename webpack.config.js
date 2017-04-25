@@ -1,10 +1,12 @@
+const path = require("path")
+
 module.exports = {
     entry: [
-      './src/mapd-con-es6.js'
+      "./src/mapd-con-es6.js"
     ],
     output: {
-        path: __dirname +'/dist/',
-        filename: 'mapd-connection.js'
+        path: path.join(__dirname, "/dist/"),
+        filename: "mapd-connector.js"
     },
     module: {
       loaders: [
