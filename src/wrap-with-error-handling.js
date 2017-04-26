@@ -1,25 +1,22 @@
-/*global Thrift, TMapDException, MapDClient*/
+/* global Thrift, TMapDException, MapDClient*/
 
 export function isResultError (result) {
   return (
-    result instanceof Thrift.TException ||
-    result instanceof Error
+    result instanceof Thrift.TException || result instanceof Error
   )
 }
 
 export function createResultError (result) {
-  let errorMessage
   if (result instanceof TMapDException) {
-    errorMessage = result.error_msg
-  } else if (result.message !== undefined) {
-    errorMessage = result.message
+    return new Error(result.error_msg)
+  } else if (typeof result.message === "undefined") {
+    return new Error("Unspecified Error")
   } else {
-    errorMessage = 'Unspecified Error'
+    return new Error(result.message)
   }
-  return new Error(errorMessage)
 }
 
-export function wrapMethod(context, method, isError) {
+export function wrapMethod (context, method, isError) { // eslint-disable-line consistent-this
   return function wrapped (...args) {
     const arity = MapDClient.prototype[method].length
     if (args.length === arity) {
@@ -38,11 +35,11 @@ export function wrapMethod(context, method, isError) {
       }
       return result
     } else {
-      throw new Error ('Insufficient arguments to run this method ' + method)
+      throw new Error ("Insufficient arguments to run this method " + method)
     }
   }
 }
 
-export function wrapWithErrorHandling (context, method) {
+export function wrapWithErrorHandling (context, method) { // eslint-disable-line consistent-this
   return wrapMethod(context, method, isResultError)
 }

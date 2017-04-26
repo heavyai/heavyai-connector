@@ -51,7 +51,7 @@
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -59,31 +59,38 @@
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*global Thrift*/
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global Thrift*/
 
-	var _mapdClientV = __webpack_require__(3);
-
-	var _mapdClientV2 = _interopRequireDefault(_mapdClientV);
-
-	var _processQueryResults = __webpack_require__(5);
-
-	var _processQueryResults2 = _interopRequireDefault(_processQueryResults);
-
-	var _helpers = __webpack_require__(8);
+	var _helpers = __webpack_require__(3);
 
 	var helpers = _interopRequireWildcard(_helpers);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _mapdClientV = __webpack_require__(4);
+
+	var _mapdClientV2 = _interopRequireDefault(_mapdClientV);
+
+	var _processQueryResults = __webpack_require__(6);
+
+	var _processQueryResults2 = _interopRequireDefault(_processQueryResults);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var COMPRESSION_LEVEL_DEFAULT = 3;
+
+	function arrayify(maybeArray) {
+	  return Array.isArray(maybeArray) ? maybeArray : [maybeArray];
+	}
 
 	/**
 	 * The MapdCon class provides the necessary methods for performing queries to a
 	 * MapD GPU database. In order to use MapdCon, you must have the Thrift library
 	 * loaded into the <code>window</code> object first.
 	 */
+
 	var MapdCon = function () {
 
 	  /**
@@ -115,7 +122,7 @@
 	          }
 	        });
 	      } else {
-	        callback(new Error('No Session ID'));
+	        callback(new Error("No Session ID"));
 	      }
 	    };
 
@@ -141,7 +148,7 @@
 	          }
 	        });
 	      } else {
-	        callback(new Error('No Session ID'));
+	        callback(new Error("No Session ID"));
 	      }
 	    };
 
@@ -159,7 +166,7 @@
 
 	    this.getServerStatus = function (callback) {
 	      _this._client[0].get_server_status(_this._sessionId[0], function (result) {
-	        if ((typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object' && result.hasOwnProperty('read_only') && result.hasOwnProperty('rendering_enabled') && result.hasOwnProperty('version')) {
+	        if ((typeof result === "undefined" ? "undefined" : _typeof(result)) === "object" && result.hasOwnProperty("read_only") && result.hasOwnProperty("rendering_enabled") && result.hasOwnProperty("version")) {
 	          callback(null, result);
 	        } else {
 	          callback(result, null);
@@ -182,7 +189,7 @@
 	    this.createFrontendViewAsync = function (viewName, viewState, imageHash, metaData) {
 	      if (!_this._sessionId) {
 	        return new Promise(function (resolve, reject) {
-	          reject(new Error('You are not connected to a server. Try running the connect method first.'));
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
 	        });
 	      }
 
@@ -201,7 +208,7 @@
 
 	    this.deleteFrontendView = function (viewName, callback) {
 	      if (!_this._sessionId) {
-	        throw new Error('You are not connected to a server. Try running the connect method first.');
+	        throw new Error("You are not connected to a server. Try running the connect method first.");
 	      }
 	      try {
 	        _this._client.forEach(function (client, i) {
@@ -209,7 +216,7 @@
 	          client.delete_frontend_view(_this._sessionId[i], viewName, callback);
 	        });
 	      } catch (err) {
-	        console.log('ERROR: Could not delete the frontend view. Check your session id.', err);
+	        console.log("ERROR: Could not delete the frontend view. Check your session id.", err);
 	      }
 	    };
 
@@ -226,18 +233,18 @@
 	    };
 
 	    this.getLinkView = function (link, callback) {
-	      _this._client[0].get_link_view(_this._sessionId[0], link, function (link) {
-	        callback(null, link);
+	      _this._client[0].get_link_view(_this._sessionId[0], link, function (theLink) {
+	        callback(null, theLink);
 	      });
 	    };
 
 	    this.getLinkViewAsync = function (link) {
 	      return new Promise(function (resolve, reject) {
-	        _this.getLinkView(link, function (err, link) {
+	        _this.getLinkView(link, function (err, theLink) {
 	          if (err) {
 	            reject(err);
 	          } else {
-	            resolve(link);
+	            resolve(theLink);
 	          }
 	        });
 	      });
@@ -268,9 +275,9 @@
 	    this._protocol = null;
 	    this._datumEnum = {};
 	    this._logging = false;
-	    this._platform = 'mapd';
+	    this._platform = "mapd";
 	    this._nonce = 0;
-	    this._balanceStrategy = 'adaptive';
+	    this._balanceStrategy = "adaptive";
 	    this._numConnections = 0;
 	    this._lastRenderCon = 0;
 	    this.queryTimes = {};
@@ -319,7 +326,7 @@
 
 
 	  _createClass(MapdCon, [{
-	    key: 'connect',
+	    key: "connect",
 	    value: function connect(callback) {
 	      var _this2 = this;
 
@@ -330,36 +337,36 @@
 	      // TODO: should be its own function
 	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
 	      if (!allAreArrays) {
-	        return callback('All connection parameters must be arrays.');
+	        return callback("All connection parameters must be arrays.");
 	      }
 
 	      this._client = [];
 	      this._sessionId = [];
 
 	      if (!this._user[0]) {
-	        return callback('Please enter a username.');
+	        return callback("Please enter a username.");
 	      } else if (!this._password[0]) {
-	        return callback('Please enter a password.');
+	        return callback("Please enter a password.");
 	      } else if (!this._dbName[0]) {
-	        return callback('Please enter a database.');
+	        return callback("Please enter a database.");
 	      } else if (!this._host[0]) {
-	        return callback('Please enter a host name.');
+	        return callback("Please enter a host name.");
 	      } else if (!this._port[0]) {
-	        return callback('Please enter a port.');
+	        return callback("Please enter a port.");
 	      }
 
 	      // now check to see if length of all arrays are the same and > 0
 	      var hostLength = this._host.length;
 	      if (hostLength < 1) {
-	        return callback('Must have at least one server to connect to.');
+	        return callback("Must have at least one server to connect to.");
 	      }
 	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) {
-	        return callback('Array connection parameters must be of equal length.');
+	        return callback("Array connection parameters must be of equal length.");
 	      }
 
 	      if (!this._protocol) {
-	        this._protocol = this._host.map(function (host, i) {
-	          return window.location.protocol.replace(':', '');
+	        this._protocol = this._host.map(function () {
+	          return window.location.protocol.replace(":", "");
 	        });
 	      }
 
@@ -388,7 +395,7 @@
 	      return this;
 	    }
 	  }, {
-	    key: 'convertFromThriftTypes',
+	    key: "convertFromThriftTypes",
 	    value: function convertFromThriftTypes(fields) {
 	      var fieldsArray = [];
 	      // silly to change this from map to array
@@ -399,7 +406,7 @@
 	            name: key,
 	            type: this._datumEnum[fields[key].col_type.type],
 	            is_array: fields[key].col_type.is_array,
-	            is_dict: fields[key].col_type.encoding === TEncodingType.DICT
+	            is_dict: fields[key].col_type.encoding === TEncodingType.DICT // eslint-disable-line no-undef
 	          });
 	        }
 	      }
@@ -425,13 +432,13 @@
 	     */
 
 	  }, {
-	    key: 'disconnect',
+	    key: "disconnect",
 	    value: function disconnect(callback) {
 	      var _this3 = this;
 
 	      if (this._sessionId !== null) {
 	        for (var c = 0; c < this._client.length; c++) {
-	          this._client[c].disconnect(this._sessionId[c], function (error, success) {
+	          this._client[c].disconnect(this._sessionId[c], function (error) {
 	            // Success will return NULL
 
 	            if (error) {
@@ -550,7 +557,7 @@
 	     */
 
 	  }, {
-	    key: 'createLinkAsync',
+	    key: "createLinkAsync",
 
 
 	    /**
@@ -584,12 +591,14 @@
 	            if (error) {
 	              reject(error);
 	            } else {
-	              var result = data.split(',').reduce(function (links, link) {
-	                if (links.indexOf(link) === -1) links.push(link);
+	              var result = data.split(",").reduce(function (links, link) {
+	                if (links.indexOf(link) === -1) {
+	                  links.push(link);
+	                }
 	                return links;
 	              }, []);
 	              if (!result || result.length !== 1) {
-	                reject(new Error('Different links were created on connection'));
+	                reject(new Error("Different links were created on connection"));
 	              } else {
 	                resolve(result.join());
 	              }
@@ -619,7 +628,7 @@
 	     */
 
 	  }, {
-	    key: 'detectColumnTypes',
+	    key: "detectColumnTypes",
 
 
 	    /**
@@ -659,7 +668,7 @@
 	      });
 	    }
 	  }, {
-	    key: 'detectColumnTypesAsync',
+	    key: "detectColumnTypesAsync",
 	    value: function detectColumnTypesAsync(fileName, copyParams) {
 	      var _this5 = this;
 
@@ -687,7 +696,7 @@
 	     */
 
 	  }, {
-	    key: 'query',
+	    key: "query",
 	    value: function query(_query, options, callback) {
 	      var _this6 = this;
 
@@ -697,11 +706,11 @@
 	      var returnTiming = false;
 	      var limit = -1;
 	      if (options) {
-	        columnarResults = options.hasOwnProperty('columnarResults') ? options.columnarResults : columnarResults;
-	        eliminateNullRows = options.hasOwnProperty('eliminateNullRows') ? options.eliminateNullRows : eliminateNullRows;
-	        queryId = options.hasOwnProperty('queryId') ? options.queryId : queryId;
-	        returnTiming = options.hasOwnProperty('returnTiming') ? options.returnTiming : returnTiming;
-	        limit = options.hasOwnProperty('limit') ? options.limit : limit;
+	        columnarResults = options.hasOwnProperty("columnarResults") ? options.columnarResults : columnarResults;
+	        eliminateNullRows = options.hasOwnProperty("eliminateNullRows") ? options.eliminateNullRows : eliminateNullRows;
+	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
+	        returnTiming = options.hasOwnProperty("returnTiming") ? options.returnTiming : returnTiming;
+	        limit = options.hasOwnProperty("limit") ? options.limit : limit;
 	      }
 
 	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
@@ -720,7 +729,7 @@
 	      };
 
 	      try {
-	        if (!!callback) {
+	        if (callback) {
 	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, function (error, result) {
 	            if (error) {
 	              callback(error);
@@ -734,10 +743,10 @@
 	          return this.processResults(processResultsOptions, SQLExecuteResult);
 	        }
 	      } catch (err) {
-	        if (err.name === 'NetworkError') {
+	        if (err.name === "NetworkError") {
 	          this.removeConnection(conId);
 	          if (this._numConnections === 0) {
-	            err.msg = 'No remaining database connections';
+	            err.msg = "No remaining database connections";
 	            throw err;
 	          }
 	          this.query(_query, options, callback);
@@ -749,7 +758,7 @@
 	      }
 	    }
 	  }, {
-	    key: 'validateQuery',
+	    key: "validateQuery",
 	    value: function validateQuery(query) {
 	      var _this7 = this;
 
@@ -769,11 +778,11 @@
 	     */
 
 	  }, {
-	    key: 'removeConnection',
+	    key: "removeConnection",
 	    value: function removeConnection(conId) {
 	      if (conId < 0 || conId >= this.numConnections) {
 	        var err = {
-	          msg: 'Remove connection id invalid'
+	          msg: "Remove connection id invalid"
 	        };
 	        throw err;
 	      }
@@ -802,7 +811,7 @@
 	     */
 
 	  }, {
-	    key: 'getTables',
+	    key: "getTables",
 	    value: function getTables(callback) {
 	      this._client[0].get_tables(this._sessionId[0], function (error, tables) {
 	        if (error) {
@@ -811,14 +820,14 @@
 	          callback(null, tables.map(function (table) {
 	            return {
 	              name: table,
-	              label: 'obs'
+	              label: "obs"
 	            };
 	          }));
 	        }
 	      });
 	    }
 	  }, {
-	    key: 'getTablesAsync',
+	    key: "getTablesAsync",
 	    value: function getTablesAsync() {
 	      var _this8 = this;
 
@@ -839,11 +848,12 @@
 	     */
 
 	  }, {
-	    key: 'invertDatumTypes',
+	    key: "invertDatumTypes",
 	    value: function invertDatumTypes() {
-	      for (var key in TDatumType) {
-	        if (TDatumType.hasOwnProperty(key)) {
-	          this._datumEnum[TDatumType[key]] = key;
+	      var datumType = TDatumType; // eslint-disable-line no-undef
+	      for (var key in datumType) {
+	        if (datumType.hasOwnProperty(key)) {
+	          this._datumEnum[datumType[key]] = key;
 	        }
 	      }
 	    }
@@ -873,21 +883,19 @@
 	     */
 
 	  }, {
-	    key: 'getFields',
+	    key: "getFields",
 	    value: function getFields(tableName, callback) {
 	      var _this9 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (fields) {
-	        if (!fields) {
-	          callback(new Error('Table (' + tableName + ') not found'));
-	        } else {
-
+	        if (fields) {
 	          var rowDict = fields.row_desc.reduce(function (accum, value) {
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-
 	          callback(null, _this9.convertFromThriftTypes(rowDict));
+	        } else {
+	          callback(new Error("Table (" + tableName + ") not found"));
 	        }
 	      });
 	    }
@@ -910,10 +918,10 @@
 	     */
 
 	  }, {
-	    key: 'createTable',
+	    key: "createTable",
 	    value: function createTable(tableName, rowDescObj, tableType, callback) {
 	      if (!this._sessionId) {
-	        throw new Error('You are not connected to a server. Try running the connect method first.');
+	        throw new Error("You are not connected to a server. Try running the connect method first.");
 	      }
 
 	      var thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc);
@@ -929,7 +937,7 @@
 	      }
 	    }
 	  }, {
-	    key: 'importTable',
+	    key: "importTable",
 
 
 	    /**
@@ -941,7 +949,7 @@
 	     */
 	    value: function importTable(tableName, fileName, copyParams, rowDescObj, isShapeFile, callback) {
 	      if (!this._sessionId) {
-	        throw new Error('You are not connected to a server. Try running the connect method first.');
+	        throw new Error("You are not connected to a server. Try running the connect method first.");
 	      }
 
 	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
@@ -964,7 +972,7 @@
 	      }
 	    }
 	  }, {
-	    key: 'importTableAsyncWrapper',
+	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
 	      var _this10 = this;
 
@@ -981,7 +989,7 @@
 	      };
 	    }
 	  }, {
-	    key: 'renderVega',
+	    key: "renderVega",
 
 
 	    /**
@@ -1001,10 +1009,10 @@
 	      var _this11 = this;
 
 	      var queryId = null;
-	      var compressionLevel = 3;
+	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
 	      if (options) {
-	        queryId = options.hasOwnProperty('queryId') ? options.queryId : queryId;
-	        compressionLevel = options.hasOwnProperty('compressionLevel') ? options.compressionLevel : compressionLevel;
+	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
+	        compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
 	      }
 
 	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
@@ -1016,7 +1024,7 @@
 
 	      var processResultsOptions = {
 	        isImage: true,
-	        query: 'render: ' + vega,
+	        query: "render: " + vega,
 	        queryId: queryId,
 	        conId: conId,
 	        estimatedQueryTime: lastQueryTime
@@ -1055,7 +1063,7 @@
 	     */
 
 	  }, {
-	    key: 'getResultRowForPixel',
+	    key: "getResultRowForPixel",
 	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap, callbacks) /* istanbul ignore next */{
 	      var pixelRadius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
 
@@ -1063,7 +1071,8 @@
 	      var curNonce = (this._nonce++).toString();
 	      try {
 	        if (!callbacks) {
-	          return this.processPixelResults(undefined, this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));
+	          return this.processPixelResults(undefined, // eslint-disable-line no-undefined
+	          this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));
 	        }
 	        this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callbacks));
 	      } catch (err) {
@@ -1080,14 +1089,14 @@
 	     */
 
 	  }, {
-	    key: 'processPixelResults',
+	    key: "processPixelResults",
 	    value: function processPixelResults(callbacks, results) {
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
 	      var numPixels = results.length;
 	      var processResultsOptions = {
 	        isImage: false,
 	        eliminateNullRows: false,
-	        query: 'pixel request',
+	        query: "pixel request",
 	        queryId: -2
 	      };
 	      for (var p = 0; p < numPixels; p++) {
@@ -1122,7 +1131,7 @@
 	     */
 
 	  }, {
-	    key: 'sessionId',
+	    key: "sessionId",
 	    value: function sessionId(_sessionId) {
 	      if (!arguments.length) {
 	        return this._sessionId;
@@ -1146,15 +1155,12 @@
 	     */
 
 	  }, {
-	    key: 'host',
+	    key: "host",
 	    value: function host(_host) {
 	      if (!arguments.length) {
 	        return this._host;
-	      } else if (!Array.isArray(_host)) {
-	        this._host = [_host];
-	      } else {
-	        this._host = _host;
 	      }
+	      this._host = arrayify(_host);
 	      return this;
 	    }
 
@@ -1172,15 +1178,12 @@
 	     */
 
 	  }, {
-	    key: 'port',
+	    key: "port",
 	    value: function port(_port) {
 	      if (!arguments.length) {
 	        return this._port;
-	      } else if (!Array.isArray(_port)) {
-	        this._port = [_port];
-	      } else {
-	        this._port = _port;
 	      }
+	      this._port = arrayify(_port);
 	      return this;
 	    }
 
@@ -1198,15 +1201,12 @@
 	     */
 
 	  }, {
-	    key: 'user',
+	    key: "user",
 	    value: function user(_user) {
 	      if (!arguments.length) {
 	        return this._user;
-	      } else if (!Array.isArray(_user)) {
-	        this._user = [_user];
-	      } else {
-	        this._user = _user;
 	      }
+	      this._user = arrayify(_user);
 	      return this;
 	    }
 
@@ -1224,15 +1224,12 @@
 	     */
 
 	  }, {
-	    key: 'password',
+	    key: "password",
 	    value: function password(_password) {
 	      if (!arguments.length) {
 	        return this._password;
-	      } else if (!Array.isArray(_password)) {
-	        this._password = [_password];
-	      } else {
-	        this._password = _password;
 	      }
+	      this._password = arrayify(_password);
 	      return this;
 	    }
 
@@ -1250,15 +1247,12 @@
 	     */
 
 	  }, {
-	    key: 'dbName',
+	    key: "dbName",
 	    value: function dbName(_dbName) {
 	      if (!arguments.length) {
 	        return this._dbName;
-	      } else if (!Array.isArray(_dbName)) {
-	        this._dbName = [_dbName];
-	      } else {
-	        this._dbName = _dbName;
 	      }
+	      this._dbName = arrayify(_dbName);
 	      return this;
 	    }
 
@@ -1277,16 +1271,16 @@
 	     */
 
 	  }, {
-	    key: 'logging',
+	    key: "logging",
 	    value: function logging(_logging) {
 	      if (typeof _logging === "undefined") {
 	        return this._logging;
 	      } else if (typeof _logging !== "boolean") {
-	        return 'logging can only be set with boolean values';
+	        return "logging can only be set with boolean values";
 	      }
 	      this._logging = _logging;
 	      var isEnabledTxt = _logging ? "enabled" : "disabled";
-	      return 'SQL logging is now ' + isEnabledTxt;
+	      return "SQL logging is now " + isEnabledTxt;
 	    }
 
 	    /**
@@ -1303,7 +1297,7 @@
 	     */
 
 	  }, {
-	    key: 'platform',
+	    key: "platform",
 	    value: function platform(_platform) {
 	      if (!arguments.length) {
 	        return this._platform;
@@ -1330,7 +1324,7 @@
 	     */
 
 	  }, {
-	    key: 'numConnections',
+	    key: "numConnections",
 	    value: function numConnections() {
 	      return this._numConnections;
 	    }
@@ -1349,15 +1343,12 @@
 	     */
 
 	  }, {
-	    key: 'protocol',
+	    key: "protocol",
 	    value: function protocol(_protocol) {
 	      if (!arguments.length) {
 	        return this._protocol;
-	      } else if (!Array.isArray(_protocol)) {
-	        this._protocol = [_protocol];
-	      } else {
-	        this._protocol = _protocol;
 	      }
+	      this._protocol = arrayify(_protocol);
 	      return this;
 	    }
 
@@ -1372,12 +1363,12 @@
 	     */
 
 	  }, {
-	    key: 'getEndpoints',
+	    key: "getEndpoints",
 	    value: function getEndpoints() {
 	      var _this12 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this12._protocol[i] + '://' + host + ':' + _this12._port[i];
+	        return _this12._protocol[i] + "://" + host + ":" + _this12._port[i];
 	      });
 	    }
 	  }]);
@@ -1388,7 +1379,7 @@
 	// Set a global mapdcon function when mapdcon is brought in via script tag.
 
 
-	if (( false ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+	if (( false ? "undefined" : _typeof(module)) === "object" && module.exports) {
 	  if (window) {
 	    window.MapdCon = MapdCon;
 	  }
@@ -1415,99 +1406,121 @@
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
+	  return new TCopyParams(obj);
+	}; // eslint-disable-line no-undef
+
+	var mutateThriftRowDesc = exports.mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
+	  rowDescArray.forEach(function (obj, i) {
+	    thriftRowDescArray[i].col_name = obj.clean_col_name;
+	    thriftRowDescArray[i].col_type.encoding = obj.col_type.encoding;
+	    thriftRowDescArray[i].col_type.type = obj.col_type.type;
+	  });
+	  return thriftRowDescArray;
+	};
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = MapDClientV2;
 
-	var _wrapWithErrorHandling = __webpack_require__(4);
+	var _wrapWithErrorHandling = __webpack_require__(5);
 
 	function MapDClientV2(protocol) {
 	  MapDClient.call(this, protocol);
-	} /*global MapDClient*/
+	} /* global MapDClient*/
 
 	MapDClientV2.prototype = Object.create(MapDClient.prototype);
 
 	MapDClientV2.prototype.connect = function () {
-	  var connectWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'connect');
+	  var connectWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "connect");
 	  return connectWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.sql_execute = function () {
-	  var SQLExecuteWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'sql_execute');
+	  var SQLExecuteWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "sql_execute");
 	  return SQLExecuteWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.sql_validate = function () {
-	  var SQLValidateWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'sql_validate');
+	  var SQLValidateWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "sql_validate");
 	  return SQLValidateWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.render = function () {
-	  var renderWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'render');
+	  var renderWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "render");
 	  return renderWithErrorHandling.apply(undefined, arguments);
 	};
 
 	/* istanbul ignore next */
 	MapDClientV2.prototype.render_vega = function () {
-	  var renderVegaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'render_vega');
+	  var renderVegaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "render_vega");
 	  return renderVegaWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.delete_frontend_view = function () {
-	  var deleteFrontendViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'delete_frontend_view');
+	  var deleteFrontendViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "delete_frontend_view");
 	  return deleteFrontendViewWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.get_tables = function () {
-	  var getTablesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'get_tables');
+	  var getTablesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_tables");
 	  return getTablesWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.get_frontend_views = function () {
-	  var getFrontEndViewsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'get_frontend_views');
+	  var getFrontEndViewsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_frontend_views");
 	  return getFrontEndViewsWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.get_frontend_view = function () {
-	  var getFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'get_frontend_view');
+	  var getFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_frontend_view");
 	  return getFrontEndViewWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.create_link = function () {
-	  var createLinkWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'create_link');
+	  var createLinkWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "create_link");
 	  return createLinkWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.create_frontend_view = function () {
-	  var createFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'create_frontend_view');
+	  var createFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "create_frontend_view");
 	  return createFrontEndViewWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.send_create_table = function () {
-	  var sendCreateTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'send_create_table');
+	  var sendCreateTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "send_create_table");
 	  return sendCreateTableWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.send_import_table = function () {
-	  var sendImportTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'send_import_table');
+	  var sendImportTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "send_import_table");
 	  return sendImportTableWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.detect_column_types = function () {
-	  var detectColumnTypesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, 'detect_column_types');
+	  var detectColumnTypesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "detect_column_types");
 	  return detectColumnTypesWithErrorHandling.apply(undefined, arguments);
 	};
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1516,25 +1529,24 @@
 	exports.createResultError = createResultError;
 	exports.wrapMethod = wrapMethod;
 	exports.wrapWithErrorHandling = wrapWithErrorHandling;
-	/*global Thrift, TMapDException, MapDClient*/
+	/* global Thrift, TMapDException, MapDClient*/
 
 	function isResultError(result) {
 	  return result instanceof Thrift.TException || result instanceof Error;
 	}
 
 	function createResultError(result) {
-	  var errorMessage = void 0;
 	  if (result instanceof TMapDException) {
-	    errorMessage = result.error_msg;
-	  } else if (result.message !== undefined) {
-	    errorMessage = result.message;
+	    return new Error(result.error_msg);
+	  } else if (typeof result.message === "undefined") {
+	    return new Error("Unspecified Error");
 	  } else {
-	    errorMessage = 'Unspecified Error';
+	    return new Error(result.message);
 	  }
-	  return new Error(errorMessage);
 	}
 
 	function wrapMethod(context, method, isError) {
+	  // eslint-disable-line consistent-this
 	  return function wrapped() {
 	    var arity = MapDClient.prototype[method].length;
 
@@ -1562,31 +1574,32 @@
 	      }
 	      return result;
 	    } else {
-	      throw new Error('Insufficient arguments to run this method ' + method);
+	      throw new Error("Insufficient arguments to run this method " + method);
 	    }
 	  };
 	}
 
 	function wrapWithErrorHandling(context, method) {
+	  // eslint-disable-line consistent-this
 	  return wrapMethod(context, method, isResultError);
 	}
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = processQueryResults;
 
-	var _processColumnarResults = __webpack_require__(6);
+	var _processColumnarResults = __webpack_require__(7);
 
 	var _processColumnarResults2 = _interopRequireDefault(_processColumnarResults);
 
-	var _processRowResults = __webpack_require__(7);
+	var _processRowResults = __webpack_require__(8);
 
 	var _processRowResults2 = _interopRequireDefault(_processRowResults);
 
@@ -1616,15 +1629,15 @@
 	    var queryId = null;
 	    var conId = null;
 	    var estimatedQueryTime = null;
-	    var hasCallback = !!callback;
+	    var hasCallback = Boolean(callback);
 
-	    if (typeof options !== 'undefined') {
+	    if (typeof options !== "undefined") {
 	      isImage = options.isImage ? options.isImage : false;
 	      eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
 	      query = options.query ? options.query : null;
 	      queryId = options.queryId ? options.queryId : null;
-	      conId = typeof options.conId !== 'undefined' ? options.conId : null;
-	      estimatedQueryTime = typeof options.estimatedQueryTime !== 'undefined' ? options.estimatedQueryTime : null;
+	      conId = typeof options.conId === "undefined" ? null : options.conId;
+	      estimatedQueryTime = typeof options.estimatedQueryTime === "undefined" ? null : options.estimatedQueryTime;
 	    }
 	    if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
 	      updateQueryTimes(conId, queryId, estimatedQueryTime, result.execution_time_ms);
@@ -1632,7 +1645,7 @@
 
 	    // should use node_env
 	    if (logging && result.execution_time_ms) {
-	      console.log(query, 'on Server', conId, '- Execution Time:', result.execution_time_ms, ' ms, Total Time:', result.total_time_ms + 'ms');
+	      console.log(query, "on Server", conId, "- Execution Time:", result.execution_time_ms, " ms, Total Time:", result.total_time_ms + "ms");
 	    }
 
 	    if (isImage && hasCallback) {
@@ -1644,9 +1657,9 @@
 
 	      if (!result.row_set) {
 	        if (hasCallback) {
-	          callback(new Error('No result to process'));
+	          callback(new Error("No result to process"));
 	        } else {
-	          throw new Error('No result to process');
+	          throw new Error("No result to process");
 	        }
 	        return;
 	      }
@@ -1672,10 +1685,10 @@
 	}
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1693,7 +1706,7 @@
 	function processColumnarResults(data, eliminateNullRows, dataEnum) {
 	  var formattedResult = { fields: [], results: [] };
 	  var numCols = data.row_desc.length;
-	  var numRows = data.columns[0] !== undefined ? data.columns[0].nulls.length : 0;
+	  var numRows = typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length;
 
 	  formattedResult.fields = data.row_desc.map(function (field) {
 	    return {
@@ -1713,7 +1726,7 @@
 	        }
 	      }
 	      if (rowHasNull) {
-	        continue;
+	        continue; // eslint-disable-line no-continue
 	      }
 	    }
 	    var row = {};
@@ -1725,37 +1738,37 @@
 	      if (isNull) {
 	        // row[fieldName] = "NULL";
 	        row[fieldName] = null;
-	        continue;
+	        continue; // eslint-disable-line no-continue
 	      }
 	      if (fieldIsArray) {
 	        row[fieldName] = [];
 	        var arrayNumElems = data.columns[_c].data.arr_col[r].nulls.length;
 	        for (var e = 0; e < arrayNumElems; e++) {
 	          if (data.columns[_c].data.arr_col[r].nulls[e]) {
-	            row[fieldName].push('NULL');
-	            continue;
+	            row[fieldName].push("NULL");
+	            continue; // eslint-disable-line no-continue
 	          }
 	          switch (fieldType) {
-	            case 'BOOL':
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] ? true : false);
+	            case "BOOL":
+	              row[fieldName].push(Boolean(data.columns[_c].data.arr_col[r].data.int_col[e]));
 	              break;
-	            case 'SMALLINT':
-	            case 'INT':
-	            case 'BIGINT':
+	            case "SMALLINT":
+	            case "INT":
+	            case "BIGINT":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e]);
 	              break;
-	            case 'FLOAT':
-	            case 'DOUBLE':
-	            case 'DECIMAL':
+	            case "FLOAT":
+	            case "DOUBLE":
+	            case "DECIMAL":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.real_col[e]);
 	              break;
-	            case 'STR':
+	            case "STR":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.str_col[e]);
 	              break;
-	            case 'TIME':
-	            case 'TIMESTAMP':
-	            case 'DATE':
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] * 1000);
+	            case "TIME":
+	            case "TIMESTAMP":
+	            case "DATE":
+	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] * 1000); // eslint-disable-line no-magic-numbers
 	              break;
 	            default:
 	              break;
@@ -1763,26 +1776,26 @@
 	        }
 	      } else {
 	        switch (fieldType) {
-	          case 'BOOL':
-	            row[fieldName] = data.columns[_c].data.int_col[r] ? true : false;
+	          case "BOOL":
+	            row[fieldName] = Boolean(data.columns[_c].data.int_col[r]);
 	            break;
-	          case 'SMALLINT':
-	          case 'INT':
-	          case 'BIGINT':
+	          case "SMALLINT":
+	          case "INT":
+	          case "BIGINT":
 	            row[fieldName] = data.columns[_c].data.int_col[r];
 	            break;
-	          case 'FLOAT':
-	          case 'DOUBLE':
-	          case 'DECIMAL':
+	          case "FLOAT":
+	          case "DOUBLE":
+	          case "DECIMAL":
 	            row[fieldName] = data.columns[_c].data.real_col[r];
 	            break;
-	          case 'STR':
+	          case "STR":
 	            row[fieldName] = data.columns[_c].data.str_col[r];
 	            break;
-	          case 'TIME':
-	          case 'TIMESTAMP':
-	          case 'DATE':
-	            row[fieldName] = new Date(data.columns[_c].data.int_col[r] * 1000);
+	          case "TIME":
+	          case "TIMESTAMP":
+	          case "DATE":
+	            row[fieldName] = new Date(data.columns[_c].data.int_col[r] * 1000); // eslint-disable-line no-magic-numbers
 	            break;
 	          default:
 	            break;
@@ -1795,10 +1808,10 @@
 	}
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1826,7 +1839,7 @@
 
 	  formattedResult.results = [];
 	  var numRows = 0;
-	  if (data.rows !== undefined && data.rows !== null) {
+	  if (typeof data.rows !== "undefined" && data.rows !== null) {
 	    numRows = data.rows.length; // so won't throw if data.rows is missing
 	  }
 
@@ -1840,7 +1853,7 @@
 	        }
 	      }
 	      if (rowHasNull) {
-	        continue;
+	        continue; // eslint-disable-line no-continue
 	      }
 	    }
 
@@ -1851,38 +1864,38 @@
 	      var fieldIsArray = formattedResult.fields[_c].is_array;
 	      if (fieldIsArray) {
 	        if (data.rows[r].cols[_c].is_null) {
-	          row[fieldName] = 'NULL';
-	          continue;
+	          row[fieldName] = "NULL";
+	          continue; // eslint-disable-line no-continue
 	        }
 	        row[fieldName] = [];
 	        var arrayNumElems = data.rows[r].cols[_c].val.arr_val.length;
 	        for (var e = 0; e < arrayNumElems; e++) {
 	          var elemDatum = data.rows[r].cols[_c].val.arr_val[e];
 	          if (elemDatum.is_null) {
-	            row[fieldName].push('NULL');
-	            continue;
+	            row[fieldName].push("NULL");
+	            continue; // eslint-disable-line no-continue
 	          }
 	          switch (fieldType) {
-	            case 'BOOL':
-	              row[fieldName].push(elemDatum.val.int_val ? true : false);
+	            case "BOOL":
+	              row[fieldName].push(Boolean(elemDatum.val.int_val));
 	              break;
-	            case 'SMALLINT':
-	            case 'INT':
-	            case 'BIGINT':
+	            case "SMALLINT":
+	            case "INT":
+	            case "BIGINT":
 	              row[fieldName].push(elemDatum.val.int_val);
 	              break;
-	            case 'FLOAT':
-	            case 'DOUBLE':
-	            case 'DECIMAL':
+	            case "FLOAT":
+	            case "DOUBLE":
+	            case "DECIMAL":
 	              row[fieldName].push(elemDatum.val.real_val);
 	              break;
-	            case 'STR':
+	            case "STR":
 	              row[fieldName].push(elemDatum.val.str_val);
 	              break;
-	            case 'TIME':
-	            case 'TIMESTAMP':
-	            case 'DATE':
-	              row[fieldName].push(elemDatum.val.int_val * 1000);
+	            case "TIME":
+	            case "TIMESTAMP":
+	            case "DATE":
+	              row[fieldName].push(elemDatum.val.int_val * 1000); // eslint-disable-line no-magic-numbers
 	              break;
 	            default:
 	              break;
@@ -1891,30 +1904,30 @@
 	      } else {
 	        var scalarDatum = data.rows[r].cols[_c];
 	        if (scalarDatum.is_null) {
-	          row[fieldName] = 'NULL';
-	          continue;
+	          row[fieldName] = "NULL";
+	          continue; // eslint-disable-line no-continue
 	        }
 	        switch (fieldType) {
-	          case 'BOOL':
-	            row[fieldName] = scalarDatum.val.int_val ? true : false;
+	          case "BOOL":
+	            row[fieldName] = Boolean(scalarDatum.val.int_val);
 	            break;
-	          case 'SMALLINT':
-	          case 'INT':
-	          case 'BIGINT':
+	          case "SMALLINT":
+	          case "INT":
+	          case "BIGINT":
 	            row[fieldName] = scalarDatum.val.int_val;
 	            break;
-	          case 'FLOAT':
-	          case 'DOUBLE':
-	          case 'DECIMAL':
+	          case "FLOAT":
+	          case "DOUBLE":
+	          case "DECIMAL":
 	            row[fieldName] = scalarDatum.val.real_val;
 	            break;
-	          case 'STR':
+	          case "STR":
 	            row[fieldName] = scalarDatum.val.str_val;
 	            break;
-	          case 'TIME':
-	          case 'TIMESTAMP':
-	          case 'DATE':
-	            row[fieldName] = new Date(scalarDatum.val.int_val * 1000);
+	          case "TIME":
+	          case "TIMESTAMP":
+	          case "DATE":
+	            row[fieldName] = new Date(scalarDatum.val.int_val * 1000); // eslint-disable-line no-magic-numbers
 	            break;
 	          default:
 	            break;
@@ -1925,28 +1938,6 @@
 	  }
 	  return formattedResult;
 	}
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
-	  return new TCopyParams(obj);
-	};
-
-	var mutateThriftRowDesc = exports.mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
-	  rowDescArray.forEach(function (obj, i) {
-	    thriftRowDescArray[i].col_name = obj.clean_col_name;
-	    thriftRowDescArray[i].col_type.encoding = obj.col_type.encoding;
-	    thriftRowDescArray[i].col_type.type = obj.col_type.type;
-	  });
-	  return thriftRowDescArray;
-	};
 
 /***/ })
 /******/ ]);

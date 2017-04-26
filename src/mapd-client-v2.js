@@ -1,8 +1,8 @@
-/*global MapDClient*/
+/* global MapDClient*/
 
 import {
   wrapWithErrorHandling
-} from './wrap-with-error-handling'
+} from "./wrap-with-error-handling"
 
 export default function MapDClientV2 (protocol) {
   MapDClient.call(this, protocol)
@@ -11,72 +11,72 @@ export default function MapDClientV2 (protocol) {
 MapDClientV2.prototype = Object.create(MapDClient.prototype)
 
 MapDClientV2.prototype.connect = function (...args) {
-  const connectWithErrorHandling = wrapWithErrorHandling(this, 'connect')
+  const connectWithErrorHandling = wrapWithErrorHandling(this, "connect")
   return connectWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.sql_execute = function (...args) {
-  const SQLExecuteWithErrorHandling = wrapWithErrorHandling(this, 'sql_execute')
+  const SQLExecuteWithErrorHandling = wrapWithErrorHandling(this, "sql_execute")
   return SQLExecuteWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.sql_validate = function (...args) {
-  const SQLValidateWithErrorHandling = wrapWithErrorHandling(this, 'sql_validate')
+  const SQLValidateWithErrorHandling = wrapWithErrorHandling(this, "sql_validate")
   return SQLValidateWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.render = function (...args) {
-  const renderWithErrorHandling = wrapWithErrorHandling(this, 'render')
+  const renderWithErrorHandling = wrapWithErrorHandling(this, "render")
   return renderWithErrorHandling(...args)
 }
 
 /* istanbul ignore next */
 MapDClientV2.prototype.render_vega = function (...args) {
-  const renderVegaWithErrorHandling = wrapWithErrorHandling(this, 'render_vega')
+  const renderVegaWithErrorHandling = wrapWithErrorHandling(this, "render_vega")
   return renderVegaWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.delete_frontend_view = function (...args) {
-  const deleteFrontendViewWithErrorHandling = wrapWithErrorHandling(this, 'delete_frontend_view')
+  const deleteFrontendViewWithErrorHandling = wrapWithErrorHandling(this, "delete_frontend_view")
   return deleteFrontendViewWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.get_tables = function (...args) {
-  const getTablesWithErrorHandling = wrapWithErrorHandling(this, 'get_tables')
+  const getTablesWithErrorHandling = wrapWithErrorHandling(this, "get_tables")
   return getTablesWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.get_frontend_views = function (...args) {
-  const getFrontEndViewsWithErrorHandling = wrapWithErrorHandling(this, 'get_frontend_views')
+  const getFrontEndViewsWithErrorHandling = wrapWithErrorHandling(this, "get_frontend_views")
   return getFrontEndViewsWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.get_frontend_view = function (...args) {
-  const getFrontEndViewWithErrorHandling = wrapWithErrorHandling(this, 'get_frontend_view')
+  const getFrontEndViewWithErrorHandling = wrapWithErrorHandling(this, "get_frontend_view")
   return getFrontEndViewWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.create_link = function (...args) {
-  const createLinkWithErrorHandling = wrapWithErrorHandling(this, 'create_link')
+  const createLinkWithErrorHandling = wrapWithErrorHandling(this, "create_link")
   return createLinkWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.create_frontend_view = function (...args) {
-  const createFrontEndViewWithErrorHandling = wrapWithErrorHandling(this, 'create_frontend_view')
+  const createFrontEndViewWithErrorHandling = wrapWithErrorHandling(this, "create_frontend_view")
   return createFrontEndViewWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.send_create_table = function (...args) {
-  const sendCreateTableWithErrorHandling = wrapWithErrorHandling(this, 'send_create_table')
+  const sendCreateTableWithErrorHandling = wrapWithErrorHandling(this, "send_create_table")
   return sendCreateTableWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.send_import_table = function (...args) {
-  const sendImportTableWithErrorHandling = wrapWithErrorHandling(this, 'send_import_table')
+  const sendImportTableWithErrorHandling = wrapWithErrorHandling(this, "send_import_table")
   return sendImportTableWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.detect_column_types = function (...args) {
-  const detectColumnTypesWithErrorHandling = wrapWithErrorHandling(this, 'detect_column_types')
+  const detectColumnTypesWithErrorHandling = wrapWithErrorHandling(this, "detect_column_types")
   return detectColumnTypesWithErrorHandling(...args)
 }
