@@ -9,7 +9,7 @@
     "docs": "esdoc -c .esdoc.json && open docs/index.html",
     "test": "bash scripts/test.sh"
   },
-  "main": "dist/mapd-crossfilter.js",
+  "main": "src/mapd-con-es6.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/mapd/connector"
