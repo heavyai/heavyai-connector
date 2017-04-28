@@ -3,9 +3,10 @@
    * data structure, it is better to process the column-based results into a row-based
    * format after the fact.
    *
-   * @param {TRowSet} data - The column-based data returned from a query
-   * @param {Boolean} eliminateNullRows
-   * @returns {Object} processedResults
+   * @param {TRowSet} data The column-based data returned from a query
+   * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
+   * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
+   * @returns {Object} processedResults The formatted results of the query
    */
 export default function processColumnarResults (data, eliminateNullRows, dataEnum) {
   const formattedResult = {fields: [], results: []}

@@ -5,8 +5,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "mkdir -p dist; webpack",
-    "clean": "rm -rf node_modules/ build/ docs/",
-    "docs": "esdoc -c .esdoc.json && open docs/index.html",
+    "clean": "rm -rf node_modules/ dist/ docs/",
+    "docs": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs && open docs/index.html",
     "lint": "eslint --fix src/",
     "test": "npm run lint && nyc npm run test:unit --",
     "test:unit": "mocha ./test --require ./test/config.js --require ./test/setup.js"
@@ -24,6 +24,7 @@
     "babel-preset-stage-1": "^6.5.0",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
+    "documentation": "^4.0.0-rc.0",
     "esdoc": "^0.4.8",
     "eslint": "^3.0.1",
     "mocha": "^2.5.3",
@@ -32,8 +33,8 @@
   },
   "nyc": {
     "check-coverage": true,
-    "lines": 28.24,
-    "statements": 28.62,
+    "lines": 28.0,
+    "statements": 28.3,
     "functions": 23.91,
     "branches": 17.3,
     "exclude": [
