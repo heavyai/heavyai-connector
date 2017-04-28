@@ -1,20 +1,33 @@
-```
-                           _
-                          | |
- _ __ ___   __ _ _ __   __| |   ___ ___  _ __
-| '_ ` _ \ / _` | '_ \ / _` |  / __/ _ \| '_ \
-| | | | | | (_| | |_) | (_| | | (_| (_) | | | |
-|_| |_| |_|\__,_| .__/ \__,_|  \___\___/|_| |_|
-                | |
-                |_|
-```
+# MapD Connector
+
 A JavaScript library for connecting to a MapD GPU database and running queries.
 
-## Documentation
+### Table of Contents
+- [Quick Start](#quick-start)
+- [Synopsis](#synopsis)
+- [Installation](#installation)
+- [Examples](#examples)
+- [Testing](#testing)
+- [Documentation](#documentation)
+- [Contributing](.github/CONTRIBUTING.md)
+- [License](LICENSE.md)
 
-The current `esdoc` generated documentation is outdated. For now, treat it as a rough guideline.
+# Quick Start
+```bash
+npm run clean
+yarn
+npm run build
+npm run docs # opens API docs in your browser.
+```
 
-## Development Guidelines
+# Installation
+```bash
+npm install
+npm run build
+```
+
+# Examples
+Open [example.html](example.html) in your browser for a basic query call.
 
 ### Use Asynchronous Methods
 
@@ -57,15 +70,18 @@ new Promise ((resolve, reject) => {
 
 ### Error Handling
 
-By default, the callback signature of a Thrift client method is just `(response) =>`. This means that the response can either be the success response or a Thrift Exception.
+By default, the callback signature of a Thrift client method is `response => {…}`. This means that the response can either be the success response or a Thrift Exception.
 
 Since this not idiomatic JS callback style, we wrap our Thrift client methods in `wrapWithErrorHandling`, making their signature `(error, response) =>`. Refer to `/src/mapd-client-v2` for examples of how to wrap Thrift client methods in the proper error handling style.
 
-### Testing
+# Testing
 
-Everything in MapdCon must be unit tested. You can find these tests in `/test-unit`.
+Everything in MapdCon should be unit-tested and linted. You can find these tests in `/test`.
 
-The folders `/test` and `/test-functional` are deprecated.
+The linter and all tests run on
+```bash
+npm test
+```
 
 ### Linting
 
@@ -75,11 +91,9 @@ It's our eventual goal to fully lint the files in `mapd-con/src`. Try to write `
 
 Command | Description
 --- | ---
-`npm run fullbuild` | Lint, build, run tests, and generate documentation
-`npm run lint` | Lint the source and tests against AirBnB style guide
-`npm run build` | Runs `babel` and `webpack` scripts
-`npm run babel` | Transpile to ES5 and output to build/ directory (usage: import/require statements)
-`npm run webpack` | Generate webpack bundle and output to dist/ directory (usage: script tags)
-`npm test:unit` | Runs mocha unit tests
-`npm run watch` | Watches the `src/` directory for changes are runs `fullbuild` automatically
-`npm run generate-docs` | Generates docs via esdoc
+`npm run build` | Creates `/dist` folder and runs `webpack` script
+`npm run clean` | Removes node modules, dist, and docs
+`npm run docs` | Creates and opens docs
+`npm run lint` | Runs lint
+`npm run test` | Runs linting and unit tests
+`npm run test:unit` | Runs mocha unit tests
