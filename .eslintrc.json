@@ -221,7 +221,7 @@
     "strict": [0, "global"], // unnecessary when babbling.
     "template-curly-spacing": 2, // makes code concise, and therefore more readable.
     "use-isnan": 2, // comparing to NaN can be difficult to reason about.
-    "valid-jsdoc": 0, // not using jsdoc.
+    "valid-jsdoc": 2, // lints jsdoc comments
     "valid-typeof": 2, // there are ways to type-check, but will least prevent typos.
     //"vars-on-top": 2, // best to have code agree with hoisting.
     "wrap-iife": [2, "inside"], // make IIFE's more obvious; inside fits standard invocation syntax better.

@@ -3,7 +3,8 @@
    * it can still be done. In this case, still process them into the same format as
    * (@link processColumnarResults} to keep the output consistent.
    * @param {TRowSet} data - The row-based data returned from a query
-   * @param {Boolean} eliminateNullRows
+   * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
+   * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}
    * @returns {Object} processedResults
    */
 export default function processRowResults (data, eliminateNullRows, datumEnum) {
