@@ -7,3 +7,4 @@ npm-debug.log
 .node-xmlhttprequest-*
 *-transpiled.js
 coverage/
+.nyc_output/

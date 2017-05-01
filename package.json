@@ -7,7 +7,9 @@
     "build": "mkdir -p dist; webpack",
     "clean": "rm -rf node_modules/ build/ docs/",
     "docs": "esdoc -c .esdoc.json && open docs/index.html",
-    "test": "bash scripts/test.sh"
+    "lint": "eslint --fix src/",
+    "test": "npm run lint && nyc npm run test:unit --",
+    "test:unit": "mocha ./test --require ./test/config.js --require ./test/setup.js"
   },
   "main": "src/mapd-con-es6.js",
   "repository": {
@@ -24,8 +26,18 @@
     "chai-spies": "^0.7.1",
     "esdoc": "^0.4.8",
     "eslint": "^3.0.1",
-    "istanbul": "1.0.0-alpha.2",
     "mocha": "^2.5.3",
+    "nyc": "^10.3.0",
     "webpack": "^1.13.1"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 28.24,
+    "statements": 28.62,
+    "functions": 23.91,
+    "branches": 17.3,
+    "exclude": [
+      "**/*.spec.js"
+    ]
   }
 }
