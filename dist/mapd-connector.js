@@ -85,24 +85,7 @@
 	  return Array.isArray(maybeArray) ? maybeArray : [maybeArray];
 	}
 
-	/**
-	 * The MapdCon class provides the necessary methods for performing queries to a
-	 * MapD GPU database. In order to use MapdCon, you must have the Thrift library
-	 * loaded into the <code>window</code> object first.
-	 */
-
 	var MapdCon = function () {
-
-	  /**
-	   * Create a new MapdCon and return it to allow method chaining.
-	   * @return {MapdCon} Object
-	   *
-	   * @example <caption>Create a new MapdCon instance:</caption>
-	   * var con = new MapdCon();
-	   *
-	   * @example <caption>Create a new MapdCon instance and set the host via method chaining:</caption>
-	   * var con = new MapdCon().host('http://hostname.com');
-	   */
 	  function MapdCon() {
 	    var _this = this;
 
@@ -186,40 +169,6 @@
 	      });
 	    };
 
-	    this.createFrontendViewAsync = function (viewName, viewState, imageHash, metaData) {
-	      if (!_this._sessionId) {
-	        return new Promise(function (resolve, reject) {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        });
-	      }
-
-	      return Promise.all(_this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_frontend_view(_this._sessionId[i], viewName, viewState, imageHash, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              resolve(data);
-	            }
-	          });
-	        });
-	      }));
-	    };
-
-	    this.deleteFrontendView = function (viewName, callback) {
-	      if (!_this._sessionId) {
-	        throw new Error("You are not connected to a server. Try running the connect method first.");
-	      }
-	      try {
-	        _this._client.forEach(function (client, i) {
-	          // do we want to try each one individually so if we fail we keep going?
-	          client.delete_frontend_view(_this._sessionId[i], viewName, callback);
-	        });
-	      } catch (err) {
-	        console.log("ERROR: Could not delete the frontend view. Check your session id.", err);
-	      }
-	    };
-
 	    this.deleteFrontendViewAsync = function (viewName) {
 	      return new Promise(function (resolve, reject) {
 	        _this.deleteFrontendView(viewName, function (err) {
@@ -249,6 +198,8 @@
 	        });
 	      });
 	    };
+
+	    this.queryAsync = this.query;
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
 	      return new Promise(function (resolve, reject) {
@@ -291,9 +242,6 @@
 	    // invoke initialization methods
 	    this.invertDatumTypes();
 
-	    /** Deprecated */
-	    this.queryAsync = this.query;
-
 	    this.processResults = function () {
 	      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	      var result = arguments[1];
@@ -310,6 +258,7 @@
 
 	  /**
 	   * Create a connection to the server, generating a client and session id.
+	   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton on success.
 	   * @return {MapdCon} Object
 	   *
 	   * @example <caption>Connect to a MapD server:</caption>
@@ -319,9 +268,9 @@
 	   *   .dbName('myDatabase')
 	   *   .user('foo')
 	   *   .password('bar')
-	   *   .connect();
-	   * // con.client() instanceof MapDClient === true
-	   * // con.sessionId() === 2070686863
+	   *   .connect((err, success) => console.log(success));
+	   *
+	   *    con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
 	   */
 
 
@@ -416,19 +365,19 @@
 	    /**
 	     * Disconnect from the server then clears the client and session values.
 	     * @return {MapdCon} Object
+	     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton on success.
 	     *
 	     * @example <caption>Disconnect from the server:</caption>
-	     * var con = new MapdCon()
-	     *   .host('localhost')
-	     *   .port('8080')
-	     *   .dbName('myDatabase')
-	     *   .user('foo')
-	     *   .password('bar')
-	     *   .connect(); // Create a connection
-	     *
-	     * con.disconnect();
-	     * // con.client() === null;
-	     * // con.sessionId() === null;
+	      var con = new MapdCon()
+	        .host('localhost')
+	        .port('8080')
+	        .dbName('myDatabase')
+	        .user('foo')
+	        .password('bar')
+	        .connect(); // Create a connection
+	        con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+	      con.disconnect((err, con) => console.log(err, con))
+	      con.sessionId() === null;
 	     */
 
 	  }, {
@@ -442,13 +391,13 @@
 	            // Success will return NULL
 
 	            if (error) {
-	              return callback(error);
+	              return callback(error, _this3);
 	            }
 	            _this3._sessionId = null;
 	            _this3._client = null;
 	            _this3._numConnections = 0;
 	            _this3.serverPingTimes = null;
-	            return callback();
+	            return callback(null, _this3);
 	          });
 	        }
 	      }
@@ -459,7 +408,7 @@
 	     * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
 	     * These objects contain a value for the <code>view_name</code> property,
 	     * but not for the <code>view_state</code> property.
-	     * @return {Array<TFrontendView>}
+	     * @return {Promise<TFrontendView[]>} An array which has all saved dashboards.
 	     *
 	     * @example <caption>Get the list of dashboards from the server:</caption>
 	     * var con = new MapdCon()
@@ -470,8 +419,8 @@
 	     *   .password('bar')
 	     *   .connect(); // Create a connection
 	     *
-	     * var views = con.getFrontendViews();
-	     * // views === [TFrontendView, TFrontendView]
+	     * con.getFrontendViewsAsync().then((results) => console.log(results))
+	     * // [TFrontendView, TFrontendView]
 	     */
 
 
@@ -479,8 +428,8 @@
 	     * Get a dashboard object containing a value for the <code>view_state</code> property.
 	     * This object contains a value for the <code>view_state</code> property,
 	     * but not for the <code>view_name</code> property.
-	     * @param {String} viewName - the name of the dashboard
-	     * @return {TFrontendView} Object
+	     * @param {String} viewName the name of the dashboard
+	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard
 	     *
 	     * @example <caption>Get a specific dashboard from the server:</caption>
 	     * var con = new MapdCon()
@@ -491,8 +440,8 @@
 	     *   .password('bar')
 	     *   .connect(); // Create a connection
 	     *
-	     * var dashboard = con.getFrontendView();
-	     * // dashboard instanceof TFrontendView === true
+	     * con.getFrontendViewAsync('dashboard_name').then((result) => console.log(result))
+	     * // {TFrontendView}
 	     */
 
 
@@ -500,7 +449,7 @@
 	     * Get the status of the server as a <code>TServerStatus</code> object.
 	     * This includes whether the server is read-only,
 	     * has backend rendering enabled, and the version number.
-	     * @return {TServerStatus} Object
+	     * @return {Promise.<Object>}
 	     *
 	     * @example <caption>Get the server status:</caption>
 	     * var con = new MapdCon()
@@ -511,10 +460,13 @@
 	     *   .password('bar')
 	     *   .connect(); // Create a connection
 	     *
-	     * var status = con.getServerStatus();
-	     * // status instanceof TServerStatus === true
+	     * con.getServerStatusAsync().then((result) => console.log(result))
+	     * //
 	     *
 	     */
+
+	  }, {
+	    key: "createFrontendViewAsync",
 
 
 	    /**
@@ -523,7 +475,7 @@
 	     * @param {String} viewState - the base64-encoded state string of the new dashboard
 	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
 	     * @param {String} metaData - Stringified metaData related to the view
-	     * @return {MapdCon} Object
+	     * @return {Promise} Returns empty if success
 	     *
 	     * @example <caption>Add a new dashboard to the server:</caption>
 	     * var con = new MapdCon()
@@ -534,15 +486,51 @@
 	     *   .password('bar')
 	     *   .connect();
 	     *
-	     * con.createFrontendView('newView', 'GlnaHRz...', '1906667617');
+	     *  con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
 	     */
+	    value: function createFrontendViewAsync(viewName, viewState, imageHash, metaData) {
+	      var _this4 = this;
 
+	      if (!this._sessionId) {
+	        return new Promise(function (resolve, reject) {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        });
+	      }
+
+	      return Promise.all(this._client.map(function (client, i) {
+	        return new Promise(function (resolve, reject) {
+	          client.create_frontend_view(_this4._sessionId[i], viewName, viewState, imageHash, metaData, function (error, data) {
+	            if (error) {
+	              reject(error);
+	            } else {
+	              resolve(data);
+	            }
+	          });
+	        });
+	      }));
+	    }
+	  }, {
+	    key: "deleteFrontendView",
+	    value: function deleteFrontendView(viewName, callback) {
+	      var _this5 = this;
+
+	      if (!this._sessionId) {
+	        throw new Error("You are not connected to a server. Try running the connect method first.");
+	      }
+	      try {
+	        this._client.forEach(function (client, i) {
+	          // do we want to try each one individually so if we fail we keep going?
+	          client.delete_frontend_view(_this5._sessionId[i], viewName, callback);
+	        });
+	      } catch (err) {
+	        console.log("ERROR: Could not delete the frontend view. Check your session id.", err);
+	      }
+	    }
 
 	    /**
 	     * Delete a dashboard object containing a value for the <code>view_state</code> property.
 	     * @param {String} viewName - the name of the dashboard
-	     * @param {Function} callback
-	     * @return {TFrontendView} Object
+	     * @return {Promise.<String>} Name of dashboard successfully deleted
 	     *
 	     * @example <caption>Delete a specific dashboard from the server:</caption>
 	     * var con = new MapdCon()
@@ -553,7 +541,7 @@
 	     *   .password('bar')
 	     *   .connect(); // Create a connection
 	     *
-	     * con.deleteFrontendView(viewName);
+	     * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
 	     */
 
 	  }, {
@@ -564,7 +552,7 @@
 	     * Create a short hash to make it easy to share a link to a specific dashboard.
 	     * @param {String} viewState - the base64-encoded state string of the new dashboard
 	     * @param {String} metaData - Stringified metaData related to the link
-	     * @return {String} link - A short hash of the dashboard used for URLs
+	     * @return {Promise.<String[]>} link - A short hash of the dashboard used for URLs
 	     *
 	     * @example <caption>Create a link to the current state of a dashboard:</caption>
 	     * var con = new MapdCon()
@@ -575,19 +563,15 @@
 	     *   .password('bar')
 	     *   .connect();
 	     *
-	     * // get a dashboard
-	     * var dashboards = con.getFrontendViews();
-	     * var dashboard = con.getFrontendView(dashboards[0].view_name);
-	     *
-	     * var link = con.createLink(dashboard.view_state);
-	     * // link === 'CRtzoe'
+	     * con.createLinkAsync("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
+	     * // ["28127951"]
 	     */
 	    value: function createLinkAsync(viewState, metaData) {
-	      var _this4 = this;
+	      var _this6 = this;
 
 	      return Promise.all(this._client.map(function (client, i) {
 	        return new Promise(function (resolve, reject) {
-	          client.create_link(_this4._sessionId[i], viewState, metaData, function (error, data) {
+	          client.create_link(_this6._sessionId[i], viewState, metaData, function (error, data) {
 	            if (error) {
 	              reject(error);
 	            } else {
@@ -612,7 +596,7 @@
 	     * Get a fully-formed dashboard object from a generated share link.
 	     * This object contains the given link for the <code>view_name</code> property,
 	     * @param {String} link - the short hash of the dashboard, see {@link createLink}
-	     * @return {TFrontendView} Object
+	     * @return {Promise.<Object>} Object of the dashboard and metadata
 	     *
 	     * @example <caption>Get a dashboard from a link:</caption>
 	     * var con = new MapdCon()
@@ -623,21 +607,35 @@
 	     *   .password('bar')
 	     *   .connect();
 	     *
-	     * var dashboard = con.getLinkView('CRtzoe');
-	     * // dashboard instanceof TFrontendView === true
+	     * con.getLinkViewAsync('28127951').then(res => console.log(res))
+	     * //  {
+	     * //    "view_name": "28127951",
+	     * //    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",
+	     * //    "image_hash": "",
+	     * //    "update_time": "2017-04-28T21:34:01Z",
+	     * //    "view_metadata": "metaData"
+	     * //  }
 	     */
 
 	  }, {
 	    key: "detectColumnTypes",
-
+	    value: function detectColumnTypes(fileName, copyParams, callback) {
+	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
+	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, function (err, res) {
+	        if (err) {
+	          callback(err);
+	        } else {
+	          callback(null, res);
+	        }
+	      });
+	    }
 
 	    /**
 	     * Asynchronously get the data from an importable file,
 	     * such as a .csv or plaintext file with a header.
 	     * @param {String} fileName - the name of the importable file
 	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @param {Function} callback - specify a callback that takes a
-	     *                              {@link TDetectResult} as its only argument
+	     * @returns {Promise.<TDetectResult>} An object which has copy_params and row_set
 	     *
 	     * @example <caption>Get data from table_data.csv:</caption>
 	     * var con = new MapdCon()
@@ -649,35 +647,22 @@
 	     *   .connect();
 	     *
 	     * var copyParams = new TCopyParams();
-	     * con.detectColumnTypes('table_data.csv', copyParams, function(tableData){
-	     *   var columnHeaders = tableData.row_set.row_desc;
-	     *   // columnHeaders === [TColumnType, TColumnType, ...]
+	     * con.detectColumnTypesAsync('table_data.csv', copyParams).then(res => console.log(res))
+	     * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
 	     *
-	     *   var data = tableData.row_set.rows;
-	     *   ...
-	     * });
 	     */
-	    value: function detectColumnTypes(fileName, copyParams, callback) {
-	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
-	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, function (err, res) {
-	        if (err) {
-	          callback(err);
-	        } else {
-	          callback(null, res);
-	        }
-	      });
-	    }
+
 	  }, {
 	    key: "detectColumnTypesAsync",
 	    value: function detectColumnTypesAsync(fileName, copyParams) {
-	      var _this5 = this;
+	      var _this7 = this;
 
 	      return new Promise(function (resolve, reject) {
-	        _this5.detectColumnTypes.bind(_this5, fileName, copyParams)(function (err, res) {
+	        _this7.detectColumnTypes.bind(_this7, fileName, copyParams)(function (err, res) {
 	          if (err) {
 	            reject(err);
 	          } else {
-	            _this5.importerRowDesc = res.row_set.row_desc;
+	            _this7.importerRowDesc = res.row_set.row_desc;
 	            resolve(res);
 	          }
 	        });
@@ -685,20 +670,34 @@
 	    }
 
 	    /**
-	     * Submit a query to the database and process the results through an array
-	     * of asychronous callbacks. If no callbacks are given, use synchronous instead.
-	     * @param {String} query - The query to perform
-	     * @param {Object} options - the options for the query
-	     * @param {Boolean} options.columnarResults=true - Indicates whether to return the data
-	     *                                             in columnar format. This saves time on the backend.
-	     * @param {Boolean} options.eliminateNullRows
-	     * @param {Array<Function>} callbacks
+	     * Submit a query to the database and process the results.
+	     * @param {String} query The query to perform
+	     * @param {Object} options the options for the query
+	     * @param {Function} callback that takes `(err, result) => result`
+	     * @returns {Object} The result of the query
+	     *
+	     * @example <caption>create a query</caption>
+	     * var con = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect();
+	     *
+	     * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
+	     * var options = {};
+	     *
+	     * con.query(query, options, function(err, result) {
+	     *        console.log(result)
+	     *      });
+	     *
 	     */
 
 	  }, {
 	    key: "query",
 	    value: function query(_query, options, callback) {
-	      var _this6 = this;
+	      var _this8 = this;
 
 	      var columnarResults = true;
 	      var eliminateNullRows = false;
@@ -734,7 +733,7 @@
 	            if (error) {
 	              callback(error);
 	            } else {
-	              _this6.processResults(processResultsOptions, result, callback);
+	              _this8.processResults(processResultsOptions, result, callback);
 	            }
 	          });
 	          return curNonce;
@@ -757,26 +756,52 @@
 	        }
 	      }
 	    }
+
+	    /** @deprecated will default to query */
+
 	  }, {
 	    key: "validateQuery",
+
+
+	    /**
+	     * Submit a query to validate whether the backend can create a result set based on the SQL statement.
+	     * @param {String} query The query to perform
+	     * @returns {Promise.<Object>} The result of whether the query is valid
+	     *
+	     * @example <caption>create a query</caption>
+	     * var con = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect();
+	     *
+	     * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
+	     *
+	     * con.validateQuery(query).then(res => console.log(res))
+	     *
+	     * // [{
+	     * //    "name": "n",
+	     * //    "type": "INT",
+	     * //    "is_array": false,
+	     * //    "is_dict": false
+	     * //  }]
+	     *
+	     */
 	    value: function validateQuery(query) {
-	      var _this7 = this;
+	      var _this9 = this;
 
 	      return new Promise(function (resolve, reject) {
-	        _this7._client[0].sql_validate(_this7._sessionId[0], query, function (err, res) {
+	        _this9._client[0].sql_validate(_this9._sessionId[0], query, function (err, res) {
 	          if (err) {
 	            reject(err);
 	          } else {
-	            resolve(_this7.convertFromThriftTypes(res));
+	            resolve(_this9.convertFromThriftTypes(res));
 	          }
 	        });
 	      });
 	    }
-
-	    /**
-	     * TODO
-	     */
-
 	  }, {
 	    key: "removeConnection",
 	    value: function removeConnection(conId) {
@@ -790,26 +815,6 @@
 	      this._sessionId.splice(conId, 1);
 	      this._numConnections--;
 	    }
-
-	    /**
-	     * Get the names of the databases that exist on the current session's connectdion.
-	     * @return {Array<Object>} list of table objects containing the label and table names.
-	     *
-	     * @example <caption>Get the list of tables from a connection:</caption>
-	     * var tables = new MapdCon()
-	     *   .host('localhost')
-	     *   .port('8080')
-	     *   .dbName('myDatabase')
-	     *   .user('foo')
-	     *   .password('bar')
-	     *   .connect()
-	     *   .getTables();
-	     * // tables === [{
-	     *    label: 'obs', // deprecated property
-	     *    name: 'myDatabaseName'
-	     *  }, ...]
-	     */
-
 	  }, {
 	    key: "getTables",
 	    value: function getTables(callback) {
@@ -826,13 +831,36 @@
 	        }
 	      });
 	    }
+
+	    /**
+	     * Get the names of the databases that exist on the current session's connectdion.
+	     * @return {Promise.<Object[]>} list of table objects containing the label and table names.
+	     *
+	     * @example <caption>Get the list of tables from a connection:</caption>
+	     * var tables = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect()
+	     *
+	     *  con.getTablesAsync().then(res => console.log(res))
+	     *
+	     *  //  [{
+	     *  //    label: 'obs', // deprecated property
+	     *  //    name: 'myDatabaseName'
+	     *  //   },
+	     *  //  ...]
+	     */
+
 	  }, {
 	    key: "getTablesAsync",
 	    value: function getTablesAsync() {
-	      var _this8 = this;
+	      var _this10 = this;
 
 	      return new Promise(function (resolve, reject) {
-	        _this8.getTables.bind(_this8)(function (error, tables) {
+	        _this10.getTables.bind(_this10)(function (error, tables) {
 	          if (error) {
 	            reject(error);
 	          } else {
@@ -845,6 +873,8 @@
 	    /**
 	     * Create an array-like object from {@link TDatumType} by
 	     * flipping the string key and numerical value around.
+	     *
+	     * @returns {Undefined} This function does not return anything
 	     */
 
 	  }, {
@@ -861,6 +891,7 @@
 	    /**
 	     * Get a list of field objects for a given table.
 	     * @param {String} tableName - name of table containing field names
+	     * @param {Function} callback - (err, results)
 	     * @return {Array<Object>} fields - the formmatted list of field objects
 	     *
 	     * @example <caption>Get the list of fields from a specific table:</caption>
@@ -873,8 +904,8 @@
 	     *   .connect()
 	     *   .getTables();
 	     *
-	     * var fields = con.getFields(tables[0].name);
-	     * // fields === [{
+	     * con.getFields('flights', (err, res) => console.log(res))
+	     * // [{
 	     *   name: 'fieldName',
 	     *   type: 'BIGINT',
 	     *   is_array: false,
@@ -885,7 +916,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName, callback) {
-	      var _this9 = this;
+	      var _this11 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (fields) {
 	        if (fields) {
@@ -893,30 +924,12 @@
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-	          callback(null, _this9.convertFromThriftTypes(rowDict));
+	          callback(null, _this11.convertFromThriftTypes(rowDict));
 	        } else {
 	          callback(new Error("Table (" + tableName + ") not found"));
 	        }
 	      });
 	    }
-
-	    /**
-	     * Create a table and persist it to the backend.
-	     * @param {String} tableName - desired name of the new table
-	     * @param {Array<TColumnType>} rowDesc - fields of the new table
-	     * @param {Function} callback
-	     *
-	     * @example <caption>Create a new table:</caption>
-	     * var result = new MapdCon()
-	     *   .host('localhost')
-	     *   .port('8080')
-	     *   .dbName('myDatabase')
-	     *   .user('foo')
-	     *   .password('bar')
-	     *   .connect()
-	     *   .createTable('mynewtable', [TColumnType, TColumnType, ...], cb);
-	     */
-
 	  }, {
 	    key: "createTable",
 	    value: function createTable(tableName, rowDescObj, tableType, callback) {
@@ -936,17 +949,29 @@
 	        });
 	      }
 	    }
-	  }, {
-	    key: "importTable",
-
 
 	    /**
-	     * Import a table from a file.
+	     * Create a table and persist it to the backend.
 	     * @param {String} tableName - desired name of the new table
-	     * @param {String} fileName
-	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @param {Function} callback
+	     * @param {Array<TColumnType>} rowDescObj - fields of the new table
+	     * @param {Number<TTableType>} tableType - the types of tables a user can import into the db
+	     * @return {Promise.<undefined>} it will either catch an error or return undefined on success
+	     *
+	     * @example <caption>Create a new table:</caption>
+	     * var result = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect()
+	     *
+	     *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
+	     *  // undefined
 	     */
+
+	  }, {
+	    key: "importTable",
 	    value: function importTable(tableName, fileName, copyParams, rowDescObj, isShapeFile, callback) {
 	      if (!this._sessionId) {
 	        throw new Error("You are not connected to a server. Try running the connect method first.");
@@ -974,11 +999,11 @@
 	  }, {
 	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this10 = this;
+	      var _this12 = this;
 
 	      return function (tableName, fileName, copyParams, headers) {
 	        return new Promise(function (resolve, reject) {
-	          _this10.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
+	          _this12.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
 	            if (err) {
 	              reject(err);
 	            } else {
@@ -988,6 +1013,24 @@
 	        });
 	      };
 	    }
+
+	    /**
+	     * Import a delimited table from a file.
+	     * @param {String} tableName - desired name of the new table
+	     * @param {String} fileName
+	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
+	     * @param {TColumnType[]} headers -- a colleciton of metadata related to the table headers
+	     */
+
+
+	    /**
+	     * Import a geo table from a file.
+	     * @param {String} tableName - desired name of the new table
+	     * @param {String} fileName
+	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
+	     * @param {TColumnType[]} headers -- a colleciton of metadata related to the table headers
+	     */
+
 	  }, {
 	    key: "renderVega",
 
@@ -996,17 +1039,18 @@
 	     * Use for backend rendering. This method will fetch a PNG image
 	     * that is a render of the vega json object.
 	     *
-	     * @param {Number} widgetId - the widget id of the calling widget
-	     * @param {String} vega - the vega json
-	     * @param {Object} options - the options for the render query
-	     * @param {Number} options.compressionLevel - the png compression level.
+	     * @param {Number} widgetid the widget id of the calling widget
+	     * @param {String} vega the vega json
+	     * @param {Object} options the options for the render query
+	     * @param {Number} options.compressionLevel the png compression level.
 	     *                  range 1 (low compression, faster) to 10 (high compression, slower).
 	     *                  Default 3.
-	     * @param {Function} callback
+	     * @param {Function} callback takes `(err, success)` as its signature.  Returns con singleton on success.
+	     *
+	     * @returns {Image} Base 64 Image
 	     */
-
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this11 = this;
+	      var _this13 = this;
 
 	      var queryId = null;
 	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
@@ -1040,7 +1084,7 @@
 	          if (error) {
 	            callback(error);
 	          } else {
-	            _this11.processResults(processResultsOptions, result, callback);
+	            _this13.processResults(processResultsOptions, result, callback);
 	          }
 	        });
 	      } catch (err) {
@@ -1084,8 +1128,10 @@
 	    /**
 	     * Formats the pixel results into the same pattern as textual results.
 	     *
-	     * @param {Array<Function>} callbacks
-	     * @param {Object} results
+	     * @param {Array<Function>} callbacks a collection of callbacks
+	     * @param {Array|Object} results unformatted results of pixel rowId information
+	     *
+	     * @returns {Object} An object with the pixel results formatted for display
 	     */
 
 	  }, {
@@ -1111,7 +1157,7 @@
 	    /**
 	     * Get or set the session ID used by the server to serve the correct data.
 	     * This is typically set by {@link connect} and should not be set manually.
-	     * @param {Number} [sessionId] - The session ID of the current connection
+	     * @param {Number} sessionId - The session ID of the current connection
 	     * @return {Number|MapdCon} - The session ID or the MapdCon itself
 	     *
 	     * @example <caption>Get the session id:</caption>
@@ -1143,7 +1189,7 @@
 	    /**
 	     * Get or set the connection server hostname.
 	     * This is is typically the first method called after instantiating a new MapdCon.
-	     * @param {String} [host] - The hostname address
+	     * @param {String} host - The hostname address
 	     * @return {String|MapdCon} - The hostname or the MapdCon itself
 	     *
 	     * @example <caption>Set the hostname:</caption>
@@ -1166,7 +1212,7 @@
 
 	    /**
 	     * Get or set the connection port.
-	     * @param {String} [port] - The port to connect on
+	     * @param {String} port - The port to connect on
 	     * @return {String|MapdCon} - The port or the MapdCon itself
 	     *
 	     * @example <caption>Set the port:</caption>
@@ -1189,7 +1235,7 @@
 
 	    /**
 	     * Get or set the username to authenticate with.
-	     * @param {String} [user] - The username to authenticate with
+	     * @param {String} user - The username to authenticate with
 	     * @return {String|MapdCon} - The username or the MapdCon itself
 	     *
 	     * @example <caption>Set the username:</caption>
@@ -1212,7 +1258,7 @@
 
 	    /**
 	     * Get or set the user's password to authenticate with.
-	     * @param {String} [password] - The password to authenticate with
+	     * @param {String} password - The password to authenticate with
 	     * @return {String|MapdCon} - The password or the MapdCon itself
 	     *
 	     * @example <caption>Set the password:</caption>
@@ -1235,7 +1281,7 @@
 
 	    /**
 	     * Get or set the name of the database to connect to.
-	     * @param {String} [dbName] - The database to connect to
+	     * @param {String} dbName - The database to connect to
 	     * @return {String|MapdCon} - The name of the database or the MapdCon itself
 	     *
 	     * @example <caption>Set the database name:</caption>
@@ -1259,7 +1305,7 @@
 	    /**
 	     * Whether the raw queries strings will be logged to the console.
 	     * Used primarily for debugging and defaults to <code>false</code>.
-	     * @param {Boolean} [logging] - Set to true to enable logging
+	     * @param {Boolean} logging - Set to true to enable logging
 	     * @return {Boolean|MapdCon} - The current logging flag or MapdCon itself
 	     *
 	     * @example <caption>Set logging to true:</caption>
@@ -1285,7 +1331,7 @@
 
 	    /**
 	     * The name of the platform.
-	     * @param {String} [platform] - The platform, default is "mapd"
+	     * @param {String} platform - The platform, default is "mapd"
 	     * @return {String|MapdCon} - The platform or the MapdCon itself
 	     *
 	     * @example <caption>Set the platform name:</caption>
@@ -1331,7 +1377,7 @@
 
 	    /**
 	     * The protocol to use for requests.
-	     * @param {String} [protocol] - http or https
+	     * @param {String} protocol - http or https
 	     * @return {String|MapdCon} - protocol or MapdCon itself
 	     *
 	     * @example <caption>Set the protocol:</caption>
@@ -1365,10 +1411,10 @@
 	  }, {
 	    key: "getEndpoints",
 	    value: function getEndpoints() {
-	      var _this12 = this;
+	      var _this14 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this12._protocol[i] + "://" + host + ":" + _this12._port[i];
+	        return _this14._protocol[i] + "://" + host + ":" + _this14._port[i];
 	      });
 	    }
 	  }]);
@@ -1608,14 +1654,16 @@
 	/**
 	   * Decides how to process raw results once they come back from the server.
 	   *
-	   * @param {Object} options
-	   * @param {Boolean} options.isImage - Set to true when querying for backend rendered images
-	   * @param {Boolean} options.eliminateNullRows
-	   * @param {String} options.query - The SQL query string used only for logging
-	   * @param {Number} options.queryId
-	   * @param {Number} options.conId
-	   * @param {String} options.estimatedQueryTime
-	   * @param {Array<Function>} callbacks
+	   * @param {Boolean} logging if enabled, will show how long the query took to execute in console
+	   * @param {Function} updateQueryTimes A function that updates internal query times on connector
+	   * @param {Object} options A list of options for processing the results
+	   * @param {Boolean} options.isImage Set to true when querying for backend rendered images
+	   * @param {Boolean} options.eliminateNullRows Removes null rows
+	   * @param {String} options.query The SQL query string used only for logging
+	   * @param {Number} options.queryId The ID of the query
+	   * @param {Number} options.conId The unique connector identification
+	   * @param {String} options.estimatedQueryTime The estimate of the query time
+	   * @param {Array<Function>} the same callback coming from {@link #query}
 	   * @param {Object} result - The query result used to decide whether to process
 	   *                          as column or row results.
 	   * @return {Object} null if image with callbacks, result if image with callbacks,
@@ -1699,9 +1747,10 @@
 	   * data structure, it is better to process the column-based results into a row-based
 	   * format after the fact.
 	   *
-	   * @param {TRowSet} data - The column-based data returned from a query
-	   * @param {Boolean} eliminateNullRows
-	   * @returns {Object} processedResults
+	   * @param {TRowSet} data The column-based data returned from a query
+	   * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
+	   * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
+	   * @returns {Object} processedResults The formatted results of the query
 	   */
 	function processColumnarResults(data, eliminateNullRows, dataEnum) {
 	  var formattedResult = { fields: [], results: [] };
@@ -1822,7 +1871,8 @@
 	   * it can still be done. In this case, still process them into the same format as
 	   * (@link processColumnarResults} to keep the output consistent.
 	   * @param {TRowSet} data - The row-based data returned from a query
-	   * @param {Boolean} eliminateNullRows
+	   * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
+	   * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}
 	   * @returns {Object} processedResults
 	   */
 	function processRowResults(data, eliminateNullRows, datumEnum) {
