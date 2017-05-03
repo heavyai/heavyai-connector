@@ -6,7 +6,9 @@
   "scripts": {
     "build": "mkdir -p dist; webpack",
     "clean": "rm -rf node_modules/ dist/ docs/",
-    "docs": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs && open docs/index.html",
+    "clean:docs": "rm -rf docs/",
+    "docs": "npm run docs:build && open docs/index.html",
+    "docs:build": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
     "lint": "eslint --fix src/",
     "test": "npm run lint && nyc npm run test:unit --",
     "test:unit": "mocha ./test --require ./test/config.js --require ./test/setup.js"
