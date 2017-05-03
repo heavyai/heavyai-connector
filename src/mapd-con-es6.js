@@ -59,9 +59,9 @@ class MapdCon {
    *   .dbName('myDatabase')
    *   .user('foo')
    *   .password('bar')
-   *   .connect((err, success) => console.log(success));
+   *   .connect((err, con) => console.log(con.sessionId()));
    *
-   *    con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
    */
   connect (callback) {
     if (this._sessionId) {
@@ -145,18 +145,10 @@ class MapdCon {
    * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton on success.
    *
    * @example <caption>Disconnect from the server:</caption>
-    var con = new MapdCon()
-      .host('localhost')
-      .port('8080')
-      .dbName('myDatabase')
-      .user('foo')
-      .password('bar')
-      .connect(); // Create a connection
-
-
-    con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
-    con.disconnect((err, con) => console.log(err, con))
-    con.sessionId() === null;
+   *
+   * con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+   * con.disconnect((err, con) => console.log(err, con))
+   * con.sessionId() === null;
    */
   disconnect (callback) {
     if (this._sessionId !== null) {
@@ -203,13 +195,6 @@ class MapdCon {
    * @return {Promise<TFrontendView[]>} An array which has all saved dashboards.
    *
    * @example <caption>Get the list of dashboards from the server:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect(); // Create a connection
    *
    * con.getFrontendViewsAsync().then((results) => console.log(results))
    * // [TFrontendView, TFrontendView]
@@ -248,13 +233,6 @@ class MapdCon {
    * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard
    *
    * @example <caption>Get a specific dashboard from the server:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect(); // Create a connection
    *
    * con.getFrontendViewAsync('dashboard_name').then((result) => console.log(result))
    * // {TFrontendView}
@@ -286,17 +264,14 @@ class MapdCon {
    * @return {Promise.<Object>}
    *
    * @example <caption>Get the server status:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect(); // Create a connection
    *
    * con.getServerStatusAsync().then((result) => console.log(result))
-   * //
-   *
+   * // {
+   * //   "read_only": false,
+   * //   "version": "3.0.0dev-20170503-40e2de3",
+   * //   "rendering_enabled": true,
+   * //   "start_time": 1493840131
+   * // }
    */
 
   getServerStatusAsync = () => (
@@ -320,15 +295,8 @@ class MapdCon {
    * @return {Promise} Returns empty if success
    *
    * @example <caption>Add a new dashboard to the server:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect();
    *
-   *  con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
+   * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
    */
   createFrontendViewAsync (viewName, viewState, imageHash, metaData) {
     if (!this._sessionId) {
@@ -368,13 +336,6 @@ class MapdCon {
    * @return {Promise.<String>} Name of dashboard successfully deleted
    *
    * @example <caption>Delete a specific dashboard from the server:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect(); // Create a connection
    *
    * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
    */
@@ -395,13 +356,6 @@ class MapdCon {
    * @return {Promise.<String[]>} link - A short hash of the dashboard used for URLs
    *
    * @example <caption>Create a link to the current state of a dashboard:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect();
    *
    * con.createLinkAsync("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
    * // ["28127951"]
@@ -439,13 +393,6 @@ class MapdCon {
    * @return {Promise.<Object>} Object of the dashboard and metadata
    *
    * @example <caption>Get a dashboard from a link:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect();
    *
    * con.getLinkViewAsync('28127951').then(res => console.log(res))
    * //  {
@@ -485,13 +432,6 @@ class MapdCon {
    * @returns {Promise.<TDetectResult>} An object which has copy_params and row_set
    *
    * @example <caption>Get data from table_data.csv:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect();
    *
    * var copyParams = new TCopyParams();
    * con.detectColumnTypesAsync('table_data.csv', copyParams).then(res => console.log(res))
@@ -519,13 +459,6 @@ class MapdCon {
    * @returns {Object} The result of the query
    *
    * @example <caption>create a query</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect();
    *
    * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
    * var options = {};
@@ -609,13 +542,6 @@ class MapdCon {
    * @returns {Promise.<Object>} The result of whether the query is valid
    *
    * @example <caption>create a query</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect();
    *
    * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
    *
@@ -671,13 +597,6 @@ class MapdCon {
    * @return {Promise.<Object[]>} list of table objects containing the label and table names.
    *
    * @example <caption>Get the list of tables from a connection:</caption>
-   * var tables = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect()
    *
    *  con.getTablesAsync().then(res => console.log(res))
    *
@@ -721,14 +640,6 @@ class MapdCon {
    * @return {Array<Object>} fields - the formmatted list of field objects
    *
    * @example <caption>Get the list of fields from a specific table:</caption>
-   * var tables = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect()
-   *   .getTables();
    *
    * con.getFields('flights', (err, res) => console.log(res))
    * // [{
@@ -786,13 +697,6 @@ class MapdCon {
    * @return {Promise.<undefined>} it will either catch an error or return undefined on success
    *
    * @example <caption>Create a new table:</caption>
-   * var result = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect()
    *
    *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
    *  // undefined
@@ -1017,14 +921,8 @@ class MapdCon {
    * @return {Number|MapdCon} - The session ID or the MapdCon itself
    *
    * @example <caption>Get the session id:</caption>
-   * var sessionID = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect()
-   *   .sessionId();
+   *
+   *  con.sessionId();
    * // sessionID === 3145846410
    *
    * @example <caption>Set the session id:</caption>
@@ -1189,13 +1087,6 @@ class MapdCon {
    * @return {Number} - number of open connections
    *
    * @example <caption>Get the number of connections:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect();
    *
    * var numConnections = con.numConnections();
    * // numConnections === 1
