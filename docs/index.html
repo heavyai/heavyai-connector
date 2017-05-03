@@ -1,0 +1,4813 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>@mapd/connector 1.0.0 | Documentation</title>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <link href='assets/bass.css' type='text/css' rel='stylesheet' />
+  <link href='assets/style.css' type='text/css' rel='stylesheet' />
+  <link href='assets/github.css' type='text/css' rel='stylesheet' />
+</head>
+<body class='documentation'>
+  <div class='max-width-4 mx-auto'>
+    <div class='clearfix md-mxn2'>
+      <div class='fixed xs-hide fix-3 overflow-auto max-height-100'>
+        <div class='py1 px2'>
+          <h3 class='mb0 no-anchor'>@mapd/connector</h3>
+          <div class='mb1'><code>1.0.0</code></div>
+          <input
+            placeholder='Filter'
+            id='filter-input'
+            class='col12 block input'
+            type='text' />
+          <div id='toc'>
+            <ul class='list-reset h5 py1-ul'>
+              
+                
+                <li><a
+                  href='#connect'
+                  class="">
+                  connect
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#disconnect'
+                  class="">
+                  disconnect
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getfrontendviewsasync'
+                  class="">
+                  getFrontendViewsAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getfrontendviewasync'
+                  class="">
+                  getFrontendViewAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getserverstatusasync'
+                  class="">
+                  getServerStatusAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#createfrontendviewasync'
+                  class="">
+                  createFrontendViewAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#deletefrontendviewasync'
+                  class="">
+                  deleteFrontendViewAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#createlinkasync'
+                  class="">
+                  createLinkAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getlinkviewasync'
+                  class="">
+                  getLinkViewAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#detectcolumntypesasync'
+                  class="">
+                  detectColumnTypesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#query'
+                  class="">
+                  query
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#queryasync'
+                  class="">
+                  queryAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#validatequery'
+                  class="">
+                  validateQuery
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#gettablesasync'
+                  class="">
+                  getTablesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#invertdatumtypes'
+                  class="">
+                  invertDatumTypes
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getfields'
+                  class="">
+                  getFields
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#createtableasync'
+                  class="">
+                  createTableAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#importtableasync'
+                  class="">
+                  importTableAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#importtablegeoasync'
+                  class="">
+                  importTableGeoAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#rendervega'
+                  class="">
+                  renderVega
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getresultrowforpixel'
+                  class="">
+                  getResultRowForPixel
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#processpixelresults'
+                  class="">
+                  processPixelResults
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#sessionid'
+                  class="">
+                  sessionId
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#host'
+                  class="">
+                  host
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#port'
+                  class="">
+                  port
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#user'
+                  class="">
+                  user
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#password'
+                  class="">
+                  password
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#dbname'
+                  class="">
+                  dbName
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#logging'
+                  class="">
+                  logging
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#platform'
+                  class="">
+                  platform
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#numconnections'
+                  class="">
+                  numConnections
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#protocol'
+                  class="">
+                  protocol
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getendpoints'
+                  class="">
+                  getEndpoints
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#processcolumnarresults'
+                  class="">
+                  processColumnarResults
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#processqueryresults'
+                  class="">
+                  processQueryResults
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#processrowresults'
+                  class="">
+                  processRowResults
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tdatumval'
+                  class="">
+                  TDatumVal
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#ttabletype'
+                  class="">
+                  TTableType
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tdetectresult'
+                  class="">
+                  TDetectResult
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#ttypeinfo'
+                  class="">
+                  TTypeInfo
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tdatumtype'
+                  class="">
+                  TDatumType
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#timportstatus'
+                  class="">
+                  TImportStatus
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tfrontendview'
+                  class="">
+                  TFrontendView
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tdatum'
+                  class="">
+                  TDatum
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#trow'
+                  class="">
+                  TRow
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tcolumntype'
+                  class="">
+                  TColumnType
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#trowset'
+                  class="">
+                  TRowSet
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tserverstatus'
+                  class="">
+                  TServerStatus
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tcopyparams'
+                  class="">
+                  TCopyParams
+                  
+                </a>
+                
+                </li>
+              
+            </ul>
+          </div>
+          <div class='mt1 h6 quiet'>
+            <a href='http://documentation.js.org/reading-documentation.html'>Need help reading this?</a>
+          </div>
+        </div>
+      </div>
+      <div class='fix-margin-3'>
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='connect'>
+      connect
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Create a connection to the server, generating a client and session id.</p>
+
+
+  <div class='pre p1 fill-light mt0'>connect(callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): MapdCon</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    A callback that takes 
+<code>(err, success)</code>
+ as its signature.  Returns con singleton on success.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>MapdCon</code>:
+        Object
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Connect to a MapD server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect(<span class="hljs-function">(<span class="hljs-params">err, success</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(success));
+
+   con.sessionId() <span class="hljs-comment">// ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='disconnect'>
+      disconnect
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Disconnect from the server then clears the client and session values.</p>
+
+
+  <div class='pre p1 fill-light mt0'>disconnect(callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): MapdCon</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    A callback that takes 
+<code>(err, success)</code>
+ as its signature.  Returns con singleton on success.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>MapdCon</code>:
+        Object
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Disconnect from the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+.host(<span class="hljs-string">'localhost'</span>)
+.port(<span class="hljs-string">'8080'</span>)
+.dbName(<span class="hljs-string">'myDatabase'</span>)
+.user(<span class="hljs-string">'foo'</span>)
+.password(<span class="hljs-string">'bar'</span>)
+.connect(); <span class="hljs-comment">// Create a connection</span>
+
+
+con.sessionId() <span class="hljs-comment">// ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]</span>
+con.disconnect(<span class="hljs-function">(<span class="hljs-params">err, con</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(err, con))
+con.sessionId() === <span class="hljs-literal">null</span>;</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getfrontendviewsasync'>
+      getFrontendViewsAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get the recent dashboards as a list of <code>TFrontendView</code> objects.
+These objects contain a value for the <code>view_name</code> property,
+but not for the <code>view_state</code> property.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getFrontendViewsAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tfrontendview">TFrontendView</a>>></code>:
+        An array which has all saved dashboards.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the list of dashboards from the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect(); <span class="hljs-comment">// Create a connection</span>
+
+con.getFrontendViewsAsync().then(<span class="hljs-function">(<span class="hljs-params">results</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(results))
+<span class="hljs-comment">// [TFrontendView, TFrontendView]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getfrontendviewasync'>
+      getFrontendViewAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a dashboard object containing a value for the <code>view_state</code> property.
+This object contains a value for the <code>view_state</code> property,
+but not for the <code>view_name</code> property.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getFrontendViewAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>viewName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name of the dashboard
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        An object that contains all data and metadata related to the dashboard
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get a specific dashboard from the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect(); <span class="hljs-comment">// Create a connection</span>
+
+con.getFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
+<span class="hljs-comment">// {TFrontendView}</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getserverstatusasync'>
+      getServerStatusAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get the status of the server as a <code>TServerStatus</code> object.
+This includes whether the server is read-only,
+has backend rendering enabled, and the version number.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getServerStatusAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the server status:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect(); <span class="hljs-comment">// Create a connection</span>
+
+con.getServerStatusAsync().then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
+<span class="hljs-comment">//</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='createfrontendviewasync'>
+      createFrontendViewAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Add a new dashboard to the server.</p>
+
+
+  <div class='pre p1 fill-light mt0'>createFrontendViewAsync(viewName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, viewState: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, imageHash: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, metaData: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>viewName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name of the new dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>viewState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the base64-encoded state string of the new dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the numeric hash of the dashboard thumbnail
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    Stringified metaData related to the view
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns empty if success
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Add a new dashboard to the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect();
+
+ con.createFrontendViewAsync(<span class="hljs-string">'newSave'</span>, <span class="hljs-string">'viewstateBase64'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='deletefrontendviewasync'>
+      deleteFrontendViewAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Delete a dashboard object containing a value for the <code>view_state</code> property.</p>
+
+
+  <div class='pre p1 fill-light mt0'>deleteFrontendViewAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>viewName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name of the dashboard
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
+        Name of dashboard successfully deleted
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Delete a specific dashboard from the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect(); <span class="hljs-comment">// Create a connection</span>
+
+con.deleteFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='createlinkasync'>
+      createLinkAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Create a short hash to make it easy to share a link to a specific dashboard.</p>
+
+
+  <div class='pre p1 fill-light mt0'>createLinkAsync(viewState: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, metaData: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>viewState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the base64-encoded state string of the new dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    Stringified metaData related to the link
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>></code>:
+        link - A short hash of the dashboard used for URLs
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Create a link to the current state of a dashboard:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect();
+
+con.createLinkAsync(<span class="hljs-string">"eyJuYW1lIjoibXlkYXNoYm9hcmQifQ=="</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res));
+<span class="hljs-comment">// ["28127951"]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getlinkviewasync'>
+      getLinkViewAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a fully-formed dashboard object from a generated share link.
+This object contains the given link for the <code>view_name</code> property,</p>
+
+
+  <div class='pre p1 fill-light mt0'>getLinkViewAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>link</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the short hash of the dashboard, see 
+<a href="createLink">createLink</a>
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        Object of the dashboard and metadata
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get a dashboard from a link:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect();
+
+con.getLinkViewAsync(<span class="hljs-string">'28127951'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+<span class="hljs-comment">//  {</span>
+<span class="hljs-comment">//    "view_name": "28127951",</span>
+<span class="hljs-comment">//    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",</span>
+<span class="hljs-comment">//    "image_hash": "",</span>
+<span class="hljs-comment">//    "update_time": "2017-04-28T21:34:01Z",</span>
+<span class="hljs-comment">//    "view_metadata": "metaData"</span>
+<span class="hljs-comment">//  }</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='detectcolumntypesasync'>
+      detectColumnTypesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Asynchronously get the data from an importable file,
+such as a .csv or plaintext file with a header.</p>
+
+
+  <div class='pre p1 fill-light mt0'>detectColumnTypesAsync(fileName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, copyParams: <a href="#tcopyparams">TCopyParams</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#tdetectresult">TDetectResult</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name of the importable file
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>copyParams</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
+	    see 
+<a href="#tcopyparams">TCopyParams</a>
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#tdetectresult">TDetectResult</a>></code>:
+        An object which has copy_params and row_set
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get data from table_data.csv:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect();
+
+<span class="hljs-keyword">var</span> copyParams = <span class="hljs-keyword">new</span> TCopyParams();
+con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, copyParams).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+<span class="hljs-comment">// TDetectResult {row_set: TRowSet, copy_params: TCopyParams}</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='query'>
+      query
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Submit a query to the database and process the results.</p>
+
+
+  <div class='pre p1 fill-light mt0'>query(query: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>query</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The query to perform
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    the options for the query
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    that takes 
+<code>(err, result) => result</code>
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+        The result of the query
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>create a query</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect();
+
+<span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"</span>;
+<span class="hljs-keyword">var</span> options = {};
+
+con.query(query, options, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
+       <span class="hljs-built_in">console</span>.log(result)
+     });</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='queryasync'>
+      queryAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>queryAsync</div>
+  
+  
+
+  <div>Deprecated: will default to query
+</div>
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='validatequery'>
+      validateQuery
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Submit a query to validate whether the backend can create a result set based on the SQL statement.</p>
+
+
+  <div class='pre p1 fill-light mt0'>validateQuery(query: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>query</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The query to perform
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        The result of whether the query is valid
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>create a query</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect();
+
+<span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"</span>;
+
+con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+
+<span class="hljs-comment">// [{</span>
+<span class="hljs-comment">//    "name": "n",</span>
+<span class="hljs-comment">//    "type": "INT",</span>
+<span class="hljs-comment">//    "is_array": false,</span>
+<span class="hljs-comment">//    "is_dict": false</span>
+<span class="hljs-comment">//  }]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='gettablesasync'>
+      getTablesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get the names of the databases that exist on the current session's connectdion.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getTablesAsync(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></code>:
+        list of table objects containing the label and table names.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the list of tables from a connection:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> tables = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect()
+
+ con.getTablesAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+
+ <span class="hljs-comment">//  [{</span>
+ <span class="hljs-comment">//    label: 'obs', // deprecated property</span>
+ <span class="hljs-comment">//    name: 'myDatabaseName'</span>
+ <span class="hljs-comment">//   },</span>
+ <span class="hljs-comment">//  ...]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='invertdatumtypes'>
+      invertDatumTypes
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Create an array-like object from <a href="#tdatumtype">TDatumType</a> by
+flipping the string key and numerical value around.</p>
+
+
+  <div class='pre p1 fill-light mt0'>invertDatumTypes(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">Undefined</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">Undefined</a></code>:
+        This function does not return anything
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getfields'>
+      getFields
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a list of field objects for a given table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getFields(tableName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    name of table containing field names
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    (err, results)
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        fields - the formmatted list of field objects
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the list of fields from a specific table:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> tables = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect()
+  .getTables();
+
+con.getFields(<span class="hljs-string">'flights'</span>, (err, res) =&gt; <span class="hljs-built_in">console</span>.log(res))
+<span class="hljs-comment">// [{</span>
+  name: <span class="hljs-string">'fieldName'</span>,
+  <span class="hljs-attr">type</span>: <span class="hljs-string">'BIGINT'</span>,
+  <span class="hljs-attr">is_array</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">is_dict</span>: <span class="hljs-literal">false</span>
+}, ...]</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='createtableasync'>
+      createTableAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Create a table and persist it to the backend.</p>
+
+
+  <div class='pre p1 fill-light mt0'>createTableAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    desired name of the new table
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>rowDescObj</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+	    fields of the new table
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>tableType</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&#x3C;<a href="#ttabletype">TTableType</a>>)</code>
+	    the types of tables a user can import into the db
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>></code>:
+        it will either catch an error or return undefined on success
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Create a new table:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> result = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect()
+
+ con.createTable(<span class="hljs-string">'mynewtable'</span>, [TColumnType, TColumnType, ...], <span class="hljs-number">0</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res));
+ <span class="hljs-comment">// undefined</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='importtableasync'>
+      importTableAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Import a delimited table from a file.</p>
+
+
+  <div class='pre p1 fill-light mt0'>importTableAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    desired name of the new table
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>copyParams</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
+	    see 
+<a href="#tcopyparams">TCopyParams</a>
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>headers</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+	    -- a colleciton of metadata related to the table headers
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='importtablegeoasync'>
+      importTableGeoAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Import a geo table from a file.</p>
+
+
+  <div class='pre p1 fill-light mt0'>importTableGeoAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    desired name of the new table
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>copyParams</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
+	    see 
+<a href="#tcopyparams">TCopyParams</a>
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>headers</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+	    -- a colleciton of metadata related to the table headers
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='rendervega'>
+      renderVega
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Use for backend rendering. This method will fetch a PNG image
+that is a render of the vega json object.</p>
+
+
+  <div class='pre p1 fill-light mt0'>renderVega(widgetid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, vega: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image">Image</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>widgetid</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    the widget id of the calling widget
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>vega</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the vega json
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    the options for the render query
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>options.compressionLevel</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
+                  </td>
+                  <td class='break-word'><span>the png compression level.
+range 1 (low compression, faster) to 10 (high compression, slower).
+Default 3.
+</span></td>
+                </tr>
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    takes 
+<code>(err, success)</code>
+ as its signature.  Returns con singleton on success.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image">Image</a></code>:
+        Base 64 Image
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getresultrowforpixel'>
+      getResultRowForPixel
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Used primarily for backend rendered maps, this method will fetch the row
+for a specific table that was last rendered at a pixel.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getResultRowForPixel(widgetId: any, pixel: TPixel, tableColNamesMap: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callbacks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, pixelRadius: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>?, Number: widgetId, tableName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>widgetId</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>pixel</span> <code class='quiet'>(TPixel)</code>
+	    the pixel (lower left-hand corner is pixel (0,0))
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>tableColNamesMap</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    object of tableName -> array of col names
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callbacks</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>pixelRadius</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>?
+            = <code>2</code>)</code>
+	    the radius around the primary pixel to search
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>Number</span> <code class='quiet'>(widgetId)</code>
+	    the widget id of the caller
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the table containing the geo data
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='processpixelresults'>
+      processPixelResults
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Formats the pixel results into the same pattern as textual results.</p>
+
+
+  <div class='pre p1 fill-light mt0'>processPixelResults(callbacks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, results: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callbacks</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
+	    a collection of callbacks
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>results</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>))</code>
+	    unformatted results of pixel rowId information
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+        An object with the pixel results formatted for display
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='sessionid'>
+      sessionId
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get or set the session ID used by the server to serve the correct data.
+This is typically set by <a href="connect">connect</a> and should not be set manually.</p>
+
+
+  <div class='pre p1 fill-light mt0'>sessionId(sessionId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>sessionId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The session ID of the current connection
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</code>:
+        The session ID or the MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the session id:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> sessionID = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect()
+  .sessionId();
+<span class="hljs-comment">// sessionID === 3145846410</span></pre>
+    
+      <p><p>Set the session id:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().connect().sessionId(<span class="hljs-number">3415846410</span>);
+<span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> It is generally unsafe to set the session id manually.</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='host'>
+      host
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get or set the connection server hostname.
+This is is typically the first method called after instantiating a new MapdCon.</p>
+
+
+  <div class='pre p1 fill-light mt0'>host(host: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>host</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The hostname address
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+        The hostname or the MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set the hostname:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().host(<span class="hljs-string">'localhost'</span>);</pre>
+    
+      <p><p>Get the hostname:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> host = con.host();
+<span class="hljs-comment">// host === 'localhost'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='port'>
+      port
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get or set the connection port.</p>
+
+
+  <div class='pre p1 fill-light mt0'>port(port: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>port</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The port to connect on
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+        The port or the MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set the port:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().port(<span class="hljs-string">'8080'</span>);</pre>
+    
+      <p><p>Get the port:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> port = con.port();
+<span class="hljs-comment">// port === '8080'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='user'>
+      user
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get or set the username to authenticate with.</p>
+
+
+  <div class='pre p1 fill-light mt0'>user(user: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>user</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The username to authenticate with
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+        The username or the MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set the username:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().user(<span class="hljs-string">'foo'</span>);</pre>
+    
+      <p><p>Get the username:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> username = con.user();
+<span class="hljs-comment">// user === 'foo'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='password'>
+      password
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get or set the user's password to authenticate with.</p>
+
+
+  <div class='pre p1 fill-light mt0'>password(password: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>password</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The password to authenticate with
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+        The password or the MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set the password:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().password(<span class="hljs-string">'bar'</span>);</pre>
+    
+      <p><p>Get the username:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> password = con.password();
+<span class="hljs-comment">// password === 'bar'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='dbname'>
+      dbName
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get or set the name of the database to connect to.</p>
+
+
+  <div class='pre p1 fill-light mt0'>dbName(dbName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dbName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The database to connect to
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+        The name of the database or the MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set the database name:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().dbName(<span class="hljs-string">'myDatabase'</span>);</pre>
+    
+      <p><p>Get the database name:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> dbName = con.dbName();
+<span class="hljs-comment">// dbName === 'myDatabase'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='logging'>
+      logging
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Whether the raw queries strings will be logged to the console.
+Used primarily for debugging and defaults to <code>false</code>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>logging(logging: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>logging</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+	    Set to true to enable logging
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</code>:
+        The current logging flag or MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set logging to true:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().logging(<span class="hljs-literal">true</span>);</pre>
+    
+      <p><p>Get the logging flag:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> isLogging = con.logging();
+<span class="hljs-comment">// isLogging === true</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='platform'>
+      platform
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The name of the platform.</p>
+
+
+  <div class='pre p1 fill-light mt0'>platform(platform: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>platform</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The platform, default is "mapd"
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+        The platform or the MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set the platform name:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().platform(<span class="hljs-string">'myPlatform'</span>);</pre>
+    
+      <p><p>Get the platform name:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> platform = con.platform();
+<span class="hljs-comment">// platform === 'myPlatform'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='numconnections'>
+      numConnections
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get the number of connections that are currently open.</p>
+
+
+  <div class='pre p1 fill-light mt0'>numConnections(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
+        number of open connections
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the number of connections:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+  .host(<span class="hljs-string">'localhost'</span>)
+  .port(<span class="hljs-string">'8080'</span>)
+  .dbName(<span class="hljs-string">'myDatabase'</span>)
+  .user(<span class="hljs-string">'foo'</span>)
+  .password(<span class="hljs-string">'bar'</span>)
+  .connect();
+
+<span class="hljs-keyword">var</span> numConnections = con.numConnections();
+<span class="hljs-comment">// numConnections === 1</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='protocol'>
+      protocol
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The protocol to use for requests.</p>
+
+
+  <div class='pre p1 fill-light mt0'>protocol(protocol: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>protocol</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    http or https
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+        protocol or MapdCon itself
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Set the protocol:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().protocol(<span class="hljs-string">'http'</span>);</pre>
+    
+      <p><p>Get the protocol:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> protocol = con.protocol();
+<span class="hljs-comment">// protocol === 'http'</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getendpoints'>
+      getEndpoints
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Generates a list of endpoints from the connection params.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getEndpoints(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
+        list of endpoints
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the endpoints:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().protocol(<span class="hljs-string">'http'</span>).host(<span class="hljs-string">'localhost'</span>).port(<span class="hljs-string">'8000'</span>);
+<span class="hljs-keyword">var</span> endpoints = con.getEndpoints();
+<span class="hljs-comment">// endpoints === [ 'http://localhost:8000' ]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='processcolumnarresults'>
+      processColumnarResults
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Because it is inefficient for the server to return a row-based
+data structure, it is better to process the column-based results into a row-based
+format after the fact.</p>
+
+
+  <div class='pre p1 fill-light mt0'>processColumnarResults(data: <a href="#trowset">TRowSet</a>, eliminateNullRows: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, dataEnum: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>data</span> <code class='quiet'>(<a href="#trowset">TRowSet</a>)</code>
+	    The column-based data returned from a query
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>eliminateNullRows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+	    A flag that allows removal of null rows from results
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dataEnum</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    A list of types created from when executing 
+<a href="#invertdatumtypes">#invertDatumTypes</a>
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+        processedResults The formatted results of the query
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='processqueryresults'>
+      processQueryResults
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Decides how to process raw results once they come back from the server.</p>
+
+
+  <div class='pre p1 fill-light mt0'>processQueryResults(logging: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, updateQueryTimes: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, the: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, result: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>logging</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+	    if enabled, will show how long the query took to execute in console
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>updateQueryTimes</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    A function that updates internal query times on connector
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    A list of options for processing the results
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>options.isImage</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>
+                  </td>
+                  <td class='break-word'><span>Set to true when querying for backend rendered images
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>options.eliminateNullRows</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>
+                  </td>
+                  <td class='break-word'><span>Removes null rows
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>options.query</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></code>
+                  </td>
+                  <td class='break-word'><span>The SQL query string used only for logging
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>options.queryId</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
+                  </td>
+                  <td class='break-word'><span>The ID of the query
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>options.conId</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
+                  </td>
+                  <td class='break-word'><span>The unique connector identification
+</span></td>
+                </tr>
+              
+                <tr>
+                  <td class='break-word'><span class='code bold'>options.estimatedQueryTime</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></code>
+                  </td>
+                  <td class='break-word'><span>The estimate of the query time
+</span></td>
+                </tr>
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>the</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
+	    same callback coming from 
+<a href="#query">#query</a>
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>result</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    The query result used to decide whether to process
+as column or row results.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+        null if image with callbacks, result if image with callbacks,
+otherwise formatted results
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='processrowresults'>
+      processRowResults
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>It should be avoided to query for row-based results from the server, howerver
+it can still be done. In this case, still process them into the same format as
+(@link processColumnarResults} to keep the output consistent.</p>
+
+
+  <div class='pre p1 fill-light mt0'>processRowResults(data: <a href="#trowset">TRowSet</a>, eliminateNullRows: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, datumEnum: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>data</span> <code class='quiet'>(<a href="#trowset">TRowSet</a>)</code>
+	    The row-based data returned from a query
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>eliminateNullRows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+	    A flag that allows removal of null rows from results
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>datumEnum</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    A list of types created from when executing 
+<a href="#invertdatumtypes">#invertDatumTypes</a>
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+        processedResults
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdatumval'>
+      TDatumVal
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The value of an individual cell in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDatumVal</div>
+  
+    <p>
+      Type:
+      <a href="#tdatumval">TDatumVal</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='ttabletype'>
+      TTableType
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TTableType</div>
+  
+    <p>
+      Type:
+      <a href="#ttabletype">TTableType</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =0
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =1
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdetectresult'>
+      TDetectResult
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Contains the result from calling <a href="detectColumnTypes">detectColumnTypes</a>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDetectResult</div>
+  
+    <p>
+      Type:
+      <a href="#tdetectresult">TDetectResult</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>copy_params</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>row_set</span> <code class='quiet'>(<a href="#trowset">TRowSet</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='ttypeinfo'>
+      TTypeInfo
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The information about a particular field in a given table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TTypeInfo</div>
+  
+    <p>
+      Type:
+      <a href="#ttypeinfo">TTypeInfo</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>encoding</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>is_array</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>nullable</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>type</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdatumtype'>
+      TDatumType
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The valid types for database field values.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDatumType</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>SMALLINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =0
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>INT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =1
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>BIGINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =2
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>FLOAT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =3
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DECIMAL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =4
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DOUBLE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =5
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>STR</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =6
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =7
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>TIMESTAMP</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =8
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DATE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =9
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>BOOL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =10
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='timportstatus'>
+      TImportStatus
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The value of an individual cell in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TImportStatus</div>
+  
+    <p>
+      Type:
+      <a href="#timportstatus">TImportStatus</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>elapsed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rows_completed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rows_estimated</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tfrontendview'>
+      TFrontendView
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The data stored for a given dashboard.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TFrontendView</div>
+  
+    <p>
+      Type:
+      <a href="#tfrontendview">TFrontendView</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>image_hash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The lookup hash for the dashboard thumbnail image
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>update_time</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The timestamp from the last saved update
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>view_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The name of the dashboard or the shortened share link hash
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The base64-encoded string containing all the details about the current state of the dashboard
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The value and state of an individual data cell in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDatum</div>
+  
+    <p>
+      Type:
+      <a href="#tdatum">TDatum</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='trow'>
+      TRow
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>A row of data in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TRow</div>
+  
+    <p>
+      Type:
+      <a href="#trow">TRow</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>cols</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tdatum">TDatum</a>>)</code>
+          : The array of individual data cells in a table.
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tcolumntype'>
+      TColumnType
+    </h3>
+    
+    
+  </div>
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>TColumnType</div>
+  
+    <p>
+      Type:
+      <a href="#tcolumntype">TColumnType</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>col_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The name of the table field
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>col_type</span> <code class='quiet'>(<a href="#ttypeinfo">TTypeInfo</a>)</code>
+          : The information about the field
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='trowset'>
+      TRowSet
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Contains parsed table data.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TRowSet</div>
+  
+    <p>
+      Type:
+      <a href="#trowset">TRowSet</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>columns</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>is_columnar</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>row_desc</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+          : A list of field names and their associated information.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#trow">TRow</a>>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tserverstatus'>
+      TServerStatus
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The permissions granted by the server.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TServerStatus</div>
+  
+    <p>
+      Type:
+      <a href="#tserverstatus">TServerStatus</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>read_only</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : Indicates whether server accepts write operations, eg: save dashboard
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rendering_enabled</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : Indicates whether the server has backend rendering enabled
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>version</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : the current version
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tcopyparams'>
+      TCopyParams
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The configuration needed to import a table into MapD.
+See <a href="detectColumnTypes">detectColumnTypes</a> for usage example.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TCopyParams</div>
+  
+    <p>
+      Type:
+      <a href="#tcopyparams">TCopyParams</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>array_begin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>array_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>array_end</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>delimiter</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : ="" - The character delimiter (eg:  comma, 
+[
+TAB
+]
+, or pipe)
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>escape</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>has_header</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>line_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>null_str</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : ="" - The token used by the table to express a null value (eg: some systems use 'nil' or 'none')
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>quote</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>quoted</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : =true - Indicates whether the String fields should be wrapped in quotes
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>threads</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =null
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+      </div>
+    </div>
+  </div>
+  <script src='assets/anchor.js'></script>
+  <script src='assets/site.js'></script>
+</body>
+</html>
