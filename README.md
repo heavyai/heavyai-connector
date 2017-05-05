@@ -2,14 +2,8 @@
 
 A JavaScript library for connecting to a MapD GPU database and running queries.
 
-### Table of Contents
-- [Quick Start](#quick-start)
-- [Example](#example)
-- [Testing](#testing)
-- [Scripts](#scripts)
-- [Documentation](http://mapd.github.io/mapd-connector/docs/)
-- [Contributing](.github/CONTRIBUTING.md)
-- [License](LICENSE)
+
+![alt text](https://cloud.githubusercontent.com/assets/2932405/25765834/e18ae5c2-31a3-11e7-9afc-989dcf42941c.png "Connector Example with a d3 rendered chart")
 
 # Quick Start
 ```bash
@@ -17,10 +11,12 @@ yarn
 npm run build
 npm run docs # opens API docs in your browser.
 ```
+# Documentation
+Visit our [API Docs](http://mapd.github.io/mapd-connector/docs/)
 
 # Example
 
-Open [example.html](example.html) in your browser for a basic query call.
+Open [example.html](http://mapd.github.io/mapd-connector/example) in your browser for a basic query call.
 
 # Testing
 
@@ -45,3 +41,7 @@ Command | Description
 `npm run lint` | Runs lint
 `npm run test` | Runs linting and unit tests
 `npm run test:unit` | Runs mocha unit tests
+
+## Contributing
+
+Interested in contributing? We'd love for you to help! Check out [Contributing.MD](.github/CONTRIBUTING.md)
