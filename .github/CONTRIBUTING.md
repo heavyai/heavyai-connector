@@ -105,8 +105,8 @@ Create a temporary `release/version` branch off of `develop` when there is a via
 Create a temporary `hotfix/your-urgent-matter` branch when an urgent fix needs to be released without merging the code in `develop`. Merge this branch back into `master` when ready, follow the normal release process, then back-merge the hotfix into `develop`.
 
 
-# Becoming a Core Contributor
-We may ask community members who've proven themselves with consistently excellent PR and issue contributions to join our **Core Contributors** team. There they'll help curate issues, review pull requests, and keep improving the community they're leading.
+# Becoming a Maintainer
+We may ask community members who've proven themselves with consistently excellent PR and issue contributions to join our **Maintainers** team. There they'll help curate issues, review pull requests, and keep improving the community they're leading.
 
 As we grow our internal engineering team, we may consider hiring contributors, particularly those who've earned this level of trust.
 
