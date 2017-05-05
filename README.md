@@ -9,7 +9,7 @@ A JavaScript library for connecting to a MapD GPU database and running queries.
 - [Scripts](#scripts)
 - [Documentation](http://mapd.github.io/mapd-connector/docs/)
 - [Contributing](.github/CONTRIBUTING.md)
-- [License](LICENSE.md)
+- [License](LICENSE)
 
 # Quick Start
 ```bash
