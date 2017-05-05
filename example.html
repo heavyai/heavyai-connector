@@ -4,34 +4,141 @@
   <meta charset="utf-8">
   <base data-ice="baseUrl">
   <title data-ice="title">MapdCon Example</title>
+  <style>
+  .axis {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  rect {
+    opacity: 0.8;
+  }
+  rect:hover{
+    opacity: 1;
+  }
+  </style>
+
 </head>
   <body>
+    <p><strong> Example 1: SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO' </strong></p>
     <p id="result-async"></p>
+
+    <hr>
+
+    <p><strong> Example 2: SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 20 </strong></p>
+    <div id="chart"></div>
     <script src="thrift/browser/thrift.js"></script>
     <script src="thrift/browser/mapd_types.js"></script>
     <script src="thrift/browser/mapd.thrift.js"></script>
     <script src="dist/mapd-connector.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>
 
-       // The total number of tweets from Columbia
-       var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
 
        var con = new MapdCon()
-         .protocol("http")
-         .host("kali.mapd.com")
-         .port("9092")
+         .protocol("https")
+         .host("metis.mapd.com")
+         .port("443")
          .dbName("mapd")
          .user("mapd")
          .password("HyperInteractive");
        var options = {};
 
        con.connect(function(err, con){
-         con.query(query, options, function(err, result) {
+        // lists all tables in console
+        con.getTablesAsync().then(res => {
+          console.log("All tables available at metis.mapd.com':")
+          console.log(res)
+        })
+
+       // The total number of tweets from Columbia
+        var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
+        
+        con.query(query, options, function(err, result) {
            document
              .getElementById("result-async")
              .innerHTML = "There are " + result[0].n + " tweets from Columbia.";
+         
+         });
+
+         con.getFields('flights_donotmodify', (err, res) => {
+          console.log("All fields for 'flights_donotmodify':")
+          console.log(res)
+          })
+
+         // try changing airtime to arrdelay in the query
+         var query2 = "SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 100";
+
+         con.query(query2, options, function(err, result) {
+           createRowChart(result)
          });
        });
+
+       // http://bl.ocks.org/d3noob/8952219
+       function createRowChart (data) {
+        var margin = {top: 20, right: 20, bottom: 150, left: 40},
+            width = 600
+            height = 300
+
+        var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+        var y = d3.scale.linear().range([height, 0]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .tickFormat(function(d, i){
+                return d
+            });
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(10);
+
+        var svg = d3.select("#chart").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", 
+                  "translate(" + margin.left + "," + margin.top + ")");
+          
+          x.domain(data.map(function(d) { return d.key0; }));
+          y.domain([0, d3.max(data, function(d) { return d.val })]);
+
+          svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis)
+            .selectAll("text")
+              .style("text-anchor", "end")
+              .attr("dx", "-.8em")
+              .attr("dy", "-.55em")
+              .attr("transform", "rotate(-90)" );
+
+          svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis)
+            .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+
+          svg.selectAll("bar")
+              .data(data)
+            .enter().append("rect")
+              .style("fill", "steelblue")
+              .attr("x", function(d) { return x(d.key0); })
+              .attr("width", x.rangeBand())
+              .attr("y", function(d) { return y(d.val); })
+              .attr("height", function(d) { return height - y(d.val); });
+       }
     </script>
   </body>
 </html>
