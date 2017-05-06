@@ -3,6 +3,10 @@
 
 Our team welcomes and appreciates your contributions to this codebase. Every contribution helps, and our team will make sure you're given proper credit for your efforts.
 
+### Contributor License Agreement
+
+In order to clarify the intellectual property license granted with Contributions from any person or entity, MapD must have a Contributor License Agreement (“CLA”) on file that has been signed by each Contributor, indicating agreement to the [Contributor License Agreement](CONTRIBUTOR_LICENSE_AGREEMENT). If you have not already done so, please complete and sign, then scan and email a pdf file of this Agreement to contributors@mapd.com. Please read the agreement carefully before signing and keep a copy for your records.
+
 You can contribute in many ways:
 
 ### Types of Issues
@@ -15,7 +19,7 @@ You can contribute in many ways:
 
 This section guides you through submitting a bug report. Following these guidelines helps maintainers and the community understand your report :pencil:, reproduce the behavior :computer:, and find related reports. :mag_right:
 
-Before creating bug reports, look through [existing issues](https://github.com/mapd/mapd-connector/issues?q=is%3Aopen+is%3Aissue+label%3Abug) as you might find out that you don't need to create one and can just 👍 an existing issue. When you are creating a bug report, [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](ISSUE_TEMPLATE.md), the information it asks for helps us resolve issues faster.
+Before creating bug reports, look through [existing issues](https://github.com/mapd/mapd-connector-os-testing/issues?q=is%3Aopen+is%3Aissue+label%3Abug) as you might find out that you don't need to create one and can just 👍 an existing issue. When you are creating a bug report, [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](ISSUE_TEMPLATE.md), the information it asks for helps us resolve issues faster.
 
 ### How Do I Submit A (Good) Bug Report?
 
@@ -41,7 +45,7 @@ Correcting typos and clarifying key functions and APIs are two great ways to mak
 
 This section guides you through submitting an enhancement suggestion, ranging from minor improvements for existing functionality to completely new features. Following these guidelines helps maintainers and the community understand your suggestion :pencil: and find related suggestions. :mag_right:
 
-**Perform a [cursory search](https://github.com/mapd/mapd-connector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)** to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
+**Perform a [cursory search](https://github.com/mapd/mapd-connector-os-testing/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)** to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
 
 When you are creating an enhancement suggestion, [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill in [the template](ISSUE_TEMPLATE.md), including the steps that you imagine you would take if the feature you're requesting existed.
 
@@ -59,7 +63,7 @@ When you are creating an enhancement suggestion, [include as many details as pos
 
 Unsure where to begin contributing? You can start by looking for issues tagged `beginner`:
 
-* [Beginner issues](https://github.com/mapd/mapd-connector/issues?utf8=%E2%9C%93&q=is%3Aopen%20is%3Aissue%20label%3A%22beginner%22%20) - issues which should only require a few lines of code, and a test or two.
+* [Beginner issues](https://github.com/mapd/mapd-connector-os-testing/issues?utf8=%E2%9C%93&q=is%3Aopen%20is%3Aissue%20label%3A%22beginner%22%20) - issues which should only require a few lines of code, and a test or two.
 
 ### Opening Pull Requests
 0. Make sure to commit your built `dist/` files.
@@ -76,37 +80,9 @@ Unsure where to begin contributing? You can start by looking for issues tagged `
 ### Style Guide
 We use an extensive linter to help prevent typos and to maintain a consistent style in the codebase. The linter runs whenever you run `npm test`. The [linter settings file contains justifications](../.eslintrc.json) for most rules, but we're open to suggestions if you're willing to make the change!
 
-### Branch Naming
 
-We use the following branch names to ensure the stability of our codebase.
-
-#### `develop`
-
-This is a long-living branch off of master where active development work gets merged in via feature/ or chore/ branches. Do not commit to this branch directly.
-
-#### `master`
-
-This is a long-living branch that only contains production-ready code. Stable work should be merged into this branch from a `release/` branch when that code is ready for production. Urgent work may be merged in via `hotfix/` branches.
-
-#### `feature/`
-
-Create a temporary `feature/your-cool-feature` branch off of `develop` whenever you want to submit work through the normal release cycle. Your branch lives for as long as it takes for the feature to be complete enough to merge into `develop`, at which point you should rebase `develop` one final time and open a pull request into `develop`.
-
-#### `chore/`
-
-Create a temporary `chore/your-maintenance-task` branch off of `develop` when you're factoring/rewriting production code or performing general maintenance to architecture, dependencies, or documentation. Use the same process for merging a `feature/`.
-
-#### `release/`
-
-Create a temporary `release/version` branch off of `develop` when there is a viable release candidate. This branch lives for as long as it takes for the release candidate to be ready for production. To prepare a release, bump the version number using `npm version major/minor/patch` and merge into `master`.
-
-#### `hotfix/`
-
-Create a temporary `hotfix/your-urgent-matter` branch when an urgent fix needs to be released without merging the code in `develop`. Merge this branch back into `master` when ready, follow the normal release process, then back-merge the hotfix into `develop`.
-
-
-# Becoming a Maintainer
-We may ask community members who've proven themselves with consistently excellent PR and issue contributions to join our **Maintainers** team. There they'll help curate issues, review pull requests, and keep improving the community they're leading.
+# Becoming a Core Contributor
+We may ask community members who've proven themselves with consistently excellent PR and issue contributions to join our **Core Contributors** team. There they'll help curate issues, review pull requests, and keep improving the community they're leading.
 
 As we grow our internal engineering team, we may consider hiring contributors, particularly those who've earned this level of trust.
 
