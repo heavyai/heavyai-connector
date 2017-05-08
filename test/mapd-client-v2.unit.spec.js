@@ -39,25 +39,4 @@ describe("MapDClientV2", () => {
   it("should have the correct methods on its prototype", () => {
     expect(methods.reduce(isMapDClientV2Method, true)).to.equal(true)
   })
-
-  describe('methods', () => {
-    let client
-    let mapdclient
-    before(() => {
-      mapdclient = global.MapDClient
-      global.MapDClient = createMapDClientStub(methods)
-      client = new MapDClientV2()
-    })
-    after(() => {
-      global.MapDClient = mapdclient
-    })
-    describe('sql_execute', () => {
-      it('should return errors as a JS Error Object', function(done) {
-        client.sql_execute(true, function(err, data) {
-          expect(err instanceof Error).to.equal(true)
-          done()
-        })
-      })
-    })
-  })
 })

@@ -1,4 +1,4 @@
-/* global MapDClient*/
+const MapDClient = (typeof window !== "undefined" && window.MapDClient) || require("../build/thrift/node/mapd.thrift.js").Client // eslint-disable-line global-require
 
 import {
   wrapWithErrorHandling
@@ -46,6 +46,21 @@ MapDClientV2.prototype.get_tables = function (...args) {
   return getTablesWithErrorHandling(...args)
 }
 
+MapDClientV2.prototype.get_table_details = function (...args) {
+  const getTableDetailsWithErrorHandling = wrapWithErrorHandling(this, "get_table_details")
+  return getTableDetailsWithErrorHandling(...args)
+}
+
+MapDClientV2.prototype.get_fields = function (...args) {
+  const getFieldsWithErrorHandling = wrapWithErrorHandling(this, "get_fields")
+  return getFieldsWithErrorHandling(...args)
+}
+
+MapDClientV2.prototype.get_server_status = function (...args) {
+  const getServerStatusWithErrorHandling = wrapWithErrorHandling(this, "get_server_status")
+  return getServerStatusWithErrorHandling(...args)
+}
+
 MapDClientV2.prototype.get_frontend_views = function (...args) {
   const getFrontEndViewsWithErrorHandling = wrapWithErrorHandling(this, "get_frontend_views")
   return getFrontEndViewsWithErrorHandling(...args)
@@ -59,6 +74,16 @@ MapDClientV2.prototype.get_frontend_view = function (...args) {
 MapDClientV2.prototype.create_link = function (...args) {
   const createLinkWithErrorHandling = wrapWithErrorHandling(this, "create_link")
   return createLinkWithErrorHandling(...args)
+}
+
+MapDClientV2.prototype.get_link_view = function (...args) {
+  const getLinkViewWithErrorHandling = wrapWithErrorHandling(this, "get_link_view")
+  return getLinkViewWithErrorHandling(...args)
+}
+
+MapDClientV2.prototype.detect_column_types = function (...args) {
+  const detectColumnTypesWithErrorHandling = wrapWithErrorHandling(this, "detect_column_types")
+  return detectColumnTypesWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.create_frontend_view = function (...args) {
