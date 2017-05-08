@@ -36,51 +36,52 @@
     <script src="thrift/browser/mapd_types.js"></script>
     <script src="thrift/browser/mapd.thrift.js"></script>
     <script src="dist/mapd-connector.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
     <script>
+      var defaultQueryOptions = {};
+      var connector = new MapdCon()
 
+      connector
+       .protocol("https")
+       .host("metis.mapd.com")
+       .port("443")
+       .dbName("mapd")
+       .user("mapd")
+       .password("HyperInteractive")
+       .connect(init);
 
-       var con = new MapdCon()
-         .protocol("https")
-         .host("metis.mapd.com")
-         .port("443")
-         .dbName("mapd")
-         .user("mapd")
-         .password("HyperInteractive");
-       var options = {};
-
-       con.connect(function(err, con){
+      function init (error, con){
         // lists all tables in console
-        con.getTablesAsync().then(res => {
+        con.getTablesAsync().then(function (result) {
           console.log("All tables available at metis.mapd.com':")
-          console.log(res)
+          console.log(result)
         })
 
-       // The total number of tweets from Columbia
+        // The total number of tweets from Columbia
         var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
-        
-        con.query(query, options, function(err, result) {
+
+        con.query(query, defaultQueryOptions, function(err, result) {
            document
              .getElementById("result-async")
              .innerHTML = "There are " + result[0].n + " tweets from Columbia.";
-         
-         });
+        });
 
-         con.getFields('flights_donotmodify', (err, res) => {
+        con.getFields('flights_donotmodify', function (err, result) {
           console.log("All fields for 'flights_donotmodify':")
-          console.log(res)
-          })
+          console.log(result)
+        })
 
-         // try changing airtime to arrdelay in the query
-         var query2 = "SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 100";
+        // try changing airtime to arrdelay in the query
+        var query2 = "SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 100";
 
-         con.query(query2, options, function(err, result) {
-           createRowChart(result)
-         });
-       });
+        con.query(query2, defaultQueryOptions, function(err, result) {
+         createRowChart(result)
+        });
+      }
 
-       // http://bl.ocks.org/d3noob/8952219
-       function createRowChart (data) {
+
+      // http://bl.ocks.org/d3noob/8952219
+      function createRowChart (data) {
         var margin = {top: 20, right: 20, bottom: 150, left: 40},
             width = 600
             height = 300
@@ -105,9 +106,9 @@
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
           .append("g")
-            .attr("transform", 
+            .attr("transform",
                   "translate(" + margin.left + "," + margin.top + ")");
-          
+
           x.domain(data.map(function(d) { return d.key0; }));
           y.domain([0, d3.max(data, function(d) { return d.val })]);
 
