@@ -4,10 +4,15 @@ node_js:
 notifications:
   email: false
   slack:
+<<<<<<< HEAD
     secure: Orp8wK7SwxC2MJ0CERONtjxduXhJIxBAZHsQo6C3vykLDk9w80jQO5zKdUHv89Latcnp1/svsw+Tik4/CXK+vQpqk/gRnTDKcU42E1QbnML4RX8rfDU7JBy7XZ8yZBAvwQNadlBGnQUtneETtWlJkkhNkbCVtbwN5REI7THgXd0XkAMe0GDGxu0w0EgtMsK6GHPEDjsI04f3eU83gUuiWURg2ZIdEmFQrZOrfrelbJ7l+RedeawhtiKKWQQ9+z7tRCJy7wYREistgx6Coo6DpGuQk6hEuvujo8KS0ikNfq6scU5yw/NyI1/aeo1gJA8kh2DSToGChdWqOhTbifEAyGG9e5sqmu4QqbNTooLUi9NdcRJ6ZwZdVoaobT9+Mm2Fp9Abbxc5A8XOHVibxrHvmXHNCZMYkffe0JxgOAdkKmO3vo1YyG3ebihT1mfB5zv22oQmp9bJZsMl6FalBaFNvTeFkWeBGO5/0QqwPR6eBh7lQ7MtqnKKmMsJzkt0JlEZA1IzMtb8++EHN3NjWgNqxzYev4PIDru+vMPsTNQQ+NTDwqzHgytKgY4nne74mYE5jhzWQCKKmbAi+6FbLFaCva2gDG0QUcPVc0I/9ijG5hXHkPUNrEAarEjPNrAdMppiTr2NJnNrZxVuK1j+CvS5L/QcxZ8WY0suulGYXkWa7aA=
 before_install:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
+=======
+    rooms:
+      secure: ZpnM4rlh0JdWijrLWl9Ir08y+m0wn89n3qk8t34MQqeg+vDQu79YD5eaYuqF/01gSgrcrvWMAFqwGrCerngkAzHJtIdQCMkXiB5AmuSZjjkICmpBXy/t5AmehlRslLlH58dVpmU3TTY4pD7NQ3tIJ0lLOWv9j9Qq1xggOMUPc4tRy+b5cDWNyeSAGKv8BdRwPiP+6Ziwwn31an8q9lLz9Rk+iEWXQKjKBnfhnYMlm38aUgSsZGKvxCsFEVEIW5nJbELwSzbPtDtCmG2YLHnl9n4m2RcYwNOssZi5gPdGe4mK6hbsl+CGTyxHoZX8BcQaiuzNQRWjkQQvRfUQkpKLkZ57bg5RZO1OX/X5Y5SY65xiHoZDIIxj1Py4WfWpVygHP2yUEzoIVZAxvGXLH0cii9LDntNpejpU+90RMH1DJd7sZJJnRGogHwpLKMG4aDpGbIEoCv/32ykvAhiRD6mTPe5GAv4wAcGMRc/3tmpvHKNnNvYa+GqEPei4A34ysEPp32KOz3ntVk0+MnWaol0uGiJ7aeEfnJnfctd6MkxJSdssuk0tu5jUYNLrkbiKPUeGXwrxzY0lkZkoJCmFjGDe+UQFBHpaZyubocOrZUQV8tOdGbwN/J/UrB/tQDEBSBLUaZHwzfKqG4vzL6i6uU5Ao4xvCbhX3xkPXiXFtbD+QLg=
+>>>>>>> d9d799e... Put slack notifications in a room
 after_success:
 - sh ./scripts/publish-docs.sh
