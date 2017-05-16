@@ -14,7 +14,7 @@
     "test:integration": "mocha test/integration.spec.js && karma start test/karma.conf.js",
     "test:unit": "mocha ./test/*.unit.spec.js --require ./test/config.js --require ./test/setup.js"
   },
-  "main": "src/mapd-con-es6.js",
+  "main": "dist/node-connector.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/mapd/connector"
