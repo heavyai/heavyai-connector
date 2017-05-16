@@ -1,8 +1,8 @@
+"use strict"
 const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
 const convertToDataUrl = isNodeRuntime ? require("base64-arraybuffer").encode : x => x
 const MapdCon = isNodeRuntime ? require("../dist/node-connector.js").default : window.MapdCon
-const TPixel = isNodeRuntime ? require("../build/thrift/node/mapd_types.js").TPixel : window.TPixel
 
 const imageRegex = /^iVBOR/
 // An empty image data url will have about 80 header chars, then repeat 12 chars till it ends with a roughly 35 char footer.
@@ -179,7 +179,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
 
   xit(".getResultRowForPixel", function (done) {
     this.timeout(15000)
-    const pixel = new TPixel({x: 70, y: 275}) // TODO global dependency TPixel should be hidden by Connector.
+    const pixel = {x: 70, y: 275}
     const tableColNamesMap = {points: ["dest_lon"]} // {vegaDataLayerName: [columnFromDataLayerTable]}
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")

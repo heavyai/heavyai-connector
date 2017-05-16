@@ -1,4 +1,4 @@
-const {TDatumType, TEncodingType} = (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
+const {TDatumType, TEncodingType, TPixel} = (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
 const MapDThrift = isNodeRuntime() && require("../build/thrift/node/mapd.thrift.js") // eslint-disable-line global-require
 let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
 const thriftWrapper = Thrift
@@ -859,6 +859,7 @@ class MapdCon {
    */
 
   getResultRowForPixel (widgetId, pixel, tableColNamesMap, callbacks, pixelRadius = 2) /* istanbul ignore next */ {
+    if (!(pixel instanceof TPixel)) { pixel = new TPixel(pixel) }
     const columnFormat = true // BOOL
     const curNonce = (this._nonce++).toString()
     try {
