@@ -26691,7 +26691,7 @@ module.exports =
 	    window.MapdCon = MapdCon;
 	  }
 	}
-
+	module.exports = MapdCon;
 	exports.default = MapdCon;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55)(module)))
 

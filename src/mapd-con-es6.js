@@ -1142,5 +1142,5 @@ if (typeof module === "object" && module.exports) {
     window.MapdCon = MapdCon
   }
 }
-
+module.exports = MapdCon
 export default MapdCon

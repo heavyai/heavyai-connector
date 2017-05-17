@@ -2,7 +2,7 @@
 const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
 const convertToDataUrl = isNodeRuntime ? require("base64-arraybuffer").encode : x => x
-const MapdCon = isNodeRuntime ? require("../dist/node-connector.js").default : window.MapdCon
+const Connector = isNodeRuntime ? require("../dist/node-connector.js") : window.MapdCon
 
 const imageRegex = /^iVBOR/
 // An empty image data url will have about 80 header chars, then repeat 12 chars till it ends with a roughly 35 char footer.
@@ -13,7 +13,7 @@ const emptyImageRegex = /^.{70,90}(.{12})\1+.{30,50}$/
 describe(isNodeRuntime ? "node" : "browser", () => {
   let connector
   beforeEach(() => {
-    connector = new MapdCon().protocol("https").host("metis.mapd.com").port("443").dbName("mapd").user("mapd").password("HyperInteractive")
+    connector = new Connector().protocol("https").host("metis.mapd.com").port("443").dbName("mapd").user("mapd").password("HyperInteractive")
   })
 
   const widgetId = 0

@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 
-const MapdCon = require("../dist/node-connector.js").default
+const Connector = require("../dist/node-connector.js")
 
 // The total number of tweets from Columbia
 const query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
 const defaultQueryOptions = {}
 
-const connector = new MapdCon()
+const connector = new Connector()
 connector
 .protocol("https")
 .host("metis.mapd.com")
