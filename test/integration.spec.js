@@ -17,6 +17,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   })
 
   const widgetId = 0
+  const options = {}
   const vega = JSON.stringify({ // vega must be a JSON-parsable string
     width: 384,
     height: 541,
@@ -46,7 +47,6 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       }
     }]
   })
-  const options = {}
 
   it(".connect", done => {
     connector.connect((connectError, session) => {
@@ -177,8 +177,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
-  xit(".getResultRowForPixel", function (done) {
-    this.timeout(15000)
+  it(".getResultRowForPixel", done => {
     const pixel = {x: 70, y: 275}
     const tableColNamesMap = {points: ["dest_lon"]} // {vegaDataLayerName: [columnFromDataLayerTable]}
     connector.connect((connectError, session) => {
@@ -187,11 +186,9 @@ describe(isNodeRuntime ? "node" : "browser", () => {
         expect(renderVegaError).to.not.be.an("error")
         session.getResultRowForPixel(widgetId, pixel, tableColNamesMap, (pixelError, data) => {
           expect(pixelError).to.not.be.an("error")
-          console.log("DATA", data)
-          console.log("DATA", data)
-          expect(data).to.deep.equal({})
+          expect(data[0].row_set).to.deep.equal([{dest_lon: -119.056770324707}]) // Ran 100 times; seems deterministic.
           done()
-        })//, 100)
+        })
       })
     })
   })

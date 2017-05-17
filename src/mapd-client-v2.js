@@ -36,6 +36,11 @@ MapDClientV2.prototype.render_vega = function (...args) {
   return renderVegaWithErrorHandling(...args)
 }
 
+MapDClientV2.prototype.get_result_row_for_pixel = function (...args) {
+  const getResultRowForPixelWithErrorHandling = wrapWithErrorHandling(this, "get_result_row_for_pixel")
+  return getResultRowForPixelWithErrorHandling(...args)
+}
+
 MapDClientV2.prototype.delete_frontend_view = function (...args) {
   const deleteFrontendViewWithErrorHandling = wrapWithErrorHandling(this, "delete_frontend_view")
   return deleteFrontendViewWithErrorHandling(...args)

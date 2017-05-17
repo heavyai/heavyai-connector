@@ -901,7 +901,8 @@ class MapdCon {
    *
    * @returns {Object} An object with the pixel results formatted for display
    */
-  processPixelResults (callbacks, results) {
+  processPixelResults (callbacks, error, results) {
+    callbacks = Array.isArray(callbacks) ? callbacks : [callbacks]
     results = Array.isArray(results) ? results.pixel_rows : [results]
     const numPixels = results.length
     const processResultsOptions = {
@@ -916,7 +917,7 @@ class MapdCon {
     if (!callbacks) {
       return results
     }
-    callbacks.pop()(results, callbacks)
+    callbacks.pop()(error, results)
   }
 
   /**

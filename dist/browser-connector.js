@@ -1116,7 +1116,8 @@
 
 	  }, {
 	    key: "processPixelResults",
-	    value: function processPixelResults(callbacks, results) {
+	    value: function processPixelResults(callbacks, error, results) {
+	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
 	      var numPixels = results.length;
 	      var processResultsOptions = {
@@ -1131,7 +1132,7 @@
 	      if (!callbacks) {
 	        return results;
 	      }
-	      callbacks.pop()(results, callbacks);
+	      callbacks.pop()(error, results);
 	    }
 
 	    /**
@@ -1484,6 +1485,11 @@
 	MapDClientV2.prototype.render_vega = function () {
 	  var renderVegaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "render_vega");
 	  return renderVegaWithErrorHandling.apply(undefined, arguments);
+	};
+
+	MapDClientV2.prototype.get_result_row_for_pixel = function () {
+	  var getResultRowForPixelWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_result_row_for_pixel");
+	  return getResultRowForPixelWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.delete_frontend_view = function () {
