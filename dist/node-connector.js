@@ -26401,6 +26401,7 @@ module.exports =
 	     * Formats the pixel results into the same pattern as textual results.
 	     *
 	     * @param {Array<Function>} callbacks a collection of callbacks
+	     * @param {Object} error an error if one was thrown, otherwise null
 	     * @param {Array|Object} results unformatted results of pixel rowId information
 	     *
 	     * @returns {Object} An object with the pixel results formatted for display
