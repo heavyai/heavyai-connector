@@ -26380,7 +26380,7 @@ module.exports =
 	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap, callbacks) /* istanbul ignore next */{
 	      var pixelRadius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
 
-	      if (!pixel instanceof TPixel) {
+	      if (!(pixel instanceof TPixel)) {
 	        pixel = new TPixel(pixel);
 	      }
 	      var columnFormat = true; // BOOL
