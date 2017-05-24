@@ -1,5 +1,13 @@
-/* global Thrift*/
-
+const {TDatumType, TEncodingType, TPixel} = (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
+const MapDThrift = isNodeRuntime() && require("../build/thrift/node/mapd.thrift.js") // eslint-disable-line global-require
+let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
+const thriftWrapper = Thrift
+const parseUrl = isNodeRuntime() && require("url").parse // eslint-disable-line global-require
+if (isNodeRuntime()) { // Because browser Thrift and Node Thrift are exposed slightly differently.
+  Thrift = Thrift.Thrift
+  Thrift.Transport = thriftWrapper.TBufferedTransport
+  Thrift.Protocol = thriftWrapper.TJSONProtocol
+}
 import * as helpers from "./helpers"
 import MapDClientV2 from "./mapd-client-v2"
 import processQueryResults from "./process-query-results"
@@ -7,6 +15,8 @@ import processQueryResults from "./process-query-results"
 const COMPRESSION_LEVEL_DEFAULT = 3
 
 function arrayify (maybeArray) { return Array.isArray(maybeArray) ? maybeArray : [maybeArray] }
+
+function isNodeRuntime () { return typeof window === "undefined" }
 
 class MapdCon {
 
@@ -104,9 +114,29 @@ class MapdCon {
 
     const transportUrls = this.getEndpoints()
     for (let h = 0; h < hostLength; h++) {
-      const transport = new Thrift.Transport(transportUrls[h])
-      const protocol = new Thrift.Protocol(transport)
-      const client = new MapDClientV2(protocol)
+      let client = null
+
+      if (isNodeRuntime()) {
+        const {protocol, hostname, port} = parseUrl(transportUrls[h])
+        const connection = thriftWrapper.createHttpConnection(
+          hostname,
+          port,
+          {
+            transport: thriftWrapper.TBufferedTransport,
+            protocol: thriftWrapper.TJSONProtocol,
+            path: "/",
+            headers: {Connection: "close"},
+            https: protocol === "https:"
+          }
+        )
+        connection.on("error", console.error) // eslint-disable-line no-console
+        client = thriftWrapper.createClient(MapDThrift, connection)
+      } else {
+        const thriftTransport = new Thrift.Transport(transportUrls[h])
+        const thriftProtocol = new Thrift.Protocol(thriftTransport)
+        client = new MapDClientV2(thriftProtocol)
+      }
+
       client.connect(this._user[h], this._password[h], this._dbName[h], (error, sessionId) => {
         if (error) {
           callback(error)
@@ -176,13 +206,7 @@ class MapdCon {
 
   getFrontendViews = (callback) => {
     if (this._sessionId) {
-      this._client[0].get_frontend_views(this._sessionId[0], (error, views) => {
-        if (error) {
-          callback(error)
-        } else {
-          callback(null, views)
-        }
-      })
+      this._client[0].get_frontend_views(this._sessionId[0], callback)
     } else {
       callback(new Error("No Session ID"))
     }
@@ -213,13 +237,7 @@ class MapdCon {
 
   getFrontendView = (viewName, callback) => {
     if (this._sessionId && viewName) {
-      this._client[0].get_frontend_view(this._sessionId[0], viewName, (error, view) => {
-        if (error) {
-          callback(error)
-        } else {
-          callback(null, view)
-        }
-      })
+      this._client[0].get_frontend_view(this._sessionId[0], viewName, callback)
     } else {
       callback(new Error("No Session ID"))
     }
@@ -248,13 +266,7 @@ class MapdCon {
   })
 
   getServerStatus = (callback) => {
-    this._client[0].get_server_status(this._sessionId[0], (result) => {
-      if (typeof result === "object" && result.hasOwnProperty("read_only") && result.hasOwnProperty("rendering_enabled") && result.hasOwnProperty("version")) {
-        callback(null, result)
-      } else {
-        callback(result, null)
-      }
-    })
+    this._client[0].get_server_status(this._sessionId[0], callback)
   }
 
   /**
@@ -381,9 +393,7 @@ class MapdCon {
   }
 
   getLinkView = (link, callback) => {
-    this._client[0].get_link_view(this._sessionId[0], link, theLink => {
-      callback(null, theLink)
-    })
+    this._client[0].get_link_view(this._sessionId[0], link, callback)
   }
 
   /**
@@ -415,13 +425,7 @@ class MapdCon {
 
   detectColumnTypes (fileName, copyParams, callback) {
     const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
-    this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, (err, res) => {
-      if (err) {
-        callback(err)
-      } else {
-        callback(null, res)
-      }
-    })
+    this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback)
   }
 
   /**
@@ -557,9 +561,9 @@ class MapdCon {
    */
   validateQuery (query) {
     return new Promise((resolve, reject) => {
-      this._client[0].sql_validate(this._sessionId[0], query, (err, res) => {
-        if (err) {
-          reject(err)
+      this._client[0].sql_validate(this._sessionId[0], query, (error, res) => {
+        if (error) {
+          reject(error)
         } else {
           resolve(this.convertFromThriftTypes(res))
         }
@@ -650,7 +654,7 @@ class MapdCon {
    * }, ...]
    */
   getFields (tableName, callback) {
-    this._client[0].get_table_details(this._sessionId[0], tableName, (fields) => {
+    this._client[0].get_table_details(this._sessionId[0], tableName, (error, fields) => {
       if (fields) {
         const rowDict = fields.row_desc.reduce((accum, value) => {
           accum[value.col_name] = value
@@ -658,7 +662,7 @@ class MapdCon {
         }, {})
         callback(null, this.convertFromThriftTypes(rowDict))
       } else {
-        callback(new Error("Table (" + tableName + ") not found"))
+        callback(new Error("Table (" + tableName + ") not found" + error))
       }
     })
   }
@@ -855,6 +859,7 @@ class MapdCon {
    */
 
   getResultRowForPixel (widgetId, pixel, tableColNamesMap, callbacks, pixelRadius = 2) /* istanbul ignore next */ {
+    if (!(pixel instanceof TPixel)) { pixel = new TPixel(pixel) }
     const columnFormat = true // BOOL
     const curNonce = (this._nonce++).toString()
     try {
@@ -892,11 +897,13 @@ class MapdCon {
    * Formats the pixel results into the same pattern as textual results.
    *
    * @param {Array<Function>} callbacks a collection of callbacks
+   * @param {Object} error an error if one was thrown, otherwise null
    * @param {Array|Object} results unformatted results of pixel rowId information
    *
    * @returns {Object} An object with the pixel results formatted for display
    */
-  processPixelResults (callbacks, results) {
+  processPixelResults (callbacks, error, results) {
+    callbacks = Array.isArray(callbacks) ? callbacks : [callbacks]
     results = Array.isArray(results) ? results.pixel_rows : [results]
     const numPixels = results.length
     const processResultsOptions = {
@@ -911,7 +918,7 @@ class MapdCon {
     if (!callbacks) {
       return results
     }
-    callbacks.pop()(results, callbacks)
+    callbacks.pop()(error, results)
   }
 
   /**
@@ -1131,9 +1138,9 @@ class MapdCon {
 
 // Set a global mapdcon function when mapdcon is brought in via script tag.
 if (typeof module === "object" && module.exports) {
-  if (window) {
+  if (!isNodeRuntime()) {
     window.MapdCon = MapdCon
   }
 }
-
-export default new MapdCon()
+module.exports = MapdCon
+export default MapdCon

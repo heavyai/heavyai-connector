@@ -1,4 +1,6 @@
-/* global Thrift, TMapDException, MapDClient*/
+const MapDClient = (typeof window !== "undefined" && window.MapDClient) || require("../build/thrift/node/mapd.thrift.js").Client // eslint-disable-line global-require
+const TMapDException = (typeof window !== "undefined" && window.TMapDException) || require("../build/thrift/node/mapd_types.js").TMapDException // eslint-disable-line global-require
+const Thrift = (typeof window !== "undefined" && window.Thrift) || require("thrift").Thrift // eslint-disable-line global-require
 
 export function isResultError (result) {
   return (

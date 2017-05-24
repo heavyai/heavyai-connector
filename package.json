@@ -4,16 +4,17 @@
   "version": "1.0.0",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "mkdir -p dist; webpack",
-    "clean": "rm -rf node_modules/ dist/ docs/",
+    "build": "bash scripts/build.sh",
+    "clean": "rm -rf node_modules/ dist/ build/ docs/",
     "clean:docs": "rm -rf docs/",
     "docs": "npm run docs:build && open docs/index.html",
     "docs:build": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
     "lint": "eslint --fix src/",
-    "test": "npm run lint && nyc npm run test:unit --",
-    "test:unit": "mocha ./test --require ./test/config.js --require ./test/setup.js"
+    "test": "npm run lint && nyc npm run test:unit -- && npm run test:integration",
+    "test:integration": "mocha test/integration.spec.js && karma start test/karma.conf.js",
+    "test:unit": "mocha ./test/*.unit.spec.js --require ./test/config.js --require ./test/setup.js"
   },
-  "main": "src/mapd-con-es6.js",
+  "main": "dist/node-connector.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/mapd/connector"
@@ -21,26 +22,39 @@
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
-    "babel-loader": "^6.2.4",
+    "babel-loader": "^6.4.1",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-1": "^6.5.0",
+    "base64-arraybuffer": "^0.1.5",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
     "documentation": "^4.0.0-rc.0",
     "esdoc": "^0.4.8",
     "eslint": "^3.0.1",
+    "karma": "^1.7.0",
+    "karma-babel-preprocessor": "^6.0.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-mocha": "^1.3.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-webpack": "^2.0.3",
     "mocha": "^2.5.3",
     "nyc": "^10.3.0",
-    "webpack": "^1.13.1"
+    "webpack": "^1.15.0"
   },
   "nyc": {
     "check-coverage": true,
-    "lines": 28.0,
-    "statements": 28.3,
-    "functions": 23.91,
-    "branches": 17.3,
+    "lines": 0,
+    "statements": 0,
+    "functions": 0,
+    "branches": 0,
     "exclude": [
-      "**/*.spec.js"
+      "test/"
     ]
+  },
+  "dependencies": {
+    "script-loader": "^0.7.0",
+    "thrift": "^0.10.0"
   }
 }

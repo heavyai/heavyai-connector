@@ -5,5 +5,9 @@ notifications:
   slack:
     secure: WfGCUYA3CYAp1J5GHj7Tnz1HcFi6SAbdvGJw/t5C7ZkSAjZCyJnvYNvF4M4R8rP0y4kloPn2ZGHa464dDvw4G7cXMZHrF4aoedY60t2uuiwRlQ7dBkJRfnno76IML/VCj7J9KHBSRFBroTQFRx/YQ59MWvPen35Mmn7USVFsvy8lWRL6rEt1NvnRJhIG88GqasjCXgYGKcxbJcOJsPiH+5zOth5Dqc69OsmoAZnoiEKGMQ65RPCBRxbT7Gq2wb42BRQ1OsY8WKh5/d6/1CBbCkrOLWDWTx3eDTdZZN5dZSA5lqWQmoN0793PecTjRaYnkkGcB8AaGNitkGrqx5s+pcNyBsbCC+JGeQl2BzhcNe8/Bd5z0Rd0lXIjwM/jFj4yg+PEOniTpCSz7otrnsj/cVy3J7/GIdos8kNaZUriPlh9bQvkt3uOOEhSyPWyaF02IuHYaFO4ctGg3W309pbNZefRuzYImbOGmprpJzHYm9DKQoG5uSnwFKRFWBAgPVYQdCnfhbJPv+48VQ77ktyNO2AJn1TUcSV+sTC0OL+ZTI+B29sbH9OlmWn/tOgJ0fDFclsWg+Ds14UTBrJotHqSQPGcUf3vwo2RhDWSo9nCMoWz6tZ3KANXIGFWYQrZGdzdDAgpEWZnC8DiEfHoKKVvtz5ourlW5s0hO/TO6BqhZEY=
   email: false
+before_install:
+- export CHROME_BIN=chromium-browser
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 after_success:
 - sh ./scripts/publish-docs.sh
