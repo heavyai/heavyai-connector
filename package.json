@@ -7,6 +7,7 @@
     "build": "bash scripts/build.sh",
     "clean": "rm -rf node_modules/ dist/ build/ docs/",
     "clean:docs": "rm -rf docs/",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "docs": "npm run docs:build && open docs/index.html",
     "docs:build": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
     "lint": "eslint --fix src/",
@@ -54,6 +55,7 @@
     ]
   },
   "dependencies": {
+    "codecov": "^2.2.0",
     "script-loader": "^0.7.0",
     "thrift": "^0.10.0"
   }
