@@ -192,4 +192,22 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       })
     })
   })
+
+  if (isNodeRuntime) { // bug only applies to node; in browser thriftTransportInstance is undefined.
+    it("on bad arguments: passes error, flushes internal buffer so next RPC doesn't fail, dereferences callback to avoid memory leak", done => {
+      const BAD_ARG = null
+      connector.connect((connectError, session) => {
+        session.getFields(BAD_ARG, error => {
+          expect(error).to.be.truthy
+          const thriftClient = connector._client[0]
+          const thriftTransportInstance = thriftClient.output
+          expect(thriftTransportInstance.outCount).to.equal(0)
+          expect(thriftTransportInstance.outBuffers).to.deep.equal([])
+          expect(thriftTransportInstance._seqid).to.be.null
+          expect(thriftClient._reqs[thriftClient._seqid]).to.be.undefined
+          done()
+        })
+      })
+    })
+  }
 })
