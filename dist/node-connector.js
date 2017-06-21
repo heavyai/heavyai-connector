@@ -25406,8 +25406,6 @@ module.exports =
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _helpers = __webpack_require__(56);
 
 	var helpers = _interopRequireWildcard(_helpers);
@@ -25423,8 +25421,6 @@ module.exports =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var _ref = isNodeRuntime() && __webpack_require__(52) || window,
 	    TDatumType = _ref.TDatumType,
@@ -25444,1245 +25440,837 @@ module.exports =
 	}
 
 
-	var COMPRESSION_LEVEL_DEFAULT = 3;
-
-	function arrayify(maybeArray) {
-	  return Array.isArray(maybeArray) ? maybeArray : [maybeArray];
-	}
-
-	function isNodeRuntime() {
-	  return typeof window === "undefined";
-	}
-
-	var MapdCon = function () {
-	  function MapdCon() {
-	    var _this = this;
-
-	    _classCallCheck(this, MapdCon);
-
-	    this.updateQueryTimes = function (conId, queryId, estimatedQueryTime, execution_time_ms) {
-	      _this.queryTimes[queryId] = execution_time_ms;
-	    };
-
-	    this.getFrontendViews = function (callback) {
-	      if (_this._sessionId) {
-	        _this._client[0].get_frontend_views(_this._sessionId[0], callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewsAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendViews(function (error, views) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(views);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getFrontendView = function (viewName, callback) {
-	      if (_this._sessionId && viewName) {
-	        _this._client[0].get_frontend_view(_this._sessionId[0], viewName, callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendView(viewName, function (err, view) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(view);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getServerStatus = function (callback) {
-	      _this._client[0].get_server_status(_this._sessionId[0], callback);
-	    };
-
-	    this.getServerStatusAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        _this.getServerStatus(function (err, result) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(result);
-	          }
-	        });
-	      });
-	    };
-
-	    this.deleteFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.deleteFrontendView(viewName, function (err) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(viewName);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getLinkView = function (link, callback) {
-	      _this._client[0].get_link_view(_this._sessionId[0], link, callback);
-	    };
-
-	    this.getLinkViewAsync = function (link) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getLinkView(link, function (err, theLink) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(theLink);
-	          }
-	        });
-	      });
-	    };
-
-	    this.queryAsync = this.query;
-
-	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
-	      return new Promise(function (resolve, reject) {
-	        _this.createTable(tableName, rowDescObj, tableType, function (err) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve();
-	          }
-	        });
-	      });
-	    };
-
-	    this.importTableAsync = this.importTableAsyncWrapper(false);
-	    this.importTableGeoAsync = this.importTableAsyncWrapper(true);
-
-	    this._host = null;
-	    this._user = null;
-	    this._password = null;
-	    this._port = null;
-	    this._dbName = null;
-	    this._client = null;
-	    this._sessionId = null;
-	    this._protocol = null;
-	    this._datumEnum = {};
-	    this._logging = false;
-	    this._platform = "mapd";
-	    this._nonce = 0;
-	    this._balanceStrategy = "adaptive";
-	    this._numConnections = 0;
-	    this._lastRenderCon = 0;
-	    this.queryTimes = {};
-	    this.serverQueueTimes = null;
-	    this.serverPingTimes = null;
-	    this.pingCount = null;
-	    this.DEFAULT_QUERY_TIME = 50;
-	    this.NUM_PINGS_PER_SERVER = 4;
-	    this.importerRowDesc = null;
-
-	    // invoke initialization methods
-	    this.invertDatumTypes();
-
-	    this.processResults = function () {
-	      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	      var result = arguments[1];
-	      var callback = arguments[2];
-
-	      var processor = (0, _processQueryResults2.default)(_this._logging, _this.updateQueryTimes);
-	      var processResultsObject = processor(options, _this._datumEnum, result, callback);
-	      return processResultsObject;
-	    };
-
-	    // return this to allow chaining off of instantiation
-	    return this;
+	// Set a global Connector function when Connector is brought in via script tag.
+	if (( false ? "undefined" : _typeof(module)) === "object" && module.exports) {
+	  if (!isNodeRuntime()) {
+	    window.Connector = Connector;
 	  }
+	}
+	module.exports = Connector;
+	exports.default = Connector;
 
+
+	var COMPRESSION_LEVEL_DEFAULT = 3;
+	var DEFAULT_QUERY_TIME = 50;
+
+	function Connector() {
+	  // initialize variables
+	  var _datumEnum = {};
+	  var _queryTimes = {};
+	  var _client = null;
+	  var _dbName = null;
+	  var _host = null;
+	  var _logging = false;
+	  var _nonce = 0;
+	  var _password = null;
+	  var _port = null;
+	  var _protocol = null;
+	  var _sessionId = null;
+	  var _user = null;
+
+	  // invoke initialization methods
+	  publicizeMethods(this, [connect, createFrontendView, createLink, createTable, dbName, deleteFrontendView, detectColumnTypes, disconnect, getFields, getFrontendView, getFrontendViews, getLinkView, getPixel, getServerStatus, getTables, host, importShapeTable, importTable, logging, password, port, protocol, query, renderVega, sessionId, user, validateQuery]);
+	  invertDatumTypes(_datumEnum);
+
+	  // return this to allow chaining off of instantiation
+	  return this;
+
+	  // public methods
 	  /**
 	   * Create a connection to the server, generating a client and session id.
-	   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton on success.
-	   * @return {MapdCon} Object
+	   * @param {Function} callback (error, session) => {…}
+	   * @returns {undefined}
 	   *
 	   * @example <caption>Connect to a MapD server:</caption>
-	   * var con = new MapdCon()
+	   * var con = new Connector()
 	   *   .host('localhost')
 	   *   .port('8080')
 	   *   .dbName('myDatabase')
 	   *   .user('foo')
 	   *   .password('bar')
-	   *   .connect((err, con) => console.log(con.sessionId()));
+	   *   .connect((error, con) => console.log(con.sessionId()));
 	   *
 	   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
 	   */
+	  function connect(callback) {
+	    var _this = this;
 
-
-	  _createClass(MapdCon, [{
-	    key: "connect",
-	    value: function connect(callback) {
-	      var _this2 = this;
-
-	      if (this._sessionId) {
-	        this.disconnect();
-	      }
-
-	      // TODO: should be its own function
-	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
-	      if (!allAreArrays) {
-	        return callback("All connection parameters must be arrays.");
-	      }
-
-	      this._client = [];
-	      this._sessionId = [];
-
-	      if (!this._user[0]) {
-	        return callback("Please enter a username.");
-	      } else if (!this._password[0]) {
-	        return callback("Please enter a password.");
-	      } else if (!this._dbName[0]) {
-	        return callback("Please enter a database.");
-	      } else if (!this._host[0]) {
-	        return callback("Please enter a host name.");
-	      } else if (!this._port[0]) {
-	        return callback("Please enter a port.");
-	      }
-
-	      // now check to see if length of all arrays are the same and > 0
-	      var hostLength = this._host.length;
-	      if (hostLength < 1) {
-	        return callback("Must have at least one server to connect to.");
-	      }
-	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) {
-	        return callback("Array connection parameters must be of equal length.");
-	      }
-
-	      if (!this._protocol) {
-	        this._protocol = this._host.map(function () {
-	          return window.location.protocol.replace(":", "");
-	        });
-	      }
-
-	      var transportUrls = this.getEndpoints();
-
-	      var _loop = function _loop(h) {
-	        var client = null;
-
-	        if (isNodeRuntime()) {
-	          var _parseUrl = parseUrl(transportUrls[h]),
-	              protocol = _parseUrl.protocol,
-	              hostname = _parseUrl.hostname,
-	              port = _parseUrl.port;
-
-	          var connection = thriftWrapper.createHttpConnection(hostname, port, {
-	            transport: thriftWrapper.TBufferedTransport,
-	            protocol: thriftWrapper.TJSONProtocol,
-	            path: "/",
-	            headers: { Connection: "close" },
-	            https: protocol === "https:"
-	          });
-	          connection.on("error", console.error); // eslint-disable-line no-console
-	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
-	        } else {
-	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
-	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
-	          client = new _mapdClientV2.default(thriftProtocol);
-	        }
-
-	        client.connect(_this2._user[h], _this2._password[h], _this2._dbName[h], function (error, sessionId) {
-	          if (error) {
-	            callback(error);
-	            return;
-	          }
-	          _this2._client.push(client);
-	          _this2._sessionId.push(sessionId);
-	          _this2._numConnections = _this2._client.length;
-	          callback(null, _this2);
-	        });
-	      };
-
-	      for (var h = 0; h < hostLength; h++) {
-	        _loop(h);
-	      }
-
-	      return this;
-	    }
-	  }, {
-	    key: "convertFromThriftTypes",
-	    value: function convertFromThriftTypes(fields) {
-	      var fieldsArray = [];
-	      // silly to change this from map to array
-	      // - then later it turns back to map
-	      for (var key in fields) {
-	        if (fields.hasOwnProperty(key)) {
-	          fieldsArray.push({
-	            name: key,
-	            type: this._datumEnum[fields[key].col_type.type],
-	            is_array: fields[key].col_type.is_array,
-	            is_dict: fields[key].col_type.encoding === TEncodingType.DICT // eslint-disable-line no-undef
-	          });
-	        }
-	      }
-	      return fieldsArray;
+	    // eslint-disable-line consistent-return
+	    if (_sessionId) {
+	      disconnect();
 	    }
 
-	    /**
-	     * Disconnect from the server then clears the client and session values.
-	     * @return {MapdCon} Object
-	     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton on success.
-	     *
-	     * @example <caption>Disconnect from the server:</caption>
-	     *
-	     * con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
-	     * con.disconnect((err, con) => console.log(err, con))
-	     * con.sessionId() === null;
-	     */
-
-	  }, {
-	    key: "disconnect",
-	    value: function disconnect(callback) {
-	      var _this3 = this;
-
-	      if (this._sessionId !== null) {
-	        for (var c = 0; c < this._client.length; c++) {
-	          this._client[c].disconnect(this._sessionId[c], function (error) {
-	            // Success will return NULL
-
-	            if (error) {
-	              return callback(error, _this3);
-	            }
-	            _this3._sessionId = null;
-	            _this3._client = null;
-	            _this3._numConnections = 0;
-	            _this3.serverPingTimes = null;
-	            return callback(null, _this3);
-	          });
-	        }
-	      }
-	      return this;
+	    if ([_host, _port, _user, _password, _dbName].some(Array.isArray)) {
+	      console.warn("Connection parameters as arrays is deprecated; use single values."); // eslint-disable-line no-console
+	      _host = Array.isArray(_host) ? _host[0] : _host;
+	      _port = Array.isArray(_port) ? _port[0] : _port;
+	      _user = Array.isArray(_user) ? _user[0] : _user;
+	      _password = Array.isArray(_password) ? _password[0] : _password;
+	      _dbName = Array.isArray(_dbName) ? _dbName[0] : _dbName;
 	    }
 
-	    /**
-	     * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
-	     * These objects contain a value for the <code>view_name</code> property,
-	     * but not for the <code>view_state</code> property.
-	     * @return {Promise<TFrontendView[]>} An array which has all saved dashboards.
-	     *
-	     * @example <caption>Get the list of dashboards from the server:</caption>
-	     *
-	     * con.getFrontendViewsAsync().then((results) => console.log(results))
-	     * // [TFrontendView, TFrontendView]
-	     */
-
-
-	    /**
-	     * Get a dashboard object containing a value for the <code>view_state</code> property.
-	     * This object contains a value for the <code>view_state</code> property,
-	     * but not for the <code>view_name</code> property.
-	     * @param {String} viewName the name of the dashboard
-	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard
-	     *
-	     * @example <caption>Get a specific dashboard from the server:</caption>
-	     *
-	     * con.getFrontendViewAsync('dashboard_name').then((result) => console.log(result))
-	     * // {TFrontendView}
-	     */
-
-
-	    /**
-	     * Get the status of the server as a <code>TServerStatus</code> object.
-	     * This includes whether the server is read-only,
-	     * has backend rendering enabled, and the version number.
-	     * @return {Promise.<Object>}
-	     *
-	     * @example <caption>Get the server status:</caption>
-	     *
-	     * con.getServerStatusAsync().then((result) => console.log(result))
-	     * // {
-	     * //   "read_only": false,
-	     * //   "version": "3.0.0dev-20170503-40e2de3",
-	     * //   "rendering_enabled": true,
-	     * //   "start_time": 1493840131
-	     * // }
-	     */
-
-	  }, {
-	    key: "createFrontendViewAsync",
-
-
-	    /**
-	     * Add a new dashboard to the server.
-	     * @param {String} viewName - the name of the new dashboard
-	     * @param {String} viewState - the base64-encoded state string of the new dashboard
-	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
-	     * @param {String} metaData - Stringified metaData related to the view
-	     * @return {Promise} Returns empty if success
-	     *
-	     * @example <caption>Add a new dashboard to the server:</caption>
-	     *
-	     * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
-	     */
-	    value: function createFrontendViewAsync(viewName, viewState, imageHash, metaData) {
-	      var _this4 = this;
-
-	      if (!this._sessionId) {
-	        return new Promise(function (resolve, reject) {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        });
-	      }
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_frontend_view(_this4._sessionId[i], viewName, viewState, imageHash, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              resolve(data);
-	            }
-	          });
-	        });
-	      }));
-	    }
-	  }, {
-	    key: "deleteFrontendView",
-	    value: function deleteFrontendView(viewName, callback) {
-	      var _this5 = this;
-
-	      if (!this._sessionId) {
-	        throw new Error("You are not connected to a server. Try running the connect method first.");
-	      }
-	      try {
-	        this._client.forEach(function (client, i) {
-	          // do we want to try each one individually so if we fail we keep going?
-	          client.delete_frontend_view(_this5._sessionId[i], viewName, callback);
-	        });
-	      } catch (err) {
-	        console.log("ERROR: Could not delete the frontend view. Check your session id.", err);
-	      }
+	    if (!_user) {
+	      return callback("Please enter a username.");
+	    } else if (!_password) {
+	      return callback("Please enter a password.");
+	    } else if (!_dbName) {
+	      return callback("Please enter a database.");
+	    } else if (!_host) {
+	      return callback("Please enter a host name.");
+	    } else if (!_port) {
+	      return callback("Please enter a port.");
 	    }
 
-	    /**
-	     * Delete a dashboard object containing a value for the <code>view_state</code> property.
-	     * @param {String} viewName - the name of the dashboard
-	     * @return {Promise.<String>} Name of dashboard successfully deleted
-	     *
-	     * @example <caption>Delete a specific dashboard from the server:</caption>
-	     *
-	     * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
-	     */
+	    _client = null;
+	    _sessionId = null;
+	    _protocol = _protocol || window.location.protocol.replace(":", "");
 
-	  }, {
-	    key: "createLinkAsync",
+	    var transportUrl = _protocol + "://" + _host + ":" + _port;
+	    var client = null;
 
+	    if (isNodeRuntime()) {
+	      var _parseUrl = parseUrl(transportUrl),
+	          parsedProtocol = _parseUrl.protocol,
+	          parsedHost = _parseUrl.hostname,
+	          parsedPort = _parseUrl.port;
 
-	    /**
-	     * Create a short hash to make it easy to share a link to a specific dashboard.
-	     * @param {String} viewState - the base64-encoded state string of the new dashboard
-	     * @param {String} metaData - Stringified metaData related to the link
-	     * @return {Promise.<String[]>} link - A short hash of the dashboard used for URLs
-	     *
-	     * @example <caption>Create a link to the current state of a dashboard:</caption>
-	     *
-	     * con.createLinkAsync("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
-	     * // ["28127951"]
-	     */
-	    value: function createLinkAsync(viewState, metaData) {
-	      var _this6 = this;
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_link(_this6._sessionId[i], viewState, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              var result = data.split(",").reduce(function (links, link) {
-	                if (links.indexOf(link) === -1) {
-	                  links.push(link);
-	                }
-	                return links;
-	              }, []);
-	              if (!result || result.length !== 1) {
-	                reject(new Error("Different links were created on connection"));
-	              } else {
-	                resolve(result.join());
-	              }
-	            }
-	          });
-	        });
-	      }));
-	    }
-
-	    /**
-	     * Get a fully-formed dashboard object from a generated share link.
-	     * This object contains the given link for the <code>view_name</code> property,
-	     * @param {String} link - the short hash of the dashboard, see {@link createLink}
-	     * @return {Promise.<Object>} Object of the dashboard and metadata
-	     *
-	     * @example <caption>Get a dashboard from a link:</caption>
-	     *
-	     * con.getLinkViewAsync('28127951').then(res => console.log(res))
-	     * //  {
-	     * //    "view_name": "28127951",
-	     * //    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",
-	     * //    "image_hash": "",
-	     * //    "update_time": "2017-04-28T21:34:01Z",
-	     * //    "view_metadata": "metaData"
-	     * //  }
-	     */
-
-	  }, {
-	    key: "detectColumnTypes",
-	    value: function detectColumnTypes(fileName, copyParams, callback) {
-	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
-	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
-	    }
-
-	    /**
-	     * Asynchronously get the data from an importable file,
-	     * such as a .csv or plaintext file with a header.
-	     * @param {String} fileName - the name of the importable file
-	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @returns {Promise.<TDetectResult>} An object which has copy_params and row_set
-	     *
-	     * @example <caption>Get data from table_data.csv:</caption>
-	     *
-	     * var copyParams = new TCopyParams();
-	     * con.detectColumnTypesAsync('table_data.csv', copyParams).then(res => console.log(res))
-	     * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
-	     *
-	     */
-
-	  }, {
-	    key: "detectColumnTypesAsync",
-	    value: function detectColumnTypesAsync(fileName, copyParams) {
-	      var _this7 = this;
-
-	      return new Promise(function (resolve, reject) {
-	        _this7.detectColumnTypes.bind(_this7, fileName, copyParams)(function (err, res) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            _this7.importerRowDesc = res.row_set.row_desc;
-	            resolve(res);
-	          }
-	        });
+	      var connection = thriftWrapper.createHttpConnection(parsedHost, parsedPort, {
+	        transport: thriftWrapper.TBufferedTransport,
+	        protocol: thriftWrapper.TJSONProtocol,
+	        path: "/",
+	        headers: { Connection: "close" },
+	        https: parsedProtocol === "https:"
 	      });
+	      connection.on("error", console.error); // eslint-disable-line no-console
+	      client = thriftWrapper.createClient(MapDThrift, connection);
+	      resetThriftClientOnArgumentErrorForMethods(this, client, Object.keys(this));
+	    } else {
+	      var thriftTransport = new Thrift.Transport(transportUrl);
+	      var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	      client = new _mapdClientV2.default(thriftProtocol);
 	    }
-
-	    /**
-	     * Submit a query to the database and process the results.
-	     * @param {String} query The query to perform
-	     * @param {Object} options the options for the query
-	     * @param {Function} callback that takes `(err, result) => result`
-	     * @returns {Object} The result of the query
-	     *
-	     * @example <caption>create a query</caption>
-	     *
-	     * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
-	     * var options = {};
-	     *
-	     * con.query(query, options, function(err, result) {
-	     *        console.log(result)
-	     *      });
-	     *
-	     */
-
-	  }, {
-	    key: "query",
-	    value: function query(_query, options, callback) {
-	      var _this8 = this;
-
-	      var columnarResults = true;
-	      var eliminateNullRows = false;
-	      var queryId = null;
-	      var returnTiming = false;
-	      var limit = -1;
-	      if (options) {
-	        columnarResults = options.hasOwnProperty("columnarResults") ? options.columnarResults : columnarResults;
-	        eliminateNullRows = options.hasOwnProperty("eliminateNullRows") ? options.eliminateNullRows : eliminateNullRows;
-	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
-	        returnTiming = options.hasOwnProperty("returnTiming") ? options.returnTiming : returnTiming;
-	        limit = options.hasOwnProperty("limit") ? options.limit : limit;
+	    client.connect(_user, _password, _dbName, function (error, newSessionId) {
+	      // eslint-disable-line no-loop-func
+	      if (error) {
+	        return callback(normalizeError(error));
 	      }
+	      _client = client;
+	      _sessionId = newSessionId;
+	      return callback(null, _this);
+	    });
+	  }
+	  /**
+	   * Disconnect from the server then clears the client and session values.
+	   * @param {Function} callback (error) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Disconnect from the server:</caption>
+	   *
+	   * con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+	   * con.disconnect((err) => {
+	   *   console.error(err);
+	   *   con.sessionId() === null;
+	   * })
+	   */
+	  function disconnect() {
+	    var _this2 = this;
 
-	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
+	    var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : noop;
 
-	      var curNonce = (this._nonce++).toString();
-
-	      var conId = 0;
-
-	      var processResultsOptions = {
-	        returnTiming: returnTiming,
-	        eliminateNullRows: eliminateNullRows,
-	        query: _query,
-	        queryId: queryId,
-	        conId: conId,
-	        estimatedQueryTime: lastQueryTime
-	      };
-
-	      try {
-	        if (callback) {
-	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, function (error, result) {
-	            if (error) {
-	              callback(error);
-	            } else {
-	              _this8.processResults(processResultsOptions, result, callback);
-	            }
-	          });
-	          return curNonce;
-	        } else if (!callback) {
-	          var SQLExecuteResult = this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit);
-	          return this.processResults(processResultsOptions, SQLExecuteResult);
-	        }
-	      } catch (err) {
-	        if (err.name === "NetworkError") {
-	          this.removeConnection(conId);
-	          if (this._numConnections === 0) {
-	            err.msg = "No remaining database connections";
-	            throw err;
-	          }
-	          this.query(_query, options, callback);
-	        } else if (callback) {
-	          callback(err);
-	        } else {
-	          throw err;
-	        }
-	      }
-	    }
-
-	    /** @deprecated will default to query */
-
-	  }, {
-	    key: "validateQuery",
-
-
-	    /**
-	     * Submit a query to validate whether the backend can create a result set based on the SQL statement.
-	     * @param {String} query The query to perform
-	     * @returns {Promise.<Object>} The result of whether the query is valid
-	     *
-	     * @example <caption>create a query</caption>
-	     *
-	     * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
-	     *
-	     * con.validateQuery(query).then(res => console.log(res))
-	     *
-	     * // [{
-	     * //    "name": "n",
-	     * //    "type": "INT",
-	     * //    "is_array": false,
-	     * //    "is_dict": false
-	     * //  }]
-	     *
-	     */
-	    value: function validateQuery(query) {
-	      var _this9 = this;
-
-	      return new Promise(function (resolve, reject) {
-	        _this9._client[0].sql_validate(_this9._sessionId[0], query, function (error, res) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(_this9.convertFromThriftTypes(res));
-	          }
-	        });
-	      });
-	    }
-	  }, {
-	    key: "removeConnection",
-	    value: function removeConnection(conId) {
-	      if (conId < 0 || conId >= this.numConnections) {
-	        var err = {
-	          msg: "Remove connection id invalid"
-	        };
-	        throw err;
-	      }
-	      this._client.splice(conId, 1);
-	      this._sessionId.splice(conId, 1);
-	      this._numConnections--;
-	    }
-	  }, {
-	    key: "getTables",
-	    value: function getTables(callback) {
-	      this._client[0].get_tables(this._sessionId[0], function (error, tables) {
+	    if (_sessionId !== null) {
+	      _client.disconnect(_sessionId, function (error) {
+	        // eslint-disable-line no-loop-func
 	        if (error) {
-	          callback(error);
-	        } else {
-	          callback(null, tables.map(function (table) {
-	            return {
-	              name: table,
-	              label: "obs"
-	            };
-	          }));
+	          return callback(error, _this2);
 	        }
+	        _sessionId = null;
+	        _client = null;
+	        return callback(null, _this2);
 	      });
 	    }
+	  }
+	  /**
+	   * Get a dashboard object containing a value for the <code>view_state</code> property.
+	   * This object contains a value for the <code>view_state</code> property,
+	   * but not for the <code>view_name</code> property.
+	   * @param {String} viewName the name of the dashboard
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Get a specific dashboard from the server:</caption>
+	   *
+	   * con.getFrontendView('dashboard_name').then((result) => console.log(result))
+	   * // {TFrontendView}
+	   */
+	  function getFrontendView(viewName, callback) {
+	    if (_sessionId && viewName) {
+	      _client.get_frontend_view(_sessionId, viewName, callback);
+	      return;
+	    } else {
+	      callback(new Error("No Session ID"));
+	      return;
+	    }
+	  }
+	  /**
+	   * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
+	   * These objects contain a value for the <code>view_name</code> property,
+	   * but not for the <code>view_state</code> property.
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Get the list of dashboards from the server:</caption>
+	   *
+	   * con.getFrontendViews().then((results) => console.log(results))
+	   * // [TFrontendView, TFrontendView]
+	   */
+	  function getFrontendViews(callback) {
+	    if (_sessionId) {
+	      _client.get_frontend_views(_sessionId, callback);
+	    } else {
+	      callback(new Error("No Session ID"));
+	      return;
+	    }
+	  }
+	  /**
+	   * Get the status of the server as a <code>TServerStatus</code> object.
+	   * This includes whether the server is read-only,
+	   * has backend rendering enabled, and the version number.
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Get the server status:</caption>
+	   *
+	   * con.getServerStatus().then((result) => console.log(result))
+	   * // {
+	   * //   "read_only": false,
+	   * //   "version": "3.0.0dev-20170503-40e2de3",
+	   * //   "rendering_enabled": true,
+	   * //   "start_time": 1493840131
+	   * // }
+	   */
+	  function getServerStatus(callback) {
+	    _client.get_server_status(_sessionId, callback);
+	  }
+	  /**
+	   * Add a new dashboard to the server.
+	   * @param {String} viewName - the name of the new dashboard
+	   * @param {String} viewState - the base64-encoded state string of the new dashboard
+	   * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+	   * @param {String} metaData - Stringified metaData related to the view
+	   * @param {Function} callback (error) => {…} success returns null
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Add a new dashboard to the server:</caption>
+	   *
+	   * con.createFrontendView('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
+	   */
+	  function createFrontendView(viewName, viewState, imageHash, metaData, callback) {
+	    if (!_sessionId) {
+	      return callback(new Error("You are not connected to a server. Try running the connect method first."));
+	    }
+	    return _client.create_frontend_view(_sessionId, viewName, viewState, imageHash, metaData, callback);
+	  }
+	  /**
+	   * Delete a dashboard object containing a value for the <code>view_state</code> property.
+	   * @param {String} viewName - the name of the dashboard
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Delete a specific dashboard from the server:</caption>
+	   *
+	   * con.deleteFrontendView('dashboard_name').then(res => console.log(res))
+	   */
+	  function deleteFrontendView(viewName, callback) {
+	    if (!_sessionId) {
+	      return callback(new Error("You are not connected to a server. Try running the connect method first."));
+	    }
+	    try {
+	      // eslint-disable-line no-restricted-syntax
+	      return _client.delete_frontend_view(_sessionId, viewName, callback);
+	    } catch (err) {
+	      return callback(new Error("Could not delete the frontend view; check your session id.", err));
+	    }
+	  }
+	  /**
+	   * Create a short hash to make it easy to share a link to a specific dashboard.
+	   * @param {String} viewState - the base64-encoded state string of the new dashboard
+	   * @param {String} metaData - Stringified metaData related to the link
+	   * @param {Function} callback (error, id) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Create a link to the current state of a dashboard:</caption>
+	   *
+	   * con.createLink("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
+	   * // ["28127951"]
+	   */
+	  function createLink(viewState, metaData, callback) {
+	    return _client.create_link(_sessionId, viewState, metaData, function (error, data) {
+	      if (error) {
+	        return callback(normalizeError(error));
+	      }
+	      var result = data.split(",").reduce(function (links, link) {
+	        // eslint-disable-line max-nested-callbacks
+	        if (!links.includes(link)) {
+	          links.push(link);
+	        }
+	        return links;
+	      }, []);
+	      if (!result || result.length !== 1) {
+	        return callback(new Error("Different links were created on connection"));
+	      } else {
+	        return callback(null, result.join());
+	      }
+	    });
+	  }
+	  /**
+	   * Get a fully-formed dashboard object from a generated share link.
+	   * This object contains the given link for the <code>view_name</code> property,
+	   * @param {String} link - the short hash of the dashboard, see {@link createLink}
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Get a dashboard from a link:</caption>
+	   *
+	   * con.getLinkView('28127951').then(res => console.log(res))
+	   * //  {
+	   * //    "view_name": "28127951",
+	   * //    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",
+	   * //    "image_hash": "",
+	   * //    "update_time": "2017-04-28T21:34:01Z",
+	   * //    "view_metadata": "metaData"
+	   * //  }
+	   */
+	  function getLinkView(link, callback) {
+	    _client.get_link_view(_sessionId, link, function (error, data) {
+	      if (error) {
+	        return callback(normalizeError(error));
+	      } else {
+	        return callback(null, data);
+	      }
+	    });
+	  }
+	  /**
+	   * Asynchronously get the data from an importable file,
+	   * such as a .csv or plaintext file with a header.
+	   * @param {String} fileName - the name of the importable file
+	   * @param {TCopyParams} copyParams - see {@link TCopyParams}
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Get data from table_data.csv:</caption>
+	   *
+	   * var copyParams = new TCopyParams();
+	   * con.detectColumnTypes('table_data.csv', copyParams).then(res => console.log(res))
+	   * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
+	   *
+	   */
+	  function detectColumnTypes(fileName, copyParams, callback) {
+	    var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
+	    _client.detect_column_types(_sessionId, fileName, thriftCopyParams, callback);
+	  }
+	  /**
+	   * Submit a query to the database and process the results.
+	   * @param {String} sql The query to perform
+	   * @param {Object} options the options for the query
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>create a query</caption>
+	   *
+	   * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
+	   * var options = {};
+	   *
+	   * con.query(query, options, function(error, data) {
+	   *        console.log(data)
+	   *      });
+	   *
+	   */
+	  function query(sql, options, callback) {
+	    var columnarResults = true;
+	    var eliminateNullRows = false;
+	    var queryId = null;
+	    var returnTiming = false;
+	    var limit = -1;
+	    if (options) {
+	      columnarResults = options.hasOwnProperty("columnarResults") ? options.columnarResults : columnarResults;
+	      eliminateNullRows = options.hasOwnProperty("eliminateNullRows") ? options.eliminateNullRows : eliminateNullRows;
+	      queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
+	      returnTiming = options.hasOwnProperty("returnTiming") ? options.returnTiming : returnTiming;
+	      limit = options.hasOwnProperty("limit") ? options.limit : limit;
+	    }
 
-	    /**
-	     * Get the names of the databases that exist on the current session's connectdion.
-	     * @return {Promise.<Object[]>} list of table objects containing the label and table names.
-	     *
-	     * @example <caption>Get the list of tables from a connection:</caption>
-	     *
-	     *  con.getTablesAsync().then(res => console.log(res))
-	     *
-	     *  //  [{
-	     *  //    label: 'obs', // deprecated property
-	     *  //    name: 'myDatabaseName'
-	     *  //   },
-	     *  //  ...]
-	     */
+	    var lastQueryTime = queryId in _queryTimes ? _queryTimes[queryId] : DEFAULT_QUERY_TIME;
 
-	  }, {
-	    key: "getTablesAsync",
-	    value: function getTablesAsync() {
-	      var _this10 = this;
+	    var curNonce = (_nonce++).toString();
 
-	      return new Promise(function (resolve, reject) {
-	        _this10.getTables.bind(_this10)(function (error, tables) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(tables);
-	          }
-	        });
+	    var processResultsOptions = {
+	      returnTiming: returnTiming,
+	      eliminateNullRows: eliminateNullRows,
+	      sql: sql,
+	      queryId: queryId,
+	      conId: 0,
+	      estimatedQueryTime: lastQueryTime
+	    };
+
+	    _client.sql_execute(_sessionId, sql, columnarResults, curNonce, limit, function (error, result) {
+	      if (error) {
+	        return callback(normalizeError(error));
+	      } else {
+	        return processResults(result, callback, _logging, _datumEnum, processResultsOptions);
+	      }
+	    });
+	  }
+	  /**
+	   * Submit a query to validate whether the backend can create a result set based on the SQL statement.
+	   * @param {String} sql The query to perform
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>create a query</caption>
+	   *
+	   * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
+	   *
+	   * con.validateQuery(query).then(res => console.log(res))
+	   *
+	   * // [{
+	   * //    "name": "n",
+	   * //    "type": "INT",
+	   * //    "is_array": false,
+	   * //    "is_dict": false
+	   * //  }]
+	   *
+	   */
+	  function validateQuery(sql, callback) {
+	    _client.sql_validate(_sessionId, sql, function (error, data) {
+	      if (error) {
+	        return callback(normalizeError(error));
+	      } else {
+	        return callback(null, convertFromThriftTypes(data, _datumEnum));
+	      }
+	    });
+	  }
+	  /**
+	   * Get the names of the databases that exist on the current session's connectdion.
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Get the list of tables from a connection:</caption>
+	   *
+	   *  con.getTables().then(res => console.log(res))
+	   *
+	   *  //  [{
+	   *  //    label: 'obs', // deprecated property
+	   *  //    name: 'myDatabaseName'
+	   *  //   },
+	   *  //  ...]
+	   */
+	  function getTables(callback) {
+	    _client.get_tables(_sessionId, function (error, tables) {
+	      if (error) {
+	        return callback(normalizeError(error));
+	      } else {
+	        return callback(null, tables.map(function (table) {
+	          return { name: table, label: "obs" };
+	        }));
+	      }
+	    });
+	  }
+	  /**
+	   * Get a list of field objects for a given table.
+	   * @param {String} tableName - name of table containing field names
+	   * @param {Function} callback - (error, fields) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Get the list of fields from a specific table:</caption>
+	   *
+	   * con.getFields('flights', (error, res) => console.log(res))
+	   * // [{
+	   *   name: 'fieldName',
+	   *   type: 'BIGINT',
+	   *   is_array: false,
+	   *   is_dict: false
+	   * }, ...]
+	   */
+	  function getFields(tableName, callback) {
+	    _client.get_table_details(_sessionId, tableName, function (error, fields) {
+	      if (fields) {
+	        var rowDict = fields.row_desc.reduce(function (accum, value) {
+	          accum[value.col_name] = value;
+	          return accum;
+	        }, {});
+	        return callback(null, convertFromThriftTypes(rowDict, _datumEnum));
+	      } else {
+	        return callback(normalizeError(error));
+	      }
+	    });
+	  }
+	  /**
+	   * Create a table and persist it to the backend.
+	   * @param {String} tableName - desired name of the new table
+	   * @param {Array<TColumnType>} rowDescObj - fields of the new table
+	   * @param {Number<TTableType>} tableType - the types of tables a user can import into the db
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   *
+	   * @example <caption>Create a new table:</caption>
+	   *
+	   *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
+	   *  // undefined
+	   */
+	  function createTable(tableName, rowDescObj, tableType, callback) {
+	    if (!_sessionId) {
+	      return callback(new Error("You are not connected to a server. Try running the connect method first."));
+	    }
+	    var thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, null);
+	    return _client.create_table(_sessionId, tableName, thriftRowDesc, tableType, callback);
+	  }
+	  /**
+	   * Import a delimited table from a file.
+	   * @param {String} tableName - desired name of the new table
+	   * @param {String} fileName - name of imported file
+	   * @param {TCopyParams} copyParams - see {@link TCopyParams}
+	   * @param {TColumnType[]} rowDescObj -- a colleciton of metadata related to the table headers
+	   * @param {Function} callback (error, data) => {…}
+	   * @param {Boolean} isShapeFile false by default, enabled to import shape data.
+	   * @returns {undefined}
+	   */
+	  function importTable(tableName, fileName, copyParams, rowDescObj, callback) {
+	    var isShapeFile = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
+
+	    if (!_sessionId) {
+	      return callback(new Error("You are not connected to a server. Try running the connect method first."));
+	    }
+
+	    var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
+	    var thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, null);
+
+	    if (isShapeFile) {
+	      return _client.import_geo_table(_sessionId, tableName, fileName, thriftCopyParams, thriftRowDesc, callback);
+	    } else {
+	      return _client.import_table(_sessionId, tableName, fileName, thriftCopyParams, callback);
+	    }
+	  }
+	  /**
+	   * Import a geo table from a file.
+	   * @param {String} tableName - desired name of the new table
+	   * @param {String} fileName - name of imported file
+	   * @param {TCopyParams} copyParams - see {@link TCopyParams}
+	   * @param {TColumnType[]} rowDescObj -- a colleciton of metadata related to the table headers
+	   * @param {Function} callback (error, data) => {…}
+	   * @returns {undefined}
+	   */
+	  function importShapeTable(tableName, fileName, copyParams, rowDescObj, callback) {
+	    return importTable(tableName, fileName, copyParams, rowDescObj, callback, true);
+	  }
+	  /**
+	   * Use for backend rendering. This method will fetch a PNG image
+	   * that is a render of the vega json object.
+	   *
+	   * @param {Number} widgetid the widget id of the calling widget
+	   * @param {String} vega the vega json
+	   * @param {Object} options the options for the render query
+	   * @param {Number} options.compressionLevel the png compression level.
+	   *                  range 1 (low compression, faster) to 10 (high compression, slower).
+	   *                  Default 3.
+	   * @param {Function} callback (error, Base64Image) => {…}
+	   * @returns {undefined}
+	   */
+	  function renderVega(widgetid, vega, options, callback) {
+	    var queryId = null;
+	    var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
+	    if (options) {
+	      queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
+	      compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
+	    }
+
+	    var lastQueryTime = queryId in _queryTimes ? _queryTimes[queryId] : DEFAULT_QUERY_TIME;
+
+	    var curNonce = (_nonce++).toString();
+
+	    var processResultsOptions = {
+	      isImage: true,
+	      query: "render: " + vega,
+	      queryId: queryId,
+	      conId: 0,
+	      estimatedQueryTime: lastQueryTime
+	    };
+
+	    _client.render_vega(_sessionId, widgetid, vega, compressionLevel, curNonce, function (error, result) {
+	      if (error) {
+	        return callback(normalizeError(error));
+	      }
+	      return processResults(result, callback, _logging, _datumEnum, processResultsOptions);
+	    });
+	  }
+	  /**
+	   * Used primarily for backend rendered maps, this method will fetch the row
+	   * for a specific table that was last rendered at a pixel.
+	   * @param {Number} widgetId - the widget id of the caller
+	   * @param {TPixel} pixel - the pixel (lower left-hand corner is pixel (0,0))
+	   * @param {Object} tableColNamesMap - object of tableName -> array of col names
+	   * @param {Function} callback (error, results) => {…}
+	   * @param {Number} [pixelRadius=2] - the radius around the primary pixel to search
+	   * @returns {undefined}
+	   */
+	  function getPixel(widgetId, pixel, tableColNamesMap, callback) {
+	    var pixelRadius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
+
+	    if (Array.isArray(callback)) {
+	      console.warn("getPixel callbacks array deprecated; pass single callback instead."); // eslint-disable-line no-console
+	      callback = callback[0];
+	    }
+	    if (!(pixel instanceof TPixel)) {
+	      pixel = new TPixel(pixel);
+	    }
+	    var columnFormat = true;
+	    var curNonce = String(_nonce++);
+	    _client.get_result_row_for_pixel(_sessionId, widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, processPixelResults.bind(this, callback, _logging, _datumEnum));
+	  }
+	  /**
+	   * Get or set the session ID used by the server to serve the correct data.
+	   * This is typically set by {@link connect} and should not be set manually.
+	   * @param {Number} newSessionId - The session ID of the current connection
+	   * @returns {Number|Connector} - The session ID or the Connector itself
+	   *
+	   * @example <caption>Get the session id:</caption>
+	   *
+	   *  con.sessionId();
+	   * // sessionID === 3145846410
+	   *
+	   * @example <caption>Set the session id:</caption>
+	   * var con = new Connector().connect().sessionId(3415846410);
+	   * // NOTE: It is generally unsafe to set the session id manually.
+	   */
+	  function sessionId(newSessionId) {
+	    if (!arguments.length) {
+	      return _sessionId;
+	    }
+	    _sessionId = newSessionId;
+	    return this;
+	  }
+	  /**
+	   * Get or set the connection server hostname.
+	   * This is is typically the first method called after instantiating a new Connector.
+	   * @param {String} hostname - The hostname address
+	   * @returns {String|Connector} - The hostname or the Connector itself
+	   *
+	   * @example <caption>Set the hostname:</caption>
+	   * var con = new Connector().host('localhost');
+	   *
+	   * @example <caption>Get the hostname:</caption>
+	   * var host = con.host();
+	   * // host === 'localhost'
+	   */
+	  function host(hostname) {
+	    if (!arguments.length) {
+	      return _host;
+	    }
+	    _host = hostname;
+	    return this;
+	  }
+	  /**
+	   * Get or set the connection port.
+	   * @param {String} thePort - The port to connect on
+	   * @returns {String|Connector} - The port or the Connector itself
+	   *
+	   * @example <caption>Set the port:</caption>
+	   * var con = new Connector().port('8080');
+	   *
+	   * @example <caption>Get the port:</caption>
+	   * var port = con.port();
+	   * // port === '8080'
+	   */
+	  function port(thePort) {
+	    if (!arguments.length) {
+	      return _port;
+	    }
+	    _port = thePort;
+	    return this;
+	  }
+	  /**
+	   * Get or set the username to authenticate with.
+	   * @param {String} username - The username to authenticate with
+	   * @returns {String|Connector} - The username or the Connector itself
+	   *
+	   * @example <caption>Set the username:</caption>
+	   * var con = new Connector().user('foo');
+	   *
+	   * @example <caption>Get the username:</caption>
+	   * var username = con.user();
+	   * // user === 'foo'
+	   */
+	  function user(username) {
+	    if (!arguments.length) {
+	      return _user;
+	    }
+	    _user = username;
+	    return this;
+	  }
+	  /**
+	   * Get or set the user's password to authenticate with.
+	   * @param {String} pass - The password to authenticate with
+	   * @returns {String|Connector} - The password or the Connector itself
+	   *
+	   * @example <caption>Set the password:</caption>
+	   * var con = new Connector().password('bar');
+	   *
+	   * @example <caption>Get the username:</caption>
+	   * var password = con.password();
+	   * // password === 'bar'
+	   */
+	  function password(pass) {
+	    if (!arguments.length) {
+	      return _password;
+	    }
+	    _password = pass;
+	    return this;
+	  }
+	  /**
+	   * Get or set the name of the database to connect to.
+	   * @param {String} db - The database to connect to
+	   * @returns {String|Connector} - The name of the database or the Connector itself
+	   *
+	   * @example <caption>Set the database name:</caption>
+	   * var con = new Connector().dbName('myDatabase');
+	   *
+	   * @example <caption>Get the database name:</caption>
+	   * var dbName = con.dbName();
+	   * // dbName === 'myDatabase'
+	   */
+	  function dbName(db) {
+	    if (!arguments.length) {
+	      return _dbName;
+	    }
+	    _dbName = db;
+	    return this;
+	  }
+	  /**
+	   * Whether the raw queries strings will be logged to the console.
+	   * Used primarily for debugging and defaults to <code>false</code>.
+	   * @param {Boolean} loggingEnabled - Set to true to enable logging
+	   * @returns {Boolean|Connector} - The current logging flag or Connector itself
+	   *
+	   * @example <caption>Set logging to true:</caption>
+	   * var con = new Connector().logging(true);
+	   *
+	   * @example <caption>Get the logging flag:</caption>
+	   * var isLogging = con.logging();
+	   * // isLogging === true
+	   */
+	  function logging(loggingEnabled) {
+	    if (typeof loggingEnabled === "undefined") {
+	      return _logging;
+	    } else if (typeof loggingEnabled !== "boolean") {
+	      return "logging can only be set with boolean values";
+	    }
+	    _logging = loggingEnabled;
+	    var isEnabledTxt = loggingEnabled ? "enabled" : "disabled";
+	    return "SQL logging is now " + isEnabledTxt;
+	  }
+	  /**
+	   * The protocol to use for requests.
+	   * @param {String} theProtocol - http or https
+	   * @returns {String|Connector} - protocol or Connector itself
+	   *
+	   * @example <caption>Set the protocol:</caption>
+	   * var con = new Connector().protocol('http');
+	   *
+	   * @example <caption>Get the protocol:</caption>
+	   * var protocol = con.protocol();
+	   * // protocol === 'http'
+	   */
+	  function protocol(theProtocol) {
+	    if (!arguments.length) {
+	      return _protocol;
+	    }
+	    _protocol = theProtocol;
+	    return this;
+	  }
+	}
+
+	// helper functions
+
+	function noop() {/* noop */}
+
+	function isNodeRuntime() {
+	  return typeof window === "undefined";
+	}
+
+	function publicizeMethods(theClass, methods) {
+	  methods.forEach(function (method) {
+	    theClass[method.name] = method;
+	  });
+	}
+
+	function convertFromThriftTypes(fields, _datumEnum) {
+	  var fieldsArray = [];
+	  for (var key in fields) {
+	    if (fields.hasOwnProperty(key)) {
+	      fieldsArray.push({
+	        name: key,
+	        type: _datumEnum[fields[key].col_type.type],
+	        is_array: fields[key].col_type.is_array,
+	        is_dict: fields[key].col_type.encoding === TEncodingType.DICT
 	      });
 	    }
+	  }
+	  return fieldsArray;
+	}
 
-	    /**
-	     * Create an array-like object from {@link TDatumType} by
-	     * flipping the string key and numerical value around.
-	     *
-	     * @returns {Undefined} This function does not return anything
-	     */
+	function updateQueryTimes(queryTimes) {
+	  return function (conId, queryId, estimatedQueryTime, execution_time_ms) {
+	    queryTimes[queryId] = execution_time_ms;
+	  };
+	}
 
-	  }, {
-	    key: "invertDatumTypes",
-	    value: function invertDatumTypes() {
-	      var datumType = TDatumType; // eslint-disable-line no-undef
-	      for (var key in datumType) {
-	        if (datumType.hasOwnProperty(key)) {
-	          this._datumEnum[datumType[key]] = key;
-	        }
+	function processPixelResults(callback, _logging, _datumEnum, error, results) {
+	  // eslint-disable-line consistent-return
+	  if (error) {
+	    return callback(normalizeError(error));
+	  }
+	  results = Array.isArray(results) ? results.pixel_rows : [results];
+	  var numPixels = results.length;
+	  var processResultsOptions = {
+	    isImage: false,
+	    eliminateNullRows: false,
+	    query: "pixel request",
+	    queryId: -2
+	  };
+	  var numResultsProcessed = 0;
+	  for (var p = 0; p < numPixels; p++) {
+	    processResults(results[p], aggregatingCallback(p), _logging, _datumEnum, processResultsOptions);
+	  }
+	  function aggregatingCallback(index) {
+	    return function (processResultsError, row_set) {
+	      results[index].row_set = row_set;
+	      if (processResultsError) {
+	        numResultsProcessed = -Infinity; // avoid invoking callback again
+	        return callback(processResultsError);
+	      } else if (numResultsProcessed === numPixels - 1) {
+	        return callback(null, results);
+	      } else {
+	        return numResultsProcessed++;
 	      }
+	    };
+	  }
+	}
+
+	function processResults(result, callback, _logging, _datumEnum) {
+	  var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+
+	  var processor = (0, _processQueryResults2.default)(_logging, updateQueryTimes);
+	  var processResultsObject = processor(options, _datumEnum, result, callback);
+	  return processResultsObject;
+	}
+
+	function invertDatumTypes(datumEnum) {
+	  var datumType = TDatumType;
+	  for (var key in datumType) {
+	    if (datumType.hasOwnProperty(key)) {
+	      datumEnum[datumType[key]] = key;
 	    }
-
-	    /**
-	     * Get a list of field objects for a given table.
-	     * @param {String} tableName - name of table containing field names
-	     * @param {Function} callback - (err, results)
-	     * @return {Array<Object>} fields - the formmatted list of field objects
-	     *
-	     * @example <caption>Get the list of fields from a specific table:</caption>
-	     *
-	     * con.getFields('flights', (err, res) => console.log(res))
-	     * // [{
-	     *   name: 'fieldName',
-	     *   type: 'BIGINT',
-	     *   is_array: false,
-	     *   is_dict: false
-	     * }, ...]
-	     */
-
-	  }, {
-	    key: "getFields",
-	    value: function getFields(tableName, callback) {
-	      var _this11 = this;
-
-	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
-	        if (fields) {
-	          var rowDict = fields.row_desc.reduce(function (accum, value) {
-	            accum[value.col_name] = value;
-	            return accum;
-	          }, {});
-	          callback(null, _this11.convertFromThriftTypes(rowDict));
-	        } else {
-	          callback(new Error("Table (" + tableName + ") not found" + error));
-	        }
-	      });
-	    }
-	  }, {
-	    key: "createTable",
-	    value: function createTable(tableName, rowDescObj, tableType, callback) {
-	      if (!this._sessionId) {
-	        throw new Error("You are not connected to a server. Try running the connect method first.");
-	      }
-
-	      var thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc);
-
-	      for (var c = 0; c < this._numConnections; c++) {
-	        this._client[c].create_table(this._sessionId[c], tableName, thriftRowDesc, tableType, function (err) {
-	          if (err) {
-	            callback(err);
-	          } else {
-	            callback();
-	          }
-	        });
-	      }
-	    }
-
-	    /**
-	     * Create a table and persist it to the backend.
-	     * @param {String} tableName - desired name of the new table
-	     * @param {Array<TColumnType>} rowDescObj - fields of the new table
-	     * @param {Number<TTableType>} tableType - the types of tables a user can import into the db
-	     * @return {Promise.<undefined>} it will either catch an error or return undefined on success
-	     *
-	     * @example <caption>Create a new table:</caption>
-	     *
-	     *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
-	     *  // undefined
-	     */
-
-	  }, {
-	    key: "importTable",
-	    value: function importTable(tableName, fileName, copyParams, rowDescObj, isShapeFile, callback) {
-	      if (!this._sessionId) {
-	        throw new Error("You are not connected to a server. Try running the connect method first.");
-	      }
-
-	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
-	      var thriftRowDesc = helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc);
-
-	      var thriftCallBack = function thriftCallBack(err, res) {
-	        if (err) {
-	          callback(err);
-	        } else {
-	          callback(null, res);
-	        }
-	      };
-
-	      for (var c = 0; c < this._numConnections; c++) {
-	        if (isShapeFile) {
-	          this._client[c].import_geo_table(this._sessionId[c], tableName, fileName, thriftCopyParams, thriftRowDesc, thriftCallBack);
-	        } else {
-	          this._client[c].import_table(this._sessionId[c], tableName, fileName, thriftCopyParams, thriftCallBack);
-	        }
-	      }
-	    }
-	  }, {
-	    key: "importTableAsyncWrapper",
-	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this12 = this;
-
-	      return function (tableName, fileName, copyParams, headers) {
-	        return new Promise(function (resolve, reject) {
-	          _this12.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
-	            if (err) {
-	              reject(err);
-	            } else {
-	              resolve(link);
-	            }
-	          });
-	        });
-	      };
-	    }
-
-	    /**
-	     * Import a delimited table from a file.
-	     * @param {String} tableName - desired name of the new table
-	     * @param {String} fileName
-	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @param {TColumnType[]} headers -- a colleciton of metadata related to the table headers
-	     */
-
-
-	    /**
-	     * Import a geo table from a file.
-	     * @param {String} tableName - desired name of the new table
-	     * @param {String} fileName
-	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @param {TColumnType[]} headers -- a colleciton of metadata related to the table headers
-	     */
-
-	  }, {
-	    key: "renderVega",
-
-
-	    /**
-	     * Use for backend rendering. This method will fetch a PNG image
-	     * that is a render of the vega json object.
-	     *
-	     * @param {Number} widgetid the widget id of the calling widget
-	     * @param {String} vega the vega json
-	     * @param {Object} options the options for the render query
-	     * @param {Number} options.compressionLevel the png compression level.
-	     *                  range 1 (low compression, faster) to 10 (high compression, slower).
-	     *                  Default 3.
-	     * @param {Function} callback takes `(err, success)` as its signature.  Returns con singleton on success.
-	     *
-	     * @returns {Image} Base 64 Image
-	     */
-	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this13 = this;
-
-	      var queryId = null;
-	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
-	      if (options) {
-	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
-	        compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
-	      }
-
-	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
-
-	      var curNonce = (this._nonce++).toString();
-
-	      var conId = 0;
-	      this._lastRenderCon = conId;
-
-	      var processResultsOptions = {
-	        isImage: true,
-	        query: "render: " + vega,
-	        queryId: queryId,
-	        conId: conId,
-	        estimatedQueryTime: lastQueryTime
-	      };
-
-	      try {
-	        if (!callback) {
-	          var renderResult = this._client[conId].render_vega(this._sessionId[conId], widgetid, vega, compressionLevel, curNonce);
-	          return this.processResults(processResultsOptions, renderResult);
-	        }
-
-	        this._client[conId].render_vega(this._sessionId[conId], widgetid, vega, compressionLevel, curNonce, function (error, result) {
-	          if (error) {
-	            callback(error);
-	          } else {
-	            _this13.processResults(processResultsOptions, result, callback);
-	          }
-	        });
-	      } catch (err) {
-	        throw err;
-	      }
-
-	      return curNonce;
-	    }
-
-	    /**
-	     * Used primarily for backend rendered maps, this method will fetch the row
-	     * for a specific table that was last rendered at a pixel.
-	     *
-	     * @param {widgetId} Number - the widget id of the caller
-	     * @param {TPixel} pixel - the pixel (lower left-hand corner is pixel (0,0))
-	     * @param {String} tableName - the table containing the geo data
-	     * @param {Object} tableColNamesMap - object of tableName -> array of col names
-	     * @param {Array<Function>} callbacks
-	     * @param {Number} [pixelRadius=2] - the radius around the primary pixel to search
-	     */
-
-	  }, {
-	    key: "getResultRowForPixel",
-	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap, callbacks) /* istanbul ignore next */{
-	      var pixelRadius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
-
-	      if (!(pixel instanceof TPixel)) {
-	        pixel = new TPixel(pixel);
-	      }
-	      var columnFormat = true; // BOOL
-	      var curNonce = (this._nonce++).toString();
-	      try {
-	        if (!callbacks) {
-	          return this.processPixelResults(undefined, // eslint-disable-line no-undefined
-	          this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));
-	        }
-	        this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callbacks));
-	      } catch (err) {
-	        throw err;
-	      }
-	      return curNonce;
-	    }
-
-	    /**
-	     * Formats the pixel results into the same pattern as textual results.
-	     *
-	     * @param {Array<Function>} callbacks a collection of callbacks
-	     * @param {Object} error an error if one was thrown, otherwise null
-	     * @param {Array|Object} results unformatted results of pixel rowId information
-	     *
-	     * @returns {Object} An object with the pixel results formatted for display
-	     */
-
-	  }, {
-	    key: "processPixelResults",
-	    value: function processPixelResults(callbacks, error, results) {
-	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
-	      results = Array.isArray(results) ? results.pixel_rows : [results];
-	      var numPixels = results.length;
-	      var processResultsOptions = {
-	        isImage: false,
-	        eliminateNullRows: false,
-	        query: "pixel request",
-	        queryId: -2
-	      };
-	      for (var p = 0; p < numPixels; p++) {
-	        results[p].row_set = this.processResults(processResultsOptions, results[p]);
-	      }
-	      if (!callbacks) {
-	        return results;
-	      }
-	      callbacks.pop()(error, results);
-	    }
-
-	    /**
-	     * Get or set the session ID used by the server to serve the correct data.
-	     * This is typically set by {@link connect} and should not be set manually.
-	     * @param {Number} sessionId - The session ID of the current connection
-	     * @return {Number|MapdCon} - The session ID or the MapdCon itself
-	     *
-	     * @example <caption>Get the session id:</caption>
-	     *
-	     *  con.sessionId();
-	     * // sessionID === 3145846410
-	     *
-	     * @example <caption>Set the session id:</caption>
-	     * var con = new MapdCon().connect().sessionId(3415846410);
-	     * // NOTE: It is generally unsafe to set the session id manually.
-	     */
-
-	  }, {
-	    key: "sessionId",
-	    value: function sessionId(_sessionId) {
-	      if (!arguments.length) {
-	        return this._sessionId;
-	      }
-	      this._sessionId = _sessionId;
-	      return this;
-	    }
-
-	    /**
-	     * Get or set the connection server hostname.
-	     * This is is typically the first method called after instantiating a new MapdCon.
-	     * @param {String} host - The hostname address
-	     * @return {String|MapdCon} - The hostname or the MapdCon itself
-	     *
-	     * @example <caption>Set the hostname:</caption>
-	     * var con = new MapdCon().host('localhost');
-	     *
-	     * @example <caption>Get the hostname:</caption>
-	     * var host = con.host();
-	     * // host === 'localhost'
-	     */
-
-	  }, {
-	    key: "host",
-	    value: function host(_host) {
-	      if (!arguments.length) {
-	        return this._host;
-	      }
-	      this._host = arrayify(_host);
-	      return this;
-	    }
-
-	    /**
-	     * Get or set the connection port.
-	     * @param {String} port - The port to connect on
-	     * @return {String|MapdCon} - The port or the MapdCon itself
-	     *
-	     * @example <caption>Set the port:</caption>
-	     * var con = new MapdCon().port('8080');
-	     *
-	     * @example <caption>Get the port:</caption>
-	     * var port = con.port();
-	     * // port === '8080'
-	     */
-
-	  }, {
-	    key: "port",
-	    value: function port(_port) {
-	      if (!arguments.length) {
-	        return this._port;
-	      }
-	      this._port = arrayify(_port);
-	      return this;
-	    }
-
-	    /**
-	     * Get or set the username to authenticate with.
-	     * @param {String} user - The username to authenticate with
-	     * @return {String|MapdCon} - The username or the MapdCon itself
-	     *
-	     * @example <caption>Set the username:</caption>
-	     * var con = new MapdCon().user('foo');
-	     *
-	     * @example <caption>Get the username:</caption>
-	     * var username = con.user();
-	     * // user === 'foo'
-	     */
-
-	  }, {
-	    key: "user",
-	    value: function user(_user) {
-	      if (!arguments.length) {
-	        return this._user;
-	      }
-	      this._user = arrayify(_user);
-	      return this;
-	    }
-
-	    /**
-	     * Get or set the user's password to authenticate with.
-	     * @param {String} password - The password to authenticate with
-	     * @return {String|MapdCon} - The password or the MapdCon itself
-	     *
-	     * @example <caption>Set the password:</caption>
-	     * var con = new MapdCon().password('bar');
-	     *
-	     * @example <caption>Get the username:</caption>
-	     * var password = con.password();
-	     * // password === 'bar'
-	     */
-
-	  }, {
-	    key: "password",
-	    value: function password(_password) {
-	      if (!arguments.length) {
-	        return this._password;
-	      }
-	      this._password = arrayify(_password);
-	      return this;
-	    }
-
-	    /**
-	     * Get or set the name of the database to connect to.
-	     * @param {String} dbName - The database to connect to
-	     * @return {String|MapdCon} - The name of the database or the MapdCon itself
-	     *
-	     * @example <caption>Set the database name:</caption>
-	     * var con = new MapdCon().dbName('myDatabase');
-	     *
-	     * @example <caption>Get the database name:</caption>
-	     * var dbName = con.dbName();
-	     * // dbName === 'myDatabase'
-	     */
-
-	  }, {
-	    key: "dbName",
-	    value: function dbName(_dbName) {
-	      if (!arguments.length) {
-	        return this._dbName;
-	      }
-	      this._dbName = arrayify(_dbName);
-	      return this;
-	    }
-
-	    /**
-	     * Whether the raw queries strings will be logged to the console.
-	     * Used primarily for debugging and defaults to <code>false</code>.
-	     * @param {Boolean} logging - Set to true to enable logging
-	     * @return {Boolean|MapdCon} - The current logging flag or MapdCon itself
-	     *
-	     * @example <caption>Set logging to true:</caption>
-	     * var con = new MapdCon().logging(true);
-	     *
-	     * @example <caption>Get the logging flag:</caption>
-	     * var isLogging = con.logging();
-	     * // isLogging === true
-	     */
-
-	  }, {
-	    key: "logging",
-	    value: function logging(_logging) {
-	      if (typeof _logging === "undefined") {
-	        return this._logging;
-	      } else if (typeof _logging !== "boolean") {
-	        return "logging can only be set with boolean values";
-	      }
-	      this._logging = _logging;
-	      var isEnabledTxt = _logging ? "enabled" : "disabled";
-	      return "SQL logging is now " + isEnabledTxt;
-	    }
-
-	    /**
-	     * The name of the platform.
-	     * @param {String} platform - The platform, default is "mapd"
-	     * @return {String|MapdCon} - The platform or the MapdCon itself
-	     *
-	     * @example <caption>Set the platform name:</caption>
-	     * var con = new MapdCon().platform('myPlatform');
-	     *
-	     * @example <caption>Get the platform name:</caption>
-	     * var platform = con.platform();
-	     * // platform === 'myPlatform'
-	     */
-
-	  }, {
-	    key: "platform",
-	    value: function platform(_platform) {
-	      if (!arguments.length) {
-	        return this._platform;
-	      }
-	      this._platform = _platform;
-	      return this;
-	    }
-
-	    /**
-	     * Get the number of connections that are currently open.
-	     * @return {Number} - number of open connections
-	     *
-	     * @example <caption>Get the number of connections:</caption>
-	     *
-	     * var numConnections = con.numConnections();
-	     * // numConnections === 1
-	     */
-
-	  }, {
-	    key: "numConnections",
-	    value: function numConnections() {
-	      return this._numConnections;
-	    }
-
-	    /**
-	     * The protocol to use for requests.
-	     * @param {String} protocol - http or https
-	     * @return {String|MapdCon} - protocol or MapdCon itself
-	     *
-	     * @example <caption>Set the protocol:</caption>
-	     * var con = new MapdCon().protocol('http');
-	     *
-	     * @example <caption>Get the protocol:</caption>
-	     * var protocol = con.protocol();
-	     * // protocol === 'http'
-	     */
-
-	  }, {
-	    key: "protocol",
-	    value: function protocol(_protocol) {
-	      if (!arguments.length) {
-	        return this._protocol;
-	      }
-	      this._protocol = arrayify(_protocol);
-	      return this;
-	    }
-
-	    /**
-	     * Generates a list of endpoints from the connection params.
-	     * @return {Array<String>} - list of endpoints
-	     *
-	     * @example <caption>Get the endpoints:</caption>
-	     * var con = new MapdCon().protocol('http').host('localhost').port('8000');
-	     * var endpoints = con.getEndpoints();
-	     * // endpoints === [ 'http://localhost:8000' ]
-	     */
-
-	  }, {
-	    key: "getEndpoints",
-	    value: function getEndpoints() {
-	      var _this14 = this;
-
-	      return this._host.map(function (host, i) {
-	        return _this14._protocol[i] + "://" + host + ":" + _this14._port[i];
-	      });
-	    }
-	  }]);
-
-	  return MapdCon;
-	}();
+	  }
+	}
 
 	function resetThriftClientOnArgumentErrorForMethods(connector, client, methodNames) {
 	  methodNames.forEach(function (methodName) {
@@ -26708,14 +26296,13 @@ module.exports =
 	  });
 	}
 
-	// Set a global mapdcon function when mapdcon is brought in via script tag.
-	if (( false ? "undefined" : _typeof(module)) === "object" && module.exports) {
-	  if (!isNodeRuntime()) {
-	    window.MapdCon = MapdCon;
+	function normalizeError(error) {
+	  if (isNodeRuntime()) {
+	    return new Error(error.name + " " + error.error_msg);
+	  } else {
+	    return new Error("TMapDException " + error.message);
 	  }
 	}
-	module.exports = MapdCon;
-	exports.default = MapdCon;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(55)(module)))
 
 /***/ }),
@@ -26804,8 +26391,8 @@ module.exports =
 	};
 
 	MapDClientV2.prototype.get_result_row_for_pixel = function () {
-	  var getResultRowForPixelWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_result_row_for_pixel");
-	  return getResultRowForPixelWithErrorHandling.apply(undefined, arguments);
+	  var getPixelWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_result_row_for_pixel");
+	  return getPixelWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.delete_frontend_view = function () {
