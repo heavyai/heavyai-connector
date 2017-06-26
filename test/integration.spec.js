@@ -157,7 +157,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
       session.query(sql, options, (error, data) => {
-        expect(connectError).not.be.an("error")
+        expect(error).not.be.an("error")
         expect(Number(data[0].n)).to.equal(6400)
         done()
       })
@@ -195,18 +195,17 @@ describe(isNodeRuntime ? "node" : "browser", () => {
 
   if (isNodeRuntime) { // bug only applies to node; in browser thriftTransportInstance is undefined.
     it("on bad arguments: passes error, flushes internal buffer so next RPC doesn't fail, dereferences callback to avoid memory leak", done => {
-      const BAD_ARG = null
-      connector.connect((connectError, session) => {
-        session.getFields(BAD_ARG, error => {
-          expect(error).to.be.truthy
-          const thriftClient = connector._client[0]
-          const thriftTransportInstance = thriftClient.output
-          expect(thriftTransportInstance.outCount).to.equal(0)
-          expect(thriftTransportInstance.outBuffers).to.deep.equal([])
-          expect(thriftTransportInstance._seqid).to.be.null
-          expect(thriftClient._reqs[thriftClient._seqid]).to.be.undefined
-          done()
-        })
+      const BAD_ARG = {}
+      const callback = () => { /* noop */ }
+      connector.connect((_, session) => {
+        expect(() => session.getFields(BAD_ARG, callback)).to.throw("writeString called without a string/Buffer argument: [object Object]")
+        const thriftClient = connector._client[0]
+        const thriftTransportInstance = thriftClient.output
+        expect(thriftTransportInstance.outCount).to.equal(0)
+        expect(thriftTransportInstance.outBuffers).to.deep.equal([])
+        expect(thriftTransportInstance._seqid).to.equal(null)
+        expect(thriftClient._reqs[thriftClient._seqid]).to.equal(null)
+        done()
       })
     })
   }
