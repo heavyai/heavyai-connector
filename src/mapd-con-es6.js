@@ -131,6 +131,35 @@ class MapdCon {
         )
         connection.on("error", console.error) // eslint-disable-line no-console
         client = thriftWrapper.createClient(MapDThrift, connection)
+        resetThriftClientOnArgumentErrorForMethods(this, client, [
+          "connect",
+          "createFrontendViewAsync",
+          "createLinkAsync",
+          "createTableAsync",
+          "dbName",
+          "deleteFrontendViewAsync",
+          "detectColumnTypesAsync",
+          "disconnect",
+          "getFields",
+          "getFrontendViewAsync",
+          "getFrontendViewsAsync",
+          "getLinkViewAsync",
+          "getResultRowForPixel",
+          "getServerStatusAsync",
+          "getTablesAsync",
+          "host",
+          "importTableAsync",
+          "importTableGeoAsync",
+          "logging",
+          "password",
+          "port",
+          "protocol",
+          "query",
+          "renderVega",
+          "sessionId",
+          "user",
+          "validateQuery"
+        ])
       } else {
         const thriftTransport = new Thrift.Transport(transportUrls[h])
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
@@ -1134,6 +1163,25 @@ class MapdCon {
   getEndpoints () {
     return this._host.map((host, i) => this._protocol[i] + "://" + host + ":" + this._port[i])
   }
+}
+
+function resetThriftClientOnArgumentErrorForMethods (connector, client, methodNames) {
+  methodNames.forEach(methodName => {
+    const oldFunc = connector[methodName]
+    connector[methodName] = (...args) => {
+      try { // eslint-disable-line no-restricted-syntax
+        return oldFunc.apply(connector, args) // TODO should reject rather than throw for Promises.
+      } catch (e) {
+        // `this.output` is the Thrift transport instance
+        client.output.outCount = 0
+        client.output.outBuffers = []
+        client.output._seqid = null
+        // dereference the callback
+        client._reqs[client._seqid] = null
+        throw e // re-throw the error to Rx
+      }
+    }
+  })
 }
 
 // Set a global mapdcon function when mapdcon is brought in via script tag.

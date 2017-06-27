@@ -25688,6 +25688,7 @@ module.exports =
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -26683,9 +26684,31 @@ module.exports =
 	  return MapdCon;
 	}();
 
+	function resetThriftClientOnArgumentErrorForMethods(connector, client, methodNames) {
+	  methodNames.forEach(function (methodName) {
+	    var oldFunc = connector[methodName];
+	    connector[methodName] = function () {
+	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	        args[_key] = arguments[_key];
+	      }
+
+	      try {
+	        // eslint-disable-line no-restricted-syntax
+	        return oldFunc.apply(connector, args); // TODO should reject rather than throw for Promises.
+	      } catch (e) {
+	        // `this.output` is the Thrift transport instance
+	        client.output.outCount = 0;
+	        client.output.outBuffers = [];
+	        client.output._seqid = null;
+	        // dereference the callback
+	        client._reqs[client._seqid] = null;
+	        throw e; // re-throw the error to Rx
+	      }
+	    };
+	  });
+	}
+
 	// Set a global mapdcon function when mapdcon is brought in via script tag.
-
-
 	if (( false ? "undefined" : _typeof(module)) === "object" && module.exports) {
 	  if (!isNodeRuntime()) {
 	    window.MapdCon = MapdCon;
