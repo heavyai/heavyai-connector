@@ -10,9 +10,9 @@ if [ "$TRAVIS_BRANCH" = "master" ]
   git config --global user.email "${COMMIT_EMAIL}"
   rm -rf ${DOWNLOAD_PATH}
   git clone "${REPO_PATH}" ${DOWNLOAD_PATH}
-  
+
   cd ${DOWNLOAD_PATH}
-    yarn
+    npm install
     git fetch --all
     git checkout gh-pages
     git pull --rebase origin master
