@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+    <style>
+      .title {
+        font-weight: bold;
+        text-align:center;
+      }
+      .mapd {
+        position: relative;
+        top: 2px;
+      }
+      .search{
+        displa"y": inline-block;
+        margin-top: 12px;
+        margin-left: 50px;
+      }
+      .data-count {
+        padding-right:20px;
+      }
+      .filter-count {
+        font-weight: bold;
+        color:  #45B1E8;
+      }
+    </style>
+  </head>
+  <body>
+
+    <script src="../thrift/browser/thrift.js"></script>
+    <script src="../thrift/node/mapd.thrift.js"></script>
+    <script src="../thrift/node/mapd_types.js"></script>
+    <script src="../dist/browser-connector.js"></script>
+
+    <script>
+
+    function init() {
+      const exampleVega = {
+        "width": 768,
+        "height": 1128,
+        "data": [
+          {
+            "name": "tweets",
+            "sql": "SELECT conv_4326_900913_x(lon) as x,conv_4326_900913_y(lat) as y, rowid FROM tweets_nov_feb WHERE (lon >= -32.792856830441934 AND lon < 66.59503616698942) AND (lat >= -45.98634907110587 AND lat < 68.08334286056177) LIMIT 800000"
+          }
+        ],
+        "scales": [
+          {
+            "name": "x",
+            "type": "linear",
+            "domain": [
+              -3650484.1235206556,
+              7413325.514451755
+            ],
+            "range": "width"
+          },
+          {
+            "name": "y",
+            "type": "linear",
+            "domain": [
+              -5778161.9183506705,
+              10471808.487466192
+            ],
+            "range": "height"
+          }
+        ],
+        "marks": [
+          {
+            "type": "points",
+            "from": {
+              "data": "tweets"
+            },
+            "properties": {
+              "x": {
+                "scale": "x",
+                "field": "x"
+              },
+              "y": {
+                "scale": "y",
+                "field": "y"
+              },
+              "fillColor": "blue",
+              "size": {
+                "value": 3
+              }
+            }
+          }
+        ]
+      };
+
+      var conn = new MapdCon()
+        .protocol("http")
+        .host("kali.mapd.com")
+        .port("9092")
+        .dbName("mapd")
+        .user("mapd")
+        .password("HyperInteractive")
+        .connect(function(error, con) {
+          var results = con.renderVega(1, JSON.stringify(exampleVega));
+          var blobUrl = 'data:image/png;base64,' + results.image;
+          var w=window.open('about:blank','backend-rendered png');
+          w.document.write("<img src='"+blobUrl+"' alt='backend-rendered png'/>")
+          console.log("CROOT - done!");
+        });
+
+      console.log("CROOT - done!");
+    }
+    document.addEventListener('DOMContentLoaded', init, false);
+    </script>
+  </body>
+</html>
