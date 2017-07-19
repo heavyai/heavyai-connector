@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MapD</title>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <script src="../dist/browser-connector.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', init, false);
+      function init() {
+        var vegaOptions = {}
+        var connector = new MapdCon()
+        .protocol("http")
+        .host("metis.mapd.com")
+        .port("9092")
+        .dbName("mapd")
+        .user("mapd")
+        .password("HyperInteractive")
+        .connect(function(error, con) {
+          con.renderVega(1, JSON.stringify(exampleVega()), vegaOptions, function(error, result) {
+            if (error)
+              console.log(error.message);
+            else {
+              var blobUrl = `data:image/png;base64,${result.image}`
+              var body = document.querySelector('body')
+              var vegaImg = new Image()
+              vegaImg.src = blobUrl
+              body.append(vegaImg)
+            }
+          });
+        });
+      }
+      function exampleVega () {
+        return {
+          "width": 384,
+          "height": 564,
+          "data": [
+            {
+              "name": "tweets",
+              "sql": "SELECT goog_x as x, goog_y as y, tweets_nov_feb.rowid FROM tweets_nov_feb"
+            }
+          ],
+          "scales": [
+            {
+              "name": "x",
+              "type": "linear",
+              "domain": [
+                -3650484.1235206556,
+                7413325.514451755
+              ],
+              "range": "width"
+            },
+            {
+              "name": "y",
+              "type": "linear",
+              "domain": [
+                -5778161.9183506705,
+                10471808.487466192
+              ],
+              "range": "height"
+            }
+          ],
+          "marks": [
+            {
+              "type": "points",
+              "from": {
+                "data": "tweets"
+              },
+              "properties": {
+                "x": {
+                  "scale": "x",
+                  "field": "x"
+                },
+                "y": {
+                  "scale": "y",
+                  "field": "y"
+                },
+                "fillColor": "blue",
+                "size": {
+                  "value": 3
+                }
+              }
+            }
+          ]
+        }
+      }
+    </script>
+  </body>
+</html>
