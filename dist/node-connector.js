@@ -26411,6 +26411,7 @@ module.exports =
 	  }, {
 	    key: "processPixelResults",
 	    value: function processPixelResults(callbacks, error, results) {
+	      var hasCallbacks = Boolean(callbacks);
 	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
 	      var numPixels = results.length;
@@ -26420,13 +26421,22 @@ module.exports =
 	        query: "pixel request",
 	        queryId: -2
 	      };
-	      for (var p = 0; p < numPixels; p++) {
-	        results[p].row_set = this.processResults(processResultsOptions, results[p]);
+	      if (error) {
+	        if (hasCallbacks) {
+	          return callbacks.pop()(error);
+	        } else {
+	          throw error;
+	        }
+	      } else {
+	        for (var p = 0; p < numPixels; p++) {
+	          results[p].row_set = this.processResults(processResultsOptions, results[p]);
+	        }
+	        if (hasCallbacks) {
+	          return callbacks.pop()(null, results);
+	        } else {
+	          return results;
+	        }
 	      }
-	      if (!callbacks) {
-	        return results;
-	      }
-	      callbacks.pop()(error, results);
 	    }
 
 	    /**
@@ -26974,6 +26984,7 @@ module.exports =
 	   *
 	   * @param {Boolean} logging if enabled, will show how long the query took to execute in console
 	   * @param {Function} updateQueryTimes A function that updates internal query times on connector
+	   * @param {Function} logger A function logs timing info; defaults to console.log.
 	   * @param {Object} options A list of options for processing the results
 	   * @param {Boolean} options.isImage Set to true when querying for backend rendered images
 	   * @param {Boolean} options.eliminateNullRows Removes null rows
@@ -26988,6 +26999,8 @@ module.exports =
 	   *                  otherwise formatted results
 	   */
 	function processQueryResults(logging, updateQueryTimes) {
+	  var logger = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : console.log;
+	  // eslint-disable-line no-console
 	  return function (options, _datumEnum, result, callback) {
 	    var isImage = false;
 	    var eliminateNullRows = false;
@@ -26997,7 +27010,7 @@ module.exports =
 	    var estimatedQueryTime = null;
 	    var hasCallback = Boolean(callback);
 
-	    if (typeof options !== "undefined") {
+	    if (typeof options !== "undefined" && options !== null) {
 	      isImage = options.isImage ? options.isImage : false;
 	      eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false;
 	      query = options.query ? options.query : null;
@@ -27005,29 +27018,29 @@ module.exports =
 	      conId = typeof options.conId === "undefined" ? null : options.conId;
 	      estimatedQueryTime = typeof options.estimatedQueryTime === "undefined" ? null : options.estimatedQueryTime;
 	    }
-	    if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
+	    if (result && result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
 	      updateQueryTimes(conId, queryId, estimatedQueryTime, result.execution_time_ms);
 	    }
 
 	    // should use node_env
 	    if (logging && result.execution_time_ms) {
-	      console.log(query, "on Server", conId, "- Execution Time:", result.execution_time_ms, " ms, Total Time:", result.total_time_ms + "ms");
+	      logger(query, "on Server", conId, "- Execution Time:", result.execution_time_ms, " ms, Total Time:", result.total_time_ms + "ms");
 	    }
 
 	    if (isImage && hasCallback) {
-	      callback(null, result);
+	      return callback(null, result);
 	    } else if (isImage && !hasCallback) {
 	      return result;
 	    } else {
+	      // !isImage
 	      var formattedResult = null;
 
-	      if (!result.row_set) {
+	      if (!result || !result.row_set) {
 	        if (hasCallback) {
-	          callback(new Error("No result to process"));
+	          return callback(new Error("No result to process"));
 	        } else {
 	          throw new Error("No result to process");
 	        }
-	        return;
 	      }
 
 	      if (result.row_set.is_columnar) {
@@ -27042,9 +27055,9 @@ module.exports =
 	      };
 
 	      if (hasCallback) {
-	        callback(null, options.returnTiming ? formattedResult : formattedResult.results);
+	        return callback(null, options && options.returnTiming ? formattedResult : formattedResult.results);
 	      } else {
-	        return options.returnTiming ? formattedResult : formattedResult.results;
+	        return options && options.returnTiming ? formattedResult : formattedResult.results;
 	      }
 	    }
 	  };
