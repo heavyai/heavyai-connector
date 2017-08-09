@@ -1,3 +1,5 @@
+/* eslint-disable max-nested-callbacks */
+/* eslint-disable no-magic-numbers */
 "use strict"
 const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
@@ -11,7 +13,7 @@ const imageRegex = /^iVBOR/
 const emptyImageRegex = /^.{70,90}(.{12})\1+.{30,50}$/
 
 describe(isNodeRuntime ? "node" : "browser", () => {
-  let connector
+  let connector = null
   beforeEach(() => {
     connector = new Connector().protocol("https").host("metis.mapd.com").port("443").dbName("mapd").user("mapd").password("HyperInteractive")
   })
@@ -186,7 +188,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
         expect(renderVegaError).to.not.be.an("error")
         session.getResultRowForPixel(widgetId, pixel, tableColNamesMap, (pixelError, data) => {
           expect(pixelError).to.not.be.an("error")
-          expect(data[0].row_set).to.deep.equal([{dest_lon: -119.056770324707}]) // Ran 100 times; seems deterministic.
+          expect(data[0].row_set).to.deep.equal([{dest_lon: -119.05677032470703}]) // Ran 100 times; seems deterministic.
           done()
         })
       })

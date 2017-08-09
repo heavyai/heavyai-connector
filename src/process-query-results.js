@@ -5,6 +5,7 @@ import processRowResults from "./process-row-results"
    *
    * @param {Boolean} logging if enabled, will show how long the query took to execute in console
    * @param {Function} updateQueryTimes A function that updates internal query times on connector
+   * @param {Function} logger A function logs timing info; defaults to console.log.
    * @param {Object} options A list of options for processing the results
    * @param {Boolean} options.isImage Set to true when querying for backend rendered images
    * @param {Boolean} options.eliminateNullRows Removes null rows
@@ -18,7 +19,7 @@ import processRowResults from "./process-row-results"
    * @return {Object} null if image with callbacks, result if image with callbacks,
    *                  otherwise formatted results
    */
-export default function processQueryResults (logging, updateQueryTimes) {
+export default function processQueryResults (logging, updateQueryTimes, logger = console.log) { // eslint-disable-line no-console
   return function (options, _datumEnum, result, callback) {
     let isImage = false
     let eliminateNullRows = false
@@ -28,7 +29,7 @@ export default function processQueryResults (logging, updateQueryTimes) {
     let estimatedQueryTime = null
     const hasCallback = Boolean(callback)
 
-    if (typeof options !== "undefined") {
+    if (typeof options !== "undefined" && options !== null) {
       isImage = options.isImage ? options.isImage : false
       eliminateNullRows = options.eliminateNullRows ? options.eliminateNullRows : false
       query = options.query ? options.query : null
@@ -36,13 +37,13 @@ export default function processQueryResults (logging, updateQueryTimes) {
       conId = typeof options.conId === "undefined" ? null : options.conId
       estimatedQueryTime = typeof options.estimatedQueryTime === "undefined" ? null : options.estimatedQueryTime
     }
-    if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
+    if (result && result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
       updateQueryTimes(conId, queryId, estimatedQueryTime, result.execution_time_ms)
     }
 
     // should use node_env
     if (logging && result.execution_time_ms) {
-      console.log(
+      logger(
         query,
         "on Server",
         conId,
@@ -54,19 +55,18 @@ export default function processQueryResults (logging, updateQueryTimes) {
     }
 
     if (isImage && hasCallback) {
-      callback(null, result)
+      return callback(null, result)
     } else if (isImage && !hasCallback) {
       return result
-    } else {
+    } else { // !isImage
       let formattedResult = null
 
-      if (!result.row_set) {
+      if (!result || !result.row_set) {
         if (hasCallback) {
-          callback(new Error("No result to process"))
+          return callback(new Error("No result to process"))
         } else {
           throw new Error("No result to process")
         }
-        return
       }
 
       if (result.row_set.is_columnar) {
@@ -81,9 +81,9 @@ export default function processQueryResults (logging, updateQueryTimes) {
       }
 
       if (hasCallback) {
-        callback(null, options.returnTiming ? formattedResult : formattedResult.results)
+        return callback(null, (options && options.returnTiming) ? formattedResult : formattedResult.results)
       } else {
-        return options.returnTiming ? formattedResult : formattedResult.results
+        return (options && options.returnTiming) ? formattedResult : formattedResult.results
       }
     }
   }

@@ -932,6 +932,7 @@ class MapdCon {
    * @returns {Object} An object with the pixel results formatted for display
    */
   processPixelResults (callbacks, error, results) {
+    const hasCallbacks = Boolean(callbacks)
     callbacks = Array.isArray(callbacks) ? callbacks : [callbacks]
     results = Array.isArray(results) ? results.pixel_rows : [results]
     const numPixels = results.length
@@ -941,13 +942,22 @@ class MapdCon {
       query: "pixel request",
       queryId: -2
     }
-    for (let p = 0; p < numPixels; p++) {
-      results[p].row_set = this.processResults(processResultsOptions, results[p])
+    if (error) {
+      if (hasCallbacks) {
+        return callbacks.pop()(error)
+      } else {
+        throw error
+      }
+    } else {
+      for (let p = 0; p < numPixels; p++) {
+        results[p].row_set = this.processResults(processResultsOptions, results[p])
+      }
+      if (hasCallbacks) {
+        return callbacks.pop()(null, results)
+      } else {
+        return results
+      }
     }
-    if (!callbacks) {
-      return results
-    }
-    callbacks.pop()(error, results)
   }
 
   /**
