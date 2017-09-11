@@ -39,6 +39,10 @@ ttypes.TExecuteMode = {
   'GPU' : 1,
   'CPU' : 2
 };
+ttypes.TDeviceType = {
+  'CPU' : 0,
+  'GPU' : 1
+};
 ttypes.TTableType = {
   'DELIMITED' : 0,
   'POLYGON' : 1
@@ -458,6 +462,7 @@ var TColumnType = module.exports.TColumnType = function(args) {
   this.col_type = null;
   this.is_reserved_keyword = null;
   this.src_name = null;
+  this.is_system = null;
   if (args) {
     if (args.col_name !== undefined && args.col_name !== null) {
       this.col_name = args.col_name;
@@ -470,6 +475,9 @@ var TColumnType = module.exports.TColumnType = function(args) {
     }
     if (args.src_name !== undefined && args.src_name !== null) {
       this.src_name = args.src_name;
+    }
+    if (args.is_system !== undefined && args.is_system !== null) {
+      this.is_system = args.is_system;
     }
   }
 };
@@ -516,6 +524,13 @@ TColumnType.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_system = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -545,6 +560,11 @@ TColumnType.prototype.write = function(output) {
   if (this.src_name !== null && this.src_name !== undefined) {
     output.writeFieldBegin('src_name', Thrift.Type.STRING, 4);
     output.writeString(this.src_name);
+    output.writeFieldEnd();
+  }
+  if (this.is_system !== null && this.is_system !== undefined) {
+    output.writeFieldBegin('is_system', Thrift.Type.BOOL, 5);
+    output.writeBool(this.is_system);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1399,13 +1419,17 @@ TQueryResult.prototype.write = function(output) {
   return;
 };
 
-var TGpuDataFrame = module.exports.TGpuDataFrame = function(args) {
-  this.schema = null;
+var TDataFrame = module.exports.TDataFrame = function(args) {
+  this.sm_handle = null;
+  this.sm_size = null;
   this.df_handle = null;
   this.df_size = null;
   if (args) {
-    if (args.schema !== undefined && args.schema !== null) {
-      this.schema = args.schema;
+    if (args.sm_handle !== undefined && args.sm_handle !== null) {
+      this.sm_handle = args.sm_handle;
+    }
+    if (args.sm_size !== undefined && args.sm_size !== null) {
+      this.sm_size = args.sm_size;
     }
     if (args.df_handle !== undefined && args.df_handle !== null) {
       this.df_handle = args.df_handle;
@@ -1415,8 +1439,8 @@ var TGpuDataFrame = module.exports.TGpuDataFrame = function(args) {
     }
   }
 };
-TGpuDataFrame.prototype = {};
-TGpuDataFrame.prototype.read = function(input) {
+TDataFrame.prototype = {};
+TDataFrame.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1431,19 +1455,26 @@ TGpuDataFrame.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.schema = input.readBinary();
+        this.sm_handle = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.sm_size = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
       if (ftype == Thrift.Type.STRING) {
         this.df_handle = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
-      case 3:
+      case 4:
       if (ftype == Thrift.Type.I64) {
         this.df_size = input.readI64();
       } else {
@@ -1459,20 +1490,25 @@ TGpuDataFrame.prototype.read = function(input) {
   return;
 };
 
-TGpuDataFrame.prototype.write = function(output) {
-  output.writeStructBegin('TGpuDataFrame');
-  if (this.schema !== null && this.schema !== undefined) {
-    output.writeFieldBegin('schema', Thrift.Type.STRING, 1);
-    output.writeBinary(this.schema);
+TDataFrame.prototype.write = function(output) {
+  output.writeStructBegin('TDataFrame');
+  if (this.sm_handle !== null && this.sm_handle !== undefined) {
+    output.writeFieldBegin('sm_handle', Thrift.Type.STRING, 1);
+    output.writeBinary(this.sm_handle);
+    output.writeFieldEnd();
+  }
+  if (this.sm_size !== null && this.sm_size !== undefined) {
+    output.writeFieldBegin('sm_size', Thrift.Type.I64, 2);
+    output.writeI64(this.sm_size);
     output.writeFieldEnd();
   }
   if (this.df_handle !== null && this.df_handle !== undefined) {
-    output.writeFieldBegin('df_handle', Thrift.Type.STRING, 2);
+    output.writeFieldBegin('df_handle', Thrift.Type.STRING, 3);
     output.writeBinary(this.df_handle);
     output.writeFieldEnd();
   }
   if (this.df_size !== null && this.df_size !== undefined) {
-    output.writeFieldBegin('df_size', Thrift.Type.I64, 3);
+    output.writeFieldBegin('df_size', Thrift.Type.I64, 4);
     output.writeI64(this.df_size);
     output.writeFieldEnd();
   }
@@ -3052,6 +3088,9 @@ var TTableDetails = module.exports.TTableDetails = function(args) {
   this.page_size = null;
   this.max_rows = null;
   this.view_sql = null;
+  this.shard_count = null;
+  this.key_metainfo = null;
+  this.is_temporary = null;
   if (args) {
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [ttypes.TColumnType]);
@@ -3067,6 +3106,15 @@ var TTableDetails = module.exports.TTableDetails = function(args) {
     }
     if (args.view_sql !== undefined && args.view_sql !== null) {
       this.view_sql = args.view_sql;
+    }
+    if (args.shard_count !== undefined && args.shard_count !== null) {
+      this.shard_count = args.shard_count;
+    }
+    if (args.key_metainfo !== undefined && args.key_metainfo !== null) {
+      this.key_metainfo = args.key_metainfo;
+    }
+    if (args.is_temporary !== undefined && args.is_temporary !== null) {
+      this.is_temporary = args.is_temporary;
     }
   }
 };
@@ -3133,6 +3181,27 @@ TTableDetails.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.I64) {
+        this.shard_count = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.key_metainfo = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_temporary = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -3176,6 +3245,21 @@ TTableDetails.prototype.write = function(output) {
   if (this.view_sql !== null && this.view_sql !== undefined) {
     output.writeFieldBegin('view_sql', Thrift.Type.STRING, 5);
     output.writeString(this.view_sql);
+    output.writeFieldEnd();
+  }
+  if (this.shard_count !== null && this.shard_count !== undefined) {
+    output.writeFieldBegin('shard_count', Thrift.Type.I64, 6);
+    output.writeI64(this.shard_count);
+    output.writeFieldEnd();
+  }
+  if (this.key_metainfo !== null && this.key_metainfo !== undefined) {
+    output.writeFieldBegin('key_metainfo', Thrift.Type.STRING, 7);
+    output.writeString(this.key_metainfo);
+    output.writeFieldEnd();
+  }
+  if (this.is_temporary !== null && this.is_temporary !== undefined) {
+    output.writeFieldBegin('is_temporary', Thrift.Type.BOOL, 8);
+    output.writeBool(this.is_temporary);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -3996,6 +4080,7 @@ var TRawRenderPassDataResult = module.exports.TRawRenderPassDataResult = functio
   this.row_ids_A = null;
   this.row_ids_B = null;
   this.table_ids = null;
+  this.accum_data = null;
   if (args) {
     if (args.num_channels !== undefined && args.num_channels !== null) {
       this.num_channels = args.num_channels;
@@ -4011,6 +4096,9 @@ var TRawRenderPassDataResult = module.exports.TRawRenderPassDataResult = functio
     }
     if (args.table_ids !== undefined && args.table_ids !== null) {
       this.table_ids = args.table_ids;
+    }
+    if (args.accum_data !== undefined && args.accum_data !== null) {
+      this.accum_data = args.accum_data;
     }
   }
 };
@@ -4063,6 +4151,13 @@ TRawRenderPassDataResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.accum_data = input.readBinary();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -4097,6 +4192,11 @@ TRawRenderPassDataResult.prototype.write = function(output) {
   if (this.table_ids !== null && this.table_ids !== undefined) {
     output.writeFieldBegin('table_ids', Thrift.Type.STRING, 5);
     output.writeBinary(this.table_ids);
+    output.writeFieldEnd();
+  }
+  if (this.accum_data !== null && this.accum_data !== undefined) {
+    output.writeFieldBegin('accum_data', Thrift.Type.STRING, 6);
+    output.writeBinary(this.accum_data);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
