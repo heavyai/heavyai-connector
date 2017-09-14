@@ -146,6 +146,7 @@ class MapdCon {
           "getLinkViewAsync",
           "getResultRowForPixel",
           "getServerStatusAsync",
+          "getStatusAsync",
           "getTablesAsync",
           "host",
           "importTableAsync",
@@ -294,8 +295,8 @@ class MapdCon {
     })
   })
 
-  getServerStatus = (callback) => {
-    this._client[0].get_server_status(this._sessionId[0], callback)
+  getStatus = (callback) => {
+    this._client[0].get_status(this._sessionId[0], callback)
   }
 
   /**
@@ -315,9 +316,39 @@ class MapdCon {
    * // }
    */
 
-  getServerStatusAsync = () => (
+  getServerStatusAsync = () => {
+    console.warn("getServerStatusAsync is deprecated, please use getStatusAsync")
+    return new Promise((resolve, reject) => {
+      this.getStatus((err, result) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(result[0])
+        }
+      })
+    })
+   }
+
+  /**
+   * Get the status of the server as an array of <code>TServerStatus</code> objects.
+   * This includes whether the server is read-only,
+   * has backend rendering enabled, and the version number.
+   * @return {Promise.<Object>}
+   *
+   * @example <caption>Get the server status:</caption>
+   *
+   * con.getStatusAsync().then((result) => console.log(result))
+   * // [{
+   * //   "read_only": false,
+   * //   "version": "3.0.0dev-20170503-40e2de3",
+   * //   "rendering_enabled": true,
+   * //   "start_time": 1493840131
+   * // }]
+   */
+
+  getStatusAsync = () => (
      new Promise((resolve, reject) => {
-       this.getServerStatus((err, result) => {
+       this.getStatus((err, result) => {
          if (err) {
            reject(err)
          } else {
