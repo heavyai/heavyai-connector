@@ -61,6 +61,11 @@ MapDClientV2.prototype.get_fields = function (...args) {
   return getFieldsWithErrorHandling(...args)
 }
 
+MapDClientV2.prototype.get_status = function (...args) {
+  const getStatusWithErrorHandling = wrapWithErrorHandling(this, "get_status")
+  return getStatusWithErrorHandling(...args)
+}
+
 MapDClientV2.prototype.get_server_status = function (...args) {
   const getServerStatusWithErrorHandling = wrapWithErrorHandling(this, "get_server_status")
   return getServerStatusWithErrorHandling(...args)
