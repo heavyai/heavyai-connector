@@ -25,6 +25,8 @@ const COMPRESSION_LEVEL_DEFAULT = 3
 const DEFAULT_QUERY_TIME = 50
 
 function Connector () {
+  console.warn("This version of mapd-connector will be deprecated in the near future. Please use the latest stable version 2.1.0")
+
   // initialize variables
   const _datumEnum = {}
   const _queryTimes = {}
