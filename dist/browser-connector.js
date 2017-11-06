@@ -65,16 +65,26 @@
 		Author Tobias Koppers @sokra
 	*/
 	module.exports = function(src) {
+		function log(error) {
+			(typeof console !== "undefined")
+			&& (console.error || console.log)("[Script Loader]", error);
+		}
+
+		// Check for IE =< 8
+		function isIE() {
+			return typeof attachEvent !== "undefined" && typeof addEventListener === "undefined";
+		}
+
 		try {
-			if (typeof eval !== "undefined") {
-				eval.call(null, src);
-			} else if (typeof execScript !== "undefined") {
+			if (typeof execScript !== "undefined" && isIE()) {
 				execScript(src);
+			} else if (typeof eval !== "undefined") {
+				eval.call(null, src);
 			} else {
-				console.error("[Script Loader] EvalError: No eval function available");
+				log("EvalError: No eval function available");
 			}
 		} catch (error) {
-			console.error("[Script Loader] ", error.message);
+			log(error);
 		}
 	}
 
@@ -36361,8 +36371,8 @@
 	      }
 
 	      formattedResult.timing = {
-	        execution_time_ms: result.execution_time_ms,
-	        total_time_ms: result.total_time_ms
+	        execution_time_ms: Number(result.execution_time_ms),
+	        total_time_ms: Number(result.total_time_ms)
 	      };
 
 	      if (hasCallback) {
@@ -36394,6 +36404,7 @@
 	   * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
 	   * @returns {Object} processedResults The formatted results of the query
 	   */
+
 	function processColumnarResults(data, eliminateNullRows, dataEnum) {
 	  var formattedResult = { fields: [], results: [] };
 	  var numCols = data.row_desc.length;
@@ -36439,27 +36450,30 @@
 	            row[fieldName].push("NULL");
 	            continue; // eslint-disable-line no-continue
 	          }
+
+	          var arrValue = data.columns[_c].data.arr_col[r].data;
+
 	          switch (fieldType) {
 	            case "BOOL":
-	              row[fieldName].push(Boolean(data.columns[_c].data.arr_col[r].data.int_col[e]));
+	              row[fieldName].push(Boolean(Number(arrValue.int_col[e])));
 	              break;
 	            case "SMALLINT":
 	            case "INT":
 	            case "BIGINT":
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e]);
+	              row[fieldName].push(Number(arrValue.int_col[e]));
 	              break;
 	            case "FLOAT":
 	            case "DOUBLE":
 	            case "DECIMAL":
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.real_col[e]);
+	              row[fieldName].push(arrValue.real_col[e]);
 	              break;
 	            case "STR":
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.str_col[e]);
+	              row[fieldName].push(arrValue.str_col[e]);
 	              break;
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] * 1000); // eslint-disable-line no-magic-numbers
+	              row[fieldName].push(Number(arrValue.int_col[e]) * 1000); // eslint-disable-line no-magic-numbers
 	              break;
 	            default:
 	              break;
@@ -36473,7 +36487,7 @@
 	          case "SMALLINT":
 	          case "INT":
 	          case "BIGINT":
-	            row[fieldName] = data.columns[_c].data.int_col[r];
+	            row[fieldName] = Number(data.columns[_c].data.int_col[r]);
 	            break;
 	          case "FLOAT":
 	          case "DOUBLE":
@@ -36490,6 +36504,7 @@
 	            break;
 	          default:
 	            break;
+
 	        }
 	      }
 	    }
