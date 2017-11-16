@@ -26576,6 +26576,22 @@ module.exports =
 	      });
 	    };
 
+	    this.getHardwareInfo = function (callback) {
+	      _this._client[0].get_hardware_info(_this._sessionId[0], callback);
+	    };
+
+	    this.getHardwareInfoAsync = function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getHardwareInfo(function (err, result) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            resolve(result[0]);
+	          }
+	        });
+	      });
+	    };
+
 	    this.deleteFrontendViewAsync = function (viewName) {
 	      return new Promise(function (resolve, reject) {
 	        _this.deleteFrontendView(viewName, function (err) {
@@ -26744,7 +26760,7 @@ module.exports =
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getHardwareInfoAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -26883,6 +26899,22 @@ module.exports =
 	     * //   "rendering_enabled": true,
 	     * //   "start_time": 1493840131
 	     * // }]
+	     */
+
+	    /**
+	     * Get some info about the hardware
+	     * - Number of GPUs
+	     * - Number of GPUs allocated to MapD
+	     * - Start GPU
+	     * - Number of SMs or SMx or CU (They simply mean streaming multi processors)
+	     * - Clock frequency of each GPUs
+	     * - Physical Memory of each GPU
+	     * - Compute capability of each GPU
+	     * @return {Promise.<Object>}
+	     *
+	     * @example <caption>Get harddware info:</caption>
+	     *
+	     * con.getHardwareInfoAsync().then((result) => console.log(result))
 	     */
 
 	  }, {
@@ -27908,6 +27940,11 @@ module.exports =
 
 	MapDClientV2.prototype.get_server_status = function () {
 	  var getServerStatusWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_server_status");
+	  return getServerStatusWithErrorHandling.apply(undefined, arguments);
+	};
+
+	MapDClientV2.prototype.get_hardware_info = function () {
+	  var getServerStatusWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_hardware_info");
 	  return getServerStatusWithErrorHandling.apply(undefined, arguments);
 	};
 

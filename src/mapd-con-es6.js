@@ -147,6 +147,7 @@ class MapdCon {
           "getResultRowForPixel",
           "getServerStatusAsync",
           "getStatusAsync",
+          "getHardwareInfoAsync",
           "getTablesAsync",
           "host",
           "importTableAsync",
@@ -357,6 +358,38 @@ class MapdCon {
        })
      })
    )
+
+  getHardwareInfo = (callback) => {
+    this._client[0].get_hardware_info(this._sessionId[0], callback)
+  }
+
+  /**
+   * Get some info about the hardware
+   * - Number of GPUs
+   * - Number of GPUs allocated to MapD
+   * - Start GPU
+   * - Number of SMs or SMx or CU (They simply mean streaming multi processors)
+   * - Clock frequency of each GPUs
+   * - Physical Memory of each GPU
+   * - Compute capability of each GPU
+   * @return {Promise.<Object>}
+   *
+   * @example <caption>Get harddware info:</caption>
+   *
+   * con.getHardwareInfoAsync().then((result) => console.log(result))
+   */
+
+  getHardwareInfoAsync = () => {
+    return new Promise((resolve, reject) => {
+      this.getHardwareInfo((err, result) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(result[0])
+        }
+      })
+    })
+   }
 
   /**
    * Add a new dashboard to the server.

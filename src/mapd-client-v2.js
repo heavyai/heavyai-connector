@@ -71,6 +71,11 @@ MapDClientV2.prototype.get_server_status = function (...args) {
   return getServerStatusWithErrorHandling(...args)
 }
 
+MapDClientV2.prototype.get_hardware_info = function (...args) {
+  const getServerStatusWithErrorHandling = wrapWithErrorHandling(this, "get_hardware_info")
+  return getServerStatusWithErrorHandling(...args)
+}
+
 MapDClientV2.prototype.get_frontend_views = function (...args) {
   const getFrontEndViewsWithErrorHandling = wrapWithErrorHandling(this, "get_frontend_views")
   return getFrontEndViewsWithErrorHandling(...args)
