@@ -27944,8 +27944,8 @@ module.exports =
 	};
 
 	MapDClientV2.prototype.get_hardware_info = function () {
-	  var getServerStatusWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_hardware_info");
-	  return getServerStatusWithErrorHandling.apply(undefined, arguments);
+	  var getHardwareInfoWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_hardware_info");
+	  return getHardwareInfoWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.get_frontend_views = function () {
