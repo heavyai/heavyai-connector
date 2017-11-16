@@ -358,6 +358,60 @@ class MapdCon {
      })
    )
 
+  getHardwareInfo = (callback) => {
+    this._client[0].get_hardware_info(this._sessionId[0], callback)
+  }
+
+  /**
+   * Get some info about the hardware
+   * - Number of GPUs
+   * - Number of GPUs allocated to MapD
+   * - Start GPU
+   * - Number of SMs or SMx or CU (They simply mean streaming multi processors)
+   * - Clock frequency of each GPUs
+   * - Physical Memory of each GPU
+   * - Compute capability of each GPU
+   * @return {Promise.<Object>}
+   *
+   * @example <caption>Get harddware info:</caption>
+   *
+   * con.getHardwareInfoAsync().then((result) => console.log(result))
+   * {
+   *   "hardware_info": [{
+   *    "num_gpu_hw": 2,
+   *      "num_cpu_hw": 12,
+   *      "num_gpu_allocated": 2,
+   *      "start_gpu": 0,
+   *      "host_name": "",
+   *      "gpu_info": [{
+   *          "num_sm": 28,
+   *          "clock_frequency_kHz": 1531000,
+   *          "memory": 12781682688,
+   *          "compute_capability_major": 6,
+   *          "compute_capability_minor": 1
+   *      }, {
+   *          "num_sm": 28,
+   *          "clock_frequency_kHz": 1531000,
+   *          "memory": 12782075904,
+   *          "compute_capability_major": 6,
+   *          "compute_capability_minor": 1
+   *      }]
+   *   }]
+   * }
+   */
+
+  getHardwareInfoAsync = () => (
+    new Promise((resolve, reject) => {
+      this.getHardwareInfo((err, result) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(result)
+        }
+      })
+    })
+  )
+
   /**
    * Add a new dashboard to the server.
    * @param {String} viewName - the name of the new dashboard
