@@ -61,7 +61,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       expect(connectError).to.not.be.an("error")
       session.disconnect(disconnectError => {
         expect(disconnectError).not.be.an("error")
-        expect(session.getServerStatus).to.throw() // example use of disconnected client should fail
+        expect(session.getStatus).to.throw() // example use of disconnected client should fail
         done()
       })
     })
@@ -186,7 +186,8 @@ describe(isNodeRuntime ? "node" : "browser", () => {
         expect(renderVegaError).to.not.be.an("error")
         session.getResultRowForPixel(widgetId, pixel, tableColNamesMap, (pixelError, data) => {
           expect(pixelError).to.not.be.an("error")
-          expect(data[0].row_set).to.deep.equal([{dest_lon: -119.056770324707}]) // Ran 100 times; seems deterministic.
+          const lon = data[0].row_set[0].dest_lon
+          expect(lon).to.be.within(-119.056770325, -119.056770323) // Ran 100 times; seems deterministic.
           done()
         })
       })
