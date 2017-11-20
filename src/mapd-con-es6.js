@@ -616,8 +616,9 @@ class MapdCon {
     }
 
     try {
+      const AT_MOST_N = -1
       if (callback) {
-        this._client[conId].sql_execute(this._sessionId[conId], query, columnarResults, curNonce, limit, (error, result) => {
+        this._client[conId].sql_execute(this._sessionId[conId], query, columnarResults, curNonce, limit, AT_MOST_N, (error, result) => {
           if (error) {
             callback(error)
           } else {
@@ -631,7 +632,8 @@ class MapdCon {
           query,
           columnarResults,
           curNonce,
-          limit
+          limit,
+          AT_MOST_N
         )
         return this.processResults(processResultsOptions, SQLExecuteResult)
       }

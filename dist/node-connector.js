@@ -30859,8 +30859,9 @@ module.exports =
 	      };
 
 	      try {
+	        var AT_MOST_N = -1;
 	        if (callback) {
-	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, function (error, result) {
+	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, AT_MOST_N, function (error, result) {
 	            if (error) {
 	              callback(error);
 	            } else {
@@ -30869,7 +30870,7 @@ module.exports =
 	          });
 	          return curNonce;
 	        } else if (!callback) {
-	          var SQLExecuteResult = this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit);
+	          var SQLExecuteResult = this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, AT_MOST_N);
 	          return this.processResults(processResultsOptions, SQLExecuteResult);
 	        }
 	      } catch (err) {
