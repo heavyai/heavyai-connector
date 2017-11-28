@@ -7,7 +7,7 @@ A JavaScript library for connecting to a MapD GPU database and running queries.
 
 # Quick Start
 ```bash
-npm install
+yarn
 npm run build
 npm run docs # opens API docs in your browser.
 ```

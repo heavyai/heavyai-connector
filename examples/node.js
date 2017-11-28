@@ -17,10 +17,9 @@ connector
 .connect((connectError, session) => { // eslint-disable-line consistent-return
   if (connectError) { return console.error("Error connecting", connectError) }
 
-  session.getTables((error, data) => {
-    if (error) { return console.error("getTablesAsync error:", error) }
-    return console.log("All tables available at metis.mapd.com:", data.map(x => x.name))
-  })
+  session.getTablesAsync()
+  .then(data => console.log("All tables available at metis.mapd.com:", data.map(x => x.name)))
+  .catch(error => console.error("getTablesAsync error:", error))
 
   session.query(query, defaultQueryOptions, (error, data) => {
     if (error) { return console.error("Query 1 error:", error) }
