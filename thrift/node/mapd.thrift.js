@@ -3619,6 +3619,166 @@ MapD_sql_execute_gdf_result.prototype.write = function(output) {
 };
 
 var MapD_deallocate_df_args = function(args) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+=======
+  this.session = null;
+  this.df = null;
+  this.device_type = null;
+  this.device_id = 0;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.df !== undefined && args.df !== null) {
+      this.df = new ttypes.TDataFrame(args.df);
+    }
+    if (args.device_type !== undefined && args.device_type !== null) {
+      this.device_type = args.device_type;
+    }
+    if (args.device_id !== undefined && args.device_id !== null) {
+      this.device_id = args.device_id;
+    }
+  }
+};
+MapD_deallocate_df_args.prototype = {};
+MapD_deallocate_df_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.df = new ttypes.TDataFrame();
+        this.df.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.device_type = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.device_id = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_deallocate_df_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_deallocate_df_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.df !== null && this.df !== undefined) {
+    output.writeFieldBegin('df', Thrift.Type.STRUCT, 2);
+    this.df.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.device_type !== null && this.device_type !== undefined) {
+    output.writeFieldBegin('device_type', Thrift.Type.I32, 3);
+    output.writeI32(this.device_type);
+    output.writeFieldEnd();
+  }
+  if (this.device_id !== null && this.device_id !== undefined) {
+    output.writeFieldBegin('device_id', Thrift.Type.I32, 4);
+    output.writeI32(this.device_id);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var MapD_deallocate_df_result = function(args) {
+  this.e = null;
+  if (args instanceof ttypes.TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_deallocate_df_result.prototype = {};
+MapD_deallocate_df_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new ttypes.TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_deallocate_df_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_deallocate_df_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var MapD_interrupt_args = function(args) {
+>>>>>>> Update Thrift
   this.session = null;
   this.df = null;
   this.device_type = null;
@@ -3886,13 +4046,21 @@ MapD_interrupt_result.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 var MapD_sql_validate_args = function(args) {
   this.session = null;
   this.query = null;
+=======
+var MapD_get_completion_hints_args = function(args) {
+  this.session = null;
+  this.sql = null;
+  this.cursor = null;
+>>>>>>> Update Thrift
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
     }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     if (args.query !== undefined && args.query !== null) {
       this.query = args.query;
     }
@@ -3900,6 +4068,18 @@ var MapD_sql_validate_args = function(args) {
 };
 MapD_sql_validate_args.prototype = {};
 MapD_sql_validate_args.prototype.read = function(input) {
+=======
+    if (args.sql !== undefined && args.sql !== null) {
+      this.sql = args.sql;
+    }
+    if (args.cursor !== undefined && args.cursor !== null) {
+      this.cursor = args.cursor;
+    }
+  }
+};
+MapD_get_completion_hints_args.prototype = {};
+MapD_get_completion_hints_args.prototype.read = function(input) {
+>>>>>>> Update Thrift
   input.readStructBegin();
   while (true)
   {
@@ -3921,7 +4101,18 @@ MapD_sql_validate_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         this.query = input.readString();
+=======
+        this.sql = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.cursor = input.readI32();
+>>>>>>> Update Thrift
       } else {
         input.skip(ftype);
       }
@@ -3935,16 +4126,32 @@ MapD_sql_validate_args.prototype.read = function(input) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 MapD_sql_validate_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_sql_validate_args');
+=======
+MapD_get_completion_hints_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_completion_hints_args');
+>>>>>>> Update Thrift
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
     output.writeFieldEnd();
   }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
   if (this.query !== null && this.query !== undefined) {
     output.writeFieldBegin('query', Thrift.Type.STRING, 2);
     output.writeString(this.query);
+=======
+  if (this.sql !== null && this.sql !== undefined) {
+    output.writeFieldBegin('sql', Thrift.Type.STRING, 2);
+    output.writeString(this.sql);
+    output.writeFieldEnd();
+  }
+  if (this.cursor !== null && this.cursor !== undefined) {
+    output.writeFieldBegin('cursor', Thrift.Type.I32, 3);
+    output.writeI32(this.cursor);
+>>>>>>> Update Thrift
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -3952,7 +4159,11 @@ MapD_sql_validate_args.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 var MapD_sql_validate_result = function(args) {
+=======
+var MapD_get_completion_hints_result = function(args) {
+>>>>>>> Update Thrift
   this.success = null;
   this.e = null;
   if (args instanceof ttypes.TMapDException) {
@@ -3961,15 +4172,24 @@ var MapD_sql_validate_result = function(args) {
   }
   if (args) {
     if (args.success !== undefined && args.success !== null) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
       this.success = Thrift.copyMap(args.success, [ttypes.TColumnType]);
+=======
+      this.success = Thrift.copyList(args.success, [completion_hints_ttypes.TCompletionHint]);
+>>>>>>> Update Thrift
     }
     if (args.e !== undefined && args.e !== null) {
       this.e = args.e;
     }
   }
 };
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 MapD_sql_validate_result.prototype = {};
 MapD_sql_validate_result.prototype.read = function(input) {
+=======
+MapD_get_completion_hints_result.prototype = {};
+MapD_get_completion_hints_result.prototype.read = function(input) {
+>>>>>>> Update Thrift
   input.readStructBegin();
   while (true)
   {
@@ -3983,6 +4203,7 @@ MapD_sql_validate_result.prototype.read = function(input) {
     switch (fid)
     {
       case 0:
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
       if (ftype == Thrift.Type.MAP) {
         var _size306 = 0;
         var _rtmp3310;
@@ -4003,6 +4224,24 @@ MapD_sql_validate_result.prototype.read = function(input) {
           this.success[key312] = val313;
         }
         input.readMapEnd();
+=======
+      if (ftype == Thrift.Type.LIST) {
+        var _size260 = 0;
+        var _rtmp3264;
+        this.success = [];
+        var _etype263 = 0;
+        _rtmp3264 = input.readListBegin();
+        _etype263 = _rtmp3264.etype;
+        _size260 = _rtmp3264.size;
+        for (var _i265 = 0; _i265 < _size260; ++_i265)
+        {
+          var elem266 = null;
+          elem266 = new completion_hints_ttypes.TCompletionHint();
+          elem266.read(input);
+          this.success.push(elem266);
+        }
+        input.readListEnd();
+>>>>>>> Update Thrift
       } else {
         input.skip(ftype);
       }
@@ -4024,6 +4263,7 @@ MapD_sql_validate_result.prototype.read = function(input) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 MapD_sql_validate_result.prototype.write = function(output) {
   output.writeStructBegin('MapD_sql_validate_result');
   if (this.success !== null && this.success !== undefined) {
@@ -4039,6 +4279,22 @@ MapD_sql_validate_result.prototype.write = function(output) {
       }
     }
     output.writeMapEnd();
+=======
+MapD_get_completion_hints_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_completion_hints_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter267 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter267))
+      {
+        iter267 = this.success[iter267];
+        iter267.write(output);
+      }
+    }
+    output.writeListEnd();
+>>>>>>> Update Thrift
     output.writeFieldEnd();
   }
   if (this.e !== null && this.e !== undefined) {
@@ -4051,14 +4307,21 @@ MapD_sql_validate_result.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 var MapD_get_completion_hints_args = function(args) {
   this.session = null;
   this.sql = null;
   this.cursor = null;
+=======
+var MapD_set_execution_mode_args = function(args) {
+  this.session = null;
+  this.mode = null;
+>>>>>>> Update Thrift
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
     }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     if (args.sql !== undefined && args.sql !== null) {
       this.sql = args.sql;
     }
@@ -4069,6 +4332,15 @@ var MapD_get_completion_hints_args = function(args) {
 };
 MapD_get_completion_hints_args.prototype = {};
 MapD_get_completion_hints_args.prototype.read = function(input) {
+=======
+    if (args.mode !== undefined && args.mode !== null) {
+      this.mode = args.mode;
+    }
+  }
+};
+MapD_set_execution_mode_args.prototype = {};
+MapD_set_execution_mode_args.prototype.read = function(input) {
+>>>>>>> Update Thrift
   input.readStructBegin();
   while (true)
   {
@@ -4089,6 +4361,7 @@ MapD_get_completion_hints_args.prototype.read = function(input) {
       }
       break;
       case 2:
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
       if (ftype == Thrift.Type.STRING) {
         this.sql = input.readString();
       } else {
@@ -4098,6 +4371,10 @@ MapD_get_completion_hints_args.prototype.read = function(input) {
       case 3:
       if (ftype == Thrift.Type.I32) {
         this.cursor = input.readI32();
+=======
+      if (ftype == Thrift.Type.I32) {
+        this.mode = input.readI32();
+>>>>>>> Update Thrift
       } else {
         input.skip(ftype);
       }
@@ -4111,16 +4388,194 @@ MapD_get_completion_hints_args.prototype.read = function(input) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 MapD_get_completion_hints_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_completion_hints_args');
+=======
+MapD_set_execution_mode_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_execution_mode_args');
+>>>>>>> Update Thrift
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
     output.writeFieldEnd();
   }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
   if (this.sql !== null && this.sql !== undefined) {
     output.writeFieldBegin('sql', Thrift.Type.STRING, 2);
     output.writeString(this.sql);
+=======
+  if (this.mode !== null && this.mode !== undefined) {
+    output.writeFieldBegin('mode', Thrift.Type.I32, 2);
+    output.writeI32(this.mode);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var MapD_set_execution_mode_result = function(args) {
+  this.e = null;
+  if (args instanceof ttypes.TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_set_execution_mode_result.prototype = {};
+MapD_set_execution_mode_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new ttypes.TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_set_execution_mode_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_execution_mode_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var MapD_render_vega_args = function(args) {
+  this.session = null;
+  this.widget_id = null;
+  this.vega_json = null;
+  this.compression_level = null;
+  this.nonce = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.widget_id !== undefined && args.widget_id !== null) {
+      this.widget_id = args.widget_id;
+    }
+    if (args.vega_json !== undefined && args.vega_json !== null) {
+      this.vega_json = args.vega_json;
+    }
+    if (args.compression_level !== undefined && args.compression_level !== null) {
+      this.compression_level = args.compression_level;
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
+    }
+  }
+};
+MapD_render_vega_args.prototype = {};
+MapD_render_vega_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.widget_id = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.vega_json = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.compression_level = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_render_vega_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_render_vega_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.widget_id !== null && this.widget_id !== undefined) {
+    output.writeFieldBegin('widget_id', Thrift.Type.I64, 2);
+    output.writeI64(this.widget_id);
+    output.writeFieldEnd();
+  }
+  if (this.vega_json !== null && this.vega_json !== undefined) {
+    output.writeFieldBegin('vega_json', Thrift.Type.STRING, 3);
+    output.writeString(this.vega_json);
+    output.writeFieldEnd();
+  }
+  if (this.compression_level !== null && this.compression_level !== undefined) {
+    output.writeFieldBegin('compression_level', Thrift.Type.I32, 4);
+    output.writeI32(this.compression_level);
+>>>>>>> Update Thrift
     output.writeFieldEnd();
   }
   if (this.cursor !== null && this.cursor !== undefined) {
@@ -4607,6 +5062,7 @@ MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.MAP) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size324 = 0;
         var _rtmp3328;
         this.table_col_names = {};
@@ -4636,6 +5092,37 @@ MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
           }
           input.readListEnd();
           this.table_col_names[key330] = val331;
+=======
+        var _size268 = 0;
+        var _rtmp3272;
+        this.table_col_names = {};
+        var _ktype269 = 0;
+        var _vtype270 = 0;
+        _rtmp3272 = input.readMapBegin();
+        _ktype269 = _rtmp3272.ktype;
+        _vtype270 = _rtmp3272.vtype;
+        _size268 = _rtmp3272.size;
+        for (var _i273 = 0; _i273 < _size268; ++_i273)
+        {
+          var key274 = null;
+          var val275 = null;
+          key274 = input.readString();
+          var _size276 = 0;
+          var _rtmp3280;
+          val275 = [];
+          var _etype279 = 0;
+          _rtmp3280 = input.readListBegin();
+          _etype279 = _rtmp3280.etype;
+          _size276 = _rtmp3280.size;
+          for (var _i281 = 0; _i281 < _size276; ++_i281)
+          {
+            var elem282 = null;
+            elem282 = input.readString();
+            val275.push(elem282);
+          }
+          input.readListEnd();
+          this.table_col_names[key274] = val275;
+>>>>>>> Update Thrift
         }
         input.readMapEnd();
       } else {
@@ -4692,6 +5179,7 @@ MapD_get_result_row_for_pixel_args.prototype.write = function(output) {
   if (this.table_col_names !== null && this.table_col_names !== undefined) {
     output.writeFieldBegin('table_col_names', Thrift.Type.MAP, 4);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(this.table_col_names));
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var kiter339 in this.table_col_names)
     {
       if (this.table_col_names.hasOwnProperty(kiter339))
@@ -4705,6 +5193,21 @@ MapD_get_result_row_for_pixel_args.prototype.write = function(output) {
           {
             iter341 = viter340[iter341];
             output.writeString(iter341);
+=======
+    for (var kiter283 in this.table_col_names)
+    {
+      if (this.table_col_names.hasOwnProperty(kiter283))
+      {
+        var viter284 = this.table_col_names[kiter283];
+        output.writeString(kiter283);
+        output.writeListBegin(Thrift.Type.STRING, viter284.length);
+        for (var iter285 in viter284)
+        {
+          if (viter284.hasOwnProperty(iter285))
+          {
+            iter285 = viter284[iter285];
+            output.writeString(iter285);
+>>>>>>> Update Thrift
           }
         }
         output.writeListEnd();
@@ -5028,6 +5531,7 @@ MapD_get_frontend_views_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size342 = 0;
         var _rtmp3346;
         this.success = [];
@@ -5041,6 +5545,21 @@ MapD_get_frontend_views_result.prototype.read = function(input) {
           elem348 = new ttypes.TFrontendView();
           elem348.read(input);
           this.success.push(elem348);
+=======
+        var _size286 = 0;
+        var _rtmp3290;
+        this.success = [];
+        var _etype289 = 0;
+        _rtmp3290 = input.readListBegin();
+        _etype289 = _rtmp3290.etype;
+        _size286 = _rtmp3290.size;
+        for (var _i291 = 0; _i291 < _size286; ++_i291)
+        {
+          var elem292 = null;
+          elem292 = new ttypes.TFrontendView();
+          elem292.read(input);
+          this.success.push(elem292);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -5069,12 +5588,21 @@ MapD_get_frontend_views_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter349 in this.success)
     {
       if (this.success.hasOwnProperty(iter349))
       {
         iter349 = this.success[iter349];
         iter349.write(output);
+=======
+    for (var iter293 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter293))
+      {
+        iter293 = this.success[iter293];
+        iter293.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -5723,6 +6251,7 @@ MapD_load_table_binary_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size350 = 0;
         var _rtmp3354;
         this.rows = [];
@@ -5736,6 +6265,21 @@ MapD_load_table_binary_args.prototype.read = function(input) {
           elem356 = new ttypes.TRow();
           elem356.read(input);
           this.rows.push(elem356);
+=======
+        var _size294 = 0;
+        var _rtmp3298;
+        this.rows = [];
+        var _etype297 = 0;
+        _rtmp3298 = input.readListBegin();
+        _etype297 = _rtmp3298.etype;
+        _size294 = _rtmp3298.size;
+        for (var _i299 = 0; _i299 < _size294; ++_i299)
+        {
+          var elem300 = null;
+          elem300 = new ttypes.TRow();
+          elem300.read(input);
+          this.rows.push(elem300);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -5766,12 +6310,21 @@ MapD_load_table_binary_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter357 in this.rows)
     {
       if (this.rows.hasOwnProperty(iter357))
       {
         iter357 = this.rows[iter357];
         iter357.write(output);
+=======
+    for (var iter301 in this.rows)
+    {
+      if (this.rows.hasOwnProperty(iter301))
+      {
+        iter301 = this.rows[iter301];
+        iter301.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -5886,6 +6439,7 @@ MapD_load_table_binary_columnar_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size358 = 0;
         var _rtmp3362;
         this.cols = [];
@@ -5899,6 +6453,21 @@ MapD_load_table_binary_columnar_args.prototype.read = function(input) {
           elem364 = new ttypes.TColumn();
           elem364.read(input);
           this.cols.push(elem364);
+=======
+        var _size302 = 0;
+        var _rtmp3306;
+        this.cols = [];
+        var _etype305 = 0;
+        _rtmp3306 = input.readListBegin();
+        _etype305 = _rtmp3306.etype;
+        _size302 = _rtmp3306.size;
+        for (var _i307 = 0; _i307 < _size302; ++_i307)
+        {
+          var elem308 = null;
+          elem308 = new ttypes.TColumn();
+          elem308.read(input);
+          this.cols.push(elem308);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -5929,12 +6498,21 @@ MapD_load_table_binary_columnar_args.prototype.write = function(output) {
   if (this.cols !== null && this.cols !== undefined) {
     output.writeFieldBegin('cols', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter365 in this.cols)
     {
       if (this.cols.hasOwnProperty(iter365))
       {
         iter365 = this.cols[iter365];
         iter365.write(output);
+=======
+    for (var iter309 in this.cols)
+    {
+      if (this.cols.hasOwnProperty(iter309))
+      {
+        iter309 = this.cols[iter309];
+        iter309.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -6189,6 +6767,7 @@ MapD_load_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size366 = 0;
         var _rtmp3370;
         this.rows = [];
@@ -6202,6 +6781,21 @@ MapD_load_table_args.prototype.read = function(input) {
           elem372 = new ttypes.TStringRow();
           elem372.read(input);
           this.rows.push(elem372);
+=======
+        var _size310 = 0;
+        var _rtmp3314;
+        this.rows = [];
+        var _etype313 = 0;
+        _rtmp3314 = input.readListBegin();
+        _etype313 = _rtmp3314.etype;
+        _size310 = _rtmp3314.size;
+        for (var _i315 = 0; _i315 < _size310; ++_i315)
+        {
+          var elem316 = null;
+          elem316 = new ttypes.TStringRow();
+          elem316.read(input);
+          this.rows.push(elem316);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -6232,12 +6826,21 @@ MapD_load_table_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter373 in this.rows)
     {
       if (this.rows.hasOwnProperty(iter373))
       {
         iter373 = this.rows[iter373];
         iter373.write(output);
+=======
+    for (var iter317 in this.rows)
+    {
+      if (this.rows.hasOwnProperty(iter317))
+      {
+        iter317 = this.rows[iter317];
+        iter317.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -6511,6 +7114,7 @@ MapD_create_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size374 = 0;
         var _rtmp3378;
         this.row_desc = [];
@@ -6524,6 +7128,21 @@ MapD_create_table_args.prototype.read = function(input) {
           elem380 = new ttypes.TColumnType();
           elem380.read(input);
           this.row_desc.push(elem380);
+=======
+        var _size318 = 0;
+        var _rtmp3322;
+        this.row_desc = [];
+        var _etype321 = 0;
+        _rtmp3322 = input.readListBegin();
+        _etype321 = _rtmp3322.etype;
+        _size318 = _rtmp3322.size;
+        for (var _i323 = 0; _i323 < _size318; ++_i323)
+        {
+          var elem324 = null;
+          elem324 = new ttypes.TColumnType();
+          elem324.read(input);
+          this.row_desc.push(elem324);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -6561,12 +7180,21 @@ MapD_create_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter381 in this.row_desc)
     {
       if (this.row_desc.hasOwnProperty(iter381))
       {
         iter381 = this.row_desc[iter381];
         iter381.write(output);
+=======
+    for (var iter325 in this.row_desc)
+    {
+      if (this.row_desc.hasOwnProperty(iter325))
+      {
+        iter325 = this.row_desc[iter325];
+        iter325.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -6866,6 +7494,7 @@ MapD_import_geo_table_args.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size382 = 0;
         var _rtmp3386;
         this.row_desc = [];
@@ -6879,6 +7508,21 @@ MapD_import_geo_table_args.prototype.read = function(input) {
           elem388 = new ttypes.TColumnType();
           elem388.read(input);
           this.row_desc.push(elem388);
+=======
+        var _size326 = 0;
+        var _rtmp3330;
+        this.row_desc = [];
+        var _etype329 = 0;
+        _rtmp3330 = input.readListBegin();
+        _etype329 = _rtmp3330.etype;
+        _size326 = _rtmp3330.size;
+        for (var _i331 = 0; _i331 < _size326; ++_i331)
+        {
+          var elem332 = null;
+          elem332 = new ttypes.TColumnType();
+          elem332.read(input);
+          this.row_desc.push(elem332);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -6919,12 +7563,21 @@ MapD_import_geo_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter389 in this.row_desc)
     {
       if (this.row_desc.hasOwnProperty(iter389))
       {
         iter389 = this.row_desc[iter389];
         iter389.write(output);
+=======
+    for (var iter333 in this.row_desc)
+    {
+      if (this.row_desc.hasOwnProperty(iter333))
+      {
+        iter333 = this.row_desc[iter333];
+        iter333.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -7450,6 +8103,7 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size390 = 0;
         var _rtmp3394;
         this.row_desc = [];
@@ -7463,6 +8117,21 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
           elem396 = new ttypes.TColumnType();
           elem396.read(input);
           this.row_desc.push(elem396);
+=======
+        var _size334 = 0;
+        var _rtmp3338;
+        this.row_desc = [];
+        var _etype337 = 0;
+        _rtmp3338 = input.readListBegin();
+        _etype337 = _rtmp3338.etype;
+        _size334 = _rtmp3338.size;
+        for (var _i339 = 0; _i339 < _size334; ++_i339)
+        {
+          var elem340 = null;
+          elem340 = new ttypes.TColumnType();
+          elem340.read(input);
+          this.row_desc.push(elem340);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -7495,12 +8164,21 @@ MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter397 in this.row_desc)
     {
       if (this.row_desc.hasOwnProperty(iter397))
       {
         iter397 = this.row_desc[iter397];
         iter397.write(output);
+=======
+    for (var iter341 in this.row_desc)
+    {
+      if (this.row_desc.hasOwnProperty(iter341))
+      {
+        iter341 = this.row_desc[iter341];
+        iter341.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -7579,6 +8257,7 @@ var MapD_start_render_query_args = function(args) {
   this.widget_id = null;
   this.node_idx = null;
   this.vega_json = null;
+  this.nonce = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -7591,6 +8270,9 @@ var MapD_start_render_query_args = function(args) {
     }
     if (args.vega_json !== undefined && args.vega_json !== null) {
       this.vega_json = args.vega_json;
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
     }
   }
 };
@@ -7854,6 +8536,13 @@ MapD_execute_next_render_step_args.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -7913,6 +8602,11 @@ MapD_execute_next_render_step_args.prototype.write = function(output) {
       }
     }
     output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 5);
+    output.writeString(this.nonce);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -8355,6 +9049,7 @@ MapD_get_table_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.MAP) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size438 = 0;
         var _rtmp3442;
         this.success = {};
@@ -8372,6 +9067,25 @@ MapD_get_table_descriptor_result.prototype.read = function(input) {
           val445 = new ttypes.TColumnType();
           val445.read(input);
           this.success[key444] = val445;
+=======
+        var _size342 = 0;
+        var _rtmp3346;
+        this.success = {};
+        var _ktype343 = 0;
+        var _vtype344 = 0;
+        _rtmp3346 = input.readMapBegin();
+        _ktype343 = _rtmp3346.ktype;
+        _vtype344 = _rtmp3346.vtype;
+        _size342 = _rtmp3346.size;
+        for (var _i347 = 0; _i347 < _size342; ++_i347)
+        {
+          var key348 = null;
+          var val349 = null;
+          key348 = input.readString();
+          val349 = new ttypes.TColumnType();
+          val349.read(input);
+          this.success[key348] = val349;
+>>>>>>> Update Thrift
         }
         input.readMapEnd();
       } else {
@@ -8400,6 +9114,7 @@ MapD_get_table_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.MAP, 0);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var kiter446 in this.success)
     {
       if (this.success.hasOwnProperty(kiter446))
@@ -8407,6 +9122,15 @@ MapD_get_table_descriptor_result.prototype.write = function(output) {
         var viter447 = this.success[kiter446];
         output.writeString(kiter446);
         viter447.write(output);
+=======
+    for (var kiter350 in this.success)
+    {
+      if (this.success.hasOwnProperty(kiter350))
+      {
+        var viter351 = this.success[kiter350];
+        output.writeString(kiter350);
+        viter351.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeMapEnd();
@@ -8520,6 +9244,7 @@ MapD_get_row_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size448 = 0;
         var _rtmp3452;
         this.success = [];
@@ -8533,6 +9258,21 @@ MapD_get_row_descriptor_result.prototype.read = function(input) {
           elem454 = new ttypes.TColumnType();
           elem454.read(input);
           this.success.push(elem454);
+=======
+        var _size352 = 0;
+        var _rtmp3356;
+        this.success = [];
+        var _etype355 = 0;
+        _rtmp3356 = input.readListBegin();
+        _etype355 = _rtmp3356.etype;
+        _size352 = _rtmp3356.size;
+        for (var _i357 = 0; _i357 < _size352; ++_i357)
+        {
+          var elem358 = null;
+          elem358 = new ttypes.TColumnType();
+          elem358.read(input);
+          this.success.push(elem358);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -8561,12 +9301,21 @@ MapD_get_row_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter455 in this.success)
     {
       if (this.success.hasOwnProperty(iter455))
       {
         iter455 = this.success[iter455];
         iter455.write(output);
+=======
+    for (var iter359 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter359))
+      {
+        iter359 = this.success[iter359];
+        iter359.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -8583,6 +9332,10 @@ MapD_get_row_descriptor_result.prototype.write = function(output) {
 };
 
 var MapD_get_role_args = function(args) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+  this.session = null;
+  this.roleName = null;
+=======
   this.session = null;
   this.roleName = null;
   this.userPrivateRole = null;
@@ -8696,6 +9449,226 @@ MapD_get_role_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
+        var _size360 = 0;
+        var _rtmp3364;
+        this.success = [];
+        var _etype363 = 0;
+        _rtmp3364 = input.readListBegin();
+        _etype363 = _rtmp3364.etype;
+        _size360 = _rtmp3364.size;
+        for (var _i365 = 0; _i365 < _size360; ++_i365)
+        {
+          var elem366 = null;
+          elem366 = input.readString();
+          this.success.push(elem366);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new ttypes.TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_role_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_role_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRING, this.success.length);
+    for (var iter367 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter367))
+      {
+        iter367 = this.success[iter367];
+        output.writeString(iter367);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var MapD_get_all_roles_args = function(args) {
+  this.session = null;
+>>>>>>> Update Thrift
+  this.userPrivateRole = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+    if (args.roleName !== undefined && args.roleName !== null) {
+      this.roleName = args.roleName;
+    }
+=======
+>>>>>>> Update Thrift
+    if (args.userPrivateRole !== undefined && args.userPrivateRole !== null) {
+      this.userPrivateRole = args.userPrivateRole;
+    }
+  }
+};
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+MapD_get_role_args.prototype = {};
+MapD_get_role_args.prototype.read = function(input) {
+=======
+MapD_get_all_roles_args.prototype = {};
+MapD_get_all_roles_args.prototype.read = function(input) {
+>>>>>>> Update Thrift
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+      if (ftype == Thrift.Type.STRING) {
+        this.roleName = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+=======
+>>>>>>> Update Thrift
+      if (ftype == Thrift.Type.BOOL) {
+        this.userPrivateRole = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+MapD_get_role_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_role_args');
+=======
+MapD_get_all_roles_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_all_roles_args');
+>>>>>>> Update Thrift
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+  if (this.roleName !== null && this.roleName !== undefined) {
+    output.writeFieldBegin('roleName', Thrift.Type.STRING, 2);
+    output.writeString(this.roleName);
+    output.writeFieldEnd();
+  }
+  if (this.userPrivateRole !== null && this.userPrivateRole !== undefined) {
+    output.writeFieldBegin('userPrivateRole', Thrift.Type.BOOL, 3);
+=======
+  if (this.userPrivateRole !== null && this.userPrivateRole !== undefined) {
+    output.writeFieldBegin('userPrivateRole', Thrift.Type.BOOL, 2);
+>>>>>>> Update Thrift
+    output.writeBool(this.userPrivateRole);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+};
+
+var MapD_get_role_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof ttypes.TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [null]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_role_result.prototype = {};
+MapD_get_role_result.prototype.read = function(input) {
+=======
+};
+
+var MapD_get_all_roles_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof ttypes.TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [null]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_all_roles_result.prototype = {};
+MapD_get_all_roles_result.prototype.read = function(input) {
+>>>>>>> Update Thrift
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size456 = 0;
         var _rtmp3460;
         this.success = [];
@@ -8708,6 +9681,20 @@ MapD_get_role_result.prototype.read = function(input) {
           var elem462 = null;
           elem462 = input.readString();
           this.success.push(elem462);
+=======
+        var _size368 = 0;
+        var _rtmp3372;
+        this.success = [];
+        var _etype371 = 0;
+        _rtmp3372 = input.readListBegin();
+        _etype371 = _rtmp3372.etype;
+        _size368 = _rtmp3372.size;
+        for (var _i373 = 0; _i373 < _size368; ++_i373)
+        {
+          var elem374 = null;
+          elem374 = input.readString();
+          this.success.push(elem374);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -8718,6 +9705,7 @@ MapD_get_role_result.prototype.read = function(input) {
       if (ftype == Thrift.Type.STRUCT) {
         this.e = new ttypes.TMapDException();
         this.e.read(input);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
       } else {
         input.skip(ftype);
       }
@@ -8793,6 +9781,8 @@ MapD_get_all_roles_args.prototype.read = function(input) {
       case 2:
       if (ftype == Thrift.Type.BOOL) {
         this.userPrivateRole = input.readBool();
+=======
+>>>>>>> Update Thrift
       } else {
         input.skip(ftype);
       }
@@ -8806,6 +9796,7 @@ MapD_get_all_roles_args.prototype.read = function(input) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 MapD_get_all_roles_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_all_roles_args');
   if (this.session !== null && this.session !== undefined) {
@@ -8890,17 +9881,28 @@ MapD_get_all_roles_result.prototype.read = function(input) {
   return;
 };
 
+=======
+>>>>>>> Update Thrift
 MapD_get_all_roles_result.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_all_roles_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter471 in this.success)
     {
       if (this.success.hasOwnProperty(iter471))
       {
         iter471 = this.success[iter471];
         output.writeString(iter471);
+=======
+    for (var iter375 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter375))
+      {
+        iter375 = this.success[iter375];
+        output.writeString(iter375);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -9055,10 +10057,17 @@ MapD_get_db_object_privileges_for_role_result.prototype.read = function(input) {
         _size472 = _rtmp3476.size;
         for (var _i477 = 0; _i477 < _size472; ++_i477)
         {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
           var elem478 = null;
           elem478 = new ttypes.TAccessPrivileges();
           elem478.read(input);
           this.success.push(elem478);
+=======
+          var elem382 = null;
+          elem382 = new ttypes.TAccessPrivileges();
+          elem382.read(input);
+          this.success.push(elem382);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -9087,12 +10096,21 @@ MapD_get_db_object_privileges_for_role_result.prototype.write = function(output)
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter479 in this.success)
+=======
+    for (var iter383 in this.success)
+>>>>>>> Update Thrift
     {
       if (this.success.hasOwnProperty(iter479))
       {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         iter479 = this.success[iter479];
         iter479.write(output);
+=======
+        iter383 = this.success[iter383];
+        iter383.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -9215,10 +10233,17 @@ MapD_get_db_objects_for_role_result.prototype.read = function(input) {
         _size480 = _rtmp3484.size;
         for (var _i485 = 0; _i485 < _size480; ++_i485)
         {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
           var elem486 = null;
           elem486 = new ttypes.TDBObject();
           elem486.read(input);
           this.success.push(elem486);
+=======
+          var elem390 = null;
+          elem390 = new ttypes.TDBObject();
+          elem390.read(input);
+          this.success.push(elem390);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -9247,12 +10272,21 @@ MapD_get_db_objects_for_role_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter487 in this.success)
+=======
+    for (var iter391 in this.success)
+>>>>>>> Update Thrift
     {
       if (this.success.hasOwnProperty(iter487))
       {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         iter487 = this.success[iter487];
         iter487.write(output);
+=======
+        iter391 = this.success[iter391];
+        iter391.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -9375,10 +10409,17 @@ MapD_get_db_object_privs_result.prototype.read = function(input) {
         _size488 = _rtmp3492.size;
         for (var _i493 = 0; _i493 < _size488; ++_i493)
         {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
           var elem494 = null;
           elem494 = new ttypes.TDBObject();
           elem494.read(input);
           this.success.push(elem494);
+=======
+          var elem398 = null;
+          elem398 = new ttypes.TDBObject();
+          elem398.read(input);
+          this.success.push(elem398);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -9535,9 +10576,15 @@ MapD_get_all_roles_for_user_result.prototype.read = function(input) {
         _size496 = _rtmp3500.size;
         for (var _i501 = 0; _i501 < _size496; ++_i501)
         {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
           var elem502 = null;
           elem502 = input.readString();
           this.success.push(elem502);
+=======
+          var elem406 = null;
+          elem406 = input.readString();
+          this.success.push(elem406);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -9566,12 +10613,21 @@ MapD_get_all_roles_for_user_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter503 in this.success)
+=======
+    for (var iter407 in this.success)
+>>>>>>> Update Thrift
     {
       if (this.success.hasOwnProperty(iter503))
       {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         iter503 = this.success[iter503];
         output.writeString(iter503);
+=======
+        iter407 = this.success[iter407];
+        output.writeString(iter407);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -9726,10 +10782,17 @@ MapD_get_db_object_privileges_for_user_result.prototype.read = function(input) {
         _size504 = _rtmp3508.size;
         for (var _i509 = 0; _i509 < _size504; ++_i509)
         {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
           var elem510 = null;
           elem510 = new ttypes.TAccessPrivileges();
           elem510.read(input);
           this.success.push(elem510);
+=======
+          var elem414 = null;
+          elem414 = new ttypes.TAccessPrivileges();
+          elem414.read(input);
+          this.success.push(elem414);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -9886,10 +10949,17 @@ MapD_get_db_objects_for_user_result.prototype.read = function(input) {
         _size512 = _rtmp3516.size;
         for (var _i517 = 0; _i517 < _size512; ++_i517)
         {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
           var elem518 = null;
           elem518 = new ttypes.TDBObject();
           elem518.read(input);
           this.success.push(elem518);
+=======
+          var elem422 = null;
+          elem422 = new ttypes.TDBObject();
+          elem422.read(input);
+          this.success.push(elem422);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -9918,12 +10988,21 @@ MapD_get_db_objects_for_user_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter519 in this.success)
+=======
+    for (var iter423 in this.success)
+>>>>>>> Update Thrift
     {
       if (this.success.hasOwnProperty(iter519))
       {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         iter519 = this.success[iter519];
         iter519.write(output);
+=======
+        iter423 = this.success[iter423];
+        iter423.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -12799,7 +13878,11 @@ MapDClient.prototype.recv_broadcast_serialized_rows = function(input,mtype,rseqi
   }
   callback(null);
 };
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 MapDClient.prototype.start_render_query = function(session, widget_id, node_idx, vega_json, callback) {
+=======
+MapDClient.prototype.render_vega_raw_pixels = function(session, widget_id, node_idx, vega_json, nonce, callback) {
+>>>>>>> Update Thrift
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -12810,6 +13893,7 @@ MapDClient.prototype.start_render_query = function(session, widget_id, node_idx,
         _defer.resolve(result);
       }
     };
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     this.send_start_render_query(session, widget_id, node_idx, vega_json);
     return _defer.promise;
   } else {
@@ -12819,6 +13903,17 @@ MapDClient.prototype.start_render_query = function(session, widget_id, node_idx,
 };
 
 MapDClient.prototype.send_start_render_query = function(session, widget_id, node_idx, vega_json) {
+=======
+    this.send_render_vega_raw_pixels(session, widget_id, node_idx, vega_json, nonce);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_render_vega_raw_pixels(session, widget_id, node_idx, vega_json, nonce);
+  }
+};
+
+MapDClient.prototype.send_render_vega_raw_pixels = function(session, widget_id, node_idx, vega_json, nonce) {
+>>>>>>> Update Thrift
   var output = new this.pClass(this.output);
   output.writeMessageBegin('start_render_query', Thrift.MessageType.CALL, this.seqid());
   var args = new MapD_start_render_query_args();
@@ -12826,6 +13921,7 @@ MapDClient.prototype.send_start_render_query = function(session, widget_id, node
   args.widget_id = widget_id;
   args.node_idx = node_idx;
   args.vega_json = vega_json;
+  args.nonce = nonce;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
@@ -12951,6 +14047,7 @@ MapDClient.prototype.recv_insert_data = function(input,mtype,rseqid) {
   }
   callback(null);
 };
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 MapDClient.prototype.checkpoint = function(session, db_id, table_id, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
@@ -13001,6 +14098,9 @@ MapDClient.prototype.recv_checkpoint = function(input,mtype,rseqid) {
   callback(null);
 };
 MapDClient.prototype.get_table_descriptor = function(session, table_name, callback) {
+=======
+MapDClient.prototype.get_role = function(session, roleName, userPrivateRole, callback) {
+>>>>>>> Update Thrift
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -13011,6 +14111,7 @@ MapDClient.prototype.get_table_descriptor = function(session, table_name, callba
         _defer.resolve(result);
       }
     };
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     this.send_get_table_descriptor(session, table_name);
     return _defer.promise;
   } else {
@@ -13025,94 +14126,7 @@ MapDClient.prototype.send_get_table_descriptor = function(session, table_name) {
   var args = new MapD_get_table_descriptor_args();
   args.session = session;
   args.table_name = table_name;
-  args.write(output);
-  output.writeMessageEnd();
-  return this.output.flush();
-};
-
-MapDClient.prototype.recv_get_table_descriptor = function(input,mtype,rseqid) {
-  var callback = this._reqs[rseqid] || function() {};
-  delete this._reqs[rseqid];
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(input);
-    input.readMessageEnd();
-    return callback(x);
-  }
-  var result = new MapD_get_table_descriptor_result();
-  result.read(input);
-  input.readMessageEnd();
-
-  if (null !== result.e) {
-    return callback(result.e);
-  }
-  if (null !== result.success) {
-    return callback(null, result.success);
-  }
-  return callback('get_table_descriptor failed: unknown result');
-};
-MapDClient.prototype.get_row_descriptor = function(session, table_name, callback) {
-  this._seqid = this.new_seqid();
-  if (callback === undefined) {
-    var _defer = Q.defer();
-    this._reqs[this.seqid()] = function(error, result) {
-      if (error) {
-        _defer.reject(error);
-      } else {
-        _defer.resolve(result);
-      }
-    };
-    this.send_get_row_descriptor(session, table_name);
-    return _defer.promise;
-  } else {
-    this._reqs[this.seqid()] = callback;
-    this.send_get_row_descriptor(session, table_name);
-  }
-};
-
-MapDClient.prototype.send_get_row_descriptor = function(session, table_name) {
-  var output = new this.pClass(this.output);
-  output.writeMessageBegin('get_row_descriptor', Thrift.MessageType.CALL, this.seqid());
-  var args = new MapD_get_row_descriptor_args();
-  args.session = session;
-  args.table_name = table_name;
-  args.write(output);
-  output.writeMessageEnd();
-  return this.output.flush();
-};
-
-MapDClient.prototype.recv_get_row_descriptor = function(input,mtype,rseqid) {
-  var callback = this._reqs[rseqid] || function() {};
-  delete this._reqs[rseqid];
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(input);
-    input.readMessageEnd();
-    return callback(x);
-  }
-  var result = new MapD_get_row_descriptor_result();
-  result.read(input);
-  input.readMessageEnd();
-
-  if (null !== result.e) {
-    return callback(result.e);
-  }
-  if (null !== result.success) {
-    return callback(null, result.success);
-  }
-  return callback('get_row_descriptor failed: unknown result');
-};
-MapDClient.prototype.get_role = function(session, roleName, userPrivateRole, callback) {
-  this._seqid = this.new_seqid();
-  if (callback === undefined) {
-    var _defer = Q.defer();
-    this._reqs[this.seqid()] = function(error, result) {
-      if (error) {
-        _defer.reject(error);
-      } else {
-        _defer.resolve(result);
-      }
-    };
+=======
     this.send_get_role(session, roleName, userPrivateRole);
     return _defer.promise;
   } else {
@@ -13128,12 +14142,17 @@ MapDClient.prototype.send_get_role = function(session, roleName, userPrivateRole
   args.session = session;
   args.roleName = roleName;
   args.userPrivateRole = userPrivateRole;
+>>>>>>> Update Thrift
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+MapDClient.prototype.recv_get_table_descriptor = function(input,mtype,rseqid) {
+=======
 MapDClient.prototype.recv_get_role = function(input,mtype,rseqid) {
+>>>>>>> Update Thrift
   var callback = this._reqs[rseqid] || function() {};
   delete this._reqs[rseqid];
   if (mtype == Thrift.MessageType.EXCEPTION) {
@@ -13142,7 +14161,11 @@ MapDClient.prototype.recv_get_role = function(input,mtype,rseqid) {
     input.readMessageEnd();
     return callback(x);
   }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+  var result = new MapD_get_table_descriptor_result();
+=======
   var result = new MapD_get_role_result();
+>>>>>>> Update Thrift
   result.read(input);
   input.readMessageEnd();
 
@@ -13152,9 +14175,15 @@ MapDClient.prototype.recv_get_role = function(input,mtype,rseqid) {
   if (null !== result.success) {
     return callback(null, result.success);
   }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+  return callback('get_table_descriptor failed: unknown result');
+};
+MapDClient.prototype.get_row_descriptor = function(session, table_name, callback) {
+=======
   return callback('get_role failed: unknown result');
 };
 MapDClient.prototype.get_all_roles = function(session, userPrivateRole, callback) {
+>>>>>>> Update Thrift
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -13165,6 +14194,22 @@ MapDClient.prototype.get_all_roles = function(session, userPrivateRole, callback
         _defer.resolve(result);
       }
     };
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+    this.send_get_row_descriptor(session, table_name);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_get_row_descriptor(session, table_name);
+  }
+};
+
+MapDClient.prototype.send_get_row_descriptor = function(session, table_name) {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('get_row_descriptor', Thrift.MessageType.CALL, this.seqid());
+  var args = new MapD_get_row_descriptor_args();
+  args.session = session;
+  args.table_name = table_name;
+=======
     this.send_get_all_roles(session, userPrivateRole);
     return _defer.promise;
   } else {
@@ -13179,12 +14224,17 @@ MapDClient.prototype.send_get_all_roles = function(session, userPrivateRole) {
   var args = new MapD_get_all_roles_args();
   args.session = session;
   args.userPrivateRole = userPrivateRole;
+>>>>>>> Update Thrift
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+MapDClient.prototype.recv_get_row_descriptor = function(input,mtype,rseqid) {
+=======
 MapDClient.prototype.recv_get_all_roles = function(input,mtype,rseqid) {
+>>>>>>> Update Thrift
   var callback = this._reqs[rseqid] || function() {};
   delete this._reqs[rseqid];
   if (mtype == Thrift.MessageType.EXCEPTION) {
@@ -13193,7 +14243,11 @@ MapDClient.prototype.recv_get_all_roles = function(input,mtype,rseqid) {
     input.readMessageEnd();
     return callback(x);
   }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+  var result = new MapD_get_row_descriptor_result();
+=======
   var result = new MapD_get_all_roles_result();
+>>>>>>> Update Thrift
   result.read(input);
   input.readMessageEnd();
 
@@ -13203,7 +14257,11 @@ MapDClient.prototype.recv_get_all_roles = function(input,mtype,rseqid) {
   if (null !== result.success) {
     return callback(null, result.success);
   }
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+  return callback('get_row_descriptor failed: unknown result');
+=======
   return callback('get_all_roles failed: unknown result');
+>>>>>>> Update Thrift
 };
 MapDClient.prototype.get_db_object_privileges_for_role = function(session, roleName, objectType, objectName, callback) {
   this._seqid = this.new_seqid();
@@ -13514,6 +14572,109 @@ MapDClient.prototype.recv_get_db_objects_for_user = function(input,mtype,rseqid)
     return callback(null, result.success);
   }
   return callback('get_db_objects_for_user failed: unknown result');
+};
+MapDClient.prototype.set_license_key = function(session, key, nonce, callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_set_license_key(session, key, nonce);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_set_license_key(session, key, nonce);
+  }
+};
+
+MapDClient.prototype.send_set_license_key = function(session, key, nonce) {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('set_license_key', Thrift.MessageType.CALL, this.seqid());
+  var args = new MapD_set_license_key_args();
+  args.session = session;
+  args.key = key;
+  args.nonce = nonce;
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+MapDClient.prototype.recv_set_license_key = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new MapD_set_license_key_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.e) {
+    return callback(result.e);
+  }
+  if (null !== result.success) {
+    return callback(null, result.success);
+  }
+  return callback('set_license_key failed: unknown result');
+};
+MapDClient.prototype.get_license_claims = function(session, nonce, callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_get_license_claims(session, nonce);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_get_license_claims(session, nonce);
+  }
+};
+
+MapDClient.prototype.send_get_license_claims = function(session, nonce) {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('get_license_claims', Thrift.MessageType.CALL, this.seqid());
+  var args = new MapD_get_license_claims_args();
+  args.session = session;
+  args.nonce = nonce;
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+MapDClient.prototype.recv_get_license_claims = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new MapD_get_license_claims_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.e) {
+    return callback(result.e);
+  }
+  if (null !== result.success) {
+    return callback(null, result.success);
+  }
+  return callback('get_license_claims failed: unknown result');
 };
 MapDClient.prototype.set_license_key = function(session, key, nonce, callback) {
   this._seqid = this.new_seqid();
@@ -15763,8 +16924,13 @@ MapDProcessor.prototype.process_execute_next_render_step = function(seqid, input
   var args = new MapD_execute_next_render_step_args();
   args.read(input);
   input.readMessageEnd();
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
   if (this._handler.execute_next_render_step.length === 2) {
     Q.fcall(this._handler.execute_next_render_step, args.pending_render, args.merged_data)
+=======
+  if (this._handler.render_vega_raw_pixels.length === 5) {
+    Q.fcall(this._handler.render_vega_raw_pixels, args.session, args.widget_id, args.node_idx, args.vega_json, args.nonce)
+>>>>>>> Update Thrift
       .then(function(result) {
         var result_obj = new MapD_execute_next_render_step_result({success: result});
         output.writeMessageBegin("execute_next_render_step", Thrift.MessageType.REPLY, seqid);
@@ -15785,7 +16951,11 @@ MapDProcessor.prototype.process_execute_next_render_step = function(seqid, input
         output.flush();
       });
   } else {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     this._handler.execute_next_render_step(args.pending_render, args.merged_data, function (err, result) {
+=======
+    this._handler.render_vega_raw_pixels(args.session, args.widget_id, args.node_idx, args.vega_json, args.nonce, function (err, result) {
+>>>>>>> Update Thrift
       var result_obj;
       if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TMapDException) {
         result_obj = new MapD_execute_next_render_step_result((err !== null || typeof err === 'undefined') ? err : {success: result});

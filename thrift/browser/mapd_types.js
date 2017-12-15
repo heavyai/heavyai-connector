@@ -2346,6 +2346,7 @@ TPixelTableRowResult = function(args) {
   this.table_id = null;
   this.row_id = null;
   this.row_set = null;
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
   this.nonce = null;
   if (args) {
     if (args.pixel !== undefined && args.pixel !== null) {
@@ -2474,6 +2475,8 @@ TPixelTableRowResult.prototype.write = function(output) {
 
 TRenderResult = function(args) {
   this.image = null;
+=======
+>>>>>>> Update Thrift
   this.nonce = null;
   this.execution_time_ms = null;
   this.render_time_ms = null;
@@ -2602,6 +2605,123 @@ TRenderResult.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
+=======
+TRenderResult = function(args) {
+  this.image = null;
+  this.nonce = null;
+  this.execution_time_ms = null;
+  this.render_time_ms = null;
+  this.total_time_ms = null;
+  if (args) {
+    if (args.image !== undefined && args.image !== null) {
+      this.image = args.image;
+    }
+    if (args.nonce !== undefined && args.nonce !== null) {
+      this.nonce = args.nonce;
+    }
+    if (args.execution_time_ms !== undefined && args.execution_time_ms !== null) {
+      this.execution_time_ms = args.execution_time_ms;
+    }
+    if (args.render_time_ms !== undefined && args.render_time_ms !== null) {
+      this.render_time_ms = args.render_time_ms;
+    }
+    if (args.total_time_ms !== undefined && args.total_time_ms !== null) {
+      this.total_time_ms = args.total_time_ms;
+    }
+  }
+};
+TRenderResult.prototype = {};
+TRenderResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.image = input.readBinary().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.nonce = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.execution_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I64) {
+        this.render_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.I64) {
+        this.total_time_ms = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TRenderResult.prototype.write = function(output) {
+  output.writeStructBegin('TRenderResult');
+  if (this.image !== null && this.image !== undefined) {
+    output.writeFieldBegin('image', Thrift.Type.STRING, 1);
+    output.writeBinary(this.image);
+    output.writeFieldEnd();
+  }
+  if (this.nonce !== null && this.nonce !== undefined) {
+    output.writeFieldBegin('nonce', Thrift.Type.STRING, 2);
+    output.writeString(this.nonce);
+    output.writeFieldEnd();
+  }
+  if (this.execution_time_ms !== null && this.execution_time_ms !== undefined) {
+    output.writeFieldBegin('execution_time_ms', Thrift.Type.I64, 3);
+    output.writeI64(this.execution_time_ms);
+    output.writeFieldEnd();
+  }
+  if (this.render_time_ms !== null && this.render_time_ms !== undefined) {
+    output.writeFieldBegin('render_time_ms', Thrift.Type.I64, 4);
+    output.writeI64(this.render_time_ms);
+    output.writeFieldEnd();
+  }
+  if (this.total_time_ms !== null && this.total_time_ms !== undefined) {
+    output.writeFieldBegin('total_time_ms', Thrift.Type.I64, 5);
+    output.writeI64(this.total_time_ms);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+>>>>>>> Update Thrift
 TGpuSpecification = function(args) {
   this.num_sm = null;
   this.clock_frequency_kHz = null;
@@ -4925,6 +5045,7 @@ TRenderStepResult.prototype.read = function(input) {
   return;
 };
 
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
 TRenderStepResult.prototype.write = function(output) {
   output.writeStructBegin('TRenderStepResult');
   if (this.merge_data !== null && this.merge_data !== undefined) {
@@ -4967,6 +5088,30 @@ TRenderStepResult.prototype.write = function(output) {
           }
         }
         output.writeMapEnd();
+=======
+TRawPixelDataResult.prototype.write = function(output) {
+  output.writeStructBegin('TRawPixelDataResult');
+  if (this.width !== null && this.width !== undefined) {
+    output.writeFieldBegin('width', Thrift.Type.I32, 1);
+    output.writeI32(this.width);
+    output.writeFieldEnd();
+  }
+  if (this.height !== null && this.height !== undefined) {
+    output.writeFieldBegin('height', Thrift.Type.I32, 2);
+    output.writeI32(this.height);
+    output.writeFieldEnd();
+  }
+  if (this.render_pass_map !== null && this.render_pass_map !== undefined) {
+    output.writeFieldBegin('render_pass_map', Thrift.Type.MAP, 3);
+    output.writeMapBegin(Thrift.Type.I32, Thrift.Type.STRUCT, Thrift.objectLength(this.render_pass_map));
+    for (var kiter192 in this.render_pass_map)
+    {
+      if (this.render_pass_map.hasOwnProperty(kiter192))
+      {
+        var viter193 = this.render_pass_map[kiter192];
+        output.writeI32(kiter192);
+        viter193.write(output);
+>>>>>>> Update Thrift
       }
     }
     output.writeMapEnd();
@@ -5141,6 +5286,7 @@ TDBObject.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size234 = 0;
         var _rtmp3238;
         this.privs = [];
@@ -5153,6 +5299,20 @@ TDBObject.prototype.read = function(input) {
           var elem240 = null;
           elem240 = input.readBool().value;
           this.privs.push(elem240);
+=======
+        var _size194 = 0;
+        var _rtmp3198;
+        this.privs = [];
+        var _etype197 = 0;
+        _rtmp3198 = input.readListBegin();
+        _etype197 = _rtmp3198.etype;
+        _size194 = _rtmp3198.size;
+        for (var _i199 = 0; _i199 < _size194; ++_i199)
+        {
+          var elem200 = null;
+          elem200 = input.readBool().value;
+          this.privs.push(elem200);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -5183,12 +5343,21 @@ TDBObject.prototype.write = function(output) {
   if (this.privs !== null && this.privs !== undefined) {
     output.writeFieldBegin('privs', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.BOOL, this.privs.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter241 in this.privs)
     {
       if (this.privs.hasOwnProperty(iter241))
       {
         iter241 = this.privs[iter241];
         output.writeBool(iter241);
+=======
+    for (var iter201 in this.privs)
+    {
+      if (this.privs.hasOwnProperty(iter201))
+      {
+        iter201 = this.privs[iter201];
+        output.writeBool(iter201);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
@@ -5223,6 +5392,7 @@ TLicenseInfo.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.LIST) {
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
         var _size242 = 0;
         var _rtmp3246;
         this.claims = [];
@@ -5235,6 +5405,20 @@ TLicenseInfo.prototype.read = function(input) {
           var elem248 = null;
           elem248 = input.readString().value;
           this.claims.push(elem248);
+=======
+        var _size202 = 0;
+        var _rtmp3206;
+        this.claims = [];
+        var _etype205 = 0;
+        _rtmp3206 = input.readListBegin();
+        _etype205 = _rtmp3206.etype;
+        _size202 = _rtmp3206.size;
+        for (var _i207 = 0; _i207 < _size202; ++_i207)
+        {
+          var elem208 = null;
+          elem208 = input.readString().value;
+          this.claims.push(elem208);
+>>>>>>> Update Thrift
         }
         input.readListEnd();
       } else {
@@ -5258,12 +5442,21 @@ TLicenseInfo.prototype.write = function(output) {
   if (this.claims !== null && this.claims !== undefined) {
     output.writeFieldBegin('claims', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.STRING, this.claims.length);
+<<<<<<< 67dd489e7c0be426662f284f9420f0dc28f887f5
     for (var iter249 in this.claims)
     {
       if (this.claims.hasOwnProperty(iter249))
       {
         iter249 = this.claims[iter249];
         output.writeString(iter249);
+=======
+    for (var iter209 in this.claims)
+    {
+      if (this.claims.hasOwnProperty(iter209))
+      {
+        iter209 = this.claims[iter209];
+        output.writeString(iter209);
+>>>>>>> Update Thrift
       }
     }
     output.writeListEnd();
