@@ -6,6 +6,7 @@ module.exports = {
     "script!./build/thrift/browser/thrift.js",
     "script!./build/thrift/browser/mapd_types.js",
     "script!./build/thrift/browser/mapd.thrift.js",
+    "script!./build/thrift/browser/completion_hints_types.js",
     "./src/mapd-con-es6.js"
   ],
   module: {

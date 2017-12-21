@@ -13,11 +13,13 @@ function mkdirp (path) {
 
 const findExports = /^([\w]+)( = )/gm
 const filePathsBrowser = [
+  "thrift/browser/completion_hints_types.js",
   "thrift/browser/mapd_types.js",
   "thrift/browser/mapd.thrift.js",
   "thrift/browser/thrift.js"
 ]
 const filePathsNode = [
+  "thrift/node/completion_hints_types.js",
   "thrift/node/mapd_types.js",
   "thrift/node/mapd.thrift.js"
 ]
