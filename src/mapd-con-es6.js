@@ -832,6 +832,18 @@ class MapdCon {
     })
   }
 
+  getCompletionHintsAsync () {
+    return new Promise((resolve, reject) => {
+      this.getCompletionHints.bind(this)((error, completionHints) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(completionHints)
+        }
+      })
+    }) 
+  }
+
   /**
    * Create an array-like object from {@link TDatumType} by
    * flipping the string key and numerical value around.
