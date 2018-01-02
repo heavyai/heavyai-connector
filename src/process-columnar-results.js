@@ -8,6 +8,7 @@
    * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
    * @returns {Object} processedResults The formatted results of the query
    */
+
 export default function processColumnarResults (data, eliminateNullRows, dataEnum) {
   const formattedResult = {fields: [], results: []}
   const numCols = data.row_desc.length
@@ -51,27 +52,30 @@ export default function processColumnarResults (data, eliminateNullRows, dataEnu
             row[fieldName].push("NULL")
             continue // eslint-disable-line no-continue
           }
+
+          const arrValue = data.columns[c].data.arr_col[r].data
+
           switch (fieldType) {
           case "BOOL":
-            row[fieldName].push(Boolean(data.columns[c].data.arr_col[r].data.int_col[e]))
+            row[fieldName].push(Boolean(Number(arrValue.int_col[e])))
             break
           case "SMALLINT":
           case "INT":
           case "BIGINT":
-            row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e])
+            row[fieldName].push(Number(arrValue.int_col[e]))
             break
           case "FLOAT":
           case "DOUBLE":
           case "DECIMAL":
-            row[fieldName].push(data.columns[c].data.arr_col[r].data.real_col[e])
+            row[fieldName].push(arrValue.real_col[e])
             break
           case "STR":
-            row[fieldName].push(data.columns[c].data.arr_col[r].data.str_col[e])
+            row[fieldName].push(arrValue.str_col[e])
             break
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            row[fieldName].push(data.columns[c].data.arr_col[r].data.int_col[e] * 1000) // eslint-disable-line no-magic-numbers
+            row[fieldName].push(Number(arrValue.int_col[e]) * 1000) // eslint-disable-line no-magic-numbers
             break
           default:
             break
@@ -85,7 +89,7 @@ export default function processColumnarResults (data, eliminateNullRows, dataEnu
         case "SMALLINT":
         case "INT":
         case "BIGINT":
-          row[fieldName] = data.columns[c].data.int_col[r]
+          row[fieldName] = Number(data.columns[c].data.int_col[r])
           break
         case "FLOAT":
         case "DOUBLE":
@@ -102,6 +106,8 @@ export default function processColumnarResults (data, eliminateNullRows, dataEnu
           break
         default:
           break
+
+
         }
       }
     }

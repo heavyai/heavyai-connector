@@ -76,8 +76,8 @@ export default function processQueryResults (logging, updateQueryTimes) {
       }
 
       formattedResult.timing = {
-        execution_time_ms: result.execution_time_ms,
-        total_time_ms: result.total_time_ms
+        execution_time_ms: Number(result.execution_time_ms),
+        total_time_ms: Number(result.total_time_ms)
       }
 
       if (hasCallback) {
