@@ -836,9 +836,9 @@ class MapdCon {
     this._client[0].get_completion_hints(this._sessionId[0], callback)
   }
 
-  getCompletionHintsAsync () {
+  getCompletionHintsAsync (queryString) {
     return new Promise((resolve, reject) => {
-      this.getCompletionHints.bind(this)((error, completionHints) => {
+      this.getCompletionHints.bind(this)(queryString, {}, (error, completionHints) => {
         if (error) {
           reject(error)
         } else {
