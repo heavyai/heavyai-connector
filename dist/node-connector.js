@@ -31857,6 +31857,10 @@ module.exports =
 
 	    this.queryAsync = this.query;
 
+	    this.getCompletionHints = function (callback) {
+	      _this._client[0].get_completion_hints(_this._sessionId[0], callback);
+	    };
+
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
 	      return new Promise(function (resolve, reject) {
 	        _this.createTable(tableName, rowDescObj, tableType, function (err) {
