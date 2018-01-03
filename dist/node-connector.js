@@ -32530,11 +32530,12 @@ module.exports =
 	      var _this11 = this;
 
 	      return new Promise(function (resolve, reject) {
-	        _this11.getCompletionHints.bind(_this11)(queryString, function (error, completionHints) {
+	        _this11.getCompletionHints(queryString, function (error, result) {
 	          if (error) {
 	            reject(error);
 	          } else {
-	            resolve(completionHints);
+	            console.log('result from getCompletionHintsAsync', result);
+	            resolve(result);
 	          }
 	        });
 	      });
