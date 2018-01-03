@@ -317,9 +317,9 @@
 
 	    this.queryAsync = this.query;
 
-	    this.getCompletionHints = function (queryString, callback) {
+	    this.getCompletionHints = function (queryString, cursor) {
 	      console.log('this._client from connector getCompletionHints', _this._client);
-	      _this._client[0].get_completion_hints(_this._sessionId[0], queryString, callback);
+	      return _this._client[0].get_completion_hints(_this._sessionId[0], queryString, 0);
 	    };
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
