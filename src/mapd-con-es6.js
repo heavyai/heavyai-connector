@@ -840,11 +840,12 @@ class MapdCon {
 
   getCompletionHintsAsync (queryString) {
     return new Promise((resolve, reject) => {
-      this.getCompletionHints.bind(this)(queryString, (error, completionHints) => {
+      this.getCompletionHints(queryString, (error, result) => {
         if (error) {
           reject(error)
         } else {
-          resolve(completionHints)
+          console.log('result from getCompletionHintsAsync', result);
+          resolve(result)
         }
       })
     }) 
