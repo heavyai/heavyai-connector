@@ -1660,7 +1660,7 @@
 	  return deleteFrontendViewWithErrorHandling.apply(undefined, arguments);
 	};
 
-	MapdClientV2.prototype.get_completion_hints = function () {
+	MapDClientV2.prototype.get_completion_hints = function () {
 	  var getCompletionHintsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_completion_hints");
 	  return getCompletionHintsWithErrorHandling.apply(undefined, arguments);
 	};

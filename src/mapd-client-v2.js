@@ -55,7 +55,7 @@ MapDClientV2.prototype.delete_frontend_view = function(...args) {
   return deleteFrontendViewWithErrorHandling(...args)
 }
 
-MapdClientV2.prototype.get_completion_hints = function (...args) {
+MapDClientV2.prototype.get_completion_hints = function (...args) {
   const getCompletionHintsWithErrorHandling = wrapWithErrorHandling(this, "get_completion_hints")
   return getCompletionHintsWithErrorHandling(...args)
 }
