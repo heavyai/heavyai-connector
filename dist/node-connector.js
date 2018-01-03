@@ -31859,7 +31859,9 @@ module.exports =
 
 	    this.getCompletionHints = function (queryString, cursor) {
 	      // console.log('this._client from connector getCompletionHints', this._client);
-	      return _this._client[0].get_completion_hints(_this._sessionId[0], queryString, cursor);
+	      var result = _this._client[0].get_completion_hints(_this._sessionId[0], queryString, cursor);
+	      console.log('result from getCompletionHints', result);
+	      return result;
 	    };
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
