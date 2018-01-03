@@ -31857,8 +31857,8 @@ module.exports =
 
 	    this.queryAsync = this.query;
 
-	    this.getCompletionHints = function (callback) {
-	      _this._client[0].get_completion_hints(_this._sessionId[0], callback);
+	    this.getCompletionHints = function (queryString, callback) {
+	      _this._client[0].get_completion_hints(_this._sessionId[0], queryString, callback);
 	    };
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
@@ -31999,7 +31999,7 @@ module.exports =
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -32521,13 +32521,16 @@ module.exports =
 	        });
 	      });
 	    }
+
+	    // arguments: session_info, sql, cursor
+
 	  }, {
 	    key: "getCompletionHintsAsync",
 	    value: function getCompletionHintsAsync(queryString) {
 	      var _this11 = this;
 
 	      return new Promise(function (resolve, reject) {
-	        _this11.getCompletionHints.bind(_this11)(queryString, {}, function (error, completionHints) {
+	        _this11.getCompletionHints.bind(_this11)(queryString, function (error, completionHints) {
 	          if (error) {
 	            reject(error);
 	          } else {

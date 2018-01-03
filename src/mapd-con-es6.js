@@ -162,6 +162,7 @@ class MapdCon {
           "deleteFrontendViewAsync",
           "detectColumnTypesAsync",
           "disconnect",
+          "getCompletionHintsAsync",
           "getFields",
           "getFrontendViewAsync",
           "getFrontendViewsAsync",
@@ -832,13 +833,14 @@ class MapdCon {
     })
   }
 
-  getCompletionHints = (callback) => {
-    this._client[0].get_completion_hints(this._sessionId[0], callback)
+  // arguments: session_info, sql, cursor
+  getCompletionHints = (queryString, callback) => {
+    this._client[0].get_completion_hints(this._sessionId[0], queryString, callback)
   }
 
   getCompletionHintsAsync (queryString) {
     return new Promise((resolve, reject) => {
-      this.getCompletionHints.bind(this)(queryString, {}, (error, completionHints) => {
+      this.getCompletionHints.bind(this)(queryString, (error, completionHints) => {
         if (error) {
           reject(error)
         } else {
