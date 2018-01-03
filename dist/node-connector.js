@@ -32523,11 +32523,11 @@ module.exports =
 	    }
 	  }, {
 	    key: "getCompletionHintsAsync",
-	    value: function getCompletionHintsAsync() {
+	    value: function getCompletionHintsAsync(queryString) {
 	      var _this11 = this;
 
 	      return new Promise(function (resolve, reject) {
-	        _this11.getCompletionHints.bind(_this11)(function (error, completionHints) {
+	        _this11.getCompletionHints.bind(_this11)(queryString, {}, function (error, completionHints) {
 	          if (error) {
 	            reject(error);
 	          } else {
