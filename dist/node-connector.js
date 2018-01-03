@@ -33200,6 +33200,11 @@ module.exports =
 	  return deleteFrontendViewWithErrorHandling.apply(undefined, arguments);
 	};
 
+	MapdClientV2.prototype.get_completion_hints = function () {
+	  var getCompletionHintsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_completion_hints");
+	  return getCompletionHintsWithErrorHandling.apply(undefined, arguments);
+	};
+
 	MapDClientV2.prototype.get_tables = function () {
 	  var getTablesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_tables");
 	  return getTablesWithErrorHandling.apply(undefined, arguments);
