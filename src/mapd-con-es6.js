@@ -835,6 +835,7 @@ class MapdCon {
 
   // arguments: session_info, sql, cursor
   getCompletionHints = (queryString, callback) => {
+    console.log('this._client from connector getCompletionHints', this._client);
     this._client[0].get_completion_hints(this._sessionId[0], queryString, callback)
   }
 

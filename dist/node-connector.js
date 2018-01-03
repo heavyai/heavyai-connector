@@ -31858,6 +31858,7 @@ module.exports =
 	    this.queryAsync = this.query;
 
 	    this.getCompletionHints = function (queryString, callback) {
+	      console.log('this._client from connector getCompletionHints', _this._client);
 	      _this._client[0].get_completion_hints(_this._sessionId[0], queryString, callback);
 	    };
 
