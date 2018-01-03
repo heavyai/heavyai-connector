@@ -32517,6 +32517,21 @@ module.exports =
 	        });
 	      });
 	    }
+	  }, {
+	    key: "getCompletionHintsAsync",
+	    value: function getCompletionHintsAsync() {
+	      var _this11 = this;
+
+	      return new Promise(function (resolve, reject) {
+	        _this11.getCompletionHints.bind(_this11)(function (error, completionHints) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(completionHints);
+	          }
+	        });
+	      });
+	    }
 
 	    /**
 	     * Create an array-like object from {@link TDatumType} by
@@ -32556,7 +32571,7 @@ module.exports =
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName, callback) {
-	      var _this11 = this;
+	      var _this12 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
 	        if (fields) {
@@ -32564,7 +32579,7 @@ module.exports =
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-	          callback(null, _this11.convertFromThriftTypes(rowDict));
+	          callback(null, _this12.convertFromThriftTypes(rowDict));
 	        } else {
 	          callback(new Error("Table (" + tableName + ") not found" + error));
 	        }
@@ -32632,11 +32647,11 @@ module.exports =
 	  }, {
 	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this12 = this;
+	      var _this13 = this;
 
 	      return function (tableName, fileName, copyParams, headers) {
 	        return new Promise(function (resolve, reject) {
-	          _this12.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
+	          _this13.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
 	            if (err) {
 	              reject(err);
 	            } else {
@@ -32683,7 +32698,7 @@ module.exports =
 	     * @returns {Image} Base 64 Image
 	     */
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this13 = this;
+	      var _this14 = this;
 
 	      var queryId = null;
 	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
@@ -32717,7 +32732,7 @@ module.exports =
 	          if (error) {
 	            callback(error);
 	          } else {
-	            _this13.processResults(processResultsOptions, result, callback);
+	            _this14.processResults(processResultsOptions, result, callback);
 	          }
 	        });
 	      } catch (err) {
@@ -33036,10 +33051,10 @@ module.exports =
 	  }, {
 	    key: "getEndpoints",
 	    value: function getEndpoints() {
-	      var _this14 = this;
+	      var _this15 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this14._protocol[i] + "://" + host + ":" + _this14._port[i];
+	        return _this15._protocol[i] + "://" + host + ":" + _this15._port[i];
 	      });
 	    }
 	  }]);
