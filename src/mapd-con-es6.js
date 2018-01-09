@@ -834,6 +834,28 @@ class MapdCon {
   }
 
   // arguments: session_info, sql, cursor
+  /**
+   * Submits a sql string to the backend and returns a completion hints object 
+   * @param {String} queryString a fragment of SQL input
+   * @param {Object} cursor the current cursor position, 1-indexed from the start of queryString
+   * @param {Function} callback a callback function with the signature `(err, result) => result`
+   * @returns {Array} An array of completion hints objects that contains the completion hints
+   * 
+   * @example 
+   * const queryString = "f";
+   * const cursor = 1;
+   *
+   * con.getCompletionHints(queryString, cursor, function(err, result) {
+   *        console.log(result)
+   *      });
+   *
+   *  [{
+   *    hints: ["FROM"],
+   *    replaced: "f",
+   *    type: 7
+   *   }]
+   *
+   */
   getCompletionHints = (queryString, cursor) => {
     // console.log('this._client from connector getCompletionHints', this._client);
     const result = this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor);
