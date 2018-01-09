@@ -317,8 +317,11 @@
 
 	    this.queryAsync = this.query;
 
-	    this.getCompletionHints = function (queryString, cursor, disableKeywords, callback) {
+	    this.getCompletionHints = function (queryString, options, callback) {
 	      // console.log('this._client from connector getCompletionHints', this._client);
+	      var cursor = options.cursor,
+	          disableKeywords = options.disableKeywords;
+
 	      var result = _this._client[0].get_completion_hints(_this._sessionId[0], queryString, cursor, disableKeywords, function (error, result) {
 	        if (error) {
 	          callback(error);
