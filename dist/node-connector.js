@@ -31857,21 +31857,6 @@ module.exports =
 
 	    this.queryAsync = this.query;
 
-	    this.getCompletionHints = function (queryString, options, callback) {
-	      // console.log('this._client from connector getCompletionHints', this._client);
-	      var cursor = options.cursor,
-	          disableKeywords = options.disableKeywords;
-
-	      var result = _this._client[0].get_completion_hints(_this._sessionId[0], queryString, cursor, disableKeywords, function (error, result) {
-	        if (error) {
-	          callback(error);
-	        } else {
-	          console.log('result from getCompletionHints', result);
-	          callback(null, result);
-	        }
-	      });
-	    };
-
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
 	      return new Promise(function (resolve, reject) {
 	        _this.createTable(tableName, rowDescObj, tableType, function (err) {
@@ -32010,7 +31995,7 @@ module.exports =
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -32534,38 +32519,14 @@ module.exports =
 	    }
 
 	    /**
-	     * Submits a sql string to the backend and returns a completion hints object 
-	     * @param {String} queryString a fragment of SQL input
-	     * @param {Object} cursor the current cursor position, 1-indexed from the start of queryString
-	     * @param {Function} callback a callback function with the signature `(err, result) => result`
-	     * @returns {Array} An array of completion hints objects that contains the completion hints
-	     * 
-	     * @example 
-	     * const queryString = "f";
-	     * const cursor = 1;
-	     *
-	     * con.getCompletionHints(queryString, cursor, function(error, result) {
-	     *        console.log(result)
-	     *      });
-	     *
-	     *  [{
-	     *    hints: ["FROM"],
-	     *    replaced: "f",
-	     *    type: 7
-	     *   }]
-	     *
-	     */
-
-	  }, {
-	    key: "invertDatumTypes",
-
-
-	    /**
 	     * Create an array-like object from {@link TDatumType} by
 	     * flipping the string key and numerical value around.
 	     *
 	     * @returns {Undefined} This function does not return anything
 	     */
+
+	  }, {
+	    key: "invertDatumTypes",
 	    value: function invertDatumTypes() {
 	      var datumType = TDatumType; // eslint-disable-line no-undef
 	      for (var key in datumType) {
@@ -33213,11 +33174,6 @@ module.exports =
 	MapDClientV2.prototype.delete_frontend_view = function () {
 	  var deleteFrontendViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "delete_frontend_view");
 	  return deleteFrontendViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_completion_hints = function () {
-	  var getCompletionHintsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_completion_hints");
-	  return getCompletionHintsWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.get_tables = function () {
