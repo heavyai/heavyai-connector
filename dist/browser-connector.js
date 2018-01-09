@@ -317,9 +317,9 @@
 
 	    this.queryAsync = this.query;
 
-	    this.getCompletionHints = function (queryString, cursor, callback) {
+	    this.getCompletionHints = function (queryString, cursor, disableKeywords, callback) {
 	      // console.log('this._client from connector getCompletionHints', this._client);
-	      var result = _this._client[0].get_completion_hints(_this._sessionId[0], queryString, cursor, function (error, result) {
+	      var result = _this._client[0].get_completion_hints(_this._sessionId[0], queryString, cursor, disableKeywords, function (error, result) {
 	        if (error) {
 	          callback(error);
 	        } else {
@@ -1014,21 +1014,8 @@
 	     */
 
 	  }, {
-	    key: "getCompletionHintsAsync",
-	    value: function getCompletionHintsAsync(queryString) {
-	      var _this11 = this;
+	    key: "invertDatumTypes",
 
-	      return new Promise(function (resolve, reject) {
-	        _this11.getCompletionHints(queryString, function (error, result) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            console.log('result from getCompletionHintsAsync', result);
-	            resolve(result);
-	          }
-	        });
-	      });
-	    }
 
 	    /**
 	     * Create an array-like object from {@link TDatumType} by
@@ -1036,9 +1023,6 @@
 	     *
 	     * @returns {Undefined} This function does not return anything
 	     */
-
-	  }, {
-	    key: "invertDatumTypes",
 	    value: function invertDatumTypes() {
 	      var datumType = TDatumType; // eslint-disable-line no-undef
 	      for (var key in datumType) {
@@ -1068,7 +1052,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName, callback) {
-	      var _this12 = this;
+	      var _this11 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
 	        if (fields) {
@@ -1076,7 +1060,7 @@
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-	          callback(null, _this12.convertFromThriftTypes(rowDict));
+	          callback(null, _this11.convertFromThriftTypes(rowDict));
 	        } else {
 	          callback(new Error("Table (" + tableName + ") not found" + error));
 	        }
@@ -1144,11 +1128,11 @@
 	  }, {
 	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this13 = this;
+	      var _this12 = this;
 
 	      return function (tableName, fileName, copyParams, headers) {
 	        return new Promise(function (resolve, reject) {
-	          _this13.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
+	          _this12.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
 	            if (err) {
 	              reject(err);
 	            } else {
@@ -1195,7 +1179,7 @@
 	     * @returns {Image} Base 64 Image
 	     */
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this14 = this;
+	      var _this13 = this;
 
 	      var queryId = null;
 	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
@@ -1229,7 +1213,7 @@
 	          if (error) {
 	            callback(error);
 	          } else {
-	            _this14.processResults(processResultsOptions, result, callback);
+	            _this13.processResults(processResultsOptions, result, callback);
 	          }
 	        });
 	      } catch (err) {
@@ -1548,10 +1532,10 @@
 	  }, {
 	    key: "getEndpoints",
 	    value: function getEndpoints() {
-	      var _this15 = this;
+	      var _this14 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this15._protocol[i] + "://" + host + ":" + _this15._port[i];
+	        return _this14._protocol[i] + "://" + host + ":" + _this14._port[i];
 	      });
 	    }
 	  }]);
