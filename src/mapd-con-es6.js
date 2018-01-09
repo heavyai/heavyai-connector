@@ -833,7 +833,6 @@ class MapdCon {
     })
   }
 
-  // arguments: session_info, sql, cursor
   /**
    * Submits a sql string to the backend and returns a completion hints object 
    * @param {String} queryString a fragment of SQL input
@@ -845,7 +844,7 @@ class MapdCon {
    * const queryString = "f";
    * const cursor = 1;
    *
-   * con.getCompletionHints(queryString, cursor, function(err, result) {
+   * con.getCompletionHints(queryString, cursor, function(error, result) {
    *        console.log(result)
    *      });
    *
@@ -856,11 +855,16 @@ class MapdCon {
    *   }]
    *
    */
-  getCompletionHints = (queryString, cursor) => {
+  getCompletionHints = (queryString, cursor, callback) => {
     // console.log('this._client from connector getCompletionHints', this._client);
-    const result = this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor);
-    console.log('result from getCompletionHints', result);
-    return result;
+    const result = this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, (error, result) => {
+      if (error) {
+        callback(error)
+      } else {
+        console.log('result from getCompletionHints', result);
+        callback(null, result)
+      }
+    });
   }
 
   getCompletionHintsAsync (queryString) {
