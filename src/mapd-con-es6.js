@@ -858,8 +858,7 @@ class MapdCon {
   getCompletionHints = (queryString, options, callback) => {
     // console.log('this._client from connector getCompletionHints', this._client);
     const cursor = options.cursor;
-    const disableKeywords = options.disableKeywords;
-    const result = this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, disableKeywords, (error, result) => {
+    const result = this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, (error, result) => {
       if (error) {
         callback(error)
       } else {

@@ -12663,14 +12663,14 @@ MapDClient.prototype.recv_sql_validate = function() {
   }
   throw 'sql_validate failed: unknown result';
 };
-MapDClient.prototype.get_completion_hints = function( session, sql, cursor, disableKeywords, callback) {
-  this.send_get_completion_hints( session, sql, cursor, disableKeywords, callback); 
+MapDClient.prototype.get_completion_hints = function( session, sql, cursor, callback) {
+  this.send_get_completion_hints( session, sql, cursor, callback); 
   if (!callback) {
     return this.recv_get_completion_hints();
   }
 };
 
-MapDClient.prototype.send_get_completion_hints = function( session, sql, cursor, disableKeywords, callback) {
+MapDClient.prototype.send_get_completion_hints = function( session, sql, cursor,  callback) {
   this.output.writeMessageBegin('get_completion_hints', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_get_completion_hints_args();
   args.session = session;

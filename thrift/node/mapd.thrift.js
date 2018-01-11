@@ -12764,7 +12764,7 @@ MapDClient.prototype.recv_sql_validate = function(input,mtype,rseqid) {
   }
   return callback('sql_validate failed: unknown result');
 };
-MapDClient.prototype.get_completion_hints = function(session, sql, cursor, disableKeywords, callback) {
+MapDClient.prototype.get_completion_hints = function(session, sql, cursor, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
