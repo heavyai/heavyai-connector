@@ -15,7 +15,7 @@ TCompletionHintType = {
   'FUNCTION' : 6,
   'KEYWORD' : 7
 };
-TCompletionHint = function(args) {
+function TCompletionHint(args) {
   this.type = null;
   this.hints = null;
   this.replaced = null;
