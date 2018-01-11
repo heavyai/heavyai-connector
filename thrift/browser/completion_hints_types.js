@@ -15,7 +15,7 @@ TCompletionHintType = {
   'FUNCTION' : 6,
   'KEYWORD' : 7
 };
-function TCompletionHint(args) {
+TCompletionHint = function(args) {
   this.type = null;
   this.hints = null;
   this.replaced = null;
@@ -118,4 +118,3 @@ TCompletionHint.prototype.write = function(output) {
   output.writeStructEnd();
   return;
 };
-
