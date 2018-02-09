@@ -35,6 +35,7 @@
     "documentation": "^4.0.0-rc.0",
     "esdoc": "^0.4.8",
     "eslint": "^3.0.1",
+    "eslint-config-prettier": "^2.9.0",
     "karma": "^1.7.0",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-chai": "^0.1.0",

@@ -1,4 +1,5 @@
 {
+  "extends": ["prettier"],
   "rules": { // And why they're best practice (alphabetized).
     "accessor-pairs": [2, {"getWithoutSet": true}], // omission is usually by mistake.
     "array-bracket-spacing": 2, // spaces can make arrays take up a lot of space, and concise code allows for more reading context.
