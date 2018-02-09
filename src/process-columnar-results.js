@@ -18,7 +18,7 @@ export default function processColumnarResults(
   const numRows =
     typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length
   // to satisfy eslint no-magic-numbers rule
-  const oneThousand = 1000
+  const oneThousandMilliseconds = 1000
 
   formattedResult.fields = data.row_desc.map(field => ({
     name: field.col_name,
@@ -87,7 +87,7 @@ export default function processColumnarResults(
             case "TIMESTAMP":
             case "DATE":
               row[fieldName].push(
-                data.columns[c].data.arr_col[r].data.int_col[e] * oneThousand
+                data.columns[c].data.arr_col[r].data.int_col[e] * oneThousandMilliseconds
               )
               break
             default:
@@ -115,7 +115,7 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            row[fieldName] = new Date(data.columns[c].data.int_col[r] * oneThousand)
+            row[fieldName] = new Date(data.columns[c].data.int_col[r] * oneThousandMilliseconds)
             break
           default:
             break
