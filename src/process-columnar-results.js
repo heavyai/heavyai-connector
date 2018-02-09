@@ -17,6 +17,8 @@ export default function processColumnarResults(
   const numCols = data.row_desc.length
   const numRows =
     typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length
+  // to satisfy eslint no-magic-numbers rule
+  const oneThousand = 1000
 
   formattedResult.fields = data.row_desc.map(field => ({
     name: field.col_name,
@@ -85,8 +87,8 @@ export default function processColumnarResults(
             case "TIMESTAMP":
             case "DATE":
               row[fieldName].push(
-                data.columns[c].data.arr_col[r].data.int_col[e] * 1000
-              ) // eslint-disable-line no-magic-numbers
+                data.columns[c].data.arr_col[r].data.int_col[e] * oneThousand
+              )
               break
             default:
               break
@@ -113,7 +115,7 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            row[fieldName] = new Date(data.columns[c].data.int_col[r] * 1000) // eslint-disable-line no-magic-numbers
+            row[fieldName] = new Date(data.columns[c].data.int_col[r] * oneThousand)
             break
           default:
             break
