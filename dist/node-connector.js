@@ -31720,6 +31720,7 @@ module.exports =
 	exports.createResultError = createResultError;
 	exports.wrapMethod = wrapMethod;
 	exports.wrapWithErrorHandling = wrapWithErrorHandling;
+	/* eslint-disable consistent-this */
 	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(54).Client; // eslint-disable-line global-require
 	var TMapDException = typeof window !== "undefined" && window.TMapDException || __webpack_require__(52).TMapDException; // eslint-disable-line global-require
 	var Thrift = typeof window !== "undefined" && window.Thrift || __webpack_require__(1).Thrift; // eslint-disable-line global-require
@@ -31739,7 +31740,6 @@ module.exports =
 	}
 
 	function wrapMethod(context, method, isError) {
-	  // eslint-disable-line consistent-this
 	  return function wrapped() {
 	    var arity = MapDClient.prototype[method].length;
 
@@ -31773,7 +31773,6 @@ module.exports =
 	}
 
 	function wrapWithErrorHandling(context, method) {
-	  // eslint-disable-line consistent-this
 	  return wrapMethod(context, method, isResultError);
 	}
 
@@ -31799,23 +31798,23 @@ module.exports =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
-	   * Decides how to process raw results once they come back from the server.
-	   *
-	   * @param {Boolean} logging if enabled, will show how long the query took to execute in console
-	   * @param {Function} updateQueryTimes A function that updates internal query times on connector
-	   * @param {Object} options A list of options for processing the results
-	   * @param {Boolean} options.isImage Set to true when querying for backend rendered images
-	   * @param {Boolean} options.eliminateNullRows Removes null rows
-	   * @param {String} options.query The SQL query string used only for logging
-	   * @param {Number} options.queryId The ID of the query
-	   * @param {Number} options.conId The unique connector identification
-	   * @param {String} options.estimatedQueryTime The estimate of the query time
-	   * @param {Array<Function>} the same callback coming from {@link #query}
-	   * @param {Object} result - The query result used to decide whether to process
-	   *                          as column or row results.
-	   * @return {Object} null if image with callbacks, result if image with callbacks,
-	   *                  otherwise formatted results
-	   */
+	 * Decides how to process raw results once they come back from the server.
+	 *
+	 * @param {Boolean} logging if enabled, will show how long the query took to execute in console
+	 * @param {Function} updateQueryTimes A function that updates internal query times on connector
+	 * @param {Object} options A list of options for processing the results
+	 * @param {Boolean} options.isImage Set to true when querying for backend rendered images
+	 * @param {Boolean} options.eliminateNullRows Removes null rows
+	 * @param {String} options.query The SQL query string used only for logging
+	 * @param {Number} options.queryId The ID of the query
+	 * @param {Number} options.conId The unique connector identification
+	 * @param {String} options.estimatedQueryTime The estimate of the query time
+	 * @param {Array<Function>} the same callback coming from {@link #query}
+	 * @param {Object} result - The query result used to decide whether to process
+	 *                          as column or row results.
+	 * @return {Object} null if image with callbacks, result if image with callbacks,
+	 *                  otherwise formatted results
+	 */
 	function processQueryResults(logging, updateQueryTimes) {
 	  return function (options, _datumEnum, result, callback) {
 	    var isImage = false;
@@ -31890,19 +31889,21 @@ module.exports =
 	});
 	exports.default = processColumnarResults;
 	/**
-	   * Because it is inefficient for the server to return a row-based
-	   * data structure, it is better to process the column-based results into a row-based
-	   * format after the fact.
-	   *
-	   * @param {TRowSet} data The column-based data returned from a query
-	   * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
-	   * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
-	   * @returns {Object} processedResults The formatted results of the query
-	   */
+	 * Because it is inefficient for the server to return a row-based
+	 * data structure, it is better to process the column-based results into a row-based
+	 * format after the fact.
+	 *
+	 * @param {TRowSet} data The column-based data returned from a query
+	 * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
+	 * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
+	 * @returns {Object} processedResults The formatted results of the query
+	 */
 	function processColumnarResults(data, eliminateNullRows, dataEnum) {
 	  var formattedResult = { fields: [], results: [] };
 	  var numCols = data.row_desc.length;
 	  var numRows = typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length;
+	  // to satisfy eslint no-magic-numbers rule
+	  var oneThousand = 1000;
 
 	  formattedResult.fields = data.row_desc.map(function (field) {
 	    return {
@@ -31964,7 +31965,7 @@ module.exports =
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] * 1000); // eslint-disable-line no-magic-numbers
+	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] * oneThousand);
 	              break;
 	            default:
 	              break;
@@ -31991,7 +31992,7 @@ module.exports =
 	          case "TIME":
 	          case "TIMESTAMP":
 	          case "DATE":
-	            row[fieldName] = new Date(data.columns[_c].data.int_col[r] * 1000); // eslint-disable-line no-magic-numbers
+	            row[fieldName] = new Date(data.columns[_c].data.int_col[r] * oneThousand);
 	            break;
 	          default:
 	            break;
@@ -32014,14 +32015,14 @@ module.exports =
 	});
 	exports.default = processRowResults;
 	/**
-	   * It should be avoided to query for row-based results from the server, howerver
-	   * it can still be done. In this case, still process them into the same format as
-	   * (@link processColumnarResults} to keep the output consistent.
-	   * @param {TRowSet} data - The row-based data returned from a query
-	   * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
-	   * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}
-	   * @returns {Object} processedResults
-	   */
+	 * It should be avoided to query for row-based results from the server, howerver
+	 * it can still be done. In this case, still process them into the same format as
+	 * (@link processColumnarResults} to keep the output consistent.
+	 * @param {TRowSet} data - The row-based data returned from a query
+	 * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
+	 * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}
+	 * @returns {Object} processedResults
+	 */
 	function processRowResults(data, eliminateNullRows, datumEnum) {
 	  var numCols = data.row_desc.length;
 	  var formattedResult = { fields: [], results: [] };
