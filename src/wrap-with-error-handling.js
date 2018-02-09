@@ -1,3 +1,4 @@
+/* eslint-disable consistent-this */
 const MapDClient =
   (typeof window !== "undefined" && window.MapDClient) ||
   require("../build/thrift/node/mapd.thrift.js").Client // eslint-disable-line global-require
@@ -22,7 +23,6 @@ export function createResultError(result) {
 }
 
 export function wrapMethod(context, method, isError) {
-  // eslint-disable-line consistent-this
   return function wrapped(...args) {
     const arity = MapDClient.prototype[method].length
     if (args.length === arity) {
@@ -47,6 +47,5 @@ export function wrapMethod(context, method, isError) {
 }
 
 export function wrapWithErrorHandling(context, method) {
-  // eslint-disable-line consistent-this
   return wrapMethod(context, method, isResultError)
 }
