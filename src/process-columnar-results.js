@@ -87,7 +87,8 @@ export default function processColumnarResults(
             case "TIMESTAMP":
             case "DATE":
               row[fieldName].push(
-                data.columns[c].data.arr_col[r].data.int_col[e] * oneThousandMilliseconds
+                data.columns[c].data.arr_col[r].data.int_col[e] *
+                  oneThousandMilliseconds
               )
               break
             default:
@@ -115,7 +116,9 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            row[fieldName] = new Date(data.columns[c].data.int_col[r] * oneThousandMilliseconds)
+            row[fieldName] = new Date(
+              data.columns[c].data.int_col[r] * oneThousandMilliseconds
+            )
             break
           default:
             break
