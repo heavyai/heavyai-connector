@@ -109,10 +109,9 @@
  * @property {TRowSet} row_set
  */
 
- /**
-  * The types of tables that uploaded through the importer {@link TTableType}.
-  * @typedef {TTableType} TTableType
-  * @property {Number} DELIMITED=0
-  * @property {Number} POLYGON=1
-  */
-
+/**
+ * The types of tables that uploaded through the importer {@link TTableType}.
+ * @typedef {TTableType} TTableType
+ * @property {Number} DELIMITED=0
+ * @property {Number} POLYGON=1
+ */

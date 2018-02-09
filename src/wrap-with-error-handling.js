@@ -1,14 +1,17 @@
-const MapDClient = (typeof window !== "undefined" && window.MapDClient) || require("../build/thrift/node/mapd.thrift.js").Client // eslint-disable-line global-require
-const TMapDException = (typeof window !== "undefined" && window.TMapDException) || require("../build/thrift/node/mapd_types.js").TMapDException // eslint-disable-line global-require
-const Thrift = (typeof window !== "undefined" && window.Thrift) || require("thrift").Thrift // eslint-disable-line global-require
+const MapDClient =
+  (typeof window !== "undefined" && window.MapDClient) ||
+  require("../build/thrift/node/mapd.thrift.js").Client // eslint-disable-line global-require
+const TMapDException =
+  (typeof window !== "undefined" && window.TMapDException) ||
+  require("../build/thrift/node/mapd_types.js").TMapDException // eslint-disable-line global-require
+const Thrift =
+  (typeof window !== "undefined" && window.Thrift) || require("thrift").Thrift // eslint-disable-line global-require
 
-export function isResultError (result) {
-  return (
-    result instanceof Thrift.TException || result instanceof Error
-  )
+export function isResultError(result) {
+  return result instanceof Thrift.TException || result instanceof Error
 }
 
-export function createResultError (result) {
+export function createResultError(result) {
   if (result instanceof TMapDException) {
     return new Error(result.error_msg)
   } else if (typeof result.message === "undefined") {
@@ -18,12 +21,13 @@ export function createResultError (result) {
   }
 }
 
-export function wrapMethod (context, method, isError) { // eslint-disable-line consistent-this
-  return function wrapped (...args) {
+export function wrapMethod(context, method, isError) {
+  // eslint-disable-line consistent-this
+  return function wrapped(...args) {
     const arity = MapDClient.prototype[method].length
     if (args.length === arity) {
       const callback = args.pop()
-      MapDClient.prototype[method].call(context, ...args, (result) => {
+      MapDClient.prototype[method].call(context, ...args, result => {
         if (isError(result)) {
           callback(createResultError(result))
         } else {
@@ -37,11 +41,12 @@ export function wrapMethod (context, method, isError) { // eslint-disable-line c
       }
       return result
     } else {
-      throw new Error ("Insufficient arguments to run this method " + method)
+      throw new Error("Insufficient arguments to run this method " + method)
     }
   }
 }
 
-export function wrapWithErrorHandling (context, method) { // eslint-disable-line consistent-this
+export function wrapWithErrorHandling(context, method) {
+  // eslint-disable-line consistent-this
   return wrapMethod(context, method, isResultError)
 }
