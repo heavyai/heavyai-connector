@@ -327,7 +327,7 @@ class MapdCon {
         }
       })
     })
-   }
+  }
 
   /**
    * Get the status of the server as an array of <code>TServerStatus</code> objects.
