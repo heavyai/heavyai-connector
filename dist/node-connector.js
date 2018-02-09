@@ -31720,7 +31720,6 @@ module.exports =
 	exports.createResultError = createResultError;
 	exports.wrapMethod = wrapMethod;
 	exports.wrapWithErrorHandling = wrapWithErrorHandling;
-	/* eslint-disable consistent-this */
 	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(54).Client; // eslint-disable-line global-require
 	var TMapDException = typeof window !== "undefined" && window.TMapDException || __webpack_require__(52).TMapDException; // eslint-disable-line global-require
 	var Thrift = typeof window !== "undefined" && window.Thrift || __webpack_require__(1).Thrift; // eslint-disable-line global-require
@@ -31739,6 +31738,7 @@ module.exports =
 	  }
 	}
 
+	/* eslint-disable consistent-this */
 	function wrapMethod(context, method, isError) {
 	  return function wrapped() {
 	    var arity = MapDClient.prototype[method].length;
@@ -31775,6 +31775,7 @@ module.exports =
 	function wrapWithErrorHandling(context, method) {
 	  return wrapMethod(context, method, isResultError);
 	}
+	/* eslint-enable consistent-this */
 
 /***/ }),
 /* 60 */
