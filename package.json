@@ -10,6 +10,8 @@
     "coverage": "nyc report --reporter=text-lcov",
     "docs": "npm run docs:build && open docs/index.html",
     "docs:build": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
+    "format": "prettier --write '{src,test}/**/*.js'",
+    "format:check": "prettier --debug-check --list-different '{src,test}/**/*.js'",
     "lint": "eslint --fix src/",
     "test": "npm run lint && nyc npm run test:unit -- && npm run test:integration",
     "test:integration": "mocha test/integration.spec.js && karma start test/karma.conf.js",
