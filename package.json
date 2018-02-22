@@ -10,6 +10,9 @@
     "coverage": "nyc report --reporter=text-lcov",
     "docs": "npm run docs:build && open docs/index.html",
     "docs:build": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
+    "format": "prettier --write '{src,test}/**/*.js'",
+    "format:check": "prettier --debug-check --list-different '{src,test}/**/*.js'",
+    "format:lint": "yarn format && yarn lint",
     "lint": "eslint --fix src/",
     "test": "npm run lint && nyc npm run test:unit -- && npm run test:integration",
     "test:integration": "mocha test/integration.spec.js && karma start test/karma.conf.js",
@@ -33,6 +36,7 @@
     "documentation": "^4.0.0-rc.0",
     "esdoc": "^0.4.8",
     "eslint": "^3.0.1",
+    "eslint-config-prettier": "^2.9.0",
     "karma": "^1.7.0",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-chai": "^0.1.0",
@@ -42,6 +46,7 @@
     "karma-webpack": "^2.0.3",
     "mocha": "^2.5.3",
     "nyc": "^10.3.0",
+    "prettier": "1.10.2",
     "webpack": "^1.15.0"
   },
   "nyc": {
