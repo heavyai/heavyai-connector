@@ -31995,7 +31995,7 @@ module.exports =
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -32515,6 +32515,42 @@ module.exports =
 	            resolve(tables);
 	          }
 	        });
+	      });
+	    }
+
+	    /**
+	     * Submits a sql string to the backend and returns a completion hints object
+	     * @param {String} queryString a fragment of SQL input
+	     * @param {Object} options an options object continaing the current cursor position, 1-indexed from the start of queryString
+	     * @param {Function} callback a callback function with the signature `(err, result) => result`
+	     * @returns {Array} An array of completion hints objects that contains the completion hints
+	     *
+	     * @example
+	     * const queryString = "f";
+	     * const cursor = 1;
+	     *
+	     * con.getCompletionHints(queryString, cursor, function(error, result) {
+	     *        console.log(result)
+	     *      });
+	     *
+	     *  [{
+	     *    hints: ["FROM"],
+	     *    replaced: "f",
+	     *    type: 7
+	     *   }]
+	     *
+	     */
+
+	  }, {
+	    key: "getCompletionHints",
+	    value: function getCompletionHints(queryString, options, callback) {
+	      var cursor = options.cursor;
+	      this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, function (error, result) {
+	        if (error) {
+	          callback(error);
+	        } else {
+	          callback(null, result);
+	        }
 	      });
 	    }
 
@@ -33174,6 +33210,11 @@ module.exports =
 	MapDClientV2.prototype.delete_frontend_view = function () {
 	  var deleteFrontendViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "delete_frontend_view");
 	  return deleteFrontendViewWithErrorHandling.apply(undefined, arguments);
+	};
+
+	MapDClientV2.prototype.get_completion_hints = function () {
+	  var getCompletionHintsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_completion_hints");
+	  return getCompletionHintsWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.get_tables = function () {
