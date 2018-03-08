@@ -100,8 +100,10 @@ describe(isNodeRuntime ? "node" : "browser", () => {
           ])
           done()
         })
-        .catch(getTablesAsyncError =>
+        .catch(getTablesAsyncError => {
           expect(getTablesAsyncError).to.not.be.an("error")
+          done()
+        }
         )
     })
   })
