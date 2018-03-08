@@ -855,15 +855,12 @@ class MapdCon {
    *   }]
    *
    */
-  getCompletionHints = (queryString, options, callback) => {
-    // console.log('this._client from connector getCompletionHints', this._client);
+  getCompletionHints(queryString, options, callback) {
     const cursor = options.cursor
-    // const result =
     this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, (error, result) => {
       if (error) {
         callback(error)
       } else {
-        console.log("result from getCompletionHints", result)
         callback(null, result)
       }
     })
