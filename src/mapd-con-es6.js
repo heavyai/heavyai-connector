@@ -1197,6 +1197,13 @@ class MapdCon {
   processPixelResults(callbacks, error, results) {
     callbacks = Array.isArray(callbacks) ? callbacks : [callbacks]
     results = Array.isArray(results) ? results.pixel_rows : [results]
+    if (error) {
+      if (callbacks) {
+        callbacks.pop()(error, results)
+      } else {
+        throw new Error(`Unable to process result row for pixel results: ${error}`)
+      }
+    }
     const numPixels = results.length
     const processResultsOptions = {
       isImage: false,
