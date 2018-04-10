@@ -481,19 +481,19 @@ MapD_get_status_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size258 = 0;
-        var _rtmp3262;
+        var _size266 = 0;
+        var _rtmp3270;
         this.success = [];
-        var _etype261 = 0;
-        _rtmp3262 = input.readListBegin();
-        _etype261 = _rtmp3262.etype;
-        _size258 = _rtmp3262.size;
-        for (var _i263 = 0; _i263 < _size258; ++_i263)
+        var _etype269 = 0;
+        _rtmp3270 = input.readListBegin();
+        _etype269 = _rtmp3270.etype;
+        _size266 = _rtmp3270.size;
+        for (var _i271 = 0; _i271 < _size266; ++_i271)
         {
-          var elem264 = null;
-          elem264 = new TServerStatus();
-          elem264.read(input);
-          this.success.push(elem264);
+          var elem272 = null;
+          elem272 = new TServerStatus();
+          elem272.read(input);
+          this.success.push(elem272);
         }
         input.readListEnd();
       } else {
@@ -522,12 +522,12 @@ MapD_get_status_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter265 in this.success)
+    for (var iter273 in this.success)
     {
-      if (this.success.hasOwnProperty(iter265))
+      if (this.success.hasOwnProperty(iter273))
       {
-        iter265 = this.success[iter265];
-        iter265.write(output);
+        iter273 = this.success[iter273];
+        iter273.write(output);
       }
     }
     output.writeListEnd();
@@ -753,18 +753,18 @@ MapD_get_tables_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size266 = 0;
-        var _rtmp3270;
+        var _size274 = 0;
+        var _rtmp3278;
         this.success = [];
-        var _etype269 = 0;
-        _rtmp3270 = input.readListBegin();
-        _etype269 = _rtmp3270.etype;
-        _size266 = _rtmp3270.size;
-        for (var _i271 = 0; _i271 < _size266; ++_i271)
+        var _etype277 = 0;
+        _rtmp3278 = input.readListBegin();
+        _etype277 = _rtmp3278.etype;
+        _size274 = _rtmp3278.size;
+        for (var _i279 = 0; _i279 < _size274; ++_i279)
         {
-          var elem272 = null;
-          elem272 = input.readString().value;
-          this.success.push(elem272);
+          var elem280 = null;
+          elem280 = input.readString().value;
+          this.success.push(elem280);
         }
         input.readListEnd();
       } else {
@@ -793,12 +793,12 @@ MapD_get_tables_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter273 in this.success)
+    for (var iter281 in this.success)
     {
-      if (this.success.hasOwnProperty(iter273))
+      if (this.success.hasOwnProperty(iter281))
       {
-        iter273 = this.success[iter273];
-        output.writeString(iter273);
+        iter281 = this.success[iter281];
+        output.writeString(iter281);
       }
     }
     output.writeListEnd();
@@ -899,18 +899,18 @@ MapD_get_physical_tables_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size274 = 0;
-        var _rtmp3278;
+        var _size282 = 0;
+        var _rtmp3286;
         this.success = [];
-        var _etype277 = 0;
-        _rtmp3278 = input.readListBegin();
-        _etype277 = _rtmp3278.etype;
-        _size274 = _rtmp3278.size;
-        for (var _i279 = 0; _i279 < _size274; ++_i279)
+        var _etype285 = 0;
+        _rtmp3286 = input.readListBegin();
+        _etype285 = _rtmp3286.etype;
+        _size282 = _rtmp3286.size;
+        for (var _i287 = 0; _i287 < _size282; ++_i287)
         {
-          var elem280 = null;
-          elem280 = input.readString().value;
-          this.success.push(elem280);
+          var elem288 = null;
+          elem288 = input.readString().value;
+          this.success.push(elem288);
         }
         input.readListEnd();
       } else {
@@ -939,12 +939,12 @@ MapD_get_physical_tables_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter281 in this.success)
+    for (var iter289 in this.success)
     {
-      if (this.success.hasOwnProperty(iter281))
+      if (this.success.hasOwnProperty(iter289))
       {
-        iter281 = this.success[iter281];
-        output.writeString(iter281);
+        iter289 = this.success[iter289];
+        output.writeString(iter289);
       }
     }
     output.writeListEnd();
@@ -1045,18 +1045,18 @@ MapD_get_views_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size282 = 0;
-        var _rtmp3286;
+        var _size290 = 0;
+        var _rtmp3294;
         this.success = [];
-        var _etype285 = 0;
-        _rtmp3286 = input.readListBegin();
-        _etype285 = _rtmp3286.etype;
-        _size282 = _rtmp3286.size;
-        for (var _i287 = 0; _i287 < _size282; ++_i287)
+        var _etype293 = 0;
+        _rtmp3294 = input.readListBegin();
+        _etype293 = _rtmp3294.etype;
+        _size290 = _rtmp3294.size;
+        for (var _i295 = 0; _i295 < _size290; ++_i295)
         {
-          var elem288 = null;
-          elem288 = input.readString().value;
-          this.success.push(elem288);
+          var elem296 = null;
+          elem296 = input.readString().value;
+          this.success.push(elem296);
         }
         input.readListEnd();
       } else {
@@ -1085,12 +1085,159 @@ MapD_get_views_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter289 in this.success)
+    for (var iter297 in this.success)
     {
-      if (this.success.hasOwnProperty(iter289))
+      if (this.success.hasOwnProperty(iter297))
       {
-        iter289 = this.success[iter289];
-        output.writeString(iter289);
+        iter297 = this.success[iter297];
+        output.writeString(iter297);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_tables_meta_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_tables_meta_args.prototype = {};
+MapD_get_tables_meta_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_tables_meta_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_meta_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_tables_meta_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [TTableMeta]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_tables_meta_result.prototype = {};
+MapD_get_tables_meta_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size298 = 0;
+        var _rtmp3302;
+        this.success = [];
+        var _etype301 = 0;
+        _rtmp3302 = input.readListBegin();
+        _etype301 = _rtmp3302.etype;
+        _size298 = _rtmp3302.size;
+        for (var _i303 = 0; _i303 < _size298; ++_i303)
+        {
+          var elem304 = null;
+          elem304 = new TTableMeta();
+          elem304.read(input);
+          this.success.push(elem304);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_tables_meta_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_meta_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter305 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter305))
+      {
+        iter305 = this.success[iter305];
+        iter305.write(output);
       }
     }
     output.writeListEnd();
@@ -1467,18 +1614,18 @@ MapD_get_users_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size290 = 0;
-        var _rtmp3294;
+        var _size306 = 0;
+        var _rtmp3310;
         this.success = [];
-        var _etype293 = 0;
-        _rtmp3294 = input.readListBegin();
-        _etype293 = _rtmp3294.etype;
-        _size290 = _rtmp3294.size;
-        for (var _i295 = 0; _i295 < _size290; ++_i295)
+        var _etype309 = 0;
+        _rtmp3310 = input.readListBegin();
+        _etype309 = _rtmp3310.etype;
+        _size306 = _rtmp3310.size;
+        for (var _i311 = 0; _i311 < _size306; ++_i311)
         {
-          var elem296 = null;
-          elem296 = input.readString().value;
-          this.success.push(elem296);
+          var elem312 = null;
+          elem312 = input.readString().value;
+          this.success.push(elem312);
         }
         input.readListEnd();
       } else {
@@ -1507,12 +1654,12 @@ MapD_get_users_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter297 in this.success)
+    for (var iter313 in this.success)
     {
-      if (this.success.hasOwnProperty(iter297))
+      if (this.success.hasOwnProperty(iter313))
       {
-        iter297 = this.success[iter297];
-        output.writeString(iter297);
+        iter313 = this.success[iter313];
+        output.writeString(iter313);
       }
     }
     output.writeListEnd();
@@ -1613,19 +1760,19 @@ MapD_get_databases_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size298 = 0;
-        var _rtmp3302;
+        var _size314 = 0;
+        var _rtmp3318;
         this.success = [];
-        var _etype301 = 0;
-        _rtmp3302 = input.readListBegin();
-        _etype301 = _rtmp3302.etype;
-        _size298 = _rtmp3302.size;
-        for (var _i303 = 0; _i303 < _size298; ++_i303)
+        var _etype317 = 0;
+        _rtmp3318 = input.readListBegin();
+        _etype317 = _rtmp3318.etype;
+        _size314 = _rtmp3318.size;
+        for (var _i319 = 0; _i319 < _size314; ++_i319)
         {
-          var elem304 = null;
-          elem304 = new TDBInfo();
-          elem304.read(input);
-          this.success.push(elem304);
+          var elem320 = null;
+          elem320 = new TDBInfo();
+          elem320.read(input);
+          this.success.push(elem320);
         }
         input.readListEnd();
       } else {
@@ -1654,12 +1801,12 @@ MapD_get_databases_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter305 in this.success)
+    for (var iter321 in this.success)
     {
-      if (this.success.hasOwnProperty(iter305))
+      if (this.success.hasOwnProperty(iter321))
       {
-        iter305 = this.success[iter305];
-        iter305.write(output);
+        iter321 = this.success[iter321];
+        iter321.write(output);
       }
     }
     output.writeListEnd();
@@ -2218,19 +2365,19 @@ MapD_get_memory_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size306 = 0;
-        var _rtmp3310;
+        var _size322 = 0;
+        var _rtmp3326;
         this.success = [];
-        var _etype309 = 0;
-        _rtmp3310 = input.readListBegin();
-        _etype309 = _rtmp3310.etype;
-        _size306 = _rtmp3310.size;
-        for (var _i311 = 0; _i311 < _size306; ++_i311)
+        var _etype325 = 0;
+        _rtmp3326 = input.readListBegin();
+        _etype325 = _rtmp3326.etype;
+        _size322 = _rtmp3326.size;
+        for (var _i327 = 0; _i327 < _size322; ++_i327)
         {
-          var elem312 = null;
-          elem312 = new TNodeMemoryInfo();
-          elem312.read(input);
-          this.success.push(elem312);
+          var elem328 = null;
+          elem328 = new TNodeMemoryInfo();
+          elem328.read(input);
+          this.success.push(elem328);
         }
         input.readListEnd();
       } else {
@@ -2259,12 +2406,12 @@ MapD_get_memory_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter313 in this.success)
+    for (var iter329 in this.success)
     {
-      if (this.success.hasOwnProperty(iter313))
+      if (this.success.hasOwnProperty(iter329))
       {
-        iter313 = this.success[iter313];
-        iter313.write(output);
+        iter329 = this.success[iter329];
+        iter329.write(output);
       }
     }
     output.writeListEnd();
@@ -3976,28 +4123,28 @@ MapD_sql_validate_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.MAP) {
-        var _size314 = 0;
-        var _rtmp3318;
+        var _size330 = 0;
+        var _rtmp3334;
         this.success = {};
-        var _ktype315 = 0;
-        var _vtype316 = 0;
-        _rtmp3318 = input.readMapBegin();
-        _ktype315 = _rtmp3318.ktype;
-        _vtype316 = _rtmp3318.vtype;
-        _size314 = _rtmp3318.size;
-        for (var _i319 = 0; _i319 < _size314; ++_i319)
+        var _ktype331 = 0;
+        var _vtype332 = 0;
+        _rtmp3334 = input.readMapBegin();
+        _ktype331 = _rtmp3334.ktype;
+        _vtype332 = _rtmp3334.vtype;
+        _size330 = _rtmp3334.size;
+        for (var _i335 = 0; _i335 < _size330; ++_i335)
         {
-          if (_i319 > 0 ) {
+          if (_i335 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key320 = null;
-          var val321 = null;
-          key320 = input.readString().value;
-          val321 = new TColumnType();
-          val321.read(input);
-          this.success[key320] = val321;
+          var key336 = null;
+          var val337 = null;
+          key336 = input.readString().value;
+          val337 = new TColumnType();
+          val337.read(input);
+          this.success[key336] = val337;
         }
         input.readMapEnd();
       } else {
@@ -4026,13 +4173,13 @@ MapD_sql_validate_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.MAP, 0);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
-    for (var kiter322 in this.success)
+    for (var kiter338 in this.success)
     {
-      if (this.success.hasOwnProperty(kiter322))
+      if (this.success.hasOwnProperty(kiter338))
       {
-        var viter323 = this.success[kiter322];
-        output.writeString(kiter322);
-        viter323.write(output);
+        var viter339 = this.success[kiter338];
+        output.writeString(kiter338);
+        viter339.write(output);
       }
     }
     output.writeMapEnd();
@@ -4162,19 +4309,19 @@ MapD_get_completion_hints_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size324 = 0;
-        var _rtmp3328;
+        var _size340 = 0;
+        var _rtmp3344;
         this.success = [];
-        var _etype327 = 0;
-        _rtmp3328 = input.readListBegin();
-        _etype327 = _rtmp3328.etype;
-        _size324 = _rtmp3328.size;
-        for (var _i329 = 0; _i329 < _size324; ++_i329)
+        var _etype343 = 0;
+        _rtmp3344 = input.readListBegin();
+        _etype343 = _rtmp3344.etype;
+        _size340 = _rtmp3344.size;
+        for (var _i345 = 0; _i345 < _size340; ++_i345)
         {
-          var elem330 = null;
-          elem330 = new TCompletionHint();
-          elem330.read(input);
-          this.success.push(elem330);
+          var elem346 = null;
+          elem346 = new TCompletionHint();
+          elem346.read(input);
+          this.success.push(elem346);
         }
         input.readListEnd();
       } else {
@@ -4203,12 +4350,12 @@ MapD_get_completion_hints_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter331 in this.success)
+    for (var iter347 in this.success)
     {
-      if (this.success.hasOwnProperty(iter331))
+      if (this.success.hasOwnProperty(iter347))
       {
-        iter331 = this.success[iter331];
-        iter331.write(output);
+        iter347 = this.success[iter347];
+        iter347.write(output);
       }
     }
     output.writeListEnd();
@@ -4604,40 +4751,40 @@ MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.MAP) {
-        var _size332 = 0;
-        var _rtmp3336;
+        var _size348 = 0;
+        var _rtmp3352;
         this.table_col_names = {};
-        var _ktype333 = 0;
-        var _vtype334 = 0;
-        _rtmp3336 = input.readMapBegin();
-        _ktype333 = _rtmp3336.ktype;
-        _vtype334 = _rtmp3336.vtype;
-        _size332 = _rtmp3336.size;
-        for (var _i337 = 0; _i337 < _size332; ++_i337)
+        var _ktype349 = 0;
+        var _vtype350 = 0;
+        _rtmp3352 = input.readMapBegin();
+        _ktype349 = _rtmp3352.ktype;
+        _vtype350 = _rtmp3352.vtype;
+        _size348 = _rtmp3352.size;
+        for (var _i353 = 0; _i353 < _size348; ++_i353)
         {
-          if (_i337 > 0 ) {
+          if (_i353 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key338 = null;
-          var val339 = null;
-          key338 = input.readString().value;
-          var _size340 = 0;
-          var _rtmp3344;
-          val339 = [];
-          var _etype343 = 0;
-          _rtmp3344 = input.readListBegin();
-          _etype343 = _rtmp3344.etype;
-          _size340 = _rtmp3344.size;
-          for (var _i345 = 0; _i345 < _size340; ++_i345)
+          var key354 = null;
+          var val355 = null;
+          key354 = input.readString().value;
+          var _size356 = 0;
+          var _rtmp3360;
+          val355 = [];
+          var _etype359 = 0;
+          _rtmp3360 = input.readListBegin();
+          _etype359 = _rtmp3360.etype;
+          _size356 = _rtmp3360.size;
+          for (var _i361 = 0; _i361 < _size356; ++_i361)
           {
-            var elem346 = null;
-            elem346 = input.readString().value;
-            val339.push(elem346);
+            var elem362 = null;
+            elem362 = input.readString().value;
+            val355.push(elem362);
           }
           input.readListEnd();
-          this.table_col_names[key338] = val339;
+          this.table_col_names[key354] = val355;
         }
         input.readMapEnd();
       } else {
@@ -4694,19 +4841,19 @@ MapD_get_result_row_for_pixel_args.prototype.write = function(output) {
   if (this.table_col_names !== null && this.table_col_names !== undefined) {
     output.writeFieldBegin('table_col_names', Thrift.Type.MAP, 4);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(this.table_col_names));
-    for (var kiter347 in this.table_col_names)
+    for (var kiter363 in this.table_col_names)
     {
-      if (this.table_col_names.hasOwnProperty(kiter347))
+      if (this.table_col_names.hasOwnProperty(kiter363))
       {
-        var viter348 = this.table_col_names[kiter347];
-        output.writeString(kiter347);
-        output.writeListBegin(Thrift.Type.STRING, viter348.length);
-        for (var iter349 in viter348)
+        var viter364 = this.table_col_names[kiter363];
+        output.writeString(kiter363);
+        output.writeListBegin(Thrift.Type.STRING, viter364.length);
+        for (var iter365 in viter364)
         {
-          if (viter348.hasOwnProperty(iter349))
+          if (viter364.hasOwnProperty(iter365))
           {
-            iter349 = viter348[iter349];
-            output.writeString(iter349);
+            iter365 = viter364[iter365];
+            output.writeString(iter365);
           }
         }
         output.writeListEnd();
@@ -5030,19 +5177,19 @@ MapD_get_frontend_views_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size350 = 0;
-        var _rtmp3354;
+        var _size366 = 0;
+        var _rtmp3370;
         this.success = [];
-        var _etype353 = 0;
-        _rtmp3354 = input.readListBegin();
-        _etype353 = _rtmp3354.etype;
-        _size350 = _rtmp3354.size;
-        for (var _i355 = 0; _i355 < _size350; ++_i355)
+        var _etype369 = 0;
+        _rtmp3370 = input.readListBegin();
+        _etype369 = _rtmp3370.etype;
+        _size366 = _rtmp3370.size;
+        for (var _i371 = 0; _i371 < _size366; ++_i371)
         {
-          var elem356 = null;
-          elem356 = new TFrontendView();
-          elem356.read(input);
-          this.success.push(elem356);
+          var elem372 = null;
+          elem372 = new TFrontendView();
+          elem372.read(input);
+          this.success.push(elem372);
         }
         input.readListEnd();
       } else {
@@ -5071,12 +5218,12 @@ MapD_get_frontend_views_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter357 in this.success)
+    for (var iter373 in this.success)
     {
-      if (this.success.hasOwnProperty(iter357))
+      if (this.success.hasOwnProperty(iter373))
       {
-        iter357 = this.success[iter357];
-        iter357.write(output);
+        iter373 = this.success[iter373];
+        iter373.write(output);
       }
     }
     output.writeListEnd();
@@ -5378,6 +5525,804 @@ MapD_delete_frontend_view_result.prototype.read = function(input) {
 
 MapD_delete_frontend_view_result.prototype.write = function(output) {
   output.writeStructBegin('MapD_delete_frontend_view_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_dashboard_args = function(args) {
+  this.session = null;
+  this.dashboard_id = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.dashboard_id !== undefined && args.dashboard_id !== null) {
+      this.dashboard_id = args.dashboard_id;
+    }
+  }
+};
+MapD_get_dashboard_args.prototype = {};
+MapD_get_dashboard_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.dashboard_id = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboard_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_id !== null && this.dashboard_id !== undefined) {
+    output.writeFieldBegin('dashboard_id', Thrift.Type.I32, 2);
+    output.writeI32(this.dashboard_id);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_dashboard_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TDashboard(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_dashboard_result.prototype = {};
+MapD_get_dashboard_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TDashboard();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboard_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_dashboards_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
+};
+MapD_get_dashboards_args.prototype = {};
+MapD_get_dashboards_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_dashboards_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboards_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_dashboards_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyList(args.success, [TDashboard]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_dashboards_result.prototype = {};
+MapD_get_dashboards_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size374 = 0;
+        var _rtmp3378;
+        this.success = [];
+        var _etype377 = 0;
+        _rtmp3378 = input.readListBegin();
+        _etype377 = _rtmp3378.etype;
+        _size374 = _rtmp3378.size;
+        for (var _i379 = 0; _i379 < _size374; ++_i379)
+        {
+          var elem380 = null;
+          elem380 = new TDashboard();
+          elem380.read(input);
+          this.success.push(elem380);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_dashboards_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboards_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter381 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter381))
+      {
+        iter381 = this.success[iter381];
+        iter381.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_create_dashboard_args = function(args) {
+  this.session = null;
+  this.dashboard_name = null;
+  this.dashboard_state = null;
+  this.image_hash = null;
+  this.dashboard_metadata = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.dashboard_name !== undefined && args.dashboard_name !== null) {
+      this.dashboard_name = args.dashboard_name;
+    }
+    if (args.dashboard_state !== undefined && args.dashboard_state !== null) {
+      this.dashboard_state = args.dashboard_state;
+    }
+    if (args.image_hash !== undefined && args.image_hash !== null) {
+      this.image_hash = args.image_hash;
+    }
+    if (args.dashboard_metadata !== undefined && args.dashboard_metadata !== null) {
+      this.dashboard_metadata = args.dashboard_metadata;
+    }
+  }
+};
+MapD_create_dashboard_args.prototype = {};
+MapD_create_dashboard_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_state = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.image_hash = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_metadata = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_create_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_dashboard_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_name !== null && this.dashboard_name !== undefined) {
+    output.writeFieldBegin('dashboard_name', Thrift.Type.STRING, 2);
+    output.writeString(this.dashboard_name);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_state !== null && this.dashboard_state !== undefined) {
+    output.writeFieldBegin('dashboard_state', Thrift.Type.STRING, 3);
+    output.writeString(this.dashboard_state);
+    output.writeFieldEnd();
+  }
+  if (this.image_hash !== null && this.image_hash !== undefined) {
+    output.writeFieldBegin('image_hash', Thrift.Type.STRING, 4);
+    output.writeString(this.image_hash);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_metadata !== null && this.dashboard_metadata !== undefined) {
+    output.writeFieldBegin('dashboard_metadata', Thrift.Type.STRING, 5);
+    output.writeString(this.dashboard_metadata);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_create_dashboard_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_create_dashboard_result.prototype = {};
+MapD_create_dashboard_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.I32) {
+        this.success = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_create_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_dashboard_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.I32, 0);
+    output.writeI32(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_replace_dashboard_args = function(args) {
+  this.session = null;
+  this.dashboard_id = null;
+  this.dashboard_name = null;
+  this.dashboard_owner = null;
+  this.dashboard_state = null;
+  this.image_hash = null;
+  this.dashboard_metadata = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.dashboard_id !== undefined && args.dashboard_id !== null) {
+      this.dashboard_id = args.dashboard_id;
+    }
+    if (args.dashboard_name !== undefined && args.dashboard_name !== null) {
+      this.dashboard_name = args.dashboard_name;
+    }
+    if (args.dashboard_owner !== undefined && args.dashboard_owner !== null) {
+      this.dashboard_owner = args.dashboard_owner;
+    }
+    if (args.dashboard_state !== undefined && args.dashboard_state !== null) {
+      this.dashboard_state = args.dashboard_state;
+    }
+    if (args.image_hash !== undefined && args.image_hash !== null) {
+      this.image_hash = args.image_hash;
+    }
+    if (args.dashboard_metadata !== undefined && args.dashboard_metadata !== null) {
+      this.dashboard_metadata = args.dashboard_metadata;
+    }
+  }
+};
+MapD_replace_dashboard_args.prototype = {};
+MapD_replace_dashboard_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.dashboard_id = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_owner = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_state = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.image_hash = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_metadata = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_replace_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_replace_dashboard_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_id !== null && this.dashboard_id !== undefined) {
+    output.writeFieldBegin('dashboard_id', Thrift.Type.I32, 2);
+    output.writeI32(this.dashboard_id);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_name !== null && this.dashboard_name !== undefined) {
+    output.writeFieldBegin('dashboard_name', Thrift.Type.STRING, 3);
+    output.writeString(this.dashboard_name);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_owner !== null && this.dashboard_owner !== undefined) {
+    output.writeFieldBegin('dashboard_owner', Thrift.Type.STRING, 4);
+    output.writeString(this.dashboard_owner);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_state !== null && this.dashboard_state !== undefined) {
+    output.writeFieldBegin('dashboard_state', Thrift.Type.STRING, 5);
+    output.writeString(this.dashboard_state);
+    output.writeFieldEnd();
+  }
+  if (this.image_hash !== null && this.image_hash !== undefined) {
+    output.writeFieldBegin('image_hash', Thrift.Type.STRING, 6);
+    output.writeString(this.image_hash);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_metadata !== null && this.dashboard_metadata !== undefined) {
+    output.writeFieldBegin('dashboard_metadata', Thrift.Type.STRING, 7);
+    output.writeString(this.dashboard_metadata);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_replace_dashboard_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_replace_dashboard_result.prototype = {};
+MapD_replace_dashboard_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_replace_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_replace_dashboard_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_delete_dashboard_args = function(args) {
+  this.session = null;
+  this.dashboard_id = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.dashboard_id !== undefined && args.dashboard_id !== null) {
+      this.dashboard_id = args.dashboard_id;
+    }
+  }
+};
+MapD_delete_dashboard_args.prototype = {};
+MapD_delete_dashboard_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.dashboard_id = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_delete_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_dashboard_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_id !== null && this.dashboard_id !== undefined) {
+    output.writeFieldBegin('dashboard_id', Thrift.Type.I32, 2);
+    output.writeI32(this.dashboard_id);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_delete_dashboard_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_delete_dashboard_result.prototype = {};
+MapD_delete_dashboard_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_delete_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_dashboard_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -5725,19 +6670,19 @@ MapD_load_table_binary_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size358 = 0;
-        var _rtmp3362;
+        var _size382 = 0;
+        var _rtmp3386;
         this.rows = [];
-        var _etype361 = 0;
-        _rtmp3362 = input.readListBegin();
-        _etype361 = _rtmp3362.etype;
-        _size358 = _rtmp3362.size;
-        for (var _i363 = 0; _i363 < _size358; ++_i363)
+        var _etype385 = 0;
+        _rtmp3386 = input.readListBegin();
+        _etype385 = _rtmp3386.etype;
+        _size382 = _rtmp3386.size;
+        for (var _i387 = 0; _i387 < _size382; ++_i387)
         {
-          var elem364 = null;
-          elem364 = new TRow();
-          elem364.read(input);
-          this.rows.push(elem364);
+          var elem388 = null;
+          elem388 = new TRow();
+          elem388.read(input);
+          this.rows.push(elem388);
         }
         input.readListEnd();
       } else {
@@ -5768,12 +6713,12 @@ MapD_load_table_binary_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter365 in this.rows)
+    for (var iter389 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter365))
+      if (this.rows.hasOwnProperty(iter389))
       {
-        iter365 = this.rows[iter365];
-        iter365.write(output);
+        iter389 = this.rows[iter389];
+        iter389.write(output);
       }
     }
     output.writeListEnd();
@@ -5888,19 +6833,19 @@ MapD_load_table_binary_columnar_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size366 = 0;
-        var _rtmp3370;
+        var _size390 = 0;
+        var _rtmp3394;
         this.cols = [];
-        var _etype369 = 0;
-        _rtmp3370 = input.readListBegin();
-        _etype369 = _rtmp3370.etype;
-        _size366 = _rtmp3370.size;
-        for (var _i371 = 0; _i371 < _size366; ++_i371)
+        var _etype393 = 0;
+        _rtmp3394 = input.readListBegin();
+        _etype393 = _rtmp3394.etype;
+        _size390 = _rtmp3394.size;
+        for (var _i395 = 0; _i395 < _size390; ++_i395)
         {
-          var elem372 = null;
-          elem372 = new TColumn();
-          elem372.read(input);
-          this.cols.push(elem372);
+          var elem396 = null;
+          elem396 = new TColumn();
+          elem396.read(input);
+          this.cols.push(elem396);
         }
         input.readListEnd();
       } else {
@@ -5931,12 +6876,12 @@ MapD_load_table_binary_columnar_args.prototype.write = function(output) {
   if (this.cols !== null && this.cols !== undefined) {
     output.writeFieldBegin('cols', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-    for (var iter373 in this.cols)
+    for (var iter397 in this.cols)
     {
-      if (this.cols.hasOwnProperty(iter373))
+      if (this.cols.hasOwnProperty(iter397))
       {
-        iter373 = this.cols[iter373];
-        iter373.write(output);
+        iter397 = this.cols[iter397];
+        iter397.write(output);
       }
     }
     output.writeListEnd();
@@ -6191,19 +7136,19 @@ MapD_load_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size374 = 0;
-        var _rtmp3378;
+        var _size398 = 0;
+        var _rtmp3402;
         this.rows = [];
-        var _etype377 = 0;
-        _rtmp3378 = input.readListBegin();
-        _etype377 = _rtmp3378.etype;
-        _size374 = _rtmp3378.size;
-        for (var _i379 = 0; _i379 < _size374; ++_i379)
+        var _etype401 = 0;
+        _rtmp3402 = input.readListBegin();
+        _etype401 = _rtmp3402.etype;
+        _size398 = _rtmp3402.size;
+        for (var _i403 = 0; _i403 < _size398; ++_i403)
         {
-          var elem380 = null;
-          elem380 = new TStringRow();
-          elem380.read(input);
-          this.rows.push(elem380);
+          var elem404 = null;
+          elem404 = new TStringRow();
+          elem404.read(input);
+          this.rows.push(elem404);
         }
         input.readListEnd();
       } else {
@@ -6234,12 +7179,12 @@ MapD_load_table_args.prototype.write = function(output) {
   if (this.rows !== null && this.rows !== undefined) {
     output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-    for (var iter381 in this.rows)
+    for (var iter405 in this.rows)
     {
-      if (this.rows.hasOwnProperty(iter381))
+      if (this.rows.hasOwnProperty(iter405))
       {
-        iter381 = this.rows[iter381];
-        iter381.write(output);
+        iter405 = this.rows[iter405];
+        iter405.write(output);
       }
     }
     output.writeListEnd();
@@ -6513,19 +7458,19 @@ MapD_create_table_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.LIST) {
-        var _size382 = 0;
-        var _rtmp3386;
+        var _size406 = 0;
+        var _rtmp3410;
         this.row_desc = [];
-        var _etype385 = 0;
-        _rtmp3386 = input.readListBegin();
-        _etype385 = _rtmp3386.etype;
-        _size382 = _rtmp3386.size;
-        for (var _i387 = 0; _i387 < _size382; ++_i387)
+        var _etype409 = 0;
+        _rtmp3410 = input.readListBegin();
+        _etype409 = _rtmp3410.etype;
+        _size406 = _rtmp3410.size;
+        for (var _i411 = 0; _i411 < _size406; ++_i411)
         {
-          var elem388 = null;
-          elem388 = new TColumnType();
-          elem388.read(input);
-          this.row_desc.push(elem388);
+          var elem412 = null;
+          elem412 = new TColumnType();
+          elem412.read(input);
+          this.row_desc.push(elem412);
         }
         input.readListEnd();
       } else {
@@ -6563,12 +7508,12 @@ MapD_create_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter389 in this.row_desc)
+    for (var iter413 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter389))
+      if (this.row_desc.hasOwnProperty(iter413))
       {
-        iter389 = this.row_desc[iter389];
-        iter389.write(output);
+        iter413 = this.row_desc[iter413];
+        iter413.write(output);
       }
     }
     output.writeListEnd();
@@ -6868,19 +7813,19 @@ MapD_import_geo_table_args.prototype.read = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.LIST) {
-        var _size390 = 0;
-        var _rtmp3394;
+        var _size414 = 0;
+        var _rtmp3418;
         this.row_desc = [];
-        var _etype393 = 0;
-        _rtmp3394 = input.readListBegin();
-        _etype393 = _rtmp3394.etype;
-        _size390 = _rtmp3394.size;
-        for (var _i395 = 0; _i395 < _size390; ++_i395)
+        var _etype417 = 0;
+        _rtmp3418 = input.readListBegin();
+        _etype417 = _rtmp3418.etype;
+        _size414 = _rtmp3418.size;
+        for (var _i419 = 0; _i419 < _size414; ++_i419)
         {
-          var elem396 = null;
-          elem396 = new TColumnType();
-          elem396.read(input);
-          this.row_desc.push(elem396);
+          var elem420 = null;
+          elem420 = new TColumnType();
+          elem420.read(input);
+          this.row_desc.push(elem420);
         }
         input.readListEnd();
       } else {
@@ -6921,12 +7866,12 @@ MapD_import_geo_table_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter397 in this.row_desc)
+    for (var iter421 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter397))
+      if (this.row_desc.hasOwnProperty(iter421))
       {
-        iter397 = this.row_desc[iter397];
-        iter397.write(output);
+        iter421 = this.row_desc[iter421];
+        iter421.write(output);
       }
     }
     output.writeListEnd();
@@ -7452,19 +8397,19 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.LIST) {
-        var _size398 = 0;
-        var _rtmp3402;
+        var _size422 = 0;
+        var _rtmp3426;
         this.row_desc = [];
-        var _etype401 = 0;
-        _rtmp3402 = input.readListBegin();
-        _etype401 = _rtmp3402.etype;
-        _size398 = _rtmp3402.size;
-        for (var _i403 = 0; _i403 < _size398; ++_i403)
+        var _etype425 = 0;
+        _rtmp3426 = input.readListBegin();
+        _etype425 = _rtmp3426.etype;
+        _size422 = _rtmp3426.size;
+        for (var _i427 = 0; _i427 < _size422; ++_i427)
         {
-          var elem404 = null;
-          elem404 = new TColumnType();
-          elem404.read(input);
-          this.row_desc.push(elem404);
+          var elem428 = null;
+          elem428 = new TColumnType();
+          elem428.read(input);
+          this.row_desc.push(elem428);
         }
         input.readListEnd();
       } else {
@@ -7497,12 +8442,12 @@ MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
   if (this.row_desc !== null && this.row_desc !== undefined) {
     output.writeFieldBegin('row_desc', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-    for (var iter405 in this.row_desc)
+    for (var iter429 in this.row_desc)
     {
-      if (this.row_desc.hasOwnProperty(iter405))
+      if (this.row_desc.hasOwnProperty(iter429))
       {
-        iter405 = this.row_desc[iter405];
-        iter405.write(output);
+        iter429 = this.row_desc[iter429];
+        iter429.write(output);
       }
     }
     output.writeListEnd();
@@ -7782,107 +8727,107 @@ MapD_execute_next_render_step_args.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.MAP) {
-        var _size406 = 0;
-        var _rtmp3410;
+        var _size430 = 0;
+        var _rtmp3434;
         this.merged_data = {};
-        var _ktype407 = 0;
-        var _vtype408 = 0;
-        _rtmp3410 = input.readMapBegin();
-        _ktype407 = _rtmp3410.ktype;
-        _vtype408 = _rtmp3410.vtype;
-        _size406 = _rtmp3410.size;
-        for (var _i411 = 0; _i411 < _size406; ++_i411)
+        var _ktype431 = 0;
+        var _vtype432 = 0;
+        _rtmp3434 = input.readMapBegin();
+        _ktype431 = _rtmp3434.ktype;
+        _vtype432 = _rtmp3434.vtype;
+        _size430 = _rtmp3434.size;
+        for (var _i435 = 0; _i435 < _size430; ++_i435)
         {
-          if (_i411 > 0 ) {
+          if (_i435 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key412 = null;
-          var val413 = null;
-          key412 = input.readString().value;
-          var _size414 = 0;
-          var _rtmp3418;
-          val413 = {};
-          var _ktype415 = 0;
-          var _vtype416 = 0;
-          _rtmp3418 = input.readMapBegin();
-          _ktype415 = _rtmp3418.ktype;
-          _vtype416 = _rtmp3418.vtype;
-          _size414 = _rtmp3418.size;
-          for (var _i419 = 0; _i419 < _size414; ++_i419)
+          var key436 = null;
+          var val437 = null;
+          key436 = input.readString().value;
+          var _size438 = 0;
+          var _rtmp3442;
+          val437 = {};
+          var _ktype439 = 0;
+          var _vtype440 = 0;
+          _rtmp3442 = input.readMapBegin();
+          _ktype439 = _rtmp3442.ktype;
+          _vtype440 = _rtmp3442.vtype;
+          _size438 = _rtmp3442.size;
+          for (var _i443 = 0; _i443 < _size438; ++_i443)
           {
-            if (_i419 > 0 ) {
+            if (_i443 > 0 ) {
               if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                 input.rstack.pop();
               }
             }
-            var key420 = null;
-            var val421 = null;
-            key420 = input.readString().value;
-            var _size422 = 0;
-            var _rtmp3426;
-            val421 = {};
-            var _ktype423 = 0;
-            var _vtype424 = 0;
-            _rtmp3426 = input.readMapBegin();
-            _ktype423 = _rtmp3426.ktype;
-            _vtype424 = _rtmp3426.vtype;
-            _size422 = _rtmp3426.size;
-            for (var _i427 = 0; _i427 < _size422; ++_i427)
+            var key444 = null;
+            var val445 = null;
+            key444 = input.readString().value;
+            var _size446 = 0;
+            var _rtmp3450;
+            val445 = {};
+            var _ktype447 = 0;
+            var _vtype448 = 0;
+            _rtmp3450 = input.readMapBegin();
+            _ktype447 = _rtmp3450.ktype;
+            _vtype448 = _rtmp3450.vtype;
+            _size446 = _rtmp3450.size;
+            for (var _i451 = 0; _i451 < _size446; ++_i451)
             {
-              if (_i427 > 0 ) {
+              if (_i451 > 0 ) {
                 if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                   input.rstack.pop();
                 }
               }
-              var key428 = null;
-              var val429 = null;
-              key428 = input.readString().value;
-              var _size430 = 0;
-              var _rtmp3434;
-              val429 = {};
-              var _ktype431 = 0;
-              var _vtype432 = 0;
-              _rtmp3434 = input.readMapBegin();
-              _ktype431 = _rtmp3434.ktype;
-              _vtype432 = _rtmp3434.vtype;
-              _size430 = _rtmp3434.size;
-              for (var _i435 = 0; _i435 < _size430; ++_i435)
+              var key452 = null;
+              var val453 = null;
+              key452 = input.readString().value;
+              var _size454 = 0;
+              var _rtmp3458;
+              val453 = {};
+              var _ktype455 = 0;
+              var _vtype456 = 0;
+              _rtmp3458 = input.readMapBegin();
+              _ktype455 = _rtmp3458.ktype;
+              _vtype456 = _rtmp3458.vtype;
+              _size454 = _rtmp3458.size;
+              for (var _i459 = 0; _i459 < _size454; ++_i459)
               {
-                if (_i435 > 0 ) {
+                if (_i459 > 0 ) {
                   if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
                     input.rstack.pop();
                   }
                 }
-                var key436 = null;
-                var val437 = null;
-                key436 = input.readString().value;
-                var _size438 = 0;
-                var _rtmp3442;
-                val437 = [];
-                var _etype441 = 0;
-                _rtmp3442 = input.readListBegin();
-                _etype441 = _rtmp3442.etype;
-                _size438 = _rtmp3442.size;
-                for (var _i443 = 0; _i443 < _size438; ++_i443)
+                var key460 = null;
+                var val461 = null;
+                key460 = input.readString().value;
+                var _size462 = 0;
+                var _rtmp3466;
+                val461 = [];
+                var _etype465 = 0;
+                _rtmp3466 = input.readListBegin();
+                _etype465 = _rtmp3466.etype;
+                _size462 = _rtmp3466.size;
+                for (var _i467 = 0; _i467 < _size462; ++_i467)
                 {
-                  var elem444 = null;
-                  elem444 = new TRenderDatum();
-                  elem444.read(input);
-                  val437.push(elem444);
+                  var elem468 = null;
+                  elem468 = new TRenderDatum();
+                  elem468.read(input);
+                  val461.push(elem468);
                 }
                 input.readListEnd();
-                val429[key436] = val437;
+                val453[key460] = val461;
               }
               input.readMapEnd();
-              val421[key428] = val429;
+              val445[key452] = val453;
             }
             input.readMapEnd();
-            val413[key420] = val421;
+            val437[key444] = val445;
           }
           input.readMapEnd();
-          this.merged_data[key412] = val413;
+          this.merged_data[key436] = val437;
         }
         input.readMapEnd();
       } else {
@@ -7908,40 +8853,40 @@ MapD_execute_next_render_step_args.prototype.write = function(output) {
   if (this.merged_data !== null && this.merged_data !== undefined) {
     output.writeFieldBegin('merged_data', Thrift.Type.MAP, 2);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.merged_data));
-    for (var kiter445 in this.merged_data)
+    for (var kiter469 in this.merged_data)
     {
-      if (this.merged_data.hasOwnProperty(kiter445))
+      if (this.merged_data.hasOwnProperty(kiter469))
       {
-        var viter446 = this.merged_data[kiter445];
-        output.writeString(kiter445);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter446));
-        for (var kiter447 in viter446)
+        var viter470 = this.merged_data[kiter469];
+        output.writeString(kiter469);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter470));
+        for (var kiter471 in viter470)
         {
-          if (viter446.hasOwnProperty(kiter447))
+          if (viter470.hasOwnProperty(kiter471))
           {
-            var viter448 = viter446[kiter447];
-            output.writeString(kiter447);
-            output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter448));
-            for (var kiter449 in viter448)
+            var viter472 = viter470[kiter471];
+            output.writeString(kiter471);
+            output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter472));
+            for (var kiter473 in viter472)
             {
-              if (viter448.hasOwnProperty(kiter449))
+              if (viter472.hasOwnProperty(kiter473))
               {
-                var viter450 = viter448[kiter449];
-                output.writeString(kiter449);
-                output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter450));
-                for (var kiter451 in viter450)
+                var viter474 = viter472[kiter473];
+                output.writeString(kiter473);
+                output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter474));
+                for (var kiter475 in viter474)
                 {
-                  if (viter450.hasOwnProperty(kiter451))
+                  if (viter474.hasOwnProperty(kiter475))
                   {
-                    var viter452 = viter450[kiter451];
-                    output.writeString(kiter451);
-                    output.writeListBegin(Thrift.Type.STRUCT, viter452.length);
-                    for (var iter453 in viter452)
+                    var viter476 = viter474[kiter475];
+                    output.writeString(kiter475);
+                    output.writeListBegin(Thrift.Type.STRUCT, viter476.length);
+                    for (var iter477 in viter476)
                     {
-                      if (viter452.hasOwnProperty(iter453))
+                      if (viter476.hasOwnProperty(iter477))
                       {
-                        iter453 = viter452[iter453];
-                        iter453.write(output);
+                        iter477 = viter476[iter477];
+                        iter477.write(output);
                       }
                     }
                     output.writeListEnd();
@@ -8399,28 +9344,28 @@ MapD_get_table_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.MAP) {
-        var _size454 = 0;
-        var _rtmp3458;
+        var _size478 = 0;
+        var _rtmp3482;
         this.success = {};
-        var _ktype455 = 0;
-        var _vtype456 = 0;
-        _rtmp3458 = input.readMapBegin();
-        _ktype455 = _rtmp3458.ktype;
-        _vtype456 = _rtmp3458.vtype;
-        _size454 = _rtmp3458.size;
-        for (var _i459 = 0; _i459 < _size454; ++_i459)
+        var _ktype479 = 0;
+        var _vtype480 = 0;
+        _rtmp3482 = input.readMapBegin();
+        _ktype479 = _rtmp3482.ktype;
+        _vtype480 = _rtmp3482.vtype;
+        _size478 = _rtmp3482.size;
+        for (var _i483 = 0; _i483 < _size478; ++_i483)
         {
-          if (_i459 > 0 ) {
+          if (_i483 > 0 ) {
             if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
               input.rstack.pop();
             }
           }
-          var key460 = null;
-          var val461 = null;
-          key460 = input.readString().value;
-          val461 = new TColumnType();
-          val461.read(input);
-          this.success[key460] = val461;
+          var key484 = null;
+          var val485 = null;
+          key484 = input.readString().value;
+          val485 = new TColumnType();
+          val485.read(input);
+          this.success[key484] = val485;
         }
         input.readMapEnd();
       } else {
@@ -8449,13 +9394,13 @@ MapD_get_table_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.MAP, 0);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.success));
-    for (var kiter462 in this.success)
+    for (var kiter486 in this.success)
     {
-      if (this.success.hasOwnProperty(kiter462))
+      if (this.success.hasOwnProperty(kiter486))
       {
-        var viter463 = this.success[kiter462];
-        output.writeString(kiter462);
-        viter463.write(output);
+        var viter487 = this.success[kiter486];
+        output.writeString(kiter486);
+        viter487.write(output);
       }
     }
     output.writeMapEnd();
@@ -8569,19 +9514,19 @@ MapD_get_row_descriptor_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size464 = 0;
-        var _rtmp3468;
+        var _size488 = 0;
+        var _rtmp3492;
         this.success = [];
-        var _etype467 = 0;
-        _rtmp3468 = input.readListBegin();
-        _etype467 = _rtmp3468.etype;
-        _size464 = _rtmp3468.size;
-        for (var _i469 = 0; _i469 < _size464; ++_i469)
+        var _etype491 = 0;
+        _rtmp3492 = input.readListBegin();
+        _etype491 = _rtmp3492.etype;
+        _size488 = _rtmp3492.size;
+        for (var _i493 = 0; _i493 < _size488; ++_i493)
         {
-          var elem470 = null;
-          elem470 = new TColumnType();
-          elem470.read(input);
-          this.success.push(elem470);
+          var elem494 = null;
+          elem494 = new TColumnType();
+          elem494.read(input);
+          this.success.push(elem494);
         }
         input.readListEnd();
       } else {
@@ -8610,12 +9555,12 @@ MapD_get_row_descriptor_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter471 in this.success)
+    for (var iter495 in this.success)
     {
-      if (this.success.hasOwnProperty(iter471))
+      if (this.success.hasOwnProperty(iter495))
       {
-        iter471 = this.success[iter471];
-        iter471.write(output);
+        iter495 = this.success[iter495];
+        iter495.write(output);
       }
     }
     output.writeListEnd();
@@ -8716,18 +9661,18 @@ MapD_get_roles_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size472 = 0;
-        var _rtmp3476;
+        var _size496 = 0;
+        var _rtmp3500;
         this.success = [];
-        var _etype475 = 0;
-        _rtmp3476 = input.readListBegin();
-        _etype475 = _rtmp3476.etype;
-        _size472 = _rtmp3476.size;
-        for (var _i477 = 0; _i477 < _size472; ++_i477)
+        var _etype499 = 0;
+        _rtmp3500 = input.readListBegin();
+        _etype499 = _rtmp3500.etype;
+        _size496 = _rtmp3500.size;
+        for (var _i501 = 0; _i501 < _size496; ++_i501)
         {
-          var elem478 = null;
-          elem478 = input.readString().value;
-          this.success.push(elem478);
+          var elem502 = null;
+          elem502 = input.readString().value;
+          this.success.push(elem502);
         }
         input.readListEnd();
       } else {
@@ -8756,12 +9701,12 @@ MapD_get_roles_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter479 in this.success)
+    for (var iter503 in this.success)
     {
-      if (this.success.hasOwnProperty(iter479))
+      if (this.success.hasOwnProperty(iter503))
       {
-        iter479 = this.success[iter479];
-        output.writeString(iter479);
+        iter503 = this.success[iter503];
+        output.writeString(iter503);
       }
     }
     output.writeListEnd();
@@ -8875,19 +9820,19 @@ MapD_get_db_objects_for_grantee_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size480 = 0;
-        var _rtmp3484;
+        var _size504 = 0;
+        var _rtmp3508;
         this.success = [];
-        var _etype483 = 0;
-        _rtmp3484 = input.readListBegin();
-        _etype483 = _rtmp3484.etype;
-        _size480 = _rtmp3484.size;
-        for (var _i485 = 0; _i485 < _size480; ++_i485)
+        var _etype507 = 0;
+        _rtmp3508 = input.readListBegin();
+        _etype507 = _rtmp3508.etype;
+        _size504 = _rtmp3508.size;
+        for (var _i509 = 0; _i509 < _size504; ++_i509)
         {
-          var elem486 = null;
-          elem486 = new TDBObject();
-          elem486.read(input);
-          this.success.push(elem486);
+          var elem510 = null;
+          elem510 = new TDBObject();
+          elem510.read(input);
+          this.success.push(elem510);
         }
         input.readListEnd();
       } else {
@@ -8916,12 +9861,12 @@ MapD_get_db_objects_for_grantee_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter487 in this.success)
+    for (var iter511 in this.success)
     {
-      if (this.success.hasOwnProperty(iter487))
+      if (this.success.hasOwnProperty(iter511))
       {
-        iter487 = this.success[iter487];
-        iter487.write(output);
+        iter511 = this.success[iter511];
+        iter511.write(output);
       }
     }
     output.writeListEnd();
@@ -9051,19 +9996,19 @@ MapD_get_db_object_privs_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size488 = 0;
-        var _rtmp3492;
+        var _size512 = 0;
+        var _rtmp3516;
         this.success = [];
-        var _etype491 = 0;
-        _rtmp3492 = input.readListBegin();
-        _etype491 = _rtmp3492.etype;
-        _size488 = _rtmp3492.size;
-        for (var _i493 = 0; _i493 < _size488; ++_i493)
+        var _etype515 = 0;
+        _rtmp3516 = input.readListBegin();
+        _etype515 = _rtmp3516.etype;
+        _size512 = _rtmp3516.size;
+        for (var _i517 = 0; _i517 < _size512; ++_i517)
         {
-          var elem494 = null;
-          elem494 = new TDBObject();
-          elem494.read(input);
-          this.success.push(elem494);
+          var elem518 = null;
+          elem518 = new TDBObject();
+          elem518.read(input);
+          this.success.push(elem518);
         }
         input.readListEnd();
       } else {
@@ -9092,12 +10037,12 @@ MapD_get_db_object_privs_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter495 in this.success)
+    for (var iter519 in this.success)
     {
-      if (this.success.hasOwnProperty(iter495))
+      if (this.success.hasOwnProperty(iter519))
       {
-        iter495 = this.success[iter495];
-        iter495.write(output);
+        iter519 = this.success[iter519];
+        iter519.write(output);
       }
     }
     output.writeListEnd();
@@ -9211,18 +10156,18 @@ MapD_get_all_roles_for_user_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size496 = 0;
-        var _rtmp3500;
+        var _size520 = 0;
+        var _rtmp3524;
         this.success = [];
-        var _etype499 = 0;
-        _rtmp3500 = input.readListBegin();
-        _etype499 = _rtmp3500.etype;
-        _size496 = _rtmp3500.size;
-        for (var _i501 = 0; _i501 < _size496; ++_i501)
+        var _etype523 = 0;
+        _rtmp3524 = input.readListBegin();
+        _etype523 = _rtmp3524.etype;
+        _size520 = _rtmp3524.size;
+        for (var _i525 = 0; _i525 < _size520; ++_i525)
         {
-          var elem502 = null;
-          elem502 = input.readString().value;
-          this.success.push(elem502);
+          var elem526 = null;
+          elem526 = input.readString().value;
+          this.success.push(elem526);
         }
         input.readListEnd();
       } else {
@@ -9251,12 +10196,12 @@ MapD_get_all_roles_for_user_result.prototype.write = function(output) {
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
-    for (var iter503 in this.success)
+    for (var iter527 in this.success)
     {
-      if (this.success.hasOwnProperty(iter503))
+      if (this.success.hasOwnProperty(iter527))
       {
-        iter503 = this.success[iter503];
-        output.writeString(iter503);
+        iter527 = this.success[iter527];
+        output.writeString(iter527);
       }
     }
     output.writeListEnd();
@@ -9984,6 +10929,58 @@ MapDClient.prototype.recv_get_views = function() {
     return result.success;
   }
   throw 'get_views failed: unknown result';
+};
+MapDClient.prototype.get_tables_meta = function(session, callback) {
+  this.send_get_tables_meta(session, callback); 
+  if (!callback) {
+    return this.recv_get_tables_meta();
+  }
+};
+
+MapDClient.prototype.send_get_tables_meta = function(session, callback) {
+  this.output.writeMessageBegin('get_tables_meta', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_tables_meta_args();
+  args.session = session;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_tables_meta();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_tables_meta = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_tables_meta_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_tables_meta failed: unknown result';
 };
 MapDClient.prototype.get_table_details = function(session, table_name, callback) {
   this.send_get_table_details(session, table_name, callback); 
@@ -11491,6 +12488,272 @@ MapDClient.prototype.recv_delete_frontend_view = function() {
     throw x;
   }
   var result = new MapD_delete_frontend_view_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.get_dashboard = function(session, dashboard_id, callback) {
+  this.send_get_dashboard(session, dashboard_id, callback); 
+  if (!callback) {
+    return this.recv_get_dashboard();
+  }
+};
+
+MapDClient.prototype.send_get_dashboard = function(session, dashboard_id, callback) {
+  this.output.writeMessageBegin('get_dashboard', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_dashboard_args();
+  args.session = session;
+  args.dashboard_id = dashboard_id;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_dashboard();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_dashboard = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_dashboard_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_dashboard failed: unknown result';
+};
+MapDClient.prototype.get_dashboards = function(session, callback) {
+  this.send_get_dashboards(session, callback); 
+  if (!callback) {
+    return this.recv_get_dashboards();
+  }
+};
+
+MapDClient.prototype.send_get_dashboards = function(session, callback) {
+  this.output.writeMessageBegin('get_dashboards', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_dashboards_args();
+  args.session = session;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_dashboards();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_dashboards = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_dashboards_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_dashboards failed: unknown result';
+};
+MapDClient.prototype.create_dashboard = function(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback) {
+  this.send_create_dashboard(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback); 
+  if (!callback) {
+    return this.recv_create_dashboard();
+  }
+};
+
+MapDClient.prototype.send_create_dashboard = function(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback) {
+  this.output.writeMessageBegin('create_dashboard', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_create_dashboard_args();
+  args.session = session;
+  args.dashboard_name = dashboard_name;
+  args.dashboard_state = dashboard_state;
+  args.image_hash = image_hash;
+  args.dashboard_metadata = dashboard_metadata;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_create_dashboard();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_create_dashboard = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_create_dashboard_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'create_dashboard failed: unknown result';
+};
+MapDClient.prototype.replace_dashboard = function(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback) {
+  this.send_replace_dashboard(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback); 
+  if (!callback) {
+  this.recv_replace_dashboard();
+  }
+};
+
+MapDClient.prototype.send_replace_dashboard = function(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback) {
+  this.output.writeMessageBegin('replace_dashboard', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_replace_dashboard_args();
+  args.session = session;
+  args.dashboard_id = dashboard_id;
+  args.dashboard_name = dashboard_name;
+  args.dashboard_owner = dashboard_owner;
+  args.dashboard_state = dashboard_state;
+  args.image_hash = image_hash;
+  args.dashboard_metadata = dashboard_metadata;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_replace_dashboard();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_replace_dashboard = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_replace_dashboard_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
+};
+MapDClient.prototype.delete_dashboard = function(session, dashboard_id, callback) {
+  this.send_delete_dashboard(session, dashboard_id, callback); 
+  if (!callback) {
+  this.recv_delete_dashboard();
+  }
+};
+
+MapDClient.prototype.send_delete_dashboard = function(session, dashboard_id, callback) {
+  this.output.writeMessageBegin('delete_dashboard', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_delete_dashboard_args();
+  args.session = session;
+  args.dashboard_id = dashboard_id;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_delete_dashboard();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_delete_dashboard = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_delete_dashboard_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
