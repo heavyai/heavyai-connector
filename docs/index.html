@@ -75,6 +75,26 @@
               
                 
                 <li><a
+                  href='#getstatusasync'
+                  class="">
+                  getStatusAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#gethardwareinfoasync'
+                  class="">
+                  getHardwareInfoAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#createfrontendviewasync'
                   class="">
                   createFrontendViewAsync
@@ -158,6 +178,16 @@
                   href='#gettablesasync'
                   class="">
                   getTablesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getcompletionhints'
+                  class="">
+                  getCompletionHints
                   
                 </a>
                 
@@ -385,9 +415,9 @@
               
                 
                 <li><a
-                  href='#tdatumval'
+                  href='#trow'
                   class="">
-                  TDatumVal
+                  TRow
                   
                 </a>
                 
@@ -398,16 +428,6 @@
                   href='#ttabletype'
                   class="">
                   TTableType
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#tdetectresult'
-                  class="">
-                  TDetectResult
                   
                 </a>
                 
@@ -445,9 +465,9 @@
               
                 
                 <li><a
-                  href='#tfrontendview'
+                  href='#tdatumval'
                   class="">
-                  TFrontendView
+                  TDatumVal
                   
                 </a>
                 
@@ -455,9 +475,9 @@
               
                 
                 <li><a
-                  href='#tdatum'
+                  href='#completion_hints'
                   class="">
-                  TDatum
+                  completion_hints
                   
                 </a>
                 
@@ -465,9 +485,9 @@
               
                 
                 <li><a
-                  href='#trow'
+                  href='#tdetectresult'
                   class="">
-                  TRow
+                  TDetectResult
                   
                 </a>
                 
@@ -505,9 +525,29 @@
               
                 
                 <li><a
+                  href='#tfrontendview'
+                  class="">
+                  TFrontendView
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#tcopyparams'
                   class="">
                   TCopyParams
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tdatum'
+                  class="">
+                  TDatum
                   
                 </a>
                 
@@ -593,9 +633,9 @@
   .dbName(<span class="hljs-string">'myDatabase'</span>)
   .user(<span class="hljs-string">'foo'</span>)
   .password(<span class="hljs-string">'bar'</span>)
-  .connect(<span class="hljs-function">(<span class="hljs-params">err, success</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(success));
+  .connect(<span class="hljs-function">(<span class="hljs-params">err, con</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(con.sessionId()));
 
-   con.sessionId() <span class="hljs-comment">// ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]</span></pre>
+  <span class="hljs-comment">// ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]</span></pre>
     
   
 
@@ -673,16 +713,7 @@
     
       <p><p>Disconnect from the server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-.host(<span class="hljs-string">'localhost'</span>)
-.port(<span class="hljs-string">'8080'</span>)
-.dbName(<span class="hljs-string">'myDatabase'</span>)
-.user(<span class="hljs-string">'foo'</span>)
-.password(<span class="hljs-string">'bar'</span>)
-.connect(); <span class="hljs-comment">// Create a connection</span>
-
-
-con.sessionId() <span class="hljs-comment">// ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]</span>
+      <pre class='p1 overflow-auto round fill-light'>con.sessionId() <span class="hljs-comment">// ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]</span>
 con.disconnect(<span class="hljs-function">(<span class="hljs-params">err, con</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(err, con))
 con.sessionId() === <span class="hljs-literal">null</span>;</pre>
     
@@ -748,15 +779,7 @@ but not for the <code>view_state</code> property.</p>
     
       <p><p>Get the list of dashboards from the server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect(); <span class="hljs-comment">// Create a connection</span>
-
-con.getFrontendViewsAsync().then(<span class="hljs-function">(<span class="hljs-params">results</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(results))
+      <pre class='p1 overflow-auto round fill-light'>con.getFrontendViewsAsync().then(<span class="hljs-function">(<span class="hljs-params">results</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(results))
 <span class="hljs-comment">// [TFrontendView, TFrontendView]</span></pre>
     
   
@@ -835,15 +858,7 @@ but not for the <code>view_name</code> property.</p>
     
       <p><p>Get a specific dashboard from the server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect(); <span class="hljs-comment">// Create a connection</span>
-
-con.getFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
+      <pre class='p1 overflow-auto round fill-light'>con.getFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
 <span class="hljs-comment">// {TFrontendView}</span></pre>
     
   
@@ -908,16 +923,176 @@ has backend rendering enabled, and the version number.</p>
     
       <p><p>Get the server status:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect(); <span class="hljs-comment">// Create a connection</span>
+      <pre class='p1 overflow-auto round fill-light'>con.getServerStatusAsync().then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
+<span class="hljs-comment">// {</span>
+<span class="hljs-comment">//   "read_only": false,</span>
+<span class="hljs-comment">//   "version": "3.0.0dev-20170503-40e2de3",</span>
+<span class="hljs-comment">//   "rendering_enabled": true,</span>
+<span class="hljs-comment">//   "start_time": 1493840131</span>
+<span class="hljs-comment">// }</span></pre>
+    
+  
 
-con.getServerStatusAsync().then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
-<span class="hljs-comment">//</span></pre>
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getstatusasync'>
+      getStatusAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get the status of the server as an array of <code>TServerStatus</code> objects.
+This includes whether the server is read-only,
+has backend rendering enabled, and the version number.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getStatusAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the server status:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getStatusAsync().then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
+<span class="hljs-comment">// [{</span>
+<span class="hljs-comment">//   "read_only": false,</span>
+<span class="hljs-comment">//   "version": "3.0.0dev-20170503-40e2de3",</span>
+<span class="hljs-comment">//   "rendering_enabled": true,</span>
+<span class="hljs-comment">//   "start_time": 1493840131</span>
+<span class="hljs-comment">// }]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='gethardwareinfoasync'>
+      getHardwareInfoAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get some info about the hardware</p>
+<ul>
+<li>Number of GPUs</li>
+<li>Number of GPUs allocated to MapD</li>
+<li>Start GPU</li>
+<li>Number of SMs or SMx or CU (They simply mean streaming multi processors)</li>
+<li>Clock frequency of each GPUs</li>
+<li>Physical Memory of each GPU</li>
+<li>Compute capability of each GPU</li>
+</ul>
+
+
+  <div class='pre p1 fill-light mt0'>getHardwareInfoAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get harddware info:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getHardwareInfoAsync().then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
+{
+  <span class="hljs-string">"hardware_info"</span>: [{
+   <span class="hljs-string">"num_gpu_hw"</span>: <span class="hljs-number">2</span>,
+     <span class="hljs-string">"num_cpu_hw"</span>: <span class="hljs-number">12</span>,
+     <span class="hljs-string">"num_gpu_allocated"</span>: <span class="hljs-number">2</span>,
+     <span class="hljs-string">"start_gpu"</span>: <span class="hljs-number">0</span>,
+     <span class="hljs-string">"host_name"</span>: <span class="hljs-string">""</span>,
+     <span class="hljs-string">"gpu_info"</span>: [{
+         <span class="hljs-string">"num_sm"</span>: <span class="hljs-number">28</span>,
+         <span class="hljs-string">"clock_frequency_kHz"</span>: <span class="hljs-number">1531000</span>,
+         <span class="hljs-string">"memory"</span>: <span class="hljs-number">12781682688</span>,
+         <span class="hljs-string">"compute_capability_major"</span>: <span class="hljs-number">6</span>,
+         <span class="hljs-string">"compute_capability_minor"</span>: <span class="hljs-number">1</span>
+     }, {
+         <span class="hljs-string">"num_sm"</span>: <span class="hljs-number">28</span>,
+         <span class="hljs-string">"clock_frequency_kHz"</span>: <span class="hljs-number">1531000</span>,
+         <span class="hljs-string">"memory"</span>: <span class="hljs-number">12782075904</span>,
+         <span class="hljs-string">"compute_capability_major"</span>: <span class="hljs-number">6</span>,
+         <span class="hljs-string">"compute_capability_minor"</span>: <span class="hljs-number">1</span>
+     }]
+  }]
+}</pre>
     
   
 
@@ -1020,15 +1195,7 @@ con.getServerStatusAsync().then(<span class="hljs-function">(<span class="hljs-p
     
       <p><p>Add a new dashboard to the server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect();
-
- con.createFrontendViewAsync(<span class="hljs-string">'newSave'</span>, <span class="hljs-string">'viewstateBase64'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+      <pre class='p1 overflow-auto round fill-light'>con.createFrontendViewAsync(<span class="hljs-string">'newSave'</span>, <span class="hljs-string">'viewstateBase64'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
   
 
@@ -1104,15 +1271,7 @@ con.getServerStatusAsync().then(<span class="hljs-function">(<span class="hljs-p
     
       <p><p>Delete a specific dashboard from the server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect(); <span class="hljs-comment">// Create a connection</span>
-
-con.deleteFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+      <pre class='p1 overflow-auto round fill-light'>con.deleteFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
   
 
@@ -1197,15 +1356,7 @@ con.deleteFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).t
     
       <p><p>Create a link to the current state of a dashboard:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect();
-
-con.createLinkAsync(<span class="hljs-string">"eyJuYW1lIjoibXlkYXNoYm9hcmQifQ=="</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res));
+      <pre class='p1 overflow-auto round fill-light'>con.createLinkAsync(<span class="hljs-string">"eyJuYW1lIjoibXlkYXNoYm9hcmQifQ=="</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res));
 <span class="hljs-comment">// ["28127951"]</span></pre>
     
   
@@ -1284,15 +1435,7 @@ This object contains the given link for the <code>view_name</code> property,</p>
     
       <p><p>Get a dashboard from a link:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect();
-
-con.getLinkViewAsync(<span class="hljs-string">'28127951'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+      <pre class='p1 overflow-auto round fill-light'>con.getLinkViewAsync(<span class="hljs-string">'28127951'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
 <span class="hljs-comment">//  {</span>
 <span class="hljs-comment">//    "view_name": "28127951",</span>
 <span class="hljs-comment">//    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",</span>
@@ -1386,15 +1529,7 @@ such as a .csv or plaintext file with a header.</p>
     
       <p><p>Get data from table_data.csv:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect();
-
-<span class="hljs-keyword">var</span> copyParams = <span class="hljs-keyword">new</span> TCopyParams();
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> copyParams = <span class="hljs-keyword">new</span> TCopyParams();
 con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, copyParams).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
 <span class="hljs-comment">// TDetectResult {row_set: TRowSet, copy_params: TCopyParams}</span></pre>
     
@@ -1491,15 +1626,7 @@ con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, co
     
       <p><p>create a query</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect();
-
-<span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"</span>;
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"</span>;
 <span class="hljs-keyword">var</span> options = {};
 
 con.query(query, options, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, result</span>) </span>{
@@ -1627,15 +1754,7 @@ con.query(query, options, <span class="hljs-function"><span class="hljs-keyword"
     
       <p><p>create a query</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect();
-
-<span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"</span>;
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> query = <span class="hljs-string">"SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"</span>;
 
 con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
 
@@ -1706,21 +1825,118 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
     
       <p><p>Get the list of tables from a connection:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> tables = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect()
-
- con.getTablesAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+      <pre class='p1 overflow-auto round fill-light'>con.getTablesAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
 
  <span class="hljs-comment">//  [{</span>
  <span class="hljs-comment">//    label: 'obs', // deprecated property</span>
  <span class="hljs-comment">//    name: 'myDatabaseName'</span>
  <span class="hljs-comment">//   },</span>
  <span class="hljs-comment">//  ...]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getcompletionhints'>
+      getCompletionHints
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Submits a sql string to the backend and returns a completion hints object</p>
+
+
+  <div class='pre p1 fill-light mt0'>getCompletionHints(queryString: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>queryString</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    a fragment of SQL input
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    an options object continaing the current cursor position, 1-indexed from the start of queryString
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    a callback function with the signature 
+<code>(err, result) => result</code>
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+        An array of completion hints objects that contains the completion hints
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">const</span> queryString = <span class="hljs-string">"f"</span>;
+<span class="hljs-keyword">const</span> cursor = <span class="hljs-number">1</span>;
+
+con.getCompletionHints(queryString, cursor, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error, result</span>) </span>{
+       <span class="hljs-built_in">console</span>.log(result)
+     });
+
+ [{
+   <span class="hljs-attr">hints</span>: [<span class="hljs-string">"FROM"</span>],
+   <span class="hljs-attr">replaced</span>: <span class="hljs-string">"f"</span>,
+   <span class="hljs-attr">type</span>: <span class="hljs-number">7</span>
+  }]</pre>
     
   
 
@@ -1861,16 +2077,7 @@ flipping the string key and numerical value around.</p>
     
       <p><p>Get the list of fields from a specific table:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> tables = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect()
-  .getTables();
-
-con.getFields(<span class="hljs-string">'flights'</span>, (err, res) =&gt; <span class="hljs-built_in">console</span>.log(res))
+      <pre class='p1 overflow-auto round fill-light'>con.getFields(<span class="hljs-string">'flights'</span>, (err, res) =&gt; <span class="hljs-built_in">console</span>.log(res))
 <span class="hljs-comment">// [{</span>
   name: <span class="hljs-string">'fieldName'</span>,
   <span class="hljs-attr">type</span>: <span class="hljs-string">'BIGINT'</span>,
@@ -1970,15 +2177,7 @@ con.getFields(<span class="hljs-string">'flights'</span>, (err, res) =&gt; <span
     
       <p><p>Create a new table:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> result = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect()
-
- con.createTable(<span class="hljs-string">'mynewtable'</span>, [TColumnType, TColumnType, ...], <span class="hljs-number">0</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res));
+      <pre class='p1 overflow-auto round fill-light'>con.createTable(<span class="hljs-string">'mynewtable'</span>, [TColumnType, TColumnType, ...], <span class="hljs-number">0</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res));
  <span class="hljs-comment">// undefined</span></pre>
     
   
@@ -2424,7 +2623,7 @@ for a specific table that was last rendered at a pixel.</p>
   <p>Formats the pixel results into the same pattern as textual results.</p>
 
 
-  <div class='pre p1 fill-light mt0'>processPixelResults(callbacks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, results: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>processPixelResults(callbacks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, error: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, results: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -2443,6 +2642,15 @@ for a specific table that was last rendered at a pixel.</p>
           <div>
             <span class='code bold'>callbacks</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
 	    a collection of callbacks
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>error</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    an error if one was thrown, otherwise null
 
           </div>
           
@@ -2549,14 +2757,7 @@ This is typically set by <a href="connect">connect</a> and should not be set man
     
       <p><p>Get the session id:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> sessionID = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect()
-  .sessionId();
+      <pre class='p1 overflow-auto round fill-light'>con.sessionId();
 <span class="hljs-comment">// sessionID === 3145846410</span></pre>
     
       <p><p>Set the session id:</p>
@@ -3193,15 +3394,7 @@ Used primarily for debugging and defaults to <code>false</code>.</p>
     
       <p><p>Get the number of connections:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
-  .host(<span class="hljs-string">'localhost'</span>)
-  .port(<span class="hljs-string">'8080'</span>)
-  .dbName(<span class="hljs-string">'myDatabase'</span>)
-  .user(<span class="hljs-string">'foo'</span>)
-  .password(<span class="hljs-string">'bar'</span>)
-  .connect();
-
-<span class="hljs-keyword">var</span> numConnections = con.numConnections();
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> numConnections = con.numConnections();
 <span class="hljs-comment">// numConnections === 1</span></pre>
     
   
@@ -3712,22 +3905,22 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tdatumval'>
-      TDatumVal
+    <h3 class='fl m0' id='trow'>
+      TRow
     </h3>
     
     
   </div>
   
 
-  <p>The value of an individual cell in a table.</p>
+  <p>A row of data in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TDatumVal</div>
+  <div class='pre p1 fill-light mt0'>TRow</div>
   
     <p>
       Type:
-      <a href="#tdatumval">TDatumVal</a>
+      <a href="#trow">TRow</a>
     </p>
   
   
@@ -3746,26 +3939,9 @@ it can still be done. In this case, still process them into the same format as
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          
+          <span class='code bold'>cols</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tdatum">TDatum</a>>)</code>
+          : The array of individual data cells in a table.
+
           
         </div>
       
@@ -3837,75 +4013,6 @@ it can still be done. In this case, still process them into the same format as
           <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =1
 
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tdetectresult'>
-      TDetectResult
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Contains the result from calling <a href="detectColumnTypes">detectColumnTypes</a>.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDetectResult</div>
-  
-    <p>
-      Type:
-      <a href="#tdetectresult">TDetectResult</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>copy_params</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>row_set</span> <code class='quiet'>(<a href="#trowset">TRowSet</a>)</code>
-          
           
         </div>
       
@@ -4223,22 +4330,22 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tfrontendview'>
-      TFrontendView
+    <h3 class='fl m0' id='tdatumval'>
+      TDatumVal
     </h3>
     
     
   </div>
   
 
-  <p>The data stored for a given dashboard.</p>
+  <p>The value of an individual cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TFrontendView</div>
+  <div class='pre p1 fill-light mt0'>TDatumVal</div>
   
     <p>
       Type:
-      <a href="#tfrontendview">TFrontendView</a>
+      <a href="#tdatumval">TDatumVal</a>
     </p>
   
   
@@ -4257,98 +4364,25 @@ it can still be done. In this case, still process them into the same format as
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>image_hash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The lookup hash for the dashboard thumbnail image
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>update_time</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The timestamp from the last saved update
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>view_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The name of the dashboard or the shortened share link hash
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The base64-encoded string containing all the details about the current state of the dashboard
-
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tdatum'>
-      TDatum
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The value and state of an individual data cell in a table.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDatum</div>
-  
-    <p>
-      Type:
-      <a href="#tdatum">TDatum</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           
           
         </div>
@@ -4377,22 +4411,22 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='trow'>
-      TRow
+    <h3 class='fl m0' id='completion_hints'>
+      completion_hints
     </h3>
     
     
   </div>
   
 
-  <p>A row of data in a table.</p>
+  <p>The types of the completion hint response object</p>
 
 
-  <div class='pre p1 fill-light mt0'>TRow</div>
+  <div class='pre p1 fill-light mt0'>completion_hints</div>
   
     <p>
       Type:
-      <a href="#trow">TRow</a>
+      <a href="#completion_hints">completion_hints</a>
     </p>
   
   
@@ -4411,9 +4445,89 @@ it can still be done. In this case, still process them into the same format as
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>cols</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tdatum">TDatum</a>>)</code>
-          : The array of individual data cells in a table.
+          <span class='code bold'>session</span> <code class='quiet'>(TSessionId)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>sql</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdetectresult'>
+      TDetectResult
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Contains the result from calling <a href="detectColumnTypes">detectColumnTypes</a>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDetectResult</div>
+  
+    <p>
+      Type:
+      <a href="#tdetectresult">TDetectResult</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>copy_params</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>row_set</span> <code class='quiet'>(<a href="#trowset">TRowSet</a>)</code>
+          
           
         </div>
       
@@ -4671,6 +4785,91 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='tfrontendview'>
+      TFrontendView
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The data stored for a given dashboard.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TFrontendView</div>
+  
+    <p>
+      Type:
+      <a href="#tfrontendview">TFrontendView</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>image_hash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The lookup hash for the dashboard thumbnail image
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>update_time</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The timestamp from the last saved update
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>view_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The name of the dashboard or the shortened share link hash
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The base64-encoded string containing all the details about the current state of the dashboard
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='tcopyparams'>
       TCopyParams
     </h3>
@@ -4783,6 +4982,75 @@ TAB
           <span class='code bold'>threads</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =null
 
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The value and state of an individual data cell in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDatum</div>
+  
+    <p>
+      Type:
+      <a href="#tdatum">TDatum</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          
           
         </div>
       
