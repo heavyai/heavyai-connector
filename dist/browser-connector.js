@@ -66,10 +66,27 @@
 		Author Tobias Koppers @sokra
 	*/
 	module.exports = function(src) {
-		if (typeof execScript !== "undefined")
-			execScript(src);
-		else
-			eval.call(null, src);
+		function log(error) {
+			(typeof console !== "undefined")
+			&& (console.error || console.log)("[Script Loader]", error);
+		}
+
+		// Check for IE =< 8
+		function isIE() {
+			return typeof attachEvent !== "undefined" && typeof addEventListener === "undefined";
+		}
+
+		try {
+			if (typeof execScript !== "undefined" && isIE()) {
+				execScript(src);
+			} else if (typeof eval !== "undefined") {
+				eval.call(null, src);
+			} else {
+				log("EvalError: No eval function available");
+			}
+		} catch (error) {
+			log(error);
+		}
 	}
 
 
@@ -1255,6 +1272,13 @@
 	    value: function processPixelResults(callbacks, error, results) {
 	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
+	      if (error) {
+	        if (callbacks) {
+	          callbacks.pop()(error, results);
+	        } else {
+	          throw new Error("Unable to process result row for pixel results: " + error);
+	        }
+	      }
 	      var numPixels = results.length;
 	      var processResultsOptions = {
 	        isImage: false,

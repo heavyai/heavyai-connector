@@ -17297,6 +17297,13 @@ module.exports =
 	    value: function processPixelResults(callbacks, error, results) {
 	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
+	      if (error) {
+	        if (callbacks) {
+	          callbacks.pop()(error, results);
+	        } else {
+	          throw new Error("Unable to process result row for pixel results: " + error);
+	        }
+	      }
 	      var numPixels = results.length;
 	      var processResultsOptions = {
 	        isImage: false,
