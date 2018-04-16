@@ -16356,6 +16356,93 @@ module.exports =
 	      });
 	    };
 
+	    this.getDashboardsAsync = function () {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client[0].get_dashboards(_this._sessionId[0], function (result) {
+	            if (result instanceof Error) {
+	              reject(result);
+	            } else {
+	              resolve(result);
+	            }
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
+	    this.getDashboardAsync = function (dashboardId) {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client[0].get_dashboard(_this._sessionId[0], dashboardId, function (result) {
+	            if (result instanceof Error) {
+	              reject(result);
+	            } else {
+	              resolve(result);
+	            }
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
+	    this.createDashboardAsync = function (dashboardName, dashboardState, imageHash, metaData) {
+	      if (_this._sessionId) {
+	        return Promise.all(_this._client.map(function (client, i) {
+	          return new Promise(function (resolve, reject) {
+	            client.create_dashboard(_this._sessionId[i], dashboardName, dashboardState, imageHash, metaData, function (result) {
+	              if (result instanceof Error) {
+	                reject(result);
+	              } else {
+	                resolve(result);
+	              }
+	            });
+	          });
+	        }));
+	      } else {
+	        return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
+	      }
+	    };
+
+	    this.replaceDashboardAsync = function (dashboardId, dashboardName, dashboardOwner, dashboardState, imageHash, metaData) {
+	      if (_this._sessionId) {
+	        return Promise.all(_this._client.map(function (client, i) {
+	          return new Promise(function (resolve, reject) {
+	            client.replace_dashboard(_this._sessionId[i], dashboardId, dashboardName, dashboardOwner, dashboardState, imageHash, metaData, function (result) {
+	              if (result instanceof Error) {
+	                reject(result);
+	              } else {
+	                resolve(result);
+	              }
+	            });
+	          });
+	        }));
+	      } else {
+	        return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
+	      }
+	    };
+
+	    this.deleteDashboardAsync = function (dashboardId) {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client.forEach(function (client, i) {
+	            client.delete_dashboard(_this._sessionId[i], dashboardId, function (error) {
+	              if (error) {
+	                console.log("d error", error);
+	                reject(error);
+	              } else {
+	                resolve();
+	              }
+	            });
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
 	    this.queryAsync = this.query;
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
@@ -16807,6 +16894,34 @@ module.exports =
 	    }
 
 	    /**
+	     * Add a new dashboard to the server.
+	     * @param {String} dashboardName - the name of the new dashboard
+	     * @param {String} dashboardState - the base64-encoded state string of the new dashboard
+	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+	     * @param {String} metaData - Stringified metaData related to the view
+	     * @return {Promise} Returns empty if success
+	     *
+	     * @example <caption>Add a new dashboard to the server:</caption>
+	     *
+	     * con.createDashboardAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Delete a dashboard object containing a value for the <code>view_state</code> property.
+	     * @param {String} dashboardId - the id of the dashboard
+	     * @return {Promise} Returns empty if success
+	     *
+	     * @example <caption>Delete a specific dashboard from the server:</caption>
+	     *
+	     * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
+	     */
+
+	  }, {
+	    key: "detectColumnTypesAsync",
+
+
+	    /**
 	     * Asynchronously get the data from an importable file,
 	     * such as a .csv or plaintext file with a header.
 	     * @param {String} fileName - the name of the importable file
@@ -16820,9 +16935,6 @@ module.exports =
 	     * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
 	     *
 	     */
-
-	  }, {
-	    key: "detectColumnTypesAsync",
 	    value: function detectColumnTypesAsync(fileName, copyParams) {
 	      var _this7 = this;
 

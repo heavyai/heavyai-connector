@@ -618,6 +618,168 @@ class MapdCon {
     )
   }
 
+  getDashboardsAsync = () =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client[0].get_dashboards(this._sessionId[0], result => {
+          if (result instanceof Error) {
+            reject(result)
+          } else {
+            resolve(result)
+          }
+        })
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  getDashboardAsync = dashboardId =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client[0].get_dashboard(
+          this._sessionId[0],
+          dashboardId,
+          result => {
+            if (result instanceof Error) {
+              reject(result)
+            } else {
+              resolve(result)
+            }
+          }
+        )
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  /**
+   * Add a new dashboard to the server.
+   * @param {String} dashboardName - the name of the new dashboard
+   * @param {String} dashboardState - the base64-encoded state string of the new dashboard
+   * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+   * @param {String} metaData - Stringified metaData related to the view
+   * @return {Promise} Returns empty if success
+   *
+   * @example <caption>Add a new dashboard to the server:</caption>
+   *
+   * con.createDashboardAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
+   */
+  createDashboardAsync = (
+    dashboardName,
+    dashboardState,
+    imageHash,
+    metaData
+  ) => {
+    if (this._sessionId) {
+      return Promise.all(
+        this._client.map(
+          (client, i) =>
+            new Promise((resolve, reject) => {
+              client.create_dashboard(
+                this._sessionId[i],
+                dashboardName,
+                dashboardState,
+                imageHash,
+                metaData,
+                result => {
+                  if (result instanceof Error) {
+                    reject(result)
+                  } else {
+                    resolve(result)
+                  }
+                }
+              )
+            })
+        )
+      )
+    } else {
+      return Promise.reject(
+        new Error(
+          "You are not connected to a server. Try running the connect method first."
+        )
+      )
+    }
+  }
+
+  replaceDashboardAsync = (
+    dashboardId,
+    dashboardName,
+    dashboardOwner,
+    dashboardState,
+    imageHash,
+    metaData
+  ) => {
+    if (this._sessionId) {
+      return Promise.all(
+        this._client.map(
+          (client, i) =>
+            new Promise((resolve, reject) => {
+              client.replace_dashboard(
+                this._sessionId[i],
+                dashboardId,
+                dashboardName,
+                dashboardOwner,
+                dashboardState,
+                imageHash,
+                metaData,
+                result => {
+                  if (result instanceof Error) {
+                    reject(result)
+                  } else {
+                    resolve(result)
+                  }
+                }
+              )
+            })
+        )
+      )
+    } else {
+      return Promise.reject(
+        new Error(
+          "You are not connected to a server. Try running the connect method first."
+        )
+      )
+    }
+  }
+
+  /**
+   * Delete a dashboard object containing a value for the <code>view_state</code> property.
+   * @param {String} dashboardId - the id of the dashboard
+   * @return {Promise} Returns empty if success
+   *
+   * @example <caption>Delete a specific dashboard from the server:</caption>
+   *
+   * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
+   */
+  deleteDashboardAsync = dashboardId =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client.forEach((client, i) => {
+          client.delete_dashboard(this._sessionId[i], dashboardId, error => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
   /**
    * Asynchronously get the data from an importable file,
    * such as a .csv or plaintext file with a header.
