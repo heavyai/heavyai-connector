@@ -13,15 +13,17 @@ if [ "$TRAVIS_BRANCH" = "master" ]
   
   cd ${DOWNLOAD_PATH}
     yarn
+    git checkout yarn.lock
     git fetch --all
     git checkout gh-pages
     git pull --rebase origin master
+    npm run build
     npm run clean:docs
     npm run docs:build
     git add docs -f
     CHANGESET=$(git rev-parse --verify HEAD)
     git commit -m "Automated documentation build for changeset ${CHANGESET}."
-    git push origin gh-pages
+    git push -f origin gh-pages
   cd ..
   rm -rf ${DOWNLOAD_PATH}
 fi
