@@ -55,12 +55,15 @@ MapDClientV2.prototype.delete_frontend_view = function(...args) {
   return deleteFrontendViewWithErrorHandling(...args)
 }
 
-MapDClientV2.prototype.get_completion_hints = function (...args) {
-  const getCompletionHintsWithErrorHandling = wrapWithErrorHandling(this, "get_completion_hints")
+MapDClientV2.prototype.get_completion_hints = function(...args) {
+  const getCompletionHintsWithErrorHandling = wrapWithErrorHandling(
+    this,
+    "get_completion_hints"
+  )
   return getCompletionHintsWithErrorHandling(...args)
 }
 
-MapDClientV2.prototype.get_tables = function (...args) {
+MapDClientV2.prototype.get_tables = function(...args) {
   const getTablesWithErrorHandling = wrapWithErrorHandling(this, "get_tables")
   return getTablesWithErrorHandling(...args)
 }
@@ -71,6 +74,14 @@ MapDClientV2.prototype.get_table_details = function(...args) {
     "get_table_details"
   )
   return getTableDetailsWithErrorHandling(...args)
+}
+
+MapDClientV2.prototype.get_tables_meta = function(...args) {
+  const getTablesWithMetaWithErrorHandling = wrapWithErrorHandling(
+    this,
+    "get_tables_meta"
+  )
+  return getTablesWithMetaWithErrorHandling(...args)
 }
 
 MapDClientV2.prototype.get_fields = function(...args) {
