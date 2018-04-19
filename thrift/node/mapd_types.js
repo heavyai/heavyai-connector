@@ -5406,6 +5406,7 @@ var TAccessPrivileges = module.exports.TAccessPrivileges = function(args) {
   this.insert_ = null;
   this.create_ = null;
   this.truncate_ = null;
+  this.create_dashboard_ = null;
   if (args) {
     if (args.select_ !== undefined && args.select_ !== null) {
       this.select_ = args.select_;
@@ -5418,6 +5419,9 @@ var TAccessPrivileges = module.exports.TAccessPrivileges = function(args) {
     }
     if (args.truncate_ !== undefined && args.truncate_ !== null) {
       this.truncate_ = args.truncate_;
+    }
+    if (args.create_dashboard_ !== undefined && args.create_dashboard_ !== null) {
+      this.create_dashboard_ = args.create_dashboard_;
     }
   }
 };
@@ -5463,6 +5467,13 @@ TAccessPrivileges.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.BOOL) {
+        this.create_dashboard_ = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -5492,6 +5503,11 @@ TAccessPrivileges.prototype.write = function(output) {
   if (this.truncate_ !== null && this.truncate_ !== undefined) {
     output.writeFieldBegin('truncate_', Thrift.Type.BOOL, 4);
     output.writeBool(this.truncate_);
+    output.writeFieldEnd();
+  }
+  if (this.create_dashboard_ !== null && this.create_dashboard_ !== undefined) {
+    output.writeFieldBegin('create_dashboard_', Thrift.Type.BOOL, 5);
+    output.writeBool(this.create_dashboard_);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
