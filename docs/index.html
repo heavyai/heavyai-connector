@@ -185,6 +185,16 @@
               
                 
                 <li><a
+                  href='#gettableswithmetaasync'
+                  class="">
+                  getTablesWithMetaAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#getcompletionhints'
                   class="">
                   getCompletionHints
@@ -1790,7 +1800,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   </div>
   
 
-  <p>Get the names of the databases that exist on the current session's connectdion.</p>
+  <p>Get the names of the tables that exist on the current session's connection.</p>
 
 
   <div class='pre p1 fill-light mt0'>getTablesAsync(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></div>
@@ -1829,9 +1839,82 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
 
  <span class="hljs-comment">//  [{</span>
  <span class="hljs-comment">//    label: 'obs', // deprecated property</span>
- <span class="hljs-comment">//    name: 'myDatabaseName'</span>
+ <span class="hljs-comment">//    name: 'myTableName'</span>
  <span class="hljs-comment">//   },</span>
  <span class="hljs-comment">//  ...]</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='gettableswithmetaasync'>
+      getTablesWithMetaAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get names and catalog metadata for tables that exist on the current session's connection.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getTablesWithMetaAsync(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></code>:
+        list of objects containing table metadata.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the list of tables with metadata from a connection:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getTablesWithMetaAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+
+ [
+  {
+   <span class="hljs-attr">name</span>: <span class="hljs-string">'my_table_name'</span>,
+   <span class="hljs-attr">col_datum_types</span>: [TDatumType::BOOL, <span class="hljs-attr">TDatumType</span>::DOUBLE],
+   <span class="hljs-attr">is_view</span>: <span class="hljs-literal">false</span>,
+   <span class="hljs-attr">is_replicated</span>: <span class="hljs-literal">false</span>,
+   <span class="hljs-attr">shard_count</span>: <span class="hljs-number">0</span>,
+   <span class="hljs-attr">max_rows</span>: <span class="hljs-number">-1</span>
+  },
+ ...]</pre>
     
   
 
