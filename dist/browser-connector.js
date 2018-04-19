@@ -455,7 +455,7 @@
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -948,7 +948,7 @@
 	    }
 
 	    /**
-	     * Get the names of the databases that exist on the current session's connectdion.
+	     * Get the names of the tables that exist on the current session's connection.
 	     * @return {Promise.<Object[]>} list of table objects containing the label and table names.
 	     *
 	     * @example <caption>Get the list of tables from a connection:</caption>
@@ -957,7 +957,7 @@
 	     *
 	     *  //  [{
 	     *  //    label: 'obs', // deprecated property
-	     *  //    name: 'myDatabaseName'
+	     *  //    name: 'myTableName'
 	     *  //   },
 	     *  //  ...]
 	     */
@@ -969,6 +969,67 @@
 
 	      return new Promise(function (resolve, reject) {
 	        _this10.getTables.bind(_this10)(function (error, tables) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(tables);
+	          }
+	        });
+	      });
+	    }
+	  }, {
+	    key: "getTablesWithMeta",
+	    value: function getTablesWithMeta(callback) {
+	      var _this11 = this;
+
+	      this._client[0].get_tables_meta(this._sessionId[0], function (error, tables) {
+	        if (error) {
+	          callback(error);
+	        } else {
+	          callback(null, tables.map(function (table) {
+	            return {
+	              name: table.table_name,
+	              num_cols: Number(table.num_cols.toString()),
+	              col_datum_types: table.col_datum_types.map(function (type) {
+	                return _this11._datumEnum[type];
+	              }),
+	              is_view: table.is_view,
+	              is_replicated: table.is_replicated,
+	              shard_count: Number(table.shard_count.toString()),
+	              max_rows: isFinite(table.max_rows) ? Number(table.max_rows.toString()) : -1
+	            };
+	          }));
+	        }
+	      });
+	    }
+
+	    /**
+	     * Get names and catalog metadata for tables that exist on the current session's connection.
+	     * @return {Promise.<Object[]>} list of objects containing table metadata.
+	     *
+	     * @example <caption>Get the list of tables with metadata from a connection:</caption>
+	     *
+	     *  con.getTablesWithMetaAsync().then(res => console.log(res))
+	     *
+	     *  [
+	     *   {
+	     *    name: 'my_table_name',
+	     *    col_datum_types: [TDatumType::BOOL, TDatumType::DOUBLE],
+	     *    is_view: false,
+	     *    is_replicated: false,
+	     *    shard_count: 0,
+	     *    max_rows: -1
+	     *   },
+	     *  ...]
+	     */
+
+	  }, {
+	    key: "getTablesWithMetaAsync",
+	    value: function getTablesWithMetaAsync() {
+	      var _this12 = this;
+
+	      return new Promise(function (resolve, reject) {
+	        _this12.getTablesWithMeta.bind(_this12)(function (error, tables) {
 	          if (error) {
 	            reject(error);
 	          } else {
@@ -1052,7 +1113,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName, callback) {
-	      var _this11 = this;
+	      var _this13 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
 	        if (fields) {
@@ -1060,7 +1121,7 @@
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-	          callback(null, _this11.convertFromThriftTypes(rowDict));
+	          callback(null, _this13.convertFromThriftTypes(rowDict));
 	        } else {
 	          callback(new Error("Table (" + tableName + ") not found" + error));
 	        }
@@ -1128,11 +1189,11 @@
 	  }, {
 	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this12 = this;
+	      var _this14 = this;
 
 	      return function (tableName, fileName, copyParams, headers) {
 	        return new Promise(function (resolve, reject) {
-	          _this12.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
+	          _this14.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
 	            if (err) {
 	              reject(err);
 	            } else {
@@ -1179,7 +1240,7 @@
 	     * @returns {Image} Base 64 Image
 	     */
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this13 = this;
+	      var _this15 = this;
 
 	      var queryId = null;
 	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
@@ -1213,7 +1274,7 @@
 	          if (error) {
 	            callback(error);
 	          } else {
-	            _this13.processResults(processResultsOptions, result, callback);
+	            _this15.processResults(processResultsOptions, result, callback);
 	          }
 	        });
 	      } catch (err) {
@@ -1539,10 +1600,10 @@
 	  }, {
 	    key: "getEndpoints",
 	    value: function getEndpoints() {
-	      var _this14 = this;
+	      var _this16 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this14._protocol[i] + "://" + host + ":" + _this14._port[i];
+	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
 	      });
 	    }
 	  }]);
@@ -1692,6 +1753,11 @@
 	MapDClientV2.prototype.get_table_details = function () {
 	  var getTableDetailsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_table_details");
 	  return getTableDetailsWithErrorHandling.apply(undefined, arguments);
+	};
+
+	MapDClientV2.prototype.get_tables_meta = function () {
+	  var getTablesWithMetaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_tables_meta");
+	  return getTablesWithMetaWithErrorHandling.apply(undefined, arguments);
 	};
 
 	MapDClientV2.prototype.get_fields = function () {
