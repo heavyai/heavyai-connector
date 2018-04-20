@@ -171,6 +171,7 @@ class MapdCon {
           "getServerStatusAsync",
           "getStatusAsync",
           "getTablesAsync",
+          "getTablesWithMetaAsync",
           "host",
           "importTableAsync",
           "importTableGeoAsync",
@@ -808,7 +809,7 @@ class MapdCon {
   }
 
   /**
-   * Get the names of the databases that exist on the current session's connectdion.
+   * Get the names of the tables that exist on the current session's connection.
    * @return {Promise.<Object[]>} list of table objects containing the label and table names.
    *
    * @example <caption>Get the list of tables from a connection:</caption>
@@ -817,13 +818,67 @@ class MapdCon {
    *
    *  //  [{
    *  //    label: 'obs', // deprecated property
-   *  //    name: 'myDatabaseName'
+   *  //    name: 'myTableName'
    *  //   },
    *  //  ...]
    */
   getTablesAsync() {
     return new Promise((resolve, reject) => {
       this.getTables.bind(this)((error, tables) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(tables)
+        }
+      })
+    })
+  }
+
+  getTablesWithMeta(callback) {
+    this._client[0].get_tables_meta(this._sessionId[0], (error, tables) => {
+      if (error) {
+        callback(error)
+      } else {
+        callback(
+          null,
+          tables.map(table => ({
+            name: table.table_name,
+            num_cols: Number(table.num_cols.toString()),
+            col_datum_types: table.col_datum_types.map(type => this._datumEnum[type]),
+            is_view: table.is_view,
+            is_replicated: table.is_replicated,
+            shard_count: Number(table.shard_count.toString()),
+            max_rows: isFinite(table.max_rows)
+              ? Number(table.max_rows.toString())
+              : -1
+          }))
+        )
+      }
+    })
+  }
+
+  /**
+   * Get names and catalog metadata for tables that exist on the current session's connection.
+   * @return {Promise.<Object[]>} list of objects containing table metadata.
+   *
+   * @example <caption>Get the list of tables with metadata from a connection:</caption>
+   *
+   *  con.getTablesWithMetaAsync().then(res => console.log(res))
+   *
+   *  [
+   *   {
+   *    name: 'my_table_name',
+   *    col_datum_types: [TDatumType::BOOL, TDatumType::DOUBLE],
+   *    is_view: false,
+   *    is_replicated: false,
+   *    shard_count: 0,
+   *    max_rows: -1
+   *   },
+   *  ...]
+   */
+  getTablesWithMetaAsync() {
+    return new Promise((resolve, reject) => {
+      this.getTablesWithMeta.bind(this)((error, tables) => {
         if (error) {
           reject(error)
         } else {
@@ -857,13 +912,18 @@ class MapdCon {
    */
   getCompletionHints(queryString, options, callback) {
     const cursor = options.cursor
-    this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, (error, result) => {
-      if (error) {
-        callback(error)
-      } else {
-        callback(null, result)
+    this._client[0].get_completion_hints(
+      this._sessionId[0],
+      queryString,
+      cursor,
+      (error, result) => {
+        if (error) {
+          callback(error)
+        } else {
+          callback(null, result)
+        }
       }
-    })
+    )
   }
 
   /**
@@ -1197,6 +1257,15 @@ class MapdCon {
   processPixelResults(callbacks, error, results) {
     callbacks = Array.isArray(callbacks) ? callbacks : [callbacks]
     results = Array.isArray(results) ? results.pixel_rows : [results]
+    if (error) {
+      if (callbacks) {
+        callbacks.pop()(error, results)
+      } else {
+        throw new Error(
+          `Unable to process result row for pixel results: ${error}`
+        )
+      }
+    }
     const numPixels = results.length
     const processResultsOptions = {
       isImage: false,

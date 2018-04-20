@@ -30,6 +30,7 @@ describe("MapDClientV2", () => {
     "render_vega",
     "delete_frontend_view",
     "get_tables",
+    "get_tables_meta",
     "get_frontend_views",
     "get_frontend_view",
     "create_link",
