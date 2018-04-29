@@ -5997,6 +5997,89 @@ TDBObject.prototype.write = function(output) {
   return;
 };
 
+var TDashboardGrantees = module.exports.TDashboardGrantees = function(args) {
+  this.name = null;
+  this.is_user = null;
+  this.permissions = null;
+  if (args) {
+    if (args.name !== undefined && args.name !== null) {
+      this.name = args.name;
+    }
+    if (args.is_user !== undefined && args.is_user !== null) {
+      this.is_user = args.is_user;
+    }
+    if (args.permissions !== undefined && args.permissions !== null) {
+      this.permissions = new ttypes.TDashboardPermissions(args.permissions);
+    }
+  }
+};
+TDashboardGrantees.prototype = {};
+TDashboardGrantees.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.name = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_user = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.permissions = new ttypes.TDashboardPermissions();
+        this.permissions.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TDashboardGrantees.prototype.write = function(output) {
+  output.writeStructBegin('TDashboardGrantees');
+  if (this.name !== null && this.name !== undefined) {
+    output.writeFieldBegin('name', Thrift.Type.STRING, 1);
+    output.writeString(this.name);
+    output.writeFieldEnd();
+  }
+  if (this.is_user !== null && this.is_user !== undefined) {
+    output.writeFieldBegin('is_user', Thrift.Type.BOOL, 2);
+    output.writeBool(this.is_user);
+    output.writeFieldEnd();
+  }
+  if (this.permissions !== null && this.permissions !== undefined) {
+    output.writeFieldBegin('permissions', Thrift.Type.STRUCT, 3);
+    this.permissions.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var TLicenseInfo = module.exports.TLicenseInfo = function(args) {
   this.claims = null;
   if (args) {
