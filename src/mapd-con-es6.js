@@ -819,7 +819,7 @@ class MapdCon {
     })
 
   /**
-   * Share a dashboard (set the list of groups that can access it and how)
+   * Share a dashboard (GRANT a certain set of permission to a specified list of groups)
    * @param {String} dashboardId - the id of the dashboard
    * @param {String} groups - the roles and users that can access it
    * @param {String} objects - the database objects (tables) they can see
@@ -835,6 +835,47 @@ class MapdCon {
       if (this._sessionId) {
         this._client.forEach((client, i) => {
           client.share_dashboard(
+            this._sessionId[i],
+            dashboardId,
+            groups,
+            objects,
+            // eslint-disable-next-line no-undef
+            new TDashboardPermissions(permissions),
+            error => {
+              if (error) {
+                reject(error)
+              } else {
+                resolve()
+              }
+            }
+          )
+        })
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  /**
+   * Unshare a dashboard (REVOKE a certain set of permission from a specified list of groups)
+   * @param {String} dashboardId - the id of the dashboard
+   * @param {String} groups - the roles and users that can access it
+   * @param {String} objects - the database objects (tables) they can see
+   * @param {String} permissions - permissions the groups have
+   * @return {Promise} Returns empty if success
+   *
+   * @example <caption>Share a dashboard:</caption>
+   *
+   * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
+   */
+  unshareDashboardAsync = (dashboardId, groups, objects, permissions) =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client.forEach((client, i) => {
+          client.unshare_dashboard(
             this._sessionId[i],
             dashboardId,
             groups,
