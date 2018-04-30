@@ -16728,6 +16728,38 @@ module.exports =
 	      });
 	    };
 
+	    this.getUsersAsync = function () {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client[0].get_users(_this._sessionId[0], function (result) {
+	            if (result instanceof Error) {
+	              reject(result);
+	            } else {
+	              resolve(result);
+	            }
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
+	    this.getRolesAsync = function () {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client[0].get_roles(_this._sessionId[0], function (result) {
+	            if (result instanceof Error) {
+	              reject(result);
+	            } else {
+	              resolve(result);
+	            }
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
 	    this.getDashboardsAsync = function () {
 	      return new Promise(function (resolve, reject) {
 	        if (_this._sessionId) {
@@ -16802,12 +16834,63 @@ module.exports =
 	          _this._client.forEach(function (client, i) {
 	            client.delete_dashboard(_this._sessionId[i], dashboardId, function (error) {
 	              if (error) {
-	                console.log("d error", error);
 	                reject(error);
 	              } else {
 	                resolve();
 	              }
 	            });
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
+	    this.shareDashboardAsync = function (dashboardId, groups, objects, permissions) {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client.forEach(function (client, i) {
+	            client.share_dashboard(_this._sessionId[i], dashboardId, groups, objects,
+	            // eslint-disable-next-line no-undef
+	            new TDashboardPermissions(permissions), function (error) {
+	              if (error) {
+	                reject(error);
+	              } else {
+	                resolve();
+	              }
+	            });
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
+	    this.getDbObjectsForGranteeAsync = function (roleName) {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client[0].get_db_objects_for_grantee(_this._sessionId[0], roleName, function (error) {
+	            if (error) {
+	              reject(error);
+	            } else {
+	              resolve();
+	            }
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
+	    this.getDbObjectPrivsAsync = function (objectName, type) {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client[0].get_db_object_privs(_this._sessionId[0], objectName, type, function (error) {
+	            if (error) {
+	              reject(error);
+	            } else {
+	              resolve();
+	            }
 	          });
 	        } else {
 	          reject(new Error("You are not connected to a server. Try running the connect method first."));
@@ -17057,7 +17140,7 @@ module.exports =
 	     *
 	     * @example <caption>Get a specific dashboard from the server:</caption>
 	     *
-	     * con.getFrontendViewAsync('dashboard_name').then((result) => console.log(result))
+	     * con.getFrontendViewAsync('view_name').then((result) => console.log(result))
 	     * // {TFrontendView}
 	     */
 
@@ -17196,7 +17279,7 @@ module.exports =
 	     *
 	     * @example <caption>Delete a specific dashboard from the server:</caption>
 	     *
-	     * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
+	     * con.deleteFrontendViewAsync('view_name').then(res => console.log(res))
 	     */
 
 	  }, {
@@ -17275,7 +17358,7 @@ module.exports =
 	     *
 	     * @example <caption>Add a new dashboard to the server:</caption>
 	     *
-	     * con.createDashboardAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
+	     * con.createDashboardAsync('newSave', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
 	     */
 
 
@@ -17286,7 +17369,21 @@ module.exports =
 	     *
 	     * @example <caption>Delete a specific dashboard from the server:</caption>
 	     *
-	     * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
+	     * con.deleteDashboardAsync(123).then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Share a dashboard (set the list of groups that can access it and how)
+	     * @param {String} dashboardId - the id of the dashboard
+	     * @param {String} groups - the roles and users that can access it
+	     * @param {String} objects - the database objects (tables) they can see
+	     * @param {String} permissions - permissions the groups have
+	     * @return {Promise} Returns empty if success
+	     *
+	     * @example <caption>Share a dashboard:</caption>
+	     *
+	     * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
 	     */
 
 	  }, {

@@ -315,7 +315,7 @@ class MapdCon {
    *
    * @example <caption>Get a specific dashboard from the server:</caption>
    *
-   * con.getFrontendViewAsync('dashboard_name').then((result) => console.log(result))
+   * con.getFrontendViewAsync('view_name').then((result) => console.log(result))
    * // {TFrontendView}
    */
   getFrontendViewAsync = viewName =>
@@ -518,7 +518,7 @@ class MapdCon {
    *
    * @example <caption>Delete a specific dashboard from the server:</caption>
    *
-   * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
+   * con.deleteFrontendViewAsync('view_name').then(res => console.log(res))
    */
   deleteFrontendViewAsync = viewName =>
     new Promise((resolve, reject) => {
@@ -618,6 +618,44 @@ class MapdCon {
     )
   }
 
+  getUsersAsync = () =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client[0].get_users(this._sessionId[0], result => {
+          if (result instanceof Error) {
+            reject(result)
+          } else {
+            resolve(result)
+          }
+        })
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  getRolesAsync = () =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client[0].get_roles(this._sessionId[0], result => {
+          if (result instanceof Error) {
+            reject(result)
+          } else {
+            resolve(result)
+          }
+        })
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
   getDashboardsAsync = () =>
     new Promise((resolve, reject) => {
       if (this._sessionId) {
@@ -670,7 +708,7 @@ class MapdCon {
    *
    * @example <caption>Add a new dashboard to the server:</caption>
    *
-   * con.createDashboardAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
+   * con.createDashboardAsync('newSave', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
   createDashboardAsync = (
     dashboardName,
@@ -757,7 +795,7 @@ class MapdCon {
    *
    * @example <caption>Delete a specific dashboard from the server:</caption>
    *
-   * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
+   * con.deleteDashboardAsync(123).then(res => console.log(res))
    */
   deleteDashboardAsync = dashboardId =>
     new Promise((resolve, reject) => {
@@ -771,6 +809,94 @@ class MapdCon {
             }
           })
         })
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  /**
+   * Share a dashboard (set the list of groups that can access it and how)
+   * @param {String} dashboardId - the id of the dashboard
+   * @param {String} groups - the roles and users that can access it
+   * @param {String} objects - the database objects (tables) they can see
+   * @param {String} permissions - permissions the groups have
+   * @return {Promise} Returns empty if success
+   *
+   * @example <caption>Share a dashboard:</caption>
+   *
+   * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
+   */
+  shareDashboardAsync = (dashboardId, groups, objects, permissions) =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client.forEach((client, i) => {
+          client.share_dashboard(
+            this._sessionId[i],
+            dashboardId,
+            groups,
+            objects,
+            // eslint-disable-next-line no-undef
+            new TDashboardPermissions(permissions),
+            error => {
+              if (error) {
+                reject(error)
+              } else {
+                resolve()
+              }
+            }
+          )
+        })
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  getDbObjectsForGranteeAsync = roleName =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client[0].get_db_objects_for_grantee(
+          this._sessionId[0],
+          roleName,
+          error => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          }
+        )
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  getDbObjectPrivsAsync = (objectName, type) =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client[0].get_db_object_privs(
+          this._sessionId[0],
+          objectName,
+          type,
+          error => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          }
+        )
       } else {
         reject(
           new Error(
@@ -1006,7 +1132,9 @@ class MapdCon {
           tables.map(table => ({
             name: table.table_name,
             num_cols: Number(table.num_cols.toString()),
-            col_datum_types: table.col_datum_types.map(type => this._datumEnum[type]),
+            col_datum_types: table.col_datum_types.map(
+              type => this._datumEnum[type]
+            ),
             is_view: table.is_view,
             is_replicated: table.is_replicated,
             shard_count: Number(table.shard_count.toString()),
