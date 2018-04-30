@@ -453,6 +453,22 @@
 	      });
 	    };
 
+	    this.getDashboardGranteesAsync = function (dashboardId) {
+	      return new Promise(function (resolve, reject) {
+	        if (_this._sessionId) {
+	          _this._client[0].get_dashboard_grantees(_this._sessionId[0], dashboardId, function (result) {
+	            if (result instanceof Error) {
+	              reject(result);
+	            } else {
+	              resolve(result);
+	            }
+	          });
+	        } else {
+	          reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      });
+	    };
+
 	    this.getDbObjectsForGranteeAsync = function (roleName) {
 	      return new Promise(function (resolve, reject) {
 	        if (_this._sessionId) {

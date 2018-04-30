@@ -859,6 +859,29 @@ class MapdCon {
       }
     })
 
+  getDashboardGranteesAsync = dashboardId =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        this._client[0].get_dashboard_grantees(
+          this._sessionId[0],
+          dashboardId,
+          result => {
+            if (result instanceof Error) {
+              reject(result)
+            } else {
+              resolve(result)
+            }
+          }
+        )
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
   getDbObjectsForGranteeAsync = roleName =>
     new Promise((resolve, reject) => {
       if (this._sessionId) {
