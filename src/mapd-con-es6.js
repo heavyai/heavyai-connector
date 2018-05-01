@@ -270,6 +270,7 @@ class MapdCon {
     this.queryTimes[queryId] = execution_time_ms
   }
 
+  // Wrap a Thrift binding method that only requires a single client (i.e. a 'get' type operation) in a Promise
   promisifySingle = (processArgs, methodName) => (...args) =>
     new Promise((resolve, reject) => {
       if (this._sessionId) {
@@ -295,6 +296,7 @@ class MapdCon {
       }
     })
 
+  // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
   promisifyAll = (processArgs, methodName) => (...args) => {
     if (this._sessionId) {
       const processedArgs = processArgs(args)
@@ -707,7 +709,7 @@ class MapdCon {
 
   /**
    * Get a single dashboard.
-   * @param {String} dashboardId - the id of the dashboard
+   * @param {Number} dashboardId - the id of the dashboard
    * @returns {Promise.<TDashboard>} The dashboard (Dashboard object)
    *
    * @example <caption>Get a dashboard:</caption>
@@ -732,7 +734,7 @@ class MapdCon {
 
   /**
    * Replace a dashboard on the server with new properties.
-   * @param {String} dashboardId - the id of the dashboard to replace
+   * @param {Number} dashboardId - the id of the dashboard to replace
    * @param {String} dashboardName - the name of the new dashboard
    * @param {String} dashboardOwner - user id of the owner of the dashboard
    * @param {String} dashboardState - the base64-encoded state string of the new dashboard
@@ -748,7 +750,7 @@ class MapdCon {
 
   /**
    * Delete a dashboard object containing a value for the <code>view_state</code> property.
-   * @param {String} dashboardId - the id of the dashboard
+   * @param {Number} dashboardId - the id of the dashboard
    * @return {Promise} Returns empty if success, rejects if any client failed
    *
    * @example <caption>Delete a specific dashboard from the server:</caption>
@@ -759,10 +761,10 @@ class MapdCon {
 
   /**
    * Share a dashboard (GRANT a certain set of permission to a specified list of groups)
-   * @param {String} dashboardId - the id of the dashboard
-   * @param {String} groups - the roles and users that can access it
-   * @param {String} objects - the database objects (tables) they can see
-   * @param {String} permissions - permissions the groups should have granted
+   * @param {Number} dashboardId - the id of the dashboard
+   * @param {String[]} groups - the roles and users that can access it
+   * @param {String[]} objects - the database objects (tables) they can see
+   * @param {String[]} permissions - permissions the groups should have granted
    * @return {Promise} Returns empty if success
    *
    * @example <caption>Share a dashboard:</caption>
@@ -781,13 +783,13 @@ class MapdCon {
 
   /**
    * Unshare a dashboard (REVOKE a certain set of permission from a specified list of groups)
-   * @param {String} dashboardId - the id of the dashboard
-   * @param {String} groups - the roles and users that can access it
-   * @param {String} objects - the database objects (tables) they can see
-   * @param {String} permissions - permissions the groups should have revoked
+   * @param {Number} dashboardId - the id of the dashboard
+   * @param {String[]} groups - the roles and users that can access it
+   * @param {String[]} objects - the database objects (tables) they can see
+   * @param {String[]} permissions - permissions the groups should have revoked
    * @return {Promise} Returns empty if success
    *
-   * @example <caption>Share a dashboard:</caption>
+   * @example <caption>Unshare a dashboard:</caption>
    *
    * con.unshareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
    */
@@ -803,7 +805,7 @@ class MapdCon {
 
   /**
    * Get grantees for a dashboard - the list of users it has been shared with (permissions granted to)
-   * @param {String} dashboardId - the id of the dashboard
+   * @param {Number} dashboardId - the id of the dashboard
    * @return {Promise} Returns list of users (array)
    *
    * @example <caption>Get list of grantees for a dashboard:</caption>
