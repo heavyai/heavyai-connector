@@ -325,35 +325,6 @@ class MapdCon {
     }
   }
 
-  // promisifyAll = (processArgs, methodName) => (...args) =>
-  //   new Promise((resolve, reject) => {
-  //     if (this._sessionId) {
-  //       const processedArgs = processArgs(args)
-  //       const handleClientResult = result => {
-  //         if (result instanceof Error) {
-  //           reject(result)
-  //         } else {
-  //           resolve(result)
-  //         }
-  //       }
-
-  //       this._client.forEach((client, i) => {
-  //         const argList = [this._sessionId[i]].concat(
-  //           processedArgs,
-  //           handleClientResult
-  //         )
-  //         console.log("Calling", { argList, args, processedArgs })
-  //         client[methodName].apply(client, argList)
-  //       })
-  //     } else {
-  //       reject(
-  //         new Error(
-  //           "You are not connected to a server. Try running the connect method first."
-  //         )
-  //       )
-  //     }
-  //   })
-
   getFrontendViews = callback => {
     if (this._sessionId) {
       this._client[0].get_frontend_views(this._sessionId[0], callback)

@@ -642,35 +642,6 @@
 	      return this;
 	    }
 
-	    // promisifyAll = (processArgs, methodName) => (...args) =>
-	    //   new Promise((resolve, reject) => {
-	    //     if (this._sessionId) {
-	    //       const processedArgs = processArgs(args)
-	    //       const handleClientResult = result => {
-	    //         if (result instanceof Error) {
-	    //           reject(result)
-	    //         } else {
-	    //           resolve(result)
-	    //         }
-	    //       }
-
-	    //       this._client.forEach((client, i) => {
-	    //         const argList = [this._sessionId[i]].concat(
-	    //           processedArgs,
-	    //           handleClientResult
-	    //         )
-	    //         console.log("Calling", { argList, args, processedArgs })
-	    //         client[methodName].apply(client, argList)
-	    //       })
-	    //     } else {
-	    //       reject(
-	    //         new Error(
-	    //           "You are not connected to a server. Try running the connect method first."
-	    //         )
-	    //       )
-	    //     }
-	    //   })
-
 	    /**
 	     * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
 	     * These objects contain a value for the <code>view_name</code> property,
