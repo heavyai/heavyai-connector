@@ -1,3 +1,5 @@
+/* global TDashboardPermissions: false, TDBObjectType: false */
+
 const { TDatumType, TEncodingType, TPixel } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
@@ -267,6 +269,90 @@ class MapdCon {
   ) => {
     this.queryTimes[queryId] = execution_time_ms
   }
+
+  promisifySingle = (processArgs, methodName) => (...args) =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        const processedArgs = processArgs(args)
+        const client = this._client[0]
+
+        client[methodName].apply(
+          client,
+          [this._sessionId[0]].concat(processedArgs, result => {
+            if (result instanceof Error) {
+              reject(result)
+            } else {
+              resolve(result)
+            }
+          })
+        )
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  promisifyAll = (processArgs, methodName) => (...args) => {
+    if (this._sessionId) {
+      const processedArgs = processArgs(args)
+
+      return Promise.all(
+        this._client.map(
+          (client, i) =>
+            new Promise((resolve, reject) => {
+              client[methodName].apply(
+                client,
+                [this._sessionId[i]].concat(processedArgs, result => {
+                  if (result instanceof Error) {
+                    reject(result)
+                  } else {
+                    resolve(result)
+                  }
+                })
+              )
+            })
+        )
+      )
+    } else {
+      return Promise.reject(
+        new Error(
+          "You are not connected to a server. Try running the connect method first."
+        )
+      )
+    }
+  }
+
+  // promisifyAll = (processArgs, methodName) => (...args) =>
+  //   new Promise((resolve, reject) => {
+  //     if (this._sessionId) {
+  //       const processedArgs = processArgs(args)
+  //       const handleClientResult = result => {
+  //         if (result instanceof Error) {
+  //           reject(result)
+  //         } else {
+  //           resolve(result)
+  //         }
+  //       }
+
+  //       this._client.forEach((client, i) => {
+  //         const argList = [this._sessionId[i]].concat(
+  //           processedArgs,
+  //           handleClientResult
+  //         )
+  //         console.log("Calling", { argList, args, processedArgs })
+  //         client[methodName].apply(client, argList)
+  //       })
+  //     } else {
+  //       reject(
+  //         new Error(
+  //           "You are not connected to a server. Try running the connect method first."
+  //         )
+  //       )
+  //     }
+  //   })
 
   getFrontendViews = callback => {
     if (this._sessionId) {
@@ -618,85 +704,46 @@ class MapdCon {
     )
   }
 
-  getUsersAsync = () =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client[0].get_users(this._sessionId[0], result => {
-          if (result instanceof Error) {
-            reject(result)
-          } else {
-            resolve(result)
-          }
-        })
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  /**
+   * Get a list of all users on the database for this connection
+   * @returns {Promise.<Array>} A list of all users (strings)
+   *
+   * @example <caption>Get a list of all users:</caption>
+   *
+   * con.getUsersAsync().then(res => console.log(res))
+   */
+  getUsersAsync = this.promisifySingle(args => args, "get_users")
 
-  getRolesAsync = () =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client[0].get_roles(this._sessionId[0], result => {
-          if (result instanceof Error) {
-            reject(result)
-          } else {
-            resolve(result)
-          }
-        })
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  /**
+   * Get a list of all roles on the database for this connection
+   * @returns {Promise.<Array>} A list of all roles (strings)
+   *
+   * @example <caption>Get a list of all roles:</caption>
+   *
+   * con.getRolesAsync().then(res => console.log(res))
+   */
+  getRolesAsync = this.promisifySingle(args => args, "get_roles")
 
-  getDashboardsAsync = () =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client[0].get_dashboards(this._sessionId[0], result => {
-          if (result instanceof Error) {
-            reject(result)
-          } else {
-            resolve(result)
-          }
-        })
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  /**
+   * Get a list of all dashboards on the database for this connection
+   * @returns {Promise.<Array<TDashboard>>} A list of all dashboards (Dashboard objects)
+   *
+   * @example <caption>Get a list of all dashboards:</caption>
+   *
+   * con.getDashboardsAsync().then(res => console.log(res))
+   */
+  getDashboardsAsync = this.promisifySingle(args => args, "get_dashboards")
 
-  getDashboardAsync = dashboardId =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client[0].get_dashboard(
-          this._sessionId[0],
-          dashboardId,
-          result => {
-            if (result instanceof Error) {
-              reject(result)
-            } else {
-              resolve(result)
-            }
-          }
-        )
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  /**
+   * Get a single dashboard.
+   * @param {String} dashboardId - the id of the dashboard
+   * @returns {Promise.<TDashboard>} The dashboard (Dashboard object)
+   *
+   * @example <caption>Get a dashboard:</caption>
+   *
+   * con.getDashboardAsync().then(res => console.log(res))
+   */
+  getDashboardAsync = this.promisifySingle(args => args, "get_dashboard")
 
   /**
    * Add a new dashboard to the server.
@@ -704,271 +751,127 @@ class MapdCon {
    * @param {String} dashboardState - the base64-encoded state string of the new dashboard
    * @param {String} imageHash - the numeric hash of the dashboard thumbnail
    * @param {String} metaData - Stringified metaData related to the view
-   * @return {Promise} Returns empty if success
+   * @return {Promise} Returns a Promise.all result (array) of the id's created on each client
    *
    * @example <caption>Add a new dashboard to the server:</caption>
    *
    * con.createDashboardAsync('newSave', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
-  createDashboardAsync = (
-    dashboardName,
-    dashboardState,
-    imageHash,
-    metaData
-  ) => {
-    if (this._sessionId) {
-      return Promise.all(
-        this._client.map(
-          (client, i) =>
-            new Promise((resolve, reject) => {
-              client.create_dashboard(
-                this._sessionId[i],
-                dashboardName,
-                dashboardState,
-                imageHash,
-                metaData,
-                result => {
-                  if (result instanceof Error) {
-                    reject(result)
-                  } else {
-                    resolve(result)
-                  }
-                }
-              )
-            })
-        )
-      )
-    } else {
-      return Promise.reject(
-        new Error(
-          "You are not connected to a server. Try running the connect method first."
-        )
-      )
-    }
-  }
+  createDashboardAsync = this.promisifyAll(args => args, "create_dashboard")
 
-  replaceDashboardAsync = (
-    dashboardId,
-    dashboardName,
-    dashboardOwner,
-    dashboardState,
-    imageHash,
-    metaData
-  ) => {
-    if (this._sessionId) {
-      return Promise.all(
-        this._client.map(
-          (client, i) =>
-            new Promise((resolve, reject) => {
-              client.replace_dashboard(
-                this._sessionId[i],
-                dashboardId,
-                dashboardName,
-                dashboardOwner,
-                dashboardState,
-                imageHash,
-                metaData,
-                result => {
-                  if (result instanceof Error) {
-                    reject(result)
-                  } else {
-                    resolve(result)
-                  }
-                }
-              )
-            })
-        )
-      )
-    } else {
-      return Promise.reject(
-        new Error(
-          "You are not connected to a server. Try running the connect method first."
-        )
-      )
-    }
-  }
+  /**
+   * Replace a dashboard on the server with new properties.
+   * @param {String} dashboardId - the id of the dashboard to replace
+   * @param {String} dashboardName - the name of the new dashboard
+   * @param {String} dashboardOwner - user id of the owner of the dashboard
+   * @param {String} dashboardState - the base64-encoded state string of the new dashboard
+   * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+   * @param {String} metaData - Stringified metaData related to the view
+   * @return {Promise} Returns empty if success, rejects if any client failed
+   *
+   * @example <caption>Replace dashboard on the server:</caption>
+   *
+   * con.replaceDashboardAsync(123, 'replaceSave', 'owner', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
+   */
+  replaceDashboardAsync = this.promisifyAll(args => args, "replace_dashboard")
 
   /**
    * Delete a dashboard object containing a value for the <code>view_state</code> property.
    * @param {String} dashboardId - the id of the dashboard
-   * @return {Promise} Returns empty if success
+   * @return {Promise} Returns empty if success, rejects if any client failed
    *
    * @example <caption>Delete a specific dashboard from the server:</caption>
    *
    * con.deleteDashboardAsync(123).then(res => console.log(res))
    */
-  deleteDashboardAsync = dashboardId =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client.forEach((client, i) => {
-          client.delete_dashboard(this._sessionId[i], dashboardId, error => {
-            if (error) {
-              reject(error)
-            } else {
-              resolve()
-            }
-          })
-        })
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  deleteDashboardAsync = this.promisifyAll(args => args, "delete_dashboard")
 
   /**
    * Share a dashboard (GRANT a certain set of permission to a specified list of groups)
    * @param {String} dashboardId - the id of the dashboard
    * @param {String} groups - the roles and users that can access it
    * @param {String} objects - the database objects (tables) they can see
-   * @param {String} permissions - permissions the groups have
+   * @param {String} permissions - permissions the groups should have granted
    * @return {Promise} Returns empty if success
    *
    * @example <caption>Share a dashboard:</caption>
    *
    * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
    */
-  shareDashboardAsync = (dashboardId, groups, objects, permissions) =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client.forEach((client, i) => {
-          client.share_dashboard(
-            this._sessionId[i],
-            dashboardId,
-            groups,
-            objects,
-            // eslint-disable-next-line no-undef
-            new TDashboardPermissions(permissions),
-            error => {
-              if (error) {
-                reject(error)
-              } else {
-                resolve()
-              }
-            }
-          )
-        })
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  shareDashboardAsync = this.promisifyAll(
+    ([dashboardId, groups, objects, permissions]) => [
+      dashboardId,
+      groups,
+      objects,
+      new TDashboardPermissions(permissions)
+    ],
+    "share_dashboard"
+  )
 
   /**
    * Unshare a dashboard (REVOKE a certain set of permission from a specified list of groups)
    * @param {String} dashboardId - the id of the dashboard
    * @param {String} groups - the roles and users that can access it
    * @param {String} objects - the database objects (tables) they can see
-   * @param {String} permissions - permissions the groups have
+   * @param {String} permissions - permissions the groups should have revoked
    * @return {Promise} Returns empty if success
    *
    * @example <caption>Share a dashboard:</caption>
    *
-   * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
+   * con.unshareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
    */
-  unshareDashboardAsync = (dashboardId, groups, objects, permissions) =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client.forEach((client, i) => {
-          client.unshare_dashboard(
-            this._sessionId[i],
-            dashboardId,
-            groups,
-            objects,
-            // eslint-disable-next-line no-undef
-            new TDashboardPermissions(permissions),
-            error => {
-              if (error) {
-                reject(error)
-              } else {
-                resolve()
-              }
-            }
-          )
-        })
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  unshareDashboardAsync = this.promisifyAll(
+    ([dashboardId, groups, objects, permissions]) => [
+      dashboardId,
+      groups,
+      objects,
+      new TDashboardPermissions(permissions)
+    ],
+    "unshare_dashboard"
+  )
 
-  getDashboardGranteesAsync = dashboardId =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client[0].get_dashboard_grantees(
-          this._sessionId[0],
-          dashboardId,
-          result => {
-            if (result instanceof Error) {
-              reject(result)
-            } else {
-              resolve(result)
-            }
-          }
-        )
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  /**
+   * Get grantees for a dashboard - the list of users it has been shared with (permissions granted to)
+   * @param {String} dashboardId - the id of the dashboard
+   * @return {Promise} Returns list of users (array)
+   *
+   * @example <caption>Get list of grantees for a dashboard:</caption>
+   *
+   * con.getDashboardGranteesAsync(123).then(res => console.log(res))
+   */
+  getDashboardGranteesAsync = this.promisifySingle(
+    args => args,
+    "get_dashboard_grantees"
+  )
 
-  getDbObjectsForGranteeAsync = roleName =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client[0].get_db_objects_for_grantee(
-          this._sessionId[0],
-          roleName,
-          error => {
-            if (error) {
-              reject(error)
-            } else {
-              resolve()
-            }
-          }
-        )
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  /**
+   * Get a list of database objects granted to a role (those it has permissions to access somehow)
+   * @param {String} roleName - the name of the role
+   * @return {Promise} Returns list of database object names (strings)
+   *
+   * @example <caption>Get list of accessible database objects for a role:</caption>
+   *
+   * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+   */
+  getDbObjectsForGranteeAsync = this.promisifySingle(
+    args => args,
+    "get_db_objects_for_grantee"
+  )
 
-  getDbObjectPrivsAsync = (objectName, type) =>
-    new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        this._client[0].get_db_object_privs(
-          this._sessionId[0],
-          objectName,
-          type,
-          error => {
-            if (error) {
-              reject(error)
-            } else {
-              resolve()
-            }
-          }
-        )
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      }
-    })
+  /**
+   * Get the privileges for the current user for a given database object
+   * @param {String} objectName - the name or ID of the object
+   * @param {TDBObjectType} type - the type of the database object
+   * @return {Promise} Returns list of database object names (strings)
+   *
+   * @example <caption>Get list of accessible database objects for a role:</caption>
+   *
+   * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+   */
+  getDbObjectPrivsAsync = this.promisifySingle(
+    ([objectName, type]) => [objectName, TDBObjectType[type]],
+    "get_db_objects_for_grantee"
+  )
 
   /**
    * Asynchronously get the data from an importable file,

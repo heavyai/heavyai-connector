@@ -16638,6 +16638,8 @@ module.exports =
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _helpers = __webpack_require__(57);
@@ -16657,6 +16659,8 @@ module.exports =
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/* global TDashboardPermissions: false, TDBObjectType: false */
 
 	var _ref = isNodeRuntime() && __webpack_require__(52) || window,
 	    TDatumType = _ref.TDatumType,
@@ -16694,6 +16698,57 @@ module.exports =
 
 	    this.updateQueryTimes = function (conId, queryId, estimatedQueryTime, execution_time_ms) {
 	      _this.queryTimes[queryId] = execution_time_ms;
+	    };
+
+	    this.promisifySingle = function (processArgs, methodName) {
+	      return function () {
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        return new Promise(function (resolve, reject) {
+	          if (_this._sessionId) {
+	            var processedArgs = processArgs(args);
+	            var client = _this._client[0];
+
+	            client[methodName].apply(client, [_this._sessionId[0]].concat(processedArgs, function (result) {
+	              if (result instanceof Error) {
+	                reject(result);
+	              } else {
+	                resolve(result);
+	              }
+	            }));
+	          } else {
+	            reject(new Error("You are not connected to a server. Try running the connect method first."));
+	          }
+	        });
+	      };
+	    };
+
+	    this.promisifyAll = function (processArgs, methodName) {
+	      return function () {
+	        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	          args[_key2] = arguments[_key2];
+	        }
+
+	        if (_this._sessionId) {
+	          var processedArgs = processArgs(args);
+
+	          return Promise.all(_this._client.map(function (client, i) {
+	            return new Promise(function (resolve, reject) {
+	              client[methodName].apply(client, [_this._sessionId[i]].concat(processedArgs, function (result) {
+	                if (result instanceof Error) {
+	                  reject(result);
+	                } else {
+	                  resolve(result);
+	                }
+	              }));
+	            });
+	          }));
+	        } else {
+	          return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
+	        }
+	      };
 	    };
 
 	    this.getFrontendViews = function (callback) {
@@ -16809,212 +16864,58 @@ module.exports =
 	      });
 	    };
 
-	    this.getUsersAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client[0].get_users(_this._sessionId[0], function (result) {
-	            if (result instanceof Error) {
-	              reject(result);
-	            } else {
-	              resolve(result);
-	            }
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
+	    this.getUsersAsync = this.promisifySingle(function (args) {
+	      return args;
+	    }, "get_users");
+	    this.getRolesAsync = this.promisifySingle(function (args) {
+	      return args;
+	    }, "get_roles");
+	    this.getDashboardsAsync = this.promisifySingle(function (args) {
+	      return args;
+	    }, "get_dashboards");
+	    this.getDashboardAsync = this.promisifySingle(function (args) {
+	      return args;
+	    }, "get_dashboard");
+	    this.createDashboardAsync = this.promisifyAll(function (args) {
+	      return args;
+	    }, "create_dashboard");
+	    this.replaceDashboardAsync = this.promisifyAll(function (args) {
+	      return args;
+	    }, "replace_dashboard");
+	    this.deleteDashboardAsync = this.promisifyAll(function (args) {
+	      return args;
+	    }, "delete_dashboard");
+	    this.shareDashboardAsync = this.promisifyAll(function (_ref2) {
+	      var _ref3 = _slicedToArray(_ref2, 4),
+	          dashboardId = _ref3[0],
+	          groups = _ref3[1],
+	          objects = _ref3[2],
+	          permissions = _ref3[3];
 
-	    this.getRolesAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client[0].get_roles(_this._sessionId[0], function (result) {
-	            if (result instanceof Error) {
-	              reject(result);
-	            } else {
-	              resolve(result);
-	            }
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
+	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
+	    }, "share_dashboard");
+	    this.unshareDashboardAsync = this.promisifyAll(function (_ref4) {
+	      var _ref5 = _slicedToArray(_ref4, 4),
+	          dashboardId = _ref5[0],
+	          groups = _ref5[1],
+	          objects = _ref5[2],
+	          permissions = _ref5[3];
 
-	    this.getDashboardsAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client[0].get_dashboards(_this._sessionId[0], function (result) {
-	            if (result instanceof Error) {
-	              reject(result);
-	            } else {
-	              resolve(result);
-	            }
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
+	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
+	    }, "unshare_dashboard");
+	    this.getDashboardGranteesAsync = this.promisifySingle(function (args) {
+	      return args;
+	    }, "get_dashboard_grantees");
+	    this.getDbObjectsForGranteeAsync = this.promisifySingle(function (args) {
+	      return args;
+	    }, "get_db_objects_for_grantee");
+	    this.getDbObjectPrivsAsync = this.promisifySingle(function (_ref6) {
+	      var _ref7 = _slicedToArray(_ref6, 2),
+	          objectName = _ref7[0],
+	          type = _ref7[1];
 
-	    this.getDashboardAsync = function (dashboardId) {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client[0].get_dashboard(_this._sessionId[0], dashboardId, function (result) {
-	            if (result instanceof Error) {
-	              reject(result);
-	            } else {
-	              resolve(result);
-	            }
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
-
-	    this.createDashboardAsync = function (dashboardName, dashboardState, imageHash, metaData) {
-	      if (_this._sessionId) {
-	        return Promise.all(_this._client.map(function (client, i) {
-	          return new Promise(function (resolve, reject) {
-	            client.create_dashboard(_this._sessionId[i], dashboardName, dashboardState, imageHash, metaData, function (result) {
-	              if (result instanceof Error) {
-	                reject(result);
-	              } else {
-	                resolve(result);
-	              }
-	            });
-	          });
-	        }));
-	      } else {
-	        return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
-	      }
-	    };
-
-	    this.replaceDashboardAsync = function (dashboardId, dashboardName, dashboardOwner, dashboardState, imageHash, metaData) {
-	      if (_this._sessionId) {
-	        return Promise.all(_this._client.map(function (client, i) {
-	          return new Promise(function (resolve, reject) {
-	            client.replace_dashboard(_this._sessionId[i], dashboardId, dashboardName, dashboardOwner, dashboardState, imageHash, metaData, function (result) {
-	              if (result instanceof Error) {
-	                reject(result);
-	              } else {
-	                resolve(result);
-	              }
-	            });
-	          });
-	        }));
-	      } else {
-	        return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
-	      }
-	    };
-
-	    this.deleteDashboardAsync = function (dashboardId) {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client.forEach(function (client, i) {
-	            client.delete_dashboard(_this._sessionId[i], dashboardId, function (error) {
-	              if (error) {
-	                reject(error);
-	              } else {
-	                resolve();
-	              }
-	            });
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
-
-	    this.shareDashboardAsync = function (dashboardId, groups, objects, permissions) {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client.forEach(function (client, i) {
-	            client.share_dashboard(_this._sessionId[i], dashboardId, groups, objects,
-	            // eslint-disable-next-line no-undef
-	            new TDashboardPermissions(permissions), function (error) {
-	              if (error) {
-	                reject(error);
-	              } else {
-	                resolve();
-	              }
-	            });
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
-
-	    this.unshareDashboardAsync = function (dashboardId, groups, objects, permissions) {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client.forEach(function (client, i) {
-	            client.unshare_dashboard(_this._sessionId[i], dashboardId, groups, objects,
-	            // eslint-disable-next-line no-undef
-	            new TDashboardPermissions(permissions), function (error) {
-	              if (error) {
-	                reject(error);
-	              } else {
-	                resolve();
-	              }
-	            });
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
-
-	    this.getDashboardGranteesAsync = function (dashboardId) {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client[0].get_dashboard_grantees(_this._sessionId[0], dashboardId, function (result) {
-	            if (result instanceof Error) {
-	              reject(result);
-	            } else {
-	              resolve(result);
-	            }
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
-
-	    this.getDbObjectsForGranteeAsync = function (roleName) {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client[0].get_db_objects_for_grantee(_this._sessionId[0], roleName, function (error) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              resolve();
-	            }
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
-
-	    this.getDbObjectPrivsAsync = function (objectName, type) {
-	      return new Promise(function (resolve, reject) {
-	        if (_this._sessionId) {
-	          _this._client[0].get_db_object_privs(_this._sessionId[0], objectName, type, function (error) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              resolve();
-	            }
-	          });
-	        } else {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        }
-	      });
-	    };
-
+	      return [objectName, TDBObjectType[type]];
+	    }, "get_db_objects_for_grantee");
 	    this.queryAsync = this.query;
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
@@ -17234,6 +17135,35 @@ module.exports =
 	      }
 	      return this;
 	    }
+
+	    // promisifyAll = (processArgs, methodName) => (...args) =>
+	    //   new Promise((resolve, reject) => {
+	    //     if (this._sessionId) {
+	    //       const processedArgs = processArgs(args)
+	    //       const handleClientResult = result => {
+	    //         if (result instanceof Error) {
+	    //           reject(result)
+	    //         } else {
+	    //           resolve(result)
+	    //         }
+	    //       }
+
+	    //       this._client.forEach((client, i) => {
+	    //         const argList = [this._sessionId[i]].concat(
+	    //           processedArgs,
+	    //           handleClientResult
+	    //         )
+	    //         console.log("Calling", { argList, args, processedArgs })
+	    //         client[methodName].apply(client, argList)
+	    //       })
+	    //     } else {
+	    //       reject(
+	    //         new Error(
+	    //           "You are not connected to a server. Try running the connect method first."
+	    //         )
+	    //       )
+	    //     }
+	    //   })
 
 	    /**
 	     * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
@@ -17466,12 +17396,53 @@ module.exports =
 	    }
 
 	    /**
+	     * Get a list of all users on the database for this connection
+	     * @returns {Promise.<Array>} A list of all users (strings)
+	     *
+	     * @example <caption>Get a list of all users:</caption>
+	     *
+	     * con.getUsersAsync().then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Get a list of all roles on the database for this connection
+	     * @returns {Promise.<Array>} A list of all roles (strings)
+	     *
+	     * @example <caption>Get a list of all roles:</caption>
+	     *
+	     * con.getRolesAsync().then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Get a list of all dashboards on the database for this connection
+	     * @returns {Promise.<Array<TDashboard>>} A list of all dashboards (Dashboard objects)
+	     *
+	     * @example <caption>Get a list of all dashboards:</caption>
+	     *
+	     * con.getDashboardsAsync().then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Get a single dashboard.
+	     * @param {String} dashboardId - the id of the dashboard
+	     * @returns {Promise.<TDashboard>} The dashboard (Dashboard object)
+	     *
+	     * @example <caption>Get a dashboard:</caption>
+	     *
+	     * con.getDashboardAsync().then(res => console.log(res))
+	     */
+
+
+	    /**
 	     * Add a new dashboard to the server.
 	     * @param {String} dashboardName - the name of the new dashboard
 	     * @param {String} dashboardState - the base64-encoded state string of the new dashboard
 	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
 	     * @param {String} metaData - Stringified metaData related to the view
-	     * @return {Promise} Returns empty if success
+	     * @return {Promise} Returns a Promise.all result (array) of the id's created on each client
 	     *
 	     * @example <caption>Add a new dashboard to the server:</caption>
 	     *
@@ -17480,9 +17451,25 @@ module.exports =
 
 
 	    /**
+	     * Replace a dashboard on the server with new properties.
+	     * @param {String} dashboardId - the id of the dashboard to replace
+	     * @param {String} dashboardName - the name of the new dashboard
+	     * @param {String} dashboardOwner - user id of the owner of the dashboard
+	     * @param {String} dashboardState - the base64-encoded state string of the new dashboard
+	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+	     * @param {String} metaData - Stringified metaData related to the view
+	     * @return {Promise} Returns empty if success, rejects if any client failed
+	     *
+	     * @example <caption>Replace dashboard on the server:</caption>
+	     *
+	     * con.replaceDashboardAsync(123, 'replaceSave', 'owner', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
+	     */
+
+
+	    /**
 	     * Delete a dashboard object containing a value for the <code>view_state</code> property.
 	     * @param {String} dashboardId - the id of the dashboard
-	     * @return {Promise} Returns empty if success
+	     * @return {Promise} Returns empty if success, rejects if any client failed
 	     *
 	     * @example <caption>Delete a specific dashboard from the server:</caption>
 	     *
@@ -17495,7 +17482,7 @@ module.exports =
 	     * @param {String} dashboardId - the id of the dashboard
 	     * @param {String} groups - the roles and users that can access it
 	     * @param {String} objects - the database objects (tables) they can see
-	     * @param {String} permissions - permissions the groups have
+	     * @param {String} permissions - permissions the groups should have granted
 	     * @return {Promise} Returns empty if success
 	     *
 	     * @example <caption>Share a dashboard:</caption>
@@ -17509,12 +17496,46 @@ module.exports =
 	     * @param {String} dashboardId - the id of the dashboard
 	     * @param {String} groups - the roles and users that can access it
 	     * @param {String} objects - the database objects (tables) they can see
-	     * @param {String} permissions - permissions the groups have
+	     * @param {String} permissions - permissions the groups should have revoked
 	     * @return {Promise} Returns empty if success
 	     *
 	     * @example <caption>Share a dashboard:</caption>
 	     *
-	     * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
+	     * con.unshareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Get grantees for a dashboard - the list of users it has been shared with (permissions granted to)
+	     * @param {String} dashboardId - the id of the dashboard
+	     * @return {Promise} Returns list of users (array)
+	     *
+	     * @example <caption>Get list of grantees for a dashboard:</caption>
+	     *
+	     * con.getDashboardGranteesAsync(123).then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Get a list of database objects granted to a role (those it has permissions to access somehow)
+	     * @param {String} roleName - the name of the role
+	     * @return {Promise} Returns list of database object names (strings)
+	     *
+	     * @example <caption>Get list of accessible database objects for a role:</caption>
+	     *
+	     * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Get the privileges for the current user for a given database object
+	     * @param {String} objectName - the name or ID of the object
+	     * @param {TDBObjectType} type - the type of the database object
+	     * @return {Promise} Returns list of database object names (strings)
+	     *
+	     * @example <caption>Get list of accessible database objects for a role:</caption>
+	     *
+	     * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
 	     */
 
 	  }, {
@@ -18368,8 +18389,8 @@ module.exports =
 	  methodNames.forEach(function (methodName) {
 	    var oldFunc = connector[methodName];
 	    connector[methodName] = function () {
-	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	        args[_key] = arguments[_key];
+	      for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	        args[_key3] = arguments[_key3];
 	      }
 
 	      try {
