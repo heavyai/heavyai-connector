@@ -994,6 +994,17 @@ class MapdCon {
     )
   }
 
+  getFieldsAsync = tableName =>
+    new Promise((resolve, reject) => {
+      this.getFields(tableName, (error, fields) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(fields)
+        }
+      })
+    })
+
   createTable(tableName, rowDescObj, tableType, callback) {
     if (!this._sessionId) {
       throw new Error(
