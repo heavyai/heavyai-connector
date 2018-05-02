@@ -211,6 +211,17 @@ class MapdCon {
     return this
   }
 
+  connectAsync = () =>
+    new Promise((resolve, reject) => {
+      this.connect((error, con) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(con)
+        }
+      })
+    })
+
   convertFromThriftTypes(fields) {
     const fieldsArray = []
     // silly to change this from map to array
@@ -746,8 +757,16 @@ class MapdCon {
     }
   }
 
-  /** @deprecated will default to query */
-  queryAsync = this.query
+  queryAsync = (query, options) =>
+    new Promise((resolve, reject) => {
+      this.query(query, options, (error, result) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
 
   /**
    * Submit a query to validate whether the backend can create a result set based on the SQL statement.
@@ -974,6 +993,17 @@ class MapdCon {
       }
     )
   }
+
+  getFieldsAsync = tableName =>
+    new Promise((resolve, reject) => {
+      this.getFields(tableName, (error, fields) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(fields)
+        }
+      })
+    })
 
   createTable(tableName, rowDescObj, tableType, callback) {
     if (!this._sessionId) {
