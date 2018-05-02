@@ -16,54 +16,43 @@ connector
   .user("mapd")
   .password("HyperInteractive")
   .connectAsync()
-  .then(session => {
-    // eslint-disable-line consistent-return
-    session
-      .getTablesAsync()
-      .then(data =>
-        console.log(
-          "All tables available at metis.mapd.com:",
-          data.map(x => x.name)
-        )
-      )
-      .catch(error => console.error("getTablesAsync error:", error))
+  .then(session =>
+    // now that we have a session open we can make some db calls:
+    Promise.all([
+      session.getTablesAsync(),
+      session.getFieldsAsync("flights_donotmodify"),
+      session.queryAsync(query, defaultQueryOptions),
+      session.queryAsync(query2, defaultQueryOptions)
+    ])
+  )
+  // values is an array of results from all the promises above
+  .then(values => {
+    // handle result of getTablesAsync
+    console.log(
+      "All tables available at metis.mapd.com:",
+      values[0].map(x => x.name)
+    )
 
-    session
-      .queryAsync(query, defaultQueryOptions)
-      .then(data => {
-        document.getElementById("result-async").innerHTML =
-          "There are " + data[0].n + " tweets from Columbia."
-        return console.log("Query 1 results:", Number(data[0].n))
-      })
-      .catch(error => {
-        console.error("Query 1 error:", error)
-      })
+    // handle result of getFieldsAsync
+    console.log(
+      "All fields for 'flights_donotmodify':",
+      values[1].reduce((o, x) => Object.assign(o, { [x.name]: x }), {})
+    )
 
-    // List columns for table "flights_donotmodify"
-    session.getFields("flights_donotmodify", (error, data) => {
-      if (error) {
-        return console.error("getFields error:", error)
-      }
-      return console.log(
-        "All fields for 'flights_donotmodify':",
-        data.reduce((o, x) => Object.assign(o, { [x.name]: x }), {})
-      )
-    })
+    // handle result of first query
+    document.getElementById("result-async").innerHTML =
+      "There are " + values[2][0].n + " tweets from Columbia."
+    console.log("Query 1 results:", Number(values[2][0].n))
 
-    session.queryAsync(query2, defaultQueryOptions)
-      .then(data => {
-        createRowChart(data)
-        console.log(
-          "Query 2 results:",
-          data.reduce((o, x) => Object.assign(o, { [x.key0]: x.val }), {})
-        )
-      })
-      .catch(error => {
-        console.error("Query 2 error:", error)
-      })
+    // handle result of 2nd query
+    createRowChart(values[3])
+    console.log(
+      "Query 2 results:",
+      values[3].reduce((o, x) => Object.assign(o, { [x.key0]: x.val }), {})
+    )
   })
   .catch(error => {
-    console.error("some error occured: ", error)
+    console.error("Something bad happened: ", error)
   })
 
 // http://bl.ocks.org/d3noob/8952219
