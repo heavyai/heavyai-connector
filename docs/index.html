@@ -155,16 +155,6 @@
               
                 
                 <li><a
-                  href='#queryasync'
-                  class="">
-                  queryAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
                   href='#validatequery'
                   class="">
                   validateQuery
@@ -475,9 +465,9 @@
               
                 
                 <li><a
-                  href='#completion_hints'
+                  href='#tdatumval'
                   class="">
-                  completion_hints
+                  TDatumVal
                   
                 </a>
                 
@@ -485,9 +475,9 @@
               
                 
                 <li><a
-                  href='#tdatum'
+                  href='#completion_hints'
                   class="">
-                  TDatum
+                  completion_hints
                   
                 </a>
                 
@@ -555,9 +545,9 @@
               
                 
                 <li><a
-                  href='#tdatumval'
+                  href='#tdatum'
                   class="">
-                  TDatumVal
+                  TDatum
                   
                 </a>
                 
@@ -1643,53 +1633,6 @@ con.query(query, options, <span class="hljs-function"><span class="hljs-keyword"
        <span class="hljs-built_in">console</span>.log(result)
      });</pre>
     
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='queryasync'>
-      queryAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  
-
-  <div class='pre p1 fill-light mt0'>queryAsync</div>
-  
-  
-
-  <div>Deprecated: will default to query
-</div>
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-
-  
-
   
 
   
@@ -4413,6 +4356,87 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='tdatumval'>
+      TDatumVal
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The value of an individual cell in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDatumVal</div>
+  
+    <p>
+      Type:
+      <a href="#tdatumval">TDatumVal</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='completion_hints'>
       completion_hints
     </h3>
@@ -4460,75 +4484,6 @@ it can still be done. In this case, still process them into the same format as
       
         <div class='space-bottom0'>
           <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tdatum'>
-      TDatum
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The value and state of an individual data cell in a table.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDatum</div>
-  
-    <p>
-      Type:
-      <a href="#tdatum">TDatum</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
           
           
         </div>
@@ -5080,22 +5035,22 @@ TAB
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tdatumval'>
-      TDatumVal
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
     </h3>
     
     
   </div>
   
 
-  <p>The value of an individual cell in a table.</p>
+  <p>The value and state of an individual data cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TDatumVal</div>
+  <div class='pre p1 fill-light mt0'>TDatum</div>
   
     <p>
       Type:
-      <a href="#tdatumval">TDatumVal</a>
+      <a href="#tdatum">TDatum</a>
     </p>
   
   
@@ -5114,25 +5069,13 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
           
           
         </div>
