@@ -12139,6 +12139,8 @@ module.exports =
 	  this.s3_region = null;
 	  this.geo_coords_encoding = 0;
 	  this.geo_coords_comp_param = null;
+	  this.geo_coords_type = 19;
+	  this.geo_coords_srid = 4326;
 	  if (args) {
 	    if (args.delimiter !== undefined && args.delimiter !== null) {
 	      this.delimiter = args.delimiter;
@@ -12190,6 +12192,12 @@ module.exports =
 	    }
 	    if (args.geo_coords_comp_param !== undefined && args.geo_coords_comp_param !== null) {
 	      this.geo_coords_comp_param = args.geo_coords_comp_param;
+	    }
+	    if (args.geo_coords_type !== undefined && args.geo_coords_type !== null) {
+	      this.geo_coords_type = args.geo_coords_type;
+	    }
+	    if (args.geo_coords_srid !== undefined && args.geo_coords_srid !== null) {
+	      this.geo_coords_srid = args.geo_coords_srid;
 	    }
 	  }
 	};
@@ -12324,6 +12332,20 @@ module.exports =
 	          input.skip(ftype);
 	        }
 	        break;
+	      case 18:
+	        if (ftype == Thrift.Type.I32) {
+	          this.geo_coords_type = input.readI32();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
+	      case 19:
+	        if (ftype == Thrift.Type.I32) {
+	          this.geo_coords_srid = input.readI32();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
 	      default:
 	        input.skip(ftype);
 	    }
@@ -12418,6 +12440,16 @@ module.exports =
 	  if (this.geo_coords_comp_param !== null && this.geo_coords_comp_param !== undefined) {
 	    output.writeFieldBegin('geo_coords_comp_param', Thrift.Type.I32, 17);
 	    output.writeI32(this.geo_coords_comp_param);
+	    output.writeFieldEnd();
+	  }
+	  if (this.geo_coords_type !== null && this.geo_coords_type !== undefined) {
+	    output.writeFieldBegin('geo_coords_type', Thrift.Type.I32, 18);
+	    output.writeI32(this.geo_coords_type);
+	    output.writeFieldEnd();
+	  }
+	  if (this.geo_coords_srid !== null && this.geo_coords_srid !== undefined) {
+	    output.writeFieldBegin('geo_coords_srid', Thrift.Type.I32, 19);
+	    output.writeI32(this.geo_coords_srid);
 	    output.writeFieldEnd();
 	  }
 	  output.writeFieldStop();
@@ -12707,6 +12739,7 @@ module.exports =
 	  this.dashboard_metadata = null;
 	  this.dashboard_id = null;
 	  this.dashboard_owner = null;
+	  this.is_dash_shared = null;
 	  if (args) {
 	    if (args.dashboard_name !== undefined && args.dashboard_name !== null) {
 	      this.dashboard_name = args.dashboard_name;
@@ -12728,6 +12761,9 @@ module.exports =
 	    }
 	    if (args.dashboard_owner !== undefined && args.dashboard_owner !== null) {
 	      this.dashboard_owner = args.dashboard_owner;
+	    }
+	    if (args.is_dash_shared !== undefined && args.is_dash_shared !== null) {
+	      this.is_dash_shared = args.is_dash_shared;
 	    }
 	  }
 	};
@@ -12792,6 +12828,13 @@ module.exports =
 	          input.skip(ftype);
 	        }
 	        break;
+	      case 8:
+	        if (ftype == Thrift.Type.BOOL) {
+	          this.is_dash_shared = input.readBool();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
 	      default:
 	        input.skip(ftype);
 	    }
@@ -12836,6 +12879,11 @@ module.exports =
 	  if (this.dashboard_owner !== null && this.dashboard_owner !== undefined) {
 	    output.writeFieldBegin('dashboard_owner', Thrift.Type.STRING, 7);
 	    output.writeString(this.dashboard_owner);
+	    output.writeFieldEnd();
+	  }
+	  if (this.is_dash_shared !== null && this.is_dash_shared !== undefined) {
+	    output.writeFieldBegin('is_dash_shared', Thrift.Type.BOOL, 8);
+	    output.writeBool(this.is_dash_shared);
 	    output.writeFieldEnd();
 	  }
 	  output.writeFieldStop();
