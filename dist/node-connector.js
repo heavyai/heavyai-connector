@@ -16696,6 +16696,18 @@ module.exports =
 
 	    _classCallCheck(this, MapdCon);
 
+	    this.connectAsync = function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.connect(function (error, con) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(con);
+	          }
+	        });
+	      });
+	    };
+
 	    this.updateQueryTimes = function (conId, queryId, estimatedQueryTime, execution_time_ms) {
 	      _this.queryTimes[queryId] = execution_time_ms;
 	    };
@@ -16916,7 +16928,30 @@ module.exports =
 
 	      return [objectName, TDBObjectType[type]];
 	    }, "get_db_object_privs");
-	    this.queryAsync = this.query;
+
+	    this.queryAsync = function (query, options) {
+	      return new Promise(function (resolve, reject) {
+	        _this.query(query, options, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    };
+
+	    this.getFieldsAsync = function (tableName) {
+	      return new Promise(function (resolve, reject) {
+	        _this.getFields(tableName, function (error, fields) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(fields);
+	          }
+	        });
+	      });
+	    };
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
 	      return new Promise(function (resolve, reject) {
@@ -17629,9 +17664,6 @@ module.exports =
 	        }
 	      }
 	    }
-
-	    /** @deprecated will default to query */
-
 	  }, {
 	    key: "validateQuery",
 
