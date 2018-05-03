@@ -5574,6 +5574,7 @@ TTablePermissions = function(args) {
   this.update_ = null;
   this.delete_ = null;
   this.truncate_ = null;
+  this.create_dashboard_ = null;
   if (args) {
     if (args.create_ !== undefined && args.create_ !== null) {
       this.create_ = args.create_;
@@ -5595,6 +5596,9 @@ TTablePermissions = function(args) {
     }
     if (args.truncate_ !== undefined && args.truncate_ !== null) {
       this.truncate_ = args.truncate_;
+    }
+    if (args.create_dashboard_ !== undefined && args.create_dashboard_ !== null) {
+      this.create_dashboard_ = args.create_dashboard_;
     }
   }
 };
@@ -5661,6 +5665,13 @@ TTablePermissions.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.BOOL) {
+        this.create_dashboard_ = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -5705,6 +5716,11 @@ TTablePermissions.prototype.write = function(output) {
   if (this.truncate_ !== null && this.truncate_ !== undefined) {
     output.writeFieldBegin('truncate_', Thrift.Type.BOOL, 7);
     output.writeBool(this.truncate_);
+    output.writeFieldEnd();
+  }
+  if (this.create_dashboard_ !== null && this.create_dashboard_ !== undefined) {
+    output.writeFieldBegin('create_dashboard_', Thrift.Type.BOOL, 5);
+    output.writeBool(this.create_dashboard_);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
