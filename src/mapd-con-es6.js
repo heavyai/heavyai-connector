@@ -843,7 +843,7 @@ class MapdCon {
    */
   getDbObjectPrivsAsync = this.promisifySingle(
     ([objectName, type]) => [objectName, TDBObjectType[type]],
-    "get_db_objects_for_grantee"
+    "get_db_object_privs"
   )
 
   /**

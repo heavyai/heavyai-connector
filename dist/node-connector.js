@@ -16915,7 +16915,7 @@ module.exports =
 	          type = _ref7[1];
 
 	      return [objectName, TDBObjectType[type]];
-	    }, "get_db_objects_for_grantee");
+	    }, "get_db_object_privs");
 	    this.queryAsync = this.query;
 
 	    this.createTableAsync = function (tableName, rowDescObj, tableType) {
