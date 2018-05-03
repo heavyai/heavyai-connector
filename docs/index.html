@@ -135,6 +135,126 @@
               
                 
                 <li><a
+                  href='#getusersasync'
+                  class="">
+                  getUsersAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getrolesasync'
+                  class="">
+                  getRolesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getdashboardsasync'
+                  class="">
+                  getDashboardsAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getdashboardasync'
+                  class="">
+                  getDashboardAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#createdashboardasync'
+                  class="">
+                  createDashboardAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#replacedashboardasync'
+                  class="">
+                  replaceDashboardAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#deletedashboardasync'
+                  class="">
+                  deleteDashboardAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#sharedashboardasync'
+                  class="">
+                  shareDashboardAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#unsharedashboardasync'
+                  class="">
+                  unshareDashboardAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getdashboardgranteesasync'
+                  class="">
+                  getDashboardGranteesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getdbobjectsforgranteeasync'
+                  class="">
+                  getDbObjectsForGranteeAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getdbobjectprivsasync'
+                  class="">
+                  getDbObjectPrivsAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#detectcolumntypesasync'
                   class="">
                   detectColumnTypesAsync
@@ -858,7 +978,7 @@ but not for the <code>view_name</code> property.</p>
     
       <p><p>Get a specific dashboard from the server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'>con.getFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
+      <pre class='p1 overflow-auto round fill-light'>con.getFrontendViewAsync(<span class="hljs-string">'view_name'</span>).then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
 <span class="hljs-comment">// {TFrontendView}</span></pre>
     
   
@@ -1271,7 +1391,7 @@ has backend rendering enabled, and the version number.</p>
     
       <p><p>Delete a specific dashboard from the server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'>con.deleteFrontendViewAsync(<span class="hljs-string">'dashboard_name'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+      <pre class='p1 overflow-auto round fill-light'>con.deleteFrontendViewAsync(<span class="hljs-string">'view_name'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
   
 
@@ -1443,6 +1563,1011 @@ This object contains the given link for the <code>view_name</code> property,</p>
 <span class="hljs-comment">//    "update_time": "2017-04-28T21:34:01Z",</span>
 <span class="hljs-comment">//    "view_metadata": "metaData"</span>
 <span class="hljs-comment">//  }</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getusersasync'>
+      getUsersAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a list of all users on the database for this connection</p>
+
+
+  <div class='pre p1 fill-light mt0'>getUsersAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
+        A list of all users (strings)
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get a list of all users:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getUsersAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getrolesasync'>
+      getRolesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a list of all roles on the database for this connection</p>
+
+
+  <div class='pre p1 fill-light mt0'>getRolesAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
+        A list of all roles (strings)
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get a list of all roles:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getRolesAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getdashboardsasync'>
+      getDashboardsAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a list of all dashboards on the database for this connection</p>
+
+
+  <div class='pre p1 fill-light mt0'>getDashboardsAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TDashboard>></code>:
+        A list of all dashboards (Dashboard objects)
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get a list of all dashboards:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getDashboardsAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getdashboardasync'>
+      getDashboardAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a single dashboard.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getDashboardAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    the id of the dashboard
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;TDashboard></code>:
+        The dashboard (Dashboard object)
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get a dashboard:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getDashboardAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='createdashboardasync'>
+      createDashboardAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Add a new dashboard to the server.</p>
+
+
+  <div class='pre p1 fill-light mt0'>createDashboardAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name of the new dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the base64-encoded state string of the new dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the numeric hash of the dashboard thumbnail
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    Stringified metaData related to the view
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns a Promise.all result (array) of the id's created on each client
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Add a new dashboard to the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.createDashboardAsync(<span class="hljs-string">'newSave'</span>, <span class="hljs-string">'dashboardstateBase64'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='replacedashboardasync'>
+      replaceDashboardAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Replace a dashboard on the server with new properties.</p>
+
+
+  <div class='pre p1 fill-light mt0'>replaceDashboardAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    the id of the dashboard to replace
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name of the new dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardOwner</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    user id of the owner of the dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the base64-encoded state string of the new dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the numeric hash of the dashboard thumbnail
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    Stringified metaData related to the view
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns empty if success, rejects if any client failed
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Replace dashboard on the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.replaceDashboardAsync(<span class="hljs-number">123</span>, <span class="hljs-string">'replaceSave'</span>, <span class="hljs-string">'owner'</span>, <span class="hljs-string">'dashboardstateBase64'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='deletedashboardasync'>
+      deleteDashboardAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Delete a dashboard object containing a value for the <code>view_state</code> property.</p>
+
+
+  <div class='pre p1 fill-light mt0'>deleteDashboardAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    the id of the dashboard
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns empty if success, rejects if any client failed
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Delete a specific dashboard from the server:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.deleteDashboardAsync(<span class="hljs-number">123</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='sharedashboardasync'>
+      shareDashboardAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Share a dashboard (GRANT a certain set of permission to a specified list of groups)</p>
+
+
+  <div class='pre p1 fill-light mt0'>shareDashboardAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    the id of the dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>groups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    the roles and users that can access it
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    the database objects (tables) they can see
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>permissions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    permissions the groups should have granted
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns empty if success
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Share a dashboard:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.shareDashboardAsync(<span class="hljs-number">123</span>, [<span class="hljs-string">'group1'</span>, <span class="hljs-string">'group2'</span>], [<span class="hljs-string">'object1'</span>, <span class="hljs-string">'object2'</span>], [<span class="hljs-string">'perm1'</span>, <span class="hljs-string">'perm2'</span>]).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='unsharedashboardasync'>
+      unshareDashboardAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Unshare a dashboard (REVOKE a certain set of permission from a specified list of groups)</p>
+
+
+  <div class='pre p1 fill-light mt0'>unshareDashboardAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    the id of the dashboard
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>groups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    the roles and users that can access it
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    the database objects (tables) they can see
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>permissions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    permissions the groups should have revoked
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns empty if success
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Unshare a dashboard:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.unshareDashboardAsync(<span class="hljs-number">123</span>, [<span class="hljs-string">'group1'</span>, <span class="hljs-string">'group2'</span>], [<span class="hljs-string">'object1'</span>, <span class="hljs-string">'object2'</span>], [<span class="hljs-string">'perm1'</span>, <span class="hljs-string">'perm2'</span>]).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getdashboardgranteesasync'>
+      getDashboardGranteesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get grantees for a dashboard - the list of users it has been shared with (permissions granted to)</p>
+
+
+  <div class='pre p1 fill-light mt0'>getDashboardGranteesAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    the id of the dashboard
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns list of users (array)
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get list of grantees for a dashboard:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getDashboardGranteesAsync(<span class="hljs-number">123</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getdbobjectsforgranteeasync'>
+      getDbObjectsForGranteeAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get a list of database objects granted to a role (those it has permissions to access somehow)</p>
+
+
+  <div class='pre p1 fill-light mt0'>getDbObjectsForGranteeAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>roleName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name of the role
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns list of database object names (strings)
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get list of accessible database objects for a role:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getDbObjectsForGranteeAsync(<span class="hljs-string">'role'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getdbobjectprivsasync'>
+      getDbObjectPrivsAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get the privileges for the current user for a given database object</p>
+
+
+  <div class='pre p1 fill-light mt0'>getDbObjectPrivsAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>objectName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    the name or ID of the object
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>type</span> <code class='quiet'>(TDBObjectType)</code>
+	    the type of the database object
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns list of database object names (strings)
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get list of accessible database objects for a role:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getDbObjectsForGranteeAsync(<span class="hljs-string">'role'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
   
 
