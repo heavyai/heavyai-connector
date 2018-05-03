@@ -1,3 +1,5 @@
+/* global TDashboardPermissions: false, TDBObjectType: false */
+
 const { TDatumType, TEncodingType, TPixel } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
@@ -279,6 +281,63 @@ class MapdCon {
     this.queryTimes[queryId] = execution_time_ms
   }
 
+  // Wrap a Thrift binding method that only requires a single client (i.e. a 'get' type operation) in a Promise
+  promisifySingle = (processArgs, methodName) => (...args) =>
+    new Promise((resolve, reject) => {
+      if (this._sessionId) {
+        const processedArgs = processArgs(args)
+        const client = this._client[0]
+
+        client[methodName].apply(
+          client,
+          [this._sessionId[0]].concat(processedArgs, result => {
+            if (result instanceof Error) {
+              reject(result)
+            } else {
+              resolve(result)
+            }
+          })
+        )
+      } else {
+        reject(
+          new Error(
+            "You are not connected to a server. Try running the connect method first."
+          )
+        )
+      }
+    })
+
+  // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
+  promisifyAll = (processArgs, methodName) => (...args) => {
+    if (this._sessionId) {
+      const processedArgs = processArgs(args)
+
+      return Promise.all(
+        this._client.map(
+          (client, i) =>
+            new Promise((resolve, reject) => {
+              client[methodName].apply(
+                client,
+                [this._sessionId[i]].concat(processedArgs, result => {
+                  if (result instanceof Error) {
+                    reject(result)
+                  } else {
+                    resolve(result)
+                  }
+                })
+              )
+            })
+        )
+      )
+    } else {
+      return Promise.reject(
+        new Error(
+          "You are not connected to a server. Try running the connect method first."
+        )
+      )
+    }
+  }
+
   getFrontendViews = callback => {
     if (this._sessionId) {
       this._client[0].get_frontend_views(this._sessionId[0], callback)
@@ -326,7 +385,7 @@ class MapdCon {
    *
    * @example <caption>Get a specific dashboard from the server:</caption>
    *
-   * con.getFrontendViewAsync('dashboard_name').then((result) => console.log(result))
+   * con.getFrontendViewAsync('view_name').then((result) => console.log(result))
    * // {TFrontendView}
    */
   getFrontendViewAsync = viewName =>
@@ -529,7 +588,7 @@ class MapdCon {
    *
    * @example <caption>Delete a specific dashboard from the server:</caption>
    *
-   * con.deleteFrontendViewAsync('dashboard_name').then(res => console.log(res))
+   * con.deleteFrontendViewAsync('view_name').then(res => console.log(res))
    */
   deleteFrontendViewAsync = viewName =>
     new Promise((resolve, reject) => {
@@ -628,6 +687,175 @@ class MapdCon {
       callback
     )
   }
+
+  /**
+   * Get a list of all users on the database for this connection
+   * @returns {Promise.<Array>} A list of all users (strings)
+   *
+   * @example <caption>Get a list of all users:</caption>
+   *
+   * con.getUsersAsync().then(res => console.log(res))
+   */
+  getUsersAsync = this.promisifySingle(args => args, "get_users")
+
+  /**
+   * Get a list of all roles on the database for this connection
+   * @returns {Promise.<Array>} A list of all roles (strings)
+   *
+   * @example <caption>Get a list of all roles:</caption>
+   *
+   * con.getRolesAsync().then(res => console.log(res))
+   */
+  getRolesAsync = this.promisifySingle(args => args, "get_roles")
+
+  /**
+   * Get a list of all dashboards on the database for this connection
+   * @returns {Promise.<Array<TDashboard>>} A list of all dashboards (Dashboard objects)
+   *
+   * @example <caption>Get a list of all dashboards:</caption>
+   *
+   * con.getDashboardsAsync().then(res => console.log(res))
+   */
+  getDashboardsAsync = this.promisifySingle(args => args, "get_dashboards")
+
+  /**
+   * Get a single dashboard.
+   * @param {Number} dashboardId - the id of the dashboard
+   * @returns {Promise.<TDashboard>} The dashboard (Dashboard object)
+   *
+   * @example <caption>Get a dashboard:</caption>
+   *
+   * con.getDashboardAsync().then(res => console.log(res))
+   */
+  getDashboardAsync = this.promisifySingle(args => args, "get_dashboard")
+
+  /**
+   * Add a new dashboard to the server.
+   * @param {String} dashboardName - the name of the new dashboard
+   * @param {String} dashboardState - the base64-encoded state string of the new dashboard
+   * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+   * @param {String} metaData - Stringified metaData related to the view
+   * @return {Promise} Returns a Promise.all result (array) of the id's created on each client
+   *
+   * @example <caption>Add a new dashboard to the server:</caption>
+   *
+   * con.createDashboardAsync('newSave', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
+   */
+  createDashboardAsync = this.promisifyAll(args => args, "create_dashboard")
+
+  /**
+   * Replace a dashboard on the server with new properties.
+   * @param {Number} dashboardId - the id of the dashboard to replace
+   * @param {String} dashboardName - the name of the new dashboard
+   * @param {String} dashboardOwner - user id of the owner of the dashboard
+   * @param {String} dashboardState - the base64-encoded state string of the new dashboard
+   * @param {String} imageHash - the numeric hash of the dashboard thumbnail
+   * @param {String} metaData - Stringified metaData related to the view
+   * @return {Promise} Returns empty if success, rejects if any client failed
+   *
+   * @example <caption>Replace dashboard on the server:</caption>
+   *
+   * con.replaceDashboardAsync(123, 'replaceSave', 'owner', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
+   */
+  replaceDashboardAsync = this.promisifyAll(args => args, "replace_dashboard")
+
+  /**
+   * Delete a dashboard object containing a value for the <code>view_state</code> property.
+   * @param {Number} dashboardId - the id of the dashboard
+   * @return {Promise} Returns empty if success, rejects if any client failed
+   *
+   * @example <caption>Delete a specific dashboard from the server:</caption>
+   *
+   * con.deleteDashboardAsync(123).then(res => console.log(res))
+   */
+  deleteDashboardAsync = this.promisifyAll(args => args, "delete_dashboard")
+
+  /**
+   * Share a dashboard (GRANT a certain set of permission to a specified list of groups)
+   * @param {Number} dashboardId - the id of the dashboard
+   * @param {String[]} groups - the roles and users that can access it
+   * @param {String[]} objects - the database objects (tables) they can see
+   * @param {String[]} permissions - permissions the groups should have granted
+   * @return {Promise} Returns empty if success
+   *
+   * @example <caption>Share a dashboard:</caption>
+   *
+   * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
+   */
+  shareDashboardAsync = this.promisifyAll(
+    ([dashboardId, groups, objects, permissions]) => [
+      dashboardId,
+      groups,
+      objects,
+      new TDashboardPermissions(permissions)
+    ],
+    "share_dashboard"
+  )
+
+  /**
+   * Unshare a dashboard (REVOKE a certain set of permission from a specified list of groups)
+   * @param {Number} dashboardId - the id of the dashboard
+   * @param {String[]} groups - the roles and users that can access it
+   * @param {String[]} objects - the database objects (tables) they can see
+   * @param {String[]} permissions - permissions the groups should have revoked
+   * @return {Promise} Returns empty if success
+   *
+   * @example <caption>Unshare a dashboard:</caption>
+   *
+   * con.unshareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
+   */
+  unshareDashboardAsync = this.promisifyAll(
+    ([dashboardId, groups, objects, permissions]) => [
+      dashboardId,
+      groups,
+      objects,
+      new TDashboardPermissions(permissions)
+    ],
+    "unshare_dashboard"
+  )
+
+  /**
+   * Get grantees for a dashboard - the list of users it has been shared with (permissions granted to)
+   * @param {Number} dashboardId - the id of the dashboard
+   * @return {Promise} Returns list of users (array)
+   *
+   * @example <caption>Get list of grantees for a dashboard:</caption>
+   *
+   * con.getDashboardGranteesAsync(123).then(res => console.log(res))
+   */
+  getDashboardGranteesAsync = this.promisifySingle(
+    args => args,
+    "get_dashboard_grantees"
+  )
+
+  /**
+   * Get a list of database objects granted to a role (those it has permissions to access somehow)
+   * @param {String} roleName - the name of the role
+   * @return {Promise} Returns list of database object names (strings)
+   *
+   * @example <caption>Get list of accessible database objects for a role:</caption>
+   *
+   * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+   */
+  getDbObjectsForGranteeAsync = this.promisifySingle(
+    args => args,
+    "get_db_objects_for_grantee"
+  )
+
+  /**
+   * Get the privileges for the current user for a given database object
+   * @param {String} objectName - the name or ID of the object
+   * @param {TDBObjectType} type - the type of the database object
+   * @return {Promise} Returns list of database object names (strings)
+   *
+   * @example <caption>Get list of accessible database objects for a role:</caption>
+   *
+   * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+   */
+  getDbObjectPrivsAsync = this.promisifySingle(
+    ([objectName, type]) => [objectName, TDBObjectType[type]],
+    "get_db_object_privs"
+  )
 
   /**
    * Asynchronously get the data from an importable file,
@@ -863,7 +1091,9 @@ class MapdCon {
           tables.map(table => ({
             name: table.table_name,
             num_cols: Number(table.num_cols.toString()),
-            col_datum_types: table.col_datum_types.map(type => this._datumEnum[type]),
+            col_datum_types: table.col_datum_types.map(
+              type => this._datumEnum[type]
+            ),
             is_view: table.is_view,
             is_replicated: table.is_replicated,
             shard_count: Number(table.shard_count.toString()),
