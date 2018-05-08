@@ -1417,35 +1417,31 @@ class MapdCon {
       estimatedQueryTime: lastQueryTime
     }
 
-    try {
-      if (!callback) {
-        const renderResult = this._client[conId].render_vega(
-          this._sessionId[conId],
-          widgetid,
-          vega,
-          compressionLevel,
-          curNonce
-        )
-        return this.processResults(processResultsOptions, renderResult)
-      }
-
-      this._client[conId].render_vega(
+    if (!callback) {
+      const renderResult = this._client[conId].render_vega(
         this._sessionId[conId],
         widgetid,
         vega,
         compressionLevel,
-        curNonce,
-        (error, result) => {
-          if (error) {
-            callback(error)
-          } else {
-            this.processResults(processResultsOptions, result, callback)
-          }
-        }
+        curNonce
       )
-    } catch (err) {
-      throw err
+      return this.processResults(processResultsOptions, renderResult)
     }
+
+    this._client[conId].render_vega(
+      this._sessionId[conId],
+      widgetid,
+      vega,
+      compressionLevel,
+      curNonce,
+      (error, result) => {
+        if (error) {
+          callback(error)
+        } else {
+          this.processResults(processResultsOptions, result, callback)
+        }
+      }
+    )
 
     return curNonce
   }
@@ -1474,34 +1470,32 @@ class MapdCon {
     }
     const columnFormat = true // BOOL
     const curNonce = (this._nonce++).toString()
-    try {
-      if (!callbacks) {
-        return this.processPixelResults(
-          undefined, // eslint-disable-line no-undefined
-          this._client[this._lastRenderCon].get_result_row_for_pixel(
-            this._sessionId[this._lastRenderCon],
-            widgetId,
-            pixel,
-            tableColNamesMap,
-            columnFormat,
-            pixelRadius,
-            curNonce
-          )
+
+    if (!callbacks) {
+      return this.processPixelResults(
+        undefined, // eslint-disable-line no-undefined
+        this._client[this._lastRenderCon].get_result_row_for_pixel(
+          this._sessionId[this._lastRenderCon],
+          widgetId,
+          pixel,
+          tableColNamesMap,
+          columnFormat,
+          pixelRadius,
+          curNonce
         )
-      }
-      this._client[this._lastRenderCon].get_result_row_for_pixel(
-        this._sessionId[this._lastRenderCon],
-        widgetId,
-        pixel,
-        tableColNamesMap,
-        columnFormat,
-        pixelRadius,
-        curNonce,
-        this.processPixelResults.bind(this, callbacks)
       )
-    } catch (err) {
-      throw err
     }
+    this._client[this._lastRenderCon].get_result_row_for_pixel(
+      this._sessionId[this._lastRenderCon],
+      widgetId,
+      pixel,
+      tableColNamesMap,
+      columnFormat,
+      pixelRadius,
+      curNonce,
+      this.processPixelResults.bind(this, callbacks)
+    )
+
     return curNonce
   }
 
