@@ -92,7 +92,7 @@ export default function processColumnarResults(
               )
               break
             default:
-              break
+              throw new Error("Unrecognized array field type: " + fieldType)
           }
         }
       } else {
@@ -120,8 +120,14 @@ export default function processColumnarResults(
               data.columns[c].data.int_col[r] * oneThousandMilliseconds
             )
             break
-          default:
+          case "POINT":
+          case "LINESTRING":
+          case "POLYGON":
+          case "MULTIPOLYGON":
+            row[fieldName] = data.columns[c].data.str_col[r]
             break
+          default:
+            throw new Error("Unrecognized field type: " + fieldType)
         }
       }
     }

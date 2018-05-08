@@ -83,23 +83,32 @@ export default function processQueryResults(logging, updateQueryTimes) {
         return
       }
 
-      if (result.row_set.is_columnar) {
-        formattedResult = processColumnarResults(
-          result.row_set,
-          eliminateNullRows,
-          _datumEnum
-        )
-      } else {
-        formattedResult = processRowResults(
-          result.row_set,
-          eliminateNullRows,
-          _datumEnum
-        )
-      }
+      try {
+        if (result.row_set.is_columnar) {
+          formattedResult = processColumnarResults(
+            result.row_set,
+            eliminateNullRows,
+            _datumEnum
+          )
+        } else {
+          formattedResult = processRowResults(
+            result.row_set,
+            eliminateNullRows,
+            _datumEnum
+          )
+        }
 
-      formattedResult.timing = {
-        execution_time_ms: result.execution_time_ms,
-        total_time_ms: result.total_time_ms
+        formattedResult.timing = {
+          execution_time_ms: result.execution_time_ms,
+          total_time_ms: result.total_time_ms
+        }
+      } catch (err) {
+        if (hasCallback) {
+          callback(err)
+        } else {
+          throw err
+        }
+        return
       }
 
       if (hasCallback) {

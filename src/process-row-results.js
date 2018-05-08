@@ -78,7 +78,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
               row[fieldName].push(elemDatum.val.int_val * 1000) // eslint-disable-line no-magic-numbers
               break
             default:
-              break
+              throw new Error("Unrecognized array field type: " + fieldType)
           }
         }
       } else {
@@ -109,8 +109,14 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
           case "DATE":
             row[fieldName] = new Date(scalarDatum.val.int_val * 1000) // eslint-disable-line no-magic-numbers
             break
-          default:
+          case "POINT":
+          case "LINESTRING":
+          case "POLYGON":
+          case "MULTIPOLYGON":
+            row[fieldName] = scalarDatum.val.str_val
             break
+          default:
+            throw new Error("Unrecognized field type: " + fieldType)
         }
       }
     }
