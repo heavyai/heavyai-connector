@@ -49,6 +49,12 @@ TTableType = {
   'DELIMITED' : 0,
   'POLYGON' : 1
 };
+TPartitionDetail = {
+  'DEFAULT' : 0,
+  'REPLICATED' : 1,
+  'SHARDED' : 2,
+  'OTHER' : 3
+};
 TMergeType = {
   'UNION' : 0,
   'REDUCE' : 1
@@ -1678,9 +1684,9 @@ TCopyParams = function(args) {
   this.s3_access_key = null;
   this.s3_secret_key = null;
   this.s3_region = null;
-  this.geo_coords_encoding = 0;
-  this.geo_coords_comp_param = null;
-  this.geo_coords_type = 19;
+  this.geo_coords_encoding = 6;
+  this.geo_coords_comp_param = 32;
+  this.geo_coords_type = 18;
   this.geo_coords_srid = 4326;
   this.sanitize_column_names = true;
   if (args) {
@@ -3773,6 +3779,7 @@ TTableDetails = function(args) {
   this.shard_count = null;
   this.key_metainfo = null;
   this.is_temporary = null;
+  this.partition_detail = null;
   if (args) {
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
@@ -3797,6 +3804,9 @@ TTableDetails = function(args) {
     }
     if (args.is_temporary !== undefined && args.is_temporary !== null) {
       this.is_temporary = args.is_temporary;
+    }
+    if (args.partition_detail !== undefined && args.partition_detail !== null) {
+      this.partition_detail = args.partition_detail;
     }
   }
 };
@@ -3884,6 +3894,13 @@ TTableDetails.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 9:
+      if (ftype == Thrift.Type.I32) {
+        this.partition_detail = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -3942,6 +3959,11 @@ TTableDetails.prototype.write = function(output) {
   if (this.is_temporary !== null && this.is_temporary !== undefined) {
     output.writeFieldBegin('is_temporary', Thrift.Type.BOOL, 8);
     output.writeBool(this.is_temporary);
+    output.writeFieldEnd();
+  }
+  if (this.partition_detail !== null && this.partition_detail !== undefined) {
+    output.writeFieldBegin('partition_detail', Thrift.Type.I32, 9);
+    output.writeI32(this.partition_detail);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
