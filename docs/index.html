@@ -545,6 +545,16 @@
               
                 
                 <li><a
+                  href='#ttabletype'
+                  class="">
+                  TTableType
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#tdetectresult'
                   class="">
                   TDetectResult
@@ -575,9 +585,9 @@
               
                 
                 <li><a
-                  href='#timportstatus'
+                  href='#tcopyparams'
                   class="">
-                  TImportStatus
+                  TCopyParams
                   
                 </a>
                 
@@ -595,9 +605,9 @@
               
                 
                 <li><a
-                  href='#ttabletype'
+                  href='#tdatum'
                   class="">
-                  TTableType
+                  TDatum
                   
                 </a>
                 
@@ -655,19 +665,9 @@
               
                 
                 <li><a
-                  href='#tcopyparams'
+                  href='#timportstatus'
                   class="">
-                  TCopyParams
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#tdatum'
-                  class="">
-                  TDatum
+                  TImportStatus
                   
                 </a>
                 
@@ -4750,9 +4750,8 @@ https
   </div>
   
 
-  <p>Because it is inefficient for the server to return a row-based
-data structure, it is better to process the column-based results into a row-based
-format after the fact.</p>
+  <p>Process the column-based results from the query in a row-based format.
+(Returning row-based results directly from the server is inefficient.)</p>
 
 
   <div class='pre p1 fill-light mt0'>processColumnarResults(data: <a href="#trowset">TRowSet</a>, eliminateNullRows: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, dataEnum: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
@@ -4773,7 +4772,7 @@ format after the fact.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>data</span> <code class='quiet'>(<a href="#trowset">TRowSet</a>)</code>
-	    The column-based data returned from a query
+	    The column-based data returned from a query.
 
           </div>
           
@@ -4782,7 +4781,7 @@ format after the fact.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>eliminateNullRows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-	    A flag that allows removal of null rows from results
+	    A flag that removes null rows from results.
 
           </div>
           
@@ -4793,6 +4792,7 @@ format after the fact.</p>
             <span class='code bold'>dataEnum</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    A list of types created from when executing 
 <a href="#invertdatumtypes">#invertDatumTypes</a>
+.
 
           </div>
           
@@ -4807,7 +4807,7 @@ format after the fact.</p>
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
-        processedResults The formatted results of the query
+        The formatted results of the query.
 
       
     
@@ -5163,6 +5163,77 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='ttabletype'>
+      TTableType
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TTableType</div>
+  
+    <p>
+      Type:
+      <a href="#ttabletype">TTableType</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =0
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =1
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='tdetectresult'>
       TDetectResult
     </h3>
@@ -5447,22 +5518,23 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='timportstatus'>
-      TImportStatus
+    <h3 class='fl m0' id='tcopyparams'>
+      TCopyParams
     </h3>
     
     
   </div>
   
 
-  <p>The value of an individual cell in a table.</p>
+  <p>The configuration needed to import a table into MapD.
+See <a href="detectColumnTypes">detectColumnTypes</a> for usage example.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TImportStatus</div>
+  <div class='pre p1 fill-light mt0'>TCopyParams</div>
   
     <p>
       Type:
-      <a href="#timportstatus">TImportStatus</a>
+      <a href="#tcopyparams">TCopyParams</a>
     </p>
   
   
@@ -5481,20 +5553,83 @@ it can still be done. In this case, still process them into the same format as
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>elapsed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>rows_completed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
+          <span class='code bold'>array_begin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>rows_estimated</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>array_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
           
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>array_end</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>delimiter</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : ="" - The character delimiter (eg:  comma, 
+[
+TAB
+]
+, or pipe)
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>escape</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>has_header</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>line_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>null_str</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : ="" - The token used by the table to express a null value (eg: some systems use 'nil' or 'none')
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>quote</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : =null
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>quoted</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : =true - Indicates whether the String fields should be wrapped in quotes
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>threads</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =null
+
           
         </div>
       
@@ -5603,22 +5738,22 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='ttabletype'>
-      TTableType
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
     </h3>
     
     
   </div>
   
 
-  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
+  <p>The value and state of an individual data cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TTableType</div>
+  <div class='pre p1 fill-light mt0'>TDatum</div>
   
     <p>
       Type:
-      <a href="#ttabletype">TTableType</a>
+      <a href="#tdatum">TDatum</a>
     </p>
   
   
@@ -5637,16 +5772,14 @@ it can still be done. In this case, still process them into the same format as
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =0
-
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =1
-
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          
           
         </div>
       
@@ -6053,23 +6186,22 @@ it can still be done. In this case, still process them into the same format as
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tcopyparams'>
-      TCopyParams
+    <h3 class='fl m0' id='timportstatus'>
+      TImportStatus
     </h3>
     
     
   </div>
   
 
-  <p>The configuration needed to import a table into MapD.
-See <a href="detectColumnTypes">detectColumnTypes</a> for usage example.</p>
+  <p>The value of an individual cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TCopyParams</div>
+  <div class='pre p1 fill-light mt0'>TImportStatus</div>
   
     <p>
       Type:
-      <a href="#tcopyparams">TCopyParams</a>
+      <a href="#timportstatus">TImportStatus</a>
     </p>
   
   
@@ -6088,151 +6220,19 @@ See <a href="detectColumnTypes">detectColumnTypes</a> for usage example.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>array_begin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : =null
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>array_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : =null
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>array_end</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : =null
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>delimiter</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : ="" - The character delimiter (eg:  comma, 
-[
-TAB
-]
-, or pipe)
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>escape</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : =null
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>has_header</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          : =null
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>line_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : =null
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>null_str</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : ="" - The token used by the table to express a null value (eg: some systems use 'nil' or 'none')
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>quote</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : =null
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>quoted</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          : =true - Indicates whether the String fields should be wrapped in quotes
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>threads</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =null
-
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tdatum'>
-      TDatum
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The value and state of an individual data cell in a table.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDatum</div>
-  
-    <p>
-      Type:
-      <a href="#tdatum">TDatum</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>elapsed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          <span class='code bold'>rows_completed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rows_estimated</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
