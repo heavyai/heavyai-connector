@@ -1,12 +1,12 @@
 /**
- * Because it is inefficient for the server to return a row-based
- * data structure, it is better to process the column-based results into a row-based
- * format after the fact.
+ * Process the column-based results from the query in a row-based format.
+ * (Returning row-based results directly from the server is inefficient.)
  *
- * @param {TRowSet} data The column-based data returned from a query
- * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
- * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
- * @returns {Object} processedResults The formatted results of the query
+ * @param {TRowSet} data The column-based data returned from a query.
+ * @param {Boolean} eliminateNullRows A flag that removes null rows from results.
+ * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}.
+ * @returns {Object} The formatted results of the query.
+ * @example <caption>Convert data returned in column-based format to row-based:</caption>
  */
 export default function processColumnarResults(
   data,

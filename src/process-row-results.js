@@ -1,11 +1,12 @@
 /**
- * It should be avoided to query for row-based results from the server, howerver
- * it can still be done. In this case, still process them into the same format as
- * (@link processColumnarResults} to keep the output consistent.
- * @param {TRowSet} data - The row-based data returned from a query
- * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
- * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}
- * @returns {Object} processedResults
+ * Query for row-based results from the server. In general, is inefficient and should be 
+ * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
+ * row-based format.
+ * @param {TRowSet} data - The row-based data returned from a query.
+ * @param {Boolean} eliminateNullRows Flag that removes null rows from results.
+ * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}.
+ * @returns {Object} The formatted results of the query.
+ * @example<caption> Return row-based results directly from the server:
  */
 export default function processRowResults(data, eliminateNullRows, datumEnum) {
   const numCols = data.row_desc.length

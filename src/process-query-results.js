@@ -1,22 +1,22 @@
 import processColumnarResults from "./process-columnar-results"
 import processRowResults from "./process-row-results"
 /**
- * Decides how to process raw results once they come back from the server.
+ * Determines how to process raw results when they return from the server.
  *
- * @param {Boolean} logging if enabled, will show how long the query took to execute in console
- * @param {Function} updateQueryTimes A function that updates internal query times on connector
- * @param {Object} options A list of options for processing the results
- * @param {Boolean} options.isImage Set to true when querying for backend rendered images
- * @param {Boolean} options.eliminateNullRows Removes null rows
- * @param {String} options.query The SQL query string used only for logging
- * @param {Number} options.queryId The ID of the query
- * @param {Number} options.conId The unique connector identification
- * @param {String} options.estimatedQueryTime The estimate of the query time
- * @param {Array<Function>} the same callback coming from {@link #query}
+ * @param {Boolean} logging If enabled, shows on the console how long the query took to run.
+ * @param {Function} updateQueryTimes A function that updates internal query times on the connector.
+ * @param {Object} options A list of options for processing the results.
+ * @param {Boolean} options.isImage Set to true when querying for backend-rendered images.
+ * @param {Boolean} options.eliminateNullRows Removes null rows.
+ * @param {String} options.query The SQL query string used only for logging.
+ * @param {Number} options.queryId The ID of the query.
+ * @param {Number} options.conId The unique connector identification.
+ * @param {String} options.estimatedQueryTime The estimate of the query time.
+ * @param {Array<Function>} callback The same callback coming from {@link #query}.
  * @param {Object} result - The query result used to decide whether to process
  *                          as column or row results.
- * @return {Object} null if image with callbacks, result if image with callbacks,
- *                  otherwise formatted results
+ * @return {Object} Null if image with callbacks, result if image with callbacks,
+ *                  otherwise formatted results.
  */
 export default function processQueryResults(logging, updateQueryTimes) {
   return function(options, _datumEnum, result, callback) {

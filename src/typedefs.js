@@ -1,35 +1,35 @@
 /**
- * The configuration needed to import a table into MapD.
- * See {@link detectColumnTypes} for usage example.
+ * The configuration required to import a table into MapD.
+ * See {@link detectColumnTypes} for a usage example.
  * @typedef {TCopyParams} TCopyParams
  * @property {String} array_begin=null
  * @property {String} array_delim=null
  * @property {String} array_end=null
- * @property {String} delimiter="" - The character delimiter (eg:  comma, [TAB], or pipe)
+ * @property {String} delimiter="" - The delimiter character; for example, comma, [TAB], or pipe.
  * @property {String} escape=null
  * @property {Boolean} has_header=null
  * @property {String} line_delim=null
- * @property {String} null_str="" - The token used by the table to express a null value (eg: some systems use 'nil' or 'none')
+ * @property {String} null_str="" - The token used by the table to express a null value; for example, some systems use 'nil' or 'none'.
  * @property {String} quote=null
- * @property {Boolean} quoted=true - Indicates whether the String fields should be wrapped in quotes
+ * @property {Boolean} quoted=true - Indicates whether the string fields should be wrapped in quotes.
  * @property {Number} threads=null
  */
 
 /**
- * The data stored for a given dashboard.
+ * The data stored for a dashboard.
  * @typedef {TFrontendView} TFrontendView
- * @property {String} image_hash - The lookup hash for the dashboard thumbnail image
- * @property {String} update_time - The timestamp from the last saved update
- * @property {String} view_name - The name of the dashboard or the shortened share link hash
- * @property {String} view_state - The base64-encoded string containing all the details about the current state of the dashboard
+ * @property {String} image_hash - The lookup hash for the dashboard thumbnail image.
+ * @property {String} update_time - The timestamp from the last saved update.
+ * @property {String} view_name - The name of the dashboard or the shortened share link hash.
+ * @property {String} view_state - The Base64-encoded string containing the details about the current state of the dashboard.
  */
 
 /**
  * The permissions granted by the server.
  * @typedef {TServerStatus} TServerStatus
- * @property {Boolean} read_only - Indicates whether server accepts write operations, eg: save dashboard
- * @property {Boolean} rendering_enabled - Indicates whether the server has backend rendering enabled
- * @property {String} version - the current version
+ * @property {Boolean} read_only - Indicates whether the server accepts write operations, such as saving.
+ * @property {Boolean} rendering_enabled - Indicates whether backend rendering is enabled on the server.
+ * @property {String} version - The current version of the server.
  */
 
 /**
@@ -43,8 +43,8 @@
 
 /**
  * @typedef {TColumnType} TColumnType
- * @property {String} col_name - The name of the table field
- * @property {TTypeInfo} col_type - The information about the field
+ * @property {String} col_name - The name of the table field.
+ * @property {TTypeInfo} col_type - The information about the field.
  */
 
 /**
@@ -109,17 +109,17 @@
  * @property {TRowSet} row_set
  */
 
-/**
- * The types of tables that uploaded through the importer {@link TTableType}.
- * @typedef {TTableType} TTableType
- * @property {Number} DELIMITED=0
- * @property {Number} POLYGON=1
- */
+ /**
+  * The types of tables that uploaded through the importer {@link TTableType}.
+  * @typedef {TTableType} TTableType
+  * @property {Number} DELIMITED=0
+  * @property {Number} POLYGON=1
+  */
 
 /**
- * The types of the completion hint response object
- * @typedef {completion_hints} completion_hints
- * @property {TSessionId} session
- * @property {String} sql
- * @property {Number} cursor
+* The types of the completion hint response object.
+* @typedef {completion_hints} completion_hints
+* @property {TSessionId} session
+* @property {String} sql
+* @property {Number} cursor
  */
