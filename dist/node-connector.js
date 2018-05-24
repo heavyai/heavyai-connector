@@ -10572,6 +10572,12 @@ module.exports =
 	  'DELIMITED': 0,
 	  'POLYGON': 1
 	};
+	ttypes.TPartitionDetail = {
+	  'DEFAULT': 0,
+	  'REPLICATED': 1,
+	  'SHARDED': 2,
+	  'OTHER': 3
+	};
 	ttypes.TMergeType = {
 	  'UNION': 0,
 	  'REDUCE': 1
@@ -12137,9 +12143,9 @@ module.exports =
 	  this.s3_access_key = null;
 	  this.s3_secret_key = null;
 	  this.s3_region = null;
-	  this.geo_coords_encoding = 0;
-	  this.geo_coords_comp_param = null;
-	  this.geo_coords_type = 19;
+	  this.geo_coords_encoding = 6;
+	  this.geo_coords_comp_param = 32;
+	  this.geo_coords_type = 18;
 	  this.geo_coords_srid = 4326;
 	  this.sanitize_column_names = true;
 	  if (args) {
@@ -14187,6 +14193,7 @@ module.exports =
 	  this.shard_count = null;
 	  this.key_metainfo = null;
 	  this.is_temporary = null;
+	  this.partition_detail = null;
 	  if (args) {
 	    if (args.row_desc !== undefined && args.row_desc !== null) {
 	      this.row_desc = Thrift.copyList(args.row_desc, [ttypes.TColumnType]);
@@ -14211,6 +14218,9 @@ module.exports =
 	    }
 	    if (args.is_temporary !== undefined && args.is_temporary !== null) {
 	      this.is_temporary = args.is_temporary;
+	    }
+	    if (args.partition_detail !== undefined && args.partition_detail !== null) {
+	      this.partition_detail = args.partition_detail;
 	    }
 	  }
 	};
@@ -14295,6 +14305,13 @@ module.exports =
 	          input.skip(ftype);
 	        }
 	        break;
+	      case 9:
+	        if (ftype == Thrift.Type.I32) {
+	          this.partition_detail = input.readI32();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
 	      default:
 	        input.skip(ftype);
 	    }
@@ -14351,6 +14368,11 @@ module.exports =
 	  if (this.is_temporary !== null && this.is_temporary !== undefined) {
 	    output.writeFieldBegin('is_temporary', Thrift.Type.BOOL, 8);
 	    output.writeBool(this.is_temporary);
+	    output.writeFieldEnd();
+	  }
+	  if (this.partition_detail !== null && this.partition_detail !== undefined) {
+	    output.writeFieldBegin('partition_detail', Thrift.Type.I32, 9);
+	    output.writeI32(this.partition_detail);
 	    output.writeFieldEnd();
 	  }
 	  output.writeFieldStop();
@@ -17057,9 +17079,9 @@ module.exports =
 	  }
 
 	  /**
-	   * Create a connection to the server, generating a client and session id.
-	   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton on success.
-	   * @return {MapdCon} Object
+	   * Create a connection to the MapD server, generating a client and session ID.
+	   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+	   * @return {MapdCon} Object.
 	   *
 	   * @example <caption>Connect to a MapD server:</caption>
 	   * var con = new MapdCon()
@@ -17184,9 +17206,9 @@ module.exports =
 	    }
 
 	    /**
-	     * Disconnect from the server then clears the client and session values.
-	     * @return {MapdCon} Object
-	     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton on success.
+	     * Disconnect from the server and then clear the client and session values.
+	     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+	     * @return {MapdCon} Object.
 	     *
 	     * @example <caption>Disconnect from the server:</caption>
 	     *
@@ -17226,12 +17248,12 @@ module.exports =
 
 
 	    /**
-	     * Get the recent dashboards as a list of <code>TFrontendView</code> objects.
+	     * Get the recent Immerse dashboards as a list of {@link TFrontendView} objects.
 	     * These objects contain a value for the <code>view_name</code> property,
 	     * but not for the <code>view_state</code> property.
-	     * @return {Promise<TFrontendView[]>} An array which has all saved dashboards.
+	     * @return {Promise<TFrontendView[]>} An array that has all saved dashboards.
 	     *
-	     * @example <caption>Get the list of dashboards from the server:</caption>
+	     * @example <caption>Get the list of Immerse dashboards from the server:</caption>
 	     *
 	     * con.getFrontendViewsAsync().then((results) => console.log(results))
 	     * // [TFrontendView, TFrontendView]
@@ -17242,8 +17264,8 @@ module.exports =
 	     * Get a dashboard object containing a value for the <code>view_state</code> property.
 	     * This object contains a value for the <code>view_state</code> property,
 	     * but not for the <code>view_name</code> property.
-	     * @param {String} viewName the name of the dashboard
-	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard
+	     * @param {String} viewName The name of the dashboard
+	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard.
 	     *
 	     * @example <caption>Get a specific dashboard from the server:</caption>
 	     *
@@ -17253,10 +17275,10 @@ module.exports =
 
 
 	    /**
-	     * Get the status of the server as a <code>TServerStatus</code> object.
-	     * This includes whether the server is read-only,
-	     * has backend rendering enabled, and the version number.
-	     * @return {Promise.<Object>}
+	     * Get the status of the server as a {@link TServerStatus} object.
+	     * This includes the server version number, whether the server is read-only,
+	     * and whether backend rendering is enabled.
+	     * @return {Promise.<Object>} An object that contains information about the server status.
 	     *
 	     * @example <caption>Get the server status:</caption>
 	     *
@@ -17270,10 +17292,10 @@ module.exports =
 	     */
 
 	    /**
-	     * Get the status of the server as an array of <code>TServerStatus</code> objects.
-	     * This includes whether the server is read-only,
-	     * has backend rendering enabled, and the version number.
-	     * @return {Promise.<Object>}
+	     * Get the status of the server as a {@link TServerStatus} object.
+	     * This includes the server version number, whether the server is read-only,
+	     * and whether backend rendering is enabled.
+	     * @return {Promise.<Object>} An object that contains information about the server status.
 	     *
 	     * @example <caption>Get the server status:</caption>
 	     *
@@ -17287,17 +17309,17 @@ module.exports =
 	     */
 
 	    /**
-	     * Get some info about the hardware
-	     * - Number of GPUs
-	     * - Number of GPUs allocated to MapD
-	     * - Start GPU
-	     * - Number of SMs or SMx or CU (They simply mean streaming multi processors)
-	     * - Clock frequency of each GPUs
-	     * - Physical Memory of each GPU
-	     * - Compute capability of each GPU
-	     * @return {Promise.<Object>}
+	     * Get information about the server hardware:
+	     * - Number of GPUs.
+	     * - Number of GPUs allocated to MapD.
+	     * - Start GPU.
+	     * - Number of SMs, SMXs, or CUs (streaming multiprocessors).
+	     * - Clock frequency of each GPU.
+	     * - Physical memory of each GPU.
+	     * - Compute capability of each GPU.
+	     * @return {Promise.<Object>} An object that contains hardware information.
 	     *
-	     * @example <caption>Get harddware info:</caption>
+	     * @example <caption>Get server hardware information:</caption>
 	     *
 	     * con.getHardwareInfoAsync().then((result) => console.log(result))
 	     * {
@@ -17330,12 +17352,12 @@ module.exports =
 
 	    /**
 	     * Add a new dashboard to the server.
-	     * @param {String} viewName - the name of the new dashboard
-	     * @param {String} viewState - the base64-encoded state string of the new dashboard
-	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
-	     * @param {String} metaData - Stringified metaData related to the view
-	     * @return {Promise} Returns empty if success
-	     *
+	     * @param {String} viewName The name of the new dashboard.
+	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
+	     * @param {String} imageHash The numeric hash of the dashboard thumbnail.
+	     * @param {String} metaData - Stringified metadata related to the view.
+	     * @return {Promise} Returns empty if successful.
+	      *
 	     * @example <caption>Add a new dashboard to the server:</caption>
 	     *
 	     * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
@@ -17380,9 +17402,9 @@ module.exports =
 	    }
 
 	    /**
-	     * Delete a dashboard object containing a value for the <code>view_state</code> property.
-	     * @param {String} viewName - the name of the dashboard
-	     * @return {Promise.<String>} Name of dashboard successfully deleted
+	     * Delete a dashboard object containing a value for the <code>viewState</code> property.
+	     * @param {String} viewName The name of the dashboard.
+	     * @return {Promise.<String>} The name of dashboard deleted. 
 	     *
 	     * @example <caption>Delete a specific dashboard from the server:</caption>
 	     *
@@ -17395,9 +17417,9 @@ module.exports =
 
 	    /**
 	     * Create a short hash to make it easy to share a link to a specific dashboard.
-	     * @param {String} viewState - the base64-encoded state string of the new dashboard
-	     * @param {String} metaData - Stringified metaData related to the link
-	     * @return {Promise.<String[]>} link - A short hash of the dashboard used for URLs
+	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
+	     * @param {String} metaData Stringified metadata related to the link.
+	     * @return {Promise.<String[]>} A short hash of the dashboard used for URLs.
 	     *
 	     * @example <caption>Create a link to the current state of a dashboard:</caption>
 	     *
@@ -17431,10 +17453,10 @@ module.exports =
 	    }
 
 	    /**
-	     * Get a fully-formed dashboard object from a generated share link.
-	     * This object contains the given link for the <code>view_name</code> property,
-	     * @param {String} link - the short hash of the dashboard, see {@link createLink}
-	     * @return {Promise.<Object>} Object of the dashboard and metadata
+	     * Get a fully formed dashboard object from a generated share link.
+	     * This object contains the link for the <code>view_name</code> property.
+	     * @param {String} link  The short hash of the dashboard; see {@link createLink}.
+	     * @return {Promise.<Object>} Object of the dashboard and metadata.
 	     *
 	     * @example <caption>Get a dashboard from a link:</caption>
 	     *
@@ -17456,8 +17478,8 @@ module.exports =
 	    }
 
 	    /**
-	     * Get a list of all users on the database for this connection
-	     * @returns {Promise.<Array>} A list of all users (strings)
+	     * Get a list of all users on the database for this connection.
+	     * @returns {Promise.<Array>} A list of all users (strings).
 	     *
 	     * @example <caption>Get a list of all users:</caption>
 	     *
@@ -17466,8 +17488,8 @@ module.exports =
 
 
 	    /**
-	     * Get a list of all roles on the database for this connection
-	     * @returns {Promise.<Array>} A list of all roles (strings)
+	     * Get a list of all roles on the database for this connection.
+	     * @returns {Promise.<Array>} A list of all roles (strings).
 	     *
 	     * @example <caption>Get a list of all roles:</caption>
 	     *
@@ -17476,8 +17498,8 @@ module.exports =
 
 
 	    /**
-	     * Get a list of all dashboards on the database for this connection
-	     * @returns {Promise.<Array<TDashboard>>} A list of all dashboards (Dashboard objects)
+	     * Get a list of all dashboards on the database for this connection.
+	     * @returns {Promise.<Array<TDashboard>>} A list of all dashboards (Dashboard objects).
 	     *
 	     * @example <caption>Get a list of all dashboards:</caption>
 	     *
@@ -17487,8 +17509,8 @@ module.exports =
 
 	    /**
 	     * Get a single dashboard.
-	     * @param {Number} dashboardId - the id of the dashboard
-	     * @returns {Promise.<TDashboard>} The dashboard (Dashboard object)
+	     * @param {Number} dashboardId - The ID of the dashboard.
+	     * @returns {Promise.<TDashboard>} The dashboard (Dashboard object).
 	     *
 	     * @example <caption>Get a dashboard:</caption>
 	     *
@@ -17498,11 +17520,11 @@ module.exports =
 
 	    /**
 	     * Add a new dashboard to the server.
-	     * @param {String} dashboardName - the name of the new dashboard
-	     * @param {String} dashboardState - the base64-encoded state string of the new dashboard
-	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
-	     * @param {String} metaData - Stringified metaData related to the view
-	     * @return {Promise} Returns a Promise.all result (array) of the id's created on each client
+	     * @param {String} dashboardName - The name of the new dashboard.
+	     * @param {String} dashboardState - The Base64-encoded state string of the new dashboard.
+	     * @param {String} imageHash - The numeric hash of the dashboard thumbnail.
+	     * @param {String} metaData - Stringified metadata related to the view.
+	     * @return {Promise} Returns a Promise.all result (array) of the IDs created on each client.
 	     *
 	     * @example <caption>Add a new dashboard to the server:</caption>
 	     *
@@ -17512,15 +17534,15 @@ module.exports =
 
 	    /**
 	     * Replace a dashboard on the server with new properties.
-	     * @param {Number} dashboardId - the id of the dashboard to replace
-	     * @param {String} dashboardName - the name of the new dashboard
-	     * @param {String} dashboardOwner - user id of the owner of the dashboard
-	     * @param {String} dashboardState - the base64-encoded state string of the new dashboard
-	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail
-	     * @param {String} metaData - Stringified metaData related to the view
-	     * @return {Promise} Returns empty if success, rejects if any client failed
+	     * @param {Number} dashboardId - The ID of the dashboard to replace.
+	     * @param {String} dashboardName - The name of the new dashboard.
+	     * @param {String} dashboardOwner - user id of the owner of the dashboard.
+	     * @param {String} dashboardState - the base64-encoded state string of the new dashboard.
+	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail.
+	     * @param {String} metaData - Stringified metaData related to the view.
+	     * @return {Promise} Returns empty if successful, rejects if any client failed.
 	     *
-	     * @example <caption>Replace dashboard on the server:</caption>
+	     * @example <caption>Replace a dashboard on the server:</caption>
 	     *
 	     * con.replaceDashboardAsync(123, 'replaceSave', 'owner', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
 	     */
@@ -17528,8 +17550,8 @@ module.exports =
 
 	    /**
 	     * Delete a dashboard object containing a value for the <code>view_state</code> property.
-	     * @param {Number} dashboardId - the id of the dashboard
-	     * @return {Promise} Returns empty if success, rejects if any client failed
+	     * @param {Number} dashboardId - The ID of the dashboard.
+	     * @return {Promise} Returns empty if successful, rejects if any client failed.
 	     *
 	     * @example <caption>Delete a specific dashboard from the server:</caption>
 	     *
@@ -17538,12 +17560,12 @@ module.exports =
 
 
 	    /**
-	     * Share a dashboard (GRANT a certain set of permission to a specified list of groups)
-	     * @param {Number} dashboardId - the id of the dashboard
-	     * @param {String[]} groups - the roles and users that can access it
-	     * @param {String[]} objects - the database objects (tables) they can see
-	     * @param {String[]} permissions - permissions the groups should have granted
-	     * @return {Promise} Returns empty if success
+	     * Share a dashboard (GRANT a certain set of permissions to a specified list of groups).
+	     * @param {Number} dashboardId - The ID of the dashboard.
+	     * @param {String[]} groups - The roles and users that can access the dashboard.
+	     * @param {String[]} objects - The database objects (tables) that groups can see.
+	     * @param {String[]} permissions - Permissions granted to the groups.
+	     * @return {Promise} Returns empty if successful.
 	     *
 	     * @example <caption>Share a dashboard:</caption>
 	     *
@@ -17552,12 +17574,12 @@ module.exports =
 
 
 	    /**
-	     * Unshare a dashboard (REVOKE a certain set of permission from a specified list of groups)
-	     * @param {Number} dashboardId - the id of the dashboard
-	     * @param {String[]} groups - the roles and users that can access it
-	     * @param {String[]} objects - the database objects (tables) they can see
-	     * @param {String[]} permissions - permissions the groups should have revoked
-	     * @return {Promise} Returns empty if success
+	     * Stop sharing a dashboard (REVOKE a certain set of permission from a specified list of groups).
+	     * @param {Number} dashboardId - The ID of the dashboard.
+	     * @param {String[]} groups - The roles and users that can access it.
+	     * @param {String[]} objects - The database objects (tables) that groups can see.
+	     * @param {String[]} permissions - Permissions revoked from the groups.
+	     * @return {Promise} Returns empty if successful.
 	     *
 	     * @example <caption>Unshare a dashboard:</caption>
 	     *
@@ -17566,20 +17588,20 @@ module.exports =
 
 
 	    /**
-	     * Get grantees for a dashboard - the list of users it has been shared with (permissions granted to)
-	     * @param {Number} dashboardId - the id of the dashboard
-	     * @return {Promise} Returns list of users (array)
+	     * Get the list of users that a dashboard has been shared with; that is, those users who have been granted permissions to the dashboard.
+	     * @param {Number} dashboardId - The ID of the dashboard.
+	     * @return {Promise} Returns the list of users (array).
 	     *
-	     * @example <caption>Get list of grantees for a dashboard:</caption>
+	     * @example <caption>Get the list of grantees for a dashboard:</caption>
 	     *
 	     * con.getDashboardGranteesAsync(123).then(res => console.log(res))
 	     */
 
 
 	    /**
-	     * Get a list of database objects granted to a role (those it has permissions to access somehow)
-	     * @param {String} roleName - the name of the role
-	     * @return {Promise} Returns list of database object names (strings)
+	     * Get a list of database objects granted to a role; that is, those objects the role has permissions to access.
+	     * @param {String} roleName - The name of the role.
+	     * @return {Promise} Returns the list of database object names (strings).
 	     *
 	     * @example <caption>Get list of accessible database objects for a role:</caption>
 	     *
@@ -17588,12 +17610,12 @@ module.exports =
 
 
 	    /**
-	     * Get the privileges for the current user for a given database object
-	     * @param {String} objectName - the name or ID of the object
-	     * @param {TDBObjectType} type - the type of the database object
-	     * @return {Promise} Returns list of database object names (strings)
+	     * Get the privileges for the current user for a specified database object.
+	     * @param {String} objectName - The name or ID of the object.
+	     * @param {TDBObjectType} type - The type of the database object.
+	     * @return {Promise} Returns the list of database object names (strings).
 	     *
-	     * @example <caption>Get list of accessible database objects for a role:</caption>
+	     * @example <caption>Get the list of accessible database objects for a role:</caption>
 	     *
 	     * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
 	     */
@@ -17603,11 +17625,11 @@ module.exports =
 
 
 	    /**
-	     * Asynchronously get the data from an importable file,
-	     * such as a .csv or plaintext file with a header.
-	     * @param {String} fileName - the name of the importable file
-	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @returns {Promise.<TDetectResult>} An object which has copy_params and row_set
+	     * Asynchronously get data from an importable file,
+	     * such as a CSV or plaintext file with a header.
+	     * @param {String} fileName - The name of the importable file.
+	     * @param {TCopyParams} copyParams See {@link TCopyParams}.
+	     * @returns {Promise.<TDetectResult>} An object that has <code>copy_params</code> and <code>row_set</code>.
 	     *
 	     * @example <caption>Get data from table_data.csv:</caption>
 	     *
@@ -17633,12 +17655,12 @@ module.exports =
 
 	    /**
 	     * Submit a query to the database and process the results.
-	     * @param {String} query The query to perform
-	     * @param {Object} options the options for the query
-	     * @param {Function} callback that takes `(err, result) => result`
-	     * @returns {Object} The result of the query
+	     * @param {String} query The query to perform.
+	     * @param {Object} options Options for the query.
+	     * @param {Function} callback A callback function with the signature <code>(err, result) => result</code>.
+	     * @returns {Object} The result of the query.
 	     *
-	     * @example <caption>create a query</caption>
+	     * @example <caption>Create a query:</caption>
 	     *
 	     * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
 	     * var options = {};
@@ -17717,11 +17739,11 @@ module.exports =
 
 
 	    /**
-	     * Submit a query to validate whether the backend can create a result set based on the SQL statement.
-	     * @param {String} query The query to perform
-	     * @returns {Promise.<Object>} The result of whether the query is valid
+	     * Submit a query to validate that the backend can create a result set based on the SQL statement.
+	     * @param {String} query The query to perform.
+	     * @returns {Promise.<Object>} The result of whether the query is valid.
 	     *
-	     * @example <caption>create a query</caption>
+	     * @example <caption>Create a query and determine if it is valid:</caption>
 	     *
 	     * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
 	     *
@@ -17779,8 +17801,8 @@ module.exports =
 	    }
 
 	    /**
-	     * Get the names of the tables that exist on the current session's connection.
-	     * @return {Promise.<Object[]>} list of table objects containing the label and table names.
+	     * Get the names of the databases that exist in the current session connection.
+	     * @return {Promise.<Object[]>} List of table objects containing the label and table names.
 	     *
 	     * @example <caption>Get the list of tables from a connection:</caption>
 	     *
@@ -17836,7 +17858,7 @@ module.exports =
 
 	    /**
 	     * Get names and catalog metadata for tables that exist on the current session's connection.
-	     * @return {Promise.<Object[]>} list of objects containing table metadata.
+	     * @return {Promise.<Object[]>} The list of objects containing table metadata.
 	     *
 	     * @example <caption>Get the list of tables with metadata from a connection:</caption>
 	     *
@@ -17871,11 +17893,11 @@ module.exports =
 	    }
 
 	    /**
-	     * Submits a sql string to the backend and returns a completion hints object
-	     * @param {String} queryString a fragment of SQL input
-	     * @param {Object} options an options object continaing the current cursor position, 1-indexed from the start of queryString
-	     * @param {Function} callback a callback function with the signature `(err, result) => result`
-	     * @returns {Array} An array of completion hints objects that contains the completion hints
+	     * Submits an SQL string to the backend and returns a completion hints object.
+	     * @param {String} queryString A fragment of SQL input.
+	     * @param {Object} options An options object continaing the current cursor position, 1-indexed from the start of `queryString`.
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
+	     * @returns {Array} An array of completion hints objects that contains the completion hints.
 	     *
 	     * @example
 	     * const queryString = "f";
@@ -17908,9 +17930,9 @@ module.exports =
 
 	    /**
 	     * Create an array-like object from {@link TDatumType} by
-	     * flipping the string key and numerical value around.
+	     * changing the order of the string key and numerical value.
 	     *
-	     * @returns {Undefined} This function does not return anything
+	     * @returns {Undefined} This function does not return anything.
 	     */
 
 	  }, {
@@ -17925,10 +17947,10 @@ module.exports =
 	    }
 
 	    /**
-	     * Get a list of field objects for a given table.
-	     * @param {String} tableName - name of table containing field names
-	     * @param {Function} callback - (err, results)
-	     * @return {Array<Object>} fields - the formmatted list of field objects
+	     * Get a list of field objects for a specified table.
+	     * @param {String} tableName Name of table containing field names.
+	     * @param {Function} callback A callback that takes (`err, results`).
+	     * @return {Array<Object>} The formatted list of field objects.
 	     *
 	     * @example <caption>Get the list of fields from a specific table:</caption>
 	     *
@@ -17980,10 +18002,10 @@ module.exports =
 
 	    /**
 	     * Create a table and persist it to the backend.
-	     * @param {String} tableName - desired name of the new table
-	     * @param {Array<TColumnType>} rowDescObj - fields of the new table
-	     * @param {Number<TTableType>} tableType - the types of tables a user can import into the db
-	     * @return {Promise.<undefined>} it will either catch an error or return undefined on success
+	     * @param {String} tableName The name of the new table.
+	     * @param {Array<TColumnType>} rowDescObj Fields in the new table.
+	     * @param {Number<TTableType>} tableType The types of tables a user can import into the database.
+	     * @return {Promise.<undefined>} Generates an error if unsuccessful, or returns undefined if successful.
 	     *
 	     * @example <caption>Create a new table:</caption>
 	     *
@@ -18037,19 +18059,19 @@ module.exports =
 
 	    /**
 	     * Import a delimited table from a file.
-	     * @param {String} tableName - desired name of the new table
-	     * @param {String} fileName
-	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @param {TColumnType[]} headers -- a colleciton of metadata related to the table headers
+	     * @param {String} tableName The name of the new table.
+	     * @param {String} fileName The name of the file containing the table.
+	     * @param {TCopyParams} copyParams See {@link TCopyParams}
+	     * @param {TColumnType[]} headers A collection of metadata related to the table headers.
 	     */
 
 
 	    /**
 	     * Import a geo table from a file.
-	     * @param {String} tableName - desired name of the new table
-	     * @param {String} fileName
-	     * @param {TCopyParams} copyParams - see {@link TCopyParams}
-	     * @param {TColumnType[]} headers -- a colleciton of metadata related to the table headers
+	     * @param {String} tableName The name of the new geo table.
+	     * @param {String} fileName The name of the file containing the table.
+	     * @param {TCopyParams} copyParams See {@link TCopyParams}
+	     * @param {TColumnType[]} headers A colleciton of metadata related to the table headers.
 	     */
 
 	  }, {
@@ -18057,18 +18079,18 @@ module.exports =
 
 
 	    /**
-	     * Use for backend rendering. This method will fetch a PNG image
-	     * that is a render of the vega json object.
+	     * Use for backend rendering. This method fetches a PNG image
+	     * that is a render of the Vega JSON object.
 	     *
-	     * @param {Number} widgetid the widget id of the calling widget
-	     * @param {String} vega the vega json
-	     * @param {Object} options the options for the render query
-	     * @param {Number} options.compressionLevel the png compression level.
-	     *                  range 1 (low compression, faster) to 10 (high compression, slower).
-	     *                  Default 3.
-	     * @param {Function} callback takes `(err, success)` as its signature.  Returns con singleton on success.
+	     * @param {Number} widgetid The widget ID of the calling widget.
+	     * @param {String} vega The Vega JSON
+	     * @param {Object} options The options for the render query.
+	     * @param {Number} options.compressionLevel The PNG compression level.
+	     *                  Range: 1 (low compression, faster) to 10 (high compression, slower).
+	     *                  Default: 3.
+	     * @param {Function} callback Takes `(err, success)` as its signature.  Returns con singleton if successful.
 	     *
-	     * @returns {Image} Base 64 Image
+	     * @returns {Image} Base64 image.
 	     */
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
 	      var _this15 = this;
@@ -18112,15 +18134,15 @@ module.exports =
 	    }
 
 	    /**
-	     * Used primarily for backend rendered maps, this method will fetch the row
+	     * Used primarily for backend-rendered maps; fetches the row
 	     * for a specific table that was last rendered at a pixel.
 	     *
-	     * @param {widgetId} Number - the widget id of the caller
-	     * @param {TPixel} pixel - the pixel (lower left-hand corner is pixel (0,0))
-	     * @param {String} tableName - the table containing the geo data
-	     * @param {Object} tableColNamesMap - object of tableName -> array of col names
-	     * @param {Array<Function>} callbacks
-	     * @param {Number} [pixelRadius=2] - the radius around the primary pixel to search
+	     * @param {widgetId} Number The widget ID of the caller.
+	     * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
+	     * @param {String} tableName The table containing the geo data.
+	     * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
+	     * @param {Array<Function>} callbacks A collection of callbacks.
+	     * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
 	     */
 
 	  }, {
@@ -18146,11 +18168,11 @@ module.exports =
 	    /**
 	     * Formats the pixel results into the same pattern as textual results.
 	     *
-	     * @param {Array<Function>} callbacks a collection of callbacks
-	     * @param {Object} error an error if one was thrown, otherwise null
-	     * @param {Array|Object} results unformatted results of pixel rowId information
+	     * @param {Array<Function>} callbacks A collection of callbacks.
+	     * @param {Object} error An error if thrown; otherwise null.
+	     * @param {Array|Object} results Unformatted results of pixel `rowId` information.
 	     *
-	     * @returns {Object} An object with the pixel results formatted for display
+	     * @returns {Object} An object with the pixel results formatted for display.
 	     */
 
 	  }, {
@@ -18184,8 +18206,8 @@ module.exports =
 	    /**
 	     * Get or set the session ID used by the server to serve the correct data.
 	     * This is typically set by {@link connect} and should not be set manually.
-	     * @param {Number} sessionId - The session ID of the current connection
-	     * @return {Number|MapdCon} - The session ID or the MapdCon itself
+	     * @param {Number} sessionId The session ID of the current connection.
+	     * @return {Number|MapdCon} - The session ID or MapD connector itself.
 	     *
 	     * @example <caption>Get the session id:</caption>
 	     *
@@ -18210,8 +18232,8 @@ module.exports =
 	    /**
 	     * Get or set the connection server hostname.
 	     * This is is typically the first method called after instantiating a new MapdCon.
-	     * @param {String} host - The hostname address
-	     * @return {String|MapdCon} - The hostname or the MapdCon itself
+	     * @param {String} host The hostname address.
+	     * @return {String|MapdCon} The hostname or MapD connector itself.
 	     *
 	     * @example <caption>Set the hostname:</caption>
 	     * var con = new MapdCon().host('localhost');
@@ -18233,8 +18255,8 @@ module.exports =
 
 	    /**
 	     * Get or set the connection port.
-	     * @param {String} port - The port to connect on
-	     * @return {String|MapdCon} - The port or the MapdCon itself
+	     * @param {String} port - The port to connect on.
+	     * @return {String|MapdCon} - The port or MapD connector itself.
 	     *
 	     * @example <caption>Set the port:</caption>
 	     * var con = new MapdCon().port('8080');
@@ -18255,9 +18277,9 @@ module.exports =
 	    }
 
 	    /**
-	     * Get or set the username to authenticate with.
-	     * @param {String} user - The username to authenticate with
-	     * @return {String|MapdCon} - The username or the MapdCon itself
+	     * Get or set the username with which to authenticate.
+	     * @param {String} user - The username with which to authenticate.
+	     * @return {String|MapdCon} - The username or MapD connector itself.
 	     *
 	     * @example <caption>Set the username:</caption>
 	     * var con = new MapdCon().user('foo');
@@ -18278,9 +18300,9 @@ module.exports =
 	    }
 
 	    /**
-	     * Get or set the user's password to authenticate with.
-	     * @param {String} password - The password to authenticate with
-	     * @return {String|MapdCon} - The password or the MapdCon itself
+	     * Get or set the user password for authentication.
+	     * @param {String} password The password with which to authenticate.
+	     * @return {String|MapdCon} The password or MapD connector itself.
 	     *
 	     * @example <caption>Set the password:</caption>
 	     * var con = new MapdCon().password('bar');
@@ -18324,10 +18346,10 @@ module.exports =
 	    }
 
 	    /**
-	     * Whether the raw queries strings will be logged to the console.
-	     * Used primarily for debugging and defaults to <code>false</code>.
-	     * @param {Boolean} logging - Set to true to enable logging
-	     * @return {Boolean|MapdCon} - The current logging flag or MapdCon itself
+	     * Configure whether raw query strings are logged to the console.
+	     * Used primarily for debugging; `false` by default.
+	     * @param {Boolean} logging Set to true to enable logging.
+	     * @return {Boolean|MapdCon} The current logging flag or MapD connector itself.
 	     *
 	     * @example <caption>Set logging to true:</caption>
 	     * var con = new MapdCon().logging(true);
@@ -18352,8 +18374,8 @@ module.exports =
 
 	    /**
 	     * The name of the platform.
-	     * @param {String} platform - The platform, default is "mapd"
-	     * @return {String|MapdCon} - The platform or the MapdCon itself
+	     * @param {String} platform The platform; "mapd" by default.
+	     * @return {String|MapdCon} - The platform or MapD connector itself.
 	     *
 	     * @example <caption>Set the platform name:</caption>
 	     * var con = new MapdCon().platform('myPlatform');
@@ -18375,7 +18397,7 @@ module.exports =
 
 	    /**
 	     * Get the number of connections that are currently open.
-	     * @return {Number} - number of open connections
+	     * @return {Number} The number of open connections.
 	     *
 	     * @example <caption>Get the number of connections:</caption>
 	     *
@@ -18391,8 +18413,8 @@ module.exports =
 
 	    /**
 	     * The protocol to use for requests.
-	     * @param {String} protocol - http or https
-	     * @return {String|MapdCon} - protocol or MapdCon itself
+	     * @param {String} protocol <code>http</code> or <code>https</code>.
+	     * @return {String|MapdCon} The protocol or MapdCon itself.
 	     *
 	     * @example <caption>Set the protocol:</caption>
 	     * var con = new MapdCon().protocol('http');
@@ -18413,8 +18435,8 @@ module.exports =
 	    }
 
 	    /**
-	     * Generates a list of endpoints from the connection params.
-	     * @return {Array<String>} - list of endpoints
+	     * Generates a list of endpoints from the connection parameters.
+	     * @return {Array<String>} List of endpoints.
 	     *
 	     * @example <caption>Get the endpoints:</caption>
 	     * var con = new MapdCon().protocol('http').host('localhost').port('8000');
@@ -18742,22 +18764,22 @@ module.exports =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
-	 * Decides how to process raw results once they come back from the server.
+	 * Determines how to process raw results when they return from the server.
 	 *
-	 * @param {Boolean} logging if enabled, will show how long the query took to execute in console
-	 * @param {Function} updateQueryTimes A function that updates internal query times on connector
-	 * @param {Object} options A list of options for processing the results
-	 * @param {Boolean} options.isImage Set to true when querying for backend rendered images
-	 * @param {Boolean} options.eliminateNullRows Removes null rows
-	 * @param {String} options.query The SQL query string used only for logging
-	 * @param {Number} options.queryId The ID of the query
-	 * @param {Number} options.conId The unique connector identification
-	 * @param {String} options.estimatedQueryTime The estimate of the query time
-	 * @param {Array<Function>} the same callback coming from {@link #query}
+	 * @param {Boolean} logging If enabled, shows on the console how long the query took to run.
+	 * @param {Function} updateQueryTimes A function that updates internal query times on the connector.
+	 * @param {Object} options A list of options for processing the results.
+	 * @param {Boolean} options.isImage Set to true when querying for backend-rendered images.
+	 * @param {Boolean} options.eliminateNullRows Removes null rows.
+	 * @param {String} options.query The SQL query string used only for logging.
+	 * @param {Number} options.queryId The ID of the query.
+	 * @param {Number} options.conId The unique connector identification.
+	 * @param {String} options.estimatedQueryTime The estimate of the query time.
+	 * @param {Array<Function>} callback The same callback coming from {@link #query}.
 	 * @param {Object} result - The query result used to decide whether to process
 	 *                          as column or row results.
-	 * @return {Object} null if image with callbacks, result if image with callbacks,
-	 *                  otherwise formatted results
+	 * @return {Object} Null if image with callbacks, result if image with callbacks,
+	 *                  otherwise formatted results.
 	 */
 	function processQueryResults(logging, updateQueryTimes) {
 	  return function (options, _datumEnum, result, callback) {
@@ -18842,14 +18864,14 @@ module.exports =
 	});
 	exports.default = processColumnarResults;
 	/**
-	 * Because it is inefficient for the server to return a row-based
-	 * data structure, it is better to process the column-based results into a row-based
-	 * format after the fact.
+	 * Process the column-based results from the query in a row-based format.
+	 * (Returning row-based results directly from the server is inefficient.)
 	 *
-	 * @param {TRowSet} data The column-based data returned from a query
-	 * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
-	 * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}
-	 * @returns {Object} processedResults The formatted results of the query
+	 * @param {TRowSet} data The column-based data returned from a query.
+	 * @param {Boolean} eliminateNullRows A flag that removes null rows from results.
+	 * @param {Object} dataEnum A list of types created from when executing {@link #invertDatumTypes}.
+	 * @returns {Object} The formatted results of the query.
+	 * @example <caption>Convert data returned in column-based format to row-based:</caption>
 	 */
 	function processColumnarResults(data, eliminateNullRows, dataEnum) {
 	  var formattedResult = { fields: [], results: [] };
@@ -18974,13 +18996,14 @@ module.exports =
 	});
 	exports.default = processRowResults;
 	/**
-	 * It should be avoided to query for row-based results from the server, howerver
-	 * it can still be done. In this case, still process them into the same format as
-	 * (@link processColumnarResults} to keep the output consistent.
-	 * @param {TRowSet} data - The row-based data returned from a query
-	 * @param {Boolean} eliminateNullRows A flag that allows removal of null rows from results
-	 * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}
-	 * @returns {Object} processedResults
+	 * Query for row-based results from the server. In general, is inefficient and should be 
+	 * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
+	 * row-based format.
+	 * @param {TRowSet} data - The row-based data returned from a query.
+	 * @param {Boolean} eliminateNullRows Flag that removes null rows from results.
+	 * @param {Object} datumEnum A list of types created from when executing {@link #invertDatumTypes}.
+	 * @returns {Object} The formatted results of the query.
+	 * @example<caption> Return row-based results directly from the server:
 	 */
 	function processRowResults(data, eliminateNullRows, datumEnum) {
 	  var numCols = data.row_desc.length;

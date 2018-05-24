@@ -21,7 +21,7 @@
   "main": "dist/node-connector.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/mapd/connector"
+    "url": "http://github.com/mapd/mapd-connector"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
