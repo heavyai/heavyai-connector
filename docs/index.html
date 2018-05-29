@@ -135,6 +135,16 @@
               
                 
                 <li><a
+                  href='#getfirstgeofileinarchiveasync'
+                  class="">
+                  getFirstGeoFileInArchiveAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#getusersasync'
                   class="">
                   getUsersAsync
@@ -585,9 +595,9 @@
               
                 
                 <li><a
-                  href='#tdatumval'
+                  href='#completion_hints'
                   class="">
-                  TDatumVal
+                  completion_hints
                   
                 </a>
                 
@@ -595,9 +605,9 @@
               
                 
                 <li><a
-                  href='#completion_hints'
+                  href='#tdatum'
                   class="">
-                  completion_hints
+                  TDatum
                   
                 </a>
                 
@@ -665,9 +675,9 @@
               
                 
                 <li><a
-                  href='#tdatum'
+                  href='#tdatumval'
                   class="">
-                  TDatum
+                  TDatumVal
                   
                 </a>
                 
@@ -1564,6 +1574,93 @@ This object contains the link for the <code>view_name</code> property.</p>
 <span class="hljs-comment">//    "update_time": "2017-04-28T21:34:01Z",</span>
 <span class="hljs-comment">//    "view_metadata": "metaData"</span>
 <span class="hljs-comment">//  }</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getfirstgeofileinarchiveasync'>
+      getFirstGeoFileInArchiveAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get the first geo file in an archive, if present (to determine if the archive should be treated as geo)</p>
+
+
+  <div class='pre p1 fill-light mt0'>getFirstGeoFileInArchiveAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>archivePath</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The base filename of the archive.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>copyParams</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
+	    See 
+<a href="#tcopyparams">TCopyParams</a>
+.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
+        Full file path to the found geo file, or the original archivePath otherwise
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the first geo file in an archive:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getFirstGeoFileInArchiveAsync(<span class="hljs-string">'archive.zip'</span>, {}).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
   
 
@@ -5521,87 +5618,6 @@ row-based format.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tdatumval'>
-      TDatumVal
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The value of an individual cell in a table.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDatumVal</div>
-  
-    <p>
-      Type:
-      <a href="#tdatumval">TDatumVal</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='completion_hints'>
       completion_hints
     </h3>
@@ -5649,6 +5665,75 @@ row-based format.</p>
       
         <div class='space-bottom0'>
           <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The value and state of an individual data cell in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDatum</div>
+  
+    <p>
+      Type:
+      <a href="#tdatum">TDatum</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
           
           
         </div>
@@ -6200,22 +6285,22 @@ TAB
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tdatum'>
-      TDatum
+    <h3 class='fl m0' id='tdatumval'>
+      TDatumVal
     </h3>
     
     
   </div>
   
 
-  <p>The value and state of an individual data cell in a table.</p>
+  <p>The value of an individual cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TDatum</div>
+  <div class='pre p1 fill-light mt0'>TDatumVal</div>
   
     <p>
       Type:
-      <a href="#tdatum">TDatum</a>
+      <a href="#tdatumval">TDatumVal</a>
     </p>
   
   
@@ -6234,13 +6319,25 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           
           
         </div>
