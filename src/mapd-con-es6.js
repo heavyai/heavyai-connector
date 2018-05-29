@@ -523,7 +523,7 @@ class MapdCon {
    * @param {String} imageHash The numeric hash of the dashboard thumbnail.
    * @param {String} metaData - Stringified metadata related to the view.
    * @return {Promise} Returns empty if successful.
-    *
+   *
    * @example <caption>Add a new dashboard to the server:</caption>
    *
    * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
@@ -584,7 +584,7 @@ class MapdCon {
   /**
    * Delete a dashboard object containing a value for the <code>viewState</code> property.
    * @param {String} viewName The name of the dashboard.
-   * @return {Promise.<String>} The name of dashboard deleted. 
+   * @return {Promise.<String>} The name of dashboard deleted.
    *
    * @example <caption>Delete a specific dashboard from the server:</caption>
    *
@@ -687,6 +687,21 @@ class MapdCon {
       callback
     )
   }
+
+  /**
+   * Get the first geo file in an archive, if present (to determine if the archive should be treated as geo)
+   * @param {String} archivePath - The base filename of the archive.
+   * @param {TCopyParams} copyParams See {@link TCopyParams}.
+   * @returns {Promise.<String>} Full file path to the found geo file, or the original archivePath otherwise
+   *
+   * @example <caption>Get the first geo file in an archive:</caption>
+   *
+   * con.getFirstGeoFileInArchiveAsync('archive.zip', {}).then(res => console.log(res))
+   */
+  getFirstGeoFileInArchiveAsync = this.promisifySingle(
+    args => args,
+    "get_first_geo_file_in_archive"
+  )
 
   /**
    * Get a list of all users on the database for this connection.
