@@ -689,10 +689,10 @@ class MapdCon {
   }
 
   /**
-   * Get the first geo file in an archive, if present (to determine if the archive should be treated as geo)
+   * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
    * @param {String} archivePath - The base filename of the archive.
    * @param {TCopyParams} copyParams See {@link TCopyParams}.
-   * @returns {Promise.<String>} Full file path to the found geo file, or the original archivePath otherwise
+   * @returns {Promise.<String>} Full path to the located geo file; otherwise, to the original archivePath.
    *
    * @example <caption>Get the first geo file in an archive:</caption>
    *
