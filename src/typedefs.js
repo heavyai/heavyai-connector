@@ -70,7 +70,7 @@
  */
 
 /**
- * The value of an individual cell in a table.
+ * Import completion status of a table.
  * @typedef {TImportStatus} TImportStatus
  * @property {Number} elapsed
  * @property {Number} rows_completed
