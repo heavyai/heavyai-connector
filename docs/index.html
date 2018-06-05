@@ -960,7 +960,7 @@ but not for the <code>view_name</code> property.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>viewName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The name of the dashboard
+	    The name of the dashboard.
 
           </div>
           
@@ -1632,7 +1632,6 @@ This object contains the link for the <code>view_name</code> property.</p>
             <span class='code bold'>copyParams</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
 	    See 
 <a href="#tcopyparams">TCopyParams</a>
-.
 
           </div>
           
@@ -2091,7 +2090,7 @@ This object contains the link for the <code>view_name</code> property.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>dashboardOwner</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    user id of the owner of the dashboard.
+	    User ID of the owner of the dashboard.
 
           </div>
           
@@ -2100,7 +2099,7 @@ This object contains the link for the <code>view_name</code> property.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>dashboardState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    the base64-encoded state string of the new dashboard.
+	    The Base64-encoded state string of the new dashboard.
 
           </div>
           
@@ -2109,7 +2108,7 @@ This object contains the link for the <code>view_name</code> property.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    the numeric hash of the dashboard thumbnail.
+	    The numeric hash of the dashboard thumbnail.
 
           </div>
           
@@ -2118,7 +2117,7 @@ This object contains the link for the <code>view_name</code> property.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    Stringified metaData related to the view.
+	    Stringified metadata related to the view.
 
           </div>
           
@@ -2725,7 +2724,6 @@ such as a CSV or plaintext file with a header.</p>
             <span class='code bold'>copyParams</span> <code class='quiet'>(<a href="#tcopyparams">TCopyParams</a>)</code>
 	    See 
 <a href="#tcopyparams">TCopyParams</a>
-.
 
           </div>
           
@@ -3680,7 +3678,7 @@ that is a render of the Vega JSON object.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>vega</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The Vega JSON
+	    The Vega JSON.
 
           </div>
           
@@ -4028,15 +4026,15 @@ This is typically set by <a href="connect">connect</a> and should not be set man
   
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
-      <p><p>Get the session id:</p>
+      <p><p>Get the session ID:</p>
 </p>
       <pre class='p1 overflow-auto round fill-light'>con.sessionId();
 <span class="hljs-comment">// sessionID === 3145846410</span></pre>
     
-      <p><p>Set the session id:</p>
+      <p><p>Set the session ID:</p>
 </p>
       <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().connect().sessionId(<span class="hljs-number">3415846410</span>);
-<span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> It is generally unsafe to set the session id manually.</span></pre>
+<span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> It is generally unsafe to set the session ID manually.</span></pre>
     
   
 
@@ -4409,7 +4407,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>dbName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The database to connect to
+	    The database to connect to.
 
           </div>
           
@@ -4424,7 +4422,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
-        The name of the database or the MapdCon itself
+        The name of the database or the MapD connector itself.
 
       
     
@@ -5551,7 +5549,7 @@ row-based format.</p>
   </div>
   
 
-  <p>The value of an individual cell in a table.</p>
+  <p>Import completion status of a table.</p>
 
 
   <div class='pre p1 fill-light mt0'>TImportStatus</div>
