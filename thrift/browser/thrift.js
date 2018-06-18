@@ -1266,7 +1266,7 @@ Thrift.Protocol.prototype = {
             if (f.length === 0) {
                 r.value = undefined;
             } else {
-                r.value = f.shift();
+                r.value = f[0];
             }
         } else if (f instanceof Object) {
            for (var i in f) {
