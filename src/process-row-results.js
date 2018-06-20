@@ -63,6 +63,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             case "SMALLINT":
             case "INT":
             case "BIGINT":
+            case "TINYINT":
               row[fieldName].push(elemDatum.val.int_val)
               break
             case "FLOAT":
@@ -95,6 +96,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
           case "SMALLINT":
           case "INT":
           case "BIGINT":
+          case "TINYINT":
             row[fieldName] = scalarDatum.val.int_val
             break
           case "FLOAT":

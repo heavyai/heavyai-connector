@@ -24,6 +24,7 @@
     "url": "http://github.com/mapd/mapd-connector"
   },
   "devDependencies": {
+    "@types/thrift": "^0.10.7",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^6.4.1",

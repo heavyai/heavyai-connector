@@ -91,6 +91,15 @@
  * @property {Number} TIMESTAMP=8
  * @property {Number} DATE=9
  * @property {Number} BOOL=10
+ * @property {Number} INTERVAL_DAY_TIME=11
+ * @property {Number} INTERVAL_YEAR_MONTH=12
+ * @property {Number} POINT=13
+ * @property {Number} LINESTRING=14
+ * @property {Number} POLYGON=15
+ * @property {Number} MULTIPOLYGON=16
+ * @property {Number} TINYINT=17
+ * @property {Number} GEOMETRY=18
+ * @property {Number} GEOGRAPHY=19
  */
 
 /**

@@ -17267,7 +17267,7 @@ module.exports =
 	     * Get a dashboard object containing a value for the <code>view_state</code> property.
 	     * This object contains a value for the <code>view_state</code> property,
 	     * but not for the <code>view_name</code> property.
-	     * @param {String} viewName The name of the dashboard
+	     * @param {String} viewName The name of the dashboard.
 	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard.
 	     *
 	     * @example <caption>Get a specific dashboard from the server:</caption>
@@ -17481,10 +17481,10 @@ module.exports =
 	    }
 
 	    /**
-	     * Get the first geo file in an archive, if present (to determine if the archive should be treated as geo)
+	     * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
 	     * @param {String} archivePath - The base filename of the archive.
-	     * @param {TCopyParams} copyParams See {@link TCopyParams}.
-	     * @returns {Promise.<String>} Full file path to the found geo file, or the original archivePath otherwise
+	     * @param {TCopyParams} copyParams See {@link TCopyParams}
+	     * @returns {Promise.<String>} Full path to the located geo file; otherwise, to the original archivePath.
 	     *
 	     * @example <caption>Get the first geo file in an archive:</caption>
 	     *
@@ -17551,10 +17551,10 @@ module.exports =
 	     * Replace a dashboard on the server with new properties.
 	     * @param {Number} dashboardId - The ID of the dashboard to replace.
 	     * @param {String} dashboardName - The name of the new dashboard.
-	     * @param {String} dashboardOwner - user id of the owner of the dashboard.
-	     * @param {String} dashboardState - the base64-encoded state string of the new dashboard.
-	     * @param {String} imageHash - the numeric hash of the dashboard thumbnail.
-	     * @param {String} metaData - Stringified metaData related to the view.
+	     * @param {String} dashboardOwner - User ID of the owner of the dashboard.
+	     * @param {String} dashboardState - The Base64-encoded state string of the new dashboard.
+	     * @param {String} imageHash - The numeric hash of the dashboard thumbnail.
+	     * @param {String} metaData - Stringified metadata related to the view.
 	     * @return {Promise} Returns empty if successful, rejects if any client failed.
 	     *
 	     * @example <caption>Replace a dashboard on the server:</caption>
@@ -17643,7 +17643,7 @@ module.exports =
 	     * Asynchronously get data from an importable file,
 	     * such as a CSV or plaintext file with a header.
 	     * @param {String} fileName - The name of the importable file.
-	     * @param {TCopyParams} copyParams See {@link TCopyParams}.
+	     * @param {TCopyParams} copyParams See {@link TCopyParams}
 	     * @returns {Promise.<TDetectResult>} An object that has <code>copy_params</code> and <code>row_set</code>.
 	     *
 	     * @example <caption>Get data from table_data.csv:</caption>
@@ -18098,7 +18098,7 @@ module.exports =
 	     * that is a render of the Vega JSON object.
 	     *
 	     * @param {Number} widgetid The widget ID of the calling widget.
-	     * @param {String} vega The Vega JSON
+	     * @param {String} vega The Vega JSON.
 	     * @param {Object} options The options for the render query.
 	     * @param {Number} options.compressionLevel The PNG compression level.
 	     *                  Range: 1 (low compression, faster) to 10 (high compression, slower).
@@ -18224,14 +18224,14 @@ module.exports =
 	     * @param {Number} sessionId The session ID of the current connection.
 	     * @return {Number|MapdCon} - The session ID or MapD connector itself.
 	     *
-	     * @example <caption>Get the session id:</caption>
+	     * @example <caption>Get the session ID:</caption>
 	     *
 	     *  con.sessionId();
 	     * // sessionID === 3145846410
 	     *
-	     * @example <caption>Set the session id:</caption>
+	     * @example <caption>Set the session ID:</caption>
 	     * var con = new MapdCon().connect().sessionId(3415846410);
-	     * // NOTE: It is generally unsafe to set the session id manually.
+	     * // NOTE: It is generally unsafe to set the session ID manually.
 	     */
 
 	  }, {
@@ -18339,8 +18339,8 @@ module.exports =
 
 	    /**
 	     * Get or set the name of the database to connect to.
-	     * @param {String} dbName - The database to connect to
-	     * @return {String|MapdCon} - The name of the database or the MapdCon itself
+	     * @param {String} dbName - The database to connect to.
+	     * @return {String|MapdCon} - The name of the database or the MapD connector itself.
 	     *
 	     * @example <caption>Set the database name:</caption>
 	     * var con = new MapdCon().dbName('myDatabase');
@@ -18942,6 +18942,7 @@ module.exports =
 	            case "SMALLINT":
 	            case "INT":
 	            case "BIGINT":
+	            case "TINYINT":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e]);
 	              break;
 	            case "FLOAT":
@@ -18969,6 +18970,7 @@ module.exports =
 	          case "SMALLINT":
 	          case "INT":
 	          case "BIGINT":
+	          case "TINYINT":
 	            row[fieldName] = data.columns[_c].data.int_col[r];
 	            break;
 	          case "FLOAT":
@@ -19077,6 +19079,7 @@ module.exports =
 	            case "SMALLINT":
 	            case "INT":
 	            case "BIGINT":
+	            case "TINYINT":
 	              row[fieldName].push(elemDatum.val.int_val);
 	              break;
 	            case "FLOAT":
@@ -19109,6 +19112,7 @@ module.exports =
 	          case "SMALLINT":
 	          case "INT":
 	          case "BIGINT":
+	          case "TINYINT":
 	            row[fieldName] = scalarDatum.val.int_val;
 	            break;
 	          case "FLOAT":
