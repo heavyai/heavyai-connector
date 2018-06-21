@@ -16,7 +16,7 @@ Visit our [API Docs](http://mapd.github.io/mapd-connector/docs/)
 
 # Example
 
-Open [example.html](http://mapd.github.io/mapd-connector/example) in your browser for a basic query call.
+Open [example.html](https://mapd.github.io/mapd-connector/examples/browser.html) in your browser for a basic query call.
 
 # Testing
 
