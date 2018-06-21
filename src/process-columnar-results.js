@@ -67,6 +67,7 @@ export default function processColumnarResults(
             case "SMALLINT":
             case "INT":
             case "BIGINT":
+            case "TINYINT":
               row[fieldName].push(
                 data.columns[c].data.arr_col[r].data.int_col[e]
               )
@@ -103,6 +104,7 @@ export default function processColumnarResults(
           case "SMALLINT":
           case "INT":
           case "BIGINT":
+          case "TINYINT":
             row[fieldName] = data.columns[c].data.int_col[r]
             break
           case "FLOAT":
