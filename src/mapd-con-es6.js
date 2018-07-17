@@ -1250,7 +1250,7 @@ class MapdCon {
       })
     })
 
-  createTable(tableName, rowDescObj, tableType, callback) {
+  createTable(tableName, rowDescObj, tableType, isReplicated, callback) {
     if (!this._sessionId) {
       throw new Error(
         "You are not connected to a server. Try running the connect method first."
@@ -1268,6 +1268,7 @@ class MapdCon {
         tableName,
         thriftRowDesc,
         tableType,
+        isReplicated,
         err => {
           if (err) {
             callback(err)
@@ -1284,6 +1285,7 @@ class MapdCon {
    * @param {String} tableName The name of the new table.
    * @param {Array<TColumnType>} rowDescObj Fields in the new table.
    * @param {Number<TTableType>} tableType The types of tables a user can import into the database.
+   * @param {Boolean} isReplicated Whether the table should be replicated.
    * @return {Promise.<undefined>} Generates an error if unsuccessful, or returns undefined if successful.
    *
    * @example <caption>Create a new table:</caption>
@@ -1291,9 +1293,9 @@ class MapdCon {
    *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
    *  // undefined
    */
-  createTableAsync = (tableName, rowDescObj, tableType) =>
+  createTableAsync = (tableName, rowDescObj, tableType, isReplicated) =>
     new Promise((resolve, reject) => {
-      this.createTable(tableName, rowDescObj, tableType, err => {
+      this.createTable(tableName, rowDescObj, tableType, isReplicated, err => {
         if (err) {
           reject(err)
         } else {
