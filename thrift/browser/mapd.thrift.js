@@ -8007,7 +8007,7 @@ MapD_create_table_args = function(args) {
   this.table_name = null;
   this.row_desc = null;
   this.table_type = 0;
-  this.is_replicated = null;
+  this.create_params = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -8021,8 +8021,8 @@ MapD_create_table_args = function(args) {
     if (args.table_type !== undefined && args.table_type !== null) {
       this.table_type = args.table_type;
     }
-    if (args.is_replicated !== undefined && args.is_replicated !== null) {
-      this.is_replicated = args.is_replicated;
+    if (args.create_params !== undefined && args.create_params !== null) {
+      this.create_params = new TCreateParams(args.create_params);
     }
   }
 };
@@ -8083,8 +8083,9 @@ MapD_create_table_args.prototype.read = function(input) {
       }
       break;
       case 5:
-      if (ftype == Thrift.Type.BOOL) {
-        this.is_replicated = input.readBool().value;
+      if (ftype == Thrift.Type.STRUCT) {
+        this.create_params = new TCreateParams();
+        this.create_params.read(input);
       } else {
         input.skip(ftype);
       }
@@ -8129,9 +8130,9 @@ MapD_create_table_args.prototype.write = function(output) {
     output.writeI32(this.table_type);
     output.writeFieldEnd();
   }
-  if (this.is_replicated !== null && this.is_replicated !== undefined) {
-    output.writeFieldBegin('is_replicated', Thrift.Type.BOOL, 5);
-    output.writeBool(this.is_replicated);
+  if (this.create_params !== null && this.create_params !== undefined) {
+    output.writeFieldBegin('create_params', Thrift.Type.STRUCT, 5);
+    this.create_params.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -14330,21 +14331,21 @@ MapDClient.prototype.recv_detect_column_types = function() {
   }
   throw 'detect_column_types failed: unknown result';
 };
-MapDClient.prototype.create_table = function(session, table_name, row_desc, table_type, is_replicated, callback) {
-  this.send_create_table(session, table_name, row_desc, table_type, is_replicated, callback); 
+MapDClient.prototype.create_table = function(session, table_name, row_desc, table_type, create_params, callback) {
+  this.send_create_table(session, table_name, row_desc, table_type, create_params, callback); 
   if (!callback) {
   this.recv_create_table();
   }
 };
 
-MapDClient.prototype.send_create_table = function(session, table_name, row_desc, table_type, is_replicated, callback) {
+MapDClient.prototype.send_create_table = function(session, table_name, row_desc, table_type, create_params, callback) {
   this.output.writeMessageBegin('create_table', Thrift.MessageType.CALL, this.seqid);
   var params = {
     session: session,
     table_name: table_name,
     row_desc: row_desc,
     table_type: table_type,
-    is_replicated: is_replicated
+    create_params: create_params
   };
   var args = new MapD_create_table_args(params);
   args.write(this.output);
