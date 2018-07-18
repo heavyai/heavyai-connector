@@ -2032,6 +2032,59 @@ TCopyParams.prototype.write = function(output) {
   return;
 };
 
+var TCreateParams = module.exports.TCreateParams = function(args) {
+  this.is_replicated = null;
+  if (args) {
+    if (args.is_replicated !== undefined && args.is_replicated !== null) {
+      this.is_replicated = args.is_replicated;
+    }
+  }
+};
+TCreateParams.prototype = {};
+TCreateParams.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_replicated = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TCreateParams.prototype.write = function(output) {
+  output.writeStructBegin('TCreateParams');
+  if (this.is_replicated !== null && this.is_replicated !== undefined) {
+    output.writeFieldBegin('is_replicated', Thrift.Type.BOOL, 1);
+    output.writeBool(this.is_replicated);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var TDetectResult = module.exports.TDetectResult = function(args) {
   this.row_set = null;
   this.copy_params = null;
