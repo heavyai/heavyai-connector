@@ -12,7 +12,7 @@ function mkdirp(path) {
   }
 }
 
-const findExports = /^([\w]+)( = )/gm
+const findExports = /^(?!copyList|copyMap)([\w]+)( = )/gm
 const filePathsBrowser = [
   "thrift/browser/completion_hints_types.js",
   "thrift/browser/mapd_types.js",
@@ -35,10 +35,10 @@ function declareWith(declaration) {
       ? content
       : '"use strict"\n' + content
 
+    content = content.replace(findExports, declaration + "$1$2")
+
     if (filePath.includes("/thrift.js")) {
       content = content + "; window.Thrift = Thrift; "
-    } else {
-      content = content.replace(findExports, declaration + "$1$2")
     }
 
     fs.writeFileSync("build/" + filePath, content) // eslint-disable-line no-sync
