@@ -12,7 +12,7 @@ function mkdirp(path) {
   }
 }
 
-const findExports = /^(?!copyList|copyMap)([\w]+)( = )/gm
+const findExports = /^([\w]+)( = )/gm
 const filePathsBrowser = [
   "thrift/browser/completion_hints_types.js",
   "thrift/browser/mapd_types.js",
@@ -29,19 +29,15 @@ filePathsNode.forEach(declareWith("var "))
 function declareWith(declaration) {
   return function(filePath) {
     console.log("Fixing file: ", filePath) // eslint-disable-line no-console
-    let content = fs.readFileSync(filePath, { encoding: "utf8" }) // eslint-disable-line no-sync
-
-    content = /^"use strict"/.test(content)
-      ? content
-      : '"use strict"\n' + content
-
-    content = content.replace(findExports, declaration + "$1$2")
-
+    const content = fs.readFileSync(filePath, { encoding: "utf8" }) // eslint-disable-line no-sync
+    let newContent = content.replace(findExports, declaration + "$1$2")
+    newContent = /^"use strict"/.test(newContent)
+      ? newContent
+      : '"use strict"\n' + newContent
     if (filePath.includes("/thrift.js")) {
-      content = content + "; window.Thrift = Thrift; "
+      newContent = newContent + "; window.Thrift = Thrift; "
     }
-
-    fs.writeFileSync("build/" + filePath, content) // eslint-disable-line no-sync
+    fs.writeFileSync("build/" + filePath, newContent) // eslint-disable-line no-sync
     console.log("Fixed file: ", "build/" + filePath) // eslint-disable-line no-console
   }
 }
