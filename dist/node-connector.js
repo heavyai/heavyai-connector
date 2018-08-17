@@ -10848,6 +10848,7 @@ module.exports =
 	  this.precision = null;
 	  this.scale = null;
 	  this.comp_param = null;
+	  this.size = -1;
 	  if (args) {
 	    if (args.type !== undefined && args.type !== null) {
 	      this.type = args.type;
@@ -10869,6 +10870,9 @@ module.exports =
 	    }
 	    if (args.comp_param !== undefined && args.comp_param !== null) {
 	      this.comp_param = args.comp_param;
+	    }
+	    if (args.size !== undefined && args.size !== null) {
+	      this.size = args.size;
 	    }
 	  }
 	};
@@ -10933,6 +10937,13 @@ module.exports =
 	          input.skip(ftype);
 	        }
 	        break;
+	      case 8:
+	        if (ftype == Thrift.Type.I32) {
+	          this.size = input.readI32();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
 	      default:
 	        input.skip(ftype);
 	    }
@@ -10977,6 +10988,11 @@ module.exports =
 	  if (this.comp_param !== null && this.comp_param !== undefined) {
 	    output.writeFieldBegin('comp_param', Thrift.Type.I32, 7);
 	    output.writeI32(this.comp_param);
+	    output.writeFieldEnd();
+	  }
+	  if (this.size !== null && this.size !== undefined) {
+	    output.writeFieldBegin('size', Thrift.Type.I32, 8);
+	    output.writeI32(this.size);
 	    output.writeFieldEnd();
 	  }
 	  output.writeFieldStop();
