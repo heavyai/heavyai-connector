@@ -24,7 +24,8 @@ describe("helpers", () => {
             encoding: 0,
             type: 0,
             is_array: false,
-            nullable: false
+            nullable: false,
+            precision: 0
           }
         },
         {
@@ -34,7 +35,8 @@ describe("helpers", () => {
             encoding: 0,
             type: 0,
             is_array: false,
-            nullable: false
+            nullable: false,
+            precision: 3
           }
         }
       ]
@@ -47,7 +49,8 @@ describe("helpers", () => {
             encoding: 0,
             type: 0,
             is_array: false,
-            nullable: false
+            nullable: false,
+            precision: 0
           }
         },
         {
@@ -57,7 +60,8 @@ describe("helpers", () => {
             encoding: 0,
             type: 0,
             is_array: false,
-            nullable: false
+            nullable: false,
+            precision: 3
           }
         }
       ]
@@ -70,7 +74,8 @@ describe("helpers", () => {
             encoding: 0,
             type: 0,
             is_array: false,
-            nullable: false
+            nullable: false,
+            precision: 0
           }
         },
         {
@@ -80,7 +85,8 @@ describe("helpers", () => {
             encoding: 0,
             type: 0,
             is_array: false,
-            nullable: false
+            nullable: false,
+            precision: 3
           }
         }
       ])
