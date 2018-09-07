@@ -25,7 +25,9 @@ describe("helpers", () => {
             type: 0,
             is_array: false,
             nullable: false,
-            precision: 0
+            precision: 0,
+            comp_param: 0,
+            scale: 0
           }
         },
         {
@@ -36,7 +38,9 @@ describe("helpers", () => {
             type: 0,
             is_array: false,
             nullable: false,
-            precision: 3
+            precision: 3,
+            comp_param: 0,
+            scale: 0
           }
         }
       ]
@@ -50,7 +54,9 @@ describe("helpers", () => {
             type: 0,
             is_array: false,
             nullable: false,
-            precision: 0
+            precision: 0,
+            comp_param: 0,
+            scale: 0
           }
         },
         {
@@ -61,7 +67,9 @@ describe("helpers", () => {
             type: 0,
             is_array: false,
             nullable: false,
-            precision: 3
+            precision: 3,
+            comp_param: 0,
+            scale: 0
           }
         }
       ]
@@ -75,7 +83,9 @@ describe("helpers", () => {
             type: 0,
             is_array: false,
             nullable: false,
-            precision: 0
+            precision: 0,
+            comp_param: 0,
+            scale: 0
           }
         },
         {
@@ -86,7 +96,9 @@ describe("helpers", () => {
             type: 0,
             is_array: false,
             nullable: false,
-            precision: 3
+            precision: 3,
+            comp_param: 0,
+            scale: 0
           }
         }
       ])
