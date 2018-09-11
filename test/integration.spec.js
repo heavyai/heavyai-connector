@@ -117,252 +117,292 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             is_array: false,
             is_dict: false,
             name: "flight_year",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "flight_month",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "flight_dayofmonth",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "flight_dayofweek",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "deptime",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "crsdeptime",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "arrtime",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "crsarrtime",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: true,
             name: "uniquecarrier",
-            type: "STR"
+            type: "STR",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "flightnum",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
-          { is_array: false, is_dict: true, name: "tailnum", type: "STR" },
+          {
+            is_array: false, is_dict: true, name: "tailnum", type: "STR", precision: 0 },
           {
             is_array: false,
             is_dict: false,
             name: "actualelapsedtime",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "crselapsedtime",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "airtime",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "arrdelay",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "depdelay",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
-          { is_array: false, is_dict: true, name: "origin", type: "STR" },
-          { is_array: false, is_dict: true, name: "dest", type: "STR" },
+          { is_array: false, is_dict: true, name: "origin", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "dest", type: "STR", precision: 0 },
           {
             is_array: false,
             is_dict: false,
             name: "distance",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
-          { is_array: false, is_dict: false, name: "taxiin", type: "SMALLINT" },
+          { is_array: false, is_dict: false, name: "taxiin", type: "SMALLINT", precision: 0 },
           {
             is_array: false,
             is_dict: false,
             name: "taxiout",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "cancelled",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: true,
             name: "cancellationcode",
-            type: "STR"
+            type: "STR",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "diverted",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "carrierdelay",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "weatherdelay",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "nasdelay",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "securitydelay",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "lateaircraftdelay",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "dep_timestamp",
-            type: "TIMESTAMP"
+            type: "TIMESTAMP",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "arr_timestamp",
-            type: "TIMESTAMP"
+            type: "TIMESTAMP",
+            precision: 0
           },
-          { is_array: false, is_dict: true, name: "carrier_name", type: "STR" },
-          { is_array: false, is_dict: true, name: "plane_type", type: "STR" },
+          { is_array: false, is_dict: true, name: "carrier_name", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "plane_type", type: "STR", precision: 0 },
           {
             is_array: false,
             is_dict: true,
             name: "plane_manufacturer",
-            type: "STR"
+            type: "STR",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "plane_issue_date",
-            type: "DATE"
+            type: "DATE",
+            precision: 0
           },
-          { is_array: false, is_dict: true, name: "plane_model", type: "STR" },
-          { is_array: false, is_dict: true, name: "plane_status", type: "STR" },
+          { is_array: false, is_dict: true, name: "plane_model", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "plane_status", type: "STR", precision: 0 },
           {
             is_array: false,
             is_dict: true,
             name: "plane_aircraft_type",
-            type: "STR"
+            type: "STR",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: true,
             name: "plane_engine_type",
-            type: "STR"
+            type: "STR",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "plane_year",
-            type: "SMALLINT"
+            type: "SMALLINT",
+            precision: 0
           },
-          { is_array: false, is_dict: true, name: "origin_name", type: "STR" },
-          { is_array: false, is_dict: true, name: "origin_city", type: "STR" },
-          { is_array: false, is_dict: true, name: "origin_state", type: "STR" },
+          { is_array: false, is_dict: true, name: "origin_name", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "origin_city", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "origin_state", type: "STR", precision: 0 },
           {
             is_array: false,
             is_dict: true,
             name: "origin_country",
-            type: "STR"
+            type: "STR",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "origin_lat",
-            type: "FLOAT"
+            type: "FLOAT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "origin_lon",
-            type: "FLOAT"
+            type: "FLOAT",
+            precision: 0
           },
-          { is_array: false, is_dict: true, name: "dest_name", type: "STR" },
-          { is_array: false, is_dict: true, name: "dest_city", type: "STR" },
-          { is_array: false, is_dict: true, name: "dest_state", type: "STR" },
-          { is_array: false, is_dict: true, name: "dest_country", type: "STR" },
-          { is_array: false, is_dict: false, name: "dest_lat", type: "FLOAT" },
-          { is_array: false, is_dict: false, name: "dest_lon", type: "FLOAT" },
+          { is_array: false, is_dict: true, name: "dest_name", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "dest_city", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "dest_state", type: "STR", precision: 0 },
+          { is_array: false, is_dict: true, name: "dest_country", type: "STR", precision: 0 },
+          { is_array: false, is_dict: false, name: "dest_lat", type: "FLOAT", precision: 0 },
+          { is_array: false, is_dict: false, name: "dest_lon", type: "FLOAT", precision: 0 },
           {
             is_array: false,
             is_dict: false,
             name: "origin_merc_x",
-            type: "FLOAT"
+            type: "FLOAT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "origin_merc_y",
-            type: "FLOAT"
+            type: "FLOAT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "dest_merc_x",
-            type: "FLOAT"
+            type: "FLOAT",
+            precision: 0
           },
           {
             is_array: false,
             is_dict: false,
             name: "dest_merc_y",
-            type: "FLOAT"
+            type: "FLOAT",
+            precision: 0
           }
         ])
         done()

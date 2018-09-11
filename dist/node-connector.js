@@ -17267,6 +17267,7 @@ module.exports =
 	          fieldsArray.push({
 	            name: key,
 	            type: this._datumEnum[fields[key].col_type.type],
+	            precision: fields[key].col_type.precision,
 	            is_array: fields[key].col_type.is_array,
 	            is_dict: fields[key].col_type.encoding === TEncodingType.DICT // eslint-disable-line no-undef
 	          });
