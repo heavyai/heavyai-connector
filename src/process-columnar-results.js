@@ -17,8 +17,6 @@ export default function processColumnarResults(
   const numCols = data.row_desc.length
   const numRows =
     typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length
-  // to satisfy eslint no-magic-numbers rule
-  const oneThousandMilliseconds = 1000
 
   formattedResult.fields = data.row_desc.map(field => ({
     name: field.col_name,
@@ -45,6 +43,8 @@ export default function processColumnarResults(
       const fieldType = formattedResult.fields[c].type
       const fieldIsArray = formattedResult.fields[c].is_array
       const isNull = data.columns[c].nulls[r]
+      const fieldPrecision = data.row_desc[c].col_type.precision
+
       if (isNull) {
         // row[fieldName] = "NULL";
         row[fieldName] = null
@@ -87,16 +87,17 @@ export default function processColumnarResults(
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              row[fieldName].push(
-                data.columns[c].data.arr_col[r].data.int_col[e] *
-                  oneThousandMilliseconds
-              )
+              // See below for an explanation of these operations
+              // eslint-disable-next-line no-magic-numbers
+              const divisor = 10 ** (fieldPrecision - 3)
+              const timeInMs = data.columns[c].data.int_col[r] / divisor
+              row[fieldName].push(timeInMs)
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
           }
         }
-      } else {
+      } else { // Not an array
         switch (fieldType) {
           case "BOOL":
             row[fieldName] = Boolean(data.columns[c].data.int_col[r])
@@ -118,9 +119,16 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            row[fieldName] = new Date(
-              data.columns[c].data.int_col[r] * oneThousandMilliseconds
-            )
+            // The JS date constructor expects time as 'number of ms since the epoch'. The raw
+            // integer value in the DB may represent s, ms, us, or ns. We read the precision of
+            // the column to figure out what the DB value represents, then convert that to ms.
+
+            // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
+            // eslint-disable-next-line no-magic-numbers
+            const divisor = 10 ** (fieldPrecision - 3)
+            const timeInMs = data.columns[c].data.int_col[r] / divisor
+
+            row[fieldName] = new Date(timeInMs)
             break
           case "POINT":
           case "LINESTRING":

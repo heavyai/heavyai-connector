@@ -27077,8 +27077,6 @@
 	  var formattedResult = { fields: [], results: [] };
 	  var numCols = data.row_desc.length;
 	  var numRows = typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length;
-	  // to satisfy eslint no-magic-numbers rule
-	  var oneThousandMilliseconds = 1000;
 
 	  formattedResult.fields = data.row_desc.map(function (field) {
 	    return {
@@ -27107,6 +27105,8 @@
 	      var fieldType = formattedResult.fields[_c].type;
 	      var fieldIsArray = formattedResult.fields[_c].is_array;
 	      var isNull = data.columns[_c].nulls[r];
+	      var fieldPrecision = data.row_desc[_c].col_type.precision;
+
 	      if (isNull) {
 	        // row[fieldName] = "NULL";
 	        row[fieldName] = null;
@@ -27141,13 +27141,18 @@
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] * oneThousandMilliseconds);
+	              // See below for an explanation of these operations
+	              // eslint-disable-next-line no-magic-numbers
+	              var divisor = Math.pow(10, fieldPrecision - 3);
+	              var timeInMs = data.columns[_c].data.int_col[r] / divisor;
+	              row[fieldName].push(timeInMs);
 	              break;
 	            default:
 	              throw new Error("Unrecognized array field type: " + fieldType);
 	          }
 	        }
 	      } else {
+	        // Not an array
 	        switch (fieldType) {
 	          case "BOOL":
 	            row[fieldName] = Boolean(data.columns[_c].data.int_col[r]);
@@ -27169,7 +27174,16 @@
 	          case "TIME":
 	          case "TIMESTAMP":
 	          case "DATE":
-	            row[fieldName] = new Date(data.columns[_c].data.int_col[r] * oneThousandMilliseconds);
+	            // The JS date constructor expects time as 'number of ms since the epoch'. The raw
+	            // integer value in the DB may represent s, ms, us, or ns. We read the precision of
+	            // the column to figure out what the DB value represents, then convert that to ms.
+
+	            // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
+	            // eslint-disable-next-line no-magic-numbers
+	            var _divisor = Math.pow(10, fieldPrecision - 3);
+	            var _timeInMs = data.columns[_c].data.int_col[r] / _divisor;
+
+	            row[fieldName] = new Date(_timeInMs);
 	            break;
 	          case "POINT":
 	          case "LINESTRING":
