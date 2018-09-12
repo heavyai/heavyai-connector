@@ -27145,7 +27145,7 @@
 	              // eslint-disable-next-line no-magic-numbers
 	              var divisor = Math.pow(10, fieldPrecision - 3);
 	              var timeInMs = data.columns[_c].data.int_col[r] / divisor;
-	              row[fieldName].push(timeInMs);
+	              row[fieldName].push(new Date(timeInMs));
 	              break;
 	            default:
 	              throw new Error("Unrecognized array field type: " + fieldType);
