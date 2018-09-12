@@ -91,7 +91,7 @@ export default function processColumnarResults(
               // eslint-disable-next-line no-magic-numbers
               const divisor = 10 ** (fieldPrecision - 3)
               const timeInMs = data.columns[c].data.int_col[r] / divisor
-              row[fieldName].push(new Date(timeInMs))
+              row[fieldName].push(timeInMs)
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
