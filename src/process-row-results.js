@@ -1,4 +1,4 @@
-import timestampToMs from "./utils"
+import { timestampToMs } from "./helpers"
 
 /**
  * Query for row-based results from the server. In general, is inefficient and should be 

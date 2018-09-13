@@ -18601,6 +18601,7 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.timestampToMs = timestampToMs;
 	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
 	  return new TCopyParams(obj);
 	}; // eslint-disable-line no-undef
@@ -18616,6 +18617,24 @@ module.exports =
 	  });
 	  return thriftRowDescArray;
 	};
+
+	/**
+	 * Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
+	 * represent seconds, ms, us, or ns depending on the precision of the column. This value is
+	 * truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
+	 * for passing to the JS Date object constructor.
+	 * @param {Number} timestamp - The raw integer timestamp in the database.
+	 * @param {Number} precision - The precision of the timestamp column in the database.
+	 * @returns {Number} The equivalent timestamp in milliseconds.
+	 */
+	function timestampToMs(timestamp, precision) {
+	  // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
+	  // eslint-disable-next-line no-magic-numbers
+	  var divisor = Math.pow(10, precision - 3);
+	  var timeInMs = timestamp / divisor;
+
+	  return timeInMs;
+	}
 
 /***/ }),
 /* 58 */
@@ -18844,7 +18863,7 @@ module.exports =
 
 	var _processColumnarResults2 = _interopRequireDefault(_processColumnarResults);
 
-	var _processRowResults = __webpack_require__(63);
+	var _processRowResults = __webpack_require__(62);
 
 	var _processRowResults2 = _interopRequireDefault(_processRowResults);
 
@@ -18951,11 +18970,7 @@ module.exports =
 	});
 	exports.default = processColumnarResults;
 
-	var _utils = __webpack_require__(62);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _helpers = __webpack_require__(57);
 
 	/**
 	 * Process the column-based results from the query in a row-based format.
@@ -19035,7 +19050,7 @@ module.exports =
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              var timeInMs = (0, _utils2.default)(data.columns[_c].data.int_col[r], fieldPrecision);
+	              var timeInMs = (0, _helpers.timestampToMs)(data.columns[_c].data.int_col[r], fieldPrecision);
 	              row[fieldName].push(timeInMs);
 	              break;
 	            default:
@@ -19065,7 +19080,7 @@ module.exports =
 	          case "TIME":
 	          case "TIMESTAMP":
 	          case "DATE":
-	            var _timeInMs = (0, _utils2.default)(data.columns[_c].data.int_col[r], fieldPrecision);
+	            var _timeInMs = (0, _helpers.timestampToMs)(data.columns[_c].data.int_col[r], fieldPrecision);
 	            row[fieldName] = new Date(_timeInMs);
 	            break;
 	          case "POINT":
@@ -19086,53 +19101,6 @@ module.exports =
 
 /***/ }),
 /* 62 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.timestampToMs = timestampToMs;
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	// Bind arguments starting with argument number "n".
-	// NOTE: n is 1-indexed
-	var bindArgsFromN = exports.bindArgsFromN = function bindArgsFromN(fn, n) {
-	  for (var _len = arguments.length, boundArgs = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-	    boundArgs[_key - 2] = arguments[_key];
-	  }
-
-	  return function func() {
-	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	      args[_key2] = arguments[_key2];
-	    }
-
-	    return fn.apply(undefined, _toConsumableArray(args.slice(0, n - 1)).concat(boundArgs));
-	  };
-	};
-
-	/**
-	 * Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
-	 * represent seconds, ms, us, or ns depending on the precision of the column. This value is
-	 * truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
-	 * for passing to the JS Date object constructor.
-	 * @param {Number} timestamp - The raw integer timestamp in the database.
-	 * @param {Number} precision - The precision of the timestamp column in the database.
-	 * @returns {Number} The equivalent timestamp in milliseconds.
-	 */
-	function timestampToMs(timestamp, precision) {
-	  // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
-	  // eslint-disable-next-line no-magic-numbers
-	  var divisor = Math.pow(10, precision - 3);
-	  var timeInMs = timestamp / divisor;
-
-	  return timeInMs;
-	}
-
-/***/ }),
-/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19142,11 +19110,7 @@ module.exports =
 	});
 	exports.default = processRowResults;
 
-	var _utils = __webpack_require__(62);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _helpers = __webpack_require__(57);
 
 	/**
 	 * Query for row-based results from the server. In general, is inefficient and should be 
@@ -19230,7 +19194,7 @@ module.exports =
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              var timeInMs = (0, _utils2.default)(elemDatum.val.int_val, fieldPrecision);
+	              var timeInMs = (0, _helpers.timestampToMs)(elemDatum.val.int_val, fieldPrecision);
 	              row[fieldName].push(timeInMs);
 	              break;
 	            default:
@@ -19264,7 +19228,7 @@ module.exports =
 	          case "TIME":
 	          case "TIMESTAMP":
 	          case "DATE":
-	            var _timeInMs = (0, _utils2.default)(scalarDatum.val.int_val, fieldPrecision);
+	            var _timeInMs = (0, _helpers.timestampToMs)(scalarDatum.val.int_val, fieldPrecision);
 	            row[fieldName] = new Date(_timeInMs);
 	            break;
 	          case "POINT":

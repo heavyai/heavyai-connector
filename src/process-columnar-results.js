@@ -1,4 +1,4 @@
-import timestampToMs from "./utils"
+import { timestampToMs } from "./helpers"
 
 /**
  * Process the column-based results from the query in a row-based format.
