@@ -1,3 +1,5 @@
+import timestampToMs from "./utils"
+
 /**
  * Process the column-based results from the query in a row-based format.
  * (Returning row-based results directly from the server is inefficient.)
@@ -87,10 +89,7 @@ export default function processColumnarResults(
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              // See below for an explanation of these operations
-              // eslint-disable-next-line no-magic-numbers
-              const divisor = 10 ** (fieldPrecision - 3)
-              const timeInMs = data.columns[c].data.int_col[r] / divisor
+              const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
               row[fieldName].push(timeInMs)
               break
             default:
@@ -119,15 +118,7 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            // The JS date constructor expects time as 'number of ms since the epoch'. The raw
-            // integer value in the DB may represent s, ms, us, or ns. We read the precision of
-            // the column to figure out what the DB value represents, then convert that to ms.
-
-            // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
-            // eslint-disable-next-line no-magic-numbers
-            const divisor = 10 ** (fieldPrecision - 3)
-            const timeInMs = data.columns[c].data.int_col[r] / divisor
-
+            const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
             row[fieldName] = new Date(timeInMs)
             break
           case "POINT":
