@@ -27246,7 +27246,7 @@
 
 /***/ }),
 /* 123 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -27254,6 +27254,13 @@
 	  value: true
 	});
 	exports.default = processRowResults;
+
+	var _utils = __webpack_require__(122);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	/**
 	 * Query for row-based results from the server. In general, is inefficient and should be 
 	 * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
@@ -27301,6 +27308,7 @@
 	      var fieldName = formattedResult.fields[_c].name;
 	      var fieldType = formattedResult.fields[_c].type;
 	      var fieldIsArray = formattedResult.fields[_c].is_array;
+	      var fieldPrecision = data.row_desc[_c].col_type.precision;
 	      if (fieldIsArray) {
 	        if (data.rows[r].cols[_c].is_null) {
 	          row[fieldName] = "NULL";
@@ -27335,7 +27343,8 @@
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              row[fieldName].push(elemDatum.val.int_val * 1000); // eslint-disable-line no-magic-numbers
+	              var timeInMs = (0, _utils2.default)(elemDatum.val.int_val, fieldPrecision);
+	              row[fieldName].push(timeInMs);
 	              break;
 	            default:
 	              throw new Error("Unrecognized array field type: " + fieldType);
@@ -27368,7 +27377,8 @@
 	          case "TIME":
 	          case "TIMESTAMP":
 	          case "DATE":
-	            row[fieldName] = new Date(scalarDatum.val.int_val * 1000); // eslint-disable-line no-magic-numbers
+	            var _timeInMs = (0, _utils2.default)(scalarDatum.val.int_val, fieldPrecision);
+	            row[fieldName] = new Date(_timeInMs);
 	            break;
 	          case "POINT":
 	          case "LINESTRING":
