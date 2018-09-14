@@ -1,5 +1,3 @@
-import { timestampToMs } from "./helpers"
-
 /**
  * Process the column-based results from the query in a row-based format.
  * (Returning row-based results directly from the server is inefficient.)
@@ -19,6 +17,8 @@ export default function processColumnarResults(
   const numCols = data.row_desc.length
   const numRows =
     typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length
+  // to satisfy eslint no-magic-numbers rule
+  const oneThousandMilliseconds = 1000
 
   formattedResult.fields = data.row_desc.map(field => ({
     name: field.col_name,
@@ -45,8 +45,6 @@ export default function processColumnarResults(
       const fieldType = formattedResult.fields[c].type
       const fieldIsArray = formattedResult.fields[c].is_array
       const isNull = data.columns[c].nulls[r]
-      const fieldPrecision = data.row_desc[c].col_type.precision
-
       if (isNull) {
         // row[fieldName] = "NULL";
         row[fieldName] = null
@@ -89,14 +87,16 @@ export default function processColumnarResults(
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
-              row[fieldName].push(timeInMs)
+              row[fieldName].push(
+                data.columns[c].data.arr_col[r].data.int_col[e] *
+                  oneThousandMilliseconds
+              )
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
           }
         }
-      } else { // Not an array
+      } else {
         switch (fieldType) {
           case "BOOL":
             row[fieldName] = Boolean(data.columns[c].data.int_col[r])
@@ -118,8 +118,9 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
-            row[fieldName] = new Date(timeInMs)
+            row[fieldName] = new Date(
+              data.columns[c].data.int_col[r] * oneThousandMilliseconds
+            )
             break
           case "POINT":
           case "LINESTRING":
