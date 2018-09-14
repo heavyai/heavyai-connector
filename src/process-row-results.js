@@ -1,5 +1,3 @@
-import { timestampToMs } from "./helpers"
-
 /**
  * Query for row-based results from the server. In general, is inefficient and should be 
  * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
@@ -45,7 +43,6 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
       const fieldName = formattedResult.fields[c].name
       const fieldType = formattedResult.fields[c].type
       const fieldIsArray = formattedResult.fields[c].is_array
-      const fieldPrecision = data.row_desc[c].col_type.precision
       if (fieldIsArray) {
         if (data.rows[r].cols[c].is_null) {
           row[fieldName] = "NULL"
@@ -80,8 +77,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              const timeInMs = timestampToMs(elemDatum.val.int_val, fieldPrecision)
-              row[fieldName].push(timeInMs)
+              row[fieldName].push(elemDatum.val.int_val * 1000) // eslint-disable-line no-magic-numbers
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
@@ -114,8 +110,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            const timeInMs = timestampToMs(scalarDatum.val.int_val, fieldPrecision)
-            row[fieldName] = new Date(timeInMs)
+            row[fieldName] = new Date(scalarDatum.val.int_val * 1000) // eslint-disable-line no-magic-numbers
             break
           case "POINT":
           case "LINESTRING":

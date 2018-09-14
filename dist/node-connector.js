@@ -18601,7 +18601,6 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.timestampToMs = timestampToMs;
 	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
 	  return new TCopyParams(obj);
 	}; // eslint-disable-line no-undef
@@ -18617,24 +18616,6 @@ module.exports =
 	  });
 	  return thriftRowDescArray;
 	};
-
-	/**
-	 * Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
-	 * represent seconds, ms, us, or ns depending on the precision of the column. This value is
-	 * truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
-	 * for passing to the JS Date object constructor.
-	 * @param {Number} timestamp - The raw integer timestamp in the database.
-	 * @param {Number} precision - The precision of the timestamp column in the database.
-	 * @returns {Number} The equivalent timestamp in milliseconds.
-	 */
-	function timestampToMs(timestamp, precision) {
-	  // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
-	  // eslint-disable-next-line no-magic-numbers
-	  var divisor = Math.pow(10, precision - 3);
-	  var timeInMs = timestamp / divisor;
-
-	  return timeInMs;
-	}
 
 /***/ }),
 /* 58 */
@@ -18961,7 +18942,7 @@ module.exports =
 
 /***/ }),
 /* 61 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -18969,9 +18950,6 @@ module.exports =
 	  value: true
 	});
 	exports.default = processColumnarResults;
-
-	var _helpers = __webpack_require__(57);
-
 	/**
 	 * Process the column-based results from the query in a row-based format.
 	 * (Returning row-based results directly from the server is inefficient.)
@@ -18986,6 +18964,8 @@ module.exports =
 	  var formattedResult = { fields: [], results: [] };
 	  var numCols = data.row_desc.length;
 	  var numRows = typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length;
+	  // to satisfy eslint no-magic-numbers rule
+	  var oneThousandMilliseconds = 1000;
 
 	  formattedResult.fields = data.row_desc.map(function (field) {
 	    return {
@@ -19014,8 +18994,6 @@ module.exports =
 	      var fieldType = formattedResult.fields[_c].type;
 	      var fieldIsArray = formattedResult.fields[_c].is_array;
 	      var isNull = data.columns[_c].nulls[r];
-	      var fieldPrecision = data.row_desc[_c].col_type.precision;
-
 	      if (isNull) {
 	        // row[fieldName] = "NULL";
 	        row[fieldName] = null;
@@ -19050,15 +19028,13 @@ module.exports =
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              var timeInMs = (0, _helpers.timestampToMs)(data.columns[_c].data.int_col[r], fieldPrecision);
-	              row[fieldName].push(timeInMs);
+	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e] * oneThousandMilliseconds);
 	              break;
 	            default:
 	              throw new Error("Unrecognized array field type: " + fieldType);
 	          }
 	        }
 	      } else {
-	        // Not an array
 	        switch (fieldType) {
 	          case "BOOL":
 	            row[fieldName] = Boolean(data.columns[_c].data.int_col[r]);
@@ -19080,8 +19056,7 @@ module.exports =
 	          case "TIME":
 	          case "TIMESTAMP":
 	          case "DATE":
-	            var _timeInMs = (0, _helpers.timestampToMs)(data.columns[_c].data.int_col[r], fieldPrecision);
-	            row[fieldName] = new Date(_timeInMs);
+	            row[fieldName] = new Date(data.columns[_c].data.int_col[r] * oneThousandMilliseconds);
 	            break;
 	          case "POINT":
 	          case "LINESTRING":
@@ -19101,7 +19076,7 @@ module.exports =
 
 /***/ }),
 /* 62 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -19109,9 +19084,6 @@ module.exports =
 	  value: true
 	});
 	exports.default = processRowResults;
-
-	var _helpers = __webpack_require__(57);
-
 	/**
 	 * Query for row-based results from the server. In general, is inefficient and should be 
 	 * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
@@ -19159,7 +19131,6 @@ module.exports =
 	      var fieldName = formattedResult.fields[_c].name;
 	      var fieldType = formattedResult.fields[_c].type;
 	      var fieldIsArray = formattedResult.fields[_c].is_array;
-	      var fieldPrecision = data.row_desc[_c].col_type.precision;
 	      if (fieldIsArray) {
 	        if (data.rows[r].cols[_c].is_null) {
 	          row[fieldName] = "NULL";
@@ -19194,8 +19165,7 @@ module.exports =
 	            case "TIME":
 	            case "TIMESTAMP":
 	            case "DATE":
-	              var timeInMs = (0, _helpers.timestampToMs)(elemDatum.val.int_val, fieldPrecision);
-	              row[fieldName].push(timeInMs);
+	              row[fieldName].push(elemDatum.val.int_val * 1000); // eslint-disable-line no-magic-numbers
 	              break;
 	            default:
 	              throw new Error("Unrecognized array field type: " + fieldType);
@@ -19228,8 +19198,7 @@ module.exports =
 	          case "TIME":
 	          case "TIMESTAMP":
 	          case "DATE":
-	            var _timeInMs = (0, _helpers.timestampToMs)(scalarDatum.val.int_val, fieldPrecision);
-	            row[fieldName] = new Date(_timeInMs);
+	            row[fieldName] = new Date(scalarDatum.val.int_val * 1000); // eslint-disable-line no-magic-numbers
 	            break;
 	          case "POINT":
 	          case "LINESTRING":
