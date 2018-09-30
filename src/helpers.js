@@ -31,11 +31,11 @@ export function timestampToMs(timestamp, precision) {
 }
 
 /**
- * 
- * @param {Double} real - The double precision value from the database connector 
+ *
+ * @param {Double} real - The double precision value from the database connector
  * @param {Number} precision - The precision of the decimal column in the database
  * @returns {Double} - The equivalent decimal number encoded in a double precision number
  */
 export function realToDecimal(real, precision) {
-  return Number.parseFloat(real).toPrecision(precision);
+  return Number.parseFloat(real).toPrecision(precision)
 }

@@ -1,8 +1,8 @@
 import { realToDecimal, timestampToMs } from "./helpers"
 
 /**
- * Query for row-based results from the server. In general, is inefficient and should be 
- * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
+ * Query for row-based results from the server. In general, is inefficient and should be
+ * avoided. Instead, use {@link processColumnarResults} and then convert the results to
  * row-based format.
  * @param {TRowSet} data - The row-based data returned from a query.
  * @param {Boolean} eliminateNullRows Flag that removes null rows from results.
@@ -74,7 +74,10 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
               row[fieldName].push(elemDatum.val.real_val)
               break
             case "DECIMAL":
-              const decimalWithPrecision = realToDecimal(elemDatum.val.real_val, fieldPrecision)
+              const decimalWithPrecision = realToDecimal(
+                elemDatum.val.real_val,
+                fieldPrecision
+              )
               row[fieldName].push(decimalWithPrecision)
               break
             case "STR":
@@ -83,7 +86,10 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              const timeInMs = timestampToMs(elemDatum.val.int_val, fieldPrecision)
+              const timeInMs = timestampToMs(
+                elemDatum.val.int_val,
+                fieldPrecision
+              )
               row[fieldName].push(timeInMs)
               break
             default:
@@ -109,9 +115,12 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
           case "FLOAT":
           case "DOUBLE":
             row[fieldName] = scalarDatum.val.real_val
-            break;
+            break
           case "DECIMAL":
-            const decimalWithPrecision = realToDecimal(scalarDatum.val.real_val, fieldPrecision)
+            const decimalWithPrecision = realToDecimal(
+              scalarDatum.val.real_val,
+              fieldPrecision
+            )
             row[fieldName].push(decimalWithPrecision)
             break
           case "STR":
@@ -120,7 +129,10 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            const timeInMs = timestampToMs(scalarDatum.val.int_val, fieldPrecision)
+            const timeInMs = timestampToMs(
+              scalarDatum.val.int_val,
+              fieldPrecision
+            )
             row[fieldName] = new Date(timeInMs)
             break
           case "POINT":

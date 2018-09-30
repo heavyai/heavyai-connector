@@ -18638,8 +18638,8 @@ module.exports =
 	}
 
 	/**
-	 * 
-	 * @param {Double} real - The double precision value from the database connector 
+	 *
+	 * @param {Double} real - The double precision value from the database connector
 	 * @param {Number} precision - The precision of the decimal column in the database
 	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
 	 */
@@ -19130,8 +19130,8 @@ module.exports =
 	var _helpers = __webpack_require__(57);
 
 	/**
-	 * Query for row-based results from the server. In general, is inefficient and should be 
-	 * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
+	 * Query for row-based results from the server. In general, is inefficient and should be
+	 * avoided. Instead, use {@link processColumnarResults} and then convert the results to
 	 * row-based format.
 	 * @param {TRowSet} data - The row-based data returned from a query.
 	 * @param {Boolean} eliminateNullRows Flag that removes null rows from results.

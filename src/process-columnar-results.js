@@ -1,4 +1,4 @@
-import { timestampToMs, realToDecimal } from "./helpers"
+import { realToDecimal, timestampToMs } from "./helpers"
 
 /**
  * Process the column-based results from the query in a row-based format.
@@ -81,7 +81,10 @@ export default function processColumnarResults(
               )
               break
             case "DECIMAL":
-              const decimalWithPrecision = realToDecimal(data.columns[c].data.arr_col[r].data.real_col[e], fieldPrecision)
+              const decimalWithPrecision = realToDecimal(
+                data.columns[c].data.arr_col[r].data.real_col[e],
+                fieldPrecision
+              )
               row[fieldName].push(decimalWithPrecision)
               break
             case "STR":
@@ -92,14 +95,18 @@ export default function processColumnarResults(
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
+              const timeInMs = timestampToMs(
+                data.columns[c].data.int_col[r],
+                fieldPrecision
+              )
               row[fieldName].push(timeInMs)
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
           }
         }
-      } else { // Not an array
+      } else {
+        // Not an array
         switch (fieldType) {
           case "BOOL":
             row[fieldName] = Boolean(data.columns[c].data.int_col[r])
@@ -115,7 +122,9 @@ export default function processColumnarResults(
             row[fieldName] = data.columns[c].data.real_col[r]
             break
           case "DECIMAL":
-            const decimalWithPrecision = realToDecimal(data.columns[c].data.real_col[r])
+            const decimalWithPrecision = realToDecimal(
+              data.columns[c].data.real_col[r]
+            )
             row[fieldName] = decimalWithPrecision
             break
           case "STR":
@@ -124,7 +133,10 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
+            const timeInMs = timestampToMs(
+              data.columns[c].data.int_col[r],
+              fieldPrecision
+            )
             row[fieldName] = new Date(timeInMs)
             break
           case "POINT":
