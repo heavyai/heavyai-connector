@@ -123,7 +123,8 @@ export default function processColumnarResults(
             break
           case "DECIMAL":
             const decimalWithPrecision = realToDecimal(
-              data.columns[c].data.real_col[r]
+              data.columns[c].data.real_col[r],
+              fieldPrecision
             )
             row[fieldName] = decimalWithPrecision
             break

@@ -18644,6 +18644,9 @@ module.exports =
 	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
 	 */
 	function realToDecimal(real, precision) {
+	  console.log(real);
+	  console.log(precision);
+	  console.log(Number.parseFloat(real).toPrecision(precision));
 	  return Number.parseFloat(real).toPrecision(precision);
 	}
 
@@ -19088,7 +19091,7 @@ module.exports =
 	            row[fieldName] = data.columns[_c].data.real_col[r];
 	            break;
 	          case "DECIMAL":
-	            var _decimalWithPrecision = (0, _helpers.realToDecimal)(data.columns[_c].data.real_col[r]);
+	            var _decimalWithPrecision = (0, _helpers.realToDecimal)(data.columns[_c].data.real_col[r], fieldPrecision);
 	            row[fieldName] = _decimalWithPrecision;
 	            break;
 	          case "STR":
