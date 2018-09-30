@@ -18644,9 +18644,6 @@ module.exports =
 	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
 	 */
 	function realToDecimal(real, precision) {
-	  console.log(real);
-	  console.log(precision);
-	  console.log(Number.parseFloat(real).toPrecision(precision));
 	  return Number.parseFloat(real).toPrecision(precision);
 	}
 
