@@ -1,4 +1,4 @@
-import { timestampToMs } from "./helpers"
+import { timestampToMs, realToDecimal } from "./helpers"
 
 /**
  * Process the column-based results from the query in a row-based format.
@@ -76,10 +76,13 @@ export default function processColumnarResults(
               break
             case "FLOAT":
             case "DOUBLE":
-            case "DECIMAL":
               row[fieldName].push(
                 data.columns[c].data.arr_col[r].data.real_col[e]
               )
+              break
+            case "DECIMAL":
+              const decimalWithPrecision = realToDecimal(data.columns[c].data.arr_col[r].data.real_col[e], fieldPrecision)
+              row[fieldName].push(decimalWithPrecision)
               break
             case "STR":
               row[fieldName].push(
@@ -109,8 +112,11 @@ export default function processColumnarResults(
             break
           case "FLOAT":
           case "DOUBLE":
-          case "DECIMAL":
             row[fieldName] = data.columns[c].data.real_col[r]
+            break
+          case "DECIMAL":
+            const decimalWithPrecision = realToDecimal(data.columns[c].data.real_col[r])
+            row[fieldName] = decimalWithPrecision
             break
           case "STR":
             row[fieldName] = data.columns[c].data.str_col[r]

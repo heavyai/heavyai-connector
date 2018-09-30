@@ -1,4 +1,4 @@
-import { timestampToMs } from "./helpers"
+import { realToDecimal, timestampToMs } from "./helpers"
 
 /**
  * Query for row-based results from the server. In general, is inefficient and should be 
@@ -71,8 +71,11 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
               break
             case "FLOAT":
             case "DOUBLE":
-            case "DECIMAL":
               row[fieldName].push(elemDatum.val.real_val)
+              break
+            case "DECIMAL":
+              const decimalWithPrecision = realToDecimal(elemDatum.val.real_val, fieldPrecision)
+              row[fieldName].push(decimalWithPrecision)
               break
             case "STR":
               row[fieldName].push(elemDatum.val.str_val)
@@ -105,8 +108,11 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             break
           case "FLOAT":
           case "DOUBLE":
-          case "DECIMAL":
             row[fieldName] = scalarDatum.val.real_val
+            break;
+          case "DECIMAL":
+            const decimalWithPrecision = realToDecimal(scalarDatum.val.real_val, fieldPrecision)
+            row[fieldName].push(decimalWithPrecision)
             break
           case "STR":
             row[fieldName] = scalarDatum.val.str_val

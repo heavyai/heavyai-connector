@@ -1954,6 +1954,7 @@
 	  value: true
 	});
 	exports.timestampToMs = timestampToMs;
+	exports.realToDecimal = realToDecimal;
 	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
 	  return new TCopyParams(obj);
 	}; // eslint-disable-line no-undef
@@ -1986,6 +1987,16 @@
 	  var timeInMs = timestamp / divisor;
 
 	  return timeInMs;
+	}
+
+	/**
+	 * 
+	 * @param {Double} real - The double precision value from the database connector 
+	 * @param {Number} precision - The precision of the decimal column in the database
+	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
+	 */
+	function realToDecimal(real, precision) {
+	  return Number.parseFloat(real).toPrecision(precision);
 	}
 
 /***/ }),
@@ -27154,8 +27165,11 @@
 	              break;
 	            case "FLOAT":
 	            case "DOUBLE":
-	            case "DECIMAL":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.real_col[e]);
+	              break;
+	            case "DECIMAL":
+	              var decimalWithPrecision = (0, _helpers.realToDecimal)(data.columns[_c].data.arr_col[r].data.real_col[e], fieldPrecision);
+	              row[fieldName].push(decimalWithPrecision);
 	              break;
 	            case "STR":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.str_col[e]);
@@ -27184,8 +27198,11 @@
 	            break;
 	          case "FLOAT":
 	          case "DOUBLE":
-	          case "DECIMAL":
 	            row[fieldName] = data.columns[_c].data.real_col[r];
+	            break;
+	          case "DECIMAL":
+	            var _decimalWithPrecision = (0, _helpers.realToDecimal)(data.columns[_c].data.real_col[r]);
+	            row[fieldName] = _decimalWithPrecision;
 	            break;
 	          case "STR":
 	            row[fieldName] = data.columns[_c].data.str_col[r];
@@ -27298,8 +27315,11 @@
 	              break;
 	            case "FLOAT":
 	            case "DOUBLE":
-	            case "DECIMAL":
 	              row[fieldName].push(elemDatum.val.real_val);
+	              break;
+	            case "DECIMAL":
+	              var decimalWithPrecision = (0, _helpers.realToDecimal)(elemDatum.val.real_val, fieldPrecision);
+	              row[fieldName].push(decimalWithPrecision);
 	              break;
 	            case "STR":
 	              row[fieldName].push(elemDatum.val.str_val);
@@ -27332,8 +27352,11 @@
 	            break;
 	          case "FLOAT":
 	          case "DOUBLE":
-	          case "DECIMAL":
 	            row[fieldName] = scalarDatum.val.real_val;
+	            break;
+	          case "DECIMAL":
+	            var _decimalWithPrecision = (0, _helpers.realToDecimal)(scalarDatum.val.real_val, fieldPrecision);
+	            row[fieldName].push(_decimalWithPrecision);
 	            break;
 	          case "STR":
 	            row[fieldName] = scalarDatum.val.str_val;
