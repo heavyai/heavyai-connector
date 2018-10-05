@@ -89,14 +89,18 @@ export default function processColumnarResults(
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
+              const timeInMs = timestampToMs(
+                data.columns[c].data.int_col[r],
+                fieldPrecision
+              )
               row[fieldName].push(timeInMs)
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
           }
         }
-      } else { // Not an array
+      } else {
+        // Not an array
         switch (fieldType) {
           case "BOOL":
             row[fieldName] = Boolean(data.columns[c].data.int_col[r])
@@ -118,7 +122,10 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            const timeInMs = timestampToMs(data.columns[c].data.int_col[r], fieldPrecision)
+            const timeInMs = timestampToMs(
+              data.columns[c].data.int_col[r],
+              fieldPrecision
+            )
             row[fieldName] = new Date(timeInMs)
             break
           case "POINT":

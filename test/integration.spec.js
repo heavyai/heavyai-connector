@@ -184,7 +184,12 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             precision: 0
           },
           {
-            is_array: false, is_dict: true, name: "tailnum", type: "STR", precision: 0 },
+            is_array: false,
+            is_dict: true,
+            name: "tailnum",
+            type: "STR",
+            precision: 0
+          },
           {
             is_array: false,
             is_dict: false,
@@ -220,8 +225,20 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             type: "SMALLINT",
             precision: 0
           },
-          { is_array: false, is_dict: true, name: "origin", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "dest", type: "STR", precision: 0 },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "origin",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "dest",
+            type: "STR",
+            precision: 0
+          },
           {
             is_array: false,
             is_dict: false,
@@ -229,7 +246,13 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             type: "SMALLINT",
             precision: 0
           },
-          { is_array: false, is_dict: false, name: "taxiin", type: "SMALLINT", precision: 0 },
+          {
+            is_array: false,
+            is_dict: false,
+            name: "taxiin",
+            type: "SMALLINT",
+            precision: 0
+          },
           {
             is_array: false,
             is_dict: false,
@@ -307,8 +330,20 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             type: "TIMESTAMP",
             precision: 0
           },
-          { is_array: false, is_dict: true, name: "carrier_name", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "plane_type", type: "STR", precision: 0 },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "carrier_name",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "plane_type",
+            type: "STR",
+            precision: 0
+          },
           {
             is_array: false,
             is_dict: true,
@@ -323,8 +358,20 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             type: "DATE",
             precision: 0
           },
-          { is_array: false, is_dict: true, name: "plane_model", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "plane_status", type: "STR", precision: 0 },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "plane_model",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "plane_status",
+            type: "STR",
+            precision: 0
+          },
           {
             is_array: false,
             is_dict: true,
@@ -346,9 +393,27 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             type: "SMALLINT",
             precision: 0
           },
-          { is_array: false, is_dict: true, name: "origin_name", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "origin_city", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "origin_state", type: "STR", precision: 0 },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "origin_name",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "origin_city",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "origin_state",
+            type: "STR",
+            precision: 0
+          },
           {
             is_array: false,
             is_dict: true,
@@ -370,12 +435,48 @@ describe(isNodeRuntime ? "node" : "browser", () => {
             type: "FLOAT",
             precision: 0
           },
-          { is_array: false, is_dict: true, name: "dest_name", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "dest_city", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "dest_state", type: "STR", precision: 0 },
-          { is_array: false, is_dict: true, name: "dest_country", type: "STR", precision: 0 },
-          { is_array: false, is_dict: false, name: "dest_lat", type: "FLOAT", precision: 0 },
-          { is_array: false, is_dict: false, name: "dest_lon", type: "FLOAT", precision: 0 },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "dest_name",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "dest_city",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "dest_state",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: true,
+            name: "dest_country",
+            type: "STR",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: false,
+            name: "dest_lat",
+            type: "FLOAT",
+            precision: 0
+          },
+          {
+            is_array: false,
+            is_dict: false,
+            name: "dest_lon",
+            type: "FLOAT",
+            precision: 0
+          },
           {
             is_array: false,
             is_dict: false,

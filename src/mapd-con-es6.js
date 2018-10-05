@@ -874,6 +874,16 @@ class MapdCon {
   )
 
   /**
+   * Get all the roles assigned to a given username.
+   * @param {String} username - The username whose roles you wish to get.
+   * @return {Promise} A list of all roles assigned to the username.
+   */
+  getAllRolesForUserAsync = this.promisifySingle(
+    args => args,
+    "get_all_roles_for_user"
+  )
+
+  /**
    * Asynchronously get data from an importable file,
    * such as a CSV or plaintext file with a header.
    * @param {String} fileName - The name of the importable file.

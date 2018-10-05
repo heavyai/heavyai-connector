@@ -420,6 +420,9 @@
 
 	      return [objectName, TDBObjectType[type]];
 	    }, "get_db_object_privs");
+	    this.getAllRolesForUserAsync = this.promisifySingle(function (args) {
+	      return args;
+	    }, "get_all_roles_for_user");
 
 	    this.queryAsync = function (query, options) {
 	      return new Promise(function (resolve, reject) {
@@ -1053,6 +1056,13 @@
 	     * @example <caption>Get the list of accessible database objects for a role:</caption>
 	     *
 	     * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+	     */
+
+
+	    /**
+	     * Get all the roles assigned to a given username.
+	     * @param {String} username - The username whose roles you wish to get.
+	     * @return {Promise} A list of all roles assigned to the username.
 	     */
 
 	  }, {
@@ -27226,8 +27236,8 @@
 	var _helpers = __webpack_require__(12);
 
 	/**
-	 * Query for row-based results from the server. In general, is inefficient and should be 
-	 * avoided. Instead, use {@link processColumnarResults} and then convert the results to  
+	 * Query for row-based results from the server. In general, is inefficient and should be
+	 * avoided. Instead, use {@link processColumnarResults} and then convert the results to
 	 * row-based format.
 	 * @param {TRowSet} data - The row-based data returned from a query.
 	 * @param {Boolean} eliminateNullRows Flag that removes null rows from results.
