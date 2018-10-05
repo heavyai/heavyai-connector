@@ -275,6 +275,16 @@
               
                 
                 <li><a
+                  href='#getallrolesforuserasync'
+                  class="">
+                  getAllRolesForUserAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#detectcolumntypesasync'
                   class="">
                   detectColumnTypesAsync
@@ -555,19 +565,9 @@
               
                 
                 <li><a
-                  href='#tdatum'
+                  href='#completion_hints'
                   class="">
-                  TDatum
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#ttabletype'
-                  class="">
-                  TTableType
+                  completion_hints
                   
                 </a>
                 
@@ -685,9 +685,19 @@
               
                 
                 <li><a
-                  href='#completion_hints'
+                  href='#ttabletype'
                   class="">
-                  completion_hints
+                  TTableType
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tdatum'
+                  class="">
+                  TDatum
                   
                 </a>
                 
@@ -2757,6 +2767,75 @@ This object contains the link for the <code>view_name</code> property.</p>
 </p>
       <pre class='p1 overflow-auto round fill-light'>con.getDbObjectsForGranteeAsync(<span class="hljs-string">'role'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getallrolesforuserasync'>
+      getAllRolesForUserAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get all the roles assigned to a given username.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getAllRolesForUserAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>username</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The username whose roles you wish to get.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        A list of all roles assigned to the username.
+
+      
+    
+  
+
+  
+
   
 
   
@@ -5203,7 +5282,7 @@ otherwise formatted results.
   
 
   <p>Query for row-based results from the server. In general, is inefficient and should be
-avoided. Instead, use <a href="#processcolumnarresults">processColumnarResults</a> and then convert the results to<br>
+avoided. Instead, use <a href="#processcolumnarresults">processColumnarResults</a> and then convert the results to
 row-based format.</p>
 
 
@@ -5291,22 +5370,22 @@ row-based format.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tdatum'>
-      TDatum
+    <h3 class='fl m0' id='completion_hints'>
+      completion_hints
     </h3>
     
     
   </div>
   
 
-  <p>The value and state of an individual data cell in a table.</p>
+  <p>The types of the completion hint response object.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TDatum</div>
+  <div class='pre p1 fill-light mt0'>completion_hints</div>
   
     <p>
       Type:
-      <a href="#tdatum">TDatum</a>
+      <a href="#completion_hints">completion_hints</a>
     </p>
   
   
@@ -5325,85 +5404,20 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>session</span> <code class='quiet'>(TSessionId)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          <span class='code bold'>sql</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           
           
         </div>
       
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='ttabletype'>
-      TTableType
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TTableType</div>
-  
-    <p>
-      Type:
-      <a href="#ttabletype">TTableType</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
         <div class='space-bottom0'>
-          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =0
-
+          <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =1
-
           
         </div>
       
@@ -6452,22 +6466,22 @@ TAB
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='completion_hints'>
-      completion_hints
+    <h3 class='fl m0' id='ttabletype'>
+      TTableType
     </h3>
     
     
   </div>
   
 
-  <p>The types of the completion hint response object.</p>
+  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
 
 
-  <div class='pre p1 fill-light mt0'>completion_hints</div>
+  <div class='pre p1 fill-light mt0'>TTableType</div>
   
     <p>
       Type:
-      <a href="#completion_hints">completion_hints</a>
+      <a href="#ttabletype">TTableType</a>
     </p>
   
   
@@ -6486,19 +6500,84 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>session</span> <code class='quiet'>(TSessionId)</code>
+          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =0
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =1
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The value and state of an individual data cell in a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TDatum</div>
+  
+    <p>
+      Type:
+      <a href="#tdatum">TDatum</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>sql</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
           
           
         </div>
