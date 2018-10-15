@@ -45,7 +45,6 @@ ttypes.TEncodingType = {
   'GEOINT' : 6
 };
 ttypes.TExecuteMode = {
-  'HYBRID' : 0,
   'GPU' : 1,
   'CPU' : 2
 };
@@ -5595,12 +5594,20 @@ TRenderStepResult.prototype.write = function(output) {
 var TDatabasePermissions = module.exports.TDatabasePermissions = function(args) {
   this.create_ = null;
   this.delete_ = null;
+  this.view_sql_editor_ = null;
+  this.access_ = null;
   if (args) {
     if (args.create_ !== undefined && args.create_ !== null) {
       this.create_ = args.create_;
     }
     if (args.delete_ !== undefined && args.delete_ !== null) {
       this.delete_ = args.delete_;
+    }
+    if (args.view_sql_editor_ !== undefined && args.view_sql_editor_ !== null) {
+      this.view_sql_editor_ = args.view_sql_editor_;
+    }
+    if (args.access_ !== undefined && args.access_ !== null) {
+      this.access_ = args.access_;
     }
   }
 };
@@ -5632,6 +5639,20 @@ TDatabasePermissions.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.view_sql_editor_ = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.access_ = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -5651,6 +5672,16 @@ TDatabasePermissions.prototype.write = function(output) {
   if (this.delete_ !== null && this.delete_ !== undefined) {
     output.writeFieldBegin('delete_', Thrift.Type.BOOL, 2);
     output.writeBool(this.delete_);
+    output.writeFieldEnd();
+  }
+  if (this.view_sql_editor_ !== null && this.view_sql_editor_ !== undefined) {
+    output.writeFieldBegin('view_sql_editor_', Thrift.Type.BOOL, 3);
+    output.writeBool(this.view_sql_editor_);
+    output.writeFieldEnd();
+  }
+  if (this.access_ !== null && this.access_ !== undefined) {
+    output.writeFieldBegin('access_', Thrift.Type.BOOL, 4);
+    output.writeBool(this.access_);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6025,6 +6056,108 @@ TViewPermissions.prototype.write = function(output) {
   if (this.delete_ !== null && this.delete_ !== undefined) {
     output.writeFieldBegin('delete_', Thrift.Type.BOOL, 6);
     output.writeBool(this.delete_);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var TDBObjectPermissions = module.exports.TDBObjectPermissions = function(args) {
+  this.database_permissions_ = null;
+  this.table_permissions_ = null;
+  this.dashboard_permissions_ = null;
+  this.view_permissions_ = null;
+  if (args) {
+    if (args.database_permissions_ !== undefined && args.database_permissions_ !== null) {
+      this.database_permissions_ = new ttypes.TDatabasePermissions(args.database_permissions_);
+    }
+    if (args.table_permissions_ !== undefined && args.table_permissions_ !== null) {
+      this.table_permissions_ = new ttypes.TTablePermissions(args.table_permissions_);
+    }
+    if (args.dashboard_permissions_ !== undefined && args.dashboard_permissions_ !== null) {
+      this.dashboard_permissions_ = new ttypes.TDashboardPermissions(args.dashboard_permissions_);
+    }
+    if (args.view_permissions_ !== undefined && args.view_permissions_ !== null) {
+      this.view_permissions_ = new ttypes.TViewPermissions(args.view_permissions_);
+    }
+  }
+};
+TDBObjectPermissions.prototype = {};
+TDBObjectPermissions.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.database_permissions_ = new ttypes.TDatabasePermissions();
+        this.database_permissions_.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.table_permissions_ = new ttypes.TTablePermissions();
+        this.table_permissions_.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.dashboard_permissions_ = new ttypes.TDashboardPermissions();
+        this.dashboard_permissions_.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.view_permissions_ = new ttypes.TViewPermissions();
+        this.view_permissions_.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TDBObjectPermissions.prototype.write = function(output) {
+  output.writeStructBegin('TDBObjectPermissions');
+  if (this.database_permissions_ !== null && this.database_permissions_ !== undefined) {
+    output.writeFieldBegin('database_permissions_', Thrift.Type.STRUCT, 1);
+    this.database_permissions_.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.table_permissions_ !== null && this.table_permissions_ !== undefined) {
+    output.writeFieldBegin('table_permissions_', Thrift.Type.STRUCT, 2);
+    this.table_permissions_.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_permissions_ !== null && this.dashboard_permissions_ !== undefined) {
+    output.writeFieldBegin('dashboard_permissions_', Thrift.Type.STRUCT, 3);
+    this.dashboard_permissions_.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.view_permissions_ !== null && this.view_permissions_ !== undefined) {
+    output.writeFieldBegin('view_permissions_', Thrift.Type.STRUCT, 4);
+    this.view_permissions_.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
