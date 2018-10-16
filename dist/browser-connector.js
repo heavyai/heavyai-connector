@@ -66,10 +66,27 @@
 		Author Tobias Koppers @sokra
 	*/
 	module.exports = function(src) {
-		if (typeof execScript !== "undefined")
-			execScript(src);
-		else
-			eval.call(null, src);
+		function log(error) {
+			(typeof console !== "undefined")
+			&& (console.error || console.log)("[Script Loader]", error);
+		}
+
+		// Check for IE =< 8
+		function isIE() {
+			return typeof attachEvent !== "undefined" && typeof addEventListener === "undefined";
+		}
+
+		try {
+			if (typeof execScript !== "undefined" && isIE()) {
+				execScript(src);
+			} else if (typeof eval !== "undefined") {
+				eval.call(null, src);
+			} else {
+				log("EvalError: No eval function available");
+			}
+		} catch (error) {
+			log(error);
+		}
 	}
 
 
@@ -149,7 +166,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	/* global TDashboardPermissions: false, TDBObjectType: false */
+	/* global TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
 	var _ref = isNodeRuntime() && __webpack_require__(119) || window,
 	    TDatumType = _ref.TDatumType,
@@ -423,6 +440,25 @@
 	    this.getAllRolesForUserAsync = this.promisifySingle(function (args) {
 	      return args;
 	    }, "get_all_roles_for_user");
+	    this.hasObjectPrivilegesAsync = this.promisifySingle(function (_ref8) {
+	      var _ref9 = _slicedToArray(_ref8, 4),
+	          granteeName = _ref9[0],
+	          dbName = _ref9[1],
+	          objectName = _ref9[2],
+	          permissions = _ref9[3];
+
+	      return [granteeName, dbName, objectName, permissions];
+	    }, "has_object_privilege");
+	    this.hasDbPrivilegesAsync = this.promisifySingle(function (_ref10) {
+	      var _ref11 = _slicedToArray(_ref10, 3),
+	          granteeName = _ref11[0],
+	          dbName = _ref11[1],
+	          dbPrivs = _ref11[2];
+
+	      return [granteeName, dbName, TDBObjectType.DatabaseDBObjectType, new TDBObjectPermissions({
+	        database_permissions_: new TDatabasePermissions(dbPrivs)
+	      })];
+	    }, "has_object_privilege");
 
 	    this.queryAsync = function (query, options) {
 	      return new Promise(function (resolve, reject) {
@@ -1063,6 +1099,17 @@
 	     * Get all the roles assigned to a given username.
 	     * @param {String} username - The username whose roles you wish to get.
 	     * @return {Promise} A list of all roles assigned to the username.
+	     */
+
+
+	    /**
+	     * Specialization of `has_object_privilege` for checking database privileges of a user.
+	     *
+	     * @param {String} granteeName - The name of the user or role to check privileges for.
+	     * @param {String} dbName - The name of the database to check user privileges against.
+	     * @param {TDatabasePermissions} dbPrivs - An object specifying what privileges to check.
+	     *
+	     * @return {Boolean} true if the user/role has all the specified DB privileges, false otherwise.
 	     */
 
 	  }, {

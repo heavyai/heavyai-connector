@@ -1,4 +1,4 @@
-/* global TDashboardPermissions: false, TDBObjectType: false */
+/* global TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
 const { TDatumType, TEncodingType, TPixel } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
@@ -881,6 +881,37 @@ class MapdCon {
   getAllRolesForUserAsync = this.promisifySingle(
     args => args,
     "get_all_roles_for_user"
+  )
+
+  hasObjectPrivilegesAsync = this.promisifySingle(
+    ([granteeName, dbName, objectName, permissions]) => [
+      granteeName,
+      dbName,
+      objectName,
+      permissions
+    ],
+    "has_object_privilege"
+  )
+
+  /**
+   * Specialization of `has_object_privilege` for checking database privileges of a user.
+   *
+   * @param {String} granteeName - The name of the user or role to check privileges for.
+   * @param {String} dbName - The name of the database to check user privileges against.
+   * @param {TDatabasePermissions} dbPrivs - An object specifying what privileges to check.
+   *
+   * @return {Boolean} true if the user/role has all the specified DB privileges, false otherwise.
+   */
+  hasDbPrivilegesAsync = this.promisifySingle(
+    ([granteeName, dbName, dbPrivs]) => [
+      granteeName,
+      dbName,
+      TDBObjectType.DatabaseDBObjectType,
+      new TDBObjectPermissions({
+        database_permissions_: new TDatabasePermissions(dbPrivs)
+      })
+    ],
+    "has_object_privilege"
   )
 
   /**
