@@ -16928,7 +16928,7 @@ module.exports =
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	/* global TDashboardPermissions: false, TDBObjectType: false */
+	/* global TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
 	var _ref = isNodeRuntime() && __webpack_require__(52) || window,
 	    TDatumType = _ref.TDatumType,
@@ -17202,6 +17202,21 @@ module.exports =
 	    this.getAllRolesForUserAsync = this.promisifySingle(function (args) {
 	      return args;
 	    }, "get_all_roles_for_user");
+	    this.hasObjectPrivilegesAsync = this.promisifySingle(function (_ref8) {
+	      var _ref9 = _slicedToArray(_ref8, 4),
+	          granteeName = _ref9[0],
+	          objectName = _ref9[1],
+	          objectType = _ref9[2],
+	          permissions = _ref9[3];
+
+	      return [granteeName, objectName, objectType, permissions];
+	    }, "has_object_privilege");
+
+	    this.hasDbPrivilegesAsync = function (granteeName, dbName, dbPrivs) {
+	      return _this.hasObjectPrivilegesAsync(granteeName, dbName, TDBObjectType.DatabaseDBObjectType, new TDBObjectPermissions({
+	        database_permissions_: new TDatabasePermissions(dbPrivs)
+	      }));
+	    };
 
 	    this.queryAsync = function (query, options) {
 	      return new Promise(function (resolve, reject) {
@@ -17842,6 +17857,50 @@ module.exports =
 	     * Get all the roles assigned to a given username.
 	     * @param {String} username - The username whose roles you wish to get.
 	     * @return {Promise} A list of all roles assigned to the username.
+	     */
+
+
+	    /**
+	     * Checks if the given user or role has a privilege(s) on a given object. Note that this check is
+	     * transative; if a user has been granted a privilege via a role, this will return `true`.
+	     * @param {String} granteeName - The name of the user or role to check privileges for.
+	     * @param {String} objectName - The name of the object to check privileges against (for example,
+	     * the database name, table name, etc.)
+	     * @param {TDBObjectType} objectType - The type of object to check privileges against.
+	     * @param {TDBObjectPermissions} permissions - An object containing the privileges to check. All
+	     * the privileges specified must be granted for this function to return true.
+	     * @return {Boolean} true if all the specified privileges have been granted to the user/role,
+	     * false otherwise.
+	     *
+	     * @example <caption>Check if user <code>my_user</code> has the "view SQL Editor" privilege on the <code>my_db</code> database:</caption>
+	     *
+	     * con.hasDbPrivilegesAsync(
+	     *   "my_user",
+	     *   "my_db",
+	     *   TDBObjectType.DatabaseDBObjectType,
+	     *   new TDBObjectPermissions({
+	     *     database_permissions_: new TDatabasePermissions(dbPrivs)
+	     *   })
+	     * ).then((res) =>
+	     *   if(res) { console.log("Can view the SQL editor") }
+	     * )
+	     */
+
+
+	    /**
+	     * Specialization of `has_object_privilege` for checking database privileges of a user.
+	     *
+	     * @param {String} granteeName - The name of the user or role to check privileges for.
+	     * @param {String} dbName - The name of the database to check user privileges against.
+	     * @param {TDatabasePermissions} dbPrivs - An object specifying what privileges to check.
+	     *
+	     * @return {Boolean} true if the user/role has all the specified DB privileges, false otherwise.
+	     *
+	     * @example <caption>Check if user <code>my_user</code> has the "view SQL Editor" privilege on the <code>my_db</code> database:</caption>
+	     *
+	     * con.hasDbPrivilegesAsync("my_user", "my_db", {view_sql_editor_: true}).then(res =>
+	     *  if(res) { console.log("Can view the SQL editor") }
+	     * )
 	     */
 
 	  }, {

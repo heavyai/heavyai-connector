@@ -1,4 +1,4 @@
-/* global TDashboardPermissions: false, TDBObjectType: false */
+/* global TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
 const { TDatumType, TEncodingType, TPixel } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
@@ -882,6 +882,66 @@ class MapdCon {
     args => args,
     "get_all_roles_for_user"
   )
+
+  /**
+   * Checks if the given user or role has a privilege(s) on a given object. Note that this check is
+   * transative; if a user has been granted a privilege via a role, this will return `true`.
+   * @param {String} granteeName - The name of the user or role to check privileges for.
+   * @param {String} objectName - The name of the object to check privileges against (for example,
+   * the database name, table name, etc.)
+   * @param {TDBObjectType} objectType - The type of object to check privileges against.
+   * @param {TDBObjectPermissions} permissions - An object containing the privileges to check. All
+   * the privileges specified must be granted for this function to return true.
+   * @return {Boolean} true if all the specified privileges have been granted to the user/role,
+   * false otherwise.
+   *
+   * @example <caption>Check if user <code>my_user</code> has the "view SQL Editor" privilege on the <code>my_db</code> database:</caption>
+   *
+   * con.hasDbPrivilegesAsync(
+   *   "my_user",
+   *   "my_db",
+   *   TDBObjectType.DatabaseDBObjectType,
+   *   new TDBObjectPermissions({
+   *     database_permissions_: new TDatabasePermissions(dbPrivs)
+   *   })
+   * ).then((res) =>
+   *   if(res) { console.log("Can view the SQL editor") }
+   * )
+   */
+  hasObjectPrivilegesAsync = this.promisifySingle(
+    ([granteeName, objectName, objectType, permissions]) => [
+      granteeName,
+      objectName,
+      objectType,
+      permissions
+    ],
+    "has_object_privilege"
+  )
+
+  /**
+   * Specialization of `has_object_privilege` for checking database privileges of a user.
+   *
+   * @param {String} granteeName - The name of the user or role to check privileges for.
+   * @param {String} dbName - The name of the database to check user privileges against.
+   * @param {TDatabasePermissions} dbPrivs - An object specifying what privileges to check.
+   *
+   * @return {Boolean} true if the user/role has all the specified DB privileges, false otherwise.
+   *
+   * @example <caption>Check if user <code>my_user</code> has the "view SQL Editor" privilege on the <code>my_db</code> database:</caption>
+   *
+   * con.hasDbPrivilegesAsync("my_user", "my_db", {view_sql_editor_: true}).then(res =>
+   *  if(res) { console.log("Can view the SQL editor") }
+   * )
+   */
+  hasDbPrivilegesAsync = (granteeName, dbName, dbPrivs) =>
+    this.hasObjectPrivilegesAsync(
+      granteeName,
+      dbName,
+      TDBObjectType.DatabaseDBObjectType,
+      new TDBObjectPermissions({
+        database_permissions_: new TDatabasePermissions(dbPrivs)
+      })
+    )
 
   /**
    * Asynchronously get data from an importable file,
