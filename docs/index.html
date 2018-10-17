@@ -285,6 +285,26 @@
               
                 
                 <li><a
+                  href='#hasobjectprivilegesasync'
+                  class="">
+                  hasObjectPrivilegesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#hasdbprivilegesasync'
+                  class="">
+                  hasDbPrivilegesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#detectcolumntypesasync'
                   class="">
                   detectColumnTypesAsync
@@ -2836,6 +2856,218 @@ This object contains the link for the <code>view_name</code> property.</p>
 
   
 
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='hasobjectprivilegesasync'>
+      hasObjectPrivilegesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Checks if the given user or role has a privilege(s) on a given object. Note that this check is
+transative; if a user has been granted a privilege via a role, this will return <code>true</code>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>hasObjectPrivilegesAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>granteeName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The name of the user or role to check privileges for.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>objectName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The name of the object to check privileges against (for example,
+the database name, table name, etc.)
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>objectType</span> <code class='quiet'>(TDBObjectType)</code>
+	    The type of object to check privileges against.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>permissions</span> <code class='quiet'>(TDBObjectPermissions)</code>
+	    An object containing the privileges to check. All
+the privileges specified must be granted for this function to return true.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
+        true if all the specified privileges have been granted to the user/role,
+false otherwise.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Check if user <code>my_user</code> has the "view SQL Editor" privilege on the <code>my_db</code> database:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.hasDbPrivilegesAsync(
+  <span class="hljs-string">"my_user"</span>,
+  <span class="hljs-string">"my_db"</span>,
+  TDBObjectType.DatabaseDBObjectType,
+  <span class="hljs-keyword">new</span> TDBObjectPermissions({
+    <span class="hljs-attr">database_permissions_</span>: <span class="hljs-keyword">new</span> TDatabasePermissions(dbPrivs)
+  })
+).then(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span>
+  <span class="hljs-keyword">if</span>(res) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Can view the SQL editor"</span>) }
+)</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='hasdbprivilegesasync'>
+      hasDbPrivilegesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Specialization of <code>has_object_privilege</code> for checking database privileges of a user.</p>
+
+
+  <div class='pre p1 fill-light mt0'>hasDbPrivilegesAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>granteeName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The name of the user or role to check privileges for.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dbName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The name of the database to check user privileges against.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dbPrivs</span> <code class='quiet'>(TDatabasePermissions)</code>
+	    An object specifying what privileges to check.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
+        true if the user/role has all the specified DB privileges, false otherwise.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Check if user <code>my_user</code> has the "view SQL Editor" privilege on the <code>my_db</code> database:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.hasDbPrivilegesAsync(<span class="hljs-string">"my_user"</span>, <span class="hljs-string">"my_db"</span>, {<span class="hljs-attr">view_sql_editor_</span>: <span class="hljs-literal">true</span>}).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span>
+ <span class="hljs-keyword">if</span>(res) { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Can view the SQL editor"</span>) }
+)</pre>
+    
   
 
   
