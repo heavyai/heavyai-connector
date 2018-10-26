@@ -12,11 +12,11 @@ npm run build
 npm run docs # opens API docs in your browser.
 ```
 # Documentation
-Visit our [API Docs](http://mapd.github.io/mapd-connector/docs/)
+Visit our [API Docs](http://omnisci.github.io/mapd-connector/docs/)
 
 # Example
 
-Open [example.html](https://mapd.github.io/mapd-connector/examples/browser.html) in your browser for a basic query call.
+Open [example.html](https://omnisci.github.io/mapd-connector/examples/browser.html) in your browser for a basic query call.
 
 # Testing
 
