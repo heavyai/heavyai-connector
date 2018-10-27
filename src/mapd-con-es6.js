@@ -55,18 +55,25 @@ class MapdCon {
     // invoke initialization methods
     this.invertDatumTypes()
 
-    this.processResults = (options = {}, result, callback) => {
-      const processor = processQueryResults(
-        this._logging,
-        this.updateQueryTimes
-      )
-      const processResultsObject = processor(
-        options,
-        this._datumEnum,
-        result,
-        callback
-      )
-      return processResultsObject
+    this.processResults = (options = {}, result, error, callback) => {
+      if (error) {
+        if (this._logging && options.query) {
+          console.error(options.query, "\n", error)
+        }
+        callback(error)
+      } else {
+        const processor = processQueryResults(
+          this._logging,
+          this.updateQueryTimes
+        )
+        const processResultsObject = processor(
+          options,
+          this._datumEnum,
+          result,
+          callback
+        )
+        return processResultsObject
+      }
     }
 
     // return this to allow chaining off of instantiation
@@ -1036,11 +1043,7 @@ class MapdCon {
           limit,
           AT_MOST_N,
           (error, result) => {
-            if (error) {
-              callback(error)
-            } else {
-              this.processResults(processResultsOptions, result, callback)
-            }
+            this.processResults(processResultsOptions, result, error, callback)
           }
         )
         return curNonce
@@ -1523,11 +1526,7 @@ class MapdCon {
       compressionLevel,
       curNonce,
       (error, result) => {
-        if (error) {
-          callback(error)
-        } else {
-          this.processResults(processResultsOptions, result, callback)
-        }
+        this.processResults(processResultsOptions, result, error, callback)
       }
     )
 
