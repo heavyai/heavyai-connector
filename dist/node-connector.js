@@ -17286,11 +17286,19 @@ module.exports =
 	    this.processResults = function () {
 	      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	      var result = arguments[1];
-	      var callback = arguments[2];
+	      var error = arguments[2];
+	      var callback = arguments[3];
 
-	      var processor = (0, _processQueryResults2.default)(_this._logging, _this.updateQueryTimes);
-	      var processResultsObject = processor(options, _this._datumEnum, result, callback);
-	      return processResultsObject;
+	      if (error) {
+	        if (_this._logging && options.query) {
+	          console.error(options.query, "\n", error);
+	        }
+	        callback(error);
+	      } else {
+	        var processor = (0, _processQueryResults2.default)(_this._logging, _this.updateQueryTimes);
+	        var processResultsObject = processor(options, _this._datumEnum, result, callback);
+	        return processResultsObject;
+	      }
 	    };
 
 	    // return this to allow chaining off of instantiation
@@ -17991,11 +17999,7 @@ module.exports =
 	        var AT_MOST_N = -1;
 	        if (callback) {
 	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, AT_MOST_N, function (error, result) {
-	            if (error) {
-	              callback(error);
-	            } else {
-	              _this8.processResults(processResultsOptions, result, callback);
-	            }
+	            _this8.processResults(processResultsOptions, result, error, callback);
 	          });
 	          return curNonce;
 	        } else if (!callback) {
@@ -18407,11 +18411,7 @@ module.exports =
 	      }
 
 	      this._client[conId].render_vega(this._sessionId[conId], widgetid, vega, compressionLevel, curNonce, function (error, result) {
-	        if (error) {
-	          callback(error);
-	        } else {
-	          _this15.processResults(processResultsOptions, result, callback);
-	        }
+	        _this15.processResults(processResultsOptions, result, error, callback);
 	      });
 
 	      return curNonce;
