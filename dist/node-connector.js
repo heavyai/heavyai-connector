@@ -18737,6 +18737,11 @@ module.exports =
 	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
 	      });
 	    }
+	  }, {
+	    key: "getClient",
+	    value: function getClient() {
+	      return new _mapdClientV2.default();
+	    }
 	  }]);
 
 	  return MapdCon;
