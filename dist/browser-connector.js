@@ -66,27 +66,10 @@
 		Author Tobias Koppers @sokra
 	*/
 	module.exports = function(src) {
-		function log(error) {
-			(typeof console !== "undefined")
-			&& (console.error || console.log)("[Script Loader]", error);
-		}
-
-		// Check for IE =< 8
-		function isIE() {
-			return typeof attachEvent !== "undefined" && typeof addEventListener === "undefined";
-		}
-
-		try {
-			if (typeof execScript !== "undefined" && isIE()) {
-				execScript(src);
-			} else if (typeof eval !== "undefined") {
-				eval.call(null, src);
-			} else {
-				log("EvalError: No eval function available");
-			}
-		} catch (error) {
-			log(error);
-		}
+		if (typeof execScript !== "undefined")
+			execScript(src);
+		else
+			eval.call(null, src);
 	}
 
 
@@ -1977,6 +1960,11 @@
 	      return this._host.map(function (host, i) {
 	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
 	      });
+	    }
+	  }, {
+	    key: "getClient",
+	    value: function getClient() {
+	      return new _mapdClientV2.default();
 	    }
 	  }]);
 

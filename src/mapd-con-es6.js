@@ -1896,6 +1896,10 @@ class MapdCon {
       (host, i) => this._protocol[i] + "://" + host + ":" + this._port[i]
     )
   }
+
+  getClient() {
+    return new MapDClientV2()
+  }
 }
 
 function resetThriftClientOnArgumentErrorForMethods(
