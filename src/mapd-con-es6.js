@@ -1897,8 +1897,43 @@ class MapdCon {
     )
   }
 
-  getClient() {
-    return new MapDClientV2()
+  /**
+   * Set the license for Trial or Enterprise
+   * @return {Promise.<Object>} Claims or error.
+   */
+  setLicenseClaims(key) {
+    return new Promise((resolve, reject) => {
+      const client = (Array.isArray(this._client) && this._client[0]) || (new MapDClientV2())
+      const claims = client.set_license_key(
+        null,
+        key,
+        this._nonce++
+      )
+      if (claims.error) {
+        reject(error)
+      } else {
+        resolve(claims)
+      }
+    })
+  }
+
+  /**
+   * Get the license for Trial or Enterprise
+   * @return {Promise.<Object>} Claims or error.
+   */
+  getLicenseClaims() {
+    const client = (Array.isArray(this._client) && this._client[0]) || (new MapDClientV2())
+    return new Promise((resolve, reject) => {
+      const claims = client.get_license_claims(
+        null,
+        this._nonce++
+      )
+      if (claims.error) {
+        reject(error)
+      } else {
+        resolve(claims)
+      }
+    })
   }
 }
 
