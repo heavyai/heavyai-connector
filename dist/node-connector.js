@@ -18740,10 +18740,47 @@ module.exports =
 	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
 	      });
 	    }
+
+	    /**
+	     * Set the license for Trial or Enterprise
+	     * @return {Promise.<Object>} Claims or error.
+	     */
+
 	  }, {
-	    key: "getClient",
-	    value: function getClient() {
-	      return new _mapdClientV2.default();
+	    key: "setLicenseClaims",
+	    value: function setLicenseClaims(key) {
+	      var _this17 = this;
+
+	      return new Promise(function (resolve, reject) {
+	        var client = Array.isArray(_this17._client) && _this17._client[0] || new _mapdClientV2.default();
+	        var claims = client.set_license_key(null, key, _this17._nonce++);
+	        if (claims.error) {
+	          reject(error);
+	        } else {
+	          resolve(claims);
+	        }
+	      });
+	    }
+
+	    /**
+	     * Get the license for Trial or Enterprise
+	     * @return {Promise.<Object>} Claims or error.
+	     */
+
+	  }, {
+	    key: "getLicenseClaims",
+	    value: function getLicenseClaims() {
+	      var _this18 = this;
+
+	      var client = Array.isArray(this._client) && this._client[0] || new _mapdClientV2.default();
+	      return new Promise(function (resolve, reject) {
+	        var claims = client.get_license_claims(null, _this18._nonce++);
+	        if (claims.error) {
+	          reject(error);
+	        } else {
+	          resolve(claims);
+	        }
+	      });
 	    }
 	  }]);
 
