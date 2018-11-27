@@ -18743,28 +18743,28 @@ module.exports =
 
 	    /**
 	     * Set the license for Trial or Enterprise
-	     * @return {Promise.<Object>} Claims or error.
+	     * @return {Promise.<Object>} Claims or Error.
 	     */
 
 	  }, {
-	    key: "setLicenseClaims",
-	    value: function setLicenseClaims(key) {
+	    key: "setLicenseKey",
+	    value: function setLicenseKey(key) {
 	      var _this17 = this;
 
 	      return new Promise(function (resolve, reject) {
 	        var client = Array.isArray(_this17._client) && _this17._client[0] || new _mapdClientV2.default();
-	        var claims = client.set_license_key(null, key, _this17._nonce++);
-	        if (claims.error) {
-	          reject(error);
+	        var result = client.set_license_key(null, key, _this17._nonce++);
+	        if (result instanceof Error) {
+	          reject(result);
 	        } else {
-	          resolve(claims);
+	          resolve(result);
 	        }
 	      });
 	    }
 
 	    /**
 	     * Get the license for Trial or Enterprise
-	     * @return {Promise.<Object>} Claims or error.
+	     * @return {Promise.<Object>} Claims or Error.
 	     */
 
 	  }, {
@@ -18774,11 +18774,11 @@ module.exports =
 
 	      var client = Array.isArray(this._client) && this._client[0] || new _mapdClientV2.default();
 	      return new Promise(function (resolve, reject) {
-	        var claims = client.get_license_claims(null, _this18._nonce++);
-	        if (claims.error) {
-	          reject(error);
+	        var result = client.get_license_claims(null, _this18._nonce++);
+	        if (result instanceof Error) {
+	          reject(result);
 	        } else {
-	          resolve(claims);
+	          resolve(result);
 	        }
 	      });
 	    }
@@ -18904,7 +18904,7 @@ module.exports =
 	MapDClientV2.prototype = Object.create(MapDClient.prototype);
 
 	!function () {
-	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "delete_frontend_view", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "get_frontend_views", "get_frontend_view", "create_link", "get_link_view", "detect_column_types", "create_frontend_view", "send_create_table", "send_import_table", "detect_column_types"].forEach(function (funcName) {
+	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "delete_frontend_view", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "get_frontend_views", "get_frontend_view", "create_link", "get_link_view", "detect_column_types", "create_frontend_view", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
 	    MapDClientV2.prototype[funcName] = function () {
 	      return (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, funcName).apply(undefined, arguments);
 	    };
