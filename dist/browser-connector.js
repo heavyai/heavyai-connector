@@ -66,10 +66,27 @@
 		Author Tobias Koppers @sokra
 	*/
 	module.exports = function(src) {
-		if (typeof execScript !== "undefined")
-			execScript(src);
-		else
-			eval.call(null, src);
+		function log(error) {
+			(typeof console !== "undefined")
+			&& (console.error || console.log)("[Script Loader]", error);
+		}
+
+		// Check for IE =< 8
+		function isIE() {
+			return typeof attachEvent !== "undefined" && typeof addEventListener === "undefined";
+		}
+
+		try {
+			if (typeof execScript !== "undefined" && isIE()) {
+				execScript(src);
+			} else if (typeof eval !== "undefined") {
+				eval.call(null, src);
+			} else {
+				log("EvalError: No eval function available");
+			}
+		} catch (error) {
+			log(error);
+		}
 	}
 
 
@@ -1958,10 +1975,47 @@
 	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
 	      });
 	    }
+
+	    /**
+	     * Set the license for Trial or Enterprise
+	     * @return {Promise.<Object>} Claims or error.
+	     */
+
 	  }, {
-	    key: "getClient",
-	    value: function getClient() {
-	      return new _mapdClientV2.default();
+	    key: "setLicenseClaims",
+	    value: function setLicenseClaims(key) {
+	      var _this17 = this;
+
+	      return new Promise(function (resolve, reject) {
+	        var client = Array.isArray(_this17._client) && _this17._client[0] || new _mapdClientV2.default();
+	        var claims = client.set_license_key(null, key, _this17._nonce++);
+	        if (claims.error) {
+	          reject(error);
+	        } else {
+	          resolve(claims);
+	        }
+	      });
+	    }
+
+	    /**
+	     * Get the license for Trial or Enterprise
+	     * @return {Promise.<Object>} Claims or error.
+	     */
+
+	  }, {
+	    key: "getLicenseClaims",
+	    value: function getLicenseClaims() {
+	      var _this18 = this;
+
+	      var client = Array.isArray(this._client) && this._client[0] || new _mapdClientV2.default();
+	      return new Promise(function (resolve, reject) {
+	        var claims = client.get_license_claims(null, _this18._nonce++);
+	        if (claims.error) {
+	          reject(error);
+	        } else {
+	          resolve(claims);
+	        }
+	      });
 	    }
 	  }]);
 
