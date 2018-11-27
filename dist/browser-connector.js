@@ -2141,126 +2141,13 @@
 
 	MapDClientV2.prototype = Object.create(MapDClient.prototype);
 
-	MapDClientV2.prototype.connect = function () {
-	  var connectWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "connect");
-	  return connectWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.sql_execute = function () {
-	  var SQLExecuteWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "sql_execute");
-	  return SQLExecuteWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.sql_validate = function () {
-	  var SQLValidateWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "sql_validate");
-	  return SQLValidateWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.render = function () {
-	  var renderWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "render");
-	  return renderWithErrorHandling.apply(undefined, arguments);
-	};
-
-	/* istanbul ignore next */
-	MapDClientV2.prototype.render_vega = function () {
-	  var renderVegaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "render_vega");
-	  return renderVegaWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_result_row_for_pixel = function () {
-	  var getResultRowForPixelWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_result_row_for_pixel");
-	  return getResultRowForPixelWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.delete_frontend_view = function () {
-	  var deleteFrontendViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "delete_frontend_view");
-	  return deleteFrontendViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_completion_hints = function () {
-	  var getCompletionHintsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_completion_hints");
-	  return getCompletionHintsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_tables = function () {
-	  var getTablesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_tables");
-	  return getTablesWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_table_details = function () {
-	  var getTableDetailsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_table_details");
-	  return getTableDetailsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_tables_meta = function () {
-	  var getTablesWithMetaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_tables_meta");
-	  return getTablesWithMetaWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_fields = function () {
-	  var getFieldsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_fields");
-	  return getFieldsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_status = function () {
-	  var getStatusWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_status");
-	  return getStatusWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_server_status = function () {
-	  var getServerStatusWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_server_status");
-	  return getServerStatusWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_hardware_info = function () {
-	  var getHardwareInfoWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_hardware_info");
-	  return getHardwareInfoWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_frontend_views = function () {
-	  var getFrontEndViewsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_frontend_views");
-	  return getFrontEndViewsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_frontend_view = function () {
-	  var getFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_frontend_view");
-	  return getFrontEndViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.create_link = function () {
-	  var createLinkWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "create_link");
-	  return createLinkWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_link_view = function () {
-	  var getLinkViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_link_view");
-	  return getLinkViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.detect_column_types = function () {
-	  var detectColumnTypesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "detect_column_types");
-	  return detectColumnTypesWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.create_frontend_view = function () {
-	  var createFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "create_frontend_view");
-	  return createFrontEndViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.send_create_table = function () {
-	  var sendCreateTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "send_create_table");
-	  return sendCreateTableWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.send_import_table = function () {
-	  var sendImportTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "send_import_table");
-	  return sendImportTableWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.detect_column_types = function () {
-	  var detectColumnTypesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "detect_column_types");
-	  return detectColumnTypesWithErrorHandling.apply(undefined, arguments);
-	};
+	!function () {
+	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "delete_frontend_view", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "get_frontend_views", "get_frontend_view", "create_link", "get_link_view", "detect_column_types", "create_frontend_view", "send_create_table", "send_import_table", "detect_column_types"].forEach(function (funcName) {
+	    MapDClientV2.prototype[funcName] = function () {
+	      return (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, funcName).apply(undefined, arguments);
+	    };
+	  });
+	}();
 
 /***/ }),
 /* 14 */
