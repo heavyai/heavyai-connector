@@ -17425,14 +17425,14 @@ module.exports =
 	      var fieldsArray = [];
 	      // silly to change this from map to array
 	      // - then later it turns back to map
-	      for (var key in fields) {
-	        if (fields.hasOwnProperty(key)) {
+	      for (var _key2 in fields) {
+	        if (fields.hasOwnProperty(_key2)) {
 	          fieldsArray.push({
-	            name: key,
-	            type: this._datumEnum[fields[key].col_type.type],
-	            precision: fields[key].col_type.precision,
-	            is_array: fields[key].col_type.is_array,
-	            is_dict: fields[key].col_type.encoding === TEncodingType.DICT // eslint-disable-line no-undef
+	            name: _key2,
+	            type: this._datumEnum[fields[_key2].col_type.type],
+	            precision: fields[_key2].col_type.precision,
+	            is_array: fields[_key2].col_type.is_array,
+	            is_dict: fields[_key2].col_type.encoding === TEncodingType.DICT // eslint-disable-line no-undef
 	          });
 	        }
 	      }
@@ -18229,9 +18229,9 @@ module.exports =
 	    key: "invertDatumTypes",
 	    value: function invertDatumTypes() {
 	      var datumType = TDatumType; // eslint-disable-line no-undef
-	      for (var key in datumType) {
-	        if (datumType.hasOwnProperty(key)) {
-	          this._datumEnum[datumType[key]] = key;
+	      for (var _key3 in datumType) {
+	        if (datumType.hasOwnProperty(_key3)) {
+	          this._datumEnum[datumType[_key3]] = _key3;
 	        }
 	      }
 	    }
@@ -18748,11 +18748,22 @@ module.exports =
 
 	  }, {
 	    key: "setLicenseKey",
-	    value: function setLicenseKey(key) {
+	    value: function setLicenseKey(_ref10) {
 	      var _this17 = this;
 
+	      var protocol = _ref10.protocol,
+	          host = _ref10.host,
+	          port = _ref10.port;
+
 	      return new Promise(function (resolve, reject) {
-	        var client = Array.isArray(_this17._client) && _this17._client[0] || new _mapdClientV2.default();
+	        var client = Array.isArray(_this17._client) && _this17._client[0];
+	        if (!client) {
+	          var url = protocol + "://" + host + ":" + port;
+	          var thriftTransport = new Thrift.Transport(url);
+	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	          client = new _mapdClientV2.default(thriftProtocol);
+	        }
+
 	        var result = client.set_license_key(null, key, _this17._nonce++);
 	        if (result instanceof Error) {
 	          reject(result);
@@ -18769,10 +18780,20 @@ module.exports =
 
 	  }, {
 	    key: "getLicenseClaims",
-	    value: function getLicenseClaims() {
+	    value: function getLicenseClaims(_ref11) {
 	      var _this18 = this;
 
-	      var client = Array.isArray(this._client) && this._client[0] || new _mapdClientV2.default();
+	      var protocol = _ref11.protocol,
+	          host = _ref11.host,
+	          port = _ref11.port;
+
+	      var client = Array.isArray(this._client) && this._client[0];
+	      if (!client) {
+	        var url = protocol + "://" + host + ":" + port;
+	        var thriftTransport = new Thrift.Transport(url);
+	        var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	        client = new _mapdClientV2.default(thriftProtocol);
+	      }
 	      return new Promise(function (resolve, reject) {
 	        var result = client.get_license_claims(null, _this18._nonce++);
 	        if (result instanceof Error) {
@@ -18791,11 +18812,10 @@ module.exports =
 	  methodNames.forEach(function (methodName) {
 	    var oldFunc = connector[methodName];
 	    connector[methodName] = function () {
-	      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
+	      for (var _len2 = arguments.length, args = Array(_len2), _key4 = 0; _key4 < _len2; _key4++) {
+	        args[_key4] = arguments[_key4];
 	      }
 
-	      console.log("resetThriftClient-wrapped method", { methodName: methodName, args: args });
 	      try {
 	        // eslint-disable-line no-restricted-syntax
 	        return oldFunc.apply(connector, args); // TODO should reject rather than throw for Promises.

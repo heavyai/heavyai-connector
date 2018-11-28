@@ -1901,9 +1901,16 @@ class MapdCon {
    * Set the license for Trial or Enterprise
    * @return {Promise.<Object>} Claims or Error.
    */
-  setLicenseKey(key) {
+  setLicenseKey({protocol, host, port}) {
     return new Promise((resolve, reject) => {
-      const client = (Array.isArray(this._client) && this._client[0]) || (new MapDClientV2())
+      let client = Array.isArray(this._client) && this._client[0]
+      if (!client) {
+        const url = `${protocol}://${host}:${port}`
+        const thriftTransport = new Thrift.Transport(url)
+        const thriftProtocol = new Thrift.Protocol(thriftTransport)
+        client = new MapDClientV2(thriftProtocol)
+      }
+
       const result = client.set_license_key(
         null,
         key,
@@ -1921,8 +1928,14 @@ class MapdCon {
    * Get the license for Trial or Enterprise
    * @return {Promise.<Object>} Claims or Error.
    */
-  getLicenseClaims() {
-    const client = (Array.isArray(this._client) && this._client[0]) || (new MapDClientV2())
+  getLicenseClaims({protocol, host, port}) {
+    let client = Array.isArray(this._client) && this._client[0]
+    if (!client) {
+      const url = `${protocol}://${host}:${port}`
+      const thriftTransport = new Thrift.Transport(url)
+      const thriftProtocol = new Thrift.Protocol(thriftTransport)
+      client = new MapDClientV2(thriftProtocol)
+    }
     return new Promise((resolve, reject) => {
       const result = client.get_license_claims(
         null,
