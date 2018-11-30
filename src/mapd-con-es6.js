@@ -1901,7 +1901,7 @@ class MapdCon {
    * Set the license for Trial or Enterprise
    * @return {Promise.<Object>} Claims or Error.
    */
-  setLicenseKey({protocol, host, port}) {
+  setLicenseKey(key, {protocol, host, port}) {
     return new Promise((resolve, reject) => {
       let client = Array.isArray(this._client) && this._client[0]
       if (!client) {
