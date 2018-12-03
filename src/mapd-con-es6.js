@@ -1910,17 +1910,12 @@ class MapdCon {
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
         client = new MapDClientV2(thriftProtocol)
       }
-
       const result = client.set_license_key(
-        null,
+        "",
         key,
         this._nonce++
       )
-      if (result instanceof Error) {
-        reject(result)
-      } else {
-        resolve(result)
-      }
+      resolve(result)
     })
   }
 
@@ -1941,11 +1936,7 @@ class MapdCon {
         null,
         this._nonce++
       )
-      if (result instanceof Error) {
-        reject(result)
-      } else {
-        resolve(result)
-      }
+      resolve(result)
     })
   }
 }
