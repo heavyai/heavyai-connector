@@ -1924,16 +1924,16 @@ class MapdCon {
    * @return {Promise.<Object>} Claims or Error.
    */
   getLicenseClaims({protocol, host, port}) {
-    let client = Array.isArray(this._client) && this._client[0]
-    if (!client) {
-      const url = `${protocol}://${host}:${port}`
-      const thriftTransport = new Thrift.Transport(url)
-      const thriftProtocol = new Thrift.Protocol(thriftTransport)
-      client = new MapDClientV2(thriftProtocol)
-    }
     return new Promise((resolve, reject) => {
+      let client = Array.isArray(this._client) && this._client[0]
+      if (!client) {
+        const url = `${protocol}://${host}:${port}`
+        const thriftTransport = new Thrift.Transport(url)
+        const thriftProtocol = new Thrift.Protocol(thriftTransport)
+        client = new MapDClientV2(thriftProtocol)
+      }
       const result = client.get_license_claims(
-        null,
+        "",
         this._nonce++
       )
       resolve(result)
