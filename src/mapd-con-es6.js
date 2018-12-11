@@ -27,6 +27,13 @@ function isNodeRuntime() {
   return typeof window === "undefined"
 }
 
+function isTimeoutError(result) {
+  return (
+    result instanceof window.TMapDException &&
+    String(result.error_msg).indexOf("Session not valid.") !== -1
+  )
+}
+
 class MapdCon {
   constructor() {
     this._host = null
@@ -97,10 +104,6 @@ class MapdCon {
    *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
    */
   connect(callback) {
-    if (this._sessionId) {
-      this.disconnect()
-    }
-
     // TODO: should be its own function
     const allAreArrays =
       Array.isArray(this._host) &&
@@ -173,6 +176,8 @@ class MapdCon {
           "disconnect",
           "getCompletionHintsAsync",
           "getFields",
+          "getDashboardAsync",
+          "getDashboardsAsync",
           "getFrontendViewAsync",
           "getFrontendViewsAsync",
           "getLinkViewAsync",
@@ -264,15 +269,15 @@ class MapdCon {
     if (this._sessionId !== null) {
       for (let c = 0; c < this._client.length; c++) {
         this._client[c].disconnect(this._sessionId[c], error => {
-          // Success will return NULL
-
-          if (error) {
+          if (error && !isTimeoutError(error)) {
             return callback(error, this)
           }
+
           this._sessionId = null
           this._client = null
           this._numConnections = 0
           this.serverPingTimes = null
+
           return callback(null, this)
         })
       }
@@ -289,54 +294,68 @@ class MapdCon {
     this.queryTimes[queryId] = execution_time_ms
   }
 
-  // Wrap a Thrift binding method that only requires a single client (i.e. a 'get' type operation) in a Promise
-  promisifySingle = (processArgs, methodName) => (...args) =>
+  promisifyThriftMethod = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
-      if (this._sessionId) {
-        const processedArgs = processArgs(args)
-        const client = this._client[0]
-
+      const runThriftMethod = (_sessionId, handleError) => {
         client[methodName].apply(
           client,
-          [this._sessionId[0]].concat(processedArgs, result => {
+          [_sessionId].concat(args, result => {
             if (result instanceof Error) {
-              reject(result)
+              handleError(result)
             } else {
               resolve(result)
             }
           })
         )
-      } else {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
       }
+
+      const handleErrorReject = error => {
+        reject(error)
+      }
+
+      const handleErrorReconnectAndRetry = error => {
+        if (isTimeoutError(error)) {
+          // Session might have timed out - call connect with existing parameters, then retry
+          this.connectAsync().then(result => {
+            // If we fail again though, just stop and reject
+            runThriftMethod(result._sessionId[0], handleErrorReject)
+          })
+        } else {
+          reject(error)
+        }
+      }
+
+      runThriftMethod(sessionId, handleErrorReconnectAndRetry)
     })
 
+  overSingleClient = "SINGLE_CLIENT"
+
+  overAllClients = "ALL_CLIENTS"
+
   // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
-  promisifyAll = (processArgs, methodName) => (...args) => {
+  wrapThrift = (methodName, overClients, processArgs) => (...args) => {
     if (this._sessionId) {
       const processedArgs = processArgs(args)
 
-      return Promise.all(
-        this._client.map(
-          (client, i) =>
-            new Promise((resolve, reject) => {
-              client[methodName].apply(
-                client,
-                [this._sessionId[i]].concat(processedArgs, result => {
-                  if (result instanceof Error) {
-                    reject(result)
-                  } else {
-                    resolve(result)
-                  }
-                })
-              )
-            })
+      if (overClients === this.overSingleClient) {
+        return this.promisifyThriftMethod(
+          this._client[0],
+          this._sessionId[0],
+          methodName,
+          processedArgs
         )
-      )
+      } else {
+        return Promise.all(
+          this._client.map((client, index) =>
+            this.promisifyThriftMethod(
+              client,
+              this._sessionId[index],
+              methodName,
+              processedArgs
+            )
+          )
+        )
+      }
     } else {
       return Promise.reject(
         new Error(
@@ -706,9 +725,10 @@ class MapdCon {
    *
    * con.getFirstGeoFileInArchiveAsync('archive.zip', {}).then(res => console.log(res))
    */
-  getFirstGeoFileInArchiveAsync = this.promisifySingle(
-    args => args,
-    "get_first_geo_file_in_archive"
+  getFirstGeoFileInArchiveAsync = this.wrapThrift(
+    "get_first_geo_file_in_archive",
+    this.overSingleClient,
+    args => args
   )
 
   /**
@@ -719,7 +739,11 @@ class MapdCon {
    *
    * con.getUsersAsync().then(res => console.log(res))
    */
-  getUsersAsync = this.promisifySingle(args => args, "get_users")
+  getUsersAsync = this.wrapThrift(
+    "get_users",
+    this.overSingleClient,
+    args => args
+  )
 
   /**
    * Get a list of all roles on the database for this connection.
@@ -729,7 +753,11 @@ class MapdCon {
    *
    * con.getRolesAsync().then(res => console.log(res))
    */
-  getRolesAsync = this.promisifySingle(args => args, "get_roles")
+  getRolesAsync = this.wrapThrift(
+    "get_roles",
+    this.overSingleClient,
+    args => args
+  )
 
   /**
    * Get a list of all dashboards on the database for this connection.
@@ -739,7 +767,11 @@ class MapdCon {
    *
    * con.getDashboardsAsync().then(res => console.log(res))
    */
-  getDashboardsAsync = this.promisifySingle(args => args, "get_dashboards")
+  getDashboardsAsync = this.wrapThrift(
+    "get_dashboards",
+    this.overSingleClient,
+    args => args
+  )
 
   /**
    * Get a single dashboard.
@@ -750,7 +782,11 @@ class MapdCon {
    *
    * con.getDashboardAsync().then(res => console.log(res))
    */
-  getDashboardAsync = this.promisifySingle(args => args, "get_dashboard")
+  getDashboardAsync = this.wrapThrift(
+    "get_dashboard",
+    this.overSingleClient,
+    args => args
+  )
 
   /**
    * Add a new dashboard to the server.
@@ -764,7 +800,11 @@ class MapdCon {
    *
    * con.createDashboardAsync('newSave', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
-  createDashboardAsync = this.promisifyAll(args => args, "create_dashboard")
+  createDashboardAsync = this.wrapThrift(
+    "create_dashboard",
+    this.overAllClients,
+    args => args
+  )
 
   /**
    * Replace a dashboard on the server with new properties.
@@ -780,7 +820,11 @@ class MapdCon {
    *
    * con.replaceDashboardAsync(123, 'replaceSave', 'owner', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
-  replaceDashboardAsync = this.promisifyAll(args => args, "replace_dashboard")
+  replaceDashboardAsync = this.wrapThrift(
+    "replace_dashboard",
+    this.overAllClients,
+    args => args
+  )
 
   /**
    * Delete a dashboard object containing a value for the <code>view_state</code> property.
@@ -791,7 +835,11 @@ class MapdCon {
    *
    * con.deleteDashboardAsync(123).then(res => console.log(res))
    */
-  deleteDashboardAsync = this.promisifyAll(args => args, "delete_dashboard")
+  deleteDashboardAsync = this.wrapThrift(
+    "delete_dashboard",
+    this.overAllClients,
+    args => args
+  )
 
   /**
    * Share a dashboard (GRANT a certain set of permissions to a specified list of groups).
@@ -805,14 +853,15 @@ class MapdCon {
    *
    * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
    */
-  shareDashboardAsync = this.promisifyAll(
+  shareDashboardAsync = this.wrapThrift(
+    "share_dashboard",
+    this.overAllClients,
     ([dashboardId, groups, objects, permissions]) => [
       dashboardId,
       groups,
       objects,
       new TDashboardPermissions(permissions)
-    ],
-    "share_dashboard"
+    ]
   )
 
   /**
@@ -827,14 +876,15 @@ class MapdCon {
    *
    * con.unshareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
    */
-  unshareDashboardAsync = this.promisifyAll(
+  unshareDashboardAsync = this.wrapThrift(
+    "unshare_dashboard",
+    this.overAllClients,
     ([dashboardId, groups, objects, permissions]) => [
       dashboardId,
       groups,
       objects,
       new TDashboardPermissions(permissions)
-    ],
-    "unshare_dashboard"
+    ]
   )
 
   /**
@@ -846,9 +896,10 @@ class MapdCon {
    *
    * con.getDashboardGranteesAsync(123).then(res => console.log(res))
    */
-  getDashboardGranteesAsync = this.promisifySingle(
-    args => args,
-    "get_dashboard_grantees"
+  getDashboardGranteesAsync = this.wrapThrift(
+    "get_dashboard_grantees",
+    this.overSingleClient,
+    args => args
   )
 
   /**
@@ -860,9 +911,10 @@ class MapdCon {
    *
    * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
    */
-  getDbObjectsForGranteeAsync = this.promisifySingle(
-    args => args,
-    "get_db_objects_for_grantee"
+  getDbObjectsForGranteeAsync = this.wrapThrift(
+    "get_db_objects_for_grantee",
+    this.overSingleClient,
+    args => args
   )
 
   /**
@@ -875,9 +927,10 @@ class MapdCon {
    *
    * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
    */
-  getDbObjectPrivsAsync = this.promisifySingle(
-    ([objectName, type]) => [objectName, TDBObjectType[type]],
-    "get_db_object_privs"
+  getDbObjectPrivsAsync = this.wrapThrift(
+    "get_db_object_privs",
+    this.overSingleClient,
+    ([objectName, type]) => [objectName, TDBObjectType[type]]
   )
 
   /**
@@ -885,9 +938,10 @@ class MapdCon {
    * @param {String} username - The username whose roles you wish to get.
    * @return {Promise} A list of all roles assigned to the username.
    */
-  getAllRolesForUserAsync = this.promisifySingle(
-    args => args,
-    "get_all_roles_for_user"
+  getAllRolesForUserAsync = this.wrapThrift(
+    "get_all_roles_for_user",
+    this.overSingleClient,
+    args => args
   )
 
   /**
@@ -915,14 +969,15 @@ class MapdCon {
    *   if(res) { console.log("Can view the SQL editor") }
    * )
    */
-  hasObjectPrivilegesAsync = this.promisifySingle(
+  hasObjectPrivilegesAsync = this.wrapThrift(
+    "has_object_privilege",
+    this.overSingleClient,
     ([granteeName, objectName, objectType, permissions]) => [
       granteeName,
       objectName,
       objectType,
       permissions
-    ],
-    "has_object_privilege"
+    ]
   )
 
   /**
@@ -1851,6 +1906,7 @@ function resetThriftClientOnArgumentErrorForMethods(
   methodNames.forEach(methodName => {
     const oldFunc = connector[methodName]
     connector[methodName] = (...args) => {
+      console.log("resetThriftClient-wrapped method", { methodName, args })
       try {
         // eslint-disable-line no-restricted-syntax
         return oldFunc.apply(connector, args) // TODO should reject rather than throw for Promises.

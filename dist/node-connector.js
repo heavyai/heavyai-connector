@@ -16958,6 +16958,10 @@ module.exports =
 	  return typeof window === "undefined";
 	}
 
+	function isTimeoutError(result) {
+	  return result instanceof window.TMapDException && String(result.error_msg).indexOf("Session not valid.") !== -1;
+	}
+
 	var MapdCon = function () {
 	  function MapdCon() {
 	    var _this = this;
@@ -16980,51 +16984,57 @@ module.exports =
 	      _this.queryTimes[queryId] = execution_time_ms;
 	    };
 
-	    this.promisifySingle = function (processArgs, methodName) {
+	    this.promisifyThriftMethod = function (client, sessionId, methodName, args) {
+	      return new Promise(function (resolve, reject) {
+	        var runThriftMethod = function runThriftMethod(_sessionId, handleError) {
+	          client[methodName].apply(client, [_sessionId].concat(args, function (result) {
+	            if (result instanceof Error) {
+	              handleError(result);
+	            } else {
+	              resolve(result);
+	            }
+	          }));
+	        };
+
+	        var handleErrorReject = function handleErrorReject(error) {
+	          reject(error);
+	        };
+
+	        var handleErrorReconnectAndRetry = function handleErrorReconnectAndRetry(error) {
+	          if (isTimeoutError(error)) {
+	            // Session might have timed out - call connect with existing parameters, then retry
+	            _this.connectAsync().then(function (result) {
+	              // If we fail again though, just stop and reject
+	              runThriftMethod(result._sessionId[0], handleErrorReject);
+	            });
+	          } else {
+	            reject(error);
+	          }
+	        };
+
+	        runThriftMethod(sessionId, handleErrorReconnectAndRetry);
+	      });
+	    };
+
+	    this.overSingleClient = "SINGLE_CLIENT";
+	    this.overAllClients = "ALL_CLIENTS";
+
+	    this.wrapThrift = function (methodName, overClients, processArgs) {
 	      return function () {
 	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
 	          args[_key] = arguments[_key];
 	        }
 
-	        return new Promise(function (resolve, reject) {
-	          if (_this._sessionId) {
-	            var processedArgs = processArgs(args);
-	            var client = _this._client[0];
-
-	            client[methodName].apply(client, [_this._sessionId[0]].concat(processedArgs, function (result) {
-	              if (result instanceof Error) {
-	                reject(result);
-	              } else {
-	                resolve(result);
-	              }
-	            }));
-	          } else {
-	            reject(new Error("You are not connected to a server. Try running the connect method first."));
-	          }
-	        });
-	      };
-	    };
-
-	    this.promisifyAll = function (processArgs, methodName) {
-	      return function () {
-	        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	          args[_key2] = arguments[_key2];
-	        }
-
 	        if (_this._sessionId) {
 	          var processedArgs = processArgs(args);
 
-	          return Promise.all(_this._client.map(function (client, i) {
-	            return new Promise(function (resolve, reject) {
-	              client[methodName].apply(client, [_this._sessionId[i]].concat(processedArgs, function (result) {
-	                if (result instanceof Error) {
-	                  reject(result);
-	                } else {
-	                  resolve(result);
-	                }
-	              }));
-	            });
-	          }));
+	          if (overClients === _this.overSingleClient) {
+	            return _this.promisifyThriftMethod(_this._client[0], _this._sessionId[0], methodName, processedArgs);
+	          } else {
+	            return Promise.all(_this._client.map(function (client, index) {
+	              return _this.promisifyThriftMethod(client, _this._sessionId[index], methodName, processedArgs);
+	            }));
+	          }
 	        } else {
 	          return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
 	        }
@@ -17144,31 +17154,31 @@ module.exports =
 	      });
 	    };
 
-	    this.getFirstGeoFileInArchiveAsync = this.promisifySingle(function (args) {
+	    this.getFirstGeoFileInArchiveAsync = this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_first_geo_file_in_archive");
-	    this.getUsersAsync = this.promisifySingle(function (args) {
+	    });
+	    this.getUsersAsync = this.wrapThrift("get_users", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_users");
-	    this.getRolesAsync = this.promisifySingle(function (args) {
+	    });
+	    this.getRolesAsync = this.wrapThrift("get_roles", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_roles");
-	    this.getDashboardsAsync = this.promisifySingle(function (args) {
+	    });
+	    this.getDashboardsAsync = this.wrapThrift("get_dashboards", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_dashboards");
-	    this.getDashboardAsync = this.promisifySingle(function (args) {
+	    });
+	    this.getDashboardAsync = this.wrapThrift("get_dashboard", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_dashboard");
-	    this.createDashboardAsync = this.promisifyAll(function (args) {
+	    });
+	    this.createDashboardAsync = this.wrapThrift("create_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    }, "create_dashboard");
-	    this.replaceDashboardAsync = this.promisifyAll(function (args) {
+	    });
+	    this.replaceDashboardAsync = this.wrapThrift("replace_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    }, "replace_dashboard");
-	    this.deleteDashboardAsync = this.promisifyAll(function (args) {
+	    });
+	    this.deleteDashboardAsync = this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    }, "delete_dashboard");
-	    this.shareDashboardAsync = this.promisifyAll(function (_ref2) {
+	    });
+	    this.shareDashboardAsync = this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
 	      var _ref3 = _slicedToArray(_ref2, 4),
 	          dashboardId = _ref3[0],
 	          groups = _ref3[1],
@@ -17176,8 +17186,8 @@ module.exports =
 	          permissions = _ref3[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    }, "share_dashboard");
-	    this.unshareDashboardAsync = this.promisifyAll(function (_ref4) {
+	    });
+	    this.unshareDashboardAsync = this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
 	      var _ref5 = _slicedToArray(_ref4, 4),
 	          dashboardId = _ref5[0],
 	          groups = _ref5[1],
@@ -17185,24 +17195,24 @@ module.exports =
 	          permissions = _ref5[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    }, "unshare_dashboard");
-	    this.getDashboardGranteesAsync = this.promisifySingle(function (args) {
+	    });
+	    this.getDashboardGranteesAsync = this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_dashboard_grantees");
-	    this.getDbObjectsForGranteeAsync = this.promisifySingle(function (args) {
+	    });
+	    this.getDbObjectsForGranteeAsync = this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_db_objects_for_grantee");
-	    this.getDbObjectPrivsAsync = this.promisifySingle(function (_ref6) {
+	    });
+	    this.getDbObjectPrivsAsync = this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
 	      var _ref7 = _slicedToArray(_ref6, 2),
 	          objectName = _ref7[0],
 	          type = _ref7[1];
 
 	      return [objectName, TDBObjectType[type]];
-	    }, "get_db_object_privs");
-	    this.getAllRolesForUserAsync = this.promisifySingle(function (args) {
+	    });
+	    this.getAllRolesForUserAsync = this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
 	      return args;
-	    }, "get_all_roles_for_user");
-	    this.hasObjectPrivilegesAsync = this.promisifySingle(function (_ref8) {
+	    });
+	    this.hasObjectPrivilegesAsync = this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
 	      var _ref9 = _slicedToArray(_ref8, 4),
 	          granteeName = _ref9[0],
 	          objectName = _ref9[1],
@@ -17210,7 +17220,7 @@ module.exports =
 	          permissions = _ref9[3];
 
 	      return [granteeName, objectName, objectType, permissions];
-	    }, "has_object_privilege");
+	    });
 
 	    this.hasDbPrivilegesAsync = function (granteeName, dbName, dbPrivs) {
 	      return _this.hasObjectPrivilegesAsync(granteeName, dbName, TDBObjectType.DatabaseDBObjectType, new TDBObjectPermissions({
@@ -17328,10 +17338,6 @@ module.exports =
 	    value: function connect(callback) {
 	      var _this2 = this;
 
-	      if (this._sessionId) {
-	        this.disconnect();
-	      }
-
 	      // TODO: should be its own function
 	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
 	      if (!allAreArrays) {
@@ -17388,7 +17394,7 @@ module.exports =
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -17453,24 +17459,21 @@ module.exports =
 	      if (this._sessionId !== null) {
 	        for (var c = 0; c < this._client.length; c++) {
 	          this._client[c].disconnect(this._sessionId[c], function (error) {
-	            // Success will return NULL
-
-	            if (error) {
+	            if (error && !isTimeoutError(error)) {
 	              return callback(error, _this3);
 	            }
+
 	            _this3._sessionId = null;
 	            _this3._client = null;
 	            _this3._numConnections = 0;
 	            _this3.serverPingTimes = null;
+
 	            return callback(null, _this3);
 	          });
 	        }
 	      }
 	      return this;
 	    }
-
-	    // Wrap a Thrift binding method that only requires a single client (i.e. a 'get' type operation) in a Promise
-
 
 	    // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
 
@@ -18505,11 +18508,11 @@ module.exports =
 
 	  }, {
 	    key: "sessionId",
-	    value: function sessionId(_sessionId) {
+	    value: function sessionId(_sessionId2) {
 	      if (!arguments.length) {
 	        return this._sessionId;
 	      }
-	      this._sessionId = _sessionId;
+	      this._sessionId = _sessionId2;
 	      return this;
 	    }
 
@@ -18746,10 +18749,11 @@ module.exports =
 	  methodNames.forEach(function (methodName) {
 	    var oldFunc = connector[methodName];
 	    connector[methodName] = function () {
-	      for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-	        args[_key3] = arguments[_key3];
+	      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        args[_key2] = arguments[_key2];
 	      }
 
+	      console.log("resetThriftClient-wrapped method", { methodName: methodName, args: args });
 	      try {
 	        // eslint-disable-line no-restricted-syntax
 	        return oldFunc.apply(connector, args); // TODO should reject rather than throw for Promises.
