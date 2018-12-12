@@ -1906,7 +1906,6 @@ function resetThriftClientOnArgumentErrorForMethods(
   methodNames.forEach(methodName => {
     const oldFunc = connector[methodName]
     connector[methodName] = (...args) => {
-      console.log("resetThriftClient-wrapped method", { methodName, args })
       try {
         // eslint-disable-line no-restricted-syntax
         return oldFunc.apply(connector, args) // TODO should reject rather than throw for Promises.
