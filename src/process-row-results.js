@@ -70,6 +70,11 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
               row[fieldName].push(elemDatum.val.int_val)
               break
             case "FLOAT":
+              const floatWithPrecision = realToDecimal(
+                elemDatum.val.real_val,
+              )
+              row[fieldName].push(floatWithPrecision)
+              break
             case "DOUBLE":
             case "DECIMAL":
               row[fieldName].push(elemDatum.val.real_val)
@@ -107,6 +112,12 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             row[fieldName] = scalarDatum.val.int_val
             break
           case "FLOAT":
+            const floatWithPrecision = realToDecimal(
+              scalarDatum.val.real_val,
+            )
+            row[fieldName].push(floatWithPrecision)
+            break
+          case "DECIMAL":
           case "DOUBLE":
           case "DECIMAL":
             row[fieldName] = scalarDatum.val.real_val
