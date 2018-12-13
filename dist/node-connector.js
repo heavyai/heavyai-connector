@@ -18753,7 +18753,6 @@ module.exports =
 	        args[_key2] = arguments[_key2];
 	      }
 
-	      console.log("resetThriftClient-wrapped method", { methodName: methodName, args: args });
 	      try {
 	        // eslint-disable-line no-restricted-syntax
 	        return oldFunc.apply(connector, args); // TODO should reject rather than throw for Promises.
@@ -18806,6 +18805,9 @@ module.exports =
 	  value: true
 	});
 	exports.timestampToMs = timestampToMs;
+	exports.realToDecimal = realToDecimal;
+	var CORE_CPP_FLOAT_PRECISION = 7;
+
 	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
 	  return new TCopyParams(obj);
 	}; // eslint-disable-line no-undef
@@ -18838,6 +18840,20 @@ module.exports =
 	  var timeInMs = timestamp / divisor;
 
 	  return timeInMs;
+	}
+
+	/**
+	 *
+	 * @param {Double} real - The double precision value from the database connector
+	 * @param {Number} precision - The precision of the decimal column in the database. Note
+	 *  that as per FE-5318 this will default to 7 (i.e. `std::numeric_limits<float>::digits10 + 1`)
+	 *  to match core
+	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
+	*/
+	function realToDecimal(real) {
+	  var precision = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : CORE_CPP_FLOAT_PRECISION;
+
+	  return Number.parseFloat(real).toPrecision(precision);
 	}
 
 /***/ }),
@@ -19244,6 +19260,10 @@ module.exports =
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e]);
 	              break;
 	            case "FLOAT":
+	              var value = data.columns[_c].data.arr_col[r].data.real_col[e];
+	              var decimalWithPrecision = fieldPrecision ? value : (0, _helpers.realToDecimal)(value);
+	              row[fieldName].push(decimalWithPrecision);
+	              break;
 	            case "DOUBLE":
 	            case "DECIMAL":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.real_col[e]);
@@ -19274,6 +19294,10 @@ module.exports =
 	            row[fieldName] = data.columns[_c].data.int_col[r];
 	            break;
 	          case "FLOAT":
+	            var _value = data.columns[_c].data.real_col[r];
+	            var _decimalWithPrecision = fieldPrecision ? _value : (0, _helpers.realToDecimal)(_value);
+	            row[fieldName] = _decimalWithPrecision;
+	            break;
 	          case "DOUBLE":
 	          case "DECIMAL":
 	            row[fieldName] = data.columns[_c].data.real_col[r];
@@ -19388,6 +19412,10 @@ module.exports =
 	              row[fieldName].push(elemDatum.val.int_val);
 	              break;
 	            case "FLOAT":
+	              var value = elemDatum.val.real_val;
+	              var decimalWithPrecision = fieldPrecision ? value : (0, _helpers.realToDecimal)(value);
+	              row[fieldName].push(decimalWithPrecision);
+	              break;
 	            case "DOUBLE":
 	            case "DECIMAL":
 	              row[fieldName].push(elemDatum.val.real_val);
@@ -19422,6 +19450,10 @@ module.exports =
 	            row[fieldName] = scalarDatum.val.int_val;
 	            break;
 	          case "FLOAT":
+	            var _value = scalarDatum.val.real_val;
+	            var _decimalWithPrecision = fieldPrecision ? _value : (0, _helpers.realToDecimal)(_value);
+	            row[fieldName].push(_decimalWithPrecision);
+	            break;
 	          case "DOUBLE":
 	          case "DECIMAL":
 	            row[fieldName] = scalarDatum.val.real_val;
