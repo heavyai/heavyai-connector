@@ -41,5 +41,5 @@ export function timestampToMs(timestamp, precision) {
  * @returns {Double} - The equivalent decimal number encoded in a double precision number
 */
 export function realToDecimal(real, precision = CORE_CPP_FLOAT_PRECISION) {
-  return Number.parseFloat(real).toPrecision(precision)
+  return Number(Number.parseFloat(real).toPrecision(precision))
 }

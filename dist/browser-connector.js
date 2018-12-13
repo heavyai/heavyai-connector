@@ -2091,7 +2091,7 @@
 	function realToDecimal(real) {
 	  var precision = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : CORE_CPP_FLOAT_PRECISION;
 
-	  return Number.parseFloat(real).toPrecision(precision);
+	  return Number(Number.parseFloat(real).toPrecision(precision));
 	}
 
 /***/ }),
