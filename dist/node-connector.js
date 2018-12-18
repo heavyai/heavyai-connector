@@ -18925,7 +18925,8 @@ module.exports =
 
 	MapDClientV2.prototype = Object.create(MapDClient.prototype);
 
-	var wrappedClient = !function () {
+	/* eslint-disable no-unused-expressions */
+	!function () {
 	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "delete_frontend_view", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "get_frontend_views", "get_frontend_view", "create_link", "get_link_view", "detect_column_types", "create_frontend_view", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
 	    MapDClientV2.prototype[funcName] = function () {
 	      return (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, funcName).apply(undefined, arguments);
