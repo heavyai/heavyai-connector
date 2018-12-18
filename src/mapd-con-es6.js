@@ -1899,10 +1899,12 @@ class MapdCon {
 
   /**
    * Set the license for Trial or Enterprise
+   * @param {String} key The key to install
+   * @param {Object} config Protocol, host and port to connect to
    * @return {Promise.<Object>} Claims or Error.
    */
   setLicenseKey(key, {protocol, host, port}) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       let client = Array.isArray(this._client) && this._client[0]
       if (!client) {
         const url = `${protocol}://${host}:${port}`
@@ -1921,6 +1923,7 @@ class MapdCon {
 
   /**
    * Get the license for Trial or Enterprise
+   * @param {Object} config Protocol, host and port to connect to
    * @return {Promise.<Object>} Claims or Error.
    */
   getLicenseClaims({protocol, host, port}) {
@@ -1932,11 +1935,15 @@ class MapdCon {
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
         client = new MapDClientV2(thriftProtocol)
       }
-      const result = client.get_license_claims(
-        "",
-        this._nonce++
-      )
-      resolve(result)
+      try {
+        const result = client.get_license_claims(
+          "",
+          this._nonce++
+        )
+        resolve(result)
+      } catch (e) {
+        reject(e)
+      }
     })
   }
 }
