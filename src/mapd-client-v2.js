@@ -10,7 +10,8 @@ export default function MapDClientV2(protocol) {
 
 MapDClientV2.prototype = Object.create(MapDClient.prototype)
 
-const wrappedClient = !(function () {
+/* eslint-disable no-unused-expressions */
+!(function () {
   [
     "connect",
     "sql_execute",
