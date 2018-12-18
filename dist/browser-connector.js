@@ -222,35 +222,49 @@
 	      _this.queryTimes[queryId] = execution_time_ms;
 	    };
 
+	    this.handleErrors = function (method) {
+	      return function () {
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        return new Promise(function (resolve, reject) {
+	          var success = function success(result) {
+	            return resolve(result);
+	          };
+	          var failure = function failure(error) {
+	            return reject(error);
+	          };
+
+	          var result = method.apply(_this, args);
+
+	          result.then(success);
+	          result.catch(function (error) {
+	            if (isTimeoutError(error)) {
+	              // Reconnect, then try the method once more
+	              return _this.connectAsync().then(function () {
+	                var retriedResult = method.apply(_this, args);
+
+	                retriedResult.then(success);
+	                retriedResult.catch(failure);
+	              });
+	            } else {
+	              return failure(error);
+	            }
+	          });
+	        });
+	      };
+	    };
+
 	    this.promisifyThriftMethod = function (client, sessionId, methodName, args) {
 	      return new Promise(function (resolve, reject) {
-	        var runThriftMethod = function runThriftMethod(_sessionId, handleError) {
-	          client[methodName].apply(client, [_sessionId].concat(args, function (result) {
-	            if (result instanceof Error) {
-	              handleError(result);
-	            } else {
-	              resolve(result);
-	            }
-	          }));
-	        };
-
-	        var handleErrorReject = function handleErrorReject(error) {
-	          reject(error);
-	        };
-
-	        var handleErrorReconnectAndRetry = function handleErrorReconnectAndRetry(error) {
-	          if (isTimeoutError(error)) {
-	            // Session might have timed out - call connect with existing parameters, then retry
-	            _this.connectAsync().then(function (result) {
-	              // If we fail again though, just stop and reject
-	              runThriftMethod(result._sessionId[0], handleErrorReject);
-	            });
+	        client[methodName].apply(client, [sessionId].concat(args, function (result) {
+	          if (result instanceof Error) {
+	            reject(result);
 	          } else {
-	            reject(error);
+	            resolve(result);
 	          }
-	        };
-
-	        runThriftMethod(sessionId, handleErrorReconnectAndRetry);
+	        }));
 	      });
 	    };
 
@@ -259,8 +273,8 @@
 
 	    this.wrapThrift = function (methodName, overClients, processArgs) {
 	      return function () {
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	          args[_key] = arguments[_key];
+	        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	          args[_key2] = arguments[_key2];
 	        }
 
 	        if (_this._sessionId) {
@@ -279,64 +293,11 @@
 	      };
 	    };
 
-	    this.getFrontendViews = function (callback) {
-	      if (_this._sessionId) {
-	        _this._client[0].get_frontend_views(_this._sessionId[0], callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewsAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendViews(function (error, views) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(views);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getFrontendView = function (viewName, callback) {
-	      if (_this._sessionId && viewName) {
-	        _this._client[0].get_frontend_view(_this._sessionId[0], viewName, callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendView(viewName, function (err, view) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(view);
-	          }
-	        });
-	      });
-	    };
-
 	    this.getStatus = function (callback) {
 	      _this._client[0].get_status(_this._sessionId[0], callback);
 	    };
 
-	    this.getServerStatusAsync = function () {
-	      console.warn("getServerStatusAsync is deprecated, please use getStatusAsync");
-	      return new Promise(function (resolve, reject) {
-	        _this.getStatus(function (err, result) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(result[0]);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getStatusAsync = function () {
+	    this.getStatusAsync = this.handleErrors(function () {
 	      return new Promise(function (resolve, reject) {
 	        _this.getStatus(function (err, result) {
 	          if (err) {
@@ -346,13 +307,13 @@
 	          }
 	        });
 	      });
-	    };
+	    });
 
 	    this.getHardwareInfo = function (callback) {
 	      _this._client[0].get_hardware_info(_this._sessionId[0], callback);
 	    };
 
-	    this.getHardwareInfoAsync = function () {
+	    this.getHardwareInfoAsync = this.handleErrors(function () {
 	      return new Promise(function (resolve, reject) {
 	        _this.getHardwareInfo(function (err, result) {
 	          if (err) {
@@ -362,61 +323,32 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.deleteFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.deleteFrontendView(viewName, function (err) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(viewName);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getLinkView = function (link, callback) {
-	      _this._client[0].get_link_view(_this._sessionId[0], link, callback);
-	    };
-
-	    this.getLinkViewAsync = function (link) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getLinkView(link, function (err, theLink) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(theLink);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getFirstGeoFileInArchiveAsync = this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
-	      return args;
 	    });
-	    this.getUsersAsync = this.wrapThrift("get_users", this.overSingleClient, function (args) {
+	    this.getFirstGeoFileInArchiveAsync = this.handleErrors(this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getRolesAsync = this.wrapThrift("get_roles", this.overSingleClient, function (args) {
+	    }));
+	    this.getUsersAsync = this.handleErrors(this.wrapThrift("get_users", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDashboardsAsync = this.wrapThrift("get_dashboards", this.overSingleClient, function (args) {
+	    }));
+	    this.getRolesAsync = this.handleErrors(this.wrapThrift("get_roles", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDashboardAsync = this.wrapThrift("get_dashboard", this.overSingleClient, function (args) {
+	    }));
+	    this.getDashboardsAsync = this.handleErrors(this.wrapThrift("get_dashboards", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.createDashboardAsync = this.wrapThrift("create_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.getDashboardAsync = this.handleErrors(this.wrapThrift("get_dashboard", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.replaceDashboardAsync = this.wrapThrift("replace_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.createDashboardAsync = this.handleErrors(this.wrapThrift("create_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    });
-	    this.deleteDashboardAsync = this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.replaceDashboardAsync = this.handleErrors(this.wrapThrift("replace_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    });
-	    this.shareDashboardAsync = this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
+	    }));
+	    this.deleteDashboardAsync = this.handleErrors(this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
+	      return args;
+	    }));
+	    this.shareDashboardAsync = this.handleErrors(this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
 	      var _ref3 = _slicedToArray(_ref2, 4),
 	          dashboardId = _ref3[0],
 	          groups = _ref3[1],
@@ -424,8 +356,8 @@
 	          permissions = _ref3[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    });
-	    this.unshareDashboardAsync = this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
+	    }));
+	    this.unshareDashboardAsync = this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
 	      var _ref5 = _slicedToArray(_ref4, 4),
 	          dashboardId = _ref5[0],
 	          groups = _ref5[1],
@@ -433,24 +365,24 @@
 	          permissions = _ref5[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    });
-	    this.getDashboardGranteesAsync = this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
+	    }));
+	    this.getDashboardGranteesAsync = this.handleErrors(this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDbObjectsForGranteeAsync = this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
+	    }));
+	    this.getDbObjectsForGranteeAsync = this.handleErrors(this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDbObjectPrivsAsync = this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
+	    }));
+	    this.getDbObjectPrivsAsync = this.handleErrors(this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
 	      var _ref7 = _slicedToArray(_ref6, 2),
 	          objectName = _ref7[0],
 	          type = _ref7[1];
 
 	      return [objectName, TDBObjectType[type]];
-	    });
-	    this.getAllRolesForUserAsync = this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
+	    }));
+	    this.getAllRolesForUserAsync = this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.hasObjectPrivilegesAsync = this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
+	    }));
+	    this.hasObjectPrivilegesAsync = this.handleErrors(this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
 	      var _ref9 = _slicedToArray(_ref8, 4),
 	          granteeName = _ref9[0],
 	          objectName = _ref9[1],
@@ -458,7 +390,7 @@
 	          permissions = _ref9[3];
 
 	      return [granteeName, objectName, objectType, permissions];
-	    });
+	    }));
 
 	    this.hasDbPrivilegesAsync = function (granteeName, dbName, dbPrivs) {
 	      return _this.hasObjectPrivilegesAsync(granteeName, dbName, TDBObjectType.DatabaseDBObjectType, new TDBObjectPermissions({
@@ -466,7 +398,19 @@
 	      }));
 	    };
 
-	    this.queryAsync = function (query, options) {
+	    this.detectColumnTypesAsync = this.handleErrors(function (fileName, copyParams) {
+	      return new Promise(function (resolve, reject) {
+	        _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            _this.importerRowDesc = res.row_set.row_desc;
+	            resolve(res);
+	          }
+	        });
+	      });
+	    });
+	    this.queryAsync = this.handleErrors(function (query, options) {
 	      return new Promise(function (resolve, reject) {
 	        _this.query(query, options, function (error, result) {
 	          if (error) {
@@ -476,9 +420,41 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.getFieldsAsync = function (tableName) {
+	    });
+	    this.validateQuery = this.handleErrors(function (query) {
+	      return new Promise(function (resolve, reject) {
+	        _this._client[0].sql_validate(_this._sessionId[0], query, function (error, res) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(_this.convertFromThriftTypes(res));
+	          }
+	        });
+	      });
+	    });
+	    this.getTablesAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getTables.bind(_this)(function (error, tables) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(tables);
+	          }
+	        });
+	      });
+	    });
+	    this.getTablesWithMetaAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getTablesWithMeta.bind(_this)(function (error, tables) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(tables);
+	          }
+	        });
+	      });
+	    });
+	    this.getFieldsAsync = this.handleErrors(function (tableName) {
 	      return new Promise(function (resolve, reject) {
 	        _this.getFields(tableName, function (error, fields) {
 	          if (error) {
@@ -488,9 +464,8 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.createTableAsync = function (tableName, rowDescObj, tableType, createParams) {
+	    });
+	    this.createTableAsync = this.handleErrors(function (tableName, rowDescObj, tableType, createParams) {
 	      return new Promise(function (resolve, reject) {
 	        _this.createTable(tableName, rowDescObj, tableType, createParams, function (err) {
 	          if (err) {
@@ -500,10 +475,20 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.importTableAsync = this.importTableAsyncWrapper(false);
-	    this.importTableGeoAsync = this.importTableAsyncWrapper(true);
+	    });
+	    this.importTableAsync = this.handleErrors(this.importTableAsyncWrapper(false));
+	    this.importTableGeoAsync = this.handleErrors(this.importTableAsyncWrapper(true));
+	    this.renderVegaAsync = this.handleErrors(function (widgetid, vega, options) {
+	      return new Promise(function (resolve, reject) {
+	        _this.renderVega(widgetid, vega, options, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 
 	    this._host = null;
 	    this._user = null;
@@ -632,7 +617,7 @@
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -712,53 +697,27 @@
 	      }
 	      return this;
 	    }
+	  }, {
+	    key: "removeConnection",
+	    value: function removeConnection(conId) {
+	      if (conId < 0 || conId >= this.numConnections) {
+	        var err = {
+	          msg: "Remove connection id invalid"
+	        };
+	        throw err;
+	      }
+	      this._client.splice(conId, 1);
+	      this._sessionId.splice(conId, 1);
+	      this._numConnections--;
+	    }
 
-	    // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
+	    // ** Method wrappers **
 
-
-	    /**
-	     * Get the recent Immerse dashboards as a list of {@link TFrontendView} objects.
-	     * These objects contain a value for the <code>view_name</code> property,
-	     * but not for the <code>view_state</code> property.
-	     * @return {Promise<TFrontendView[]>} An array that has all saved dashboards.
-	     *
-	     * @example <caption>Get the list of Immerse dashboards from the server:</caption>
-	     *
-	     * con.getFrontendViewsAsync().then((results) => console.log(results))
-	     * // [TFrontendView, TFrontendView]
-	     */
-
-
-	    /**
-	     * Get a dashboard object containing a value for the <code>view_state</code> property.
-	     * This object contains a value for the <code>view_state</code> property,
-	     * but not for the <code>view_name</code> property.
-	     * @param {String} viewName The name of the dashboard.
-	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard.
-	     *
-	     * @example <caption>Get a specific dashboard from the server:</caption>
-	     *
-	     * con.getFrontendViewAsync('view_name').then((result) => console.log(result))
-	     * // {TFrontendView}
-	     */
+	    // Wrap a Thrift method to perform session check and mapping over
+	    // all clients (for mutating methods)
 
 
-	    /**
-	     * Get the status of the server as a {@link TServerStatus} object.
-	     * This includes the server version number, whether the server is read-only,
-	     * and whether backend rendering is enabled.
-	     * @return {Promise.<Object>} An object that contains information about the server status.
-	     *
-	     * @example <caption>Get the server status:</caption>
-	     *
-	     * con.getServerStatusAsync().then((result) => console.log(result))
-	     * // {
-	     * //   "read_only": false,
-	     * //   "version": "3.0.0dev-20170503-40e2de3",
-	     * //   "rendering_enabled": true,
-	     * //   "start_time": 1493840131
-	     * // }
-	     */
+	    // ** Client methods **
 
 	    /**
 	     * Get the status of the server as a {@link TServerStatus} object.
@@ -814,137 +773,6 @@
 	     *   }]
 	     * }
 	     */
-
-	  }, {
-	    key: "createFrontendViewAsync",
-
-
-	    /**
-	     * Add a new dashboard to the server.
-	     * @param {String} viewName The name of the new dashboard.
-	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
-	     * @param {String} imageHash The numeric hash of the dashboard thumbnail.
-	     * @param {String} metaData - Stringified metadata related to the view.
-	     * @return {Promise} Returns empty if successful.
-	     *
-	     * @example <caption>Add a new dashboard to the server:</caption>
-	     *
-	     * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
-	     */
-	    value: function createFrontendViewAsync(viewName, viewState, imageHash, metaData) {
-	      var _this4 = this;
-
-	      if (!this._sessionId) {
-	        return new Promise(function (resolve, reject) {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        });
-	      }
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_frontend_view(_this4._sessionId[i], viewName, viewState, imageHash, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              resolve(data);
-	            }
-	          });
-	        });
-	      }));
-	    }
-	  }, {
-	    key: "deleteFrontendView",
-	    value: function deleteFrontendView(viewName, callback) {
-	      var _this5 = this;
-
-	      if (!this._sessionId) {
-	        throw new Error("You are not connected to a server. Try running the connect method first.");
-	      }
-	      try {
-	        this._client.forEach(function (client, i) {
-	          // do we want to try each one individually so if we fail we keep going?
-	          client.delete_frontend_view(_this5._sessionId[i], viewName, callback);
-	        });
-	      } catch (err) {
-	        console.log("ERROR: Could not delete the frontend view. Check your session id.", err);
-	      }
-	    }
-
-	    /**
-	     * Delete a dashboard object containing a value for the <code>viewState</code> property.
-	     * @param {String} viewName The name of the dashboard.
-	     * @return {Promise.<String>} The name of dashboard deleted.
-	     *
-	     * @example <caption>Delete a specific dashboard from the server:</caption>
-	     *
-	     * con.deleteFrontendViewAsync('view_name').then(res => console.log(res))
-	     */
-
-	  }, {
-	    key: "createLinkAsync",
-
-
-	    /**
-	     * Create a short hash to make it easy to share a link to a specific dashboard.
-	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
-	     * @param {String} metaData Stringified metadata related to the link.
-	     * @return {Promise.<String[]>} A short hash of the dashboard used for URLs.
-	     *
-	     * @example <caption>Create a link to the current state of a dashboard:</caption>
-	     *
-	     * con.createLinkAsync("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
-	     * // ["28127951"]
-	     */
-	    value: function createLinkAsync(viewState, metaData) {
-	      var _this6 = this;
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_link(_this6._sessionId[i], viewState, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              var result = data.split(",").reduce(function (links, link) {
-	                if (links.indexOf(link) === -1) {
-	                  links.push(link);
-	                }
-	                return links;
-	              }, []);
-	              if (!result || result.length !== 1) {
-	                reject(new Error("Different links were created on connection"));
-	              } else {
-	                resolve(result.join());
-	              }
-	            }
-	          });
-	        });
-	      }));
-	    }
-
-	    /**
-	     * Get a fully formed dashboard object from a generated share link.
-	     * This object contains the link for the <code>view_name</code> property.
-	     * @param {String} link  The short hash of the dashboard; see {@link createLink}.
-	     * @return {Promise.<Object>} Object of the dashboard and metadata.
-	     *
-	     * @example <caption>Get a dashboard from a link:</caption>
-	     *
-	     * con.getLinkViewAsync('28127951').then(res => console.log(res))
-	     * //  {
-	     * //    "view_name": "28127951",
-	     * //    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",
-	     * //    "image_hash": "",
-	     * //    "update_time": "2017-04-28T21:34:01Z",
-	     * //    "view_metadata": "metaData"
-	     * //  }
-	     */
-
-	  }, {
-	    key: "detectColumnTypes",
-	    value: function detectColumnTypes(fileName, copyParams, callback) {
-	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
-	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
-	    }
 
 	    /**
 	     * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
@@ -1153,8 +981,11 @@
 	     */
 
 	  }, {
-	    key: "detectColumnTypesAsync",
-
+	    key: "detectColumnTypes",
+	    value: function detectColumnTypes(fileName, copyParams, callback) {
+	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
+	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
+	    }
 
 	    /**
 	     * Asynchronously get data from an importable file,
@@ -1170,20 +1001,10 @@
 	     * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
 	     *
 	     */
-	    value: function detectColumnTypesAsync(fileName, copyParams) {
-	      var _this7 = this;
 
-	      return new Promise(function (resolve, reject) {
-	        _this7.detectColumnTypes.bind(_this7, fileName, copyParams)(function (err, res) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            _this7.importerRowDesc = res.row_set.row_desc;
-	            resolve(res);
-	          }
-	        });
-	      });
-	    }
+	  }, {
+	    key: "query",
+
 
 	    /**
 	     * Submit a query to the database and process the results.
@@ -1202,11 +1023,8 @@
 	     *      });
 	     *
 	     */
-
-	  }, {
-	    key: "query",
 	    value: function query(_query, options, callback) {
-	      var _this8 = this;
+	      var _this4 = this;
 
 	      var columnarResults = true;
 	      var eliminateNullRows = false;
@@ -1240,7 +1058,7 @@
 	        var AT_MOST_N = -1;
 	        if (callback) {
 	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, AT_MOST_N, function (error, result) {
-	            _this8.processResults(processResultsOptions, result, error, callback);
+	            _this4.processResults(processResultsOptions, result, error, callback);
 	          });
 	          return curNonce;
 	        } else if (!callback) {
@@ -1262,9 +1080,6 @@
 	        }
 	      }
 	    }
-	  }, {
-	    key: "validateQuery",
-
 
 	    /**
 	     * Submit a query to validate that the backend can create a result set based on the SQL statement.
@@ -1285,32 +1100,7 @@
 	     * //  }]
 	     *
 	     */
-	    value: function validateQuery(query) {
-	      var _this9 = this;
 
-	      return new Promise(function (resolve, reject) {
-	        _this9._client[0].sql_validate(_this9._sessionId[0], query, function (error, res) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(_this9.convertFromThriftTypes(res));
-	          }
-	        });
-	      });
-	    }
-	  }, {
-	    key: "removeConnection",
-	    value: function removeConnection(conId) {
-	      if (conId < 0 || conId >= this.numConnections) {
-	        var err = {
-	          msg: "Remove connection id invalid"
-	        };
-	        throw err;
-	      }
-	      this._client.splice(conId, 1);
-	      this._sessionId.splice(conId, 1);
-	      this._numConnections--;
-	    }
 	  }, {
 	    key: "getTables",
 	    value: function getTables(callback) {
@@ -1344,24 +1134,9 @@
 	     */
 
 	  }, {
-	    key: "getTablesAsync",
-	    value: function getTablesAsync() {
-	      var _this10 = this;
-
-	      return new Promise(function (resolve, reject) {
-	        _this10.getTables.bind(_this10)(function (error, tables) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(tables);
-	          }
-	        });
-	      });
-	    }
-	  }, {
 	    key: "getTablesWithMeta",
 	    value: function getTablesWithMeta(callback) {
-	      var _this11 = this;
+	      var _this5 = this;
 
 	      this._client[0].get_tables_meta(this._sessionId[0], function (error, tables) {
 	        if (error) {
@@ -1372,7 +1147,7 @@
 	              name: table.table_name,
 	              num_cols: Number(table.num_cols.toString()),
 	              col_datum_types: table.col_datum_types.map(function (type) {
-	                return _this11._datumEnum[type];
+	                return _this5._datumEnum[type];
 	              }),
 	              is_view: table.is_view,
 	              is_replicated: table.is_replicated,
@@ -1405,20 +1180,8 @@
 	     */
 
 	  }, {
-	    key: "getTablesWithMetaAsync",
-	    value: function getTablesWithMetaAsync() {
-	      var _this12 = this;
+	    key: "getCompletionHints",
 
-	      return new Promise(function (resolve, reject) {
-	        _this12.getTablesWithMeta.bind(_this12)(function (error, tables) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(tables);
-	          }
-	        });
-	      });
-	    }
 
 	    /**
 	     * Submits an SQL string to the backend and returns a completion hints object.
@@ -1442,9 +1205,6 @@
 	     *   }]
 	     *
 	     */
-
-	  }, {
-	    key: "getCompletionHints",
 	    value: function getCompletionHints(queryString, options, callback) {
 	      var cursor = options.cursor;
 	      this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, function (error, result) {
@@ -1494,7 +1254,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName, callback) {
-	      var _this13 = this;
+	      var _this6 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
 	        if (fields) {
@@ -1502,7 +1262,7 @@
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-	          callback(null, _this13.convertFromThriftTypes(rowDict));
+	          callback(null, _this6.convertFromThriftTypes(rowDict));
 	        } else {
 	          callback(new Error("Table (" + tableName + ") not found" + error));
 	        }
@@ -1571,11 +1331,11 @@
 	  }, {
 	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this14 = this;
+	      var _this7 = this;
 
 	      return function (tableName, fileName, copyParams, headers) {
 	        return new Promise(function (resolve, reject) {
-	          _this14.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
+	          _this7.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
 	            if (err) {
 	              reject(err);
 	            } else {
@@ -1622,10 +1382,11 @@
 	     * @returns {Image} Base64 image.
 	     */
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this15 = this;
+	      var _this8 = this;
 
 	      var queryId = null;
 	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
+
 	      if (options) {
 	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
 	        compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
@@ -1652,40 +1413,44 @@
 	      }
 
 	      this._client[conId].render_vega(this._sessionId[conId], widgetid, vega, compressionLevel, curNonce, function (error, result) {
-	        _this15.processResults(processResultsOptions, result, error, callback);
+	        _this8.processResults(processResultsOptions, result, error, callback);
 	      });
 
 	      return curNonce;
 	    }
+	  }, {
+	    key: "getResultRowForPixel",
+
 
 	    /**
 	     * Used primarily for backend-rendered maps; fetches the row
 	     * for a specific table that was last rendered at a pixel.
 	     *
-	     * @param {widgetId} Number The widget ID of the caller.
+	     * @param {Number} widgetId The widget ID of the caller.
 	     * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
-	     * @param {String} tableName The table containing the geo data.
 	     * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
-	     * @param {Array<Function>} callbacks A collection of callbacks.
 	     * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
+	     *
+	     * @returns {String} Current result nonce
 	     */
-
-	  }, {
-	    key: "getResultRowForPixel",
-	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap, callbacks) /* istanbul ignore next */{
-	      var pixelRadius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
+	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap) /* istanbul ignore next */{
+	      var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
+	      var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
 
 	      if (!(pixel instanceof TPixel)) {
 	        pixel = new TPixel(pixel);
 	      }
+
 	      var columnFormat = true; // BOOL
 	      var curNonce = (this._nonce++).toString();
 
-	      if (!callbacks) {
+	      if (!callback) {
 	        return this.processPixelResults(undefined, // eslint-disable-line no-undefined
 	        this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));
 	      }
-	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callbacks));
+
+	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callback));
 
 	      return curNonce;
 	    }
@@ -1693,7 +1458,7 @@
 	    /**
 	     * Formats the pixel results into the same pattern as textual results.
 	     *
-	     * @param {Array<Function>} callbacks A collection of callbacks.
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
 	     * @param {Object} error An error if thrown; otherwise null.
 	     * @param {Array|Object} results Unformatted results of pixel `rowId` information.
 	     *
@@ -1702,31 +1467,37 @@
 
 	  }, {
 	    key: "processPixelResults",
-	    value: function processPixelResults(callbacks, error, results) {
-	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
+	    value: function processPixelResults(callback, error, results) {
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
+
 	      if (error) {
-	        if (callbacks) {
-	          callbacks.pop()(error, results);
+	        if (callback) {
+	          return callback(error, results);
 	        } else {
 	          throw new Error("Unable to process result row for pixel results: " + error);
 	        }
 	      }
-	      var numPixels = results.length;
+
 	      var processResultsOptions = {
 	        isImage: false,
 	        eliminateNullRows: false,
 	        query: "pixel request",
 	        queryId: -2
 	      };
+
+	      var numPixels = results.length;
 	      for (var p = 0; p < numPixels; p++) {
 	        results[p].row_set = this.processResults(processResultsOptions, results[p]);
 	      }
-	      if (!callbacks) {
+
+	      if (callback) {
+	        return callback(error, results);
+	      } else {
 	        return results;
 	      }
-	      callbacks.pop()(error, results);
 	    }
+
+	    // ** Configuration methods **
 
 	    /**
 	     * Get or set the session ID used by the server to serve the correct data.
@@ -1746,11 +1517,11 @@
 
 	  }, {
 	    key: "sessionId",
-	    value: function sessionId(_sessionId2) {
+	    value: function sessionId(_sessionId) {
 	      if (!arguments.length) {
 	        return this._sessionId;
 	      }
-	      this._sessionId = _sessionId2;
+	      this._sessionId = _sessionId;
 	      return this;
 	    }
 
@@ -1972,10 +1743,10 @@
 	  }, {
 	    key: "getEndpoints",
 	    value: function getEndpoints() {
-	      var _this16 = this;
+	      var _this9 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
+	        return _this9._protocol[i] + "://" + host + ":" + _this9._port[i];
 	      });
 	    }
 	  }]);
@@ -1987,11 +1758,10 @@
 	  methodNames.forEach(function (methodName) {
 	    var oldFunc = connector[methodName];
 	    connector[methodName] = function () {
-	      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
+	      for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	        args[_key3] = arguments[_key3];
 	      }
 
-	      console.log("resetThriftClient-wrapped method", { methodName: methodName, args: args });
 	      try {
 	        // eslint-disable-line no-restricted-syntax
 	        return oldFunc.apply(connector, args); // TODO should reject rather than throw for Promises.
