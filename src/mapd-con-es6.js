@@ -1906,14 +1906,16 @@ class MapdCon {
   setLicenseKey(key, {protocol, host, port}) {
     return new Promise((resolve) => {
       let client = Array.isArray(this._client) && this._client[0]
+      let sessionId = this._sessionId && this._sessionId[0]
       if (!client) {
         const url = `${protocol}://${host}:${port}`
         const thriftTransport = new Thrift.Transport(url)
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
         client = new MapDClientV2(thriftProtocol)
+        sessionId = ""
       }
       const result = client.set_license_key(
-        "",
+        sessionId,
         key,
         this._nonce++
       )
@@ -1929,15 +1931,17 @@ class MapdCon {
   getLicenseClaims({protocol, host, port}) {
     return new Promise((resolve, reject) => {
       let client = Array.isArray(this._client) && this._client[0]
+      let sessionId = this._sessionId && this._sessionId[0]
       if (!client) {
         const url = `${protocol}://${host}:${port}`
         const thriftTransport = new Thrift.Transport(url)
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
         client = new MapDClientV2(thriftProtocol)
+        sessionId = ""
       }
       try {
         const result = client.get_license_claims(
-          "",
+          sessionId,
           this._nonce++
         )
         resolve(result)
