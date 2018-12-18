@@ -16984,6 +16984,49 @@ module.exports =
 	      _this.queryTimes[queryId] = execution_time_ms;
 	    };
 
+	    this.eventListeners = {
+	      error: []
+
+	      /**
+	       * Subscribe a listener to be called when a given event occurs.
+	       * @param {String} eventName - An event name - must be a key of eventListeners.
+	       * @param {String} callback - Listener function to be called.
+	       * @returns {Function} A function to unsubscribe this listener.
+	       *
+	       * @example <caption>Get a list of all users:</caption>
+	       *
+	       * con.getUsersAsync().then(res => console.log(res))
+	       */
+	    };
+
+	    this.on = function (eventName, callback) {
+	      if (!_this.eventListeners[eventName]) {
+	        throw new Error("Invalid event name: " + eventName);
+	      }
+
+	      if (typeof callback !== "function") {
+	        throw new Error("Event listener must be a function");
+	      }
+
+	      _this.eventListeners[eventName].push(callback);
+
+	      // Unsubscribe callback
+	      return function () {
+	        _this.eventListeners[eventName] = _this.eventListeners[eventName].filter(function (listener) {
+	          return listener !== callback;
+	        });
+	      };
+	    };
+
+	    this.publish = function (eventName, payload) {
+	      // Don't block on listeners to complete
+	      setTimeout(function () {
+	        _this.eventListeners[eventName].forEach(function (listener) {
+	          listener(payload);
+	        });
+	      }, 0);
+	    };
+
 	    this.handleErrors = function (method) {
 	      return function () {
 	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -16995,6 +17038,7 @@ module.exports =
 	            return resolve(result);
 	          };
 	          var failure = function failure(error) {
+	            _this.publish("error", error);
 	            return reject(error);
 	          };
 
@@ -17251,6 +17295,18 @@ module.exports =
 	        });
 	      });
 	    });
+	    this.getResultRowForPixelAsync = this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
+	      var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
+	      return new Promise(function (resolve, reject) {
+	        _this.getResultRowForPixel(widgetId, pixel, tableColNamesMap, pixelRadius, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 
 	    this._host = null;
 	    this._user = null;
@@ -17472,6 +17528,8 @@ module.exports =
 	      this._sessionId.splice(conId, 1);
 	      this._numConnections--;
 	    }
+
+	    // ** Event publishing **
 
 	    // ** Method wrappers **
 
@@ -18216,6 +18274,9 @@ module.exports =
 
 	      return curNonce;
 	    }
+	  }, {
+	    key: "processPixelResults",
+
 
 	    /**
 	     * Formats the pixel results into the same pattern as textual results.
@@ -18226,9 +18287,6 @@ module.exports =
 	     *
 	     * @returns {Object} An object with the pixel results formatted for display.
 	     */
-
-	  }, {
-	    key: "processPixelResults",
 	    value: function processPixelResults(callback, error, results) {
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
 

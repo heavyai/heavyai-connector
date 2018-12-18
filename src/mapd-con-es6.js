@@ -299,12 +299,59 @@ class MapdCon {
     this.queryTimes[queryId] = execution_time_ms
   }
 
+  // ** Event publishing **
+
+  eventListeners = {
+    error: []
+  }
+
+  /**
+   * Subscribe a listener to be called when a given event occurs.
+   * @param {String} eventName - An event name - must be a key of eventListeners.
+   * @param {String} callback - Listener function to be called.
+   * @returns {Function} A function to unsubscribe this listener.
+   *
+   * @example <caption>Get a list of all users:</caption>
+   *
+   * con.getUsersAsync().then(res => console.log(res))
+   */
+  on = (eventName, callback) => {
+    if (!this.eventListeners[eventName]) {
+      throw new Error(`Invalid event name: ${eventName}`)
+    }
+
+    if (typeof callback !== "function") {
+      throw new Error("Event listener must be a function")
+    }
+
+    this.eventListeners[eventName].push(callback)
+
+    // Unsubscribe callback
+    return () => {
+      this.eventListeners[eventName] = this.eventListeners[eventName].filter(
+        listener => listener !== callback
+      )
+    }
+  }
+
+  publish = (eventName, payload) => {
+    // Don't block on listeners to complete
+    setTimeout(() => {
+      this.eventListeners[eventName].forEach(listener => {
+        listener(payload)
+      })
+    }, 0)
+  }
+
   // ** Method wrappers **
 
   handleErrors = method => (...args) =>
     new Promise((resolve, reject) => {
       const success = result => resolve(result)
-      const failure = error => reject(error)
+      const failure = error => {
+        this.publish("error", error)
+        return reject(error)
+      }
 
       const result = method.apply(this, args)
 
@@ -1427,6 +1474,25 @@ class MapdCon {
 
     return curNonce
   }
+
+  getResultRowForPixelAsync = this.handleErrors(
+    (widgetId, pixel, tableColNamesMap, pixelRadius = 2) =>
+      new Promise((resolve, reject) => {
+        this.getResultRowForPixel(
+          widgetId,
+          pixel,
+          tableColNamesMap,
+          pixelRadius,
+          (error, result) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(result)
+            }
+          }
+        )
+      })
+  )
 
   /**
    * Formats the pixel results into the same pattern as textual results.
