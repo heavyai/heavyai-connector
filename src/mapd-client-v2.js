@@ -10,7 +10,7 @@ export default function MapDClientV2(protocol) {
 
 MapDClientV2.prototype = Object.create(MapDClient.prototype)
 
-!(function () {
+const wrappedClient = !(function () {
   [
     "connect",
     "sql_execute",
