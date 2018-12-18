@@ -17425,14 +17425,14 @@ module.exports =
 	      var fieldsArray = [];
 	      // silly to change this from map to array
 	      // - then later it turns back to map
-	      for (var _key2 in fields) {
-	        if (fields.hasOwnProperty(_key2)) {
+	      for (var key in fields) {
+	        if (fields.hasOwnProperty(key)) {
 	          fieldsArray.push({
-	            name: _key2,
-	            type: this._datumEnum[fields[_key2].col_type.type],
-	            precision: fields[_key2].col_type.precision,
-	            is_array: fields[_key2].col_type.is_array,
-	            is_dict: fields[_key2].col_type.encoding === TEncodingType.DICT // eslint-disable-line no-undef
+	            name: key,
+	            type: this._datumEnum[fields[key].col_type.type],
+	            precision: fields[key].col_type.precision,
+	            is_array: fields[key].col_type.is_array,
+	            is_dict: fields[key].col_type.encoding === TEncodingType.DICT // eslint-disable-line no-undef
 	          });
 	        }
 	      }
@@ -18229,9 +18229,9 @@ module.exports =
 	    key: "invertDatumTypes",
 	    value: function invertDatumTypes() {
 	      var datumType = TDatumType; // eslint-disable-line no-undef
-	      for (var _key3 in datumType) {
-	        if (datumType.hasOwnProperty(_key3)) {
-	          this._datumEnum[datumType[_key3]] = _key3;
+	      for (var key in datumType) {
+	        if (datumType.hasOwnProperty(key)) {
+	          this._datumEnum[datumType[key]] = key;
 	        }
 	      }
 	    }
@@ -18743,38 +18743,38 @@ module.exports =
 
 	    /**
 	     * Set the license for Trial or Enterprise
+	     * @param {String} key The key to install
+	     * @param {Object} config Protocol, host and port to connect to
 	     * @return {Promise.<Object>} Claims or Error.
 	     */
 
 	  }, {
 	    key: "setLicenseKey",
-	    value: function setLicenseKey(_ref10) {
+	    value: function setLicenseKey(key, _ref10) {
 	      var _this17 = this;
 
 	      var protocol = _ref10.protocol,
 	          host = _ref10.host,
 	          port = _ref10.port;
 
-	      return new Promise(function (resolve, reject) {
+	      return new Promise(function (resolve) {
 	        var client = Array.isArray(_this17._client) && _this17._client[0];
+	        var sessionId = _this17._sessionId && _this17._sessionId[0];
 	        if (!client) {
 	          var url = protocol + "://" + host + ":" + port;
 	          var thriftTransport = new Thrift.Transport(url);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
 	          client = new _mapdClientV2.default(thriftProtocol);
+	          sessionId = "";
 	        }
-
-	        var result = client.set_license_key(null, key, _this17._nonce++);
-	        if (result instanceof Error) {
-	          reject(result);
-	        } else {
-	          resolve(result);
-	        }
+	        var result = client.set_license_key(sessionId, key, _this17._nonce++);
+	        resolve(result);
 	      });
 	    }
 
 	    /**
 	     * Get the license for Trial or Enterprise
+	     * @param {Object} config Protocol, host and port to connect to
 	     * @return {Promise.<Object>} Claims or Error.
 	     */
 
@@ -18787,19 +18787,21 @@ module.exports =
 	          host = _ref11.host,
 	          port = _ref11.port;
 
-	      var client = Array.isArray(this._client) && this._client[0];
-	      if (!client) {
-	        var url = protocol + "://" + host + ":" + port;
-	        var thriftTransport = new Thrift.Transport(url);
-	        var thriftProtocol = new Thrift.Protocol(thriftTransport);
-	        client = new _mapdClientV2.default(thriftProtocol);
-	      }
 	      return new Promise(function (resolve, reject) {
-	        var result = client.get_license_claims(null, _this18._nonce++);
-	        if (result instanceof Error) {
-	          reject(result);
-	        } else {
+	        var client = Array.isArray(_this18._client) && _this18._client[0];
+	        var sessionId = _this18._sessionId && _this18._sessionId[0];
+	        if (!client) {
+	          var url = protocol + "://" + host + ":" + port;
+	          var thriftTransport = new Thrift.Transport(url);
+	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	          client = new _mapdClientV2.default(thriftProtocol);
+	          sessionId = "";
+	        }
+	        try {
+	          var result = client.get_license_claims(sessionId, _this18._nonce++);
 	          resolve(result);
+	        } catch (e) {
+	          reject(e);
 	        }
 	      });
 	    }
@@ -18812,8 +18814,8 @@ module.exports =
 	  methodNames.forEach(function (methodName) {
 	    var oldFunc = connector[methodName];
 	    connector[methodName] = function () {
-	      for (var _len2 = arguments.length, args = Array(_len2), _key4 = 0; _key4 < _len2; _key4++) {
-	        args[_key4] = arguments[_key4];
+	      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        args[_key2] = arguments[_key2];
 	      }
 
 	      try {
@@ -18923,7 +18925,7 @@ module.exports =
 
 	MapDClientV2.prototype = Object.create(MapDClient.prototype);
 
-	!function () {
+	var wrappedClient = !function () {
 	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "delete_frontend_view", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "get_frontend_views", "get_frontend_view", "create_link", "get_link_view", "detect_column_types", "create_frontend_view", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
 	    MapDClientV2.prototype[funcName] = function () {
 	      return (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, funcName).apply(undefined, arguments);
