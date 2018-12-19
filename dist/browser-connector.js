@@ -2094,7 +2094,7 @@
 	      var callback = args.pop();
 	      (_MapDClient$prototype = MapDClient.prototype[method]).call.apply(_MapDClient$prototype, [context].concat(args, [function (result) {
 	        if (isError(result)) {
-	          callback(createResultError(result));
+	          callback(result);
 	        } else {
 	          callback(null, result);
 	        }
@@ -2104,7 +2104,7 @@
 
 	      var result = (_MapDClient$prototype2 = MapDClient.prototype[method]).call.apply(_MapDClient$prototype2, [context].concat(args));
 	      if (isError(result)) {
-	        throw createResultError(result);
+	        throw result;
 	      }
 	      return result;
 	    } else {

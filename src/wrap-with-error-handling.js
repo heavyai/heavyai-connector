@@ -29,7 +29,7 @@ export function wrapMethod(context, method, isError) {
       const callback = args.pop()
       MapDClient.prototype[method].call(context, ...args, result => {
         if (isError(result)) {
-          callback(createResultError(result))
+          callback(result)
         } else {
           callback(null, result)
         }
@@ -37,7 +37,7 @@ export function wrapMethod(context, method, isError) {
     } else if (args.length === arity - 1) {
       const result = MapDClient.prototype[method].call(context, ...args)
       if (isError(result)) {
-        throw createResultError(result)
+        throw result
       }
       return result
     } else {
