@@ -55,36 +55,6 @@
               
                 
                 <li><a
-                  href='#getfrontendviewsasync'
-                  class="">
-                  getFrontendViewsAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#getfrontendviewasync'
-                  class="">
-                  getFrontendViewAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#getserverstatusasync'
-                  class="">
-                  getServerStatusAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
                   href='#getstatusasync'
                   class="">
                   getStatusAsync
@@ -98,46 +68,6 @@
                   href='#gethardwareinfoasync'
                   class="">
                   getHardwareInfoAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#createfrontendviewasync'
-                  class="">
-                  createFrontendViewAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#deletefrontendviewasync'
-                  class="">
-                  deleteFrontendViewAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#createlinkasync'
-                  class="">
-                  createLinkAsync
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#getlinkviewasync'
-                  class="">
-                  getLinkViewAsync
                   
                 </a>
                 
@@ -605,9 +535,19 @@
               
                 
                 <li><a
-                  href='#completion_hints'
+                  href='#tdatum'
                   class="">
-                  completion_hints
+                  TDatum
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#ttabletype'
+                  class="">
+                  TTableType
                   
                 </a>
                 
@@ -725,19 +665,9 @@
               
                 
                 <li><a
-                  href='#ttabletype'
+                  href='#completion_hints'
                   class="">
-                  TTableType
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#tdatum'
-                  class="">
-                  TDatum
+                  completion_hints
                   
                 </a>
                 
@@ -772,7 +702,7 @@ truncated or extended as necessary to convert to ms precision. The returned ms v
 for passing to the JS Date object constructor.</p>
 
 
-  <div class='pre p1 fill-light mt0'>timestampToMs(timestamp: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, precision: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
+  <div class='pre p1 fill-light mt0'>timestampToMs(timestamp: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, precision: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
   
   
 
@@ -789,7 +719,7 @@ for passing to the JS Date object constructor.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>timestamp</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>timestamp</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The raw integer timestamp in the database.
 
           </div>
@@ -798,7 +728,7 @@ for passing to the JS Date object constructor.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>precision</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>precision</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The precision of the timestamp column in the database.
 
           </div>
@@ -813,7 +743,7 @@ for passing to the JS Date object constructor.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
         The equivalent timestamp in milliseconds.
 
       
@@ -850,7 +780,7 @@ for passing to the JS Date object constructor.</p>
   <p>Create a connection to the MapD server, generating a client and session ID.</p>
 
 
-  <div class='pre p1 fill-light mt0'>connect(callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): MapdCon</div>
+  <div class='pre p1 fill-light mt0'>connect(callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): MapdCon</div>
   
   
 
@@ -867,7 +797,7 @@ for passing to the JS Date object constructor.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
 	    A callback that takes 
 <code>(err, success)</code>
  as its signature.  Returns con singleton if successful.
@@ -936,7 +866,7 @@ for passing to the JS Date object constructor.</p>
   <p>Disconnect from the server and then clear the client and session values.</p>
 
 
-  <div class='pre p1 fill-light mt0'>disconnect(callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): MapdCon</div>
+  <div class='pre p1 fill-light mt0'>disconnect(callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): MapdCon</div>
   
   
 
@@ -953,7 +883,7 @@ for passing to the JS Date object constructor.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
 	    A callback that takes 
 <code>(err, success)</code>
  as its signature.  Returns con singleton if successful.
@@ -1005,220 +935,6 @@ con.sessionId() === <span class="hljs-literal">null</span>;</pre>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='getfrontendviewsasync'>
-      getFrontendViewsAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Get the recent Immerse dashboards as a list of <a href="#tfrontendview">TFrontendView</a> objects.
-These objects contain a value for the <code>view_name</code> property,
-but not for the <code>view_state</code> property.</p>
-
-
-  <div class='pre p1 fill-light mt0'>getFrontendViewsAsync</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tfrontendview">TFrontendView</a>>></code>:
-        An array that has all saved dashboards.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      <p><p>Get the list of Immerse dashboards from the server:</p>
-</p>
-      <pre class='p1 overflow-auto round fill-light'>con.getFrontendViewsAsync().then(<span class="hljs-function">(<span class="hljs-params">results</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(results))
-<span class="hljs-comment">// [TFrontendView, TFrontendView]</span></pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getfrontendviewasync'>
-      getFrontendViewAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Get a dashboard object containing a value for the <code>view_state</code> property.
-This object contains a value for the <code>view_state</code> property,
-but not for the <code>view_name</code> property.</p>
-
-
-  <div class='pre p1 fill-light mt0'>getFrontendViewAsync</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>viewName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The name of the dashboard.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
-        An object that contains all data and metadata related to the dashboard.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      <p><p>Get a specific dashboard from the server:</p>
-</p>
-      <pre class='p1 overflow-auto round fill-light'>con.getFrontendViewAsync(<span class="hljs-string">'view_name'</span>).then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
-<span class="hljs-comment">// {TFrontendView}</span></pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getserverstatusasync'>
-      getServerStatusAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Get the status of the server as a <a href="#tserverstatus">TServerStatus</a> object.
-This includes the server version number, whether the server is read-only,
-and whether backend rendering is enabled.</p>
-
-
-  <div class='pre p1 fill-light mt0'>getServerStatusAsync</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
-        An object that contains information about the server status.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      <p><p>Get the server status:</p>
-</p>
-      <pre class='p1 overflow-auto round fill-light'>con.getServerStatusAsync().then(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(result))
-<span class="hljs-comment">// {</span>
-<span class="hljs-comment">//   "read_only": false,</span>
-<span class="hljs-comment">//   "version": "3.0.0dev-20170503-40e2de3",</span>
-<span class="hljs-comment">//   "rendering_enabled": true,</span>
-<span class="hljs-comment">//   "start_time": 1493840131</span>
-<span class="hljs-comment">// }</span></pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='getstatusasync'>
       getStatusAsync
     </h3>
@@ -1250,7 +966,7 @@ and whether backend rendering is enabled.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         An object that contains information about the server status.
 
       
@@ -1327,7 +1043,7 @@ and whether backend rendering is enabled.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         An object that contains hardware information.
 
       
@@ -1382,357 +1098,6 @@ and whether backend rendering is enabled.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='createfrontendviewasync'>
-      createFrontendViewAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Add a new dashboard to the server.</p>
-
-
-  <div class='pre p1 fill-light mt0'>createFrontendViewAsync(viewName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, viewState: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, imageHash: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, metaData: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>viewName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The name of the new dashboard.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>viewState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The Base64-encoded state string of the new dashboard.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The numeric hash of the dashboard thumbnail.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    Stringified metadata related to the view.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
-        Returns empty if successful.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      <p><p>Add a new dashboard to the server:</p>
-</p>
-      <pre class='p1 overflow-auto round fill-light'>con.createFrontendViewAsync(<span class="hljs-string">'newSave'</span>, <span class="hljs-string">'viewstateBase64'</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='deletefrontendviewasync'>
-      deleteFrontendViewAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Delete a dashboard object containing a value for the <code>viewState</code> property.</p>
-
-
-  <div class='pre p1 fill-light mt0'>deleteFrontendViewAsync</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>viewName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The name of the dashboard.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
-        The name of dashboard deleted.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      <p><p>Delete a specific dashboard from the server:</p>
-</p>
-      <pre class='p1 overflow-auto round fill-light'>con.deleteFrontendViewAsync(<span class="hljs-string">'view_name'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='createlinkasync'>
-      createLinkAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Create a short hash to make it easy to share a link to a specific dashboard.</p>
-
-
-  <div class='pre p1 fill-light mt0'>createLinkAsync(viewState: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, metaData: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>viewState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The Base64-encoded state string of the new dashboard.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    Stringified metadata related to the link.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>></code>:
-        A short hash of the dashboard used for URLs.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      <p><p>Create a link to the current state of a dashboard:</p>
-</p>
-      <pre class='p1 overflow-auto round fill-light'>con.createLinkAsync(<span class="hljs-string">"eyJuYW1lIjoibXlkYXNoYm9hcmQifQ=="</span>, <span class="hljs-string">'metaData'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res));
-<span class="hljs-comment">// ["28127951"]</span></pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getlinkviewasync'>
-      getLinkViewAsync
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Get a fully formed dashboard object from a generated share link.
-This object contains the link for the <code>view_name</code> property.</p>
-
-
-  <div class='pre p1 fill-light mt0'>getLinkViewAsync</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>link</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The short hash of the dashboard; see 
-<a href="createLink">createLink</a>
-.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
-        Object of the dashboard and metadata.
-
-      
-    
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Example</div>
-    
-      <p><p>Get a dashboard from a link:</p>
-</p>
-      <pre class='p1 overflow-auto round fill-light'>con.getLinkViewAsync(<span class="hljs-string">'28127951'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
-<span class="hljs-comment">//  {</span>
-<span class="hljs-comment">//    "view_name": "28127951",</span>
-<span class="hljs-comment">//    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",</span>
-<span class="hljs-comment">//    "image_hash": "",</span>
-<span class="hljs-comment">//    "update_time": "2017-04-28T21:34:01Z",</span>
-<span class="hljs-comment">//    "view_metadata": "metaData"</span>
-<span class="hljs-comment">//  }</span></pre>
-    
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='getfirstgeofileinarchiveasync'>
       getFirstGeoFileInArchiveAsync
     </h3>
@@ -1761,7 +1126,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>archivePath</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>archivePath</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The base filename of the archive.
 
           </div>
@@ -1786,7 +1151,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
         Full path to the located geo file; otherwise, to the original archivePath.
 
       
@@ -1848,7 +1213,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
         A list of all users (strings).
 
       
@@ -1910,7 +1275,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
         A list of all roles (strings).
 
       
@@ -1972,7 +1337,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TDashboard>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TDashboard>></code>:
         A list of all dashboards (Dashboard objects).
 
       
@@ -2033,7 +1398,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The ID of the dashboard.
 
           </div>
@@ -2048,7 +1413,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;TDashboard></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;TDashboard></code>:
         The dashboard (Dashboard object).
 
       
@@ -2109,7 +1474,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>dashboardName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the new dashboard.
 
           </div>
@@ -2118,7 +1483,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>dashboardState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The Base64-encoded state string of the new dashboard.
 
           </div>
@@ -2127,7 +1492,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The numeric hash of the dashboard thumbnail.
 
           </div>
@@ -2136,7 +1501,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    Stringified metadata related to the view.
 
           </div>
@@ -2151,7 +1516,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns a Promise.all result (array) of the IDs created on each client.
 
       
@@ -2212,7 +1577,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The ID of the dashboard to replace.
 
           </div>
@@ -2221,7 +1586,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>dashboardName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the new dashboard.
 
           </div>
@@ -2230,7 +1595,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardOwner</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>dashboardOwner</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    User ID of the owner of the dashboard.
 
           </div>
@@ -2239,7 +1604,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>dashboardState</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The Base64-encoded state string of the new dashboard.
 
           </div>
@@ -2248,7 +1613,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>imageHash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The numeric hash of the dashboard thumbnail.
 
           </div>
@@ -2257,7 +1622,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>metaData</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    Stringified metadata related to the view.
 
           </div>
@@ -2272,7 +1637,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns empty if successful, rejects if any client failed.
 
       
@@ -2333,7 +1698,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The ID of the dashboard.
 
           </div>
@@ -2348,7 +1713,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns empty if successful, rejects if any client failed.
 
       
@@ -2409,7 +1774,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The ID of the dashboard.
 
           </div>
@@ -2418,7 +1783,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>groups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+            <span class='code bold'>groups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
 	    The roles and users that can access the dashboard.
 
           </div>
@@ -2427,7 +1792,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
 	    The database objects (tables) that groups can see.
 
           </div>
@@ -2436,7 +1801,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>permissions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+            <span class='code bold'>permissions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
 	    Permissions granted to the groups.
 
           </div>
@@ -2451,7 +1816,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns empty if successful.
 
       
@@ -2512,7 +1877,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The ID of the dashboard.
 
           </div>
@@ -2521,7 +1886,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>groups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+            <span class='code bold'>groups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
 	    The roles and users that can access it.
 
           </div>
@@ -2530,7 +1895,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+            <span class='code bold'>objects</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
 	    The database objects (tables) that groups can see.
 
           </div>
@@ -2539,7 +1904,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>permissions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+            <span class='code bold'>permissions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
 	    Permissions revoked from the groups.
 
           </div>
@@ -2554,7 +1919,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns empty if successful.
 
       
@@ -2615,7 +1980,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>dashboardId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The ID of the dashboard.
 
           </div>
@@ -2630,7 +1995,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns the list of users (array).
 
       
@@ -2691,7 +2056,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>roleName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>roleName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the role.
 
           </div>
@@ -2706,7 +2071,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns the list of database object names (strings).
 
       
@@ -2767,7 +2132,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>objectName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>objectName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name or ID of the object.
 
           </div>
@@ -2791,7 +2156,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         Returns the list of database object names (strings).
 
       
@@ -2852,7 +2217,7 @@ This object contains the link for the <code>view_name</code> property.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>username</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>username</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The username whose roles you wish to get.
 
           </div>
@@ -2867,7 +2232,7 @@ This object contains the link for the <code>view_name</code> property.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         A list of all roles assigned to the username.
 
       
@@ -2922,7 +2287,7 @@ transative; if a user has been granted a privilege via a role, this will return 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>granteeName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>granteeName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the user or role to check privileges for.
 
           </div>
@@ -2931,7 +2296,7 @@ transative; if a user has been granted a privilege via a role, this will return 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>objectName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>objectName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the object to check privileges against (for example,
 the database name, table name, etc.)
 
@@ -2966,7 +2331,7 @@ the privileges specified must be granted for this function to return true.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
         true if all the specified privileges have been granted to the user/role,
 false otherwise.
 
@@ -3037,7 +2402,7 @@ false otherwise.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>granteeName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>granteeName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the user or role to check privileges for.
 
           </div>
@@ -3046,7 +2411,7 @@ false otherwise.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dbName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>dbName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the database to check user privileges against.
 
           </div>
@@ -3070,7 +2435,7 @@ false otherwise.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
         true if the user/role has all the specified DB privileges, false otherwise.
 
       
@@ -3117,7 +2482,7 @@ false otherwise.
 such as a CSV or plaintext file with a header.</p>
 
 
-  <div class='pre p1 fill-light mt0'>detectColumnTypesAsync(fileName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, copyParams: <a href="#tcopyparams">TCopyParams</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#tdetectresult">TDetectResult</a>></div>
+  <div class='pre p1 fill-light mt0'>detectColumnTypesAsync</div>
   
   
 
@@ -3134,7 +2499,7 @@ such as a CSV or plaintext file with a header.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the importable file.
 
           </div>
@@ -3159,7 +2524,7 @@ such as a CSV or plaintext file with a header.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#tdetectresult">TDetectResult</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#tdetectresult">TDetectResult</a>></code>:
         An object that has 
 <code>
 copy_params
@@ -3213,7 +2578,7 @@ con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, co
   <p>Submit a query to the database and process the results.</p>
 
 
-  <div class='pre p1 fill-light mt0'>query(query: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>query(query: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -3230,7 +2595,7 @@ con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, co
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>query</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>query</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The query to perform.
 
           </div>
@@ -3239,7 +2604,7 @@ con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, co
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Options for the query.
 
           </div>
@@ -3248,7 +2613,7 @@ con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, co
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
 	    A callback function with the signature 
 <code>
 (err, result) => result
@@ -3267,7 +2632,7 @@ con.detectColumnTypesAsync(<span class="hljs-string">'table_data.csv'</span>, co
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
         The result of the query.
 
       
@@ -3316,7 +2681,7 @@ con.query(query, options, <span class="hljs-function"><span class="hljs-keyword"
   <p>Submit a query to validate that the backend can create a result set based on the SQL statement.</p>
 
 
-  <div class='pre p1 fill-light mt0'>validateQuery(query: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>validateQuery</div>
   
   
 
@@ -3333,7 +2698,7 @@ con.query(query, options, <span class="hljs-function"><span class="hljs-keyword"
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>query</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>query</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The query to perform.
 
           </div>
@@ -3348,7 +2713,7 @@ con.query(query, options, <span class="hljs-function"><span class="hljs-keyword"
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         The result of whether the query is valid.
 
       
@@ -3401,7 +2766,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   <p>Get the names of the databases that exist in the current session connection.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getTablesAsync(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></div>
+  <div class='pre p1 fill-light mt0'>getTablesAsync</div>
   
   
 
@@ -3419,7 +2784,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></code>:
         List of table objects containing the label and table names.
 
       
@@ -3469,7 +2834,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   <p>Get names and catalog metadata for tables that exist on the current session's connection.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getTablesWithMetaAsync(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></div>
+  <div class='pre p1 fill-light mt0'>getTablesWithMetaAsync</div>
   
   
 
@@ -3487,7 +2852,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>></code>:
         The list of objects containing table metadata.
 
       
@@ -3542,7 +2907,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   <p>Submits an SQL string to the backend and returns a completion hints object.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getCompletionHints(queryString: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
+  <div class='pre p1 fill-light mt0'>getCompletionHints(queryString: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></div>
   
   
 
@@ -3559,7 +2924,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>queryString</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>queryString</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    A fragment of SQL input.
 
           </div>
@@ -3568,7 +2933,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    An options object continaing the current cursor position, 1-indexed from the start of 
 <code>queryString</code>
 .
@@ -3579,7 +2944,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
 	    A callback function with the signature 
 <code>(err, result) => result</code>
 .
@@ -3596,7 +2961,7 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></code>:
         An array of completion hints objects that contains the completion hints.
 
       
@@ -3651,7 +3016,7 @@ con.getCompletionHints(queryString, cursor, <span class="hljs-function"><span cl
 changing the order of the string key and numerical value.</p>
 
 
-  <div class='pre p1 fill-light mt0'>invertDatumTypes(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">Undefined</a></div>
+  <div class='pre p1 fill-light mt0'>invertDatumTypes(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">Undefined</a></div>
   
   
 
@@ -3669,7 +3034,7 @@ changing the order of the string key and numerical value.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">Undefined</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">Undefined</a></code>:
         This function does not return anything.
 
       
@@ -3706,7 +3071,7 @@ changing the order of the string key and numerical value.</p>
   <p>Get a list of field objects for a specified table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getFields(tableName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>getFields(tableName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -3723,7 +3088,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    Name of table containing field names.
 
           </div>
@@ -3732,7 +3097,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
 	    A callback that takes (
 <code>err, results</code>
 ).
@@ -3749,7 +3114,7 @@ changing the order of the string key and numerical value.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         The formatted list of field objects.
 
       
@@ -3816,7 +3181,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the new table.
 
           </div>
@@ -3825,7 +3190,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>rowDescObj</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+            <span class='code bold'>rowDescObj</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
 	    Fields in the new table.
 
           </div>
@@ -3834,7 +3199,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tableType</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&#x3C;<a href="#ttabletype">TTableType</a>>)</code>
+            <span class='code bold'>tableType</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>&#x3C;<a href="#ttabletype">TTableType</a>>)</code>
 	    The types of tables a user can import into the database.
 
           </div>
@@ -3858,7 +3223,7 @@ changing the order of the string key and numerical value.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a>></code>:
         Generates an error if unsuccessful, or returns undefined if successful.
 
       
@@ -3920,7 +3285,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the new table.
 
           </div>
@@ -3929,7 +3294,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the file containing the table.
 
           </div>
@@ -3948,7 +3313,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>headers</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+            <span class='code bold'>headers</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
 	    A collection of metadata related to the table headers.
 
           </div>
@@ -4009,7 +3374,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the new geo table.
 
           </div>
@@ -4018,7 +3383,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>fileName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The name of the file containing the table.
 
           </div>
@@ -4037,7 +3402,7 @@ changing the order of the string key and numerical value.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>headers</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+            <span class='code bold'>headers</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
 	    A colleciton of metadata related to the table headers.
 
           </div>
@@ -4082,7 +3447,7 @@ changing the order of the string key and numerical value.</p>
 that is a render of the Vega JSON object.</p>
 
 
-  <div class='pre p1 fill-light mt0'>renderVega(widgetid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, vega: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image">Image</a></div>
+  <div class='pre p1 fill-light mt0'>renderVega(widgetid: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, vega: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/docs/Web/API/HTMLImageElement/Image">Image</a></div>
   
   
 
@@ -4099,7 +3464,7 @@ that is a render of the Vega JSON object.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>widgetid</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>widgetid</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The widget ID of the calling widget.
 
           </div>
@@ -4108,7 +3473,7 @@ that is a render of the Vega JSON object.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>vega</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>vega</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The Vega JSON.
 
           </div>
@@ -4117,7 +3482,7 @@ that is a render of the Vega JSON object.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    The options for the render query.
 
           </div>
@@ -4136,7 +3501,7 @@ that is a render of the Vega JSON object.</p>
             <tbody class='mt1'>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.compressionLevel</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
+                  <td class='break-word'><span class='code bold'>options.compressionLevel</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
                   </td>
                   <td class='break-word'><span>The PNG compression level.
 Range: 1 (low compression, faster) to 10 (high compression, slower).
@@ -4151,7 +3516,7 @@ Default: 3.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
 	    Takes 
 <code>(err, success)</code>
  as its signature.  Returns con singleton if successful.
@@ -4168,7 +3533,7 @@ Default: 3.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image">Image</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/API/HTMLImageElement/Image">Image</a></code>:
         Base64 image.
 
       
@@ -4206,7 +3571,7 @@ Default: 3.
 for a specific table that was last rendered at a pixel.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getResultRowForPixel(widgetId: any, pixel: TPixel, tableColNamesMap: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callbacks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, pixelRadius: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>?, Number: widgetId, tableName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</div>
+  <div class='pre p1 fill-light mt0'>getResultRowForPixel(widgetId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, pixel: TPixel, tableColNamesMap: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, pixelRadius: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></div>
   
   
 
@@ -4223,8 +3588,9 @@ for a specific table that was last rendered at a pixel.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>widgetId</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>widgetId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The widget ID of the caller.
+
           </div>
           
         </div>
@@ -4240,7 +3606,7 @@ for a specific table that was last rendered at a pixel.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tableColNamesMap</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>tableColNamesMap</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Map of the object of 
 <code>tableName</code>
  to the array of column names.
@@ -4251,16 +3617,7 @@ for a specific table that was last rendered at a pixel.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callbacks</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
-	    A collection of callbacks.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>pixelRadius</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>?
+            <span class='code bold'>pixelRadius</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>
             = <code>2</code>)</code>
 	    The radius around the primary pixel to search within.
 
@@ -4270,17 +3627,11 @@ for a specific table that was last rendered at a pixel.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>Number</span> <code class='quiet'>(widgetId)</code>
-	    The widget ID of the caller.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>tableName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The table containing the geo data.
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>
+            = <code>null</code>)</code>
+	    A callback function with the signature 
+<code>(err, result) => result</code>
+.
 
           </div>
           
@@ -4291,6 +3642,14 @@ for a specific table that was last rendered at a pixel.</p>
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></code>:
+        Current result nonce
+
+      
+    
   
 
   
@@ -4323,7 +3682,7 @@ for a specific table that was last rendered at a pixel.</p>
   <p>Formats the pixel results into the same pattern as textual results.</p>
 
 
-  <div class='pre p1 fill-light mt0'>processPixelResults(callbacks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, error: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, results: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>processPixelResults(callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>, error: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, results: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -4340,8 +3699,10 @@ for a specific table that was last rendered at a pixel.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callbacks</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
-	    A collection of callbacks.
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+	    A callback function with the signature 
+<code>(err, result) => result</code>
+.
 
           </div>
           
@@ -4349,7 +3710,7 @@ for a specific table that was last rendered at a pixel.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>error</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>error</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    An error if thrown; otherwise null.
 
           </div>
@@ -4358,7 +3719,7 @@ for a specific table that was last rendered at a pixel.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>results</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>))</code>
+            <span class='code bold'>results</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>))</code>
 	    Unformatted results of pixel 
 <code>rowId</code>
  information.
@@ -4375,7 +3736,7 @@ for a specific table that was last rendered at a pixel.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
         An object with the pixel results formatted for display.
 
       
@@ -4413,7 +3774,7 @@ for a specific table that was last rendered at a pixel.</p>
 This is typically set by <a href="connect">connect</a> and should not be set manually.</p>
 
 
-  <div class='pre p1 fill-light mt0'>sessionId(sessionId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>sessionId(sessionId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</div>
   
   
 
@@ -4430,7 +3791,7 @@ This is typically set by <a href="connect">connect</a> and should not be set man
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>sessionId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+            <span class='code bold'>sessionId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
 	    The session ID of the current connection.
 
           </div>
@@ -4445,7 +3806,7 @@ This is typically set by <a href="connect">connect</a> and should not be set man
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</code>:
         The session ID or MapD connector itself.
 
       
@@ -4496,7 +3857,7 @@ This is typically set by <a href="connect">connect</a> and should not be set man
 This is is typically the first method called after instantiating a new MapdCon.</p>
 
 
-  <div class='pre p1 fill-light mt0'>host(host: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>host(host: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
   
   
 
@@ -4513,7 +3874,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>host</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>host</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The hostname address.
 
           </div>
@@ -4528,7 +3889,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
         The hostname or MapD connector itself.
 
       
@@ -4577,7 +3938,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   <p>Get or set the connection port.</p>
 
 
-  <div class='pre p1 fill-light mt0'>port(port: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>port(port: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
   
   
 
@@ -4594,7 +3955,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>port</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>port</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The port to connect on.
 
           </div>
@@ -4609,7 +3970,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
         The port or MapD connector itself.
 
       
@@ -4658,7 +4019,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   <p>Get or set the username with which to authenticate.</p>
 
 
-  <div class='pre p1 fill-light mt0'>user(user: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>user(user: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
   
   
 
@@ -4675,7 +4036,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>user</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The username with which to authenticate.
 
           </div>
@@ -4690,7 +4051,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
         The username or MapD connector itself.
 
       
@@ -4739,7 +4100,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   <p>Get or set the user password for authentication.</p>
 
 
-  <div class='pre p1 fill-light mt0'>password(password: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>password(password: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
   
   
 
@@ -4756,7 +4117,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>password</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>password</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The password with which to authenticate.
 
           </div>
@@ -4771,7 +4132,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
         The password or MapD connector itself.
 
       
@@ -4820,7 +4181,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   <p>Get or set the name of the database to connect to.</p>
 
 
-  <div class='pre p1 fill-light mt0'>dbName(dbName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>dbName(dbName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
   
   
 
@@ -4837,7 +4198,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dbName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>dbName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The database to connect to.
 
           </div>
@@ -4852,7 +4213,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
         The name of the database or the MapD connector itself.
 
       
@@ -4902,7 +4263,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
 Used primarily for debugging; <code>false</code> by default.</p>
 
 
-  <div class='pre p1 fill-light mt0'>logging(logging: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>logging(logging: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</div>
   
   
 
@@ -4919,7 +4280,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>logging</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+            <span class='code bold'>logging</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
 	    Set to true to enable logging.
 
           </div>
@@ -4934,7 +4295,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</code>:
         The current logging flag or MapD connector itself.
 
       
@@ -4983,7 +4344,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   <p>The name of the platform.</p>
 
 
-  <div class='pre p1 fill-light mt0'>platform(platform: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>platform(platform: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
   
   
 
@@ -5000,7 +4361,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>platform</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>platform</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The platform; "mapd" by default.
 
           </div>
@@ -5015,7 +4376,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
         The platform or MapD connector itself.
 
       
@@ -5064,7 +4425,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   <p>Get the number of connections that are currently open.</p>
 
 
-  <div class='pre p1 fill-light mt0'>numConnections(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
+  <div class='pre p1 fill-light mt0'>numConnections(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
   
   
 
@@ -5082,7 +4443,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
         The number of open connections.
 
       
@@ -5127,7 +4488,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   <p>The protocol to use for requests.</p>
 
 
-  <div class='pre p1 fill-light mt0'>protocol(protocol: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+  <div class='pre p1 fill-light mt0'>protocol(protocol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
   
   
 
@@ -5144,7 +4505,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>protocol</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>protocol</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    <code>
 http
 </code>
@@ -5166,7 +4527,7 @@ https
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
         The protocol or MapdCon itself.
 
       
@@ -5215,7 +4576,7 @@ https
   <p>Generates a list of endpoints from the connection parameters.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getEndpoints(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></div>
+  <div class='pre p1 fill-light mt0'>getEndpoints(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></div>
   
   
 
@@ -5233,7 +4594,7 @@ https
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>></code>:
         List of endpoints.
 
       
@@ -5279,7 +4640,7 @@ https
   <p>Set the license for Trial or Enterprise</p>
 
 
-  <div class='pre p1 fill-light mt0'>setLicenseKey(key: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, config: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>setLicenseKey(key: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, config: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -5296,7 +4657,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>key</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+            <span class='code bold'>key</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
 	    The key to install
 
           </div>
@@ -5305,7 +4666,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Protocol, host and port to connect to
 
           </div>
@@ -5354,7 +4715,7 @@ https
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         Claims or Error.
 
       
@@ -5391,7 +4752,7 @@ https
   <p>Get the license for Trial or Enterprise</p>
 
 
-  <div class='pre p1 fill-light mt0'>getLicenseClaims(config: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>getLicenseClaims(config: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -5408,7 +4769,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Protocol, host and port to connect to
 
           </div>
@@ -5457,7 +4818,7 @@ https
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         Claims or Error.
 
       
@@ -5495,7 +4856,7 @@ https
 (Returning row-based results directly from the server is inefficient.)</p>
 
 
-  <div class='pre p1 fill-light mt0'>processColumnarResults(data: <a href="#trowset">TRowSet</a>, eliminateNullRows: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, dataEnum: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>processColumnarResults(data: <a href="#trowset">TRowSet</a>, eliminateNullRows: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, dataEnum: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -5521,7 +4882,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>eliminateNullRows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+            <span class='code bold'>eliminateNullRows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
 	    A flag that removes null rows from results.
 
           </div>
@@ -5530,7 +4891,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>dataEnum</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>dataEnum</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    A list of types created from when executing 
 <a href="#invertdatumtypes">#invertDatumTypes</a>
 .
@@ -5547,7 +4908,7 @@ https
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
         The formatted results of the query.
 
       
@@ -5584,7 +4945,7 @@ https
   <p>Determines how to process raw results when they return from the server.</p>
 
 
-  <div class='pre p1 fill-light mt0'>processQueryResults(logging: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, updateQueryTimes: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>, options: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, result: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>processQueryResults(logging: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, updateQueryTimes: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>, options: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>, callback: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>>, result: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -5601,7 +4962,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>logging</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+            <span class='code bold'>logging</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
 	    If enabled, shows on the console how long the query took to run.
 
           </div>
@@ -5610,7 +4971,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>updateQueryTimes</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
+            <span class='code bold'>updateQueryTimes</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>)</code>
 	    A function that updates internal query times on the connector.
 
           </div>
@@ -5619,7 +4980,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    A list of options for processing the results.
 
           </div>
@@ -5638,42 +4999,42 @@ https
             <tbody class='mt1'>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.isImage</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>
+                  <td class='break-word'><span class='code bold'>options.isImage</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>
                   </td>
                   <td class='break-word'><span>Set to true when querying for backend-rendered images.
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.eliminateNullRows</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>
+                  <td class='break-word'><span class='code bold'>options.eliminateNullRows</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>
                   </td>
                   <td class='break-word'><span>Removes null rows.
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.query</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></code>
+                  <td class='break-word'><span class='code bold'>options.query</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></code>
                   </td>
                   <td class='break-word'><span>The SQL query string used only for logging.
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.queryId</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
+                  <td class='break-word'><span class='code bold'>options.queryId</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
                   </td>
                   <td class='break-word'><span>The ID of the query.
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.conId</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
+                  <td class='break-word'><span class='code bold'>options.conId</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>
                   </td>
                   <td class='break-word'><span>The unique connector identification.
 </span></td>
                 </tr>
               
                 <tr>
-                  <td class='break-word'><span class='code bold'>options.estimatedQueryTime</span> <code class='quiet'><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></code>
+                  <td class='break-word'><span class='code bold'>options.estimatedQueryTime</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></code>
                   </td>
                   <td class='break-word'><span>The estimate of the query time.
 </span></td>
@@ -5686,7 +5047,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function">Function</a>>)</code>
 	    The same callback coming from 
 <a href="#query">#query</a>
 .
@@ -5697,7 +5058,7 @@ https
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>result</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>result</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    The query result used to decide whether to process
 as column or row results.
 
@@ -5713,7 +5074,7 @@ as column or row results.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
         Null if image with callbacks, result if image with callbacks,
 otherwise formatted results.
 
@@ -5753,7 +5114,7 @@ avoided. Instead, use <a href="#processcolumnarresults">processColumnarResults</
 row-based format.</p>
 
 
-  <div class='pre p1 fill-light mt0'>processRowResults(data: <a href="#trowset">TRowSet</a>, eliminateNullRows: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, datumEnum: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
+  <div class='pre p1 fill-light mt0'>processRowResults(data: <a href="#trowset">TRowSet</a>, eliminateNullRows: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>, datumEnum: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></div>
   
   
 
@@ -5779,7 +5140,7 @@ row-based format.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>eliminateNullRows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+            <span class='code bold'>eliminateNullRows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
 	    Flag that removes null rows from results.
 
           </div>
@@ -5788,7 +5149,7 @@ row-based format.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>datumEnum</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+            <span class='code bold'>datumEnum</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    A list of types created from when executing 
 <a href="#invertdatumtypes">#invertDatumTypes</a>
 .
@@ -5805,7 +5166,7 @@ row-based format.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></code>:
         The formatted results of the query.
 
       
@@ -5837,22 +5198,22 @@ row-based format.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='completion_hints'>
-      completion_hints
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
     </h3>
     
     
   </div>
   
 
-  <p>The types of the completion hint response object.</p>
+  <p>The value and state of an individual data cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>completion_hints</div>
+  <div class='pre p1 fill-light mt0'>TDatum</div>
   
     <p>
       Type:
-      <a href="#completion_hints">completion_hints</a>
+      <a href="#tdatum">TDatum</a>
     </p>
   
   
@@ -5871,20 +5232,85 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>session</span> <code class='quiet'>(TSessionId)</code>
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>sql</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
           
           
         </div>
       
-        <div class='space-bottom0'>
-          <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
           
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='ttabletype'>
+      TTableType
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TTableType</div>
+  
+    <p>
+      Type:
+      <a href="#ttabletype">TTableType</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =0
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =1
+
           
         </div>
       
@@ -5946,28 +5372,28 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>image_hash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>image_hash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : The lookup hash for the dashboard thumbnail image.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>update_time</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>update_time</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : The timestamp from the last saved update.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>view_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>view_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : The name of the dashboard or the shortened share link hash.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : The Base64-encoded string containing the details about the current state of the dashboard.
 
           
@@ -6031,21 +5457,21 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>read_only</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>read_only</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           : Indicates whether the server accepts write operations, such as saving.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>rendering_enabled</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>rendering_enabled</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           : Indicates whether backend rendering is enabled on the server.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>version</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>version</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : The current version of the server.
 
           
@@ -6109,26 +5535,26 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>columns</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+          <span class='code bold'>columns</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>is_columnar</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>is_columnar</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>row_desc</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
+          <span class='code bold'>row_desc</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tcolumntype">TColumnType</a>>)</code>
           : A list of field names and their associated information.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>rows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#trow">TRow</a>>)</code>
+          <span class='code bold'>rows</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#trow">TRow</a>>)</code>
           
           
         </div>
@@ -6190,7 +5616,7 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>col_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>col_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : The name of the table field.
 
           
@@ -6261,7 +5687,7 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>cols</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tdatum">TDatum</a>>)</code>
+          <span class='code bold'>cols</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#tdatum">TDatum</a>>)</code>
           : The array of individual data cells in a table.
 
           
@@ -6326,28 +5752,28 @@ See <a href="detectColumnTypes">detectColumnTypes</a> for a usage example.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>array_begin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>array_begin</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : =null
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>array_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>array_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : =null
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>array_end</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>array_end</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : =null
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>delimiter</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>delimiter</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : ="" - The delimiter character; for example, comma, 
 [
 TAB
@@ -6358,49 +5784,49 @@ TAB
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>escape</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>escape</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : =null
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>has_header</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>has_header</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           : =null
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>line_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>line_delim</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : =null
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>null_str</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>null_str</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : ="" - The token used by the table to express a null value; for example, some systems use 'nil' or 'none'.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>quote</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>quote</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : =null
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>quoted</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>quoted</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           : =true - Indicates whether the string fields should be wrapped in quotes.
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>threads</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>threads</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =null
 
           
@@ -6464,25 +5890,25 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           
           
         </div>
@@ -6545,19 +5971,19 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>elapsed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>elapsed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>rows_completed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>rows_completed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>rows_estimated</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>rows_estimated</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
@@ -6601,7 +6027,7 @@ TAB
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
     </p>
   
   
@@ -6620,140 +6046,140 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>SMALLINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>SMALLINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =0
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>INT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>INT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =1
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>BIGINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>BIGINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =2
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>FLOAT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>FLOAT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =3
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>DECIMAL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>DECIMAL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =4
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>DOUBLE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>DOUBLE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =5
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>STR</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>STR</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =6
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =7
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>TIMESTAMP</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>TIMESTAMP</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =8
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>DATE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>DATE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =9
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>BOOL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>BOOL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =10
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>INTERVAL_DAY_TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>INTERVAL_DAY_TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =11
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>INTERVAL_YEAR_MONTH</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>INTERVAL_YEAR_MONTH</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =12
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>POINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>POINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =13
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>LINESTRING</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>LINESTRING</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =14
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =15
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>MULTIPOLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>MULTIPOLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =16
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>TINYINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>TINYINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =17
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>GEOMETRY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>GEOMETRY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =18
 
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>GEOGRAPHY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>GEOGRAPHY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           : =19
 
           
@@ -6817,25 +6243,25 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>encoding</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>encoding</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>is_array</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>is_array</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>nullable</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>nullable</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>type</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>type</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
@@ -6933,22 +6359,22 @@ TAB
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='ttabletype'>
-      TTableType
+    <h3 class='fl m0' id='completion_hints'>
+      completion_hints
     </h3>
     
     
   </div>
   
 
-  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
+  <p>The types of the completion hint response object.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TTableType</div>
+  <div class='pre p1 fill-light mt0'>completion_hints</div>
   
     <p>
       Type:
-      <a href="#ttabletype">TTableType</a>
+      <a href="#completion_hints">completion_hints</a>
     </p>
   
   
@@ -6967,84 +6393,19 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =0
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =1
-
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tdatum'>
-      TDatum
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The value and state of an individual data cell in a table.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDatum</div>
-  
-    <p>
-      Type:
-      <a href="#tdatum">TDatum</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          <span class='code bold'>session</span> <code class='quiet'>(TSessionId)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
+          <span class='code bold'>sql</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
           
         </div>
