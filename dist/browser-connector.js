@@ -66,10 +66,27 @@
 		Author Tobias Koppers @sokra
 	*/
 	module.exports = function(src) {
-		if (typeof execScript !== "undefined")
-			execScript(src);
-		else
-			eval.call(null, src);
+		function log(error) {
+			(typeof console !== "undefined")
+			&& (console.error || console.log)("[Script Loader]", error);
+		}
+
+		// Check for IE =< 8
+		function isIE() {
+			return typeof attachEvent !== "undefined" && typeof addEventListener === "undefined";
+		}
+
+		try {
+			if (typeof execScript !== "undefined" && isIE()) {
+				execScript(src);
+			} else if (typeof eval !== "undefined") {
+				eval.call(null, src);
+			} else {
+				log("EvalError: No eval function available");
+			}
+		} catch (error) {
+			log(error);
+		}
 	}
 
 
@@ -131,13 +148,13 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _eventemitter = __webpack_require__(12);
-
-	var _eventemitter2 = _interopRequireDefault(_eventemitter);
-
-	var _helpers = __webpack_require__(13);
+	var _helpers = __webpack_require__(12);
 
 	var helpers = _interopRequireWildcard(_helpers);
+
+	var _eventemitter = __webpack_require__(13);
+
+	var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
 	var _mapdClientV = __webpack_require__(14);
 
@@ -147,9 +164,9 @@
 
 	var _processQueryResults2 = _interopRequireDefault(_processQueryResults);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1805,6 +1822,50 @@
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.timestampToMs = timestampToMs;
+	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
+	  return new TCopyParams(obj);
+	}; // eslint-disable-line no-undef
+
+	var mutateThriftRowDesc = exports.mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
+	  rowDescArray.forEach(function (obj, i) {
+	    thriftRowDescArray[i].col_name = obj.clean_col_name;
+	    thriftRowDescArray[i].col_type.encoding = obj.col_type.encoding;
+	    thriftRowDescArray[i].col_type.precision = obj.col_type.precision;
+	    thriftRowDescArray[i].col_type.comp_param = obj.col_type.comp_param;
+	    thriftRowDescArray[i].col_type.scale = obj.col_type.scale;
+	    thriftRowDescArray[i].col_type.type = obj.col_type.type;
+	  });
+	  return thriftRowDescArray;
+	};
+
+	/**
+	 * Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
+	 * represent seconds, ms, us, or ns depending on the precision of the column. This value is
+	 * truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
+	 * for passing to the JS Date object constructor.
+	 * @param {Number} timestamp - The raw integer timestamp in the database.
+	 * @param {Number} precision - The precision of the timestamp column in the database.
+	 * @returns {Number} The equivalent timestamp in milliseconds.
+	 */
+	function timestampToMs(timestamp, precision) {
+	  // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
+	  // eslint-disable-next-line no-magic-numbers
+	  var divisor = Math.pow(10, precision - 3);
+	  var timeInMs = timestamp / divisor;
+
+	  return timeInMs;
+	}
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2144,50 +2205,6 @@
 	  module.exports = EventEmitter;
 	}
 
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.timestampToMs = timestampToMs;
-	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
-	  return new TCopyParams(obj);
-	}; // eslint-disable-line no-undef
-
-	var mutateThriftRowDesc = exports.mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
-	  rowDescArray.forEach(function (obj, i) {
-	    thriftRowDescArray[i].col_name = obj.clean_col_name;
-	    thriftRowDescArray[i].col_type.encoding = obj.col_type.encoding;
-	    thriftRowDescArray[i].col_type.precision = obj.col_type.precision;
-	    thriftRowDescArray[i].col_type.comp_param = obj.col_type.comp_param;
-	    thriftRowDescArray[i].col_type.scale = obj.col_type.scale;
-	    thriftRowDescArray[i].col_type.type = obj.col_type.type;
-	  });
-	  return thriftRowDescArray;
-	};
-
-	/**
-	 * Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
-	 * represent seconds, ms, us, or ns depending on the precision of the column. This value is
-	 * truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
-	 * for passing to the JS Date object constructor.
-	 * @param {Number} timestamp - The raw integer timestamp in the database.
-	 * @param {Number} precision - The precision of the timestamp column in the database.
-	 * @returns {Number} The equivalent timestamp in milliseconds.
-	 */
-	function timestampToMs(timestamp, precision) {
-	  // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
-	  // eslint-disable-next-line no-magic-numbers
-	  var divisor = Math.pow(10, precision - 3);
-	  var timeInMs = timestamp / divisor;
-
-	  return timeInMs;
-	}
 
 /***/ }),
 /* 14 */
@@ -27415,7 +27432,7 @@
 	});
 	exports.default = processColumnarResults;
 
-	var _helpers = __webpack_require__(13);
+	var _helpers = __webpack_require__(12);
 
 	/**
 	 * Process the column-based results from the query in a row-based format.
@@ -27555,7 +27572,7 @@
 	});
 	exports.default = processRowResults;
 
-	var _helpers = __webpack_require__(13);
+	var _helpers = __webpack_require__(12);
 
 	/**
 	 * Query for row-based results from the server. In general, is inefficient and should be

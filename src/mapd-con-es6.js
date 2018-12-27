@@ -14,9 +14,10 @@ if (isNodeRuntime()) {
   Thrift.Protocol = thriftWrapper.TJSONProtocol
 }
 
+import * as helpers from "./helpers"
+
 import EventEmitter from "eventemitter3"
 
-import * as helpers from "./helpers"
 import MapDClientV2 from "./mapd-client-v2"
 import processQueryResults from "./process-query-results"
 
