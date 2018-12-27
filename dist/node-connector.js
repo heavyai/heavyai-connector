@@ -17004,17 +17004,15 @@ module.exports =
 	            return reject(error);
 	          };
 
-	          var result = method.apply(_this, args);
+	          var promise = method.apply(_this, args);
 
-	          result.then(success);
-	          result.catch(function (error) {
+	          promise.then(success).catch(function (error) {
 	            if (isTimeoutError(error)) {
 	              // Reconnect, then try the method once more
 	              return _this.connectAsync().then(function () {
-	                var retriedResult = method.apply(_this, args);
+	                var retriedPromise = method.apply(_this, args);
 
-	                retriedResult.then(success);
-	                retriedResult.catch(failure);
+	                retriedPromise.then(success).catch(failure);
 	              });
 	            } else {
 	              return failure(error);

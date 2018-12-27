@@ -314,22 +314,24 @@ class MapdCon {
         return reject(error)
       }
 
-      const result = method.apply(this, args)
+      const promise = method.apply(this, args)
 
-      result.then(success)
-      result.catch(error => {
-        if (isTimeoutError(error)) {
-          // Reconnect, then try the method once more
-          return this.connectAsync().then(() => {
-            const retriedResult = method.apply(this, args)
+      promise
+        .then(success)
+        .catch(error => {
+          if (isTimeoutError(error)) {
+            // Reconnect, then try the method once more
+            return this.connectAsync().then(() => {
+              const retriedPromise = method.apply(this, args)
 
-            retriedResult.then(success)
-            retriedResult.catch(failure)
-          })
-        } else {
-          return failure(error)
-        }
-      })
+              retriedPromise
+                .then(success)
+                .catch(failure)
+            })
+          } else {
+            return failure(error)
+          }
+        })
     })
 
   promisifyThriftMethod = (client, sessionId, methodName, args) =>
