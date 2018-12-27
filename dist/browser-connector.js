@@ -152,11 +152,15 @@
 
 	var helpers = _interopRequireWildcard(_helpers);
 
-	var _mapdClientV = __webpack_require__(13);
+	var _eventemitter = __webpack_require__(13);
+
+	var _eventemitter2 = _interopRequireDefault(_eventemitter);
+
+	var _mapdClientV = __webpack_require__(14);
 
 	var _mapdClientV2 = _interopRequireDefault(_mapdClientV);
 
-	var _processQueryResults = __webpack_require__(120);
+	var _processQueryResults = __webpack_require__(121);
 
 	var _processQueryResults2 = _interopRequireDefault(_processQueryResults);
 
@@ -168,23 +172,22 @@
 
 	/* global TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-	var _ref = isNodeRuntime() && __webpack_require__(119) || window,
+	var _ref = isNodeRuntime() && __webpack_require__(120) || window,
 	    TDatumType = _ref.TDatumType,
 	    TEncodingType = _ref.TEncodingType,
 	    TPixel = _ref.TPixel; // eslint-disable-line global-require
 
 
-	var MapDThrift = isNodeRuntime() && __webpack_require__(15); // eslint-disable-line global-require
-	var Thrift = isNodeRuntime() && __webpack_require__(16) || window.Thrift; // eslint-disable-line global-require
+	var MapDThrift = isNodeRuntime() && __webpack_require__(16); // eslint-disable-line global-require
+	var Thrift = isNodeRuntime() && __webpack_require__(17) || window.Thrift; // eslint-disable-line global-require
 	var thriftWrapper = Thrift;
-	var parseUrl = isNodeRuntime() && __webpack_require__(61).parse; // eslint-disable-line global-require
+	var parseUrl = isNodeRuntime() && __webpack_require__(62).parse; // eslint-disable-line global-require
 	if (isNodeRuntime()) {
 	  // Because browser Thrift and Node Thrift are exposed slightly differently.
 	  Thrift = Thrift.Thrift;
 	  Thrift.Transport = thriftWrapper.TBufferedTransport;
 	  Thrift.Protocol = thriftWrapper.TJSONProtocol;
 	}
-
 
 	var COMPRESSION_LEVEL_DEFAULT = 3;
 
@@ -222,35 +225,50 @@
 	      _this.queryTimes[queryId] = execution_time_ms;
 	    };
 
+	    this.events = new _eventemitter2.default();
+
+	    this.handleErrors = function (method) {
+	      return function () {
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        return new Promise(function (resolve, reject) {
+	          var success = function success(result) {
+	            return resolve(result);
+	          };
+	          var failure = function failure(error) {
+	            _this.events.emit("error", error);
+	            return reject(error);
+	          };
+
+	          var promise = method.apply(_this, args);
+
+	          promise.then(success).catch(function (error) {
+	            if (isTimeoutError(error)) {
+	              // Reconnect, then try the method once more
+	              return _this.connectAsync().then(function () {
+	                var retriedPromise = method.apply(_this, args);
+
+	                retriedPromise.then(success).catch(failure);
+	              });
+	            } else {
+	              return failure(error);
+	            }
+	          });
+	        });
+	      };
+	    };
+
 	    this.promisifyThriftMethod = function (client, sessionId, methodName, args) {
 	      return new Promise(function (resolve, reject) {
-	        var runThriftMethod = function runThriftMethod(_sessionId, handleError) {
-	          client[methodName].apply(client, [_sessionId].concat(args, function (result) {
-	            if (result instanceof Error) {
-	              handleError(result);
-	            } else {
-	              resolve(result);
-	            }
-	          }));
-	        };
-
-	        var handleErrorReject = function handleErrorReject(error) {
-	          reject(error);
-	        };
-
-	        var handleErrorReconnectAndRetry = function handleErrorReconnectAndRetry(error) {
-	          if (isTimeoutError(error)) {
-	            // Session might have timed out - call connect with existing parameters, then retry
-	            _this.connectAsync().then(function (result) {
-	              // If we fail again though, just stop and reject
-	              runThriftMethod(result._sessionId[0], handleErrorReject);
-	            });
+	        client[methodName].apply(client, [sessionId].concat(args, function (result) {
+	          if (result instanceof Error) {
+	            reject(result);
 	          } else {
-	            reject(error);
+	            resolve(result);
 	          }
-	        };
-
-	        runThriftMethod(sessionId, handleErrorReconnectAndRetry);
+	        }));
 	      });
 	    };
 
@@ -259,8 +277,8 @@
 
 	    this.wrapThrift = function (methodName, overClients, processArgs) {
 	      return function () {
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	          args[_key] = arguments[_key];
+	        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	          args[_key2] = arguments[_key2];
 	        }
 
 	        if (_this._sessionId) {
@@ -279,64 +297,11 @@
 	      };
 	    };
 
-	    this.getFrontendViews = function (callback) {
-	      if (_this._sessionId) {
-	        _this._client[0].get_frontend_views(_this._sessionId[0], callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewsAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendViews(function (error, views) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(views);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getFrontendView = function (viewName, callback) {
-	      if (_this._sessionId && viewName) {
-	        _this._client[0].get_frontend_view(_this._sessionId[0], viewName, callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendView(viewName, function (err, view) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(view);
-	          }
-	        });
-	      });
-	    };
-
 	    this.getStatus = function (callback) {
 	      _this._client[0].get_status(_this._sessionId[0], callback);
 	    };
 
-	    this.getServerStatusAsync = function () {
-	      console.warn("getServerStatusAsync is deprecated, please use getStatusAsync");
-	      return new Promise(function (resolve, reject) {
-	        _this.getStatus(function (err, result) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(result[0]);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getStatusAsync = function () {
+	    this.getStatusAsync = this.handleErrors(function () {
 	      return new Promise(function (resolve, reject) {
 	        _this.getStatus(function (err, result) {
 	          if (err) {
@@ -346,13 +311,13 @@
 	          }
 	        });
 	      });
-	    };
+	    });
 
 	    this.getHardwareInfo = function (callback) {
 	      _this._client[0].get_hardware_info(_this._sessionId[0], callback);
 	    };
 
-	    this.getHardwareInfoAsync = function () {
+	    this.getHardwareInfoAsync = this.handleErrors(function () {
 	      return new Promise(function (resolve, reject) {
 	        _this.getHardwareInfo(function (err, result) {
 	          if (err) {
@@ -362,61 +327,32 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.deleteFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.deleteFrontendView(viewName, function (err) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(viewName);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getLinkView = function (link, callback) {
-	      _this._client[0].get_link_view(_this._sessionId[0], link, callback);
-	    };
-
-	    this.getLinkViewAsync = function (link) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getLinkView(link, function (err, theLink) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(theLink);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getFirstGeoFileInArchiveAsync = this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
-	      return args;
 	    });
-	    this.getUsersAsync = this.wrapThrift("get_users", this.overSingleClient, function (args) {
+	    this.getFirstGeoFileInArchiveAsync = this.handleErrors(this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getRolesAsync = this.wrapThrift("get_roles", this.overSingleClient, function (args) {
+	    }));
+	    this.getUsersAsync = this.handleErrors(this.wrapThrift("get_users", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDashboardsAsync = this.wrapThrift("get_dashboards", this.overSingleClient, function (args) {
+	    }));
+	    this.getRolesAsync = this.handleErrors(this.wrapThrift("get_roles", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDashboardAsync = this.wrapThrift("get_dashboard", this.overSingleClient, function (args) {
+	    }));
+	    this.getDashboardsAsync = this.handleErrors(this.wrapThrift("get_dashboards", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.createDashboardAsync = this.wrapThrift("create_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.getDashboardAsync = this.handleErrors(this.wrapThrift("get_dashboard", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.replaceDashboardAsync = this.wrapThrift("replace_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.createDashboardAsync = this.handleErrors(this.wrapThrift("create_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    });
-	    this.deleteDashboardAsync = this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.replaceDashboardAsync = this.handleErrors(this.wrapThrift("replace_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    });
-	    this.shareDashboardAsync = this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
+	    }));
+	    this.deleteDashboardAsync = this.handleErrors(this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
+	      return args;
+	    }));
+	    this.shareDashboardAsync = this.handleErrors(this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
 	      var _ref3 = _slicedToArray(_ref2, 4),
 	          dashboardId = _ref3[0],
 	          groups = _ref3[1],
@@ -424,8 +360,8 @@
 	          permissions = _ref3[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    });
-	    this.unshareDashboardAsync = this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
+	    }));
+	    this.unshareDashboardAsync = this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
 	      var _ref5 = _slicedToArray(_ref4, 4),
 	          dashboardId = _ref5[0],
 	          groups = _ref5[1],
@@ -433,24 +369,24 @@
 	          permissions = _ref5[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    });
-	    this.getDashboardGranteesAsync = this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
+	    }));
+	    this.getDashboardGranteesAsync = this.handleErrors(this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDbObjectsForGranteeAsync = this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
+	    }));
+	    this.getDbObjectsForGranteeAsync = this.handleErrors(this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDbObjectPrivsAsync = this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
+	    }));
+	    this.getDbObjectPrivsAsync = this.handleErrors(this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
 	      var _ref7 = _slicedToArray(_ref6, 2),
 	          objectName = _ref7[0],
 	          type = _ref7[1];
 
 	      return [objectName, TDBObjectType[type]];
-	    });
-	    this.getAllRolesForUserAsync = this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
+	    }));
+	    this.getAllRolesForUserAsync = this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.hasObjectPrivilegesAsync = this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
+	    }));
+	    this.hasObjectPrivilegesAsync = this.handleErrors(this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
 	      var _ref9 = _slicedToArray(_ref8, 4),
 	          granteeName = _ref9[0],
 	          objectName = _ref9[1],
@@ -458,7 +394,7 @@
 	          permissions = _ref9[3];
 
 	      return [granteeName, objectName, objectType, permissions];
-	    });
+	    }));
 
 	    this.hasDbPrivilegesAsync = function (granteeName, dbName, dbPrivs) {
 	      return _this.hasObjectPrivilegesAsync(granteeName, dbName, TDBObjectType.DatabaseDBObjectType, new TDBObjectPermissions({
@@ -466,7 +402,19 @@
 	      }));
 	    };
 
-	    this.queryAsync = function (query, options) {
+	    this.detectColumnTypesAsync = this.handleErrors(function (fileName, copyParams) {
+	      return new Promise(function (resolve, reject) {
+	        _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            _this.importerRowDesc = res.row_set.row_desc;
+	            resolve(res);
+	          }
+	        });
+	      });
+	    });
+	    this.queryAsync = this.handleErrors(function (query, options) {
 	      return new Promise(function (resolve, reject) {
 	        _this.query(query, options, function (error, result) {
 	          if (error) {
@@ -476,9 +424,41 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.getFieldsAsync = function (tableName) {
+	    });
+	    this.validateQuery = this.handleErrors(function (query) {
+	      return new Promise(function (resolve, reject) {
+	        _this._client[0].sql_validate(_this._sessionId[0], query, function (error, res) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(_this.convertFromThriftTypes(res));
+	          }
+	        });
+	      });
+	    });
+	    this.getTablesAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getTables.bind(_this)(function (error, tables) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(tables);
+	          }
+	        });
+	      });
+	    });
+	    this.getTablesWithMetaAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getTablesWithMeta.bind(_this)(function (error, tables) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(tables);
+	          }
+	        });
+	      });
+	    });
+	    this.getFieldsAsync = this.handleErrors(function (tableName) {
 	      return new Promise(function (resolve, reject) {
 	        _this.getFields(tableName, function (error, fields) {
 	          if (error) {
@@ -488,9 +468,8 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.createTableAsync = function (tableName, rowDescObj, tableType, createParams) {
+	    });
+	    this.createTableAsync = this.handleErrors(function (tableName, rowDescObj, tableType, createParams) {
 	      return new Promise(function (resolve, reject) {
 	        _this.createTable(tableName, rowDescObj, tableType, createParams, function (err) {
 	          if (err) {
@@ -500,10 +479,32 @@
 	          }
 	        });
 	      });
-	    };
-
-	    this.importTableAsync = this.importTableAsyncWrapper(false);
-	    this.importTableGeoAsync = this.importTableAsyncWrapper(true);
+	    });
+	    this.importTableAsync = this.handleErrors(this.importTableAsyncWrapper(false));
+	    this.importTableGeoAsync = this.handleErrors(this.importTableAsyncWrapper(true));
+	    this.renderVegaAsync = this.handleErrors(function (widgetid, vega, options) {
+	      return new Promise(function (resolve, reject) {
+	        _this.renderVega(widgetid, vega, options, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
+	    this.getResultRowForPixelAsync = this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
+	      var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
+	      return new Promise(function (resolve, reject) {
+	        _this.getResultRowForPixel(widgetId, pixel, tableColNamesMap, pixelRadius, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 
 	    this._host = null;
 	    this._user = null;
@@ -632,7 +633,7 @@
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -712,53 +713,27 @@
 	      }
 	      return this;
 	    }
+	  }, {
+	    key: "removeConnection",
+	    value: function removeConnection(conId) {
+	      if (conId < 0 || conId >= this.numConnections) {
+	        var err = {
+	          msg: "Remove connection id invalid"
+	        };
+	        throw err;
+	      }
+	      this._client.splice(conId, 1);
+	      this._sessionId.splice(conId, 1);
+	      this._numConnections--;
+	    }
 
-	    // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
+	    // ** Method wrappers **
 
-
-	    /**
-	     * Get the recent Immerse dashboards as a list of {@link TFrontendView} objects.
-	     * These objects contain a value for the <code>view_name</code> property,
-	     * but not for the <code>view_state</code> property.
-	     * @return {Promise<TFrontendView[]>} An array that has all saved dashboards.
-	     *
-	     * @example <caption>Get the list of Immerse dashboards from the server:</caption>
-	     *
-	     * con.getFrontendViewsAsync().then((results) => console.log(results))
-	     * // [TFrontendView, TFrontendView]
-	     */
-
-
-	    /**
-	     * Get a dashboard object containing a value for the <code>view_state</code> property.
-	     * This object contains a value for the <code>view_state</code> property,
-	     * but not for the <code>view_name</code> property.
-	     * @param {String} viewName The name of the dashboard.
-	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard.
-	     *
-	     * @example <caption>Get a specific dashboard from the server:</caption>
-	     *
-	     * con.getFrontendViewAsync('view_name').then((result) => console.log(result))
-	     * // {TFrontendView}
-	     */
+	    // Wrap a Thrift method to perform session check and mapping over
+	    // all clients (for mutating methods)
 
 
-	    /**
-	     * Get the status of the server as a {@link TServerStatus} object.
-	     * This includes the server version number, whether the server is read-only,
-	     * and whether backend rendering is enabled.
-	     * @return {Promise.<Object>} An object that contains information about the server status.
-	     *
-	     * @example <caption>Get the server status:</caption>
-	     *
-	     * con.getServerStatusAsync().then((result) => console.log(result))
-	     * // {
-	     * //   "read_only": false,
-	     * //   "version": "3.0.0dev-20170503-40e2de3",
-	     * //   "rendering_enabled": true,
-	     * //   "start_time": 1493840131
-	     * // }
-	     */
+	    // ** Client methods **
 
 	    /**
 	     * Get the status of the server as a {@link TServerStatus} object.
@@ -814,137 +789,6 @@
 	     *   }]
 	     * }
 	     */
-
-	  }, {
-	    key: "createFrontendViewAsync",
-
-
-	    /**
-	     * Add a new dashboard to the server.
-	     * @param {String} viewName The name of the new dashboard.
-	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
-	     * @param {String} imageHash The numeric hash of the dashboard thumbnail.
-	     * @param {String} metaData - Stringified metadata related to the view.
-	     * @return {Promise} Returns empty if successful.
-	     *
-	     * @example <caption>Add a new dashboard to the server:</caption>
-	     *
-	     * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
-	     */
-	    value: function createFrontendViewAsync(viewName, viewState, imageHash, metaData) {
-	      var _this4 = this;
-
-	      if (!this._sessionId) {
-	        return new Promise(function (resolve, reject) {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        });
-	      }
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_frontend_view(_this4._sessionId[i], viewName, viewState, imageHash, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              resolve(data);
-	            }
-	          });
-	        });
-	      }));
-	    }
-	  }, {
-	    key: "deleteFrontendView",
-	    value: function deleteFrontendView(viewName, callback) {
-	      var _this5 = this;
-
-	      if (!this._sessionId) {
-	        throw new Error("You are not connected to a server. Try running the connect method first.");
-	      }
-	      try {
-	        this._client.forEach(function (client, i) {
-	          // do we want to try each one individually so if we fail we keep going?
-	          client.delete_frontend_view(_this5._sessionId[i], viewName, callback);
-	        });
-	      } catch (err) {
-	        console.log("ERROR: Could not delete the frontend view. Check your session id.", err);
-	      }
-	    }
-
-	    /**
-	     * Delete a dashboard object containing a value for the <code>viewState</code> property.
-	     * @param {String} viewName The name of the dashboard.
-	     * @return {Promise.<String>} The name of dashboard deleted.
-	     *
-	     * @example <caption>Delete a specific dashboard from the server:</caption>
-	     *
-	     * con.deleteFrontendViewAsync('view_name').then(res => console.log(res))
-	     */
-
-	  }, {
-	    key: "createLinkAsync",
-
-
-	    /**
-	     * Create a short hash to make it easy to share a link to a specific dashboard.
-	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
-	     * @param {String} metaData Stringified metadata related to the link.
-	     * @return {Promise.<String[]>} A short hash of the dashboard used for URLs.
-	     *
-	     * @example <caption>Create a link to the current state of a dashboard:</caption>
-	     *
-	     * con.createLinkAsync("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
-	     * // ["28127951"]
-	     */
-	    value: function createLinkAsync(viewState, metaData) {
-	      var _this6 = this;
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_link(_this6._sessionId[i], viewState, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              var result = data.split(",").reduce(function (links, link) {
-	                if (links.indexOf(link) === -1) {
-	                  links.push(link);
-	                }
-	                return links;
-	              }, []);
-	              if (!result || result.length !== 1) {
-	                reject(new Error("Different links were created on connection"));
-	              } else {
-	                resolve(result.join());
-	              }
-	            }
-	          });
-	        });
-	      }));
-	    }
-
-	    /**
-	     * Get a fully formed dashboard object from a generated share link.
-	     * This object contains the link for the <code>view_name</code> property.
-	     * @param {String} link  The short hash of the dashboard; see {@link createLink}.
-	     * @return {Promise.<Object>} Object of the dashboard and metadata.
-	     *
-	     * @example <caption>Get a dashboard from a link:</caption>
-	     *
-	     * con.getLinkViewAsync('28127951').then(res => console.log(res))
-	     * //  {
-	     * //    "view_name": "28127951",
-	     * //    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",
-	     * //    "image_hash": "",
-	     * //    "update_time": "2017-04-28T21:34:01Z",
-	     * //    "view_metadata": "metaData"
-	     * //  }
-	     */
-
-	  }, {
-	    key: "detectColumnTypes",
-	    value: function detectColumnTypes(fileName, copyParams, callback) {
-	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
-	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
-	    }
 
 	    /**
 	     * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
@@ -1153,8 +997,11 @@
 	     */
 
 	  }, {
-	    key: "detectColumnTypesAsync",
-
+	    key: "detectColumnTypes",
+	    value: function detectColumnTypes(fileName, copyParams, callback) {
+	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
+	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
+	    }
 
 	    /**
 	     * Asynchronously get data from an importable file,
@@ -1170,20 +1017,10 @@
 	     * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
 	     *
 	     */
-	    value: function detectColumnTypesAsync(fileName, copyParams) {
-	      var _this7 = this;
 
-	      return new Promise(function (resolve, reject) {
-	        _this7.detectColumnTypes.bind(_this7, fileName, copyParams)(function (err, res) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            _this7.importerRowDesc = res.row_set.row_desc;
-	            resolve(res);
-	          }
-	        });
-	      });
-	    }
+	  }, {
+	    key: "query",
+
 
 	    /**
 	     * Submit a query to the database and process the results.
@@ -1202,11 +1039,8 @@
 	     *      });
 	     *
 	     */
-
-	  }, {
-	    key: "query",
 	    value: function query(_query, options, callback) {
-	      var _this8 = this;
+	      var _this4 = this;
 
 	      var columnarResults = true;
 	      var eliminateNullRows = false;
@@ -1240,7 +1074,7 @@
 	        var AT_MOST_N = -1;
 	        if (callback) {
 	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, AT_MOST_N, function (error, result) {
-	            _this8.processResults(processResultsOptions, result, error, callback);
+	            _this4.processResults(processResultsOptions, result, error, callback);
 	          });
 	          return curNonce;
 	        } else if (!callback) {
@@ -1262,9 +1096,6 @@
 	        }
 	      }
 	    }
-	  }, {
-	    key: "validateQuery",
-
 
 	    /**
 	     * Submit a query to validate that the backend can create a result set based on the SQL statement.
@@ -1285,32 +1116,7 @@
 	     * //  }]
 	     *
 	     */
-	    value: function validateQuery(query) {
-	      var _this9 = this;
 
-	      return new Promise(function (resolve, reject) {
-	        _this9._client[0].sql_validate(_this9._sessionId[0], query, function (error, res) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(_this9.convertFromThriftTypes(res));
-	          }
-	        });
-	      });
-	    }
-	  }, {
-	    key: "removeConnection",
-	    value: function removeConnection(conId) {
-	      if (conId < 0 || conId >= this.numConnections) {
-	        var err = {
-	          msg: "Remove connection id invalid"
-	        };
-	        throw err;
-	      }
-	      this._client.splice(conId, 1);
-	      this._sessionId.splice(conId, 1);
-	      this._numConnections--;
-	    }
 	  }, {
 	    key: "getTables",
 	    value: function getTables(callback) {
@@ -1344,24 +1150,9 @@
 	     */
 
 	  }, {
-	    key: "getTablesAsync",
-	    value: function getTablesAsync() {
-	      var _this10 = this;
-
-	      return new Promise(function (resolve, reject) {
-	        _this10.getTables.bind(_this10)(function (error, tables) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(tables);
-	          }
-	        });
-	      });
-	    }
-	  }, {
 	    key: "getTablesWithMeta",
 	    value: function getTablesWithMeta(callback) {
-	      var _this11 = this;
+	      var _this5 = this;
 
 	      this._client[0].get_tables_meta(this._sessionId[0], function (error, tables) {
 	        if (error) {
@@ -1372,7 +1163,7 @@
 	              name: table.table_name,
 	              num_cols: Number(table.num_cols.toString()),
 	              col_datum_types: table.col_datum_types.map(function (type) {
-	                return _this11._datumEnum[type];
+	                return _this5._datumEnum[type];
 	              }),
 	              is_view: table.is_view,
 	              is_replicated: table.is_replicated,
@@ -1405,20 +1196,8 @@
 	     */
 
 	  }, {
-	    key: "getTablesWithMetaAsync",
-	    value: function getTablesWithMetaAsync() {
-	      var _this12 = this;
+	    key: "getCompletionHints",
 
-	      return new Promise(function (resolve, reject) {
-	        _this12.getTablesWithMeta.bind(_this12)(function (error, tables) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(tables);
-	          }
-	        });
-	      });
-	    }
 
 	    /**
 	     * Submits an SQL string to the backend and returns a completion hints object.
@@ -1442,9 +1221,6 @@
 	     *   }]
 	     *
 	     */
-
-	  }, {
-	    key: "getCompletionHints",
 	    value: function getCompletionHints(queryString, options, callback) {
 	      var cursor = options.cursor;
 	      this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, function (error, result) {
@@ -1494,7 +1270,7 @@
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName, callback) {
-	      var _this13 = this;
+	      var _this6 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
 	        if (fields) {
@@ -1502,7 +1278,7 @@
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-	          callback(null, _this13.convertFromThriftTypes(rowDict));
+	          callback(null, _this6.convertFromThriftTypes(rowDict));
 	        } else {
 	          callback(new Error("Table (" + tableName + ") not found" + error));
 	        }
@@ -1571,11 +1347,11 @@
 	  }, {
 	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this14 = this;
+	      var _this7 = this;
 
 	      return function (tableName, fileName, copyParams, headers) {
 	        return new Promise(function (resolve, reject) {
-	          _this14.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
+	          _this7.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
 	            if (err) {
 	              reject(err);
 	            } else {
@@ -1622,10 +1398,11 @@
 	     * @returns {Image} Base64 image.
 	     */
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this15 = this;
+	      var _this8 = this;
 
 	      var queryId = null;
 	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
+
 	      if (options) {
 	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
 	        compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
@@ -1652,81 +1429,91 @@
 	      }
 
 	      this._client[conId].render_vega(this._sessionId[conId], widgetid, vega, compressionLevel, curNonce, function (error, result) {
-	        _this15.processResults(processResultsOptions, result, error, callback);
+	        _this8.processResults(processResultsOptions, result, error, callback);
 	      });
 
 	      return curNonce;
 	    }
+	  }, {
+	    key: "getResultRowForPixel",
+
 
 	    /**
 	     * Used primarily for backend-rendered maps; fetches the row
 	     * for a specific table that was last rendered at a pixel.
 	     *
-	     * @param {widgetId} Number The widget ID of the caller.
+	     * @param {Number} widgetId The widget ID of the caller.
 	     * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
-	     * @param {String} tableName The table containing the geo data.
 	     * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
-	     * @param {Array<Function>} callbacks A collection of callbacks.
 	     * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
+	     *
+	     * @returns {String} Current result nonce
 	     */
-
-	  }, {
-	    key: "getResultRowForPixel",
-	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap, callbacks) /* istanbul ignore next */{
-	      var pixelRadius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
+	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap) /* istanbul ignore next */{
+	      var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
+	      var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
 
 	      if (!(pixel instanceof TPixel)) {
 	        pixel = new TPixel(pixel);
 	      }
+
 	      var columnFormat = true; // BOOL
 	      var curNonce = (this._nonce++).toString();
 
-	      if (!callbacks) {
+	      if (!callback) {
 	        return this.processPixelResults(undefined, // eslint-disable-line no-undefined
 	        this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));
 	      }
-	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callbacks));
+
+	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callback));
 
 	      return curNonce;
 	    }
+	  }, {
+	    key: "processPixelResults",
+
 
 	    /**
 	     * Formats the pixel results into the same pattern as textual results.
 	     *
-	     * @param {Array<Function>} callbacks A collection of callbacks.
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
 	     * @param {Object} error An error if thrown; otherwise null.
 	     * @param {Array|Object} results Unformatted results of pixel `rowId` information.
 	     *
 	     * @returns {Object} An object with the pixel results formatted for display.
 	     */
-
-	  }, {
-	    key: "processPixelResults",
-	    value: function processPixelResults(callbacks, error, results) {
-	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
+	    value: function processPixelResults(callback, error, results) {
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
+
 	      if (error) {
-	        if (callbacks) {
-	          callbacks.pop()(error, results);
+	        if (callback) {
+	          return callback(error, results);
 	        } else {
 	          throw new Error("Unable to process result row for pixel results: " + error);
 	        }
 	      }
-	      var numPixels = results.length;
+
 	      var processResultsOptions = {
 	        isImage: false,
 	        eliminateNullRows: false,
 	        query: "pixel request",
 	        queryId: -2
 	      };
+
+	      var numPixels = results.length;
 	      for (var p = 0; p < numPixels; p++) {
 	        results[p].row_set = this.processResults(processResultsOptions, results[p]);
 	      }
-	      if (!callbacks) {
+
+	      if (callback) {
+	        return callback(error, results);
+	      } else {
 	        return results;
 	      }
-	      callbacks.pop()(error, results);
 	    }
+
+	    // ** Configuration methods **
 
 	    /**
 	     * Get or set the session ID used by the server to serve the correct data.
@@ -1746,11 +1533,11 @@
 
 	  }, {
 	    key: "sessionId",
-	    value: function sessionId(_sessionId2) {
+	    value: function sessionId(_sessionId) {
 	      if (!arguments.length) {
 	        return this._sessionId;
 	      }
-	      this._sessionId = _sessionId2;
+	      this._sessionId = _sessionId;
 	      return this;
 	    }
 
@@ -1972,10 +1759,10 @@
 	  }, {
 	    key: "getEndpoints",
 	    value: function getEndpoints() {
-	      var _this16 = this;
+	      var _this9 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
+	        return _this9._protocol[i] + "://" + host + ":" + _this9._port[i];
 	      });
 	    }
 
@@ -1989,15 +1776,15 @@
 	  }, {
 	    key: "setLicenseKey",
 	    value: function setLicenseKey(key, _ref10) {
-	      var _this17 = this;
+	      var _this10 = this;
 
 	      var protocol = _ref10.protocol,
 	          host = _ref10.host,
 	          port = _ref10.port;
 
 	      return new Promise(function (resolve) {
-	        var client = Array.isArray(_this17._client) && _this17._client[0];
-	        var sessionId = _this17._sessionId && _this17._sessionId[0];
+	        var client = Array.isArray(_this10._client) && _this10._client[0];
+	        var sessionId = _this10._sessionId && _this10._sessionId[0];
 	        if (!client) {
 	          var url = protocol + "://" + host + ":" + port;
 	          var thriftTransport = new Thrift.Transport(url);
@@ -2005,7 +1792,7 @@
 	          client = new _mapdClientV2.default(thriftProtocol);
 	          sessionId = "";
 	        }
-	        var result = client.set_license_key(sessionId, key, _this17._nonce++);
+	        var result = client.set_license_key(sessionId, key, _this10._nonce++);
 	        resolve(result);
 	      });
 	    }
@@ -2019,15 +1806,15 @@
 	  }, {
 	    key: "getLicenseClaims",
 	    value: function getLicenseClaims(_ref11) {
-	      var _this18 = this;
+	      var _this11 = this;
 
 	      var protocol = _ref11.protocol,
 	          host = _ref11.host,
 	          port = _ref11.port;
 
 	      return new Promise(function (resolve, reject) {
-	        var client = Array.isArray(_this18._client) && _this18._client[0];
-	        var sessionId = _this18._sessionId && _this18._sessionId[0];
+	        var client = Array.isArray(_this11._client) && _this11._client[0];
+	        var sessionId = _this11._sessionId && _this11._sessionId[0];
 	        if (!client) {
 	          var url = protocol + "://" + host + ":" + port;
 	          var thriftTransport = new Thrift.Transport(url);
@@ -2036,7 +1823,7 @@
 	          sessionId = "";
 	        }
 	        try {
-	          var result = client.get_license_claims(sessionId, _this18._nonce++);
+	          var result = client.get_license_claims(sessionId, _this11._nonce++);
 	          resolve(result);
 	        } catch (e) {
 	          reject(e);
@@ -2052,8 +1839,8 @@
 	  methodNames.forEach(function (methodName) {
 	    var oldFunc = connector[methodName];
 	    connector[methodName] = function () {
-	      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
+	      for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	        args[_key3] = arguments[_key3];
 	      }
 
 	      try {
@@ -2146,6 +1933,348 @@
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var has = Object.prototype.hasOwnProperty
+	  , prefix = '~';
+
+	/**
+	 * Constructor to create a storage for our `EE` objects.
+	 * An `Events` instance is a plain object whose properties are event names.
+	 *
+	 * @constructor
+	 * @private
+	 */
+	function Events() {}
+
+	//
+	// We try to not inherit from `Object.prototype`. In some engines creating an
+	// instance in this way is faster than calling `Object.create(null)` directly.
+	// If `Object.create(null)` is not supported we prefix the event names with a
+	// character to make sure that the built-in object properties are not
+	// overridden or used as an attack vector.
+	//
+	if (Object.create) {
+	  Events.prototype = Object.create(null);
+
+	  //
+	  // This hack is needed because the `__proto__` property is still inherited in
+	  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+	  //
+	  if (!new Events().__proto__) prefix = false;
+	}
+
+	/**
+	 * Representation of a single event listener.
+	 *
+	 * @param {Function} fn The listener function.
+	 * @param {*} context The context to invoke the listener with.
+	 * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+	 * @constructor
+	 * @private
+	 */
+	function EE(fn, context, once) {
+	  this.fn = fn;
+	  this.context = context;
+	  this.once = once || false;
+	}
+
+	/**
+	 * Add a listener for a given event.
+	 *
+	 * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+	 * @param {(String|Symbol)} event The event name.
+	 * @param {Function} fn The listener function.
+	 * @param {*} context The context to invoke the listener with.
+	 * @param {Boolean} once Specify if the listener is a one-time listener.
+	 * @returns {EventEmitter}
+	 * @private
+	 */
+	function addListener(emitter, event, fn, context, once) {
+	  if (typeof fn !== 'function') {
+	    throw new TypeError('The listener must be a function');
+	  }
+
+	  var listener = new EE(fn, context || emitter, once)
+	    , evt = prefix ? prefix + event : event;
+
+	  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+	  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+	  else emitter._events[evt] = [emitter._events[evt], listener];
+
+	  return emitter;
+	}
+
+	/**
+	 * Clear event by name.
+	 *
+	 * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+	 * @param {(String|Symbol)} evt The Event name.
+	 * @private
+	 */
+	function clearEvent(emitter, evt) {
+	  if (--emitter._eventsCount === 0) emitter._events = new Events();
+	  else delete emitter._events[evt];
+	}
+
+	/**
+	 * Minimal `EventEmitter` interface that is molded against the Node.js
+	 * `EventEmitter` interface.
+	 *
+	 * @constructor
+	 * @public
+	 */
+	function EventEmitter() {
+	  this._events = new Events();
+	  this._eventsCount = 0;
+	}
+
+	/**
+	 * Return an array listing the events for which the emitter has registered
+	 * listeners.
+	 *
+	 * @returns {Array}
+	 * @public
+	 */
+	EventEmitter.prototype.eventNames = function eventNames() {
+	  var names = []
+	    , events
+	    , name;
+
+	  if (this._eventsCount === 0) return names;
+
+	  for (name in (events = this._events)) {
+	    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+	  }
+
+	  if (Object.getOwnPropertySymbols) {
+	    return names.concat(Object.getOwnPropertySymbols(events));
+	  }
+
+	  return names;
+	};
+
+	/**
+	 * Return the listeners registered for a given event.
+	 *
+	 * @param {(String|Symbol)} event The event name.
+	 * @returns {Array} The registered listeners.
+	 * @public
+	 */
+	EventEmitter.prototype.listeners = function listeners(event) {
+	  var evt = prefix ? prefix + event : event
+	    , handlers = this._events[evt];
+
+	  if (!handlers) return [];
+	  if (handlers.fn) return [handlers.fn];
+
+	  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+	    ee[i] = handlers[i].fn;
+	  }
+
+	  return ee;
+	};
+
+	/**
+	 * Return the number of listeners listening to a given event.
+	 *
+	 * @param {(String|Symbol)} event The event name.
+	 * @returns {Number} The number of listeners.
+	 * @public
+	 */
+	EventEmitter.prototype.listenerCount = function listenerCount(event) {
+	  var evt = prefix ? prefix + event : event
+	    , listeners = this._events[evt];
+
+	  if (!listeners) return 0;
+	  if (listeners.fn) return 1;
+	  return listeners.length;
+	};
+
+	/**
+	 * Calls each of the listeners registered for a given event.
+	 *
+	 * @param {(String|Symbol)} event The event name.
+	 * @returns {Boolean} `true` if the event had listeners, else `false`.
+	 * @public
+	 */
+	EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+	  var evt = prefix ? prefix + event : event;
+
+	  if (!this._events[evt]) return false;
+
+	  var listeners = this._events[evt]
+	    , len = arguments.length
+	    , args
+	    , i;
+
+	  if (listeners.fn) {
+	    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+	    switch (len) {
+	      case 1: return listeners.fn.call(listeners.context), true;
+	      case 2: return listeners.fn.call(listeners.context, a1), true;
+	      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+	      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+	      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+	      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+	    }
+
+	    for (i = 1, args = new Array(len -1); i < len; i++) {
+	      args[i - 1] = arguments[i];
+	    }
+
+	    listeners.fn.apply(listeners.context, args);
+	  } else {
+	    var length = listeners.length
+	      , j;
+
+	    for (i = 0; i < length; i++) {
+	      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+	      switch (len) {
+	        case 1: listeners[i].fn.call(listeners[i].context); break;
+	        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+	        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+	        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+	        default:
+	          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+	            args[j - 1] = arguments[j];
+	          }
+
+	          listeners[i].fn.apply(listeners[i].context, args);
+	      }
+	    }
+	  }
+
+	  return true;
+	};
+
+	/**
+	 * Add a listener for a given event.
+	 *
+	 * @param {(String|Symbol)} event The event name.
+	 * @param {Function} fn The listener function.
+	 * @param {*} [context=this] The context to invoke the listener with.
+	 * @returns {EventEmitter} `this`.
+	 * @public
+	 */
+	EventEmitter.prototype.on = function on(event, fn, context) {
+	  return addListener(this, event, fn, context, false);
+	};
+
+	/**
+	 * Add a one-time listener for a given event.
+	 *
+	 * @param {(String|Symbol)} event The event name.
+	 * @param {Function} fn The listener function.
+	 * @param {*} [context=this] The context to invoke the listener with.
+	 * @returns {EventEmitter} `this`.
+	 * @public
+	 */
+	EventEmitter.prototype.once = function once(event, fn, context) {
+	  return addListener(this, event, fn, context, true);
+	};
+
+	/**
+	 * Remove the listeners of a given event.
+	 *
+	 * @param {(String|Symbol)} event The event name.
+	 * @param {Function} fn Only remove the listeners that match this function.
+	 * @param {*} context Only remove the listeners that have this context.
+	 * @param {Boolean} once Only remove one-time listeners.
+	 * @returns {EventEmitter} `this`.
+	 * @public
+	 */
+	EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+	  var evt = prefix ? prefix + event : event;
+
+	  if (!this._events[evt]) return this;
+	  if (!fn) {
+	    clearEvent(this, evt);
+	    return this;
+	  }
+
+	  var listeners = this._events[evt];
+
+	  if (listeners.fn) {
+	    if (
+	      listeners.fn === fn &&
+	      (!once || listeners.once) &&
+	      (!context || listeners.context === context)
+	    ) {
+	      clearEvent(this, evt);
+	    }
+	  } else {
+	    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+	      if (
+	        listeners[i].fn !== fn ||
+	        (once && !listeners[i].once) ||
+	        (context && listeners[i].context !== context)
+	      ) {
+	        events.push(listeners[i]);
+	      }
+	    }
+
+	    //
+	    // Reset the array, or remove it completely if we have no more listeners.
+	    //
+	    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+	    else clearEvent(this, evt);
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Remove all listeners, or those of the specified event.
+	 *
+	 * @param {(String|Symbol)} [event] The event name.
+	 * @returns {EventEmitter} `this`.
+	 * @public
+	 */
+	EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+	  var evt;
+
+	  if (event) {
+	    evt = prefix ? prefix + event : event;
+	    if (this._events[evt]) clearEvent(this, evt);
+	  } else {
+	    this._events = new Events();
+	    this._eventsCount = 0;
+	  }
+
+	  return this;
+	};
+
+	//
+	// Alias methods names because people roll like that.
+	//
+	EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+	EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+	//
+	// Expose the prefix.
+	//
+	EventEmitter.prefixed = prefix;
+
+	//
+	// Allow `EventEmitter` to be imported as module namespace.
+	//
+	EventEmitter.EventEmitter = EventEmitter;
+
+	//
+	// Expose the module.
+	//
+	if (true) {
+	  module.exports = EventEmitter;
+	}
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -2153,9 +2282,9 @@
 	});
 	exports.default = MapDClientV2;
 
-	var _wrapWithErrorHandling = __webpack_require__(14);
+	var _wrapWithErrorHandling = __webpack_require__(15);
 
-	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(15).Client; // eslint-disable-line global-require
+	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(16).Client; // eslint-disable-line global-require
 
 	function MapDClientV2(protocol) {
 	  MapDClient.call(this, protocol);
@@ -2173,7 +2302,7 @@
 	}();
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2185,9 +2314,9 @@
 	exports.createResultError = createResultError;
 	exports.wrapMethod = wrapMethod;
 	exports.wrapWithErrorHandling = wrapWithErrorHandling;
-	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(15).Client; // eslint-disable-line global-require
-	var TMapDException = typeof window !== "undefined" && window.TMapDException || __webpack_require__(119).TMapDException; // eslint-disable-line global-require
-	var Thrift = typeof window !== "undefined" && window.Thrift || __webpack_require__(16).Thrift; // eslint-disable-line global-require
+	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(16).Client; // eslint-disable-line global-require
+	var TMapDException = typeof window !== "undefined" && window.TMapDException || __webpack_require__(120).TMapDException; // eslint-disable-line global-require
+	var Thrift = typeof window !== "undefined" && window.Thrift || __webpack_require__(17).Thrift; // eslint-disable-line global-require
 
 	function isResultError(result) {
 	  return result instanceof Thrift.TException || result instanceof Error;
@@ -2218,7 +2347,7 @@
 	      var callback = args.pop();
 	      (_MapDClient$prototype = MapDClient.prototype[method]).call.apply(_MapDClient$prototype, [context].concat(args, [function (result) {
 	        if (isError(result)) {
-	          callback(createResultError(result));
+	          callback(result);
 	        } else {
 	          callback(null, result);
 	        }
@@ -2228,7 +2357,7 @@
 
 	      var result = (_MapDClient$prototype2 = MapDClient.prototype[method]).call.apply(_MapDClient$prototype2, [context].concat(args));
 	      if (isError(result)) {
-	        throw createResultError(result);
+	        throw result;
 	      }
 	      return result;
 	    } else {
@@ -2243,7 +2372,7 @@
 	/* eslint-enable consistent-this */
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";//
@@ -2251,81 +2380,8 @@
 	//
 	// DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 	//
-	"use strict";var thrift=__webpack_require__(16);var Thrift=thrift.Thrift;var Q=thrift.Q;var completion_hints_ttypes=__webpack_require__(118);var ttypes=__webpack_require__(119);//HELPER FUNCTIONS AND STRUCTURES
+	"use strict";var thrift=__webpack_require__(17);var Thrift=thrift.Thrift;var Q=thrift.Q;var completion_hints_ttypes=__webpack_require__(119);var ttypes=__webpack_require__(120);//HELPER FUNCTIONS AND STRUCTURES
 	var MapD_connect_args=function MapD_connect_args(args){this.user=null;this.passwd=null;this.dbname=null;if(args){if(args.user!==undefined&&args.user!==null){this.user=args.user;}if(args.passwd!==undefined&&args.passwd!==null){this.passwd=args.passwd;}if(args.dbname!==undefined&&args.dbname!==null){this.dbname=args.dbname;}}};MapD_connect_args.prototype={};MapD_connect_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.user=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.passwd=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.dbname=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_connect_args.prototype.write=function(output){output.writeStructBegin('MapD_connect_args');if(this.user!==null&&this.user!==undefined){output.writeFieldBegin('user',Thrift.Type.STRING,1);output.writeString(this.user);output.writeFieldEnd();}if(this.passwd!==null&&this.passwd!==undefined){output.writeFieldBegin('passwd',Thrift.Type.STRING,2);output.writeString(this.passwd);output.writeFieldEnd();}if(this.dbname!==null&&this.dbname!==undefined){output.writeFieldBegin('dbname',Thrift.Type.STRING,3);output.writeString(this.dbname);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_connect_result=function MapD_connect_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_connect_result.prototype={};MapD_connect_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_connect_result.prototype.write=function(output){output.writeStructBegin('MapD_connect_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_disconnect_args=function MapD_disconnect_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_disconnect_args.prototype={};MapD_disconnect_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_disconnect_args.prototype.write=function(output){output.writeStructBegin('MapD_disconnect_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_disconnect_result=function MapD_disconnect_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_disconnect_result.prototype={};MapD_disconnect_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_disconnect_result.prototype.write=function(output){output.writeStructBegin('MapD_disconnect_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_server_status_args=function MapD_get_server_status_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_server_status_args.prototype={};MapD_get_server_status_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_server_status_args.prototype.write=function(output){output.writeStructBegin('MapD_get_server_status_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_server_status_result=function MapD_get_server_status_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TServerStatus(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_server_status_result.prototype={};MapD_get_server_status_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TServerStatus();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_server_status_result.prototype.write=function(output){output.writeStructBegin('MapD_get_server_status_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_status_args=function MapD_get_status_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_status_args.prototype={};MapD_get_status_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_status_args.prototype.write=function(output){output.writeStructBegin('MapD_get_status_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_status_result=function MapD_get_status_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TServerStatus]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_status_result.prototype={};MapD_get_status_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size266=0;var _rtmp3270;this.success=[];var _etype269=0;_rtmp3270=input.readListBegin();_etype269=_rtmp3270.etype;_size266=_rtmp3270.size;for(var _i271=0;_i271<_size266;++_i271){var elem272=null;elem272=new ttypes.TServerStatus();elem272.read(input);this.success.push(elem272);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_status_result.prototype.write=function(output){output.writeStructBegin('MapD_get_status_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter273 in this.success){if(this.success.hasOwnProperty(iter273)){iter273=this.success[iter273];iter273.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_hardware_info_args=function MapD_get_hardware_info_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_hardware_info_args.prototype={};MapD_get_hardware_info_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_hardware_info_args.prototype.write=function(output){output.writeStructBegin('MapD_get_hardware_info_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_hardware_info_result=function MapD_get_hardware_info_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TClusterHardwareInfo(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_hardware_info_result.prototype={};MapD_get_hardware_info_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TClusterHardwareInfo();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_hardware_info_result.prototype.write=function(output){output.writeStructBegin('MapD_get_hardware_info_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_args=function MapD_get_tables_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_tables_args.prototype={};MapD_get_tables_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_args.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_result=function MapD_get_tables_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_tables_result.prototype={};MapD_get_tables_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size274=0;var _rtmp3278;this.success=[];var _etype277=0;_rtmp3278=input.readListBegin();_etype277=_rtmp3278.etype;_size274=_rtmp3278.size;for(var _i279=0;_i279<_size274;++_i279){var elem280=null;elem280=input.readString();this.success.push(elem280);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_result.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter281 in this.success){if(this.success.hasOwnProperty(iter281)){iter281=this.success[iter281];output.writeString(iter281);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_physical_tables_args=function MapD_get_physical_tables_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_physical_tables_args.prototype={};MapD_get_physical_tables_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_physical_tables_args.prototype.write=function(output){output.writeStructBegin('MapD_get_physical_tables_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_physical_tables_result=function MapD_get_physical_tables_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_physical_tables_result.prototype={};MapD_get_physical_tables_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size282=0;var _rtmp3286;this.success=[];var _etype285=0;_rtmp3286=input.readListBegin();_etype285=_rtmp3286.etype;_size282=_rtmp3286.size;for(var _i287=0;_i287<_size282;++_i287){var elem288=null;elem288=input.readString();this.success.push(elem288);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_physical_tables_result.prototype.write=function(output){output.writeStructBegin('MapD_get_physical_tables_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter289 in this.success){if(this.success.hasOwnProperty(iter289)){iter289=this.success[iter289];output.writeString(iter289);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_views_args=function MapD_get_views_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_views_args.prototype={};MapD_get_views_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_views_args.prototype.write=function(output){output.writeStructBegin('MapD_get_views_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_views_result=function MapD_get_views_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_views_result.prototype={};MapD_get_views_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size290=0;var _rtmp3294;this.success=[];var _etype293=0;_rtmp3294=input.readListBegin();_etype293=_rtmp3294.etype;_size290=_rtmp3294.size;for(var _i295=0;_i295<_size290;++_i295){var elem296=null;elem296=input.readString();this.success.push(elem296);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_views_result.prototype.write=function(output){output.writeStructBegin('MapD_get_views_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter297 in this.success){if(this.success.hasOwnProperty(iter297)){iter297=this.success[iter297];output.writeString(iter297);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_meta_args=function MapD_get_tables_meta_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_tables_meta_args.prototype={};MapD_get_tables_meta_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_meta_args.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_meta_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_meta_result=function MapD_get_tables_meta_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TTableMeta]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_tables_meta_result.prototype={};MapD_get_tables_meta_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size298=0;var _rtmp3302;this.success=[];var _etype301=0;_rtmp3302=input.readListBegin();_etype301=_rtmp3302.etype;_size298=_rtmp3302.size;for(var _i303=0;_i303<_size298;++_i303){var elem304=null;elem304=new ttypes.TTableMeta();elem304.read(input);this.success.push(elem304);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_meta_result.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_meta_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter305 in this.success){if(this.success.hasOwnProperty(iter305)){iter305=this.success[iter305];iter305.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_details_args=function MapD_get_table_details_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_table_details_args.prototype={};MapD_get_table_details_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_details_args.prototype.write=function(output){output.writeStructBegin('MapD_get_table_details_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_details_result=function MapD_get_table_details_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TTableDetails(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_table_details_result.prototype={};MapD_get_table_details_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TTableDetails();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_details_result.prototype.write=function(output){output.writeStructBegin('MapD_get_table_details_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_internal_table_details_args=function MapD_get_internal_table_details_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_internal_table_details_args.prototype={};MapD_get_internal_table_details_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_internal_table_details_args.prototype.write=function(output){output.writeStructBegin('MapD_get_internal_table_details_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_internal_table_details_result=function MapD_get_internal_table_details_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TTableDetails(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_internal_table_details_result.prototype={};MapD_get_internal_table_details_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TTableDetails();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_internal_table_details_result.prototype.write=function(output){output.writeStructBegin('MapD_get_internal_table_details_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_users_args=function MapD_get_users_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_users_args.prototype={};MapD_get_users_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_users_args.prototype.write=function(output){output.writeStructBegin('MapD_get_users_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_users_result=function MapD_get_users_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_users_result.prototype={};MapD_get_users_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size306=0;var _rtmp3310;this.success=[];var _etype309=0;_rtmp3310=input.readListBegin();_etype309=_rtmp3310.etype;_size306=_rtmp3310.size;for(var _i311=0;_i311<_size306;++_i311){var elem312=null;elem312=input.readString();this.success.push(elem312);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_users_result.prototype.write=function(output){output.writeStructBegin('MapD_get_users_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter313 in this.success){if(this.success.hasOwnProperty(iter313)){iter313=this.success[iter313];output.writeString(iter313);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_databases_args=function MapD_get_databases_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_databases_args.prototype={};MapD_get_databases_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_databases_args.prototype.write=function(output){output.writeStructBegin('MapD_get_databases_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_databases_result=function MapD_get_databases_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDBInfo]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_databases_result.prototype={};MapD_get_databases_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size314=0;var _rtmp3318;this.success=[];var _etype317=0;_rtmp3318=input.readListBegin();_etype317=_rtmp3318.etype;_size314=_rtmp3318.size;for(var _i319=0;_i319<_size314;++_i319){var elem320=null;elem320=new ttypes.TDBInfo();elem320.read(input);this.success.push(elem320);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_databases_result.prototype.write=function(output){output.writeStructBegin('MapD_get_databases_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter321 in this.success){if(this.success.hasOwnProperty(iter321)){iter321=this.success[iter321];iter321.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_version_args=function MapD_get_version_args(args){};MapD_get_version_args.prototype={};MapD_get_version_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}input.skip(ftype);input.readFieldEnd();}input.readStructEnd();return;};MapD_get_version_args.prototype.write=function(output){output.writeStructBegin('MapD_get_version_args');output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_version_result=function MapD_get_version_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_version_result.prototype={};MapD_get_version_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_version_result.prototype.write=function(output){output.writeStructBegin('MapD_get_version_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_heap_profile_args=function MapD_start_heap_profile_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_start_heap_profile_args.prototype={};MapD_start_heap_profile_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_heap_profile_args.prototype.write=function(output){output.writeStructBegin('MapD_start_heap_profile_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_heap_profile_result=function MapD_start_heap_profile_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_start_heap_profile_result.prototype={};MapD_start_heap_profile_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_heap_profile_result.prototype.write=function(output){output.writeStructBegin('MapD_start_heap_profile_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_stop_heap_profile_args=function MapD_stop_heap_profile_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_stop_heap_profile_args.prototype={};MapD_stop_heap_profile_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_stop_heap_profile_args.prototype.write=function(output){output.writeStructBegin('MapD_stop_heap_profile_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_stop_heap_profile_result=function MapD_stop_heap_profile_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_stop_heap_profile_result.prototype={};MapD_stop_heap_profile_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_stop_heap_profile_result.prototype.write=function(output){output.writeStructBegin('MapD_stop_heap_profile_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_heap_profile_args=function MapD_get_heap_profile_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_heap_profile_args.prototype={};MapD_get_heap_profile_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_heap_profile_args.prototype.write=function(output){output.writeStructBegin('MapD_get_heap_profile_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_heap_profile_result=function MapD_get_heap_profile_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_heap_profile_result.prototype={};MapD_get_heap_profile_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_heap_profile_result.prototype.write=function(output){output.writeStructBegin('MapD_get_heap_profile_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_memory_args=function MapD_get_memory_args(args){this.session=null;this.memory_level=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.memory_level!==undefined&&args.memory_level!==null){this.memory_level=args.memory_level;}}};MapD_get_memory_args.prototype={};MapD_get_memory_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.memory_level=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_memory_args.prototype.write=function(output){output.writeStructBegin('MapD_get_memory_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.memory_level!==null&&this.memory_level!==undefined){output.writeFieldBegin('memory_level',Thrift.Type.STRING,2);output.writeString(this.memory_level);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_memory_result=function MapD_get_memory_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TNodeMemoryInfo]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_memory_result.prototype={};MapD_get_memory_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size322=0;var _rtmp3326;this.success=[];var _etype325=0;_rtmp3326=input.readListBegin();_etype325=_rtmp3326.etype;_size322=_rtmp3326.size;for(var _i327=0;_i327<_size322;++_i327){var elem328=null;elem328=new ttypes.TNodeMemoryInfo();elem328.read(input);this.success.push(elem328);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_memory_result.prototype.write=function(output){output.writeStructBegin('MapD_get_memory_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter329 in this.success){if(this.success.hasOwnProperty(iter329)){iter329=this.success[iter329];iter329.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_cpu_memory_args=function MapD_clear_cpu_memory_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_clear_cpu_memory_args.prototype={};MapD_clear_cpu_memory_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_cpu_memory_args.prototype.write=function(output){output.writeStructBegin('MapD_clear_cpu_memory_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_cpu_memory_result=function MapD_clear_cpu_memory_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_clear_cpu_memory_result.prototype={};MapD_clear_cpu_memory_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_cpu_memory_result.prototype.write=function(output){output.writeStructBegin('MapD_clear_cpu_memory_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_gpu_memory_args=function MapD_clear_gpu_memory_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_clear_gpu_memory_args.prototype={};MapD_clear_gpu_memory_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_gpu_memory_args.prototype.write=function(output){output.writeStructBegin('MapD_clear_gpu_memory_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_gpu_memory_result=function MapD_clear_gpu_memory_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_clear_gpu_memory_result.prototype={};MapD_clear_gpu_memory_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_gpu_memory_result.prototype.write=function(output){output.writeStructBegin('MapD_clear_gpu_memory_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_args=function MapD_set_table_epoch_args(args){this.session=null;this.db_id=null;this.table_id=null;this.new_epoch=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.db_id!==undefined&&args.db_id!==null){this.db_id=args.db_id;}if(args.table_id!==undefined&&args.table_id!==null){this.table_id=args.table_id;}if(args.new_epoch!==undefined&&args.new_epoch!==null){this.new_epoch=args.new_epoch;}}};MapD_set_table_epoch_args.prototype={};MapD_set_table_epoch_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.db_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.table_id=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.new_epoch=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_args.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.db_id!==null&&this.db_id!==undefined){output.writeFieldBegin('db_id',Thrift.Type.I32,2);output.writeI32(this.db_id);output.writeFieldEnd();}if(this.table_id!==null&&this.table_id!==undefined){output.writeFieldBegin('table_id',Thrift.Type.I32,3);output.writeI32(this.table_id);output.writeFieldEnd();}if(this.new_epoch!==null&&this.new_epoch!==undefined){output.writeFieldBegin('new_epoch',Thrift.Type.I32,4);output.writeI32(this.new_epoch);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_result=function MapD_set_table_epoch_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_table_epoch_result.prototype={};MapD_set_table_epoch_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_result.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_by_name_args=function MapD_set_table_epoch_by_name_args(args){this.session=null;this.table_name=null;this.new_epoch=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.new_epoch!==undefined&&args.new_epoch!==null){this.new_epoch=args.new_epoch;}}};MapD_set_table_epoch_by_name_args.prototype={};MapD_set_table_epoch_by_name_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.new_epoch=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_by_name_args.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_by_name_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.new_epoch!==null&&this.new_epoch!==undefined){output.writeFieldBegin('new_epoch',Thrift.Type.I32,3);output.writeI32(this.new_epoch);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_by_name_result=function MapD_set_table_epoch_by_name_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_table_epoch_by_name_result.prototype={};MapD_set_table_epoch_by_name_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_by_name_result.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_by_name_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_args=function MapD_get_table_epoch_args(args){this.session=null;this.db_id=null;this.table_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.db_id!==undefined&&args.db_id!==null){this.db_id=args.db_id;}if(args.table_id!==undefined&&args.table_id!==null){this.table_id=args.table_id;}}};MapD_get_table_epoch_args.prototype={};MapD_get_table_epoch_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.db_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.table_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_args.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.db_id!==null&&this.db_id!==undefined){output.writeFieldBegin('db_id',Thrift.Type.I32,2);output.writeI32(this.db_id);output.writeFieldEnd();}if(this.table_id!==null&&this.table_id!==undefined){output.writeFieldBegin('table_id',Thrift.Type.I32,3);output.writeI32(this.table_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_result=function MapD_get_table_epoch_result(args){this.success=null;if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}}};MapD_get_table_epoch_result.prototype={};MapD_get_table_epoch_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.I32){this.success=input.readI32();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_result.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.I32,0);output.writeI32(this.success);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_by_name_args=function MapD_get_table_epoch_by_name_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_table_epoch_by_name_args.prototype={};MapD_get_table_epoch_by_name_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_by_name_args.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_by_name_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_by_name_result=function MapD_get_table_epoch_by_name_result(args){this.success=null;if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}}};MapD_get_table_epoch_by_name_result.prototype={};MapD_get_table_epoch_by_name_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.I32){this.success=input.readI32();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_by_name_result.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_by_name_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.I32,0);output.writeI32(this.success);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_args=function MapD_sql_execute_args(args){this.session=null;this.query=null;this.column_format=null;this.nonce=null;this.first_n=-1;this.at_most_n=-1;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}if(args.column_format!==undefined&&args.column_format!==null){this.column_format=args.column_format;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}if(args.first_n!==undefined&&args.first_n!==null){this.first_n=args.first_n;}if(args.at_most_n!==undefined&&args.at_most_n!==null){this.at_most_n=args.at_most_n;}}};MapD_sql_execute_args.prototype={};MapD_sql_execute_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.BOOL){this.column_format=input.readBool();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.I32){this.first_n=input.readI32();}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.I32){this.at_most_n=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}if(this.column_format!==null&&this.column_format!==undefined){output.writeFieldBegin('column_format',Thrift.Type.BOOL,3);output.writeBool(this.column_format);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,4);output.writeString(this.nonce);output.writeFieldEnd();}if(this.first_n!==null&&this.first_n!==undefined){output.writeFieldBegin('first_n',Thrift.Type.I32,5);output.writeI32(this.first_n);output.writeFieldEnd();}if(this.at_most_n!==null&&this.at_most_n!==undefined){output.writeFieldBegin('at_most_n',Thrift.Type.I32,6);output.writeI32(this.at_most_n);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_result=function MapD_sql_execute_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TQueryResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_execute_result.prototype={};MapD_sql_execute_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TQueryResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_df_args=function MapD_sql_execute_df_args(args){this.session=null;this.query=null;this.device_type=null;this.device_id=0;this.first_n=-1;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}if(args.device_type!==undefined&&args.device_type!==null){this.device_type=args.device_type;}if(args.device_id!==undefined&&args.device_id!==null){this.device_id=args.device_id;}if(args.first_n!==undefined&&args.first_n!==null){this.first_n=args.first_n;}}};MapD_sql_execute_df_args.prototype={};MapD_sql_execute_df_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.device_type=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.device_id=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.I32){this.first_n=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_df_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_df_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}if(this.device_type!==null&&this.device_type!==undefined){output.writeFieldBegin('device_type',Thrift.Type.I32,3);output.writeI32(this.device_type);output.writeFieldEnd();}if(this.device_id!==null&&this.device_id!==undefined){output.writeFieldBegin('device_id',Thrift.Type.I32,4);output.writeI32(this.device_id);output.writeFieldEnd();}if(this.first_n!==null&&this.first_n!==undefined){output.writeFieldBegin('first_n',Thrift.Type.I32,5);output.writeI32(this.first_n);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_df_result=function MapD_sql_execute_df_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDataFrame(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_execute_df_result.prototype={};MapD_sql_execute_df_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDataFrame();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_df_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_df_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_gdf_args=function MapD_sql_execute_gdf_args(args){this.session=null;this.query=null;this.device_id=0;this.first_n=-1;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}if(args.device_id!==undefined&&args.device_id!==null){this.device_id=args.device_id;}if(args.first_n!==undefined&&args.first_n!==null){this.first_n=args.first_n;}}};MapD_sql_execute_gdf_args.prototype={};MapD_sql_execute_gdf_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.device_id=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.first_n=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_gdf_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_gdf_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}if(this.device_id!==null&&this.device_id!==undefined){output.writeFieldBegin('device_id',Thrift.Type.I32,3);output.writeI32(this.device_id);output.writeFieldEnd();}if(this.first_n!==null&&this.first_n!==undefined){output.writeFieldBegin('first_n',Thrift.Type.I32,4);output.writeI32(this.first_n);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_gdf_result=function MapD_sql_execute_gdf_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDataFrame(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_execute_gdf_result.prototype={};MapD_sql_execute_gdf_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDataFrame();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_gdf_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_gdf_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_deallocate_df_args=function MapD_deallocate_df_args(args){this.session=null;this.df=null;this.device_type=null;this.device_id=0;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.df!==undefined&&args.df!==null){this.df=new ttypes.TDataFrame(args.df);}if(args.device_type!==undefined&&args.device_type!==null){this.device_type=args.device_type;}if(args.device_id!==undefined&&args.device_id!==null){this.device_id=args.device_id;}}};MapD_deallocate_df_args.prototype={};MapD_deallocate_df_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRUCT){this.df=new ttypes.TDataFrame();this.df.read(input);}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.device_type=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.device_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_deallocate_df_args.prototype.write=function(output){output.writeStructBegin('MapD_deallocate_df_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.df!==null&&this.df!==undefined){output.writeFieldBegin('df',Thrift.Type.STRUCT,2);this.df.write(output);output.writeFieldEnd();}if(this.device_type!==null&&this.device_type!==undefined){output.writeFieldBegin('device_type',Thrift.Type.I32,3);output.writeI32(this.device_type);output.writeFieldEnd();}if(this.device_id!==null&&this.device_id!==undefined){output.writeFieldBegin('device_id',Thrift.Type.I32,4);output.writeI32(this.device_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_deallocate_df_result=function MapD_deallocate_df_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_deallocate_df_result.prototype={};MapD_deallocate_df_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_deallocate_df_result.prototype.write=function(output){output.writeStructBegin('MapD_deallocate_df_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_interrupt_args=function MapD_interrupt_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_interrupt_args.prototype={};MapD_interrupt_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_interrupt_args.prototype.write=function(output){output.writeStructBegin('MapD_interrupt_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_interrupt_result=function MapD_interrupt_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_interrupt_result.prototype={};MapD_interrupt_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_interrupt_result.prototype.write=function(output){output.writeStructBegin('MapD_interrupt_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_validate_args=function MapD_sql_validate_args(args){this.session=null;this.query=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}}};MapD_sql_validate_args.prototype={};MapD_sql_validate_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_validate_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_validate_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_validate_result=function MapD_sql_validate_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyMap(args.success,[ttypes.TColumnType]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_validate_result.prototype={};MapD_sql_validate_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.MAP){var _size330=0;var _rtmp3334;this.success={};var _ktype331=0;var _vtype332=0;_rtmp3334=input.readMapBegin();_ktype331=_rtmp3334.ktype;_vtype332=_rtmp3334.vtype;_size330=_rtmp3334.size;for(var _i335=0;_i335<_size330;++_i335){var key336=null;var val337=null;key336=input.readString();val337=new ttypes.TColumnType();val337.read(input);this.success[key336]=val337;}input.readMapEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_validate_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_validate_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.MAP,0);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.STRUCT,Thrift.objectLength(this.success));for(var kiter338 in this.success){if(this.success.hasOwnProperty(kiter338)){var viter339=this.success[kiter338];output.writeString(kiter338);viter339.write(output);}}output.writeMapEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_completion_hints_args=function MapD_get_completion_hints_args(args){this.session=null;this.sql=null;this.cursor=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.sql!==undefined&&args.sql!==null){this.sql=args.sql;}if(args.cursor!==undefined&&args.cursor!==null){this.cursor=args.cursor;}}};MapD_get_completion_hints_args.prototype={};MapD_get_completion_hints_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.sql=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.cursor=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_completion_hints_args.prototype.write=function(output){output.writeStructBegin('MapD_get_completion_hints_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.sql!==null&&this.sql!==undefined){output.writeFieldBegin('sql',Thrift.Type.STRING,2);output.writeString(this.sql);output.writeFieldEnd();}if(this.cursor!==null&&this.cursor!==undefined){output.writeFieldBegin('cursor',Thrift.Type.I32,3);output.writeI32(this.cursor);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_completion_hints_result=function MapD_get_completion_hints_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[completion_hints_ttypes.TCompletionHint]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_completion_hints_result.prototype={};MapD_get_completion_hints_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size340=0;var _rtmp3344;this.success=[];var _etype343=0;_rtmp3344=input.readListBegin();_etype343=_rtmp3344.etype;_size340=_rtmp3344.size;for(var _i345=0;_i345<_size340;++_i345){var elem346=null;elem346=new completion_hints_ttypes.TCompletionHint();elem346.read(input);this.success.push(elem346);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_completion_hints_result.prototype.write=function(output){output.writeStructBegin('MapD_get_completion_hints_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter347 in this.success){if(this.success.hasOwnProperty(iter347)){iter347=this.success[iter347];iter347.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_execution_mode_args=function MapD_set_execution_mode_args(args){this.session=null;this.mode=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.mode!==undefined&&args.mode!==null){this.mode=args.mode;}}};MapD_set_execution_mode_args.prototype={};MapD_set_execution_mode_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.mode=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_execution_mode_args.prototype.write=function(output){output.writeStructBegin('MapD_set_execution_mode_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.mode!==null&&this.mode!==undefined){output.writeFieldBegin('mode',Thrift.Type.I32,2);output.writeI32(this.mode);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_execution_mode_result=function MapD_set_execution_mode_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_execution_mode_result.prototype={};MapD_set_execution_mode_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_execution_mode_result.prototype.write=function(output){output.writeStructBegin('MapD_set_execution_mode_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_render_vega_args=function MapD_render_vega_args(args){this.session=null;this.widget_id=null;this.vega_json=null;this.compression_level=null;this.nonce=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.widget_id!==undefined&&args.widget_id!==null){this.widget_id=args.widget_id;}if(args.vega_json!==undefined&&args.vega_json!==null){this.vega_json=args.vega_json;}if(args.compression_level!==undefined&&args.compression_level!==null){this.compression_level=args.compression_level;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_render_vega_args.prototype={};MapD_render_vega_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I64){this.widget_id=input.readI64();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.vega_json=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.compression_level=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_render_vega_args.prototype.write=function(output){output.writeStructBegin('MapD_render_vega_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.widget_id!==null&&this.widget_id!==undefined){output.writeFieldBegin('widget_id',Thrift.Type.I64,2);output.writeI64(this.widget_id);output.writeFieldEnd();}if(this.vega_json!==null&&this.vega_json!==undefined){output.writeFieldBegin('vega_json',Thrift.Type.STRING,3);output.writeString(this.vega_json);output.writeFieldEnd();}if(this.compression_level!==null&&this.compression_level!==undefined){output.writeFieldBegin('compression_level',Thrift.Type.I32,4);output.writeI32(this.compression_level);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,5);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_render_vega_result=function MapD_render_vega_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TRenderResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_render_vega_result.prototype={};MapD_render_vega_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TRenderResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_render_vega_result.prototype.write=function(output){output.writeStructBegin('MapD_render_vega_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_result_row_for_pixel_args=function MapD_get_result_row_for_pixel_args(args){this.session=null;this.widget_id=null;this.pixel=null;this.table_col_names=null;this.column_format=null;this.pixelRadius=null;this.nonce=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.widget_id!==undefined&&args.widget_id!==null){this.widget_id=args.widget_id;}if(args.pixel!==undefined&&args.pixel!==null){this.pixel=new ttypes.TPixel(args.pixel);}if(args.table_col_names!==undefined&&args.table_col_names!==null){this.table_col_names=Thrift.copyMap(args.table_col_names,[Thrift.copyList,null]);}if(args.column_format!==undefined&&args.column_format!==null){this.column_format=args.column_format;}if(args.pixelRadius!==undefined&&args.pixelRadius!==null){this.pixelRadius=args.pixelRadius;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_get_result_row_for_pixel_args.prototype={};MapD_get_result_row_for_pixel_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I64){this.widget_id=input.readI64();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.pixel=new ttypes.TPixel();this.pixel.read(input);}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.MAP){var _size348=0;var _rtmp3352;this.table_col_names={};var _ktype349=0;var _vtype350=0;_rtmp3352=input.readMapBegin();_ktype349=_rtmp3352.ktype;_vtype350=_rtmp3352.vtype;_size348=_rtmp3352.size;for(var _i353=0;_i353<_size348;++_i353){var key354=null;var val355=null;key354=input.readString();var _size356=0;var _rtmp3360;val355=[];var _etype359=0;_rtmp3360=input.readListBegin();_etype359=_rtmp3360.etype;_size356=_rtmp3360.size;for(var _i361=0;_i361<_size356;++_i361){var elem362=null;elem362=input.readString();val355.push(elem362);}input.readListEnd();this.table_col_names[key354]=val355;}input.readMapEnd();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.BOOL){this.column_format=input.readBool();}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.I32){this.pixelRadius=input.readI32();}else{input.skip(ftype);}break;case 7:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_result_row_for_pixel_args.prototype.write=function(output){output.writeStructBegin('MapD_get_result_row_for_pixel_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.widget_id!==null&&this.widget_id!==undefined){output.writeFieldBegin('widget_id',Thrift.Type.I64,2);output.writeI64(this.widget_id);output.writeFieldEnd();}if(this.pixel!==null&&this.pixel!==undefined){output.writeFieldBegin('pixel',Thrift.Type.STRUCT,3);this.pixel.write(output);output.writeFieldEnd();}if(this.table_col_names!==null&&this.table_col_names!==undefined){output.writeFieldBegin('table_col_names',Thrift.Type.MAP,4);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.LIST,Thrift.objectLength(this.table_col_names));for(var kiter363 in this.table_col_names){if(this.table_col_names.hasOwnProperty(kiter363)){var viter364=this.table_col_names[kiter363];output.writeString(kiter363);output.writeListBegin(Thrift.Type.STRING,viter364.length);for(var iter365 in viter364){if(viter364.hasOwnProperty(iter365)){iter365=viter364[iter365];output.writeString(iter365);}}output.writeListEnd();}}output.writeMapEnd();output.writeFieldEnd();}if(this.column_format!==null&&this.column_format!==undefined){output.writeFieldBegin('column_format',Thrift.Type.BOOL,5);output.writeBool(this.column_format);output.writeFieldEnd();}if(this.pixelRadius!==null&&this.pixelRadius!==undefined){output.writeFieldBegin('pixelRadius',Thrift.Type.I32,6);output.writeI32(this.pixelRadius);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,7);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_result_row_for_pixel_result=function MapD_get_result_row_for_pixel_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TPixelTableRowResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_result_row_for_pixel_result.prototype={};MapD_get_result_row_for_pixel_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TPixelTableRowResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_result_row_for_pixel_result.prototype.write=function(output){output.writeStructBegin('MapD_get_result_row_for_pixel_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_frontend_view_args=function MapD_get_frontend_view_args(args){this.session=null;this.view_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.view_name!==undefined&&args.view_name!==null){this.view_name=args.view_name;}}};MapD_get_frontend_view_args.prototype={};MapD_get_frontend_view_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.view_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_frontend_view_args.prototype.write=function(output){output.writeStructBegin('MapD_get_frontend_view_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.view_name!==null&&this.view_name!==undefined){output.writeFieldBegin('view_name',Thrift.Type.STRING,2);output.writeString(this.view_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_frontend_view_result=function MapD_get_frontend_view_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TFrontendView(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_frontend_view_result.prototype={};MapD_get_frontend_view_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TFrontendView();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_frontend_view_result.prototype.write=function(output){output.writeStructBegin('MapD_get_frontend_view_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_frontend_views_args=function MapD_get_frontend_views_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_frontend_views_args.prototype={};MapD_get_frontend_views_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_frontend_views_args.prototype.write=function(output){output.writeStructBegin('MapD_get_frontend_views_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_frontend_views_result=function MapD_get_frontend_views_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TFrontendView]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_frontend_views_result.prototype={};MapD_get_frontend_views_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size366=0;var _rtmp3370;this.success=[];var _etype369=0;_rtmp3370=input.readListBegin();_etype369=_rtmp3370.etype;_size366=_rtmp3370.size;for(var _i371=0;_i371<_size366;++_i371){var elem372=null;elem372=new ttypes.TFrontendView();elem372.read(input);this.success.push(elem372);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_frontend_views_result.prototype.write=function(output){output.writeStructBegin('MapD_get_frontend_views_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter373 in this.success){if(this.success.hasOwnProperty(iter373)){iter373=this.success[iter373];iter373.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_frontend_view_args=function MapD_create_frontend_view_args(args){this.session=null;this.view_name=null;this.view_state=null;this.image_hash=null;this.view_metadata=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.view_name!==undefined&&args.view_name!==null){this.view_name=args.view_name;}if(args.view_state!==undefined&&args.view_state!==null){this.view_state=args.view_state;}if(args.image_hash!==undefined&&args.image_hash!==null){this.image_hash=args.image_hash;}if(args.view_metadata!==undefined&&args.view_metadata!==null){this.view_metadata=args.view_metadata;}}};MapD_create_frontend_view_args.prototype={};MapD_create_frontend_view_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.view_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.view_state=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.image_hash=input.readString();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRING){this.view_metadata=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_frontend_view_args.prototype.write=function(output){output.writeStructBegin('MapD_create_frontend_view_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.view_name!==null&&this.view_name!==undefined){output.writeFieldBegin('view_name',Thrift.Type.STRING,2);output.writeString(this.view_name);output.writeFieldEnd();}if(this.view_state!==null&&this.view_state!==undefined){output.writeFieldBegin('view_state',Thrift.Type.STRING,3);output.writeString(this.view_state);output.writeFieldEnd();}if(this.image_hash!==null&&this.image_hash!==undefined){output.writeFieldBegin('image_hash',Thrift.Type.STRING,4);output.writeString(this.image_hash);output.writeFieldEnd();}if(this.view_metadata!==null&&this.view_metadata!==undefined){output.writeFieldBegin('view_metadata',Thrift.Type.STRING,5);output.writeString(this.view_metadata);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_frontend_view_result=function MapD_create_frontend_view_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_create_frontend_view_result.prototype={};MapD_create_frontend_view_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_frontend_view_result.prototype.write=function(output){output.writeStructBegin('MapD_create_frontend_view_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_delete_frontend_view_args=function MapD_delete_frontend_view_args(args){this.session=null;this.view_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.view_name!==undefined&&args.view_name!==null){this.view_name=args.view_name;}}};MapD_delete_frontend_view_args.prototype={};MapD_delete_frontend_view_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.view_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_delete_frontend_view_args.prototype.write=function(output){output.writeStructBegin('MapD_delete_frontend_view_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.view_name!==null&&this.view_name!==undefined){output.writeFieldBegin('view_name',Thrift.Type.STRING,2);output.writeString(this.view_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_delete_frontend_view_result=function MapD_delete_frontend_view_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_delete_frontend_view_result.prototype={};MapD_delete_frontend_view_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_delete_frontend_view_result.prototype.write=function(output){output.writeStructBegin('MapD_delete_frontend_view_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_args=function MapD_get_dashboard_args(args){this.session=null;this.dashboard_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}}};MapD_get_dashboard_args.prototype={};MapD_get_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_result=function MapD_get_dashboard_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDashboard(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_dashboard_result.prototype={};MapD_get_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDashboard();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboards_args=function MapD_get_dashboards_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_dashboards_args.prototype={};MapD_get_dashboards_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboards_args.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboards_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboards_result=function MapD_get_dashboards_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDashboard]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_dashboards_result.prototype={};MapD_get_dashboards_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size374=0;var _rtmp3378;this.success=[];var _etype377=0;_rtmp3378=input.readListBegin();_etype377=_rtmp3378.etype;_size374=_rtmp3378.size;for(var _i379=0;_i379<_size374;++_i379){var elem380=null;elem380=new ttypes.TDashboard();elem380.read(input);this.success.push(elem380);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboards_result.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboards_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter381 in this.success){if(this.success.hasOwnProperty(iter381)){iter381=this.success[iter381];iter381.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_dashboard_args=function MapD_create_dashboard_args(args){this.session=null;this.dashboard_name=null;this.dashboard_state=null;this.image_hash=null;this.dashboard_metadata=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_name!==undefined&&args.dashboard_name!==null){this.dashboard_name=args.dashboard_name;}if(args.dashboard_state!==undefined&&args.dashboard_state!==null){this.dashboard_state=args.dashboard_state;}if(args.image_hash!==undefined&&args.image_hash!==null){this.image_hash=args.image_hash;}if(args.dashboard_metadata!==undefined&&args.dashboard_metadata!==null){this.dashboard_metadata=args.dashboard_metadata;}}};MapD_create_dashboard_args.prototype={};MapD_create_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.dashboard_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.dashboard_state=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.image_hash=input.readString();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRING){this.dashboard_metadata=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_create_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_name!==null&&this.dashboard_name!==undefined){output.writeFieldBegin('dashboard_name',Thrift.Type.STRING,2);output.writeString(this.dashboard_name);output.writeFieldEnd();}if(this.dashboard_state!==null&&this.dashboard_state!==undefined){output.writeFieldBegin('dashboard_state',Thrift.Type.STRING,3);output.writeString(this.dashboard_state);output.writeFieldEnd();}if(this.image_hash!==null&&this.image_hash!==undefined){output.writeFieldBegin('image_hash',Thrift.Type.STRING,4);output.writeString(this.image_hash);output.writeFieldEnd();}if(this.dashboard_metadata!==null&&this.dashboard_metadata!==undefined){output.writeFieldBegin('dashboard_metadata',Thrift.Type.STRING,5);output.writeString(this.dashboard_metadata);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_dashboard_result=function MapD_create_dashboard_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_create_dashboard_result.prototype={};MapD_create_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.I32){this.success=input.readI32();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_create_dashboard_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.I32,0);output.writeI32(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_replace_dashboard_args=function MapD_replace_dashboard_args(args){this.session=null;this.dashboard_id=null;this.dashboard_name=null;this.dashboard_owner=null;this.dashboard_state=null;this.image_hash=null;this.dashboard_metadata=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}if(args.dashboard_name!==undefined&&args.dashboard_name!==null){this.dashboard_name=args.dashboard_name;}if(args.dashboard_owner!==undefined&&args.dashboard_owner!==null){this.dashboard_owner=args.dashboard_owner;}if(args.dashboard_state!==undefined&&args.dashboard_state!==null){this.dashboard_state=args.dashboard_state;}if(args.image_hash!==undefined&&args.image_hash!==null){this.image_hash=args.image_hash;}if(args.dashboard_metadata!==undefined&&args.dashboard_metadata!==null){this.dashboard_metadata=args.dashboard_metadata;}}};MapD_replace_dashboard_args.prototype={};MapD_replace_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.dashboard_name=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.dashboard_owner=input.readString();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRING){this.dashboard_state=input.readString();}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.STRING){this.image_hash=input.readString();}else{input.skip(ftype);}break;case 7:if(ftype==Thrift.Type.STRING){this.dashboard_metadata=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_replace_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_replace_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}if(this.dashboard_name!==null&&this.dashboard_name!==undefined){output.writeFieldBegin('dashboard_name',Thrift.Type.STRING,3);output.writeString(this.dashboard_name);output.writeFieldEnd();}if(this.dashboard_owner!==null&&this.dashboard_owner!==undefined){output.writeFieldBegin('dashboard_owner',Thrift.Type.STRING,4);output.writeString(this.dashboard_owner);output.writeFieldEnd();}if(this.dashboard_state!==null&&this.dashboard_state!==undefined){output.writeFieldBegin('dashboard_state',Thrift.Type.STRING,5);output.writeString(this.dashboard_state);output.writeFieldEnd();}if(this.image_hash!==null&&this.image_hash!==undefined){output.writeFieldBegin('image_hash',Thrift.Type.STRING,6);output.writeString(this.image_hash);output.writeFieldEnd();}if(this.dashboard_metadata!==null&&this.dashboard_metadata!==undefined){output.writeFieldBegin('dashboard_metadata',Thrift.Type.STRING,7);output.writeString(this.dashboard_metadata);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_replace_dashboard_result=function MapD_replace_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_replace_dashboard_result.prototype={};MapD_replace_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_replace_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_replace_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_delete_dashboard_args=function MapD_delete_dashboard_args(args){this.session=null;this.dashboard_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}}};MapD_delete_dashboard_args.prototype={};MapD_delete_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_delete_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_delete_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_delete_dashboard_result=function MapD_delete_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_delete_dashboard_result.prototype={};MapD_delete_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_delete_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_delete_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_share_dashboard_args=function MapD_share_dashboard_args(args){this.session=null;this.dashboard_id=null;this.groups=null;this.objects=null;this.permissions=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}if(args.groups!==undefined&&args.groups!==null){this.groups=Thrift.copyList(args.groups,[null]);}if(args.objects!==undefined&&args.objects!==null){this.objects=Thrift.copyList(args.objects,[null]);}if(args.permissions!==undefined&&args.permissions!==null){this.permissions=new ttypes.TDashboardPermissions(args.permissions);}}};MapD_share_dashboard_args.prototype={};MapD_share_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){var _size382=0;var _rtmp3386;this.groups=[];var _etype385=0;_rtmp3386=input.readListBegin();_etype385=_rtmp3386.etype;_size382=_rtmp3386.size;for(var _i387=0;_i387<_size382;++_i387){var elem388=null;elem388=input.readString();this.groups.push(elem388);}input.readListEnd();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.LIST){var _size389=0;var _rtmp3393;this.objects=[];var _etype392=0;_rtmp3393=input.readListBegin();_etype392=_rtmp3393.etype;_size389=_rtmp3393.size;for(var _i394=0;_i394<_size389;++_i394){var elem395=null;elem395=input.readString();this.objects.push(elem395);}input.readListEnd();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.permissions=new ttypes.TDashboardPermissions();this.permissions.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_share_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_share_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}if(this.groups!==null&&this.groups!==undefined){output.writeFieldBegin('groups',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRING,this.groups.length);for(var iter396 in this.groups){if(this.groups.hasOwnProperty(iter396)){iter396=this.groups[iter396];output.writeString(iter396);}}output.writeListEnd();output.writeFieldEnd();}if(this.objects!==null&&this.objects!==undefined){output.writeFieldBegin('objects',Thrift.Type.LIST,4);output.writeListBegin(Thrift.Type.STRING,this.objects.length);for(var iter397 in this.objects){if(this.objects.hasOwnProperty(iter397)){iter397=this.objects[iter397];output.writeString(iter397);}}output.writeListEnd();output.writeFieldEnd();}if(this.permissions!==null&&this.permissions!==undefined){output.writeFieldBegin('permissions',Thrift.Type.STRUCT,5);this.permissions.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_share_dashboard_result=function MapD_share_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_share_dashboard_result.prototype={};MapD_share_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_share_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_share_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_unshare_dashboard_args=function MapD_unshare_dashboard_args(args){this.session=null;this.dashboard_id=null;this.groups=null;this.objects=null;this.permissions=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}if(args.groups!==undefined&&args.groups!==null){this.groups=Thrift.copyList(args.groups,[null]);}if(args.objects!==undefined&&args.objects!==null){this.objects=Thrift.copyList(args.objects,[null]);}if(args.permissions!==undefined&&args.permissions!==null){this.permissions=new ttypes.TDashboardPermissions(args.permissions);}}};MapD_unshare_dashboard_args.prototype={};MapD_unshare_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){var _size398=0;var _rtmp3402;this.groups=[];var _etype401=0;_rtmp3402=input.readListBegin();_etype401=_rtmp3402.etype;_size398=_rtmp3402.size;for(var _i403=0;_i403<_size398;++_i403){var elem404=null;elem404=input.readString();this.groups.push(elem404);}input.readListEnd();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.LIST){var _size405=0;var _rtmp3409;this.objects=[];var _etype408=0;_rtmp3409=input.readListBegin();_etype408=_rtmp3409.etype;_size405=_rtmp3409.size;for(var _i410=0;_i410<_size405;++_i410){var elem411=null;elem411=input.readString();this.objects.push(elem411);}input.readListEnd();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.permissions=new ttypes.TDashboardPermissions();this.permissions.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_unshare_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_unshare_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}if(this.groups!==null&&this.groups!==undefined){output.writeFieldBegin('groups',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRING,this.groups.length);for(var iter412 in this.groups){if(this.groups.hasOwnProperty(iter412)){iter412=this.groups[iter412];output.writeString(iter412);}}output.writeListEnd();output.writeFieldEnd();}if(this.objects!==null&&this.objects!==undefined){output.writeFieldBegin('objects',Thrift.Type.LIST,4);output.writeListBegin(Thrift.Type.STRING,this.objects.length);for(var iter413 in this.objects){if(this.objects.hasOwnProperty(iter413)){iter413=this.objects[iter413];output.writeString(iter413);}}output.writeListEnd();output.writeFieldEnd();}if(this.permissions!==null&&this.permissions!==undefined){output.writeFieldBegin('permissions',Thrift.Type.STRUCT,5);this.permissions.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_unshare_dashboard_result=function MapD_unshare_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_unshare_dashboard_result.prototype={};MapD_unshare_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_unshare_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_unshare_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_grantees_args=function MapD_get_dashboard_grantees_args(args){this.session=null;this.dashboard_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}}};MapD_get_dashboard_grantees_args.prototype={};MapD_get_dashboard_grantees_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_grantees_args.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_grantees_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_grantees_result=function MapD_get_dashboard_grantees_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDashboardGrantees]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_dashboard_grantees_result.prototype={};MapD_get_dashboard_grantees_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size414=0;var _rtmp3418;this.success=[];var _etype417=0;_rtmp3418=input.readListBegin();_etype417=_rtmp3418.etype;_size414=_rtmp3418.size;for(var _i419=0;_i419<_size414;++_i419){var elem420=null;elem420=new ttypes.TDashboardGrantees();elem420.read(input);this.success.push(elem420);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_grantees_result.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_grantees_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter421 in this.success){if(this.success.hasOwnProperty(iter421)){iter421=this.success[iter421];iter421.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_link_view_args=function MapD_get_link_view_args(args){this.session=null;this.link=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.link!==undefined&&args.link!==null){this.link=args.link;}}};MapD_get_link_view_args.prototype={};MapD_get_link_view_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.link=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_link_view_args.prototype.write=function(output){output.writeStructBegin('MapD_get_link_view_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.link!==null&&this.link!==undefined){output.writeFieldBegin('link',Thrift.Type.STRING,2);output.writeString(this.link);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_link_view_result=function MapD_get_link_view_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TFrontendView(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_link_view_result.prototype={};MapD_get_link_view_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TFrontendView();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_link_view_result.prototype.write=function(output){output.writeStructBegin('MapD_get_link_view_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_link_args=function MapD_create_link_args(args){this.session=null;this.view_state=null;this.view_metadata=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.view_state!==undefined&&args.view_state!==null){this.view_state=args.view_state;}if(args.view_metadata!==undefined&&args.view_metadata!==null){this.view_metadata=args.view_metadata;}}};MapD_create_link_args.prototype={};MapD_create_link_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.view_state=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.view_metadata=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_link_args.prototype.write=function(output){output.writeStructBegin('MapD_create_link_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.view_state!==null&&this.view_state!==undefined){output.writeFieldBegin('view_state',Thrift.Type.STRING,2);output.writeString(this.view_state);output.writeFieldEnd();}if(this.view_metadata!==null&&this.view_metadata!==undefined){output.writeFieldBegin('view_metadata',Thrift.Type.STRING,3);output.writeString(this.view_metadata);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_link_result=function MapD_create_link_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_create_link_result.prototype={};MapD_create_link_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_link_result.prototype.write=function(output){output.writeStructBegin('MapD_create_link_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_args=function MapD_load_table_binary_args(args){this.session=null;this.table_name=null;this.rows=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.rows!==undefined&&args.rows!==null){this.rows=Thrift.copyList(args.rows,[ttypes.TRow]);}}};MapD_load_table_binary_args.prototype={};MapD_load_table_binary_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){var _size422=0;var _rtmp3426;this.rows=[];var _etype425=0;_rtmp3426=input.readListBegin();_etype425=_rtmp3426.etype;_size422=_rtmp3426.size;for(var _i427=0;_i427<_size422;++_i427){var elem428=null;elem428=new ttypes.TRow();elem428.read(input);this.rows.push(elem428);}input.readListEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.rows!==null&&this.rows!==undefined){output.writeFieldBegin('rows',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.rows.length);for(var iter429 in this.rows){if(this.rows.hasOwnProperty(iter429)){iter429=this.rows[iter429];iter429.write(output);}}output.writeListEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_result=function MapD_load_table_binary_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_binary_result.prototype={};MapD_load_table_binary_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_columnar_args=function MapD_load_table_binary_columnar_args(args){this.session=null;this.table_name=null;this.cols=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.cols!==undefined&&args.cols!==null){this.cols=Thrift.copyList(args.cols,[ttypes.TColumn]);}}};MapD_load_table_binary_columnar_args.prototype={};MapD_load_table_binary_columnar_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){var _size430=0;var _rtmp3434;this.cols=[];var _etype433=0;_rtmp3434=input.readListBegin();_etype433=_rtmp3434.etype;_size430=_rtmp3434.size;for(var _i435=0;_i435<_size430;++_i435){var elem436=null;elem436=new ttypes.TColumn();elem436.read(input);this.cols.push(elem436);}input.readListEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_columnar_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_columnar_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.cols!==null&&this.cols!==undefined){output.writeFieldBegin('cols',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.cols.length);for(var iter437 in this.cols){if(this.cols.hasOwnProperty(iter437)){iter437=this.cols[iter437];iter437.write(output);}}output.writeListEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_columnar_result=function MapD_load_table_binary_columnar_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_binary_columnar_result.prototype={};MapD_load_table_binary_columnar_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_columnar_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_columnar_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_arrow_args=function MapD_load_table_binary_arrow_args(args){this.session=null;this.table_name=null;this.arrow_stream=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.arrow_stream!==undefined&&args.arrow_stream!==null){this.arrow_stream=args.arrow_stream;}}};MapD_load_table_binary_arrow_args.prototype={};MapD_load_table_binary_arrow_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.arrow_stream=input.readBinary();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_arrow_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_arrow_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.arrow_stream!==null&&this.arrow_stream!==undefined){output.writeFieldBegin('arrow_stream',Thrift.Type.STRING,3);output.writeBinary(this.arrow_stream);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_arrow_result=function MapD_load_table_binary_arrow_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_binary_arrow_result.prototype={};MapD_load_table_binary_arrow_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_arrow_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_arrow_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_args=function MapD_load_table_args(args){this.session=null;this.table_name=null;this.rows=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.rows!==undefined&&args.rows!==null){this.rows=Thrift.copyList(args.rows,[ttypes.TStringRow]);}}};MapD_load_table_args.prototype={};MapD_load_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){var _size438=0;var _rtmp3442;this.rows=[];var _etype441=0;_rtmp3442=input.readListBegin();_etype441=_rtmp3442.etype;_size438=_rtmp3442.size;for(var _i443=0;_i443<_size438;++_i443){var elem444=null;elem444=new ttypes.TStringRow();elem444.read(input);this.rows.push(elem444);}input.readListEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.rows!==null&&this.rows!==undefined){output.writeFieldBegin('rows',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.rows.length);for(var iter445 in this.rows){if(this.rows.hasOwnProperty(iter445)){iter445=this.rows[iter445];iter445.write(output);}}output.writeListEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_result=function MapD_load_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_result.prototype={};MapD_load_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_detect_column_types_args=function MapD_detect_column_types_args(args){this.session=null;this.file_name=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.file_name!==undefined&&args.file_name!==null){this.file_name=args.file_name;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_detect_column_types_args.prototype={};MapD_detect_column_types_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.file_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_detect_column_types_args.prototype.write=function(output){output.writeStructBegin('MapD_detect_column_types_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.file_name!==null&&this.file_name!==undefined){output.writeFieldBegin('file_name',Thrift.Type.STRING,2);output.writeString(this.file_name);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,3);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_detect_column_types_result=function MapD_detect_column_types_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDetectResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_detect_column_types_result.prototype={};MapD_detect_column_types_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDetectResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_detect_column_types_result.prototype.write=function(output){output.writeStructBegin('MapD_detect_column_types_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_table_args=function MapD_create_table_args(args){this.session=null;this.table_name=null;this.row_desc=null;this.table_type=0;this.create_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.row_desc!==undefined&&args.row_desc!==null){this.row_desc=Thrift.copyList(args.row_desc,[ttypes.TColumnType]);}if(args.table_type!==undefined&&args.table_type!==null){this.table_type=args.table_type;}if(args.create_params!==undefined&&args.create_params!==null){this.create_params=new ttypes.TCreateParams(args.create_params);}}};MapD_create_table_args.prototype={};MapD_create_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){var _size446=0;var _rtmp3450;this.row_desc=[];var _etype449=0;_rtmp3450=input.readListBegin();_etype449=_rtmp3450.etype;_size446=_rtmp3450.size;for(var _i451=0;_i451<_size446;++_i451){var elem452=null;elem452=new ttypes.TColumnType();elem452.read(input);this.row_desc.push(elem452);}input.readListEnd();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.table_type=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.create_params=new ttypes.TCreateParams();this.create_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_table_args.prototype.write=function(output){output.writeStructBegin('MapD_create_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.row_desc!==null&&this.row_desc!==undefined){output.writeFieldBegin('row_desc',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.row_desc.length);for(var iter453 in this.row_desc){if(this.row_desc.hasOwnProperty(iter453)){iter453=this.row_desc[iter453];iter453.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.table_type!==null&&this.table_type!==undefined){output.writeFieldBegin('table_type',Thrift.Type.I32,4);output.writeI32(this.table_type);output.writeFieldEnd();}if(this.create_params!==null&&this.create_params!==undefined){output.writeFieldBegin('create_params',Thrift.Type.STRUCT,5);this.create_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_table_result=function MapD_create_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_create_table_result.prototype={};MapD_create_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_table_result.prototype.write=function(output){output.writeStructBegin('MapD_create_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_args=function MapD_import_table_args(args){this.session=null;this.table_name=null;this.file_name=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.file_name!==undefined&&args.file_name!==null){this.file_name=args.file_name;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_import_table_args.prototype={};MapD_import_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.file_name=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_args.prototype.write=function(output){output.writeStructBegin('MapD_import_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.file_name!==null&&this.file_name!==undefined){output.writeFieldBegin('file_name',Thrift.Type.STRING,3);output.writeString(this.file_name);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,4);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_result=function MapD_import_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_import_table_result.prototype={};MapD_import_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_result.prototype.write=function(output){output.writeStructBegin('MapD_import_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_geo_table_args=function MapD_import_geo_table_args(args){this.session=null;this.table_name=null;this.file_name=null;this.copy_params=null;this.row_desc=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.file_name!==undefined&&args.file_name!==null){this.file_name=args.file_name;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}if(args.row_desc!==undefined&&args.row_desc!==null){this.row_desc=Thrift.copyList(args.row_desc,[ttypes.TColumnType]);}}};MapD_import_geo_table_args.prototype={};MapD_import_geo_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.file_name=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.LIST){var _size454=0;var _rtmp3458;this.row_desc=[];var _etype457=0;_rtmp3458=input.readListBegin();_etype457=_rtmp3458.etype;_size454=_rtmp3458.size;for(var _i459=0;_i459<_size454;++_i459){var elem460=null;elem460=new ttypes.TColumnType();elem460.read(input);this.row_desc.push(elem460);}input.readListEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_geo_table_args.prototype.write=function(output){output.writeStructBegin('MapD_import_geo_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.file_name!==null&&this.file_name!==undefined){output.writeFieldBegin('file_name',Thrift.Type.STRING,3);output.writeString(this.file_name);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,4);this.copy_params.write(output);output.writeFieldEnd();}if(this.row_desc!==null&&this.row_desc!==undefined){output.writeFieldBegin('row_desc',Thrift.Type.LIST,5);output.writeListBegin(Thrift.Type.STRUCT,this.row_desc.length);for(var iter461 in this.row_desc){if(this.row_desc.hasOwnProperty(iter461)){iter461=this.row_desc[iter461];iter461.write(output);}}output.writeListEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_geo_table_result=function MapD_import_geo_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_import_geo_table_result.prototype={};MapD_import_geo_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_geo_table_result.prototype.write=function(output){output.writeStructBegin('MapD_import_geo_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_status_args=function MapD_import_table_status_args(args){this.session=null;this.import_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.import_id!==undefined&&args.import_id!==null){this.import_id=args.import_id;}}};MapD_import_table_status_args.prototype={};MapD_import_table_status_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.import_id=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_status_args.prototype.write=function(output){output.writeStructBegin('MapD_import_table_status_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.import_id!==null&&this.import_id!==undefined){output.writeFieldBegin('import_id',Thrift.Type.STRING,2);output.writeString(this.import_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_status_result=function MapD_import_table_status_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TImportStatus(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_import_table_status_result.prototype={};MapD_import_table_status_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TImportStatus();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_status_result.prototype.write=function(output){output.writeStructBegin('MapD_import_table_status_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_first_geo_file_in_archive_args=function MapD_get_first_geo_file_in_archive_args(args){this.session=null;this.archive_path=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.archive_path!==undefined&&args.archive_path!==null){this.archive_path=args.archive_path;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_get_first_geo_file_in_archive_args.prototype={};MapD_get_first_geo_file_in_archive_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.archive_path=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_first_geo_file_in_archive_args.prototype.write=function(output){output.writeStructBegin('MapD_get_first_geo_file_in_archive_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.archive_path!==null&&this.archive_path!==undefined){output.writeFieldBegin('archive_path',Thrift.Type.STRING,2);output.writeString(this.archive_path);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,3);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_first_geo_file_in_archive_result=function MapD_get_first_geo_file_in_archive_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_first_geo_file_in_archive_result.prototype={};MapD_get_first_geo_file_in_archive_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_first_geo_file_in_archive_result.prototype.write=function(output){output.writeStructBegin('MapD_get_first_geo_file_in_archive_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_files_in_archive_args=function MapD_get_all_files_in_archive_args(args){this.session=null;this.archive_path=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.archive_path!==undefined&&args.archive_path!==null){this.archive_path=args.archive_path;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_get_all_files_in_archive_args.prototype={};MapD_get_all_files_in_archive_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.archive_path=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_files_in_archive_args.prototype.write=function(output){output.writeStructBegin('MapD_get_all_files_in_archive_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.archive_path!==null&&this.archive_path!==undefined){output.writeFieldBegin('archive_path',Thrift.Type.STRING,2);output.writeString(this.archive_path);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,3);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_files_in_archive_result=function MapD_get_all_files_in_archive_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_all_files_in_archive_result.prototype={};MapD_get_all_files_in_archive_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size462=0;var _rtmp3466;this.success=[];var _etype465=0;_rtmp3466=input.readListBegin();_etype465=_rtmp3466.etype;_size462=_rtmp3466.size;for(var _i467=0;_i467<_size462;++_i467){var elem468=null;elem468=input.readString();this.success.push(elem468);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_files_in_archive_result.prototype.write=function(output){output.writeStructBegin('MapD_get_all_files_in_archive_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter469 in this.success){if(this.success.hasOwnProperty(iter469)){iter469=this.success[iter469];output.writeString(iter469);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_query_args=function MapD_start_query_args(args){this.session=null;this.query_ra=null;this.just_explain=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query_ra!==undefined&&args.query_ra!==null){this.query_ra=args.query_ra;}if(args.just_explain!==undefined&&args.just_explain!==null){this.just_explain=args.just_explain;}}};MapD_start_query_args.prototype={};MapD_start_query_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query_ra=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.BOOL){this.just_explain=input.readBool();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_query_args.prototype.write=function(output){output.writeStructBegin('MapD_start_query_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query_ra!==null&&this.query_ra!==undefined){output.writeFieldBegin('query_ra',Thrift.Type.STRING,2);output.writeString(this.query_ra);output.writeFieldEnd();}if(this.just_explain!==null&&this.just_explain!==undefined){output.writeFieldBegin('just_explain',Thrift.Type.BOOL,3);output.writeBool(this.just_explain);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_query_result=function MapD_start_query_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TPendingQuery(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_start_query_result.prototype={};MapD_start_query_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TPendingQuery();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_query_result.prototype.write=function(output){output.writeStructBegin('MapD_start_query_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_first_step_args=function MapD_execute_first_step_args(args){this.pending_query=null;if(args){if(args.pending_query!==undefined&&args.pending_query!==null){this.pending_query=new ttypes.TPendingQuery(args.pending_query);}}};MapD_execute_first_step_args.prototype={};MapD_execute_first_step_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.pending_query=new ttypes.TPendingQuery();this.pending_query.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_first_step_args.prototype.write=function(output){output.writeStructBegin('MapD_execute_first_step_args');if(this.pending_query!==null&&this.pending_query!==undefined){output.writeFieldBegin('pending_query',Thrift.Type.STRUCT,1);this.pending_query.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_first_step_result=function MapD_execute_first_step_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TStepResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_execute_first_step_result.prototype={};MapD_execute_first_step_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TStepResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_first_step_result.prototype.write=function(output){output.writeStructBegin('MapD_execute_first_step_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_broadcast_serialized_rows_args=function MapD_broadcast_serialized_rows_args(args){this.serialized_rows=null;this.row_desc=null;this.query_id=null;if(args){if(args.serialized_rows!==undefined&&args.serialized_rows!==null){this.serialized_rows=args.serialized_rows;}if(args.row_desc!==undefined&&args.row_desc!==null){this.row_desc=Thrift.copyList(args.row_desc,[ttypes.TColumnType]);}if(args.query_id!==undefined&&args.query_id!==null){this.query_id=args.query_id;}}};MapD_broadcast_serialized_rows_args.prototype={};MapD_broadcast_serialized_rows_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.serialized_rows=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.LIST){var _size470=0;var _rtmp3474;this.row_desc=[];var _etype473=0;_rtmp3474=input.readListBegin();_etype473=_rtmp3474.etype;_size470=_rtmp3474.size;for(var _i475=0;_i475<_size470;++_i475){var elem476=null;elem476=new ttypes.TColumnType();elem476.read(input);this.row_desc.push(elem476);}input.readListEnd();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I64){this.query_id=input.readI64();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_broadcast_serialized_rows_args.prototype.write=function(output){output.writeStructBegin('MapD_broadcast_serialized_rows_args');if(this.serialized_rows!==null&&this.serialized_rows!==undefined){output.writeFieldBegin('serialized_rows',Thrift.Type.STRING,1);output.writeString(this.serialized_rows);output.writeFieldEnd();}if(this.row_desc!==null&&this.row_desc!==undefined){output.writeFieldBegin('row_desc',Thrift.Type.LIST,2);output.writeListBegin(Thrift.Type.STRUCT,this.row_desc.length);for(var iter477 in this.row_desc){if(this.row_desc.hasOwnProperty(iter477)){iter477=this.row_desc[iter477];iter477.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.query_id!==null&&this.query_id!==undefined){output.writeFieldBegin('query_id',Thrift.Type.I64,3);output.writeI64(this.query_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_broadcast_serialized_rows_result=function MapD_broadcast_serialized_rows_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_broadcast_serialized_rows_result.prototype={};MapD_broadcast_serialized_rows_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_broadcast_serialized_rows_result.prototype.write=function(output){output.writeStructBegin('MapD_broadcast_serialized_rows_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_render_query_args=function MapD_start_render_query_args(args){this.session=null;this.widget_id=null;this.node_idx=null;this.vega_json=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.widget_id!==undefined&&args.widget_id!==null){this.widget_id=args.widget_id;}if(args.node_idx!==undefined&&args.node_idx!==null){this.node_idx=args.node_idx;}if(args.vega_json!==undefined&&args.vega_json!==null){this.vega_json=args.vega_json;}}};MapD_start_render_query_args.prototype={};MapD_start_render_query_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I64){this.widget_id=input.readI64();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I16){this.node_idx=input.readI16();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.vega_json=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_render_query_args.prototype.write=function(output){output.writeStructBegin('MapD_start_render_query_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.widget_id!==null&&this.widget_id!==undefined){output.writeFieldBegin('widget_id',Thrift.Type.I64,2);output.writeI64(this.widget_id);output.writeFieldEnd();}if(this.node_idx!==null&&this.node_idx!==undefined){output.writeFieldBegin('node_idx',Thrift.Type.I16,3);output.writeI16(this.node_idx);output.writeFieldEnd();}if(this.vega_json!==null&&this.vega_json!==undefined){output.writeFieldBegin('vega_json',Thrift.Type.STRING,4);output.writeString(this.vega_json);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_render_query_result=function MapD_start_render_query_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TPendingRenderQuery(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_start_render_query_result.prototype={};MapD_start_render_query_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TPendingRenderQuery();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_render_query_result.prototype.write=function(output){output.writeStructBegin('MapD_start_render_query_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_next_render_step_args=function MapD_execute_next_render_step_args(args){this.pending_render=null;this.merged_data=null;if(args){if(args.pending_render!==undefined&&args.pending_render!==null){this.pending_render=new ttypes.TPendingRenderQuery(args.pending_render);}if(args.merged_data!==undefined&&args.merged_data!==null){this.merged_data=Thrift.copyMap(args.merged_data,[Thrift.copyMap,Thrift.copyMap,Thrift.copyMap,Thrift.copyList,ttypes.TRenderDatum]);}}};MapD_execute_next_render_step_args.prototype={};MapD_execute_next_render_step_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.pending_render=new ttypes.TPendingRenderQuery();this.pending_render.read(input);}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.MAP){var _size478=0;var _rtmp3482;this.merged_data={};var _ktype479=0;var _vtype480=0;_rtmp3482=input.readMapBegin();_ktype479=_rtmp3482.ktype;_vtype480=_rtmp3482.vtype;_size478=_rtmp3482.size;for(var _i483=0;_i483<_size478;++_i483){var key484=null;var val485=null;key484=input.readString();var _size486=0;var _rtmp3490;val485={};var _ktype487=0;var _vtype488=0;_rtmp3490=input.readMapBegin();_ktype487=_rtmp3490.ktype;_vtype488=_rtmp3490.vtype;_size486=_rtmp3490.size;for(var _i491=0;_i491<_size486;++_i491){var key492=null;var val493=null;key492=input.readString();var _size494=0;var _rtmp3498;val493={};var _ktype495=0;var _vtype496=0;_rtmp3498=input.readMapBegin();_ktype495=_rtmp3498.ktype;_vtype496=_rtmp3498.vtype;_size494=_rtmp3498.size;for(var _i499=0;_i499<_size494;++_i499){var key500=null;var val501=null;key500=input.readString();var _size502=0;var _rtmp3506;val501={};var _ktype503=0;var _vtype504=0;_rtmp3506=input.readMapBegin();_ktype503=_rtmp3506.ktype;_vtype504=_rtmp3506.vtype;_size502=_rtmp3506.size;for(var _i507=0;_i507<_size502;++_i507){var key508=null;var val509=null;key508=input.readString();var _size510=0;var _rtmp3514;val509=[];var _etype513=0;_rtmp3514=input.readListBegin();_etype513=_rtmp3514.etype;_size510=_rtmp3514.size;for(var _i515=0;_i515<_size510;++_i515){var elem516=null;elem516=new ttypes.TRenderDatum();elem516.read(input);val509.push(elem516);}input.readListEnd();val501[key508]=val509;}input.readMapEnd();val493[key500]=val501;}input.readMapEnd();val485[key492]=val493;}input.readMapEnd();this.merged_data[key484]=val485;}input.readMapEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_next_render_step_args.prototype.write=function(output){output.writeStructBegin('MapD_execute_next_render_step_args');if(this.pending_render!==null&&this.pending_render!==undefined){output.writeFieldBegin('pending_render',Thrift.Type.STRUCT,1);this.pending_render.write(output);output.writeFieldEnd();}if(this.merged_data!==null&&this.merged_data!==undefined){output.writeFieldBegin('merged_data',Thrift.Type.MAP,2);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.MAP,Thrift.objectLength(this.merged_data));for(var kiter517 in this.merged_data){if(this.merged_data.hasOwnProperty(kiter517)){var viter518=this.merged_data[kiter517];output.writeString(kiter517);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.MAP,Thrift.objectLength(viter518));for(var kiter519 in viter518){if(viter518.hasOwnProperty(kiter519)){var viter520=viter518[kiter519];output.writeString(kiter519);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.MAP,Thrift.objectLength(viter520));for(var kiter521 in viter520){if(viter520.hasOwnProperty(kiter521)){var viter522=viter520[kiter521];output.writeString(kiter521);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.LIST,Thrift.objectLength(viter522));for(var kiter523 in viter522){if(viter522.hasOwnProperty(kiter523)){var viter524=viter522[kiter523];output.writeString(kiter523);output.writeListBegin(Thrift.Type.STRUCT,viter524.length);for(var iter525 in viter524){if(viter524.hasOwnProperty(iter525)){iter525=viter524[iter525];iter525.write(output);}}output.writeListEnd();}}output.writeMapEnd();}}output.writeMapEnd();}}output.writeMapEnd();}}output.writeMapEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_next_render_step_result=function MapD_execute_next_render_step_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TRenderStepResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_execute_next_render_step_result.prototype={};MapD_execute_next_render_step_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TRenderStepResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_next_render_step_result.prototype.write=function(output){output.writeStructBegin('MapD_execute_next_render_step_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_insert_data_args=function MapD_insert_data_args(args){this.session=null;this.insert_data=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.insert_data!==undefined&&args.insert_data!==null){this.insert_data=new ttypes.TInsertData(args.insert_data);}}};MapD_insert_data_args.prototype={};MapD_insert_data_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRUCT){this.insert_data=new ttypes.TInsertData();this.insert_data.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_insert_data_args.prototype.write=function(output){output.writeStructBegin('MapD_insert_data_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.insert_data!==null&&this.insert_data!==undefined){output.writeFieldBegin('insert_data',Thrift.Type.STRUCT,2);this.insert_data.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_insert_data_result=function MapD_insert_data_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_insert_data_result.prototype={};MapD_insert_data_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_insert_data_result.prototype.write=function(output){output.writeStructBegin('MapD_insert_data_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_checkpoint_args=function MapD_checkpoint_args(args){this.session=null;this.db_id=null;this.table_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.db_id!==undefined&&args.db_id!==null){this.db_id=args.db_id;}if(args.table_id!==undefined&&args.table_id!==null){this.table_id=args.table_id;}}};MapD_checkpoint_args.prototype={};MapD_checkpoint_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.db_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.table_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_checkpoint_args.prototype.write=function(output){output.writeStructBegin('MapD_checkpoint_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.db_id!==null&&this.db_id!==undefined){output.writeFieldBegin('db_id',Thrift.Type.I32,2);output.writeI32(this.db_id);output.writeFieldEnd();}if(this.table_id!==null&&this.table_id!==undefined){output.writeFieldBegin('table_id',Thrift.Type.I32,3);output.writeI32(this.table_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_checkpoint_result=function MapD_checkpoint_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_checkpoint_result.prototype={};MapD_checkpoint_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_checkpoint_result.prototype.write=function(output){output.writeStructBegin('MapD_checkpoint_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_descriptor_args=function MapD_get_table_descriptor_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_table_descriptor_args.prototype={};MapD_get_table_descriptor_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_descriptor_args.prototype.write=function(output){output.writeStructBegin('MapD_get_table_descriptor_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_descriptor_result=function MapD_get_table_descriptor_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyMap(args.success,[ttypes.TColumnType]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_table_descriptor_result.prototype={};MapD_get_table_descriptor_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.MAP){var _size526=0;var _rtmp3530;this.success={};var _ktype527=0;var _vtype528=0;_rtmp3530=input.readMapBegin();_ktype527=_rtmp3530.ktype;_vtype528=_rtmp3530.vtype;_size526=_rtmp3530.size;for(var _i531=0;_i531<_size526;++_i531){var key532=null;var val533=null;key532=input.readString();val533=new ttypes.TColumnType();val533.read(input);this.success[key532]=val533;}input.readMapEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_descriptor_result.prototype.write=function(output){output.writeStructBegin('MapD_get_table_descriptor_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.MAP,0);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.STRUCT,Thrift.objectLength(this.success));for(var kiter534 in this.success){if(this.success.hasOwnProperty(kiter534)){var viter535=this.success[kiter534];output.writeString(kiter534);viter535.write(output);}}output.writeMapEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_row_descriptor_args=function MapD_get_row_descriptor_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_row_descriptor_args.prototype={};MapD_get_row_descriptor_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_row_descriptor_args.prototype.write=function(output){output.writeStructBegin('MapD_get_row_descriptor_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_row_descriptor_result=function MapD_get_row_descriptor_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TColumnType]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_row_descriptor_result.prototype={};MapD_get_row_descriptor_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size536=0;var _rtmp3540;this.success=[];var _etype539=0;_rtmp3540=input.readListBegin();_etype539=_rtmp3540.etype;_size536=_rtmp3540.size;for(var _i541=0;_i541<_size536;++_i541){var elem542=null;elem542=new ttypes.TColumnType();elem542.read(input);this.success.push(elem542);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_row_descriptor_result.prototype.write=function(output){output.writeStructBegin('MapD_get_row_descriptor_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter543 in this.success){if(this.success.hasOwnProperty(iter543)){iter543=this.success[iter543];iter543.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_roles_args=function MapD_get_roles_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_roles_args.prototype={};MapD_get_roles_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_roles_args.prototype.write=function(output){output.writeStructBegin('MapD_get_roles_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_roles_result=function MapD_get_roles_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_roles_result.prototype={};MapD_get_roles_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size544=0;var _rtmp3548;this.success=[];var _etype547=0;_rtmp3548=input.readListBegin();_etype547=_rtmp3548.etype;_size544=_rtmp3548.size;for(var _i549=0;_i549<_size544;++_i549){var elem550=null;elem550=input.readString();this.success.push(elem550);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_roles_result.prototype.write=function(output){output.writeStructBegin('MapD_get_roles_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter551 in this.success){if(this.success.hasOwnProperty(iter551)){iter551=this.success[iter551];output.writeString(iter551);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_objects_for_grantee_args=function MapD_get_db_objects_for_grantee_args(args){this.session=null;this.roleName=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.roleName!==undefined&&args.roleName!==null){this.roleName=args.roleName;}}};MapD_get_db_objects_for_grantee_args.prototype={};MapD_get_db_objects_for_grantee_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.roleName=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_objects_for_grantee_args.prototype.write=function(output){output.writeStructBegin('MapD_get_db_objects_for_grantee_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.roleName!==null&&this.roleName!==undefined){output.writeFieldBegin('roleName',Thrift.Type.STRING,2);output.writeString(this.roleName);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_objects_for_grantee_result=function MapD_get_db_objects_for_grantee_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDBObject]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_db_objects_for_grantee_result.prototype={};MapD_get_db_objects_for_grantee_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size552=0;var _rtmp3556;this.success=[];var _etype555=0;_rtmp3556=input.readListBegin();_etype555=_rtmp3556.etype;_size552=_rtmp3556.size;for(var _i557=0;_i557<_size552;++_i557){var elem558=null;elem558=new ttypes.TDBObject();elem558.read(input);this.success.push(elem558);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_objects_for_grantee_result.prototype.write=function(output){output.writeStructBegin('MapD_get_db_objects_for_grantee_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter559 in this.success){if(this.success.hasOwnProperty(iter559)){iter559=this.success[iter559];iter559.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_object_privs_args=function MapD_get_db_object_privs_args(args){this.session=null;this.objectName=null;this.type=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.objectName!==undefined&&args.objectName!==null){this.objectName=args.objectName;}if(args.type!==undefined&&args.type!==null){this.type=args.type;}}};MapD_get_db_object_privs_args.prototype={};MapD_get_db_object_privs_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.objectName=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.type=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_object_privs_args.prototype.write=function(output){output.writeStructBegin('MapD_get_db_object_privs_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.objectName!==null&&this.objectName!==undefined){output.writeFieldBegin('objectName',Thrift.Type.STRING,2);output.writeString(this.objectName);output.writeFieldEnd();}if(this.type!==null&&this.type!==undefined){output.writeFieldBegin('type',Thrift.Type.I32,3);output.writeI32(this.type);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_object_privs_result=function MapD_get_db_object_privs_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDBObject]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_db_object_privs_result.prototype={};MapD_get_db_object_privs_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size560=0;var _rtmp3564;this.success=[];var _etype563=0;_rtmp3564=input.readListBegin();_etype563=_rtmp3564.etype;_size560=_rtmp3564.size;for(var _i565=0;_i565<_size560;++_i565){var elem566=null;elem566=new ttypes.TDBObject();elem566.read(input);this.success.push(elem566);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_object_privs_result.prototype.write=function(output){output.writeStructBegin('MapD_get_db_object_privs_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter567 in this.success){if(this.success.hasOwnProperty(iter567)){iter567=this.success[iter567];iter567.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_roles_for_user_args=function MapD_get_all_roles_for_user_args(args){this.session=null;this.userName=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.userName!==undefined&&args.userName!==null){this.userName=args.userName;}}};MapD_get_all_roles_for_user_args.prototype={};MapD_get_all_roles_for_user_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.userName=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_roles_for_user_args.prototype.write=function(output){output.writeStructBegin('MapD_get_all_roles_for_user_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.userName!==null&&this.userName!==undefined){output.writeFieldBegin('userName',Thrift.Type.STRING,2);output.writeString(this.userName);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_roles_for_user_result=function MapD_get_all_roles_for_user_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_all_roles_for_user_result.prototype={};MapD_get_all_roles_for_user_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){var _size568=0;var _rtmp3572;this.success=[];var _etype571=0;_rtmp3572=input.readListBegin();_etype571=_rtmp3572.etype;_size568=_rtmp3572.size;for(var _i573=0;_i573<_size568;++_i573){var elem574=null;elem574=input.readString();this.success.push(elem574);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_roles_for_user_result.prototype.write=function(output){output.writeStructBegin('MapD_get_all_roles_for_user_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter575 in this.success){if(this.success.hasOwnProperty(iter575)){iter575=this.success[iter575];output.writeString(iter575);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_has_object_privilege_args=function MapD_has_object_privilege_args(args){this.session=null;this.granteeName=null;this.ObjectName=null;this.objectType=null;this.permissions=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.granteeName!==undefined&&args.granteeName!==null){this.granteeName=args.granteeName;}if(args.ObjectName!==undefined&&args.ObjectName!==null){this.ObjectName=args.ObjectName;}if(args.objectType!==undefined&&args.objectType!==null){this.objectType=args.objectType;}if(args.permissions!==undefined&&args.permissions!==null){this.permissions=new ttypes.TDBObjectPermissions(args.permissions);}}};MapD_has_object_privilege_args.prototype={};MapD_has_object_privilege_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.granteeName=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.ObjectName=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.objectType=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.permissions=new ttypes.TDBObjectPermissions();this.permissions.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_has_object_privilege_args.prototype.write=function(output){output.writeStructBegin('MapD_has_object_privilege_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.granteeName!==null&&this.granteeName!==undefined){output.writeFieldBegin('granteeName',Thrift.Type.STRING,2);output.writeString(this.granteeName);output.writeFieldEnd();}if(this.ObjectName!==null&&this.ObjectName!==undefined){output.writeFieldBegin('ObjectName',Thrift.Type.STRING,3);output.writeString(this.ObjectName);output.writeFieldEnd();}if(this.objectType!==null&&this.objectType!==undefined){output.writeFieldBegin('objectType',Thrift.Type.I32,4);output.writeI32(this.objectType);output.writeFieldEnd();}if(this.permissions!==null&&this.permissions!==undefined){output.writeFieldBegin('permissions',Thrift.Type.STRUCT,5);this.permissions.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_has_object_privilege_result=function MapD_has_object_privilege_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_has_object_privilege_result.prototype={};MapD_has_object_privilege_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.BOOL){this.success=input.readBool();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_has_object_privilege_result.prototype.write=function(output){output.writeStructBegin('MapD_has_object_privilege_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.BOOL,0);output.writeBool(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_license_key_args=function MapD_set_license_key_args(args){this.session=null;this.key=null;this.nonce='';if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.key!==undefined&&args.key!==null){this.key=args.key;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_set_license_key_args.prototype={};MapD_set_license_key_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.key=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_license_key_args.prototype.write=function(output){output.writeStructBegin('MapD_set_license_key_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.key!==null&&this.key!==undefined){output.writeFieldBegin('key',Thrift.Type.STRING,2);output.writeString(this.key);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,3);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_license_key_result=function MapD_set_license_key_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TLicenseInfo(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_license_key_result.prototype={};MapD_set_license_key_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TLicenseInfo();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_license_key_result.prototype.write=function(output){output.writeStructBegin('MapD_set_license_key_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_license_claims_args=function MapD_get_license_claims_args(args){this.session=null;this.nonce='';if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_get_license_claims_args.prototype={};MapD_get_license_claims_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_license_claims_args.prototype.write=function(output){output.writeStructBegin('MapD_get_license_claims_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,2);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_license_claims_result=function MapD_get_license_claims_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TLicenseInfo(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_license_claims_result.prototype={};MapD_get_license_claims_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var fname=ret.fname;var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TLicenseInfo();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_license_claims_result.prototype.write=function(output){output.writeStructBegin('MapD_get_license_claims_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapDClient=exports.Client=function(output,pClass){this.output=output;this.pClass=pClass;this._seqid=0;this._reqs={};};MapDClient.prototype={};MapDClient.prototype.seqid=function(){return this._seqid;};MapDClient.prototype.new_seqid=function(){return this._seqid+=1;};MapDClient.prototype.connect=function(user,passwd,dbname,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_connect(user,passwd,dbname);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_connect(user,passwd,dbname);}};MapDClient.prototype.send_connect=function(user,passwd,dbname){var output=new this.pClass(this.output);output.writeMessageBegin('connect',Thrift.MessageType.CALL,this.seqid());var args=new MapD_connect_args();args.user=user;args.passwd=passwd;args.dbname=dbname;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_connect=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_connect_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('connect failed: unknown result');};MapDClient.prototype.disconnect=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_disconnect(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_disconnect(session);}};MapDClient.prototype.send_disconnect=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('disconnect',Thrift.MessageType.CALL,this.seqid());var args=new MapD_disconnect_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_disconnect=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_disconnect_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_server_status=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_server_status(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_server_status(session);}};MapDClient.prototype.send_get_server_status=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_server_status',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_server_status_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_server_status=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_server_status_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_server_status failed: unknown result');};MapDClient.prototype.get_status=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_status(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_status(session);}};MapDClient.prototype.send_get_status=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_status',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_status_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_status=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_status_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_status failed: unknown result');};MapDClient.prototype.get_hardware_info=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_hardware_info(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_hardware_info(session);}};MapDClient.prototype.send_get_hardware_info=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_hardware_info',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_hardware_info_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_hardware_info=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_hardware_info_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_hardware_info failed: unknown result');};MapDClient.prototype.get_tables=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_tables(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_tables(session);}};MapDClient.prototype.send_get_tables=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_tables',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_tables_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_tables=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_tables_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_tables failed: unknown result');};MapDClient.prototype.get_physical_tables=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_physical_tables(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_physical_tables(session);}};MapDClient.prototype.send_get_physical_tables=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_physical_tables',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_physical_tables_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_physical_tables=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_physical_tables_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_physical_tables failed: unknown result');};MapDClient.prototype.get_views=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_views(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_views(session);}};MapDClient.prototype.send_get_views=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_views',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_views_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_views=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_views_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_views failed: unknown result');};MapDClient.prototype.get_tables_meta=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_tables_meta(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_tables_meta(session);}};MapDClient.prototype.send_get_tables_meta=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_tables_meta',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_tables_meta_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_tables_meta=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_tables_meta_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_tables_meta failed: unknown result');};MapDClient.prototype.get_table_details=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_table_details(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_table_details(session,table_name);}};MapDClient.prototype.send_get_table_details=function(session,table_name){var output=new this.pClass(this.output);output.writeMessageBegin('get_table_details',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_table_details_args();args.session=session;args.table_name=table_name;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_table_details=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_table_details_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_table_details failed: unknown result');};MapDClient.prototype.get_internal_table_details=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_internal_table_details(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_internal_table_details(session,table_name);}};MapDClient.prototype.send_get_internal_table_details=function(session,table_name){var output=new this.pClass(this.output);output.writeMessageBegin('get_internal_table_details',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_internal_table_details_args();args.session=session;args.table_name=table_name;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_internal_table_details=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_internal_table_details_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_internal_table_details failed: unknown result');};MapDClient.prototype.get_users=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_users(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_users(session);}};MapDClient.prototype.send_get_users=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_users',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_users_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_users=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_users_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_users failed: unknown result');};MapDClient.prototype.get_databases=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_databases(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_databases(session);}};MapDClient.prototype.send_get_databases=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_databases',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_databases_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_databases=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_databases_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_databases failed: unknown result');};MapDClient.prototype.get_version=function(callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_version();return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_version();}};MapDClient.prototype.send_get_version=function(){var output=new this.pClass(this.output);output.writeMessageBegin('get_version',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_version_args();args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_version=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_version_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_version failed: unknown result');};MapDClient.prototype.start_heap_profile=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_start_heap_profile(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_start_heap_profile(session);}};MapDClient.prototype.send_start_heap_profile=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('start_heap_profile',Thrift.MessageType.CALL,this.seqid());var args=new MapD_start_heap_profile_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_start_heap_profile=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_start_heap_profile_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.stop_heap_profile=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_stop_heap_profile(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_stop_heap_profile(session);}};MapDClient.prototype.send_stop_heap_profile=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('stop_heap_profile',Thrift.MessageType.CALL,this.seqid());var args=new MapD_stop_heap_profile_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_stop_heap_profile=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_stop_heap_profile_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_heap_profile=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_heap_profile(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_heap_profile(session);}};MapDClient.prototype.send_get_heap_profile=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_heap_profile',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_heap_profile_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_heap_profile=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_heap_profile_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_heap_profile failed: unknown result');};MapDClient.prototype.get_memory=function(session,memory_level,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_memory(session,memory_level);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_memory(session,memory_level);}};MapDClient.prototype.send_get_memory=function(session,memory_level){var output=new this.pClass(this.output);output.writeMessageBegin('get_memory',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_memory_args();args.session=session;args.memory_level=memory_level;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_memory=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_memory_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_memory failed: unknown result');};MapDClient.prototype.clear_cpu_memory=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_clear_cpu_memory(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_clear_cpu_memory(session);}};MapDClient.prototype.send_clear_cpu_memory=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('clear_cpu_memory',Thrift.MessageType.CALL,this.seqid());var args=new MapD_clear_cpu_memory_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_clear_cpu_memory=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_clear_cpu_memory_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.clear_gpu_memory=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_clear_gpu_memory(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_clear_gpu_memory(session);}};MapDClient.prototype.send_clear_gpu_memory=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('clear_gpu_memory',Thrift.MessageType.CALL,this.seqid());var args=new MapD_clear_gpu_memory_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_clear_gpu_memory=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_clear_gpu_memory_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.set_table_epoch=function(session,db_id,table_id,new_epoch,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_table_epoch(session,db_id,table_id,new_epoch);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_table_epoch(session,db_id,table_id,new_epoch);}};MapDClient.prototype.send_set_table_epoch=function(session,db_id,table_id,new_epoch){var output=new this.pClass(this.output);output.writeMessageBegin('set_table_epoch',Thrift.MessageType.CALL,this.seqid());var args=new MapD_set_table_epoch_args();args.session=session;args.db_id=db_id;args.table_id=table_id;args.new_epoch=new_epoch;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_set_table_epoch=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_table_epoch_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.set_table_epoch_by_name=function(session,table_name,new_epoch,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_table_epoch_by_name(session,table_name,new_epoch);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_table_epoch_by_name(session,table_name,new_epoch);}};MapDClient.prototype.send_set_table_epoch_by_name=function(session,table_name,new_epoch){var output=new this.pClass(this.output);output.writeMessageBegin('set_table_epoch_by_name',Thrift.MessageType.CALL,this.seqid());var args=new MapD_set_table_epoch_by_name_args();args.session=session;args.table_name=table_name;args.new_epoch=new_epoch;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_set_table_epoch_by_name=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_table_epoch_by_name_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_table_epoch=function(session,db_id,table_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_table_epoch(session,db_id,table_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_table_epoch(session,db_id,table_id);}};MapDClient.prototype.send_get_table_epoch=function(session,db_id,table_id){var output=new this.pClass(this.output);output.writeMessageBegin('get_table_epoch',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_table_epoch_args();args.session=session;args.db_id=db_id;args.table_id=table_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_table_epoch=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_table_epoch_result();result.read(input);input.readMessageEnd();if(null!==result.success){return callback(null,result.success);}return callback('get_table_epoch failed: unknown result');};MapDClient.prototype.get_table_epoch_by_name=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_table_epoch_by_name(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_table_epoch_by_name(session,table_name);}};MapDClient.prototype.send_get_table_epoch_by_name=function(session,table_name){var output=new this.pClass(this.output);output.writeMessageBegin('get_table_epoch_by_name',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_table_epoch_by_name_args();args.session=session;args.table_name=table_name;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_table_epoch_by_name=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_table_epoch_by_name_result();result.read(input);input.readMessageEnd();if(null!==result.success){return callback(null,result.success);}return callback('get_table_epoch_by_name failed: unknown result');};MapDClient.prototype.sql_execute=function(session,query,column_format,nonce,first_n,at_most_n,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_execute(session,query,column_format,nonce,first_n,at_most_n);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_execute(session,query,column_format,nonce,first_n,at_most_n);}};MapDClient.prototype.send_sql_execute=function(session,query,column_format,nonce,first_n,at_most_n){var output=new this.pClass(this.output);output.writeMessageBegin('sql_execute',Thrift.MessageType.CALL,this.seqid());var args=new MapD_sql_execute_args();args.session=session;args.query=query;args.column_format=column_format;args.nonce=nonce;args.first_n=first_n;args.at_most_n=at_most_n;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_sql_execute=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_execute_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_execute failed: unknown result');};MapDClient.prototype.sql_execute_df=function(session,query,device_type,device_id,first_n,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_execute_df(session,query,device_type,device_id,first_n);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_execute_df(session,query,device_type,device_id,first_n);}};MapDClient.prototype.send_sql_execute_df=function(session,query,device_type,device_id,first_n){var output=new this.pClass(this.output);output.writeMessageBegin('sql_execute_df',Thrift.MessageType.CALL,this.seqid());var args=new MapD_sql_execute_df_args();args.session=session;args.query=query;args.device_type=device_type;args.device_id=device_id;args.first_n=first_n;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_sql_execute_df=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_execute_df_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_execute_df failed: unknown result');};MapDClient.prototype.sql_execute_gdf=function(session,query,device_id,first_n,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_execute_gdf(session,query,device_id,first_n);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_execute_gdf(session,query,device_id,first_n);}};MapDClient.prototype.send_sql_execute_gdf=function(session,query,device_id,first_n){var output=new this.pClass(this.output);output.writeMessageBegin('sql_execute_gdf',Thrift.MessageType.CALL,this.seqid());var args=new MapD_sql_execute_gdf_args();args.session=session;args.query=query;args.device_id=device_id;args.first_n=first_n;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_sql_execute_gdf=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_execute_gdf_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_execute_gdf failed: unknown result');};MapDClient.prototype.deallocate_df=function(session,df,device_type,device_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_deallocate_df(session,df,device_type,device_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_deallocate_df(session,df,device_type,device_id);}};MapDClient.prototype.send_deallocate_df=function(session,df,device_type,device_id){var output=new this.pClass(this.output);output.writeMessageBegin('deallocate_df',Thrift.MessageType.CALL,this.seqid());var args=new MapD_deallocate_df_args();args.session=session;args.df=df;args.device_type=device_type;args.device_id=device_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_deallocate_df=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_deallocate_df_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.interrupt=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_interrupt(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_interrupt(session);}};MapDClient.prototype.send_interrupt=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('interrupt',Thrift.MessageType.CALL,this.seqid());var args=new MapD_interrupt_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_interrupt=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_interrupt_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.sql_validate=function(session,query,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_validate(session,query);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_validate(session,query);}};MapDClient.prototype.send_sql_validate=function(session,query){var output=new this.pClass(this.output);output.writeMessageBegin('sql_validate',Thrift.MessageType.CALL,this.seqid());var args=new MapD_sql_validate_args();args.session=session;args.query=query;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_sql_validate=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_validate_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_validate failed: unknown result');};MapDClient.prototype.get_completion_hints=function(session,sql,cursor,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_completion_hints(session,sql,cursor);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_completion_hints(session,sql,cursor);}};MapDClient.prototype.send_get_completion_hints=function(session,sql,cursor){var output=new this.pClass(this.output);output.writeMessageBegin('get_completion_hints',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_completion_hints_args();args.session=session;args.sql=sql;args.cursor=cursor;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_completion_hints=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_completion_hints_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_completion_hints failed: unknown result');};MapDClient.prototype.set_execution_mode=function(session,mode,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_execution_mode(session,mode);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_execution_mode(session,mode);}};MapDClient.prototype.send_set_execution_mode=function(session,mode){var output=new this.pClass(this.output);output.writeMessageBegin('set_execution_mode',Thrift.MessageType.CALL,this.seqid());var args=new MapD_set_execution_mode_args();args.session=session;args.mode=mode;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_set_execution_mode=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_execution_mode_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.render_vega=function(session,widget_id,vega_json,compression_level,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_render_vega(session,widget_id,vega_json,compression_level,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_render_vega(session,widget_id,vega_json,compression_level,nonce);}};MapDClient.prototype.send_render_vega=function(session,widget_id,vega_json,compression_level,nonce){var output=new this.pClass(this.output);output.writeMessageBegin('render_vega',Thrift.MessageType.CALL,this.seqid());var args=new MapD_render_vega_args();args.session=session;args.widget_id=widget_id;args.vega_json=vega_json;args.compression_level=compression_level;args.nonce=nonce;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_render_vega=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_render_vega_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('render_vega failed: unknown result');};MapDClient.prototype.get_result_row_for_pixel=function(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_result_row_for_pixel(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_result_row_for_pixel(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce);}};MapDClient.prototype.send_get_result_row_for_pixel=function(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce){var output=new this.pClass(this.output);output.writeMessageBegin('get_result_row_for_pixel',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_result_row_for_pixel_args();args.session=session;args.widget_id=widget_id;args.pixel=pixel;args.table_col_names=table_col_names;args.column_format=column_format;args.pixelRadius=pixelRadius;args.nonce=nonce;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_result_row_for_pixel=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_result_row_for_pixel_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_result_row_for_pixel failed: unknown result');};MapDClient.prototype.get_frontend_view=function(session,view_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_frontend_view(session,view_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_frontend_view(session,view_name);}};MapDClient.prototype.send_get_frontend_view=function(session,view_name){var output=new this.pClass(this.output);output.writeMessageBegin('get_frontend_view',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_frontend_view_args();args.session=session;args.view_name=view_name;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_frontend_view=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_frontend_view_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_frontend_view failed: unknown result');};MapDClient.prototype.get_frontend_views=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_frontend_views(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_frontend_views(session);}};MapDClient.prototype.send_get_frontend_views=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_frontend_views',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_frontend_views_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_frontend_views=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_frontend_views_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_frontend_views failed: unknown result');};MapDClient.prototype.create_frontend_view=function(session,view_name,view_state,image_hash,view_metadata,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_create_frontend_view(session,view_name,view_state,image_hash,view_metadata);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_create_frontend_view(session,view_name,view_state,image_hash,view_metadata);}};MapDClient.prototype.send_create_frontend_view=function(session,view_name,view_state,image_hash,view_metadata){var output=new this.pClass(this.output);output.writeMessageBegin('create_frontend_view',Thrift.MessageType.CALL,this.seqid());var args=new MapD_create_frontend_view_args();args.session=session;args.view_name=view_name;args.view_state=view_state;args.image_hash=image_hash;args.view_metadata=view_metadata;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_create_frontend_view=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_create_frontend_view_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.delete_frontend_view=function(session,view_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_delete_frontend_view(session,view_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_delete_frontend_view(session,view_name);}};MapDClient.prototype.send_delete_frontend_view=function(session,view_name){var output=new this.pClass(this.output);output.writeMessageBegin('delete_frontend_view',Thrift.MessageType.CALL,this.seqid());var args=new MapD_delete_frontend_view_args();args.session=session;args.view_name=view_name;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_delete_frontend_view=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_delete_frontend_view_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_dashboard=function(session,dashboard_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_dashboard(session,dashboard_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_dashboard(session,dashboard_id);}};MapDClient.prototype.send_get_dashboard=function(session,dashboard_id){var output=new this.pClass(this.output);output.writeMessageBegin('get_dashboard',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_dashboard_args();args.session=session;args.dashboard_id=dashboard_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_dashboard failed: unknown result');};MapDClient.prototype.get_dashboards=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_dashboards(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_dashboards(session);}};MapDClient.prototype.send_get_dashboards=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_dashboards',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_dashboards_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_dashboards=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_dashboards_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_dashboards failed: unknown result');};MapDClient.prototype.create_dashboard=function(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_create_dashboard(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_create_dashboard(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata);}};MapDClient.prototype.send_create_dashboard=function(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata){var output=new this.pClass(this.output);output.writeMessageBegin('create_dashboard',Thrift.MessageType.CALL,this.seqid());var args=new MapD_create_dashboard_args();args.session=session;args.dashboard_name=dashboard_name;args.dashboard_state=dashboard_state;args.image_hash=image_hash;args.dashboard_metadata=dashboard_metadata;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_create_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_create_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('create_dashboard failed: unknown result');};MapDClient.prototype.replace_dashboard=function(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_replace_dashboard(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_replace_dashboard(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata);}};MapDClient.prototype.send_replace_dashboard=function(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata){var output=new this.pClass(this.output);output.writeMessageBegin('replace_dashboard',Thrift.MessageType.CALL,this.seqid());var args=new MapD_replace_dashboard_args();args.session=session;args.dashboard_id=dashboard_id;args.dashboard_name=dashboard_name;args.dashboard_owner=dashboard_owner;args.dashboard_state=dashboard_state;args.image_hash=image_hash;args.dashboard_metadata=dashboard_metadata;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_replace_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_replace_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.delete_dashboard=function(session,dashboard_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_delete_dashboard(session,dashboard_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_delete_dashboard(session,dashboard_id);}};MapDClient.prototype.send_delete_dashboard=function(session,dashboard_id){var output=new this.pClass(this.output);output.writeMessageBegin('delete_dashboard',Thrift.MessageType.CALL,this.seqid());var args=new MapD_delete_dashboard_args();args.session=session;args.dashboard_id=dashboard_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_delete_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_delete_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.share_dashboard=function(session,dashboard_id,groups,objects,permissions,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_share_dashboard(session,dashboard_id,groups,objects,permissions);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_share_dashboard(session,dashboard_id,groups,objects,permissions);}};MapDClient.prototype.send_share_dashboard=function(session,dashboard_id,groups,objects,permissions){var output=new this.pClass(this.output);output.writeMessageBegin('share_dashboard',Thrift.MessageType.CALL,this.seqid());var args=new MapD_share_dashboard_args();args.session=session;args.dashboard_id=dashboard_id;args.groups=groups;args.objects=objects;args.permissions=permissions;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_share_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_share_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.unshare_dashboard=function(session,dashboard_id,groups,objects,permissions,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_unshare_dashboard(session,dashboard_id,groups,objects,permissions);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_unshare_dashboard(session,dashboard_id,groups,objects,permissions);}};MapDClient.prototype.send_unshare_dashboard=function(session,dashboard_id,groups,objects,permissions){var output=new this.pClass(this.output);output.writeMessageBegin('unshare_dashboard',Thrift.MessageType.CALL,this.seqid());var args=new MapD_unshare_dashboard_args();args.session=session;args.dashboard_id=dashboard_id;args.groups=groups;args.objects=objects;args.permissions=permissions;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_unshare_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_unshare_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_dashboard_grantees=function(session,dashboard_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_dashboard_grantees(session,dashboard_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_dashboard_grantees(session,dashboard_id);}};MapDClient.prototype.send_get_dashboard_grantees=function(session,dashboard_id){var output=new this.pClass(this.output);output.writeMessageBegin('get_dashboard_grantees',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_dashboard_grantees_args();args.session=session;args.dashboard_id=dashboard_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_dashboard_grantees=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_dashboard_grantees_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_dashboard_grantees failed: unknown result');};MapDClient.prototype.get_link_view=function(session,link,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_link_view(session,link);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_link_view(session,link);}};MapDClient.prototype.send_get_link_view=function(session,link){var output=new this.pClass(this.output);output.writeMessageBegin('get_link_view',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_link_view_args();args.session=session;args.link=link;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_link_view=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_link_view_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_link_view failed: unknown result');};MapDClient.prototype.create_link=function(session,view_state,view_metadata,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_create_link(session,view_state,view_metadata);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_create_link(session,view_state,view_metadata);}};MapDClient.prototype.send_create_link=function(session,view_state,view_metadata){var output=new this.pClass(this.output);output.writeMessageBegin('create_link',Thrift.MessageType.CALL,this.seqid());var args=new MapD_create_link_args();args.session=session;args.view_state=view_state;args.view_metadata=view_metadata;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_create_link=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_create_link_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('create_link failed: unknown result');};MapDClient.prototype.load_table_binary=function(session,table_name,rows,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table_binary(session,table_name,rows);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table_binary(session,table_name,rows);}};MapDClient.prototype.send_load_table_binary=function(session,table_name,rows){var output=new this.pClass(this.output);output.writeMessageBegin('load_table_binary',Thrift.MessageType.CALL,this.seqid());var args=new MapD_load_table_binary_args();args.session=session;args.table_name=table_name;args.rows=rows;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_load_table_binary=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_binary_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.load_table_binary_columnar=function(session,table_name,cols,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table_binary_columnar(session,table_name,cols);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table_binary_columnar(session,table_name,cols);}};MapDClient.prototype.send_load_table_binary_columnar=function(session,table_name,cols){var output=new this.pClass(this.output);output.writeMessageBegin('load_table_binary_columnar',Thrift.MessageType.CALL,this.seqid());var args=new MapD_load_table_binary_columnar_args();args.session=session;args.table_name=table_name;args.cols=cols;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_load_table_binary_columnar=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_binary_columnar_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.load_table_binary_arrow=function(session,table_name,arrow_stream,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table_binary_arrow(session,table_name,arrow_stream);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table_binary_arrow(session,table_name,arrow_stream);}};MapDClient.prototype.send_load_table_binary_arrow=function(session,table_name,arrow_stream){var output=new this.pClass(this.output);output.writeMessageBegin('load_table_binary_arrow',Thrift.MessageType.CALL,this.seqid());var args=new MapD_load_table_binary_arrow_args();args.session=session;args.table_name=table_name;args.arrow_stream=arrow_stream;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_load_table_binary_arrow=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_binary_arrow_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.load_table=function(session,table_name,rows,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table(session,table_name,rows);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table(session,table_name,rows);}};MapDClient.prototype.send_load_table=function(session,table_name,rows){var output=new this.pClass(this.output);output.writeMessageBegin('load_table',Thrift.MessageType.CALL,this.seqid());var args=new MapD_load_table_args();args.session=session;args.table_name=table_name;args.rows=rows;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_load_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.detect_column_types=function(session,file_name,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_detect_column_types(session,file_name,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_detect_column_types(session,file_name,copy_params);}};MapDClient.prototype.send_detect_column_types=function(session,file_name,copy_params){var output=new this.pClass(this.output);output.writeMessageBegin('detect_column_types',Thrift.MessageType.CALL,this.seqid());var args=new MapD_detect_column_types_args();args.session=session;args.file_name=file_name;args.copy_params=copy_params;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_detect_column_types=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_detect_column_types_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('detect_column_types failed: unknown result');};MapDClient.prototype.create_table=function(session,table_name,row_desc,table_type,create_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_create_table(session,table_name,row_desc,table_type,create_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_create_table(session,table_name,row_desc,table_type,create_params);}};MapDClient.prototype.send_create_table=function(session,table_name,row_desc,table_type,create_params){var output=new this.pClass(this.output);output.writeMessageBegin('create_table',Thrift.MessageType.CALL,this.seqid());var args=new MapD_create_table_args();args.session=session;args.table_name=table_name;args.row_desc=row_desc;args.table_type=table_type;args.create_params=create_params;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_create_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_create_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.import_table=function(session,table_name,file_name,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_import_table(session,table_name,file_name,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_import_table(session,table_name,file_name,copy_params);}};MapDClient.prototype.send_import_table=function(session,table_name,file_name,copy_params){var output=new this.pClass(this.output);output.writeMessageBegin('import_table',Thrift.MessageType.CALL,this.seqid());var args=new MapD_import_table_args();args.session=session;args.table_name=table_name;args.file_name=file_name;args.copy_params=copy_params;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_import_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_import_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.import_geo_table=function(session,table_name,file_name,copy_params,row_desc,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_import_geo_table(session,table_name,file_name,copy_params,row_desc);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_import_geo_table(session,table_name,file_name,copy_params,row_desc);}};MapDClient.prototype.send_import_geo_table=function(session,table_name,file_name,copy_params,row_desc){var output=new this.pClass(this.output);output.writeMessageBegin('import_geo_table',Thrift.MessageType.CALL,this.seqid());var args=new MapD_import_geo_table_args();args.session=session;args.table_name=table_name;args.file_name=file_name;args.copy_params=copy_params;args.row_desc=row_desc;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_import_geo_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_import_geo_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.import_table_status=function(session,import_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_import_table_status(session,import_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_import_table_status(session,import_id);}};MapDClient.prototype.send_import_table_status=function(session,import_id){var output=new this.pClass(this.output);output.writeMessageBegin('import_table_status',Thrift.MessageType.CALL,this.seqid());var args=new MapD_import_table_status_args();args.session=session;args.import_id=import_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_import_table_status=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_import_table_status_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('import_table_status failed: unknown result');};MapDClient.prototype.get_first_geo_file_in_archive=function(session,archive_path,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_first_geo_file_in_archive(session,archive_path,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_first_geo_file_in_archive(session,archive_path,copy_params);}};MapDClient.prototype.send_get_first_geo_file_in_archive=function(session,archive_path,copy_params){var output=new this.pClass(this.output);output.writeMessageBegin('get_first_geo_file_in_archive',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_first_geo_file_in_archive_args();args.session=session;args.archive_path=archive_path;args.copy_params=copy_params;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_first_geo_file_in_archive=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_first_geo_file_in_archive_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_first_geo_file_in_archive failed: unknown result');};MapDClient.prototype.get_all_files_in_archive=function(session,archive_path,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_all_files_in_archive(session,archive_path,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_all_files_in_archive(session,archive_path,copy_params);}};MapDClient.prototype.send_get_all_files_in_archive=function(session,archive_path,copy_params){var output=new this.pClass(this.output);output.writeMessageBegin('get_all_files_in_archive',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_all_files_in_archive_args();args.session=session;args.archive_path=archive_path;args.copy_params=copy_params;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_all_files_in_archive=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_all_files_in_archive_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_all_files_in_archive failed: unknown result');};MapDClient.prototype.start_query=function(session,query_ra,just_explain,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_start_query(session,query_ra,just_explain);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_start_query(session,query_ra,just_explain);}};MapDClient.prototype.send_start_query=function(session,query_ra,just_explain){var output=new this.pClass(this.output);output.writeMessageBegin('start_query',Thrift.MessageType.CALL,this.seqid());var args=new MapD_start_query_args();args.session=session;args.query_ra=query_ra;args.just_explain=just_explain;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_start_query=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_start_query_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('start_query failed: unknown result');};MapDClient.prototype.execute_first_step=function(pending_query,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_execute_first_step(pending_query);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_execute_first_step(pending_query);}};MapDClient.prototype.send_execute_first_step=function(pending_query){var output=new this.pClass(this.output);output.writeMessageBegin('execute_first_step',Thrift.MessageType.CALL,this.seqid());var args=new MapD_execute_first_step_args();args.pending_query=pending_query;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_execute_first_step=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_execute_first_step_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('execute_first_step failed: unknown result');};MapDClient.prototype.broadcast_serialized_rows=function(serialized_rows,row_desc,query_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_broadcast_serialized_rows(serialized_rows,row_desc,query_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_broadcast_serialized_rows(serialized_rows,row_desc,query_id);}};MapDClient.prototype.send_broadcast_serialized_rows=function(serialized_rows,row_desc,query_id){var output=new this.pClass(this.output);output.writeMessageBegin('broadcast_serialized_rows',Thrift.MessageType.CALL,this.seqid());var args=new MapD_broadcast_serialized_rows_args();args.serialized_rows=serialized_rows;args.row_desc=row_desc;args.query_id=query_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_broadcast_serialized_rows=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_broadcast_serialized_rows_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.start_render_query=function(session,widget_id,node_idx,vega_json,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_start_render_query(session,widget_id,node_idx,vega_json);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_start_render_query(session,widget_id,node_idx,vega_json);}};MapDClient.prototype.send_start_render_query=function(session,widget_id,node_idx,vega_json){var output=new this.pClass(this.output);output.writeMessageBegin('start_render_query',Thrift.MessageType.CALL,this.seqid());var args=new MapD_start_render_query_args();args.session=session;args.widget_id=widget_id;args.node_idx=node_idx;args.vega_json=vega_json;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_start_render_query=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_start_render_query_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('start_render_query failed: unknown result');};MapDClient.prototype.execute_next_render_step=function(pending_render,merged_data,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_execute_next_render_step(pending_render,merged_data);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_execute_next_render_step(pending_render,merged_data);}};MapDClient.prototype.send_execute_next_render_step=function(pending_render,merged_data){var output=new this.pClass(this.output);output.writeMessageBegin('execute_next_render_step',Thrift.MessageType.CALL,this.seqid());var args=new MapD_execute_next_render_step_args();args.pending_render=pending_render;args.merged_data=merged_data;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_execute_next_render_step=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_execute_next_render_step_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('execute_next_render_step failed: unknown result');};MapDClient.prototype.insert_data=function(session,insert_data,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_insert_data(session,insert_data);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_insert_data(session,insert_data);}};MapDClient.prototype.send_insert_data=function(session,insert_data){var output=new this.pClass(this.output);output.writeMessageBegin('insert_data',Thrift.MessageType.CALL,this.seqid());var args=new MapD_insert_data_args();args.session=session;args.insert_data=insert_data;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_insert_data=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_insert_data_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.checkpoint=function(session,db_id,table_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_checkpoint(session,db_id,table_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_checkpoint(session,db_id,table_id);}};MapDClient.prototype.send_checkpoint=function(session,db_id,table_id){var output=new this.pClass(this.output);output.writeMessageBegin('checkpoint',Thrift.MessageType.CALL,this.seqid());var args=new MapD_checkpoint_args();args.session=session;args.db_id=db_id;args.table_id=table_id;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_checkpoint=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_checkpoint_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_table_descriptor=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_table_descriptor(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_table_descriptor(session,table_name);}};MapDClient.prototype.send_get_table_descriptor=function(session,table_name){var output=new this.pClass(this.output);output.writeMessageBegin('get_table_descriptor',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_table_descriptor_args();args.session=session;args.table_name=table_name;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_table_descriptor=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_table_descriptor_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_table_descriptor failed: unknown result');};MapDClient.prototype.get_row_descriptor=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_row_descriptor(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_row_descriptor(session,table_name);}};MapDClient.prototype.send_get_row_descriptor=function(session,table_name){var output=new this.pClass(this.output);output.writeMessageBegin('get_row_descriptor',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_row_descriptor_args();args.session=session;args.table_name=table_name;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_row_descriptor=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_row_descriptor_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_row_descriptor failed: unknown result');};MapDClient.prototype.get_roles=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_roles(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_roles(session);}};MapDClient.prototype.send_get_roles=function(session){var output=new this.pClass(this.output);output.writeMessageBegin('get_roles',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_roles_args();args.session=session;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_roles=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_roles_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_roles failed: unknown result');};MapDClient.prototype.get_db_objects_for_grantee=function(session,roleName,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_db_objects_for_grantee(session,roleName);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_db_objects_for_grantee(session,roleName);}};MapDClient.prototype.send_get_db_objects_for_grantee=function(session,roleName){var output=new this.pClass(this.output);output.writeMessageBegin('get_db_objects_for_grantee',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_db_objects_for_grantee_args();args.session=session;args.roleName=roleName;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_db_objects_for_grantee=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_db_objects_for_grantee_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_db_objects_for_grantee failed: unknown result');};MapDClient.prototype.get_db_object_privs=function(session,objectName,type,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_db_object_privs(session,objectName,type);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_db_object_privs(session,objectName,type);}};MapDClient.prototype.send_get_db_object_privs=function(session,objectName,type){var output=new this.pClass(this.output);output.writeMessageBegin('get_db_object_privs',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_db_object_privs_args();args.session=session;args.objectName=objectName;args.type=type;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_db_object_privs=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_db_object_privs_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_db_object_privs failed: unknown result');};MapDClient.prototype.get_all_roles_for_user=function(session,userName,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_all_roles_for_user(session,userName);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_all_roles_for_user(session,userName);}};MapDClient.prototype.send_get_all_roles_for_user=function(session,userName){var output=new this.pClass(this.output);output.writeMessageBegin('get_all_roles_for_user',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_all_roles_for_user_args();args.session=session;args.userName=userName;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_all_roles_for_user=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_all_roles_for_user_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_all_roles_for_user failed: unknown result');};MapDClient.prototype.has_object_privilege=function(session,granteeName,ObjectName,objectType,permissions,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_has_object_privilege(session,granteeName,ObjectName,objectType,permissions);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_has_object_privilege(session,granteeName,ObjectName,objectType,permissions);}};MapDClient.prototype.send_has_object_privilege=function(session,granteeName,ObjectName,objectType,permissions){var output=new this.pClass(this.output);output.writeMessageBegin('has_object_privilege',Thrift.MessageType.CALL,this.seqid());var args=new MapD_has_object_privilege_args();args.session=session;args.granteeName=granteeName;args.ObjectName=ObjectName;args.objectType=objectType;args.permissions=permissions;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_has_object_privilege=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_has_object_privilege_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('has_object_privilege failed: unknown result');};MapDClient.prototype.set_license_key=function(session,key,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_license_key(session,key,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_license_key(session,key,nonce);}};MapDClient.prototype.send_set_license_key=function(session,key,nonce){var output=new this.pClass(this.output);output.writeMessageBegin('set_license_key',Thrift.MessageType.CALL,this.seqid());var args=new MapD_set_license_key_args();args.session=session;args.key=key;args.nonce=nonce;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_set_license_key=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_license_key_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('set_license_key failed: unknown result');};MapDClient.prototype.get_license_claims=function(session,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_license_claims(session,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_license_claims(session,nonce);}};MapDClient.prototype.send_get_license_claims=function(session,nonce){var output=new this.pClass(this.output);output.writeMessageBegin('get_license_claims',Thrift.MessageType.CALL,this.seqid());var args=new MapD_get_license_claims_args();args.session=session;args.nonce=nonce;args.write(output);output.writeMessageEnd();return this.output.flush();};MapDClient.prototype.recv_get_license_claims=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_license_claims_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_license_claims failed: unknown result');};var MapDProcessor=exports.Processor=function(handler){this._handler=handler;};MapDProcessor.prototype.process=function(input,output){var r=input.readMessageBegin();if(this['process_'+r.fname]){return this['process_'+r.fname].call(this,r.rseqid,input,output);}else{input.skip(Thrift.Type.STRUCT);input.readMessageEnd();var x=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN_METHOD,'Unknown function '+r.fname);output.writeMessageBegin(r.fname,Thrift.MessageType.EXCEPTION,r.rseqid);x.write(output);output.writeMessageEnd();output.flush();}};MapDProcessor.prototype.process_connect=function(seqid,input,output){var args=new MapD_connect_args();args.read(input);input.readMessageEnd();if(this._handler.connect.length===3){Q.fcall(this._handler.connect,args.user,args.passwd,args.dbname).then(function(result){var result_obj=new MapD_connect_result({success:result});output.writeMessageBegin("connect",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_connect_result(err);output.writeMessageBegin("connect",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("connect",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.connect(args.user,args.passwd,args.dbname,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_connect_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("connect",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("connect",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_disconnect=function(seqid,input,output){var args=new MapD_disconnect_args();args.read(input);input.readMessageEnd();if(this._handler.disconnect.length===1){Q.fcall(this._handler.disconnect,args.session).then(function(result){var result_obj=new MapD_disconnect_result({success:result});output.writeMessageBegin("disconnect",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_disconnect_result(err);output.writeMessageBegin("disconnect",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("disconnect",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.disconnect(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_disconnect_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("disconnect",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("disconnect",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_server_status=function(seqid,input,output){var args=new MapD_get_server_status_args();args.read(input);input.readMessageEnd();if(this._handler.get_server_status.length===1){Q.fcall(this._handler.get_server_status,args.session).then(function(result){var result_obj=new MapD_get_server_status_result({success:result});output.writeMessageBegin("get_server_status",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_server_status_result(err);output.writeMessageBegin("get_server_status",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_server_status",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_server_status(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_server_status_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_server_status",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_server_status",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_status=function(seqid,input,output){var args=new MapD_get_status_args();args.read(input);input.readMessageEnd();if(this._handler.get_status.length===1){Q.fcall(this._handler.get_status,args.session).then(function(result){var result_obj=new MapD_get_status_result({success:result});output.writeMessageBegin("get_status",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_status_result(err);output.writeMessageBegin("get_status",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_status",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_status(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_status_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_status",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_status",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_hardware_info=function(seqid,input,output){var args=new MapD_get_hardware_info_args();args.read(input);input.readMessageEnd();if(this._handler.get_hardware_info.length===1){Q.fcall(this._handler.get_hardware_info,args.session).then(function(result){var result_obj=new MapD_get_hardware_info_result({success:result});output.writeMessageBegin("get_hardware_info",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_hardware_info_result(err);output.writeMessageBegin("get_hardware_info",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_hardware_info",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_hardware_info(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_hardware_info_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_hardware_info",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_hardware_info",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_tables=function(seqid,input,output){var args=new MapD_get_tables_args();args.read(input);input.readMessageEnd();if(this._handler.get_tables.length===1){Q.fcall(this._handler.get_tables,args.session).then(function(result){var result_obj=new MapD_get_tables_result({success:result});output.writeMessageBegin("get_tables",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_tables_result(err);output.writeMessageBegin("get_tables",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_tables(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_tables_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_tables",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_physical_tables=function(seqid,input,output){var args=new MapD_get_physical_tables_args();args.read(input);input.readMessageEnd();if(this._handler.get_physical_tables.length===1){Q.fcall(this._handler.get_physical_tables,args.session).then(function(result){var result_obj=new MapD_get_physical_tables_result({success:result});output.writeMessageBegin("get_physical_tables",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_physical_tables_result(err);output.writeMessageBegin("get_physical_tables",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_physical_tables",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_physical_tables(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_physical_tables_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_physical_tables",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_physical_tables",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_views=function(seqid,input,output){var args=new MapD_get_views_args();args.read(input);input.readMessageEnd();if(this._handler.get_views.length===1){Q.fcall(this._handler.get_views,args.session).then(function(result){var result_obj=new MapD_get_views_result({success:result});output.writeMessageBegin("get_views",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_views_result(err);output.writeMessageBegin("get_views",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_views",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_views(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_views_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_views",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_views",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_tables_meta=function(seqid,input,output){var args=new MapD_get_tables_meta_args();args.read(input);input.readMessageEnd();if(this._handler.get_tables_meta.length===1){Q.fcall(this._handler.get_tables_meta,args.session).then(function(result){var result_obj=new MapD_get_tables_meta_result({success:result});output.writeMessageBegin("get_tables_meta",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_tables_meta_result(err);output.writeMessageBegin("get_tables_meta",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables_meta",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_tables_meta(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_tables_meta_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_tables_meta",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables_meta",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_table_details=function(seqid,input,output){var args=new MapD_get_table_details_args();args.read(input);input.readMessageEnd();if(this._handler.get_table_details.length===2){Q.fcall(this._handler.get_table_details,args.session,args.table_name).then(function(result){var result_obj=new MapD_get_table_details_result({success:result});output.writeMessageBegin("get_table_details",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_table_details_result(err);output.writeMessageBegin("get_table_details",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_details",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_table_details(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_table_details_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_table_details",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_details",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_internal_table_details=function(seqid,input,output){var args=new MapD_get_internal_table_details_args();args.read(input);input.readMessageEnd();if(this._handler.get_internal_table_details.length===2){Q.fcall(this._handler.get_internal_table_details,args.session,args.table_name).then(function(result){var result_obj=new MapD_get_internal_table_details_result({success:result});output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_internal_table_details_result(err);output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_internal_table_details(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_internal_table_details_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_users=function(seqid,input,output){var args=new MapD_get_users_args();args.read(input);input.readMessageEnd();if(this._handler.get_users.length===1){Q.fcall(this._handler.get_users,args.session).then(function(result){var result_obj=new MapD_get_users_result({success:result});output.writeMessageBegin("get_users",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_users_result(err);output.writeMessageBegin("get_users",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_users",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_users(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_users_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_users",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_users",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_databases=function(seqid,input,output){var args=new MapD_get_databases_args();args.read(input);input.readMessageEnd();if(this._handler.get_databases.length===1){Q.fcall(this._handler.get_databases,args.session).then(function(result){var result_obj=new MapD_get_databases_result({success:result});output.writeMessageBegin("get_databases",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_databases_result(err);output.writeMessageBegin("get_databases",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_databases",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_databases(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_databases_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_databases",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_databases",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_version=function(seqid,input,output){var args=new MapD_get_version_args();args.read(input);input.readMessageEnd();if(this._handler.get_version.length===0){Q.fcall(this._handler.get_version).then(function(result){var result_obj=new MapD_get_version_result({success:result});output.writeMessageBegin("get_version",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_version_result(err);output.writeMessageBegin("get_version",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_version",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_version(function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_version_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_version",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_version",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_start_heap_profile=function(seqid,input,output){var args=new MapD_start_heap_profile_args();args.read(input);input.readMessageEnd();if(this._handler.start_heap_profile.length===1){Q.fcall(this._handler.start_heap_profile,args.session).then(function(result){var result_obj=new MapD_start_heap_profile_result({success:result});output.writeMessageBegin("start_heap_profile",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_start_heap_profile_result(err);output.writeMessageBegin("start_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.start_heap_profile(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_start_heap_profile_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("start_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_stop_heap_profile=function(seqid,input,output){var args=new MapD_stop_heap_profile_args();args.read(input);input.readMessageEnd();if(this._handler.stop_heap_profile.length===1){Q.fcall(this._handler.stop_heap_profile,args.session).then(function(result){var result_obj=new MapD_stop_heap_profile_result({success:result});output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_stop_heap_profile_result(err);output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.stop_heap_profile(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_stop_heap_profile_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_heap_profile=function(seqid,input,output){var args=new MapD_get_heap_profile_args();args.read(input);input.readMessageEnd();if(this._handler.get_heap_profile.length===1){Q.fcall(this._handler.get_heap_profile,args.session).then(function(result){var result_obj=new MapD_get_heap_profile_result({success:result});output.writeMessageBegin("get_heap_profile",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_heap_profile_result(err);output.writeMessageBegin("get_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_heap_profile(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_heap_profile_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_memory=function(seqid,input,output){var args=new MapD_get_memory_args();args.read(input);input.readMessageEnd();if(this._handler.get_memory.length===2){Q.fcall(this._handler.get_memory,args.session,args.memory_level).then(function(result){var result_obj=new MapD_get_memory_result({success:result});output.writeMessageBegin("get_memory",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_memory_result(err);output.writeMessageBegin("get_memory",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_memory",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_memory(args.session,args.memory_level,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_memory_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_memory",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_memory",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_clear_cpu_memory=function(seqid,input,output){var args=new MapD_clear_cpu_memory_args();args.read(input);input.readMessageEnd();if(this._handler.clear_cpu_memory.length===1){Q.fcall(this._handler.clear_cpu_memory,args.session).then(function(result){var result_obj=new MapD_clear_cpu_memory_result({success:result});output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_clear_cpu_memory_result(err);output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.clear_cpu_memory(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_clear_cpu_memory_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_clear_gpu_memory=function(seqid,input,output){var args=new MapD_clear_gpu_memory_args();args.read(input);input.readMessageEnd();if(this._handler.clear_gpu_memory.length===1){Q.fcall(this._handler.clear_gpu_memory,args.session).then(function(result){var result_obj=new MapD_clear_gpu_memory_result({success:result});output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_clear_gpu_memory_result(err);output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.clear_gpu_memory(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_clear_gpu_memory_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_table_epoch=function(seqid,input,output){var args=new MapD_set_table_epoch_args();args.read(input);input.readMessageEnd();if(this._handler.set_table_epoch.length===4){Q.fcall(this._handler.set_table_epoch,args.session,args.db_id,args.table_id,args.new_epoch).then(function(result){var result_obj=new MapD_set_table_epoch_result({success:result});output.writeMessageBegin("set_table_epoch",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_table_epoch_result(err);output.writeMessageBegin("set_table_epoch",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_table_epoch(args.session,args.db_id,args.table_id,args.new_epoch,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_table_epoch_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_table_epoch",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_table_epoch_by_name=function(seqid,input,output){var args=new MapD_set_table_epoch_by_name_args();args.read(input);input.readMessageEnd();if(this._handler.set_table_epoch_by_name.length===3){Q.fcall(this._handler.set_table_epoch_by_name,args.session,args.table_name,args.new_epoch).then(function(result){var result_obj=new MapD_set_table_epoch_by_name_result({success:result});output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_table_epoch_by_name_result(err);output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_table_epoch_by_name(args.session,args.table_name,args.new_epoch,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_table_epoch_by_name_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_table_epoch=function(seqid,input,output){var args=new MapD_get_table_epoch_args();args.read(input);input.readMessageEnd();if(this._handler.get_table_epoch.length===3){Q.fcall(this._handler.get_table_epoch,args.session,args.db_id,args.table_id).then(function(result){var result_obj=new MapD_get_table_epoch_result({success:result});output.writeMessageBegin("get_table_epoch",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch",Thrift.MessageType.EXCEPTION,seqid);result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_table_epoch(args.session,args.db_id,args.table_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'){result_obj=new MapD_get_table_epoch_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_table_epoch",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_table_epoch_by_name=function(seqid,input,output){var args=new MapD_get_table_epoch_by_name_args();args.read(input);input.readMessageEnd();if(this._handler.get_table_epoch_by_name.length===2){Q.fcall(this._handler.get_table_epoch_by_name,args.session,args.table_name).then(function(result){var result_obj=new MapD_get_table_epoch_by_name_result({success:result});output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_table_epoch_by_name(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'){result_obj=new MapD_get_table_epoch_by_name_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_execute=function(seqid,input,output){var args=new MapD_sql_execute_args();args.read(input);input.readMessageEnd();if(this._handler.sql_execute.length===6){Q.fcall(this._handler.sql_execute,args.session,args.query,args.column_format,args.nonce,args.first_n,args.at_most_n).then(function(result){var result_obj=new MapD_sql_execute_result({success:result});output.writeMessageBegin("sql_execute",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_execute_result(err);output.writeMessageBegin("sql_execute",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_execute(args.session,args.query,args.column_format,args.nonce,args.first_n,args.at_most_n,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_execute_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_execute",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_execute_df=function(seqid,input,output){var args=new MapD_sql_execute_df_args();args.read(input);input.readMessageEnd();if(this._handler.sql_execute_df.length===5){Q.fcall(this._handler.sql_execute_df,args.session,args.query,args.device_type,args.device_id,args.first_n).then(function(result){var result_obj=new MapD_sql_execute_df_result({success:result});output.writeMessageBegin("sql_execute_df",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_execute_df_result(err);output.writeMessageBegin("sql_execute_df",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_df",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_execute_df(args.session,args.query,args.device_type,args.device_id,args.first_n,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_execute_df_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_execute_df",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_df",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_execute_gdf=function(seqid,input,output){var args=new MapD_sql_execute_gdf_args();args.read(input);input.readMessageEnd();if(this._handler.sql_execute_gdf.length===4){Q.fcall(this._handler.sql_execute_gdf,args.session,args.query,args.device_id,args.first_n).then(function(result){var result_obj=new MapD_sql_execute_gdf_result({success:result});output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_execute_gdf_result(err);output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_execute_gdf(args.session,args.query,args.device_id,args.first_n,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_execute_gdf_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_deallocate_df=function(seqid,input,output){var args=new MapD_deallocate_df_args();args.read(input);input.readMessageEnd();if(this._handler.deallocate_df.length===4){Q.fcall(this._handler.deallocate_df,args.session,args.df,args.device_type,args.device_id).then(function(result){var result_obj=new MapD_deallocate_df_result({success:result});output.writeMessageBegin("deallocate_df",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_deallocate_df_result(err);output.writeMessageBegin("deallocate_df",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("deallocate_df",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.deallocate_df(args.session,args.df,args.device_type,args.device_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_deallocate_df_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("deallocate_df",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("deallocate_df",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_interrupt=function(seqid,input,output){var args=new MapD_interrupt_args();args.read(input);input.readMessageEnd();if(this._handler.interrupt.length===1){Q.fcall(this._handler.interrupt,args.session).then(function(result){var result_obj=new MapD_interrupt_result({success:result});output.writeMessageBegin("interrupt",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_interrupt_result(err);output.writeMessageBegin("interrupt",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("interrupt",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.interrupt(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_interrupt_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("interrupt",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("interrupt",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_validate=function(seqid,input,output){var args=new MapD_sql_validate_args();args.read(input);input.readMessageEnd();if(this._handler.sql_validate.length===2){Q.fcall(this._handler.sql_validate,args.session,args.query).then(function(result){var result_obj=new MapD_sql_validate_result({success:result});output.writeMessageBegin("sql_validate",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_validate_result(err);output.writeMessageBegin("sql_validate",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_validate",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_validate(args.session,args.query,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_validate_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_validate",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_validate",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_completion_hints=function(seqid,input,output){var args=new MapD_get_completion_hints_args();args.read(input);input.readMessageEnd();if(this._handler.get_completion_hints.length===3){Q.fcall(this._handler.get_completion_hints,args.session,args.sql,args.cursor).then(function(result){var result_obj=new MapD_get_completion_hints_result({success:result});output.writeMessageBegin("get_completion_hints",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_completion_hints_result(err);output.writeMessageBegin("get_completion_hints",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_completion_hints",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_completion_hints(args.session,args.sql,args.cursor,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_completion_hints_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_completion_hints",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_completion_hints",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_execution_mode=function(seqid,input,output){var args=new MapD_set_execution_mode_args();args.read(input);input.readMessageEnd();if(this._handler.set_execution_mode.length===2){Q.fcall(this._handler.set_execution_mode,args.session,args.mode).then(function(result){var result_obj=new MapD_set_execution_mode_result({success:result});output.writeMessageBegin("set_execution_mode",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_execution_mode_result(err);output.writeMessageBegin("set_execution_mode",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_execution_mode",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_execution_mode(args.session,args.mode,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_execution_mode_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_execution_mode",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_execution_mode",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_render_vega=function(seqid,input,output){var args=new MapD_render_vega_args();args.read(input);input.readMessageEnd();if(this._handler.render_vega.length===5){Q.fcall(this._handler.render_vega,args.session,args.widget_id,args.vega_json,args.compression_level,args.nonce).then(function(result){var result_obj=new MapD_render_vega_result({success:result});output.writeMessageBegin("render_vega",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_render_vega_result(err);output.writeMessageBegin("render_vega",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("render_vega",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.render_vega(args.session,args.widget_id,args.vega_json,args.compression_level,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_render_vega_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("render_vega",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("render_vega",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_result_row_for_pixel=function(seqid,input,output){var args=new MapD_get_result_row_for_pixel_args();args.read(input);input.readMessageEnd();if(this._handler.get_result_row_for_pixel.length===7){Q.fcall(this._handler.get_result_row_for_pixel,args.session,args.widget_id,args.pixel,args.table_col_names,args.column_format,args.pixelRadius,args.nonce).then(function(result){var result_obj=new MapD_get_result_row_for_pixel_result({success:result});output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_result_row_for_pixel_result(err);output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_result_row_for_pixel(args.session,args.widget_id,args.pixel,args.table_col_names,args.column_format,args.pixelRadius,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_result_row_for_pixel_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_frontend_view=function(seqid,input,output){var args=new MapD_get_frontend_view_args();args.read(input);input.readMessageEnd();if(this._handler.get_frontend_view.length===2){Q.fcall(this._handler.get_frontend_view,args.session,args.view_name).then(function(result){var result_obj=new MapD_get_frontend_view_result({success:result});output.writeMessageBegin("get_frontend_view",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_frontend_view_result(err);output.writeMessageBegin("get_frontend_view",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_frontend_view",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_frontend_view(args.session,args.view_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_frontend_view_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_frontend_view",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_frontend_view",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_frontend_views=function(seqid,input,output){var args=new MapD_get_frontend_views_args();args.read(input);input.readMessageEnd();if(this._handler.get_frontend_views.length===1){Q.fcall(this._handler.get_frontend_views,args.session).then(function(result){var result_obj=new MapD_get_frontend_views_result({success:result});output.writeMessageBegin("get_frontend_views",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_frontend_views_result(err);output.writeMessageBegin("get_frontend_views",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_frontend_views",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_frontend_views(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_frontend_views_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_frontend_views",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_frontend_views",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_create_frontend_view=function(seqid,input,output){var args=new MapD_create_frontend_view_args();args.read(input);input.readMessageEnd();if(this._handler.create_frontend_view.length===5){Q.fcall(this._handler.create_frontend_view,args.session,args.view_name,args.view_state,args.image_hash,args.view_metadata).then(function(result){var result_obj=new MapD_create_frontend_view_result({success:result});output.writeMessageBegin("create_frontend_view",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_create_frontend_view_result(err);output.writeMessageBegin("create_frontend_view",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_frontend_view",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.create_frontend_view(args.session,args.view_name,args.view_state,args.image_hash,args.view_metadata,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_create_frontend_view_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("create_frontend_view",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_frontend_view",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_delete_frontend_view=function(seqid,input,output){var args=new MapD_delete_frontend_view_args();args.read(input);input.readMessageEnd();if(this._handler.delete_frontend_view.length===2){Q.fcall(this._handler.delete_frontend_view,args.session,args.view_name).then(function(result){var result_obj=new MapD_delete_frontend_view_result({success:result});output.writeMessageBegin("delete_frontend_view",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_delete_frontend_view_result(err);output.writeMessageBegin("delete_frontend_view",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("delete_frontend_view",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.delete_frontend_view(args.session,args.view_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_delete_frontend_view_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("delete_frontend_view",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("delete_frontend_view",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_dashboard=function(seqid,input,output){var args=new MapD_get_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.get_dashboard.length===2){Q.fcall(this._handler.get_dashboard,args.session,args.dashboard_id).then(function(result){var result_obj=new MapD_get_dashboard_result({success:result});output.writeMessageBegin("get_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_dashboard_result(err);output.writeMessageBegin("get_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_dashboard(args.session,args.dashboard_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_dashboards=function(seqid,input,output){var args=new MapD_get_dashboards_args();args.read(input);input.readMessageEnd();if(this._handler.get_dashboards.length===1){Q.fcall(this._handler.get_dashboards,args.session).then(function(result){var result_obj=new MapD_get_dashboards_result({success:result});output.writeMessageBegin("get_dashboards",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_dashboards_result(err);output.writeMessageBegin("get_dashboards",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboards",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_dashboards(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_dashboards_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_dashboards",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboards",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_create_dashboard=function(seqid,input,output){var args=new MapD_create_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.create_dashboard.length===5){Q.fcall(this._handler.create_dashboard,args.session,args.dashboard_name,args.dashboard_state,args.image_hash,args.dashboard_metadata).then(function(result){var result_obj=new MapD_create_dashboard_result({success:result});output.writeMessageBegin("create_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_create_dashboard_result(err);output.writeMessageBegin("create_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.create_dashboard(args.session,args.dashboard_name,args.dashboard_state,args.image_hash,args.dashboard_metadata,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_create_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("create_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_replace_dashboard=function(seqid,input,output){var args=new MapD_replace_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.replace_dashboard.length===7){Q.fcall(this._handler.replace_dashboard,args.session,args.dashboard_id,args.dashboard_name,args.dashboard_owner,args.dashboard_state,args.image_hash,args.dashboard_metadata).then(function(result){var result_obj=new MapD_replace_dashboard_result({success:result});output.writeMessageBegin("replace_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_replace_dashboard_result(err);output.writeMessageBegin("replace_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("replace_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.replace_dashboard(args.session,args.dashboard_id,args.dashboard_name,args.dashboard_owner,args.dashboard_state,args.image_hash,args.dashboard_metadata,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_replace_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("replace_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("replace_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_delete_dashboard=function(seqid,input,output){var args=new MapD_delete_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.delete_dashboard.length===2){Q.fcall(this._handler.delete_dashboard,args.session,args.dashboard_id).then(function(result){var result_obj=new MapD_delete_dashboard_result({success:result});output.writeMessageBegin("delete_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_delete_dashboard_result(err);output.writeMessageBegin("delete_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("delete_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.delete_dashboard(args.session,args.dashboard_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_delete_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("delete_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("delete_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_share_dashboard=function(seqid,input,output){var args=new MapD_share_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.share_dashboard.length===5){Q.fcall(this._handler.share_dashboard,args.session,args.dashboard_id,args.groups,args.objects,args.permissions).then(function(result){var result_obj=new MapD_share_dashboard_result({success:result});output.writeMessageBegin("share_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_share_dashboard_result(err);output.writeMessageBegin("share_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("share_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.share_dashboard(args.session,args.dashboard_id,args.groups,args.objects,args.permissions,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_share_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("share_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("share_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_unshare_dashboard=function(seqid,input,output){var args=new MapD_unshare_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.unshare_dashboard.length===5){Q.fcall(this._handler.unshare_dashboard,args.session,args.dashboard_id,args.groups,args.objects,args.permissions).then(function(result){var result_obj=new MapD_unshare_dashboard_result({success:result});output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_unshare_dashboard_result(err);output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.unshare_dashboard(args.session,args.dashboard_id,args.groups,args.objects,args.permissions,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_unshare_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_dashboard_grantees=function(seqid,input,output){var args=new MapD_get_dashboard_grantees_args();args.read(input);input.readMessageEnd();if(this._handler.get_dashboard_grantees.length===2){Q.fcall(this._handler.get_dashboard_grantees,args.session,args.dashboard_id).then(function(result){var result_obj=new MapD_get_dashboard_grantees_result({success:result});output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_dashboard_grantees_result(err);output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_dashboard_grantees(args.session,args.dashboard_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_dashboard_grantees_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_link_view=function(seqid,input,output){var args=new MapD_get_link_view_args();args.read(input);input.readMessageEnd();if(this._handler.get_link_view.length===2){Q.fcall(this._handler.get_link_view,args.session,args.link).then(function(result){var result_obj=new MapD_get_link_view_result({success:result});output.writeMessageBegin("get_link_view",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_link_view_result(err);output.writeMessageBegin("get_link_view",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_link_view",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_link_view(args.session,args.link,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_link_view_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_link_view",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_link_view",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_create_link=function(seqid,input,output){var args=new MapD_create_link_args();args.read(input);input.readMessageEnd();if(this._handler.create_link.length===3){Q.fcall(this._handler.create_link,args.session,args.view_state,args.view_metadata).then(function(result){var result_obj=new MapD_create_link_result({success:result});output.writeMessageBegin("create_link",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_create_link_result(err);output.writeMessageBegin("create_link",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_link",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.create_link(args.session,args.view_state,args.view_metadata,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_create_link_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("create_link",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_link",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table_binary=function(seqid,input,output){var args=new MapD_load_table_binary_args();args.read(input);input.readMessageEnd();if(this._handler.load_table_binary.length===3){Q.fcall(this._handler.load_table_binary,args.session,args.table_name,args.rows).then(function(result){var result_obj=new MapD_load_table_binary_result({success:result});output.writeMessageBegin("load_table_binary",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_binary_result(err);output.writeMessageBegin("load_table_binary",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table_binary(args.session,args.table_name,args.rows,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_binary_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table_binary",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table_binary_columnar=function(seqid,input,output){var args=new MapD_load_table_binary_columnar_args();args.read(input);input.readMessageEnd();if(this._handler.load_table_binary_columnar.length===3){Q.fcall(this._handler.load_table_binary_columnar,args.session,args.table_name,args.cols).then(function(result){var result_obj=new MapD_load_table_binary_columnar_result({success:result});output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_binary_columnar_result(err);output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table_binary_columnar(args.session,args.table_name,args.cols,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_binary_columnar_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table_binary_arrow=function(seqid,input,output){var args=new MapD_load_table_binary_arrow_args();args.read(input);input.readMessageEnd();if(this._handler.load_table_binary_arrow.length===3){Q.fcall(this._handler.load_table_binary_arrow,args.session,args.table_name,args.arrow_stream).then(function(result){var result_obj=new MapD_load_table_binary_arrow_result({success:result});output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_binary_arrow_result(err);output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table_binary_arrow(args.session,args.table_name,args.arrow_stream,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_binary_arrow_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table=function(seqid,input,output){var args=new MapD_load_table_args();args.read(input);input.readMessageEnd();if(this._handler.load_table.length===3){Q.fcall(this._handler.load_table,args.session,args.table_name,args.rows).then(function(result){var result_obj=new MapD_load_table_result({success:result});output.writeMessageBegin("load_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_result(err);output.writeMessageBegin("load_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table(args.session,args.table_name,args.rows,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_detect_column_types=function(seqid,input,output){var args=new MapD_detect_column_types_args();args.read(input);input.readMessageEnd();if(this._handler.detect_column_types.length===3){Q.fcall(this._handler.detect_column_types,args.session,args.file_name,args.copy_params).then(function(result){var result_obj=new MapD_detect_column_types_result({success:result});output.writeMessageBegin("detect_column_types",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_detect_column_types_result(err);output.writeMessageBegin("detect_column_types",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("detect_column_types",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.detect_column_types(args.session,args.file_name,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_detect_column_types_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("detect_column_types",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("detect_column_types",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_create_table=function(seqid,input,output){var args=new MapD_create_table_args();args.read(input);input.readMessageEnd();if(this._handler.create_table.length===5){Q.fcall(this._handler.create_table,args.session,args.table_name,args.row_desc,args.table_type,args.create_params).then(function(result){var result_obj=new MapD_create_table_result({success:result});output.writeMessageBegin("create_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_create_table_result(err);output.writeMessageBegin("create_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.create_table(args.session,args.table_name,args.row_desc,args.table_type,args.create_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_create_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("create_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_import_table=function(seqid,input,output){var args=new MapD_import_table_args();args.read(input);input.readMessageEnd();if(this._handler.import_table.length===4){Q.fcall(this._handler.import_table,args.session,args.table_name,args.file_name,args.copy_params).then(function(result){var result_obj=new MapD_import_table_result({success:result});output.writeMessageBegin("import_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_import_table_result(err);output.writeMessageBegin("import_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.import_table(args.session,args.table_name,args.file_name,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_import_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("import_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_import_geo_table=function(seqid,input,output){var args=new MapD_import_geo_table_args();args.read(input);input.readMessageEnd();if(this._handler.import_geo_table.length===5){Q.fcall(this._handler.import_geo_table,args.session,args.table_name,args.file_name,args.copy_params,args.row_desc).then(function(result){var result_obj=new MapD_import_geo_table_result({success:result});output.writeMessageBegin("import_geo_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_import_geo_table_result(err);output.writeMessageBegin("import_geo_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_geo_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.import_geo_table(args.session,args.table_name,args.file_name,args.copy_params,args.row_desc,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_import_geo_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("import_geo_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_geo_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_import_table_status=function(seqid,input,output){var args=new MapD_import_table_status_args();args.read(input);input.readMessageEnd();if(this._handler.import_table_status.length===2){Q.fcall(this._handler.import_table_status,args.session,args.import_id).then(function(result){var result_obj=new MapD_import_table_status_result({success:result});output.writeMessageBegin("import_table_status",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_import_table_status_result(err);output.writeMessageBegin("import_table_status",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table_status",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.import_table_status(args.session,args.import_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_import_table_status_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("import_table_status",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table_status",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_first_geo_file_in_archive=function(seqid,input,output){var args=new MapD_get_first_geo_file_in_archive_args();args.read(input);input.readMessageEnd();if(this._handler.get_first_geo_file_in_archive.length===3){Q.fcall(this._handler.get_first_geo_file_in_archive,args.session,args.archive_path,args.copy_params).then(function(result){var result_obj=new MapD_get_first_geo_file_in_archive_result({success:result});output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_first_geo_file_in_archive_result(err);output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_first_geo_file_in_archive(args.session,args.archive_path,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_first_geo_file_in_archive_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_all_files_in_archive=function(seqid,input,output){var args=new MapD_get_all_files_in_archive_args();args.read(input);input.readMessageEnd();if(this._handler.get_all_files_in_archive.length===3){Q.fcall(this._handler.get_all_files_in_archive,args.session,args.archive_path,args.copy_params).then(function(result){var result_obj=new MapD_get_all_files_in_archive_result({success:result});output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_all_files_in_archive_result(err);output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_all_files_in_archive(args.session,args.archive_path,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_all_files_in_archive_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_start_query=function(seqid,input,output){var args=new MapD_start_query_args();args.read(input);input.readMessageEnd();if(this._handler.start_query.length===3){Q.fcall(this._handler.start_query,args.session,args.query_ra,args.just_explain).then(function(result){var result_obj=new MapD_start_query_result({success:result});output.writeMessageBegin("start_query",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_start_query_result(err);output.writeMessageBegin("start_query",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_query",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.start_query(args.session,args.query_ra,args.just_explain,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_start_query_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("start_query",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_query",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_execute_first_step=function(seqid,input,output){var args=new MapD_execute_first_step_args();args.read(input);input.readMessageEnd();if(this._handler.execute_first_step.length===1){Q.fcall(this._handler.execute_first_step,args.pending_query).then(function(result){var result_obj=new MapD_execute_first_step_result({success:result});output.writeMessageBegin("execute_first_step",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_execute_first_step_result(err);output.writeMessageBegin("execute_first_step",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_first_step",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.execute_first_step(args.pending_query,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_execute_first_step_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("execute_first_step",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_first_step",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_broadcast_serialized_rows=function(seqid,input,output){var args=new MapD_broadcast_serialized_rows_args();args.read(input);input.readMessageEnd();if(this._handler.broadcast_serialized_rows.length===3){Q.fcall(this._handler.broadcast_serialized_rows,args.serialized_rows,args.row_desc,args.query_id).then(function(result){var result_obj=new MapD_broadcast_serialized_rows_result({success:result});output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_broadcast_serialized_rows_result(err);output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.broadcast_serialized_rows(args.serialized_rows,args.row_desc,args.query_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_broadcast_serialized_rows_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_start_render_query=function(seqid,input,output){var args=new MapD_start_render_query_args();args.read(input);input.readMessageEnd();if(this._handler.start_render_query.length===4){Q.fcall(this._handler.start_render_query,args.session,args.widget_id,args.node_idx,args.vega_json).then(function(result){var result_obj=new MapD_start_render_query_result({success:result});output.writeMessageBegin("start_render_query",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_start_render_query_result(err);output.writeMessageBegin("start_render_query",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_render_query",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.start_render_query(args.session,args.widget_id,args.node_idx,args.vega_json,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_start_render_query_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("start_render_query",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_render_query",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_execute_next_render_step=function(seqid,input,output){var args=new MapD_execute_next_render_step_args();args.read(input);input.readMessageEnd();if(this._handler.execute_next_render_step.length===2){Q.fcall(this._handler.execute_next_render_step,args.pending_render,args.merged_data).then(function(result){var result_obj=new MapD_execute_next_render_step_result({success:result});output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_execute_next_render_step_result(err);output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.execute_next_render_step(args.pending_render,args.merged_data,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_execute_next_render_step_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_insert_data=function(seqid,input,output){var args=new MapD_insert_data_args();args.read(input);input.readMessageEnd();if(this._handler.insert_data.length===2){Q.fcall(this._handler.insert_data,args.session,args.insert_data).then(function(result){var result_obj=new MapD_insert_data_result({success:result});output.writeMessageBegin("insert_data",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_insert_data_result(err);output.writeMessageBegin("insert_data",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("insert_data",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.insert_data(args.session,args.insert_data,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_insert_data_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("insert_data",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("insert_data",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_checkpoint=function(seqid,input,output){var args=new MapD_checkpoint_args();args.read(input);input.readMessageEnd();if(this._handler.checkpoint.length===3){Q.fcall(this._handler.checkpoint,args.session,args.db_id,args.table_id).then(function(result){var result_obj=new MapD_checkpoint_result({success:result});output.writeMessageBegin("checkpoint",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_checkpoint_result(err);output.writeMessageBegin("checkpoint",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("checkpoint",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.checkpoint(args.session,args.db_id,args.table_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_checkpoint_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("checkpoint",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("checkpoint",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_table_descriptor=function(seqid,input,output){var args=new MapD_get_table_descriptor_args();args.read(input);input.readMessageEnd();if(this._handler.get_table_descriptor.length===2){Q.fcall(this._handler.get_table_descriptor,args.session,args.table_name).then(function(result){var result_obj=new MapD_get_table_descriptor_result({success:result});output.writeMessageBegin("get_table_descriptor",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_table_descriptor_result(err);output.writeMessageBegin("get_table_descriptor",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_descriptor",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_table_descriptor(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_table_descriptor_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_table_descriptor",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_descriptor",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_row_descriptor=function(seqid,input,output){var args=new MapD_get_row_descriptor_args();args.read(input);input.readMessageEnd();if(this._handler.get_row_descriptor.length===2){Q.fcall(this._handler.get_row_descriptor,args.session,args.table_name).then(function(result){var result_obj=new MapD_get_row_descriptor_result({success:result});output.writeMessageBegin("get_row_descriptor",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_row_descriptor_result(err);output.writeMessageBegin("get_row_descriptor",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_row_descriptor",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_row_descriptor(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_row_descriptor_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_row_descriptor",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_row_descriptor",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_roles=function(seqid,input,output){var args=new MapD_get_roles_args();args.read(input);input.readMessageEnd();if(this._handler.get_roles.length===1){Q.fcall(this._handler.get_roles,args.session).then(function(result){var result_obj=new MapD_get_roles_result({success:result});output.writeMessageBegin("get_roles",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_roles_result(err);output.writeMessageBegin("get_roles",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_roles",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_roles(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_roles_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_roles",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_roles",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_db_objects_for_grantee=function(seqid,input,output){var args=new MapD_get_db_objects_for_grantee_args();args.read(input);input.readMessageEnd();if(this._handler.get_db_objects_for_grantee.length===2){Q.fcall(this._handler.get_db_objects_for_grantee,args.session,args.roleName).then(function(result){var result_obj=new MapD_get_db_objects_for_grantee_result({success:result});output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_db_objects_for_grantee_result(err);output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_db_objects_for_grantee(args.session,args.roleName,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_db_objects_for_grantee_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_db_object_privs=function(seqid,input,output){var args=new MapD_get_db_object_privs_args();args.read(input);input.readMessageEnd();if(this._handler.get_db_object_privs.length===3){Q.fcall(this._handler.get_db_object_privs,args.session,args.objectName,args.type).then(function(result){var result_obj=new MapD_get_db_object_privs_result({success:result});output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_db_object_privs_result(err);output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_db_object_privs(args.session,args.objectName,args.type,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_db_object_privs_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_all_roles_for_user=function(seqid,input,output){var args=new MapD_get_all_roles_for_user_args();args.read(input);input.readMessageEnd();if(this._handler.get_all_roles_for_user.length===2){Q.fcall(this._handler.get_all_roles_for_user,args.session,args.userName).then(function(result){var result_obj=new MapD_get_all_roles_for_user_result({success:result});output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_all_roles_for_user_result(err);output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_all_roles_for_user(args.session,args.userName,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_all_roles_for_user_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_has_object_privilege=function(seqid,input,output){var args=new MapD_has_object_privilege_args();args.read(input);input.readMessageEnd();if(this._handler.has_object_privilege.length===5){Q.fcall(this._handler.has_object_privilege,args.session,args.granteeName,args.ObjectName,args.objectType,args.permissions).then(function(result){var result_obj=new MapD_has_object_privilege_result({success:result});output.writeMessageBegin("has_object_privilege",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_has_object_privilege_result(err);output.writeMessageBegin("has_object_privilege",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("has_object_privilege",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.has_object_privilege(args.session,args.granteeName,args.ObjectName,args.objectType,args.permissions,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_has_object_privilege_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("has_object_privilege",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("has_object_privilege",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_license_key=function(seqid,input,output){var args=new MapD_set_license_key_args();args.read(input);input.readMessageEnd();if(this._handler.set_license_key.length===3){Q.fcall(this._handler.set_license_key,args.session,args.key,args.nonce).then(function(result){var result_obj=new MapD_set_license_key_result({success:result});output.writeMessageBegin("set_license_key",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_license_key_result(err);output.writeMessageBegin("set_license_key",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_license_key",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_license_key(args.session,args.key,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_license_key_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_license_key",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_license_key",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_license_claims=function(seqid,input,output){var args=new MapD_get_license_claims_args();args.read(input);input.readMessageEnd();if(this._handler.get_license_claims.length===2){Q.fcall(this._handler.get_license_claims,args.session,args.nonce).then(function(result){var result_obj=new MapD_get_license_claims_result({success:result});output.writeMessageBegin("get_license_claims",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();},function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_license_claims_result(err);output.writeMessageBegin("get_license_claims",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_license_claims",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_license_claims(args.session,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_license_claims_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_license_claims",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_license_claims",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-	exports.Thrift = __webpack_require__(17);
-
-	var connection = __webpack_require__(22);
-	exports.Connection = connection.Connection;
-	exports.createClient = connection.createClient;
-	exports.createConnection = connection.createConnection;
-	exports.createSSLConnection = connection.createSSLConnection;
-	exports.createStdIOClient = connection.createStdIOClient;
-	exports.createStdIOConnection = connection.createStdIOConnection;
-
-	var httpConnection = __webpack_require__(36);
-	exports.HttpConnection = httpConnection.HttpConnection;
-	exports.createHttpConnection = httpConnection.createHttpConnection;
-	exports.createHttpClient = httpConnection.createHttpClient;
-
-	var wsConnection = __webpack_require__(68);
-	exports.WSConnection = wsConnection.WSConnection;
-	exports.createWSConnection = wsConnection.createWSConnection;
-	exports.createWSClient = wsConnection.createWSClient;
-
-	var xhrConnection = __webpack_require__(77);
-	exports.XHRConnection = xhrConnection.XHRConnection;
-	exports.createXHRConnection = xhrConnection.createXHRConnection;
-	exports.createXHRClient = xhrConnection.createXHRClient;
-
-	var server = __webpack_require__(78);
-	exports.createServer = server.createServer;
-	exports.createMultiplexServer = server.createMultiplexServer;
-
-	var web_server = __webpack_require__(79);
-	exports.createWebServer = web_server.createWebServer;
-
-	exports.Int64 = __webpack_require__(34);
-	exports.Q = __webpack_require__(116);
-
-	var mprocessor = __webpack_require__(115);
-	var mprotocol = __webpack_require__(117);
-	exports.Multiplexer = mprotocol.Multiplexer;
-	exports.MultiplexedProcessor = mprocessor.MultiplexedProcessor;
-
-	/*
-	 * Export transport and protocol so they can be used outside of a
-	 * cassandra/server context
-	 */
-	exports.TFramedTransport = __webpack_require__(71);
-	exports.TBufferedTransport = __webpack_require__(25);
-	exports.TBinaryProtocol = __webpack_require__(32);
-	exports.TJSONProtocol = __webpack_require__(74);
-	exports.TCompactProtocol = __webpack_require__(73);
-
 
 /***/ }),
 /* 17 */
@@ -2349,7 +2405,80 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var util = __webpack_require__(18);
+	exports.Thrift = __webpack_require__(18);
+
+	var connection = __webpack_require__(23);
+	exports.Connection = connection.Connection;
+	exports.createClient = connection.createClient;
+	exports.createConnection = connection.createConnection;
+	exports.createSSLConnection = connection.createSSLConnection;
+	exports.createStdIOClient = connection.createStdIOClient;
+	exports.createStdIOConnection = connection.createStdIOConnection;
+
+	var httpConnection = __webpack_require__(37);
+	exports.HttpConnection = httpConnection.HttpConnection;
+	exports.createHttpConnection = httpConnection.createHttpConnection;
+	exports.createHttpClient = httpConnection.createHttpClient;
+
+	var wsConnection = __webpack_require__(69);
+	exports.WSConnection = wsConnection.WSConnection;
+	exports.createWSConnection = wsConnection.createWSConnection;
+	exports.createWSClient = wsConnection.createWSClient;
+
+	var xhrConnection = __webpack_require__(78);
+	exports.XHRConnection = xhrConnection.XHRConnection;
+	exports.createXHRConnection = xhrConnection.createXHRConnection;
+	exports.createXHRClient = xhrConnection.createXHRClient;
+
+	var server = __webpack_require__(79);
+	exports.createServer = server.createServer;
+	exports.createMultiplexServer = server.createMultiplexServer;
+
+	var web_server = __webpack_require__(80);
+	exports.createWebServer = web_server.createWebServer;
+
+	exports.Int64 = __webpack_require__(35);
+	exports.Q = __webpack_require__(117);
+
+	var mprocessor = __webpack_require__(116);
+	var mprotocol = __webpack_require__(118);
+	exports.Multiplexer = mprotocol.Multiplexer;
+	exports.MultiplexedProcessor = mprocessor.MultiplexedProcessor;
+
+	/*
+	 * Export transport and protocol so they can be used outside of a
+	 * cassandra/server context
+	 */
+	exports.TFramedTransport = __webpack_require__(72);
+	exports.TBufferedTransport = __webpack_require__(26);
+	exports.TBinaryProtocol = __webpack_require__(33);
+	exports.TJSONProtocol = __webpack_require__(75);
+	exports.TCompactProtocol = __webpack_require__(74);
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+	var util = __webpack_require__(19);
 
 	var Type = exports.Type = {
 	  STOP: 0,
@@ -2566,7 +2695,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -3094,7 +3223,7 @@
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(20);
+	exports.isBuffer = __webpack_require__(21);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -3138,7 +3267,7 @@
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(21);
+	exports.inherits = __webpack_require__(22);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -3156,10 +3285,10 @@
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(19)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(20)))
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 	// shim for using process in browser
@@ -3345,7 +3474,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 	module.exports = function isBuffer(arg) {
@@ -3356,7 +3485,7 @@
 	}
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -3385,7 +3514,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -3406,19 +3535,19 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var util = __webpack_require__(18);
-	var EventEmitter = __webpack_require__(23).EventEmitter;
-	var net = __webpack_require__(24);
-	var tls = __webpack_require__(24);
-	var thrift = __webpack_require__(17);
+	var util = __webpack_require__(19);
+	var EventEmitter = __webpack_require__(24).EventEmitter;
+	var net = __webpack_require__(25);
+	var tls = __webpack_require__(25);
+	var thrift = __webpack_require__(18);
 
-	var TBufferedTransport = __webpack_require__(25);
-	var TBinaryProtocol = __webpack_require__(32);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var TBufferedTransport = __webpack_require__(26);
+	var TBinaryProtocol = __webpack_require__(33);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
-	var createClient = __webpack_require__(35);
+	var createClient = __webpack_require__(36);
 
-	var binary = __webpack_require__(30);
+	var binary = __webpack_require__(31);
 
 	var Connection = exports.Connection = function(stream, options) {
 	  var self = this;
@@ -3648,7 +3777,7 @@
 
 	exports.createClient = createClient;
 
-	var child_process = __webpack_require__(24);
+	var child_process = __webpack_require__(25);
 	var StdIOConnection = exports.StdIOConnection = function(command, options) {
 	  var command_parts = command.split(' ');
 	  command = command_parts[0];
@@ -3744,7 +3873,7 @@
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -4052,13 +4181,13 @@
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -4080,8 +4209,8 @@
 	 * under the License.
 	 */
 
-	var binary = __webpack_require__(30);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var binary = __webpack_require__(31);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
 	module.exports = TBufferedTransport;
 
@@ -4237,10 +4366,10 @@
 	  this.outCount = 0;
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -4253,9 +4382,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(27)
-	var ieee754 = __webpack_require__(28)
-	var isArray = __webpack_require__(29)
+	var base64 = __webpack_require__(28)
+	var ieee754 = __webpack_require__(29)
+	var isArray = __webpack_require__(30)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -6036,7 +6165,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 	'use strict'
@@ -6156,7 +6285,7 @@
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -6246,7 +6375,7 @@
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 	var toString = {}.toString;
@@ -6257,7 +6386,7 @@
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 	/*
@@ -6431,7 +6560,7 @@
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -6452,7 +6581,7 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var util = __webpack_require__(18);
+	var util = __webpack_require__(19);
 
 	module.exports = InputBufferUnderrunError;
 
@@ -6467,7 +6596,7 @@
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -6489,10 +6618,10 @@
 	 * under the License.
 	 */
 
-	var log = __webpack_require__(33);
-	var binary = __webpack_require__(30);
-	var Int64 = __webpack_require__(34);
-	var Thrift = __webpack_require__(17);
+	var log = __webpack_require__(34);
+	var binary = __webpack_require__(31);
+	var Int64 = __webpack_require__(35);
+	var Thrift = __webpack_require__(18);
 	var Type = Thrift.Type;
 
 	module.exports = TBinaryProtocol;
@@ -6837,10 +6966,10 @@
 	  }
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 	/*
@@ -6872,7 +7001,7 @@
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {//     Int64.js
@@ -7110,10 +7239,10 @@
 	  }
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 	/*
@@ -7173,7 +7302,7 @@
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, Buffer) {/*
@@ -7194,17 +7323,17 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var util = __webpack_require__(18);
-	var http = __webpack_require__(37);
-	var https = __webpack_require__(67);
-	var EventEmitter = __webpack_require__(23).EventEmitter;
-	var thrift = __webpack_require__(17);
+	var util = __webpack_require__(19);
+	var http = __webpack_require__(38);
+	var https = __webpack_require__(68);
+	var EventEmitter = __webpack_require__(24).EventEmitter;
+	var thrift = __webpack_require__(18);
 
-	var TBufferedTransport = __webpack_require__(25);
-	var TBinaryProtocol = __webpack_require__(32);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var TBufferedTransport = __webpack_require__(26);
+	var TBinaryProtocol = __webpack_require__(33);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
-	var createClient = __webpack_require__(35);
+	var createClient = __webpack_require__(36);
 
 	/**
 	 * @class
@@ -7415,16 +7544,16 @@
 	exports.createHttpClient = createClient
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20), __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(38)
-	var extend = __webpack_require__(59)
-	var statusCodes = __webpack_require__(60)
-	var url = __webpack_require__(61)
+	/* WEBPACK VAR INJECTION */(function(global) {var ClientRequest = __webpack_require__(39)
+	var extend = __webpack_require__(60)
+	var statusCodes = __webpack_require__(61)
+	var url = __webpack_require__(62)
 
 	var http = exports
 
@@ -7503,14 +7632,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer, global, process) {var capability = __webpack_require__(39)
-	var inherits = __webpack_require__(40)
-	var response = __webpack_require__(41)
-	var stream = __webpack_require__(42)
-	var toArrayBuffer = __webpack_require__(58)
+	/* WEBPACK VAR INJECTION */(function(Buffer, global, process) {var capability = __webpack_require__(40)
+	var inherits = __webpack_require__(41)
+	var response = __webpack_require__(42)
+	var stream = __webpack_require__(43)
+	var toArrayBuffer = __webpack_require__(59)
 
 	var IncomingMessage = response.IncomingMessage
 	var rStates = response.readyStates
@@ -7811,10 +7940,10 @@
 		'via'
 	]
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer, (function() { return this; }()), __webpack_require__(19)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer, (function() { return this; }()), __webpack_require__(20)))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableStream)
@@ -7890,7 +8019,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -7919,12 +8048,12 @@
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process, Buffer, global) {var capability = __webpack_require__(39)
-	var inherits = __webpack_require__(40)
-	var stream = __webpack_require__(42)
+	/* WEBPACK VAR INJECTION */(function(process, Buffer, global) {var capability = __webpack_require__(40)
+	var inherits = __webpack_require__(41)
+	var stream = __webpack_require__(43)
 
 	var rStates = exports.readyStates = {
 		UNSENT: 0,
@@ -8105,23 +8234,23 @@
 		}
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(26).Buffer, (function() { return this; }())))
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(43);
-	exports.Stream = exports;
-	exports.Readable = exports;
-	exports.Writable = __webpack_require__(51);
-	exports.Duplex = __webpack_require__(50);
-	exports.Transform = __webpack_require__(56);
-	exports.PassThrough = __webpack_require__(57);
-
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20), __webpack_require__(27).Buffer, (function() { return this; }())))
 
 /***/ }),
 /* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(44);
+	exports.Stream = exports;
+	exports.Readable = exports;
+	exports.Writable = __webpack_require__(52);
+	exports.Duplex = __webpack_require__(51);
+	exports.Transform = __webpack_require__(57);
+	exports.PassThrough = __webpack_require__(58);
+
+
+/***/ }),
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -8129,11 +8258,11 @@
 	module.exports = Readable;
 
 	/*<replacement>*/
-	var processNextTick = __webpack_require__(44);
+	var processNextTick = __webpack_require__(45);
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var isArray = __webpack_require__(29);
+	var isArray = __webpack_require__(30);
 	/*</replacement>*/
 
 	/*<replacement>*/
@@ -8143,7 +8272,7 @@
 	Readable.ReadableState = ReadableState;
 
 	/*<replacement>*/
-	var EE = __webpack_require__(23).EventEmitter;
+	var EE = __webpack_require__(24).EventEmitter;
 
 	var EElistenerCount = function (emitter, type) {
 	  return emitter.listeners(type).length;
@@ -8151,21 +8280,21 @@
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var Stream = __webpack_require__(45);
+	var Stream = __webpack_require__(46);
 	/*</replacement>*/
 
-	var Buffer = __webpack_require__(26).Buffer;
+	var Buffer = __webpack_require__(27).Buffer;
 	/*<replacement>*/
-	var bufferShim = __webpack_require__(46);
-	/*</replacement>*/
-
-	/*<replacement>*/
-	var util = __webpack_require__(47);
-	util.inherits = __webpack_require__(40);
+	var bufferShim = __webpack_require__(47);
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var debugUtil = __webpack_require__(48);
+	var util = __webpack_require__(48);
+	util.inherits = __webpack_require__(41);
+	/*</replacement>*/
+
+	/*<replacement>*/
+	var debugUtil = __webpack_require__(49);
 	var debug = void 0;
 	if (debugUtil && debugUtil.debuglog) {
 	  debug = debugUtil.debuglog('stream');
@@ -8174,7 +8303,7 @@
 	}
 	/*</replacement>*/
 
-	var BufferList = __webpack_require__(49);
+	var BufferList = __webpack_require__(50);
 	var StringDecoder;
 
 	util.inherits(Readable, Stream);
@@ -8196,7 +8325,7 @@
 	}
 
 	function ReadableState(options, stream) {
-	  Duplex = Duplex || __webpack_require__(50);
+	  Duplex = Duplex || __webpack_require__(51);
 
 	  options = options || {};
 
@@ -8258,14 +8387,14 @@
 	  this.decoder = null;
 	  this.encoding = null;
 	  if (options.encoding) {
-	    if (!StringDecoder) StringDecoder = __webpack_require__(55).StringDecoder;
+	    if (!StringDecoder) StringDecoder = __webpack_require__(56).StringDecoder;
 	    this.decoder = new StringDecoder(options.encoding);
 	    this.encoding = options.encoding;
 	  }
 	}
 
 	function Readable(options) {
-	  Duplex = Duplex || __webpack_require__(50);
+	  Duplex = Duplex || __webpack_require__(51);
 
 	  if (!(this instanceof Readable)) return new Readable(options);
 
@@ -8368,7 +8497,7 @@
 
 	// backwards compatibility.
 	Readable.prototype.setEncoding = function (enc) {
-	  if (!StringDecoder) StringDecoder = __webpack_require__(55).StringDecoder;
+	  if (!StringDecoder) StringDecoder = __webpack_require__(56).StringDecoder;
 	  this._readableState.decoder = new StringDecoder(enc);
 	  this._readableState.encoding = enc;
 	  return this;
@@ -9059,10 +9188,10 @@
 	  }
 	  return -1;
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -9109,22 +9238,22 @@
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(23).EventEmitter;
-
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
 
 /***/ }),
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(24).EventEmitter;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
-	var buffer = __webpack_require__(26);
+	var buffer = __webpack_require__(27);
 	var Buffer = buffer.Buffer;
 	var SlowBuffer = buffer.SlowBuffer;
 	var MAX_LEN = buffer.kMaxLength || 2147483647;
@@ -9234,7 +9363,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
@@ -9345,23 +9474,23 @@
 	  return Object.prototype.toString.call(o);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Buffer = __webpack_require__(26).Buffer;
+	var Buffer = __webpack_require__(27).Buffer;
 	/*<replacement>*/
-	var bufferShim = __webpack_require__(46);
+	var bufferShim = __webpack_require__(47);
 	/*</replacement>*/
 
 	module.exports = BufferList;
@@ -9423,7 +9552,7 @@
 	};
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// a duplex stream is just a stream that is both readable and writable.
@@ -9446,16 +9575,16 @@
 	module.exports = Duplex;
 
 	/*<replacement>*/
-	var processNextTick = __webpack_require__(44);
+	var processNextTick = __webpack_require__(45);
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var util = __webpack_require__(47);
-	util.inherits = __webpack_require__(40);
+	var util = __webpack_require__(48);
+	util.inherits = __webpack_require__(41);
 	/*</replacement>*/
 
-	var Readable = __webpack_require__(43);
-	var Writable = __webpack_require__(51);
+	var Readable = __webpack_require__(44);
+	var Writable = __webpack_require__(52);
 
 	util.inherits(Duplex, Readable);
 
@@ -9503,7 +9632,7 @@
 	}
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {// A bit simpler than readable streams.
@@ -9515,7 +9644,7 @@
 	module.exports = Writable;
 
 	/*<replacement>*/
-	var processNextTick = __webpack_require__(44);
+	var processNextTick = __webpack_require__(45);
 	/*</replacement>*/
 
 	/*<replacement>*/
@@ -9529,23 +9658,23 @@
 	Writable.WritableState = WritableState;
 
 	/*<replacement>*/
-	var util = __webpack_require__(47);
-	util.inherits = __webpack_require__(40);
+	var util = __webpack_require__(48);
+	util.inherits = __webpack_require__(41);
 	/*</replacement>*/
 
 	/*<replacement>*/
 	var internalUtil = {
-	  deprecate: __webpack_require__(54)
+	  deprecate: __webpack_require__(55)
 	};
 	/*</replacement>*/
 
 	/*<replacement>*/
-	var Stream = __webpack_require__(45);
+	var Stream = __webpack_require__(46);
 	/*</replacement>*/
 
-	var Buffer = __webpack_require__(26).Buffer;
+	var Buffer = __webpack_require__(27).Buffer;
 	/*<replacement>*/
-	var bufferShim = __webpack_require__(46);
+	var bufferShim = __webpack_require__(47);
 	/*</replacement>*/
 
 	util.inherits(Writable, Stream);
@@ -9560,7 +9689,7 @@
 	}
 
 	function WritableState(options, stream) {
-	  Duplex = Duplex || __webpack_require__(50);
+	  Duplex = Duplex || __webpack_require__(51);
 
 	  options = options || {};
 
@@ -9694,7 +9823,7 @@
 	}
 
 	function Writable(options) {
-	  Duplex = Duplex || __webpack_require__(50);
+	  Duplex = Duplex || __webpack_require__(51);
 
 	  // Writable ctor is applied to Duplexes, too.
 	  // `realHasInstance` is necessary because using plain `instanceof`
@@ -10050,10 +10179,10 @@
 	    }
 	  };
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(52).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20), __webpack_require__(53).setImmediate))
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var apply = Function.prototype.apply;
@@ -10106,13 +10235,13 @@
 	};
 
 	// setimmediate attaches itself to the global object
-	__webpack_require__(53);
+	__webpack_require__(54);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -10302,10 +10431,10 @@
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(19)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(20)))
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -10379,13 +10508,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Buffer = __webpack_require__(26).Buffer;
-	var bufferShim = __webpack_require__(46);
+	var Buffer = __webpack_require__(27).Buffer;
+	var bufferShim = __webpack_require__(47);
 
 	var isEncoding = Buffer.isEncoding || function (encoding) {
 	  encoding = '' + encoding;
@@ -10657,7 +10786,7 @@
 	}
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// a transform stream is a readable/writable stream where you do
@@ -10706,11 +10835,11 @@
 
 	module.exports = Transform;
 
-	var Duplex = __webpack_require__(50);
+	var Duplex = __webpack_require__(51);
 
 	/*<replacement>*/
-	var util = __webpack_require__(47);
-	util.inherits = __webpack_require__(40);
+	var util = __webpack_require__(48);
+	util.inherits = __webpack_require__(41);
 	/*</replacement>*/
 
 	util.inherits(Transform, Duplex);
@@ -10844,7 +10973,7 @@
 	}
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// a passthrough stream.
@@ -10855,11 +10984,11 @@
 
 	module.exports = PassThrough;
 
-	var Transform = __webpack_require__(56);
+	var Transform = __webpack_require__(57);
 
 	/*<replacement>*/
-	var util = __webpack_require__(47);
-	util.inherits = __webpack_require__(40);
+	var util = __webpack_require__(48);
+	util.inherits = __webpack_require__(41);
 	/*</replacement>*/
 
 	util.inherits(PassThrough, Transform);
@@ -10875,10 +11004,10 @@
 	};
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var Buffer = __webpack_require__(26).Buffer
+	var Buffer = __webpack_require__(27).Buffer
 
 	module.exports = function (buf) {
 		// If the buffer is backed by a Uint8Array, a faster version will work
@@ -10908,7 +11037,7 @@
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports) {
 
 	module.exports = extend
@@ -10933,7 +11062,7 @@
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -11003,7 +11132,7 @@
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -11029,8 +11158,8 @@
 
 	'use strict';
 
-	var punycode = __webpack_require__(62);
-	var util = __webpack_require__(63);
+	var punycode = __webpack_require__(63);
+	var util = __webpack_require__(64);
 
 	exports.parse = urlParse;
 	exports.resolve = urlResolve;
@@ -11105,7 +11234,7 @@
 	      'gopher:': true,
 	      'file:': true
 	    },
-	    querystring = __webpack_require__(64);
+	    querystring = __webpack_require__(65);
 
 	function urlParse(url, parseQueryString, slashesDenoteHost) {
 	  if (url && util.isObject(url) && url instanceof Url) return url;
@@ -11741,7 +11870,7 @@
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/punycode v1.3.2 by @mathias */
@@ -12276,7 +12405,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module), (function() { return this; }())))
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -12298,17 +12427,17 @@
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.decode = exports.parse = __webpack_require__(65);
-	exports.encode = exports.stringify = __webpack_require__(66);
+	exports.decode = exports.parse = __webpack_require__(66);
+	exports.encode = exports.stringify = __webpack_require__(67);
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -12394,7 +12523,7 @@
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -12464,10 +12593,10 @@
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var http = __webpack_require__(37);
+	var http = __webpack_require__(38);
 
 	var https = module.exports;
 
@@ -12484,7 +12613,7 @@
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -12505,18 +12634,18 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var util = __webpack_require__(18);
-	var WebSocket = __webpack_require__(69);
-	var EventEmitter = __webpack_require__(23).EventEmitter;
-	var thrift = __webpack_require__(17);
-	var ttransport = __webpack_require__(70);
-	var tprotocol = __webpack_require__(72);
+	var util = __webpack_require__(19);
+	var WebSocket = __webpack_require__(70);
+	var EventEmitter = __webpack_require__(24).EventEmitter;
+	var thrift = __webpack_require__(18);
+	var ttransport = __webpack_require__(71);
+	var tprotocol = __webpack_require__(73);
 
-	var TBufferedTransport = __webpack_require__(25);
-	var TJSONProtocol = __webpack_require__(74);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var TBufferedTransport = __webpack_require__(26);
+	var TJSONProtocol = __webpack_require__(75);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
-	var createClient = __webpack_require__(35);
+	var createClient = __webpack_require__(36);
 
 	exports.WSConnection = WSConnection;
 
@@ -12774,10 +12903,10 @@
 
 	exports.createWSClient = createClient;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports) {
 
 	
@@ -12826,7 +12955,7 @@
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -12848,13 +12977,13 @@
 	 * under the License.
 	 */
 
-	module.exports.TBufferedTransport = __webpack_require__(25);
-	module.exports.TFramedTransport = __webpack_require__(71);
-	module.exports.InputBufferUnderrunError = __webpack_require__(31);
+	module.exports.TBufferedTransport = __webpack_require__(26);
+	module.exports.TFramedTransport = __webpack_require__(72);
+	module.exports.InputBufferUnderrunError = __webpack_require__(32);
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -12876,8 +13005,8 @@
 	 * under the License.
 	 */
 
-	var binary = __webpack_require__(30);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var binary = __webpack_require__(31);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
 	module.exports = TFramedTransport;
 
@@ -13040,10 +13169,10 @@
 	  this.outCount = 0;
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -13065,13 +13194,13 @@
 	 * under the License.
 	 */
 
-	module.exports.TBinaryProtocol = __webpack_require__(32);
-	module.exports.TCompactProtocol = __webpack_require__(73);
-	module.exports.TJSONProtocol = __webpack_require__(74);
+	module.exports.TBinaryProtocol = __webpack_require__(33);
+	module.exports.TCompactProtocol = __webpack_require__(74);
+	module.exports.TJSONProtocol = __webpack_require__(75);
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -13093,9 +13222,9 @@
 	 * under the License.
 	 */
 
-	var log = __webpack_require__(33);
-	var Int64 = __webpack_require__(34);
-	var Thrift = __webpack_require__(17);
+	var log = __webpack_require__(34);
+	var Int64 = __webpack_require__(35);
+	var Thrift = __webpack_require__(18);
 	var Type = Thrift.Type;
 
 	module.exports = TCompactProtocol;
@@ -13993,10 +14122,10 @@
 	  }
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -14018,17 +14147,17 @@
 	 * under the License.
 	 */
 
-	var log = __webpack_require__(33);
-	var Int64 = __webpack_require__(34);
-	var InputBufferUnderrunError = __webpack_require__(70).InputBufferUnderrunError;
-	var Thrift = __webpack_require__(17);
+	var log = __webpack_require__(34);
+	var Int64 = __webpack_require__(35);
+	var InputBufferUnderrunError = __webpack_require__(71).InputBufferUnderrunError;
+	var Thrift = __webpack_require__(18);
 	var Type = Thrift.Type;
-	var util = __webpack_require__(18);
+	var util = __webpack_require__(19);
 
-	var Int64Util = __webpack_require__(75);
-	var json_parse = __webpack_require__(76);
+	var Int64Util = __webpack_require__(76);
+	var json_parse = __webpack_require__(77);
 
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
 	module.exports = TJSONProtocol;
 
@@ -14743,10 +14872,10 @@
 	  throw new Error('skip not supported yet');
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -14768,7 +14897,7 @@
 	 * under the License.
 	 */
 
-	var Int64 = __webpack_require__(34);
+	var Int64 = __webpack_require__(35);
 
 	var Int64Util = module.exports = {};
 
@@ -14841,10 +14970,10 @@
 	  }
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -14869,8 +14998,8 @@
 	    prototype, push, r, t, text
 	*/
 
-	var Int64 = __webpack_require__(34);
-	var Int64Util = __webpack_require__(75);
+	var Int64 = __webpack_require__(35);
+	var Int64Util = __webpack_require__(76);
 
 	var json_parse = module.exports = (function () {
 	    "use strict";
@@ -15149,7 +15278,7 @@
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -15170,15 +15299,15 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var util = __webpack_require__(18);
-	var EventEmitter = __webpack_require__(23).EventEmitter;
-	var thrift = __webpack_require__(17);
+	var util = __webpack_require__(19);
+	var EventEmitter = __webpack_require__(24).EventEmitter;
+	var thrift = __webpack_require__(18);
 
-	var TBufferedTransport = __webpack_require__(25);
-	var TJSONProtocol = __webpack_require__(74);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var TBufferedTransport = __webpack_require__(26);
+	var TJSONProtocol = __webpack_require__(75);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
-	var createClient = __webpack_require__(35);
+	var createClient = __webpack_require__(36);
 
 	exports.XHRConnection = XHRConnection;
 
@@ -15433,10 +15562,10 @@
 
 	exports.createXHRClient = createClient;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -15457,12 +15586,12 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var net = __webpack_require__(24);
-	var tls = __webpack_require__(24);
+	var net = __webpack_require__(25);
+	var tls = __webpack_require__(25);
 
-	var TBufferedTransport = __webpack_require__(25);
-	var TBinaryProtocol = __webpack_require__(32);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var TBufferedTransport = __webpack_require__(26);
+	var TBinaryProtocol = __webpack_require__(33);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
 	/**
 	 * Create a Thrift server which can serve one or multiple services.
@@ -15549,7 +15678,7 @@
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -15570,18 +15699,18 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var http = __webpack_require__(37);
-	var https = __webpack_require__(67);
-	var url = __webpack_require__(61);
-	var path = __webpack_require__(80);
-	var fs = __webpack_require__(24);
-	var crypto = __webpack_require__(81);
+	var http = __webpack_require__(38);
+	var https = __webpack_require__(68);
+	var url = __webpack_require__(62);
+	var path = __webpack_require__(81);
+	var fs = __webpack_require__(25);
+	var crypto = __webpack_require__(82);
 
-	var MultiplexedProcessor = __webpack_require__(115).MultiplexedProcessor;
+	var MultiplexedProcessor = __webpack_require__(116).MultiplexedProcessor;
 
-	var TBufferedTransport = __webpack_require__(25);
-	var TBinaryProtocol = __webpack_require__(32);
-	var InputBufferUnderrunError = __webpack_require__(31);
+	var TBufferedTransport = __webpack_require__(26);
+	var TBinaryProtocol = __webpack_require__(33);
+	var InputBufferUnderrunError = __webpack_require__(32);
 
 	// WSFrame constructor and prototype
 	/////////////////////////////////////////////////////////////////////
@@ -16117,10 +16246,10 @@
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -16348,13 +16477,13 @@
 	    }
 	;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(82)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(83)
 
 	function error () {
 	  var m = [].slice.call(arguments).join(' ')
@@ -16365,9 +16494,9 @@
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(84)
+	exports.createHash = __webpack_require__(85)
 
-	exports.createHmac = __webpack_require__(93)
+	exports.createHmac = __webpack_require__(94)
 
 	exports.randomBytes = function(size, callback) {
 	  if (callback && callback.call) {
@@ -16388,10 +16517,10 @@
 	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
 	}
 
-	var p = __webpack_require__(94)(exports)
+	var p = __webpack_require__(95)(exports)
 	exports.pbkdf2 = p.pbkdf2
 	exports.pbkdf2Sync = p.pbkdf2Sync
-	__webpack_require__(96)(exports, module.exports);
+	__webpack_require__(97)(exports, module.exports);
 
 	// the least I can do is make error messages for the rest of the node.js/crypto api.
 	each(['createCredentials'
@@ -16404,16 +16533,16 @@
 	  }
 	})
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, Buffer) {(function() {
 	  var g = ('undefined' === typeof window ? global : window) || {}
 	  _crypto = (
-	    g.crypto || g.msCrypto || __webpack_require__(83)
+	    g.crypto || g.msCrypto || __webpack_require__(84)
 	  )
 	  module.exports = function(size) {
 	    // Modern Browsers
@@ -16437,22 +16566,22 @@
 	  }
 	}())
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(85)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(86)
 
-	var md5 = toConstructor(__webpack_require__(90))
-	var rmd160 = toConstructor(__webpack_require__(92))
+	var md5 = toConstructor(__webpack_require__(91))
+	var rmd160 = toConstructor(__webpack_require__(93))
 
 	function toConstructor (fn) {
 	  return function () {
@@ -16480,10 +16609,10 @@
 	  return createHash(alg)
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var exports = module.exports = function (alg) {
@@ -16492,16 +16621,16 @@
 	  return new Alg()
 	}
 
-	var Buffer = __webpack_require__(26).Buffer
-	var Hash   = __webpack_require__(86)(Buffer)
+	var Buffer = __webpack_require__(27).Buffer
+	var Hash   = __webpack_require__(87)(Buffer)
 
-	exports.sha1 = __webpack_require__(87)(Buffer, Hash)
-	exports.sha256 = __webpack_require__(88)(Buffer, Hash)
-	exports.sha512 = __webpack_require__(89)(Buffer, Hash)
+	exports.sha1 = __webpack_require__(88)(Buffer, Hash)
+	exports.sha256 = __webpack_require__(89)(Buffer, Hash)
+	exports.sha512 = __webpack_require__(90)(Buffer, Hash)
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports) {
 
 	module.exports = function (Buffer) {
@@ -16584,7 +16713,7 @@
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -16596,7 +16725,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(18).inherits
+	var inherits = __webpack_require__(19).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -16728,7 +16857,7 @@
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	
@@ -16740,7 +16869,7 @@
 	 *
 	 */
 
-	var inherits = __webpack_require__(18).inherits
+	var inherits = __webpack_require__(19).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -16881,10 +17010,10 @@
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var inherits = __webpack_require__(18).inherits
+	var inherits = __webpack_require__(19).inherits
 
 	module.exports = function (Buffer, Hash) {
 	  var K = [
@@ -17131,7 +17260,7 @@
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -17143,7 +17272,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(91);
+	var helpers = __webpack_require__(92);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -17292,7 +17421,7 @@
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
@@ -17330,10 +17459,10 @@
 
 	module.exports = { hash: hash };
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -17542,13 +17671,13 @@
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(84)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(85)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -17592,13 +17721,13 @@
 	}
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var pbkdf2Export = __webpack_require__(95)
+	var pbkdf2Export = __webpack_require__(96)
 
 	module.exports = function (crypto, exports) {
 	  exports = exports || {}
@@ -17613,7 +17742,7 @@
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function(crypto) {
@@ -17701,21 +17830,21 @@
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = function (crypto, exports) {
 	  exports = exports || {};
-	  var ciphers = __webpack_require__(97)(crypto);
+	  var ciphers = __webpack_require__(98)(crypto);
 	  exports.createCipher = ciphers.createCipher;
 	  exports.createCipheriv = ciphers.createCipheriv;
-	  var deciphers = __webpack_require__(114)(crypto);
+	  var deciphers = __webpack_require__(115)(crypto);
 	  exports.createDecipher = deciphers.createDecipher;
 	  exports.createDecipheriv = deciphers.createDecipheriv;
-	  var modes = __webpack_require__(105);
+	  var modes = __webpack_require__(106);
 	  function listCiphers () {
 	    return Object.keys(modes);
 	  }
@@ -17725,15 +17854,15 @@
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(98);
-	var Transform = __webpack_require__(99);
-	var inherits = __webpack_require__(40);
-	var modes = __webpack_require__(105);
-	var ebtk = __webpack_require__(106);
-	var StreamCipher = __webpack_require__(107);
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(99);
+	var Transform = __webpack_require__(100);
+	var inherits = __webpack_require__(41);
+	var modes = __webpack_require__(106);
+	var ebtk = __webpack_require__(107);
+	var StreamCipher = __webpack_require__(108);
 	inherits(Cipher, Transform);
 	function Cipher(mode, key, iv) {
 	  if (!(this instanceof Cipher)) {
@@ -17794,11 +17923,11 @@
 	  return out;
 	};
 	var modelist = {
-	  ECB: __webpack_require__(108),
-	  CBC: __webpack_require__(109),
-	  CFB: __webpack_require__(111),
-	  OFB: __webpack_require__(112),
-	  CTR: __webpack_require__(113)
+	  ECB: __webpack_require__(109),
+	  CBC: __webpack_require__(110),
+	  CFB: __webpack_require__(112),
+	  OFB: __webpack_require__(113),
+	  CTR: __webpack_require__(114)
 	};
 	module.exports = function (crypto) {
 	  function createCipheriv(suite, password, iv) {
@@ -17837,10 +17966,10 @@
 	  };
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var uint_max = Math.pow(2, 32);
@@ -18039,14 +18168,14 @@
 
 
 	  exports.AES = AES;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var Transform = __webpack_require__(100).Transform;
-	var inherits = __webpack_require__(40);
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var Transform = __webpack_require__(101).Transform;
+	var inherits = __webpack_require__(41);
 
 	module.exports = CipherBase;
 	inherits(CipherBase, Transform);
@@ -18077,10 +18206,10 @@
 	  }
 	  return outData;
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -18106,15 +18235,15 @@
 
 	module.exports = Stream;
 
-	var EE = __webpack_require__(23).EventEmitter;
-	var inherits = __webpack_require__(40);
+	var EE = __webpack_require__(24).EventEmitter;
+	var inherits = __webpack_require__(41);
 
 	inherits(Stream, EE);
-	Stream.Readable = __webpack_require__(42);
-	Stream.Writable = __webpack_require__(101);
-	Stream.Duplex = __webpack_require__(102);
-	Stream.Transform = __webpack_require__(103);
-	Stream.PassThrough = __webpack_require__(104);
+	Stream.Readable = __webpack_require__(43);
+	Stream.Writable = __webpack_require__(102);
+	Stream.Duplex = __webpack_require__(103);
+	Stream.Transform = __webpack_require__(104);
+	Stream.PassThrough = __webpack_require__(105);
 
 	// Backwards-compat with node 0.4.x
 	Stream.Stream = Stream;
@@ -18213,35 +18342,35 @@
 
 
 /***/ }),
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(51);
-
-
-/***/ }),
 /* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(50);
+	module.exports = __webpack_require__(52);
 
 
 /***/ }),
 /* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(42).Transform
+	module.exports = __webpack_require__(51);
 
 
 /***/ }),
 /* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(42).PassThrough
+	module.exports = __webpack_require__(43).Transform
 
 
 /***/ }),
 /* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(43).PassThrough
+
+
+/***/ }),
+/* 106 */
 /***/ (function(module, exports) {
 
 	exports['aes-128-ecb'] = {
@@ -18354,7 +18483,7 @@
 	};
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -18414,15 +18543,15 @@
 	    iv: iv
 	  };
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(98);
-	var Transform = __webpack_require__(99);
-	var inherits = __webpack_require__(40);
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(99);
+	var Transform = __webpack_require__(100);
+	var inherits = __webpack_require__(41);
 
 	inherits(StreamCipher, Transform);
 	module.exports = StreamCipher;
@@ -18446,10 +18575,10 @@
 	  this._cipher.scrub();
 	  next();
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports) {
 
 	exports.encrypt = function (self, block) {
@@ -18460,10 +18589,10 @@
 	};
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var xor = __webpack_require__(110);
+	var xor = __webpack_require__(111);
 	exports.encrypt = function (self, block) {
 	  var data = xor(block, self._prev);
 	  self._prev = self._cipher.encryptBlock(data);
@@ -18477,7 +18606,7 @@
 	};
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = xor;
@@ -18490,13 +18619,13 @@
 	  }
 	  return out;
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(110);
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(111);
 	exports.encrypt = function (self, data, decrypt) {
 	  var out = new Buffer('');
 	  var len;
@@ -18523,13 +18652,13 @@
 	  self._prev = Buffer.concat([self._prev, decrypt?data:out]);
 	  return out;
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(110);
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(111);
 	function getBlock(self) {
 	  self._prev = self._cipher.encryptBlock(self._prev);
 	  return self._prev;
@@ -18542,13 +18671,13 @@
 	  self._cache = self._cache.slice(chunk.length);
 	  return xor(chunk, pad);
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(110);
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(111);
 	function getBlock(self) {
 	  var out = self._cipher.encryptBlock(self._prev);
 	  incr32(self._prev);
@@ -18576,18 +18705,18 @@
 	    }
 	  }
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(98);
-	var Transform = __webpack_require__(99);
-	var inherits = __webpack_require__(40);
-	var modes = __webpack_require__(105);
-	var StreamCipher = __webpack_require__(107);
-	var ebtk = __webpack_require__(106);
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(99);
+	var Transform = __webpack_require__(100);
+	var inherits = __webpack_require__(41);
+	var modes = __webpack_require__(106);
+	var StreamCipher = __webpack_require__(108);
+	var ebtk = __webpack_require__(107);
 
 	inherits(Decipher, Transform);
 	function Decipher(mode, key, iv) {
@@ -18655,11 +18784,11 @@
 	}
 
 	var modelist = {
-	  ECB: __webpack_require__(108),
-	  CBC: __webpack_require__(109),
-	  CFB: __webpack_require__(111),
-	  OFB: __webpack_require__(112),
-	  CTR: __webpack_require__(113)
+	  ECB: __webpack_require__(109),
+	  CBC: __webpack_require__(110),
+	  CFB: __webpack_require__(112),
+	  OFB: __webpack_require__(113),
+	  CTR: __webpack_require__(114)
 	};
 
 	module.exports = function (crypto) {
@@ -18700,10 +18829,10 @@
 	  };
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27).Buffer))
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -18724,7 +18853,7 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var Thrift = __webpack_require__(17);
+	var Thrift = __webpack_require__(18);
 
 	exports.MultiplexedProcessor = MultiplexedProcessor;
 
@@ -18772,7 +18901,7 @@
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, setImmediate) {// vim:ts=4:sts=4:sw=4:
@@ -20680,10 +20809,10 @@
 
 	});
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(52).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20), __webpack_require__(53).setImmediate))
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -20704,8 +20833,8 @@
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var util = __webpack_require__(18);
-	var Thrift = __webpack_require__(17);
+	var util = __webpack_require__(19);
+	var Thrift = __webpack_require__(18);
 
 	exports.Multiplexer = Multiplexer;
 
@@ -20762,7 +20891,7 @@
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20773,7 +20902,7 @@
 	//
 	"use strict";
 
-	var thrift = __webpack_require__(16);
+	var thrift = __webpack_require__(17);
 	var Thrift = thrift.Thrift;
 	var Q = thrift.Q;
 
@@ -20888,7 +21017,7 @@
 	};
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20899,11 +21028,11 @@
 	//
 	"use strict";
 
-	var thrift = __webpack_require__(16);
+	var thrift = __webpack_require__(17);
 	var Thrift = thrift.Thrift;
 	var Q = thrift.Q;
 
-	var completion_hints_ttypes = __webpack_require__(118);
+	var completion_hints_ttypes = __webpack_require__(119);
 
 	var ttypes = module.exports = {};
 	ttypes.TDatumType = {
@@ -27135,7 +27264,7 @@
 	};
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27145,11 +27274,11 @@
 	});
 	exports.default = processQueryResults;
 
-	var _processColumnarResults = __webpack_require__(121);
+	var _processColumnarResults = __webpack_require__(122);
 
 	var _processColumnarResults2 = _interopRequireDefault(_processColumnarResults);
 
-	var _processRowResults = __webpack_require__(122);
+	var _processRowResults = __webpack_require__(123);
 
 	var _processRowResults2 = _interopRequireDefault(_processRowResults);
 
@@ -27246,7 +27375,7 @@
 	}
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -27386,7 +27515,7 @@
 	}
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";

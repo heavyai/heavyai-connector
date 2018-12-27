@@ -549,6 +549,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
           widgetId,
           pixel,
           tableColNamesMap,
+          2,
           (pixelError, data) => {
             expect(pixelError).to.not.be.an("error")
             const lon = data[0].row_set[0].dest_lon
