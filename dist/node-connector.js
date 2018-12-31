@@ -17096,6 +17096,9 @@ module.exports =
 	    this.getUsersAsync = this.handleErrors(this.wrapThrift("get_users", this.overSingleClient, function (args) {
 	      return args;
 	    }));
+	    this.importTableStatusAsync = this.handleErrors(this.wrapThrift("import_table_status", this.overSingleClient, function (args) {
+	      return args;
+	    }));
 	    this.getRolesAsync = this.handleErrors(this.wrapThrift("get_roles", this.overSingleClient, function (args) {
 	      return args;
 	    }));
