@@ -13,7 +13,11 @@ if (isNodeRuntime()) {
   Thrift.Transport = thriftWrapper.TBufferedTransport
   Thrift.Protocol = thriftWrapper.TJSONProtocol
 }
+
 import * as helpers from "./helpers"
+
+import EventEmitter from "eventemitter3"
+
 import MapDClientV2 from "./mapd-client-v2"
 import processQueryResults from "./process-query-results"
 
@@ -167,22 +171,15 @@ class MapdCon {
         client = thriftWrapper.createClient(MapDThrift, connection)
         resetThriftClientOnArgumentErrorForMethods(this, client, [
           "connect",
-          "createFrontendViewAsync",
-          "createLinkAsync",
           "createTableAsync",
           "dbName",
-          "deleteFrontendViewAsync",
           "detectColumnTypesAsync",
           "disconnect",
           "getCompletionHintsAsync",
           "getFields",
           "getDashboardAsync",
           "getDashboardsAsync",
-          "getFrontendViewAsync",
-          "getFrontendViewsAsync",
-          "getLinkViewAsync",
           "getResultRowForPixel",
-          "getServerStatusAsync",
           "getStatusAsync",
           "getTablesAsync",
           "getTablesWithMetaAsync",
@@ -285,6 +282,18 @@ class MapdCon {
     return this
   }
 
+  removeConnection(conId) {
+    if (conId < 0 || conId >= this.numConnections) {
+      const err = {
+        msg: "Remove connection id invalid"
+      }
+      throw err
+    }
+    this._client.splice(conId, 1)
+    this._sessionId.splice(conId, 1)
+    this._numConnections--
+  }
+
   updateQueryTimes = (
     conId,
     queryId,
@@ -294,45 +303,57 @@ class MapdCon {
     this.queryTimes[queryId] = execution_time_ms
   }
 
+  events = new EventEmitter()
+
+  // ** Method wrappers **
+
+  handleErrors = method => (...args) =>
+    new Promise((resolve, reject) => {
+      const success = result => resolve(result)
+      const failure = error => {
+        this.events.emit("error", error)
+        return reject(error)
+      }
+
+      const promise = method.apply(this, args)
+
+      promise
+        .then(success)
+        .catch(error => {
+          if (isTimeoutError(error)) {
+            // Reconnect, then try the method once more
+            return this.connectAsync().then(() => {
+              const retriedPromise = method.apply(this, args)
+
+              retriedPromise
+                .then(success)
+                .catch(failure)
+            })
+          } else {
+            return failure(error)
+          }
+        })
+    })
+
   promisifyThriftMethod = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
-      const runThriftMethod = (_sessionId, handleError) => {
-        client[methodName].apply(
-          client,
-          [_sessionId].concat(args, result => {
-            if (result instanceof Error) {
-              handleError(result)
-            } else {
-              resolve(result)
-            }
-          })
-        )
-      }
-
-      const handleErrorReject = error => {
-        reject(error)
-      }
-
-      const handleErrorReconnectAndRetry = error => {
-        if (isTimeoutError(error)) {
-          // Session might have timed out - call connect with existing parameters, then retry
-          this.connectAsync().then(result => {
-            // If we fail again though, just stop and reject
-            runThriftMethod(result._sessionId[0], handleErrorReject)
-          })
-        } else {
-          reject(error)
-        }
-      }
-
-      runThriftMethod(sessionId, handleErrorReconnectAndRetry)
+      client[methodName].apply(
+        client,
+        [sessionId].concat(args, result => {
+          if (result instanceof Error) {
+            reject(result)
+          } else {
+            resolve(result)
+          }
+        })
+      )
     })
 
   overSingleClient = "SINGLE_CLIENT"
-
   overAllClients = "ALL_CLIENTS"
 
-  // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
+  // Wrap a Thrift method to perform session check and mapping over
+  // all clients (for mutating methods)
   wrapThrift = (methodName, overClients, processArgs) => (...args) => {
     if (this._sessionId) {
       const processedArgs = processArgs(args)
@@ -365,101 +386,10 @@ class MapdCon {
     }
   }
 
-  getFrontendViews = callback => {
-    if (this._sessionId) {
-      this._client[0].get_frontend_views(this._sessionId[0], callback)
-    } else {
-      callback(new Error("No Session ID"))
-    }
-  }
-
-  /**
-   * Get the recent Immerse dashboards as a list of {@link TFrontendView} objects.
-   * These objects contain a value for the <code>view_name</code> property,
-   * but not for the <code>view_state</code> property.
-   * @return {Promise<TFrontendView[]>} An array that has all saved dashboards.
-   *
-   * @example <caption>Get the list of Immerse dashboards from the server:</caption>
-   *
-   * con.getFrontendViewsAsync().then((results) => console.log(results))
-   * // [TFrontendView, TFrontendView]
-   */
-  getFrontendViewsAsync = () =>
-    new Promise((resolve, reject) => {
-      this.getFrontendViews((error, views) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(views)
-        }
-      })
-    })
-
-  getFrontendView = (viewName, callback) => {
-    if (this._sessionId && viewName) {
-      this._client[0].get_frontend_view(this._sessionId[0], viewName, callback)
-    } else {
-      callback(new Error("No Session ID"))
-    }
-  }
-
-  /**
-   * Get a dashboard object containing a value for the <code>view_state</code> property.
-   * This object contains a value for the <code>view_state</code> property,
-   * but not for the <code>view_name</code> property.
-   * @param {String} viewName The name of the dashboard.
-   * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard.
-   *
-   * @example <caption>Get a specific dashboard from the server:</caption>
-   *
-   * con.getFrontendViewAsync('view_name').then((result) => console.log(result))
-   * // {TFrontendView}
-   */
-  getFrontendViewAsync = viewName =>
-    new Promise((resolve, reject) => {
-      this.getFrontendView(viewName, (err, view) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(view)
-        }
-      })
-    })
+  // ** Client methods **
 
   getStatus = callback => {
     this._client[0].get_status(this._sessionId[0], callback)
-  }
-
-  /**
-   * Get the status of the server as a {@link TServerStatus} object.
-   * This includes the server version number, whether the server is read-only,
-   * and whether backend rendering is enabled.
-   * @return {Promise.<Object>} An object that contains information about the server status.
-   *
-   * @example <caption>Get the server status:</caption>
-   *
-   * con.getServerStatusAsync().then((result) => console.log(result))
-   * // {
-   * //   "read_only": false,
-   * //   "version": "3.0.0dev-20170503-40e2de3",
-   * //   "rendering_enabled": true,
-   * //   "start_time": 1493840131
-   * // }
-   */
-
-  getServerStatusAsync = () => {
-    console.warn(
-      "getServerStatusAsync is deprecated, please use getStatusAsync"
-    )
-    return new Promise((resolve, reject) => {
-      this.getStatus((err, result) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(result[0])
-        }
-      })
-    })
   }
 
   /**
@@ -479,16 +409,18 @@ class MapdCon {
    * // }]
    */
 
-  getStatusAsync = () =>
-    new Promise((resolve, reject) => {
-      this.getStatus((err, result) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(result)
-        }
+  getStatusAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.getStatus((err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result)
+          }
+        })
       })
-    })
+  )
 
   getHardwareInfo = callback => {
     this._client[0].get_hardware_info(this._sessionId[0], callback)
@@ -532,188 +464,18 @@ class MapdCon {
    * }
    */
 
-  getHardwareInfoAsync = () =>
-    new Promise((resolve, reject) => {
-      this.getHardwareInfo((err, result) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(result)
-        }
+  getHardwareInfoAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.getHardwareInfo((err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result)
+          }
+        })
       })
-    })
-
-  /**
-   * Add a new dashboard to the server.
-   * @param {String} viewName The name of the new dashboard.
-   * @param {String} viewState The Base64-encoded state string of the new dashboard.
-   * @param {String} imageHash The numeric hash of the dashboard thumbnail.
-   * @param {String} metaData - Stringified metadata related to the view.
-   * @return {Promise} Returns empty if successful.
-   *
-   * @example <caption>Add a new dashboard to the server:</caption>
-   *
-   * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
-   */
-  createFrontendViewAsync(viewName, viewState, imageHash, metaData) {
-    if (!this._sessionId) {
-      return new Promise((resolve, reject) => {
-        reject(
-          new Error(
-            "You are not connected to a server. Try running the connect method first."
-          )
-        )
-      })
-    }
-
-    return Promise.all(
-      this._client.map(
-        (client, i) =>
-          new Promise((resolve, reject) => {
-            client.create_frontend_view(
-              this._sessionId[i],
-              viewName,
-              viewState,
-              imageHash,
-              metaData,
-              (error, data) => {
-                if (error) {
-                  reject(error)
-                } else {
-                  resolve(data)
-                }
-              }
-            )
-          })
-      )
-    )
-  }
-
-  deleteFrontendView(viewName, callback) {
-    if (!this._sessionId) {
-      throw new Error(
-        "You are not connected to a server. Try running the connect method first."
-      )
-    }
-    try {
-      this._client.forEach((client, i) => {
-        // do we want to try each one individually so if we fail we keep going?
-        client.delete_frontend_view(this._sessionId[i], viewName, callback)
-      })
-    } catch (err) {
-      console.log(
-        "ERROR: Could not delete the frontend view. Check your session id.",
-        err
-      )
-    }
-  }
-
-  /**
-   * Delete a dashboard object containing a value for the <code>viewState</code> property.
-   * @param {String} viewName The name of the dashboard.
-   * @return {Promise.<String>} The name of dashboard deleted.
-   *
-   * @example <caption>Delete a specific dashboard from the server:</caption>
-   *
-   * con.deleteFrontendViewAsync('view_name').then(res => console.log(res))
-   */
-  deleteFrontendViewAsync = viewName =>
-    new Promise((resolve, reject) => {
-      this.deleteFrontendView(viewName, err => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(viewName)
-        }
-      })
-    })
-
-  /**
-   * Create a short hash to make it easy to share a link to a specific dashboard.
-   * @param {String} viewState The Base64-encoded state string of the new dashboard.
-   * @param {String} metaData Stringified metadata related to the link.
-   * @return {Promise.<String[]>} A short hash of the dashboard used for URLs.
-   *
-   * @example <caption>Create a link to the current state of a dashboard:</caption>
-   *
-   * con.createLinkAsync("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
-   * // ["28127951"]
-   */
-  createLinkAsync(viewState, metaData) {
-    return Promise.all(
-      this._client.map(
-        (client, i) =>
-          new Promise((resolve, reject) => {
-            client.create_link(
-              this._sessionId[i],
-              viewState,
-              metaData,
-              (error, data) => {
-                if (error) {
-                  reject(error)
-                } else {
-                  const result = data.split(",").reduce((links, link) => {
-                    if (links.indexOf(link) === -1) {
-                      links.push(link)
-                    }
-                    return links
-                  }, [])
-                  if (!result || result.length !== 1) {
-                    reject(
-                      new Error("Different links were created on connection")
-                    )
-                  } else {
-                    resolve(result.join())
-                  }
-                }
-              }
-            )
-          })
-      )
-    )
-  }
-
-  getLinkView = (link, callback) => {
-    this._client[0].get_link_view(this._sessionId[0], link, callback)
-  }
-
-  /**
-   * Get a fully formed dashboard object from a generated share link.
-   * This object contains the link for the <code>view_name</code> property.
-   * @param {String} link  The short hash of the dashboard; see {@link createLink}.
-   * @return {Promise.<Object>} Object of the dashboard and metadata.
-   *
-   * @example <caption>Get a dashboard from a link:</caption>
-   *
-   * con.getLinkViewAsync('28127951').then(res => console.log(res))
-   * //  {
-   * //    "view_name": "28127951",
-   * //    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",
-   * //    "image_hash": "",
-   * //    "update_time": "2017-04-28T21:34:01Z",
-   * //    "view_metadata": "metaData"
-   * //  }
-   */
-  getLinkViewAsync = link =>
-    new Promise((resolve, reject) => {
-      this.getLinkView(link, (err, theLink) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(theLink)
-        }
-      })
-    })
-
-  detectColumnTypes(fileName, copyParams, callback) {
-    const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
-    this._client[0].detect_column_types(
-      this._sessionId[0],
-      fileName,
-      thriftCopyParams,
-      callback
-    )
-  }
+  )
 
   /**
    * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
@@ -725,10 +487,12 @@ class MapdCon {
    *
    * con.getFirstGeoFileInArchiveAsync('archive.zip', {}).then(res => console.log(res))
    */
-  getFirstGeoFileInArchiveAsync = this.wrapThrift(
-    "get_first_geo_file_in_archive",
-    this.overSingleClient,
-    args => args
+  getFirstGeoFileInArchiveAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_first_geo_file_in_archive",
+      this.overSingleClient,
+      args => args
+    )
   )
 
   /**
@@ -739,10 +503,8 @@ class MapdCon {
    *
    * con.getUsersAsync().then(res => console.log(res))
    */
-  getUsersAsync = this.wrapThrift(
-    "get_users",
-    this.overSingleClient,
-    args => args
+  getUsersAsync = this.handleErrors(
+    this.wrapThrift("get_users", this.overSingleClient, args => args)
   )
 
   /**
@@ -753,10 +515,8 @@ class MapdCon {
    *
    * con.getRolesAsync().then(res => console.log(res))
    */
-  getRolesAsync = this.wrapThrift(
-    "get_roles",
-    this.overSingleClient,
-    args => args
+  getRolesAsync = this.handleErrors(
+    this.wrapThrift("get_roles", this.overSingleClient, args => args)
   )
 
   /**
@@ -767,10 +527,8 @@ class MapdCon {
    *
    * con.getDashboardsAsync().then(res => console.log(res))
    */
-  getDashboardsAsync = this.wrapThrift(
-    "get_dashboards",
-    this.overSingleClient,
-    args => args
+  getDashboardsAsync = this.handleErrors(
+    this.wrapThrift("get_dashboards", this.overSingleClient, args => args)
   )
 
   /**
@@ -782,10 +540,8 @@ class MapdCon {
    *
    * con.getDashboardAsync().then(res => console.log(res))
    */
-  getDashboardAsync = this.wrapThrift(
-    "get_dashboard",
-    this.overSingleClient,
-    args => args
+  getDashboardAsync = this.handleErrors(
+    this.wrapThrift("get_dashboard", this.overSingleClient, args => args)
   )
 
   /**
@@ -800,10 +556,8 @@ class MapdCon {
    *
    * con.createDashboardAsync('newSave', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
-  createDashboardAsync = this.wrapThrift(
-    "create_dashboard",
-    this.overAllClients,
-    args => args
+  createDashboardAsync = this.handleErrors(
+    this.wrapThrift("create_dashboard", this.overAllClients, args => args)
   )
 
   /**
@@ -820,10 +574,8 @@ class MapdCon {
    *
    * con.replaceDashboardAsync(123, 'replaceSave', 'owner', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
-  replaceDashboardAsync = this.wrapThrift(
-    "replace_dashboard",
-    this.overAllClients,
-    args => args
+  replaceDashboardAsync = this.handleErrors(
+    this.wrapThrift("replace_dashboard", this.overAllClients, args => args)
   )
 
   /**
@@ -835,10 +587,8 @@ class MapdCon {
    *
    * con.deleteDashboardAsync(123).then(res => console.log(res))
    */
-  deleteDashboardAsync = this.wrapThrift(
-    "delete_dashboard",
-    this.overAllClients,
-    args => args
+  deleteDashboardAsync = this.handleErrors(
+    this.wrapThrift("delete_dashboard", this.overAllClients, args => args)
   )
 
   /**
@@ -853,15 +603,17 @@ class MapdCon {
    *
    * con.shareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
    */
-  shareDashboardAsync = this.wrapThrift(
-    "share_dashboard",
-    this.overAllClients,
-    ([dashboardId, groups, objects, permissions]) => [
-      dashboardId,
-      groups,
-      objects,
-      new TDashboardPermissions(permissions)
-    ]
+  shareDashboardAsync = this.handleErrors(
+    this.wrapThrift(
+      "share_dashboard",
+      this.overAllClients,
+      ([dashboardId, groups, objects, permissions]) => [
+        dashboardId,
+        groups,
+        objects,
+        new TDashboardPermissions(permissions)
+      ]
+    )
   )
 
   /**
@@ -876,15 +628,17 @@ class MapdCon {
    *
    * con.unshareDashboardAsync(123, ['group1', 'group2'], ['object1', 'object2'], ['perm1', 'perm2']).then(res => console.log(res))
    */
-  unshareDashboardAsync = this.wrapThrift(
-    "unshare_dashboard",
-    this.overAllClients,
-    ([dashboardId, groups, objects, permissions]) => [
-      dashboardId,
-      groups,
-      objects,
-      new TDashboardPermissions(permissions)
-    ]
+  unshareDashboardAsync = this.handleErrors(
+    this.wrapThrift(
+      "unshare_dashboard",
+      this.overAllClients,
+      ([dashboardId, groups, objects, permissions]) => [
+        dashboardId,
+        groups,
+        objects,
+        new TDashboardPermissions(permissions)
+      ]
+    )
   )
 
   /**
@@ -896,10 +650,12 @@ class MapdCon {
    *
    * con.getDashboardGranteesAsync(123).then(res => console.log(res))
    */
-  getDashboardGranteesAsync = this.wrapThrift(
-    "get_dashboard_grantees",
-    this.overSingleClient,
-    args => args
+  getDashboardGranteesAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_dashboard_grantees",
+      this.overSingleClient,
+      args => args
+    )
   )
 
   /**
@@ -911,10 +667,12 @@ class MapdCon {
    *
    * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
    */
-  getDbObjectsForGranteeAsync = this.wrapThrift(
-    "get_db_objects_for_grantee",
-    this.overSingleClient,
-    args => args
+  getDbObjectsForGranteeAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_db_objects_for_grantee",
+      this.overSingleClient,
+      args => args
+    )
   )
 
   /**
@@ -927,10 +685,12 @@ class MapdCon {
    *
    * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
    */
-  getDbObjectPrivsAsync = this.wrapThrift(
-    "get_db_object_privs",
-    this.overSingleClient,
-    ([objectName, type]) => [objectName, TDBObjectType[type]]
+  getDbObjectPrivsAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_db_object_privs",
+      this.overSingleClient,
+      ([objectName, type]) => [objectName, TDBObjectType[type]]
+    )
   )
 
   /**
@@ -938,10 +698,12 @@ class MapdCon {
    * @param {String} username - The username whose roles you wish to get.
    * @return {Promise} A list of all roles assigned to the username.
    */
-  getAllRolesForUserAsync = this.wrapThrift(
-    "get_all_roles_for_user",
-    this.overSingleClient,
-    args => args
+  getAllRolesForUserAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_all_roles_for_user",
+      this.overSingleClient,
+      args => args
+    )
   )
 
   /**
@@ -969,15 +731,17 @@ class MapdCon {
    *   if(res) { console.log("Can view the SQL editor") }
    * )
    */
-  hasObjectPrivilegesAsync = this.wrapThrift(
-    "has_object_privilege",
-    this.overSingleClient,
-    ([granteeName, objectName, objectType, permissions]) => [
-      granteeName,
-      objectName,
-      objectType,
-      permissions
-    ]
+  hasObjectPrivilegesAsync = this.handleErrors(
+    this.wrapThrift(
+      "has_object_privilege",
+      this.overSingleClient,
+      ([granteeName, objectName, objectType, permissions]) => [
+        granteeName,
+        objectName,
+        objectType,
+        permissions
+      ]
+    )
   )
 
   /**
@@ -1005,6 +769,16 @@ class MapdCon {
       })
     )
 
+  detectColumnTypes(fileName, copyParams, callback) {
+    const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
+    this._client[0].detect_column_types(
+      this._sessionId[0],
+      fileName,
+      thriftCopyParams,
+      callback
+    )
+  }
+
   /**
    * Asynchronously get data from an importable file,
    * such as a CSV or plaintext file with a header.
@@ -1019,18 +793,19 @@ class MapdCon {
    * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
    *
    */
-  detectColumnTypesAsync(fileName, copyParams) {
-    return new Promise((resolve, reject) => {
-      this.detectColumnTypes.bind(this, fileName, copyParams)((err, res) => {
-        if (err) {
-          reject(err)
-        } else {
-          this.importerRowDesc = res.row_set.row_desc
-          resolve(res)
-        }
+  detectColumnTypesAsync = this.handleErrors(
+    (fileName, copyParams) =>
+      new Promise((resolve, reject) => {
+        this.detectColumnTypes.bind(this, fileName, copyParams)((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            this.importerRowDesc = res.row_set.row_desc
+            resolve(res)
+          }
+        })
       })
-    })
-  }
+  )
 
   /**
    * Submit a query to the database and process the results.
@@ -1129,16 +904,18 @@ class MapdCon {
     }
   }
 
-  queryAsync = (query, options) =>
-    new Promise((resolve, reject) => {
-      this.query(query, options, (error, result) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result)
-        }
+  queryAsync = this.handleErrors(
+    (query, options) =>
+      new Promise((resolve, reject) => {
+        this.query(query, options, (error, result) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        })
       })
-    })
+  )
 
   /**
    * Submit a query to validate that the backend can create a result set based on the SQL statement.
@@ -1159,29 +936,22 @@ class MapdCon {
    * //  }]
    *
    */
-  validateQuery(query) {
-    return new Promise((resolve, reject) => {
-      this._client[0].sql_validate(this._sessionId[0], query, (error, res) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(this.convertFromThriftTypes(res))
-        }
+  validateQuery = this.handleErrors(
+    query =>
+      new Promise((resolve, reject) => {
+        this._client[0].sql_validate(
+          this._sessionId[0],
+          query,
+          (error, res) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(this.convertFromThriftTypes(res))
+            }
+          }
+        )
       })
-    })
-  }
-
-  removeConnection(conId) {
-    if (conId < 0 || conId >= this.numConnections) {
-      const err = {
-        msg: "Remove connection id invalid"
-      }
-      throw err
-    }
-    this._client.splice(conId, 1)
-    this._sessionId.splice(conId, 1)
-    this._numConnections--
-  }
+  )
 
   getTables(callback) {
     this._client[0].get_tables(this._sessionId[0], (error, tables) => {
@@ -1213,17 +983,18 @@ class MapdCon {
    *  //   },
    *  //  ...]
    */
-  getTablesAsync() {
-    return new Promise((resolve, reject) => {
-      this.getTables.bind(this)((error, tables) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(tables)
-        }
+  getTablesAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.getTables.bind(this)((error, tables) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(tables)
+          }
+        })
       })
-    })
-  }
+  )
 
   getTablesWithMeta(callback) {
     this._client[0].get_tables_meta(this._sessionId[0], (error, tables) => {
@@ -1269,17 +1040,18 @@ class MapdCon {
    *   },
    *  ...]
    */
-  getTablesWithMetaAsync() {
-    return new Promise((resolve, reject) => {
-      this.getTablesWithMeta.bind(this)((error, tables) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(tables)
-        }
+  getTablesWithMetaAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.getTablesWithMeta.bind(this)((error, tables) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(tables)
+          }
+        })
       })
-    })
-  }
+  )
 
   /**
    * Submits an SQL string to the backend and returns a completion hints object.
@@ -1368,16 +1140,18 @@ class MapdCon {
     )
   }
 
-  getFieldsAsync = tableName =>
-    new Promise((resolve, reject) => {
-      this.getFields(tableName, (error, fields) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(fields)
-        }
+  getFieldsAsync = this.handleErrors(
+    tableName =>
+      new Promise((resolve, reject) => {
+        this.getFields(tableName, (error, fields) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(fields)
+          }
+        })
       })
-    })
+  )
 
   createTable(tableName, rowDescObj, tableType, createParams, callback) {
     if (!this._sessionId) {
@@ -1422,16 +1196,24 @@ class MapdCon {
    *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
    *  // undefined
    */
-  createTableAsync = (tableName, rowDescObj, tableType, createParams) =>
-    new Promise((resolve, reject) => {
-      this.createTable(tableName, rowDescObj, tableType, createParams, err => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve()
-        }
+  createTableAsync = this.handleErrors(
+    (tableName, rowDescObj, tableType, createParams) =>
+      new Promise((resolve, reject) => {
+        this.createTable(
+          tableName,
+          rowDescObj,
+          tableType,
+          createParams,
+          err => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve()
+            }
+          }
+        )
       })
-    })
+  )
 
   importTable(
     tableName,
@@ -1510,7 +1292,7 @@ class MapdCon {
    * @param {TCopyParams} copyParams See {@link TCopyParams}
    * @param {TColumnType[]} headers A collection of metadata related to the table headers.
    */
-  importTableAsync = this.importTableAsyncWrapper(false)
+  importTableAsync = this.handleErrors(this.importTableAsyncWrapper(false))
 
   /**
    * Import a geo table from a file.
@@ -1519,7 +1301,7 @@ class MapdCon {
    * @param {TCopyParams} copyParams See {@link TCopyParams}
    * @param {TColumnType[]} headers A colleciton of metadata related to the table headers.
    */
-  importTableGeoAsync = this.importTableAsyncWrapper(true)
+  importTableGeoAsync = this.handleErrors(this.importTableAsyncWrapper(true))
 
   /**
    * Use for backend rendering. This method fetches a PNG image
@@ -1538,6 +1320,7 @@ class MapdCon {
   renderVega(widgetid, vega, options, callback) /* istanbul ignore next */ {
     let queryId = null
     let compressionLevel = COMPRESSION_LEVEL_DEFAULT
+
     if (options) {
       queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId
       compressionLevel = options.hasOwnProperty("compressionLevel")
@@ -1588,32 +1371,46 @@ class MapdCon {
     return curNonce
   }
 
+  renderVegaAsync = this.handleErrors(
+    (widgetid, vega, options) =>
+      new Promise((resolve, reject) => {
+        this.renderVega(widgetid, vega, options, (error, result) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        })
+      })
+  )
+
   /**
    * Used primarily for backend-rendered maps; fetches the row
    * for a specific table that was last rendered at a pixel.
    *
-   * @param {widgetId} Number The widget ID of the caller.
+   * @param {Number} widgetId The widget ID of the caller.
    * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
-   * @param {String} tableName The table containing the geo data.
    * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
-   * @param {Array<Function>} callbacks A collection of callbacks.
    * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
+   * @param {Function} callback A callback function with the signature `(err, result) => result`.
+   *
+   * @returns {String} Current result nonce
    */
-
   getResultRowForPixel(
     widgetId,
     pixel,
     tableColNamesMap,
-    callbacks,
-    pixelRadius = 2
+    pixelRadius = 2,
+    callback = null
   ) /* istanbul ignore next */ {
     if (!(pixel instanceof TPixel)) {
       pixel = new TPixel(pixel)
     }
+
     const columnFormat = true // BOOL
     const curNonce = (this._nonce++).toString()
 
-    if (!callbacks) {
+    if (!callback) {
       return this.processPixelResults(
         undefined, // eslint-disable-line no-undefined
         this._client[this._lastRenderCon].get_result_row_for_pixel(
@@ -1627,6 +1424,7 @@ class MapdCon {
         )
       )
     }
+
     this._client[this._lastRenderCon].get_result_row_for_pixel(
       this._sessionId[this._lastRenderCon],
       widgetId,
@@ -1635,51 +1433,76 @@ class MapdCon {
       columnFormat,
       pixelRadius,
       curNonce,
-      this.processPixelResults.bind(this, callbacks)
+      this.processPixelResults.bind(this, callback)
     )
 
     return curNonce
   }
 
+  getResultRowForPixelAsync = this.handleErrors(
+    (widgetId, pixel, tableColNamesMap, pixelRadius = 2) =>
+      new Promise((resolve, reject) => {
+        this.getResultRowForPixel(
+          widgetId,
+          pixel,
+          tableColNamesMap,
+          pixelRadius,
+          (error, result) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(result)
+            }
+          }
+        )
+      })
+  )
+
   /**
    * Formats the pixel results into the same pattern as textual results.
    *
-   * @param {Array<Function>} callbacks A collection of callbacks.
+   * @param {Function} callback A callback function with the signature `(err, result) => result`.
    * @param {Object} error An error if thrown; otherwise null.
    * @param {Array|Object} results Unformatted results of pixel `rowId` information.
    *
    * @returns {Object} An object with the pixel results formatted for display.
    */
-  processPixelResults(callbacks, error, results) {
-    callbacks = Array.isArray(callbacks) ? callbacks : [callbacks]
+  processPixelResults(callback, error, results) {
     results = Array.isArray(results) ? results.pixel_rows : [results]
+
     if (error) {
-      if (callbacks) {
-        callbacks.pop()(error, results)
+      if (callback) {
+        return callback(error, results)
       } else {
         throw new Error(
           `Unable to process result row for pixel results: ${error}`
         )
       }
     }
-    const numPixels = results.length
+
     const processResultsOptions = {
       isImage: false,
       eliminateNullRows: false,
       query: "pixel request",
       queryId: -2
     }
+
+    const numPixels = results.length
     for (let p = 0; p < numPixels; p++) {
       results[p].row_set = this.processResults(
         processResultsOptions,
         results[p]
       )
     }
-    if (!callbacks) {
+
+    if (callback) {
+      return callback(error, results)
+    } else {
       return results
     }
-    callbacks.pop()(error, results)
   }
+
+  // ** Configuration methods **
 
   /**
    * Get or set the session ID used by the server to serve the correct data.
@@ -1895,6 +1718,60 @@ class MapdCon {
     return this._host.map(
       (host, i) => this._protocol[i] + "://" + host + ":" + this._port[i]
     )
+  }
+
+  /**
+   * Set the license for Trial or Enterprise
+   * @param {String} key The key to install
+   * @param {Object} config Protocol, host and port to connect to
+   * @return {Promise.<Object>} Claims or Error.
+   */
+  setLicenseKey(key, {protocol, host, port}) {
+    return new Promise((resolve) => {
+      let client = Array.isArray(this._client) && this._client[0]
+      let sessionId = this._sessionId && this._sessionId[0]
+      if (!client) {
+        const url = `${protocol}://${host}:${port}`
+        const thriftTransport = new Thrift.Transport(url)
+        const thriftProtocol = new Thrift.Protocol(thriftTransport)
+        client = new MapDClientV2(thriftProtocol)
+        sessionId = ""
+      }
+      const result = client.set_license_key(
+        sessionId,
+        key,
+        this._nonce++
+      )
+      resolve(result)
+    })
+  }
+
+  /**
+   * Get the license for Trial or Enterprise
+   * @param {Object} config Protocol, host and port to connect to
+   * @return {Promise.<Object>} Claims or Error.
+   */
+  getLicenseClaims({protocol, host, port}) {
+    return new Promise((resolve, reject) => {
+      let client = Array.isArray(this._client) && this._client[0]
+      let sessionId = this._sessionId && this._sessionId[0]
+      if (!client) {
+        const url = `${protocol}://${host}:${port}`
+        const thriftTransport = new Thrift.Transport(url)
+        const thriftProtocol = new Thrift.Protocol(thriftTransport)
+        client = new MapDClientV2(thriftProtocol)
+        sessionId = ""
+      }
+      try {
+        const result = client.get_license_claims(
+          sessionId,
+          this._nonce++
+        )
+        resolve(result)
+      } catch (e) {
+        reject(e)
+      }
+    })
   }
 }
 

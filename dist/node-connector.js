@@ -16914,11 +16914,15 @@ module.exports =
 
 	var helpers = _interopRequireWildcard(_helpers);
 
-	var _mapdClientV = __webpack_require__(58);
+	var _eventemitter = __webpack_require__(58);
+
+	var _eventemitter2 = _interopRequireDefault(_eventemitter);
+
+	var _mapdClientV = __webpack_require__(59);
 
 	var _mapdClientV2 = _interopRequireDefault(_mapdClientV);
 
-	var _processQueryResults = __webpack_require__(60);
+	var _processQueryResults = __webpack_require__(61);
 
 	var _processQueryResults2 = _interopRequireDefault(_processQueryResults);
 
@@ -16946,7 +16950,6 @@ module.exports =
 	  Thrift.Transport = thriftWrapper.TBufferedTransport;
 	  Thrift.Protocol = thriftWrapper.TJSONProtocol;
 	}
-
 
 	var COMPRESSION_LEVEL_DEFAULT = 3;
 
@@ -16984,35 +16987,50 @@ module.exports =
 	      _this.queryTimes[queryId] = execution_time_ms;
 	    };
 
+	    this.events = new _eventemitter2.default();
+
+	    this.handleErrors = function (method) {
+	      return function () {
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        return new Promise(function (resolve, reject) {
+	          var success = function success(result) {
+	            return resolve(result);
+	          };
+	          var failure = function failure(error) {
+	            _this.events.emit("error", error);
+	            return reject(error);
+	          };
+
+	          var promise = method.apply(_this, args);
+
+	          promise.then(success).catch(function (error) {
+	            if (isTimeoutError(error)) {
+	              // Reconnect, then try the method once more
+	              return _this.connectAsync().then(function () {
+	                var retriedPromise = method.apply(_this, args);
+
+	                retriedPromise.then(success).catch(failure);
+	              });
+	            } else {
+	              return failure(error);
+	            }
+	          });
+	        });
+	      };
+	    };
+
 	    this.promisifyThriftMethod = function (client, sessionId, methodName, args) {
 	      return new Promise(function (resolve, reject) {
-	        var runThriftMethod = function runThriftMethod(_sessionId, handleError) {
-	          client[methodName].apply(client, [_sessionId].concat(args, function (result) {
-	            if (result instanceof Error) {
-	              handleError(result);
-	            } else {
-	              resolve(result);
-	            }
-	          }));
-	        };
-
-	        var handleErrorReject = function handleErrorReject(error) {
-	          reject(error);
-	        };
-
-	        var handleErrorReconnectAndRetry = function handleErrorReconnectAndRetry(error) {
-	          if (isTimeoutError(error)) {
-	            // Session might have timed out - call connect with existing parameters, then retry
-	            _this.connectAsync().then(function (result) {
-	              // If we fail again though, just stop and reject
-	              runThriftMethod(result._sessionId[0], handleErrorReject);
-	            });
+	        client[methodName].apply(client, [sessionId].concat(args, function (result) {
+	          if (result instanceof Error) {
+	            reject(result);
 	          } else {
-	            reject(error);
+	            resolve(result);
 	          }
-	        };
-
-	        runThriftMethod(sessionId, handleErrorReconnectAndRetry);
+	        }));
 	      });
 	    };
 
@@ -17021,8 +17039,8 @@ module.exports =
 
 	    this.wrapThrift = function (methodName, overClients, processArgs) {
 	      return function () {
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	          args[_key] = arguments[_key];
+	        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	          args[_key2] = arguments[_key2];
 	        }
 
 	        if (_this._sessionId) {
@@ -17041,64 +17059,11 @@ module.exports =
 	      };
 	    };
 
-	    this.getFrontendViews = function (callback) {
-	      if (_this._sessionId) {
-	        _this._client[0].get_frontend_views(_this._sessionId[0], callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewsAsync = function () {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendViews(function (error, views) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(views);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getFrontendView = function (viewName, callback) {
-	      if (_this._sessionId && viewName) {
-	        _this._client[0].get_frontend_view(_this._sessionId[0], viewName, callback);
-	      } else {
-	        callback(new Error("No Session ID"));
-	      }
-	    };
-
-	    this.getFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getFrontendView(viewName, function (err, view) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(view);
-	          }
-	        });
-	      });
-	    };
-
 	    this.getStatus = function (callback) {
 	      _this._client[0].get_status(_this._sessionId[0], callback);
 	    };
 
-	    this.getServerStatusAsync = function () {
-	      console.warn("getServerStatusAsync is deprecated, please use getStatusAsync");
-	      return new Promise(function (resolve, reject) {
-	        _this.getStatus(function (err, result) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(result[0]);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getStatusAsync = function () {
+	    this.getStatusAsync = this.handleErrors(function () {
 	      return new Promise(function (resolve, reject) {
 	        _this.getStatus(function (err, result) {
 	          if (err) {
@@ -17108,13 +17073,13 @@ module.exports =
 	          }
 	        });
 	      });
-	    };
+	    });
 
 	    this.getHardwareInfo = function (callback) {
 	      _this._client[0].get_hardware_info(_this._sessionId[0], callback);
 	    };
 
-	    this.getHardwareInfoAsync = function () {
+	    this.getHardwareInfoAsync = this.handleErrors(function () {
 	      return new Promise(function (resolve, reject) {
 	        _this.getHardwareInfo(function (err, result) {
 	          if (err) {
@@ -17124,61 +17089,32 @@ module.exports =
 	          }
 	        });
 	      });
-	    };
-
-	    this.deleteFrontendViewAsync = function (viewName) {
-	      return new Promise(function (resolve, reject) {
-	        _this.deleteFrontendView(viewName, function (err) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(viewName);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getLinkView = function (link, callback) {
-	      _this._client[0].get_link_view(_this._sessionId[0], link, callback);
-	    };
-
-	    this.getLinkViewAsync = function (link) {
-	      return new Promise(function (resolve, reject) {
-	        _this.getLinkView(link, function (err, theLink) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            resolve(theLink);
-	          }
-	        });
-	      });
-	    };
-
-	    this.getFirstGeoFileInArchiveAsync = this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
-	      return args;
 	    });
-	    this.getUsersAsync = this.wrapThrift("get_users", this.overSingleClient, function (args) {
+	    this.getFirstGeoFileInArchiveAsync = this.handleErrors(this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getRolesAsync = this.wrapThrift("get_roles", this.overSingleClient, function (args) {
+	    }));
+	    this.getUsersAsync = this.handleErrors(this.wrapThrift("get_users", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDashboardsAsync = this.wrapThrift("get_dashboards", this.overSingleClient, function (args) {
+	    }));
+	    this.getRolesAsync = this.handleErrors(this.wrapThrift("get_roles", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDashboardAsync = this.wrapThrift("get_dashboard", this.overSingleClient, function (args) {
+	    }));
+	    this.getDashboardsAsync = this.handleErrors(this.wrapThrift("get_dashboards", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.createDashboardAsync = this.wrapThrift("create_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.getDashboardAsync = this.handleErrors(this.wrapThrift("get_dashboard", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.replaceDashboardAsync = this.wrapThrift("replace_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.createDashboardAsync = this.handleErrors(this.wrapThrift("create_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    });
-	    this.deleteDashboardAsync = this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
+	    }));
+	    this.replaceDashboardAsync = this.handleErrors(this.wrapThrift("replace_dashboard", this.overAllClients, function (args) {
 	      return args;
-	    });
-	    this.shareDashboardAsync = this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
+	    }));
+	    this.deleteDashboardAsync = this.handleErrors(this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
+	      return args;
+	    }));
+	    this.shareDashboardAsync = this.handleErrors(this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
 	      var _ref3 = _slicedToArray(_ref2, 4),
 	          dashboardId = _ref3[0],
 	          groups = _ref3[1],
@@ -17186,8 +17122,8 @@ module.exports =
 	          permissions = _ref3[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    });
-	    this.unshareDashboardAsync = this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
+	    }));
+	    this.unshareDashboardAsync = this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
 	      var _ref5 = _slicedToArray(_ref4, 4),
 	          dashboardId = _ref5[0],
 	          groups = _ref5[1],
@@ -17195,24 +17131,24 @@ module.exports =
 	          permissions = _ref5[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
-	    });
-	    this.getDashboardGranteesAsync = this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
+	    }));
+	    this.getDashboardGranteesAsync = this.handleErrors(this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDbObjectsForGranteeAsync = this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
+	    }));
+	    this.getDbObjectsForGranteeAsync = this.handleErrors(this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.getDbObjectPrivsAsync = this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
+	    }));
+	    this.getDbObjectPrivsAsync = this.handleErrors(this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
 	      var _ref7 = _slicedToArray(_ref6, 2),
 	          objectName = _ref7[0],
 	          type = _ref7[1];
 
 	      return [objectName, TDBObjectType[type]];
-	    });
-	    this.getAllRolesForUserAsync = this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
+	    }));
+	    this.getAllRolesForUserAsync = this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
 	      return args;
-	    });
-	    this.hasObjectPrivilegesAsync = this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
+	    }));
+	    this.hasObjectPrivilegesAsync = this.handleErrors(this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
 	      var _ref9 = _slicedToArray(_ref8, 4),
 	          granteeName = _ref9[0],
 	          objectName = _ref9[1],
@@ -17220,7 +17156,7 @@ module.exports =
 	          permissions = _ref9[3];
 
 	      return [granteeName, objectName, objectType, permissions];
-	    });
+	    }));
 
 	    this.hasDbPrivilegesAsync = function (granteeName, dbName, dbPrivs) {
 	      return _this.hasObjectPrivilegesAsync(granteeName, dbName, TDBObjectType.DatabaseDBObjectType, new TDBObjectPermissions({
@@ -17228,7 +17164,19 @@ module.exports =
 	      }));
 	    };
 
-	    this.queryAsync = function (query, options) {
+	    this.detectColumnTypesAsync = this.handleErrors(function (fileName, copyParams) {
+	      return new Promise(function (resolve, reject) {
+	        _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            _this.importerRowDesc = res.row_set.row_desc;
+	            resolve(res);
+	          }
+	        });
+	      });
+	    });
+	    this.queryAsync = this.handleErrors(function (query, options) {
 	      return new Promise(function (resolve, reject) {
 	        _this.query(query, options, function (error, result) {
 	          if (error) {
@@ -17238,9 +17186,41 @@ module.exports =
 	          }
 	        });
 	      });
-	    };
-
-	    this.getFieldsAsync = function (tableName) {
+	    });
+	    this.validateQuery = this.handleErrors(function (query) {
+	      return new Promise(function (resolve, reject) {
+	        _this._client[0].sql_validate(_this._sessionId[0], query, function (error, res) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(_this.convertFromThriftTypes(res));
+	          }
+	        });
+	      });
+	    });
+	    this.getTablesAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getTables.bind(_this)(function (error, tables) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(tables);
+	          }
+	        });
+	      });
+	    });
+	    this.getTablesWithMetaAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getTablesWithMeta.bind(_this)(function (error, tables) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(tables);
+	          }
+	        });
+	      });
+	    });
+	    this.getFieldsAsync = this.handleErrors(function (tableName) {
 	      return new Promise(function (resolve, reject) {
 	        _this.getFields(tableName, function (error, fields) {
 	          if (error) {
@@ -17250,9 +17230,8 @@ module.exports =
 	          }
 	        });
 	      });
-	    };
-
-	    this.createTableAsync = function (tableName, rowDescObj, tableType, createParams) {
+	    });
+	    this.createTableAsync = this.handleErrors(function (tableName, rowDescObj, tableType, createParams) {
 	      return new Promise(function (resolve, reject) {
 	        _this.createTable(tableName, rowDescObj, tableType, createParams, function (err) {
 	          if (err) {
@@ -17262,10 +17241,32 @@ module.exports =
 	          }
 	        });
 	      });
-	    };
-
-	    this.importTableAsync = this.importTableAsyncWrapper(false);
-	    this.importTableGeoAsync = this.importTableAsyncWrapper(true);
+	    });
+	    this.importTableAsync = this.handleErrors(this.importTableAsyncWrapper(false));
+	    this.importTableGeoAsync = this.handleErrors(this.importTableAsyncWrapper(true));
+	    this.renderVegaAsync = this.handleErrors(function (widgetid, vega, options) {
+	      return new Promise(function (resolve, reject) {
+	        _this.renderVega(widgetid, vega, options, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
+	    this.getResultRowForPixelAsync = this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
+	      var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
+	      return new Promise(function (resolve, reject) {
+	        _this.getResultRowForPixel(widgetId, pixel, tableColNamesMap, pixelRadius, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 
 	    this._host = null;
 	    this._user = null;
@@ -17394,7 +17395,7 @@ module.exports =
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createFrontendViewAsync", "createLinkAsync", "createTableAsync", "dbName", "deleteFrontendViewAsync", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getFrontendViewAsync", "getFrontendViewsAsync", "getLinkViewAsync", "getResultRowForPixel", "getServerStatusAsync", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
@@ -17474,53 +17475,27 @@ module.exports =
 	      }
 	      return this;
 	    }
+	  }, {
+	    key: "removeConnection",
+	    value: function removeConnection(conId) {
+	      if (conId < 0 || conId >= this.numConnections) {
+	        var err = {
+	          msg: "Remove connection id invalid"
+	        };
+	        throw err;
+	      }
+	      this._client.splice(conId, 1);
+	      this._sessionId.splice(conId, 1);
+	      this._numConnections--;
+	    }
 
-	    // Wrap a Thrift binding method that must reach all clients (i.e. a 'put' type operation) in a Promise.all
+	    // ** Method wrappers **
 
-
-	    /**
-	     * Get the recent Immerse dashboards as a list of {@link TFrontendView} objects.
-	     * These objects contain a value for the <code>view_name</code> property,
-	     * but not for the <code>view_state</code> property.
-	     * @return {Promise<TFrontendView[]>} An array that has all saved dashboards.
-	     *
-	     * @example <caption>Get the list of Immerse dashboards from the server:</caption>
-	     *
-	     * con.getFrontendViewsAsync().then((results) => console.log(results))
-	     * // [TFrontendView, TFrontendView]
-	     */
-
-
-	    /**
-	     * Get a dashboard object containing a value for the <code>view_state</code> property.
-	     * This object contains a value for the <code>view_state</code> property,
-	     * but not for the <code>view_name</code> property.
-	     * @param {String} viewName The name of the dashboard.
-	     * @return {Promise.<Object>} An object that contains all data and metadata related to the dashboard.
-	     *
-	     * @example <caption>Get a specific dashboard from the server:</caption>
-	     *
-	     * con.getFrontendViewAsync('view_name').then((result) => console.log(result))
-	     * // {TFrontendView}
-	     */
+	    // Wrap a Thrift method to perform session check and mapping over
+	    // all clients (for mutating methods)
 
 
-	    /**
-	     * Get the status of the server as a {@link TServerStatus} object.
-	     * This includes the server version number, whether the server is read-only,
-	     * and whether backend rendering is enabled.
-	     * @return {Promise.<Object>} An object that contains information about the server status.
-	     *
-	     * @example <caption>Get the server status:</caption>
-	     *
-	     * con.getServerStatusAsync().then((result) => console.log(result))
-	     * // {
-	     * //   "read_only": false,
-	     * //   "version": "3.0.0dev-20170503-40e2de3",
-	     * //   "rendering_enabled": true,
-	     * //   "start_time": 1493840131
-	     * // }
-	     */
+	    // ** Client methods **
 
 	    /**
 	     * Get the status of the server as a {@link TServerStatus} object.
@@ -17576,137 +17551,6 @@ module.exports =
 	     *   }]
 	     * }
 	     */
-
-	  }, {
-	    key: "createFrontendViewAsync",
-
-
-	    /**
-	     * Add a new dashboard to the server.
-	     * @param {String} viewName The name of the new dashboard.
-	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
-	     * @param {String} imageHash The numeric hash of the dashboard thumbnail.
-	     * @param {String} metaData - Stringified metadata related to the view.
-	     * @return {Promise} Returns empty if successful.
-	     *
-	     * @example <caption>Add a new dashboard to the server:</caption>
-	     *
-	     * con.createFrontendViewAsync('newSave', 'viewstateBase64', null, 'metaData').then(res => console.log(res))
-	     */
-	    value: function createFrontendViewAsync(viewName, viewState, imageHash, metaData) {
-	      var _this4 = this;
-
-	      if (!this._sessionId) {
-	        return new Promise(function (resolve, reject) {
-	          reject(new Error("You are not connected to a server. Try running the connect method first."));
-	        });
-	      }
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_frontend_view(_this4._sessionId[i], viewName, viewState, imageHash, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              resolve(data);
-	            }
-	          });
-	        });
-	      }));
-	    }
-	  }, {
-	    key: "deleteFrontendView",
-	    value: function deleteFrontendView(viewName, callback) {
-	      var _this5 = this;
-
-	      if (!this._sessionId) {
-	        throw new Error("You are not connected to a server. Try running the connect method first.");
-	      }
-	      try {
-	        this._client.forEach(function (client, i) {
-	          // do we want to try each one individually so if we fail we keep going?
-	          client.delete_frontend_view(_this5._sessionId[i], viewName, callback);
-	        });
-	      } catch (err) {
-	        console.log("ERROR: Could not delete the frontend view. Check your session id.", err);
-	      }
-	    }
-
-	    /**
-	     * Delete a dashboard object containing a value for the <code>viewState</code> property.
-	     * @param {String} viewName The name of the dashboard.
-	     * @return {Promise.<String>} The name of dashboard deleted.
-	     *
-	     * @example <caption>Delete a specific dashboard from the server:</caption>
-	     *
-	     * con.deleteFrontendViewAsync('view_name').then(res => console.log(res))
-	     */
-
-	  }, {
-	    key: "createLinkAsync",
-
-
-	    /**
-	     * Create a short hash to make it easy to share a link to a specific dashboard.
-	     * @param {String} viewState The Base64-encoded state string of the new dashboard.
-	     * @param {String} metaData Stringified metadata related to the link.
-	     * @return {Promise.<String[]>} A short hash of the dashboard used for URLs.
-	     *
-	     * @example <caption>Create a link to the current state of a dashboard:</caption>
-	     *
-	     * con.createLinkAsync("eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==", 'metaData').then(res => console.log(res));
-	     * // ["28127951"]
-	     */
-	    value: function createLinkAsync(viewState, metaData) {
-	      var _this6 = this;
-
-	      return Promise.all(this._client.map(function (client, i) {
-	        return new Promise(function (resolve, reject) {
-	          client.create_link(_this6._sessionId[i], viewState, metaData, function (error, data) {
-	            if (error) {
-	              reject(error);
-	            } else {
-	              var result = data.split(",").reduce(function (links, link) {
-	                if (links.indexOf(link) === -1) {
-	                  links.push(link);
-	                }
-	                return links;
-	              }, []);
-	              if (!result || result.length !== 1) {
-	                reject(new Error("Different links were created on connection"));
-	              } else {
-	                resolve(result.join());
-	              }
-	            }
-	          });
-	        });
-	      }));
-	    }
-
-	    /**
-	     * Get a fully formed dashboard object from a generated share link.
-	     * This object contains the link for the <code>view_name</code> property.
-	     * @param {String} link  The short hash of the dashboard; see {@link createLink}.
-	     * @return {Promise.<Object>} Object of the dashboard and metadata.
-	     *
-	     * @example <caption>Get a dashboard from a link:</caption>
-	     *
-	     * con.getLinkViewAsync('28127951').then(res => console.log(res))
-	     * //  {
-	     * //    "view_name": "28127951",
-	     * //    "view_state": "eyJuYW1lIjoibXlkYXNoYm9hcmQifQ==",
-	     * //    "image_hash": "",
-	     * //    "update_time": "2017-04-28T21:34:01Z",
-	     * //    "view_metadata": "metaData"
-	     * //  }
-	     */
-
-	  }, {
-	    key: "detectColumnTypes",
-	    value: function detectColumnTypes(fileName, copyParams, callback) {
-	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
-	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
-	    }
 
 	    /**
 	     * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
@@ -17915,8 +17759,11 @@ module.exports =
 	     */
 
 	  }, {
-	    key: "detectColumnTypesAsync",
-
+	    key: "detectColumnTypes",
+	    value: function detectColumnTypes(fileName, copyParams, callback) {
+	      var thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams);
+	      this._client[0].detect_column_types(this._sessionId[0], fileName, thriftCopyParams, callback);
+	    }
 
 	    /**
 	     * Asynchronously get data from an importable file,
@@ -17932,20 +17779,10 @@ module.exports =
 	     * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
 	     *
 	     */
-	    value: function detectColumnTypesAsync(fileName, copyParams) {
-	      var _this7 = this;
 
-	      return new Promise(function (resolve, reject) {
-	        _this7.detectColumnTypes.bind(_this7, fileName, copyParams)(function (err, res) {
-	          if (err) {
-	            reject(err);
-	          } else {
-	            _this7.importerRowDesc = res.row_set.row_desc;
-	            resolve(res);
-	          }
-	        });
-	      });
-	    }
+	  }, {
+	    key: "query",
+
 
 	    /**
 	     * Submit a query to the database and process the results.
@@ -17964,11 +17801,8 @@ module.exports =
 	     *      });
 	     *
 	     */
-
-	  }, {
-	    key: "query",
 	    value: function query(_query, options, callback) {
-	      var _this8 = this;
+	      var _this4 = this;
 
 	      var columnarResults = true;
 	      var eliminateNullRows = false;
@@ -18002,7 +17836,7 @@ module.exports =
 	        var AT_MOST_N = -1;
 	        if (callback) {
 	          this._client[conId].sql_execute(this._sessionId[conId], _query, columnarResults, curNonce, limit, AT_MOST_N, function (error, result) {
-	            _this8.processResults(processResultsOptions, result, error, callback);
+	            _this4.processResults(processResultsOptions, result, error, callback);
 	          });
 	          return curNonce;
 	        } else if (!callback) {
@@ -18024,9 +17858,6 @@ module.exports =
 	        }
 	      }
 	    }
-	  }, {
-	    key: "validateQuery",
-
 
 	    /**
 	     * Submit a query to validate that the backend can create a result set based on the SQL statement.
@@ -18047,32 +17878,7 @@ module.exports =
 	     * //  }]
 	     *
 	     */
-	    value: function validateQuery(query) {
-	      var _this9 = this;
 
-	      return new Promise(function (resolve, reject) {
-	        _this9._client[0].sql_validate(_this9._sessionId[0], query, function (error, res) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(_this9.convertFromThriftTypes(res));
-	          }
-	        });
-	      });
-	    }
-	  }, {
-	    key: "removeConnection",
-	    value: function removeConnection(conId) {
-	      if (conId < 0 || conId >= this.numConnections) {
-	        var err = {
-	          msg: "Remove connection id invalid"
-	        };
-	        throw err;
-	      }
-	      this._client.splice(conId, 1);
-	      this._sessionId.splice(conId, 1);
-	      this._numConnections--;
-	    }
 	  }, {
 	    key: "getTables",
 	    value: function getTables(callback) {
@@ -18106,24 +17912,9 @@ module.exports =
 	     */
 
 	  }, {
-	    key: "getTablesAsync",
-	    value: function getTablesAsync() {
-	      var _this10 = this;
-
-	      return new Promise(function (resolve, reject) {
-	        _this10.getTables.bind(_this10)(function (error, tables) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(tables);
-	          }
-	        });
-	      });
-	    }
-	  }, {
 	    key: "getTablesWithMeta",
 	    value: function getTablesWithMeta(callback) {
-	      var _this11 = this;
+	      var _this5 = this;
 
 	      this._client[0].get_tables_meta(this._sessionId[0], function (error, tables) {
 	        if (error) {
@@ -18134,7 +17925,7 @@ module.exports =
 	              name: table.table_name,
 	              num_cols: Number(table.num_cols.toString()),
 	              col_datum_types: table.col_datum_types.map(function (type) {
-	                return _this11._datumEnum[type];
+	                return _this5._datumEnum[type];
 	              }),
 	              is_view: table.is_view,
 	              is_replicated: table.is_replicated,
@@ -18167,20 +17958,8 @@ module.exports =
 	     */
 
 	  }, {
-	    key: "getTablesWithMetaAsync",
-	    value: function getTablesWithMetaAsync() {
-	      var _this12 = this;
+	    key: "getCompletionHints",
 
-	      return new Promise(function (resolve, reject) {
-	        _this12.getTablesWithMeta.bind(_this12)(function (error, tables) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(tables);
-	          }
-	        });
-	      });
-	    }
 
 	    /**
 	     * Submits an SQL string to the backend and returns a completion hints object.
@@ -18204,9 +17983,6 @@ module.exports =
 	     *   }]
 	     *
 	     */
-
-	  }, {
-	    key: "getCompletionHints",
 	    value: function getCompletionHints(queryString, options, callback) {
 	      var cursor = options.cursor;
 	      this._client[0].get_completion_hints(this._sessionId[0], queryString, cursor, function (error, result) {
@@ -18256,7 +18032,7 @@ module.exports =
 	  }, {
 	    key: "getFields",
 	    value: function getFields(tableName, callback) {
-	      var _this13 = this;
+	      var _this6 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
 	        if (fields) {
@@ -18264,7 +18040,7 @@ module.exports =
 	            accum[value.col_name] = value;
 	            return accum;
 	          }, {});
-	          callback(null, _this13.convertFromThriftTypes(rowDict));
+	          callback(null, _this6.convertFromThriftTypes(rowDict));
 	        } else {
 	          callback(new Error("Table (" + tableName + ") not found" + error));
 	        }
@@ -18333,11 +18109,11 @@ module.exports =
 	  }, {
 	    key: "importTableAsyncWrapper",
 	    value: function importTableAsyncWrapper(isShapeFile) {
-	      var _this14 = this;
+	      var _this7 = this;
 
 	      return function (tableName, fileName, copyParams, headers) {
 	        return new Promise(function (resolve, reject) {
-	          _this14.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
+	          _this7.importTable(tableName, fileName, copyParams, headers, isShapeFile, function (err, link) {
 	            if (err) {
 	              reject(err);
 	            } else {
@@ -18384,10 +18160,11 @@ module.exports =
 	     * @returns {Image} Base64 image.
 	     */
 	    value: function renderVega(widgetid, vega, options, callback) /* istanbul ignore next */{
-	      var _this15 = this;
+	      var _this8 = this;
 
 	      var queryId = null;
 	      var compressionLevel = COMPRESSION_LEVEL_DEFAULT;
+
 	      if (options) {
 	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
 	        compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
@@ -18414,81 +18191,91 @@ module.exports =
 	      }
 
 	      this._client[conId].render_vega(this._sessionId[conId], widgetid, vega, compressionLevel, curNonce, function (error, result) {
-	        _this15.processResults(processResultsOptions, result, error, callback);
+	        _this8.processResults(processResultsOptions, result, error, callback);
 	      });
 
 	      return curNonce;
 	    }
+	  }, {
+	    key: "getResultRowForPixel",
+
 
 	    /**
 	     * Used primarily for backend-rendered maps; fetches the row
 	     * for a specific table that was last rendered at a pixel.
 	     *
-	     * @param {widgetId} Number The widget ID of the caller.
+	     * @param {Number} widgetId The widget ID of the caller.
 	     * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
-	     * @param {String} tableName The table containing the geo data.
 	     * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
-	     * @param {Array<Function>} callbacks A collection of callbacks.
 	     * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
+	     *
+	     * @returns {String} Current result nonce
 	     */
-
-	  }, {
-	    key: "getResultRowForPixel",
-	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap, callbacks) /* istanbul ignore next */{
-	      var pixelRadius = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
+	    value: function getResultRowForPixel(widgetId, pixel, tableColNamesMap) /* istanbul ignore next */{
+	      var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
+	      var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
 
 	      if (!(pixel instanceof TPixel)) {
 	        pixel = new TPixel(pixel);
 	      }
+
 	      var columnFormat = true; // BOOL
 	      var curNonce = (this._nonce++).toString();
 
-	      if (!callbacks) {
+	      if (!callback) {
 	        return this.processPixelResults(undefined, // eslint-disable-line no-undefined
 	        this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));
 	      }
-	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callbacks));
+
+	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callback));
 
 	      return curNonce;
 	    }
+	  }, {
+	    key: "processPixelResults",
+
 
 	    /**
 	     * Formats the pixel results into the same pattern as textual results.
 	     *
-	     * @param {Array<Function>} callbacks A collection of callbacks.
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
 	     * @param {Object} error An error if thrown; otherwise null.
 	     * @param {Array|Object} results Unformatted results of pixel `rowId` information.
 	     *
 	     * @returns {Object} An object with the pixel results formatted for display.
 	     */
-
-	  }, {
-	    key: "processPixelResults",
-	    value: function processPixelResults(callbacks, error, results) {
-	      callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
+	    value: function processPixelResults(callback, error, results) {
 	      results = Array.isArray(results) ? results.pixel_rows : [results];
+
 	      if (error) {
-	        if (callbacks) {
-	          callbacks.pop()(error, results);
+	        if (callback) {
+	          return callback(error, results);
 	        } else {
 	          throw new Error("Unable to process result row for pixel results: " + error);
 	        }
 	      }
-	      var numPixels = results.length;
+
 	      var processResultsOptions = {
 	        isImage: false,
 	        eliminateNullRows: false,
 	        query: "pixel request",
 	        queryId: -2
 	      };
+
+	      var numPixels = results.length;
 	      for (var p = 0; p < numPixels; p++) {
 	        results[p].row_set = this.processResults(processResultsOptions, results[p]);
 	      }
-	      if (!callbacks) {
+
+	      if (callback) {
+	        return callback(error, results);
+	      } else {
 	        return results;
 	      }
-	      callbacks.pop()(error, results);
 	    }
+
+	    // ** Configuration methods **
 
 	    /**
 	     * Get or set the session ID used by the server to serve the correct data.
@@ -18508,11 +18295,11 @@ module.exports =
 
 	  }, {
 	    key: "sessionId",
-	    value: function sessionId(_sessionId2) {
+	    value: function sessionId(_sessionId) {
 	      if (!arguments.length) {
 	        return this._sessionId;
 	      }
-	      this._sessionId = _sessionId2;
+	      this._sessionId = _sessionId;
 	      return this;
 	    }
 
@@ -18734,10 +18521,75 @@ module.exports =
 	  }, {
 	    key: "getEndpoints",
 	    value: function getEndpoints() {
-	      var _this16 = this;
+	      var _this9 = this;
 
 	      return this._host.map(function (host, i) {
-	        return _this16._protocol[i] + "://" + host + ":" + _this16._port[i];
+	        return _this9._protocol[i] + "://" + host + ":" + _this9._port[i];
+	      });
+	    }
+
+	    /**
+	     * Set the license for Trial or Enterprise
+	     * @param {String} key The key to install
+	     * @param {Object} config Protocol, host and port to connect to
+	     * @return {Promise.<Object>} Claims or Error.
+	     */
+
+	  }, {
+	    key: "setLicenseKey",
+	    value: function setLicenseKey(key, _ref10) {
+	      var _this10 = this;
+
+	      var protocol = _ref10.protocol,
+	          host = _ref10.host,
+	          port = _ref10.port;
+
+	      return new Promise(function (resolve) {
+	        var client = Array.isArray(_this10._client) && _this10._client[0];
+	        var sessionId = _this10._sessionId && _this10._sessionId[0];
+	        if (!client) {
+	          var url = protocol + "://" + host + ":" + port;
+	          var thriftTransport = new Thrift.Transport(url);
+	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	          client = new _mapdClientV2.default(thriftProtocol);
+	          sessionId = "";
+	        }
+	        var result = client.set_license_key(sessionId, key, _this10._nonce++);
+	        resolve(result);
+	      });
+	    }
+
+	    /**
+	     * Get the license for Trial or Enterprise
+	     * @param {Object} config Protocol, host and port to connect to
+	     * @return {Promise.<Object>} Claims or Error.
+	     */
+
+	  }, {
+	    key: "getLicenseClaims",
+	    value: function getLicenseClaims(_ref11) {
+	      var _this11 = this;
+
+	      var protocol = _ref11.protocol,
+	          host = _ref11.host,
+	          port = _ref11.port;
+
+	      return new Promise(function (resolve, reject) {
+	        var client = Array.isArray(_this11._client) && _this11._client[0];
+	        var sessionId = _this11._sessionId && _this11._sessionId[0];
+	        if (!client) {
+	          var url = protocol + "://" + host + ":" + port;
+	          var thriftTransport = new Thrift.Transport(url);
+	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	          client = new _mapdClientV2.default(thriftProtocol);
+	          sessionId = "";
+	        }
+	        try {
+	          var result = client.get_license_claims(sessionId, _this11._nonce++);
+	          resolve(result);
+	        } catch (e) {
+	          reject(e);
+	        }
 	      });
 	    }
 	  }]);
@@ -18749,8 +18601,8 @@ module.exports =
 	  methodNames.forEach(function (methodName) {
 	    var oldFunc = connector[methodName];
 	    connector[methodName] = function () {
-	      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        args[_key2] = arguments[_key2];
+	      for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	        args[_key3] = arguments[_key3];
 	      }
 
 	      try {
@@ -18860,6 +18712,301 @@ module.exports =
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var has = Object.prototype.hasOwnProperty;
+
+	//
+	// We store our EE objects in a plain object whose properties are event names.
+	// If `Object.create(null)` is not supported we prefix the event names with a
+	// `~` to make sure that the built-in object properties are not overridden or
+	// used as an attack vector.
+	// We also assume that `Object.create(null)` is available when the event name
+	// is an ES6 Symbol.
+	//
+	var prefix = typeof Object.create !== 'function' ? '~' : false;
+
+	/**
+	 * Representation of a single EventEmitter function.
+	 *
+	 * @param {Function} fn Event handler to be called.
+	 * @param {Mixed} context Context for function execution.
+	 * @param {Boolean} [once=false] Only emit once
+	 * @api private
+	 */
+	function EE(fn, context, once) {
+	  this.fn = fn;
+	  this.context = context;
+	  this.once = once || false;
+	}
+
+	/**
+	 * Minimal EventEmitter interface that is molded against the Node.js
+	 * EventEmitter interface.
+	 *
+	 * @constructor
+	 * @api public
+	 */
+	function EventEmitter() { /* Nothing to set */ }
+
+	/**
+	 * Hold the assigned EventEmitters by name.
+	 *
+	 * @type {Object}
+	 * @private
+	 */
+	EventEmitter.prototype._events = undefined;
+
+	/**
+	 * Return an array listing the events for which the emitter has registered
+	 * listeners.
+	 *
+	 * @returns {Array}
+	 * @api public
+	 */
+	EventEmitter.prototype.eventNames = function eventNames() {
+	  var events = this._events
+	    , names = []
+	    , name;
+
+	  if (!events) return names;
+
+	  for (name in events) {
+	    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+	  }
+
+	  if (Object.getOwnPropertySymbols) {
+	    return names.concat(Object.getOwnPropertySymbols(events));
+	  }
+
+	  return names;
+	};
+
+	/**
+	 * Return a list of assigned event listeners.
+	 *
+	 * @param {String} event The events that should be listed.
+	 * @param {Boolean} exists We only need to know if there are listeners.
+	 * @returns {Array|Boolean}
+	 * @api public
+	 */
+	EventEmitter.prototype.listeners = function listeners(event, exists) {
+	  var evt = prefix ? prefix + event : event
+	    , available = this._events && this._events[evt];
+
+	  if (exists) return !!available;
+	  if (!available) return [];
+	  if (available.fn) return [available.fn];
+
+	  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
+	    ee[i] = available[i].fn;
+	  }
+
+	  return ee;
+	};
+
+	/**
+	 * Emit an event to all registered event listeners.
+	 *
+	 * @param {String} event The name of the event.
+	 * @returns {Boolean} Indication if we've emitted an event.
+	 * @api public
+	 */
+	EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+	  var evt = prefix ? prefix + event : event;
+
+	  if (!this._events || !this._events[evt]) return false;
+
+	  var listeners = this._events[evt]
+	    , len = arguments.length
+	    , args
+	    , i;
+
+	  if ('function' === typeof listeners.fn) {
+	    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+	    switch (len) {
+	      case 1: return listeners.fn.call(listeners.context), true;
+	      case 2: return listeners.fn.call(listeners.context, a1), true;
+	      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+	      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+	      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+	      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+	    }
+
+	    for (i = 1, args = new Array(len -1); i < len; i++) {
+	      args[i - 1] = arguments[i];
+	    }
+
+	    listeners.fn.apply(listeners.context, args);
+	  } else {
+	    var length = listeners.length
+	      , j;
+
+	    for (i = 0; i < length; i++) {
+	      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+	      switch (len) {
+	        case 1: listeners[i].fn.call(listeners[i].context); break;
+	        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+	        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+	        default:
+	          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+	            args[j - 1] = arguments[j];
+	          }
+
+	          listeners[i].fn.apply(listeners[i].context, args);
+	      }
+	    }
+	  }
+
+	  return true;
+	};
+
+	/**
+	 * Register a new EventListener for the given event.
+	 *
+	 * @param {String} event Name of the event.
+	 * @param {Function} fn Callback function.
+	 * @param {Mixed} [context=this] The context of the function.
+	 * @api public
+	 */
+	EventEmitter.prototype.on = function on(event, fn, context) {
+	  var listener = new EE(fn, context || this)
+	    , evt = prefix ? prefix + event : event;
+
+	  if (!this._events) this._events = prefix ? {} : Object.create(null);
+	  if (!this._events[evt]) this._events[evt] = listener;
+	  else {
+	    if (!this._events[evt].fn) this._events[evt].push(listener);
+	    else this._events[evt] = [
+	      this._events[evt], listener
+	    ];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Add an EventListener that's only called once.
+	 *
+	 * @param {String} event Name of the event.
+	 * @param {Function} fn Callback function.
+	 * @param {Mixed} [context=this] The context of the function.
+	 * @api public
+	 */
+	EventEmitter.prototype.once = function once(event, fn, context) {
+	  var listener = new EE(fn, context || this, true)
+	    , evt = prefix ? prefix + event : event;
+
+	  if (!this._events) this._events = prefix ? {} : Object.create(null);
+	  if (!this._events[evt]) this._events[evt] = listener;
+	  else {
+	    if (!this._events[evt].fn) this._events[evt].push(listener);
+	    else this._events[evt] = [
+	      this._events[evt], listener
+	    ];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Remove event listeners.
+	 *
+	 * @param {String} event The event we want to remove.
+	 * @param {Function} fn The listener that we need to find.
+	 * @param {Mixed} context Only remove listeners matching this context.
+	 * @param {Boolean} once Only remove once listeners.
+	 * @api public
+	 */
+	EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+	  var evt = prefix ? prefix + event : event;
+
+	  if (!this._events || !this._events[evt]) return this;
+
+	  var listeners = this._events[evt]
+	    , events = [];
+
+	  if (fn) {
+	    if (listeners.fn) {
+	      if (
+	           listeners.fn !== fn
+	        || (once && !listeners.once)
+	        || (context && listeners.context !== context)
+	      ) {
+	        events.push(listeners);
+	      }
+	    } else {
+	      for (var i = 0, length = listeners.length; i < length; i++) {
+	        if (
+	             listeners[i].fn !== fn
+	          || (once && !listeners[i].once)
+	          || (context && listeners[i].context !== context)
+	        ) {
+	          events.push(listeners[i]);
+	        }
+	      }
+	    }
+	  }
+
+	  //
+	  // Reset the array, or remove it completely if we have no more listeners.
+	  //
+	  if (events.length) {
+	    this._events[evt] = events.length === 1 ? events[0] : events;
+	  } else {
+	    delete this._events[evt];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Remove all listeners or only the listeners for the specified event.
+	 *
+	 * @param {String} event The event want to remove all listeners for.
+	 * @api public
+	 */
+	EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+	  if (!this._events) return this;
+
+	  if (event) delete this._events[prefix ? prefix + event : event];
+	  else this._events = prefix ? {} : Object.create(null);
+
+	  return this;
+	};
+
+	//
+	// Alias methods names because people roll like that.
+	//
+	EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+	EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+	//
+	// This function doesn't apply anymore.
+	//
+	EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+	  return this;
+	};
+
+	//
+	// Expose the prefix.
+	//
+	EventEmitter.prefixed = prefix;
+
+	//
+	// Expose the module.
+	//
+	if (true) {
+	  module.exports = EventEmitter;
+	}
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -18867,7 +19014,7 @@ module.exports =
 	});
 	exports.default = MapDClientV2;
 
-	var _wrapWithErrorHandling = __webpack_require__(59);
+	var _wrapWithErrorHandling = __webpack_require__(60);
 
 	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(54).Client; // eslint-disable-line global-require
 
@@ -18877,129 +19024,17 @@ module.exports =
 
 	MapDClientV2.prototype = Object.create(MapDClient.prototype);
 
-	MapDClientV2.prototype.connect = function () {
-	  var connectWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "connect");
-	  return connectWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.sql_execute = function () {
-	  var SQLExecuteWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "sql_execute");
-	  return SQLExecuteWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.sql_validate = function () {
-	  var SQLValidateWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "sql_validate");
-	  return SQLValidateWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.render = function () {
-	  var renderWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "render");
-	  return renderWithErrorHandling.apply(undefined, arguments);
-	};
-
-	/* istanbul ignore next */
-	MapDClientV2.prototype.render_vega = function () {
-	  var renderVegaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "render_vega");
-	  return renderVegaWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_result_row_for_pixel = function () {
-	  var getResultRowForPixelWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_result_row_for_pixel");
-	  return getResultRowForPixelWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.delete_frontend_view = function () {
-	  var deleteFrontendViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "delete_frontend_view");
-	  return deleteFrontendViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_completion_hints = function () {
-	  var getCompletionHintsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_completion_hints");
-	  return getCompletionHintsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_tables = function () {
-	  var getTablesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_tables");
-	  return getTablesWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_table_details = function () {
-	  var getTableDetailsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_table_details");
-	  return getTableDetailsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_tables_meta = function () {
-	  var getTablesWithMetaWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_tables_meta");
-	  return getTablesWithMetaWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_fields = function () {
-	  var getFieldsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_fields");
-	  return getFieldsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_status = function () {
-	  var getStatusWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_status");
-	  return getStatusWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_server_status = function () {
-	  var getServerStatusWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_server_status");
-	  return getServerStatusWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_hardware_info = function () {
-	  var getHardwareInfoWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_hardware_info");
-	  return getHardwareInfoWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_frontend_views = function () {
-	  var getFrontEndViewsWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_frontend_views");
-	  return getFrontEndViewsWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_frontend_view = function () {
-	  var getFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_frontend_view");
-	  return getFrontEndViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.create_link = function () {
-	  var createLinkWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "create_link");
-	  return createLinkWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.get_link_view = function () {
-	  var getLinkViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "get_link_view");
-	  return getLinkViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.detect_column_types = function () {
-	  var detectColumnTypesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "detect_column_types");
-	  return detectColumnTypesWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.create_frontend_view = function () {
-	  var createFrontEndViewWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "create_frontend_view");
-	  return createFrontEndViewWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.send_create_table = function () {
-	  var sendCreateTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "send_create_table");
-	  return sendCreateTableWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.send_import_table = function () {
-	  var sendImportTableWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "send_import_table");
-	  return sendImportTableWithErrorHandling.apply(undefined, arguments);
-	};
-
-	MapDClientV2.prototype.detect_column_types = function () {
-	  var detectColumnTypesWithErrorHandling = (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, "detect_column_types");
-	  return detectColumnTypesWithErrorHandling.apply(undefined, arguments);
-	};
+	/* eslint-disable no-unused-expressions */
+	!function () {
+	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "delete_frontend_view", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "get_frontend_views", "get_frontend_view", "create_link", "get_link_view", "detect_column_types", "create_frontend_view", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
+	    MapDClientV2.prototype[funcName] = function () {
+	      return (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, funcName).apply(undefined, arguments);
+	    };
+	  });
+	}();
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19044,7 +19079,7 @@ module.exports =
 	      var callback = args.pop();
 	      (_MapDClient$prototype = MapDClient.prototype[method]).call.apply(_MapDClient$prototype, [context].concat(args, [function (result) {
 	        if (isError(result)) {
-	          callback(createResultError(result));
+	          callback(result);
 	        } else {
 	          callback(null, result);
 	        }
@@ -19054,7 +19089,7 @@ module.exports =
 
 	      var result = (_MapDClient$prototype2 = MapDClient.prototype[method]).call.apply(_MapDClient$prototype2, [context].concat(args));
 	      if (isError(result)) {
-	        throw createResultError(result);
+	        throw result;
 	      }
 	      return result;
 	    } else {
@@ -19069,7 +19104,7 @@ module.exports =
 	/* eslint-enable consistent-this */
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19079,11 +19114,11 @@ module.exports =
 	});
 	exports.default = processQueryResults;
 
-	var _processColumnarResults = __webpack_require__(61);
+	var _processColumnarResults = __webpack_require__(62);
 
 	var _processColumnarResults2 = _interopRequireDefault(_processColumnarResults);
 
-	var _processRowResults = __webpack_require__(62);
+	var _processRowResults = __webpack_require__(63);
 
 	var _processRowResults2 = _interopRequireDefault(_processRowResults);
 
@@ -19180,7 +19215,7 @@ module.exports =
 	}
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19328,7 +19363,7 @@ module.exports =
 	}
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
