@@ -1,4 +1,5 @@
-const CORE_CPP_FLOAT_PRECISION = 7
+export const CORE_CPP_FLOAT_PRECISION = 7
+export const CORE_CPP_DOUBLE_PRECISION = 16
 
 export const convertObjectToThriftCopyParams = obj => new TCopyParams(obj) // eslint-disable-line no-undef
 
@@ -40,6 +41,6 @@ export function timestampToMs(timestamp, precision) {
  *  to match core
  * @returns {Double} - The equivalent decimal number encoded in a double precision number
 */
-export function realToDecimal(real, precision = CORE_CPP_FLOAT_PRECISION) {
+export function realToDecimal(real, precision) {
   return Number(Number.parseFloat(real).toPrecision(precision))
 }
