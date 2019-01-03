@@ -507,6 +507,10 @@ class MapdCon {
     this.wrapThrift("get_users", this.overSingleClient, args => args)
   )
 
+  importTableStatusAsync = this.handleErrors(
+    this.wrapThrift("import_table_status", this.overSingleClient, args => args)
+  )
+
   /**
    * Get a list of all roles on the database for this connection.
    * @returns {Promise.<Array>} A list of all roles (strings).
