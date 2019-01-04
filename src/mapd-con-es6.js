@@ -34,7 +34,8 @@ function isNodeRuntime() {
 function isTimeoutError(result) {
   return (
     result instanceof window.TMapDException &&
-    String(result.error_msg).indexOf("Session not valid.") !== -1
+    (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
+      String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
   )
 }
 
@@ -317,22 +318,18 @@ class MapdCon {
 
       const promise = method.apply(this, args)
 
-      promise
-        .then(success)
-        .catch(error => {
-          if (isTimeoutError(error)) {
-            // Reconnect, then try the method once more
-            return this.connectAsync().then(() => {
-              const retriedPromise = method.apply(this, args)
+      promise.then(success).catch(error => {
+        if (isTimeoutError(error)) {
+          // Reconnect, then try the method once more
+          return this.connectAsync().then(() => {
+            const retriedPromise = method.apply(this, args)
 
-              retriedPromise
-                .then(success)
-                .catch(failure)
-            })
-          } else {
-            return failure(error)
-          }
-        })
+            retriedPromise.then(success).catch(failure)
+          })
+        } else {
+          return failure(error)
+        }
+      })
     })
 
   promisifyThriftMethod = (client, sessionId, methodName, args) =>
@@ -1730,8 +1727,8 @@ class MapdCon {
    * @param {Object} config Protocol, host and port to connect to
    * @return {Promise.<Object>} Claims or Error.
    */
-  setLicenseKey(key, {protocol, host, port}) {
-    return new Promise((resolve) => {
+  setLicenseKey(key, { protocol, host, port }) {
+    return new Promise(resolve => {
       let client = Array.isArray(this._client) && this._client[0]
       let sessionId = this._sessionId && this._sessionId[0]
       if (!client) {
@@ -1741,11 +1738,7 @@ class MapdCon {
         client = new MapDClientV2(thriftProtocol)
         sessionId = ""
       }
-      const result = client.set_license_key(
-        sessionId,
-        key,
-        this._nonce++
-      )
+      const result = client.set_license_key(sessionId, key, this._nonce++)
       resolve(result)
     })
   }
@@ -1755,7 +1748,7 @@ class MapdCon {
    * @param {Object} config Protocol, host and port to connect to
    * @return {Promise.<Object>} Claims or Error.
    */
-  getLicenseClaims({protocol, host, port}) {
+  getLicenseClaims({ protocol, host, port }) {
     return new Promise((resolve, reject) => {
       let client = Array.isArray(this._client) && this._client[0]
       let sessionId = this._sessionId && this._sessionId[0]
@@ -1767,10 +1760,7 @@ class MapdCon {
         sessionId = ""
       }
       try {
-        const result = client.get_license_claims(
-          sessionId,
-          this._nonce++
-        )
+        const result = client.get_license_claims(sessionId, this._nonce++)
         resolve(result)
       } catch (e) {
         reject(e)
