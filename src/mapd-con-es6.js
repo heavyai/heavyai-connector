@@ -309,8 +309,12 @@ class MapdCon {
 
   handleErrors = method => (...args) =>
     new Promise((resolve, reject) => {
-      const success = result => resolve(result)
+      const success = result => {
+        console.log('live con success', { args, host: this._host, sessionId: this._sessionId } )
+        return resolve(result)
+      }
       const failure = error => {
+        console.log('live con error', { args, host: this._host, sessionId: this._sessionId } )
         this.events.emit("error", error)
         return reject(error)
       }

@@ -235,9 +235,11 @@
 
 	        return new Promise(function (resolve, reject) {
 	          var success = function success(result) {
+	            console.log('live con success', { args: args, host: _this._host, sessionId: _this._sessionId });
 	            return resolve(result);
 	          };
 	          var failure = function failure(error) {
+	            console.log('live con error', { args: args, host: _this._host, sessionId: _this._sessionId });
 	            _this.events.emit("error", error);
 	            return reject(error);
 	          };
