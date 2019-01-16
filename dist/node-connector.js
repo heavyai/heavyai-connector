@@ -16962,7 +16962,7 @@ module.exports =
 	}
 
 	function isTimeoutError(result) {
-	  return result instanceof window.TMapDException && String(result.error_msg).indexOf("Session not valid.") !== -1;
+	  return result instanceof window.TMapDException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
 	}
 
 	var MapdCon = function () {
