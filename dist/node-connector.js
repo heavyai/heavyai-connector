@@ -17270,6 +17270,46 @@ module.exports =
 	        });
 	      });
 	    });
+	    this.setLicenseKey = this.handleErrors(function (key, _ref10) {
+	      var protocol = _ref10.protocol,
+	          host = _ref10.host,
+	          port = _ref10.port;
+	      return new Promise(function (resolve) {
+	        var client = Array.isArray(_this._client) && _this._client[0];
+	        var sessionId = _this._sessionId && _this._sessionId[0];
+	        if (!client) {
+	          var url = protocol + "://" + host + ":" + port;
+	          var thriftTransport = new Thrift.Transport(url);
+	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	          client = new _mapdClientV2.default(thriftProtocol);
+	          sessionId = "";
+	        }
+	        var result = client.set_license_key(sessionId, key, _this._nonce++);
+	        resolve(result);
+	      });
+	    });
+	    this.getLicenseClaims = this.handleErrors(function (_ref11) {
+	      var protocol = _ref11.protocol,
+	          host = _ref11.host,
+	          port = _ref11.port;
+	      return new Promise(function (resolve, reject) {
+	        var client = Array.isArray(_this._client) && _this._client[0];
+	        var sessionId = _this._sessionId && _this._sessionId[0];
+	        if (!client) {
+	          var url = protocol + "://" + host + ":" + port;
+	          var thriftTransport = new Thrift.Transport(url);
+	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
+	          client = new _mapdClientV2.default(thriftProtocol);
+	          sessionId = "";
+	        }
+	        try {
+	          var result = client.get_license_claims(sessionId, _this._nonce++);
+	          resolve(result);
+	        } catch (e) {
+	          reject(e);
+	        }
+	      });
+	    });
 
 	    this._host = null;
 	    this._user = null;
@@ -18538,29 +18578,6 @@ module.exports =
 	     * @return {Promise.<Object>} Claims or Error.
 	     */
 
-	  }, {
-	    key: "setLicenseKey",
-	    value: function setLicenseKey(key, _ref10) {
-	      var _this10 = this;
-
-	      var protocol = _ref10.protocol,
-	          host = _ref10.host,
-	          port = _ref10.port;
-
-	      return new Promise(function (resolve) {
-	        var client = Array.isArray(_this10._client) && _this10._client[0];
-	        var sessionId = _this10._sessionId && _this10._sessionId[0];
-	        if (!client) {
-	          var url = protocol + "://" + host + ":" + port;
-	          var thriftTransport = new Thrift.Transport(url);
-	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
-	          client = new _mapdClientV2.default(thriftProtocol);
-	          sessionId = "";
-	        }
-	        var result = client.set_license_key(sessionId, key, _this10._nonce++);
-	        resolve(result);
-	      });
-	    }
 
 	    /**
 	     * Get the license for Trial or Enterprise
@@ -18568,33 +18585,6 @@ module.exports =
 	     * @return {Promise.<Object>} Claims or Error.
 	     */
 
-	  }, {
-	    key: "getLicenseClaims",
-	    value: function getLicenseClaims(_ref11) {
-	      var _this11 = this;
-
-	      var protocol = _ref11.protocol,
-	          host = _ref11.host,
-	          port = _ref11.port;
-
-	      return new Promise(function (resolve, reject) {
-	        var client = Array.isArray(_this11._client) && _this11._client[0];
-	        var sessionId = _this11._sessionId && _this11._sessionId[0];
-	        if (!client) {
-	          var url = protocol + "://" + host + ":" + port;
-	          var thriftTransport = new Thrift.Transport(url);
-	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
-	          client = new _mapdClientV2.default(thriftProtocol);
-	          sessionId = "";
-	        }
-	        try {
-	          var result = client.get_license_claims(sessionId, _this11._nonce++);
-	          resolve(result);
-	        } catch (e) {
-	          reject(e);
-	        }
-	      });
-	    }
 	  }]);
 
 	  return MapdCon;

@@ -1727,46 +1727,48 @@ class MapdCon {
    * @param {Object} config Protocol, host and port to connect to
    * @return {Promise.<Object>} Claims or Error.
    */
-  setLicenseKey(key, { protocol, host, port }) {
-    return new Promise(resolve => {
-      let client = Array.isArray(this._client) && this._client[0]
-      let sessionId = this._sessionId && this._sessionId[0]
-      if (!client) {
-        const url = `${protocol}://${host}:${port}`
-        const thriftTransport = new Thrift.Transport(url)
-        const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
-        sessionId = ""
-      }
-      const result = client.set_license_key(sessionId, key, this._nonce++)
-      resolve(result)
-    })
-  }
+  setLicenseKey = this.handleErrors(
+    (key, { protocol, host, port }) =>
+      new Promise(resolve => {
+        let client = Array.isArray(this._client) && this._client[0]
+        let sessionId = this._sessionId && this._sessionId[0]
+        if (!client) {
+          const url = `${protocol}://${host}:${port}`
+          const thriftTransport = new Thrift.Transport(url)
+          const thriftProtocol = new Thrift.Protocol(thriftTransport)
+          client = new MapDClientV2(thriftProtocol)
+          sessionId = ""
+        }
+        const result = client.set_license_key(sessionId, key, this._nonce++)
+        resolve(result)
+      })
+  )
 
   /**
    * Get the license for Trial or Enterprise
    * @param {Object} config Protocol, host and port to connect to
    * @return {Promise.<Object>} Claims or Error.
    */
-  getLicenseClaims({ protocol, host, port }) {
-    return new Promise((resolve, reject) => {
-      let client = Array.isArray(this._client) && this._client[0]
-      let sessionId = this._sessionId && this._sessionId[0]
-      if (!client) {
-        const url = `${protocol}://${host}:${port}`
-        const thriftTransport = new Thrift.Transport(url)
-        const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
-        sessionId = ""
-      }
-      try {
-        const result = client.get_license_claims(sessionId, this._nonce++)
-        resolve(result)
-      } catch (e) {
-        reject(e)
-      }
-    })
-  }
+  getLicenseClaims = this.handleErrors(
+    ({ protocol, host, port }) =>
+      new Promise((resolve, reject) => {
+        let client = Array.isArray(this._client) && this._client[0]
+        let sessionId = this._sessionId && this._sessionId[0]
+        if (!client) {
+          const url = `${protocol}://${host}:${port}`
+          const thriftTransport = new Thrift.Transport(url)
+          const thriftProtocol = new Thrift.Protocol(thriftTransport)
+          client = new MapDClientV2(thriftProtocol)
+          sessionId = ""
+        }
+        try {
+          const result = client.get_license_claims(sessionId, this._nonce++)
+          resolve(result)
+        } catch (e) {
+          reject(e)
+        }
+      })
+  )
 }
 
 function resetThriftClientOnArgumentErrorForMethods(
