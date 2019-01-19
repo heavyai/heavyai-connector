@@ -1246,12 +1246,14 @@ class MapdCon {
 
     for (let c = 0; c < this._numConnections; c++) {
       if (isShapeFile) {
+        TCreateParams thriftCreateParamsDefault; // is_replicated = false
         this._client[c].import_geo_table(
           this._sessionId[c],
           tableName,
           fileName,
           thriftCopyParams,
           thriftRowDesc,
+          thriftCreateParamsDefault,
           thriftCallBack
         )
       } else {
