@@ -1,4 +1,4 @@
-/* global TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
+/* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
 const { TDatumType, TEncodingType, TPixel } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
@@ -1252,6 +1252,7 @@ class MapdCon {
           fileName,
           thriftCopyParams,
           thriftRowDesc,
+          new TCreateParams(),
           thriftCallBack
         )
       } else {
