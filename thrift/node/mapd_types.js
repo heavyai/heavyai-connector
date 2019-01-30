@@ -42,7 +42,8 @@ ttypes.TEncodingType = {
   'DIFF' : 3,
   'DICT' : 4,
   'SPARSE' : 5,
-  'GEOINT' : 6
+  'GEOINT' : 6,
+  'DATE_IN_DAYS' : 7
 };
 ttypes.TExecuteMode = {
   'GPU' : 1,
@@ -1056,6 +1057,7 @@ TStringRow.prototype.write = function(output) {
 
 var TStepResult = module.exports.TStepResult = function(args) {
   this.serialized_rows = null;
+  this.uncompressed_size = null;
   this.execution_finished = null;
   this.merge_type = null;
   this.sharded = null;
@@ -1064,6 +1066,9 @@ var TStepResult = module.exports.TStepResult = function(args) {
   if (args) {
     if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
       this.serialized_rows = args.serialized_rows;
+    }
+    if (args.uncompressed_size !== undefined && args.uncompressed_size !== null) {
+      this.uncompressed_size = args.uncompressed_size;
     }
     if (args.execution_finished !== undefined && args.execution_finished !== null) {
       this.execution_finished = args.execution_finished;
@@ -1098,33 +1103,40 @@ TStepResult.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.serialized_rows = input.readString();
+        this.serialized_rows = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
+      if (ftype == Thrift.Type.I64) {
+        this.uncompressed_size = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
       if (ftype == Thrift.Type.BOOL) {
         this.execution_finished = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
-      case 3:
+      case 4:
       if (ftype == Thrift.Type.I32) {
         this.merge_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
-      case 4:
+      case 5:
       if (ftype == Thrift.Type.BOOL) {
         this.sharded = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
-      case 5:
+      case 6:
       if (ftype == Thrift.Type.LIST) {
         var _size64 = 0;
         var _rtmp368;
@@ -1145,7 +1157,7 @@ TStepResult.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 6:
+      case 7:
       if (ftype == Thrift.Type.I32) {
         this.node_id = input.readI32();
       } else {
@@ -1165,26 +1177,31 @@ TStepResult.prototype.write = function(output) {
   output.writeStructBegin('TStepResult');
   if (this.serialized_rows !== null && this.serialized_rows !== undefined) {
     output.writeFieldBegin('serialized_rows', Thrift.Type.STRING, 1);
-    output.writeString(this.serialized_rows);
+    output.writeBinary(this.serialized_rows);
+    output.writeFieldEnd();
+  }
+  if (this.uncompressed_size !== null && this.uncompressed_size !== undefined) {
+    output.writeFieldBegin('uncompressed_size', Thrift.Type.I64, 2);
+    output.writeI64(this.uncompressed_size);
     output.writeFieldEnd();
   }
   if (this.execution_finished !== null && this.execution_finished !== undefined) {
-    output.writeFieldBegin('execution_finished', Thrift.Type.BOOL, 2);
+    output.writeFieldBegin('execution_finished', Thrift.Type.BOOL, 3);
     output.writeBool(this.execution_finished);
     output.writeFieldEnd();
   }
   if (this.merge_type !== null && this.merge_type !== undefined) {
-    output.writeFieldBegin('merge_type', Thrift.Type.I32, 3);
+    output.writeFieldBegin('merge_type', Thrift.Type.I32, 4);
     output.writeI32(this.merge_type);
     output.writeFieldEnd();
   }
   if (this.sharded !== null && this.sharded !== undefined) {
-    output.writeFieldBegin('sharded', Thrift.Type.BOOL, 4);
+    output.writeFieldBegin('sharded', Thrift.Type.BOOL, 5);
     output.writeBool(this.sharded);
     output.writeFieldEnd();
   }
   if (this.row_desc !== null && this.row_desc !== undefined) {
-    output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
+    output.writeFieldBegin('row_desc', Thrift.Type.LIST, 6);
     output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
     for (var iter71 in this.row_desc)
     {
@@ -1198,7 +1215,7 @@ TStepResult.prototype.write = function(output) {
     output.writeFieldEnd();
   }
   if (this.node_id !== null && this.node_id !== undefined) {
-    output.writeFieldBegin('node_id', Thrift.Type.I32, 6);
+    output.writeFieldBegin('node_id', Thrift.Type.I32, 7);
     output.writeI32(this.node_id);
     output.writeFieldEnd();
   }
@@ -6436,6 +6453,88 @@ TLicenseInfo.prototype.write = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var TSessionInfo = module.exports.TSessionInfo = function(args) {
+  this.user = null;
+  this.database = null;
+  this.start_time = null;
+  if (args) {
+    if (args.user !== undefined && args.user !== null) {
+      this.user = args.user;
+    }
+    if (args.database !== undefined && args.database !== null) {
+      this.database = args.database;
+    }
+    if (args.start_time !== undefined && args.start_time !== null) {
+      this.start_time = args.start_time;
+    }
+  }
+};
+TSessionInfo.prototype = {};
+TSessionInfo.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.user = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.database = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I64) {
+        this.start_time = input.readI64();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TSessionInfo.prototype.write = function(output) {
+  output.writeStructBegin('TSessionInfo');
+  if (this.user !== null && this.user !== undefined) {
+    output.writeFieldBegin('user', Thrift.Type.STRING, 1);
+    output.writeString(this.user);
+    output.writeFieldEnd();
+  }
+  if (this.database !== null && this.database !== undefined) {
+    output.writeFieldBegin('database', Thrift.Type.STRING, 2);
+    output.writeString(this.database);
+    output.writeFieldEnd();
+  }
+  if (this.start_time !== null && this.start_time !== undefined) {
+    output.writeFieldBegin('start_time', Thrift.Type.I64, 3);
+    output.writeI64(this.start_time);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
