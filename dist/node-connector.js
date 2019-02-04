@@ -17800,11 +17800,11 @@ module.exports =
 	     * Get the privileges for the current user for a specified database object.
 	     * @param {String} objectName - The name or ID of the object.
 	     * @param {TDBObjectType} type - The type of the database object.
-	     * @return {Promise} Returns the list of database object names (strings).
+	     * @return {Promise.<TDBObject[]>} Returns the list of database object names (strings).
 	     *
 	     * @example <caption>Get the list of accessible database objects for a role:</caption>
 	     *
-	     * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+	     * con.getDbObjectPrivsAsync('table_name', 'TableDBObjectType').then(res => console.log(res))
 	     */
 
 
