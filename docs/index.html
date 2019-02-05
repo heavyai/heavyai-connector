@@ -535,9 +535,39 @@
               
                 
                 <li><a
-                  href='#timportstatus'
+                  href='#tdatum'
                   class="">
-                  TImportStatus
+                  TDatum
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#ttabletype'
+                  class="">
+                  TTableType
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tfrontendview'
+                  class="">
+                  TFrontendView
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#tserverstatus'
+                  class="">
+                  TServerStatus
                   
                 </a>
                 
@@ -575,16 +605,6 @@
               
                 
                 <li><a
-                  href='#tdatum'
-                  class="">
-                  TDatum
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
                   href='#tcopyparams'
                   class="">
                   TCopyParams
@@ -595,9 +615,19 @@
               
                 
                 <li><a
-                  href='#tserverstatus'
+                  href='#tdatumval'
                   class="">
-                  TServerStatus
+                  TDatumVal
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#timportstatus'
+                  class="">
+                  TImportStatus
                   
                 </a>
                 
@@ -635,39 +665,9 @@
               
                 
                 <li><a
-                  href='#ttabletype'
-                  class="">
-                  TTableType
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
                   href='#completion_hints'
                   class="">
                   completion_hints
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#tfrontendview'
-                  class="">
-                  TFrontendView
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#tdatumval'
-                  class="">
-                  TDatumVal
                   
                 </a>
                 
@@ -2112,7 +2112,7 @@ and whether backend rendering is enabled.</p>
   </div>
   
 
-  <p>Get the privileges for the current user for a specified database object.</p>
+  <p>Get the privileges for the current user for a specified database object type and ID.</p>
 
 
   <div class='pre p1 fill-light mt0'>getDbObjectPrivsAsync</div>
@@ -2133,7 +2133,7 @@ and whether backend rendering is enabled.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>objectName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The name or ID of the object.
+	    The ID of the object (e.g. table name or dashboard ID).
 
           </div>
           
@@ -2156,8 +2156,8 @@ and whether backend rendering is enabled.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
-        Returns the list of database object names (strings).
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TDBObject>></code>:
+        Returns the list of database objects for this type and ID, including their privs (property 'privs').
 
       
     
@@ -2168,9 +2168,9 @@ and whether backend rendering is enabled.</p>
   
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
-      <p><p>Get the list of accessible database objects for a role:</p>
+      <p><p>Get the list of accessible database objects for the current user:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'>con.getDbObjectsForGranteeAsync(<span class="hljs-string">'role'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+      <pre class='p1 overflow-auto round fill-light'>con.getDbObjectPrivsAsync(<span class="hljs-string">'table_name'</span>, <span class="hljs-string">'TableDBObjectType'</span>).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
   
 
@@ -5198,22 +5198,22 @@ row-based format.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='timportstatus'>
-      TImportStatus
+    <h3 class='fl m0' id='tdatum'>
+      TDatum
     </h3>
     
     
   </div>
   
 
-  <p>Import completion status of a table.</p>
+  <p>The value and state of an individual data cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TImportStatus</div>
+  <div class='pre p1 fill-light mt0'>TDatum</div>
   
     <p>
       Type:
-      <a href="#timportstatus">TImportStatus</a>
+      <a href="#tdatum">TDatum</a>
     </p>
   
   
@@ -5232,20 +5232,248 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>elapsed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>rows_completed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
           
           
         </div>
       
-        <div class='space-bottom0'>
-          <span class='code bold'>rows_estimated</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
           
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='ttabletype'>
+      TTableType
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TTableType</div>
+  
+    <p>
+      Type:
+      <a href="#ttabletype">TTableType</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =0
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =1
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tfrontendview'>
+      TFrontendView
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The data stored for a dashboard.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TFrontendView</div>
+  
+    <p>
+      Type:
+      <a href="#tfrontendview">TFrontendView</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>image_hash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The lookup hash for the dashboard thumbnail image.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>update_time</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The timestamp from the last saved update.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>view_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The name of the dashboard or the shortened share link hash.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The Base64-encoded string containing the details about the current state of the dashboard.
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tserverstatus'>
+      TServerStatus
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The permissions granted by the server.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TServerStatus</div>
+  
+    <p>
+      Type:
+      <a href="#tserverstatus">TServerStatus</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>read_only</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : Indicates whether the server accepts write operations, such as saving.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rendering_enabled</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          : Indicates whether backend rendering is enabled on the server.
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>version</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          : The current version of the server.
+
           
         </div>
       
@@ -5489,75 +5717,6 @@ row-based format.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tdatum'>
-      TDatum
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The value and state of an individual data cell in a table.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDatum</div>
-  
-    <p>
-      Type:
-      <a href="#tdatum">TDatum</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>is_null</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>val</span> <code class='quiet'>(<a href="#tdatumval">TDatumVal</a>)</code>
-          
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='tcopyparams'>
       TCopyParams
     </h3>
@@ -5697,22 +5856,22 @@ TAB
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tserverstatus'>
-      TServerStatus
+    <h3 class='fl m0' id='tdatumval'>
+      TDatumVal
     </h3>
     
     
   </div>
   
 
-  <p>The permissions granted by the server.</p>
+  <p>The value of an individual cell in a table.</p>
 
 
-  <div class='pre p1 fill-light mt0'>TServerStatus</div>
+  <div class='pre p1 fill-light mt0'>TDatumVal</div>
   
     <p>
       Type:
-      <a href="#tserverstatus">TServerStatus</a>
+      <a href="#tdatumval">TDatumVal</a>
     </p>
   
   
@@ -5731,23 +5890,101 @@ TAB
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>read_only</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          : Indicates whether the server accepts write operations, such as saving.
-
+          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
+          
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>rendering_enabled</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          : Indicates whether backend rendering is enabled on the server.
-
+          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>version</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The current version of the server.
+          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='timportstatus'>
+      TImportStatus
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Import completion status of a table.</p>
+
+
+  <div class='pre p1 fill-light mt0'>TImportStatus</div>
+  
+    <p>
+      Type:
+      <a href="#timportstatus">TImportStatus</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>elapsed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rows_completed</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>rows_estimated</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
           
         </div>
       
@@ -6122,77 +6359,6 @@ TAB
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='ttabletype'>
-      TTableType
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The types of tables that uploaded through the importer <a href="#ttabletype">TTableType</a>.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TTableType</div>
-  
-    <p>
-      Type:
-      <a href="#ttabletype">TTableType</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>DELIMITED</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =0
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =1
-
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='completion_hints'>
       completion_hints
     </h3>
@@ -6240,172 +6406,6 @@ TAB
       
         <div class='space-bottom0'>
           <span class='code bold'>cursor</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tfrontendview'>
-      TFrontendView
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The data stored for a dashboard.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TFrontendView</div>
-  
-    <p>
-      Type:
-      <a href="#tfrontendview">TFrontendView</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>image_hash</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The lookup hash for the dashboard thumbnail image.
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>update_time</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The timestamp from the last saved update.
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>view_name</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The name of the dashboard or the shortened share link hash.
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-          : The Base64-encoded string containing the details about the current state of the dashboard.
-
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='tdatumval'>
-      TDatumVal
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The value of an individual cell in a table.</p>
-
-
-  <div class='pre p1 fill-light mt0'>TDatumVal</div>
-  
-    <p>
-      Type:
-      <a href="#tdatumval">TDatumVal</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>arr_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>int_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>real_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>str_val</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           
           
         </div>
