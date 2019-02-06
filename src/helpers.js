@@ -1,3 +1,6 @@
+export const CORE_CPP_FLOAT_PRECISION = 7
+export const CORE_CPP_DOUBLE_PRECISION = 16
+
 export const convertObjectToThriftCopyParams = obj => new TCopyParams(obj) // eslint-disable-line no-undef
 
 export const mutateThriftRowDesc = (rowDescArray, thriftRowDescArray) => {
@@ -28,4 +31,16 @@ export function timestampToMs(timestamp, precision) {
   const timeInMs = timestamp / divisor
 
   return timeInMs
+}
+
+/**
+ *
+ * @param {Double} real - The double precision value from the database connector
+ * @param {Number} precision - The precision of the decimal column in the database. Note
+ *  that as per FE-5318 this will default to 7 (i.e. `std::numeric_limits<float>::digits10 + 1`)
+ *  to match core
+ * @returns {Double} - The equivalent decimal number encoded in a double precision number
+*/
+export function realToDecimal(real, precision) {
+  return Number(Number.parseFloat(real).toPrecision(precision))
 }

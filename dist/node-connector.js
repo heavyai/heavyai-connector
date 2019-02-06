@@ -18757,6 +18757,10 @@ module.exports =
 	  value: true
 	});
 	exports.timestampToMs = timestampToMs;
+	exports.realToDecimal = realToDecimal;
+	var CORE_CPP_FLOAT_PRECISION = exports.CORE_CPP_FLOAT_PRECISION = 7;
+	var CORE_CPP_DOUBLE_PRECISION = exports.CORE_CPP_DOUBLE_PRECISION = 16;
+
 	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
 	  return new TCopyParams(obj);
 	}; // eslint-disable-line no-undef
@@ -18791,49 +18795,43 @@ module.exports =
 	  return timeInMs;
 	}
 
+	/**
+	 *
+	 * @param {Double} real - The double precision value from the database connector
+	 * @param {Number} precision - The precision of the decimal column in the database. Note
+	 *  that as per FE-5318 this will default to 7 (i.e. `std::numeric_limits<float>::digits10 + 1`)
+	 *  to match core
+	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
+	*/
+	function realToDecimal(real, precision) {
+	  return Number(Number.parseFloat(real).toPrecision(precision));
+	}
+
 /***/ }),
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var has = Object.prototype.hasOwnProperty
-	  , prefix = '~';
-
-	/**
-	 * Constructor to create a storage for our `EE` objects.
-	 * An `Events` instance is a plain object whose properties are event names.
-	 *
-	 * @constructor
-	 * @private
-	 */
-	function Events() {}
+	var has = Object.prototype.hasOwnProperty;
 
 	//
-	// We try to not inherit from `Object.prototype`. In some engines creating an
-	// instance in this way is faster than calling `Object.create(null)` directly.
+	// We store our EE objects in a plain object whose properties are event names.
 	// If `Object.create(null)` is not supported we prefix the event names with a
-	// character to make sure that the built-in object properties are not
-	// overridden or used as an attack vector.
+	// `~` to make sure that the built-in object properties are not overridden or
+	// used as an attack vector.
+	// We also assume that `Object.create(null)` is available when the event name
+	// is an ES6 Symbol.
 	//
-	if (Object.create) {
-	  Events.prototype = Object.create(null);
-
-	  //
-	  // This hack is needed because the `__proto__` property is still inherited in
-	  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
-	  //
-	  if (!new Events().__proto__) prefix = false;
-	}
+	var prefix = typeof Object.create !== 'function' ? '~' : false;
 
 	/**
-	 * Representation of a single event listener.
+	 * Representation of a single EventEmitter function.
 	 *
-	 * @param {Function} fn The listener function.
-	 * @param {*} context The context to invoke the listener with.
-	 * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
-	 * @constructor
-	 * @private
+	 * @param {Function} fn Event handler to be called.
+	 * @param {Mixed} context Context for function execution.
+	 * @param {Boolean} [once=false] Only emit once
+	 * @api private
 	 */
 	function EE(fn, context, once) {
 	  this.fn = fn;
@@ -18842,70 +18840,37 @@ module.exports =
 	}
 
 	/**
-	 * Add a listener for a given event.
-	 *
-	 * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
-	 * @param {(String|Symbol)} event The event name.
-	 * @param {Function} fn The listener function.
-	 * @param {*} context The context to invoke the listener with.
-	 * @param {Boolean} once Specify if the listener is a one-time listener.
-	 * @returns {EventEmitter}
-	 * @private
-	 */
-	function addListener(emitter, event, fn, context, once) {
-	  if (typeof fn !== 'function') {
-	    throw new TypeError('The listener must be a function');
-	  }
-
-	  var listener = new EE(fn, context || emitter, once)
-	    , evt = prefix ? prefix + event : event;
-
-	  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
-	  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
-	  else emitter._events[evt] = [emitter._events[evt], listener];
-
-	  return emitter;
-	}
-
-	/**
-	 * Clear event by name.
-	 *
-	 * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
-	 * @param {(String|Symbol)} evt The Event name.
-	 * @private
-	 */
-	function clearEvent(emitter, evt) {
-	  if (--emitter._eventsCount === 0) emitter._events = new Events();
-	  else delete emitter._events[evt];
-	}
-
-	/**
-	 * Minimal `EventEmitter` interface that is molded against the Node.js
-	 * `EventEmitter` interface.
+	 * Minimal EventEmitter interface that is molded against the Node.js
+	 * EventEmitter interface.
 	 *
 	 * @constructor
-	 * @public
+	 * @api public
 	 */
-	function EventEmitter() {
-	  this._events = new Events();
-	  this._eventsCount = 0;
-	}
+	function EventEmitter() { /* Nothing to set */ }
+
+	/**
+	 * Hold the assigned EventEmitters by name.
+	 *
+	 * @type {Object}
+	 * @private
+	 */
+	EventEmitter.prototype._events = undefined;
 
 	/**
 	 * Return an array listing the events for which the emitter has registered
 	 * listeners.
 	 *
 	 * @returns {Array}
-	 * @public
+	 * @api public
 	 */
 	EventEmitter.prototype.eventNames = function eventNames() {
-	  var names = []
-	    , events
+	  var events = this._events
+	    , names = []
 	    , name;
 
-	  if (this._eventsCount === 0) return names;
+	  if (!events) return names;
 
-	  for (name in (events = this._events)) {
+	  for (name in events) {
 	    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
 	  }
 
@@ -18917,60 +18882,46 @@ module.exports =
 	};
 
 	/**
-	 * Return the listeners registered for a given event.
+	 * Return a list of assigned event listeners.
 	 *
-	 * @param {(String|Symbol)} event The event name.
-	 * @returns {Array} The registered listeners.
-	 * @public
+	 * @param {String} event The events that should be listed.
+	 * @param {Boolean} exists We only need to know if there are listeners.
+	 * @returns {Array|Boolean}
+	 * @api public
 	 */
-	EventEmitter.prototype.listeners = function listeners(event) {
+	EventEmitter.prototype.listeners = function listeners(event, exists) {
 	  var evt = prefix ? prefix + event : event
-	    , handlers = this._events[evt];
+	    , available = this._events && this._events[evt];
 
-	  if (!handlers) return [];
-	  if (handlers.fn) return [handlers.fn];
+	  if (exists) return !!available;
+	  if (!available) return [];
+	  if (available.fn) return [available.fn];
 
-	  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
-	    ee[i] = handlers[i].fn;
+	  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
+	    ee[i] = available[i].fn;
 	  }
 
 	  return ee;
 	};
 
 	/**
-	 * Return the number of listeners listening to a given event.
+	 * Emit an event to all registered event listeners.
 	 *
-	 * @param {(String|Symbol)} event The event name.
-	 * @returns {Number} The number of listeners.
-	 * @public
-	 */
-	EventEmitter.prototype.listenerCount = function listenerCount(event) {
-	  var evt = prefix ? prefix + event : event
-	    , listeners = this._events[evt];
-
-	  if (!listeners) return 0;
-	  if (listeners.fn) return 1;
-	  return listeners.length;
-	};
-
-	/**
-	 * Calls each of the listeners registered for a given event.
-	 *
-	 * @param {(String|Symbol)} event The event name.
-	 * @returns {Boolean} `true` if the event had listeners, else `false`.
-	 * @public
+	 * @param {String} event The name of the event.
+	 * @returns {Boolean} Indication if we've emitted an event.
+	 * @api public
 	 */
 	EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
 	  var evt = prefix ? prefix + event : event;
 
-	  if (!this._events[evt]) return false;
+	  if (!this._events || !this._events[evt]) return false;
 
 	  var listeners = this._events[evt]
 	    , len = arguments.length
 	    , args
 	    , i;
 
-	  if (listeners.fn) {
+	  if ('function' === typeof listeners.fn) {
 	    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
 
 	    switch (len) {
@@ -18998,7 +18949,6 @@ module.exports =
 	        case 1: listeners[i].fn.call(listeners[i].context); break;
 	        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
 	        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-	        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
 	        default:
 	          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
 	            args[j - 1] = arguments[j];
@@ -19013,98 +18963,115 @@ module.exports =
 	};
 
 	/**
-	 * Add a listener for a given event.
+	 * Register a new EventListener for the given event.
 	 *
-	 * @param {(String|Symbol)} event The event name.
-	 * @param {Function} fn The listener function.
-	 * @param {*} [context=this] The context to invoke the listener with.
-	 * @returns {EventEmitter} `this`.
-	 * @public
+	 * @param {String} event Name of the event.
+	 * @param {Function} fn Callback function.
+	 * @param {Mixed} [context=this] The context of the function.
+	 * @api public
 	 */
 	EventEmitter.prototype.on = function on(event, fn, context) {
-	  return addListener(this, event, fn, context, false);
-	};
+	  var listener = new EE(fn, context || this)
+	    , evt = prefix ? prefix + event : event;
 
-	/**
-	 * Add a one-time listener for a given event.
-	 *
-	 * @param {(String|Symbol)} event The event name.
-	 * @param {Function} fn The listener function.
-	 * @param {*} [context=this] The context to invoke the listener with.
-	 * @returns {EventEmitter} `this`.
-	 * @public
-	 */
-	EventEmitter.prototype.once = function once(event, fn, context) {
-	  return addListener(this, event, fn, context, true);
-	};
-
-	/**
-	 * Remove the listeners of a given event.
-	 *
-	 * @param {(String|Symbol)} event The event name.
-	 * @param {Function} fn Only remove the listeners that match this function.
-	 * @param {*} context Only remove the listeners that have this context.
-	 * @param {Boolean} once Only remove one-time listeners.
-	 * @returns {EventEmitter} `this`.
-	 * @public
-	 */
-	EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-	  var evt = prefix ? prefix + event : event;
-
-	  if (!this._events[evt]) return this;
-	  if (!fn) {
-	    clearEvent(this, evt);
-	    return this;
-	  }
-
-	  var listeners = this._events[evt];
-
-	  if (listeners.fn) {
-	    if (
-	      listeners.fn === fn &&
-	      (!once || listeners.once) &&
-	      (!context || listeners.context === context)
-	    ) {
-	      clearEvent(this, evt);
-	    }
-	  } else {
-	    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-	      if (
-	        listeners[i].fn !== fn ||
-	        (once && !listeners[i].once) ||
-	        (context && listeners[i].context !== context)
-	      ) {
-	        events.push(listeners[i]);
-	      }
-	    }
-
-	    //
-	    // Reset the array, or remove it completely if we have no more listeners.
-	    //
-	    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
-	    else clearEvent(this, evt);
+	  if (!this._events) this._events = prefix ? {} : Object.create(null);
+	  if (!this._events[evt]) this._events[evt] = listener;
+	  else {
+	    if (!this._events[evt].fn) this._events[evt].push(listener);
+	    else this._events[evt] = [
+	      this._events[evt], listener
+	    ];
 	  }
 
 	  return this;
 	};
 
 	/**
-	 * Remove all listeners, or those of the specified event.
+	 * Add an EventListener that's only called once.
 	 *
-	 * @param {(String|Symbol)} [event] The event name.
-	 * @returns {EventEmitter} `this`.
-	 * @public
+	 * @param {String} event Name of the event.
+	 * @param {Function} fn Callback function.
+	 * @param {Mixed} [context=this] The context of the function.
+	 * @api public
+	 */
+	EventEmitter.prototype.once = function once(event, fn, context) {
+	  var listener = new EE(fn, context || this, true)
+	    , evt = prefix ? prefix + event : event;
+
+	  if (!this._events) this._events = prefix ? {} : Object.create(null);
+	  if (!this._events[evt]) this._events[evt] = listener;
+	  else {
+	    if (!this._events[evt].fn) this._events[evt].push(listener);
+	    else this._events[evt] = [
+	      this._events[evt], listener
+	    ];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Remove event listeners.
+	 *
+	 * @param {String} event The event we want to remove.
+	 * @param {Function} fn The listener that we need to find.
+	 * @param {Mixed} context Only remove listeners matching this context.
+	 * @param {Boolean} once Only remove once listeners.
+	 * @api public
+	 */
+	EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+	  var evt = prefix ? prefix + event : event;
+
+	  if (!this._events || !this._events[evt]) return this;
+
+	  var listeners = this._events[evt]
+	    , events = [];
+
+	  if (fn) {
+	    if (listeners.fn) {
+	      if (
+	           listeners.fn !== fn
+	        || (once && !listeners.once)
+	        || (context && listeners.context !== context)
+	      ) {
+	        events.push(listeners);
+	      }
+	    } else {
+	      for (var i = 0, length = listeners.length; i < length; i++) {
+	        if (
+	             listeners[i].fn !== fn
+	          || (once && !listeners[i].once)
+	          || (context && listeners[i].context !== context)
+	        ) {
+	          events.push(listeners[i]);
+	        }
+	      }
+	    }
+	  }
+
+	  //
+	  // Reset the array, or remove it completely if we have no more listeners.
+	  //
+	  if (events.length) {
+	    this._events[evt] = events.length === 1 ? events[0] : events;
+	  } else {
+	    delete this._events[evt];
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Remove all listeners or only the listeners for the specified event.
+	 *
+	 * @param {String} event The event want to remove all listeners for.
+	 * @api public
 	 */
 	EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-	  var evt;
+	  if (!this._events) return this;
 
-	  if (event) {
-	    evt = prefix ? prefix + event : event;
-	    if (this._events[evt]) clearEvent(this, evt);
-	  } else {
-	    this._events = new Events();
-	    this._eventsCount = 0;
-	  }
+	  if (event) delete this._events[prefix ? prefix + event : event];
+	  else this._events = prefix ? {} : Object.create(null);
 
 	  return this;
 	};
@@ -19116,14 +19083,16 @@ module.exports =
 	EventEmitter.prototype.addListener = EventEmitter.prototype.on;
 
 	//
+	// This function doesn't apply anymore.
+	//
+	EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+	  return this;
+	};
+
+	//
 	// Expose the prefix.
 	//
 	EventEmitter.prefixed = prefix;
-
-	//
-	// Allow `EventEmitter` to be imported as module namespace.
-	//
-	EventEmitter.EventEmitter = EventEmitter;
 
 	//
 	// Expose the module.
@@ -19425,7 +19394,15 @@ module.exports =
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e]);
 	              break;
 	            case "FLOAT":
+	              var float_value = data.columns[_c].data.arr_col[r].data.real_col[e];
+	              var floatWithPrecision = fieldPrecision ? float_value : (0, _helpers.realToDecimal)(float_value, _helpers.CORE_CPP_FLOAT_PRECISION);
+	              row[fieldName].push(floatWithPrecision);
+	              break;
 	            case "DOUBLE":
+	              var double_value = data.columns[_c].data.arr_col[r].data.real_col[e];
+	              var doubleWithPrecision = fieldPrecision ? double_value : (0, _helpers.realToDecimal)(double_value, _helpers.CORE_CPP_DOUBLE_PRECISION);
+	              row[fieldName].push(doubleWithPrecision);
+	              break;
 	            case "DECIMAL":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.real_col[e]);
 	              break;
@@ -19455,7 +19432,15 @@ module.exports =
 	            row[fieldName] = data.columns[_c].data.int_col[r];
 	            break;
 	          case "FLOAT":
+	            var _float_value = data.columns[_c].data.real_col[r];
+	            var _floatWithPrecision = fieldPrecision ? _float_value : (0, _helpers.realToDecimal)(_float_value, _helpers.CORE_CPP_FLOAT_PRECISION);
+	            row[fieldName] = _floatWithPrecision;
+	            break;
 	          case "DOUBLE":
+	            var _double_value = data.columns[_c].data.real_col[r];
+	            var _doubleWithPrecision = fieldPrecision ? _double_value : (0, _helpers.realToDecimal)(_double_value, _helpers.CORE_CPP_DOUBLE_PRECISION);
+	            row[fieldName] = _doubleWithPrecision;
+	            break;
 	          case "DECIMAL":
 	            row[fieldName] = data.columns[_c].data.real_col[r];
 	            break;
@@ -19569,7 +19554,15 @@ module.exports =
 	              row[fieldName].push(elemDatum.val.int_val);
 	              break;
 	            case "FLOAT":
+	              var floatValue = elemDatum.val.real_val;
+	              var floatWithPrecision = fieldPrecision ? floatValue : (0, _helpers.realToDecimal)(floatValue, _helpers.CORE_CPP_FLOAT_PRECISION);
+	              row[fieldName].push(floatWithPrecision);
+	              break;
 	            case "DOUBLE":
+	              var doubleValue = elemDatum.val.real_val;
+	              var doubleWithPrecision = fieldPrecision ? doubleValue : (0, _helpers.realToDecimal)(doubleValue, _helpers.CORE_CPP_DOUBLE_PRECISION);
+	              row[fieldName].push(doubleWithPrecision);
+	              break;
 	            case "DECIMAL":
 	              row[fieldName].push(elemDatum.val.real_val);
 	              break;
@@ -19603,7 +19596,15 @@ module.exports =
 	            row[fieldName] = scalarDatum.val.int_val;
 	            break;
 	          case "FLOAT":
+	            var _floatValue = scalarDatum.val.real_val;
+	            var _floatWithPrecision = fieldPrecision ? _floatValue : (0, _helpers.realToDecimal)(_floatValue, _helpers.CORE_CPP_FLOAT_PRECISION);
+	            row[fieldName].push(_floatWithPrecision);
+	            break;
 	          case "DOUBLE":
+	            var _doubleValue = scalarDatum.val.real_val;
+	            var _doubleWithPrecision = fieldPrecision ? _doubleValue : (0, _helpers.realToDecimal)(_doubleValue, _helpers.CORE_CPP_DOUBLE_PRECISION);
+	            row[fieldName].push(_doubleWithPrecision);
+	            break;
 	          case "DECIMAL":
 	            row[fieldName] = scalarDatum.val.real_val;
 	            break;
