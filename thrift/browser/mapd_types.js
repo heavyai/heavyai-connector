@@ -55,6 +55,12 @@ TPartitionDetail = {
   'SHARDED' : 2,
   'OTHER' : 3
 };
+TGeoFileLayerContents = {
+  'EMPTY' : 0,
+  'GEO' : 1,
+  'NON_GEO' : 2,
+  'UNSUPPORTED_GEO' : 3
+};
 TMergeType = {
   'UNION' : 0,
   'REDUCE' : 1
@@ -1721,6 +1727,7 @@ TCopyParams = function(args) {
   this.geo_coords_type = 18;
   this.geo_coords_srid = 4326;
   this.sanitize_column_names = true;
+  this.geo_layer_name = null;
   if (args) {
     if (args.delimiter !== undefined && args.delimiter !== null) {
       this.delimiter = args.delimiter;
@@ -1781,6 +1788,9 @@ TCopyParams = function(args) {
     }
     if (args.sanitize_column_names !== undefined && args.sanitize_column_names !== null) {
       this.sanitize_column_names = args.sanitize_column_names;
+    }
+    if (args.geo_layer_name !== undefined && args.geo_layer_name !== null) {
+      this.geo_layer_name = args.geo_layer_name;
     }
   }
 };
@@ -1938,6 +1948,13 @@ TCopyParams.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 21:
+      if (ftype == Thrift.Type.STRING) {
+        this.geo_layer_name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -2047,6 +2064,11 @@ TCopyParams.prototype.write = function(output) {
   if (this.sanitize_column_names !== null && this.sanitize_column_names !== undefined) {
     output.writeFieldBegin('sanitize_column_names', Thrift.Type.BOOL, 20);
     output.writeBool(this.sanitize_column_names);
+    output.writeFieldEnd();
+  }
+  if (this.geo_layer_name !== null && this.geo_layer_name !== undefined) {
+    output.writeFieldBegin('geo_layer_name', Thrift.Type.STRING, 21);
+    output.writeString(this.geo_layer_name);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6550,6 +6572,72 @@ TSessionInfo.prototype.write = function(output) {
   if (this.start_time !== null && this.start_time !== undefined) {
     output.writeFieldBegin('start_time', Thrift.Type.I64, 3);
     output.writeI64(this.start_time);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TGeoFileLayerInfo = function(args) {
+  this.name = null;
+  this.contents = null;
+  if (args) {
+    if (args.name !== undefined && args.name !== null) {
+      this.name = args.name;
+    }
+    if (args.contents !== undefined && args.contents !== null) {
+      this.contents = args.contents;
+    }
+  }
+};
+TGeoFileLayerInfo.prototype = {};
+TGeoFileLayerInfo.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.contents = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TGeoFileLayerInfo.prototype.write = function(output) {
+  output.writeStructBegin('TGeoFileLayerInfo');
+  if (this.name !== null && this.name !== undefined) {
+    output.writeFieldBegin('name', Thrift.Type.STRING, 1);
+    output.writeString(this.name);
+    output.writeFieldEnd();
+  }
+  if (this.contents !== null && this.contents !== undefined) {
+    output.writeFieldBegin('contents', Thrift.Type.I32, 2);
+    output.writeI32(this.contents);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
