@@ -938,14 +938,14 @@
 
 
 	    /**
-	     * Get the privileges for the current user for a specified database object.
-	     * @param {String} objectName - The name or ID of the object.
+	     * Get the privileges for the current user for a specified database object type and ID.
+	     * @param {String} objectName - The ID of the object (e.g. table name or dashboard ID).
 	     * @param {TDBObjectType} type - The type of the database object.
-	     * @return {Promise} Returns the list of database object names (strings).
+	     * @return {Promise.<TDBObject[]>} Returns the list of database objects for this type and ID, including their privs (property 'privs').
 	     *
-	     * @example <caption>Get the list of accessible database objects for a role:</caption>
+	     * @example <caption>Get the list of accessible database objects for the current user:</caption>
 	     *
-	     * con.getDbObjectsForGranteeAsync('role').then(res => console.log(res))
+	     * con.getDbObjectPrivsAsync('table_name', 'TableDBObjectType').then(res => console.log(res))
 	     */
 
 
