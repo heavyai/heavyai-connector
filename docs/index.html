@@ -35,6 +35,16 @@
               
                 
                 <li><a
+                  href='#realtodecimal'
+                  class="">
+                  realToDecimal
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#connect'
                   class="">
                   connect
@@ -745,6 +755,87 @@ for passing to the JS Date object constructor.</p>
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
         The equivalent timestamp in milliseconds.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='realtodecimal'>
+      realToDecimal
+    </h3>
+    
+    
+  </div>
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>realToDecimal(real: Double, precision: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): Double</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>real</span> <code class='quiet'>(Double)</code>
+	    The double precision value from the database connector
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>precision</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The precision of the decimal column in the database. Note
+that as per FE-5318 this will default to 7 (i.e. 
+<code>std::numeric_limits&#x3C;float>::digits10 + 1</code>
+)
+to match core
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Double</code>:
+        The equivalent decimal number encoded in a double precision number
 
       
     
