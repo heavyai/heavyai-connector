@@ -553,7 +553,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
           (pixelError, data) => {
             expect(pixelError).to.not.be.an("error")
             const lon = data[0].row_set[0].dest_lon
-            expect(lon).to.equal(-119.0568) // Ran 100 times; seems deterministic.
+            expect(lon).to.equal(-119.05677) // Ran 100 times; seems deterministic.
             done()
           }
         )
