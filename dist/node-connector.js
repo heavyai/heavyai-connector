@@ -18860,7 +18860,7 @@ module.exports =
 	});
 	exports.timestampToMs = timestampToMs;
 	exports.realToDecimal = realToDecimal;
-	var CORE_CPP_FLOAT_PRECISION = exports.CORE_CPP_FLOAT_PRECISION = 7;
+	var CORE_CPP_FLOAT_PRECISION = exports.CORE_CPP_FLOAT_PRECISION = 9;
 	var CORE_CPP_DOUBLE_PRECISION = exports.CORE_CPP_DOUBLE_PRECISION = 16;
 
 	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
@@ -18904,7 +18904,7 @@ module.exports =
 	 *  that as per FE-5318 this will default to 7 (i.e. `std::numeric_limits<float>::digits10 + 1`)
 	 *  to match core
 	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
-	*/
+	 */
 	function realToDecimal(real, precision) {
 	  return Number(Number.parseFloat(real).toPrecision(precision));
 	}
