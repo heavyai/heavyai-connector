@@ -16085,6 +16085,7 @@ module.exports =
 	  this.update_ = null;
 	  this.delete_ = null;
 	  this.truncate_ = null;
+	  this.alter_ = null;
 	  if (args) {
 	    if (args.create_ !== undefined && args.create_ !== null) {
 	      this.create_ = args.create_;
@@ -16106,6 +16107,9 @@ module.exports =
 	    }
 	    if (args.truncate_ !== undefined && args.truncate_ !== null) {
 	      this.truncate_ = args.truncate_;
+	    }
+	    if (args.alter_ !== undefined && args.alter_ !== null) {
+	      this.alter_ = args.alter_;
 	    }
 	  }
 	};
@@ -16170,6 +16174,13 @@ module.exports =
 	          input.skip(ftype);
 	        }
 	        break;
+	      case 8:
+	        if (ftype == Thrift.Type.BOOL) {
+	          this.alter_ = input.readBool();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
 	      default:
 	        input.skip(ftype);
 	    }
@@ -16214,6 +16225,11 @@ module.exports =
 	  if (this.truncate_ !== null && this.truncate_ !== undefined) {
 	    output.writeFieldBegin('truncate_', Thrift.Type.BOOL, 7);
 	    output.writeBool(this.truncate_);
+	    output.writeFieldEnd();
+	  }
+	  if (this.alter_ !== null && this.alter_ !== undefined) {
+	    output.writeFieldBegin('alter_', Thrift.Type.BOOL, 8);
+	    output.writeBool(this.alter_);
 	    output.writeFieldEnd();
 	  }
 	  output.writeFieldStop();
