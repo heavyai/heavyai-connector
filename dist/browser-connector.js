@@ -557,57 +557,32 @@
 	    return this;
 	  }
 
-	  /**
-	   * Create a connection to the MapD server, generating a client and session ID.
-	   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-	   * @return {MapdCon} Object.
-	   *
-	   * @example <caption>Connect to a MapD server:</caption>
-	   * var con = new MapdCon()
-	   *   .host('localhost')
-	   *   .port('8080')
-	   *   .dbName('myDatabase')
-	   *   .user('foo')
-	   *   .password('bar')
-	   *   .connect((err, con) => console.log(con.sessionId()));
-	   *
-	   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
-	   */
-
-
 	  _createClass(MapdCon, [{
-	    key: "connect",
-	    value: function connect(callback) {
-	      var _this2 = this;
-
-	      // TODO: should be its own function
-	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
+	    key: "initClients",
+	    value: function initClients() {
+	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._dbName);
 	      if (!allAreArrays) {
-	        return callback("All connection parameters must be arrays.");
+	        throw new Error("Host, port, and dbName must be arrays.");
 	      }
 
 	      this._client = [];
 	      this._sessionId = [];
 
-	      if (!this._user[0]) {
-	        return callback("Please enter a username.");
-	      } else if (!this._password[0]) {
-	        return callback("Please enter a password.");
-	      } else if (!this._dbName[0]) {
-	        return callback("Please enter a database.");
+	      if (!this._dbName[0]) {
+	        throw new Error("Please enter a database.");
 	      } else if (!this._host[0]) {
-	        return callback("Please enter a host name.");
+	        throw new Error("Please enter a host name.");
 	      } else if (!this._port[0]) {
-	        return callback("Please enter a port.");
+	        throw new Error("Please enter a port.");
 	      }
 
 	      // now check to see if length of all arrays are the same and > 0
 	      var hostLength = this._host.length;
 	      if (hostLength < 1) {
-	        return callback("Must have at least one server to connect to.");
+	        throw new Error("Must have at least one server to connect to.");
 	      }
-	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) {
-	        return callback("Array connection parameters must be of equal length.");
+	      if (hostLength !== this._port.length || hostLength !== this._dbName.length) {
+	        throw new Error("Array connection parameters must be of equal length.");
 	      }
 
 	      if (!this._protocol) {
@@ -617,8 +592,9 @@
 	      }
 
 	      var transportUrls = this.getEndpoints();
+	      var clients = [];
 
-	      var _loop = function _loop(h) {
+	      for (var h = 0; h < hostLength; h++) {
 	        var client = null;
 
 	        if (isNodeRuntime()) {
@@ -636,12 +612,68 @@
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(this, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
-	          client = new _mapdClientV2.default(thriftProtocol);
+	          clients.push(new _mapdClientV2.default(thriftProtocol));
 	        }
+	      }
+
+	      return clients;
+	    }
+
+	    /**
+	     * Create a connection to the MapD server, generating a client and session ID.
+	     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+	     * @return {MapdCon} Object.
+	     *
+	     * @example <caption>Connect to a MapD server:</caption>
+	     * var con = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect((err, con) => console.log(con.sessionId()));
+	     *
+	     *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+	     */
+
+	  }, {
+	    key: "connect",
+	    value: function connect(callback) {
+	      var _this2 = this;
+
+	      if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
+	        return callback("Username and password must be arrays.");
+	      }
+
+	      if (!this._user[0]) {
+	        return callback("Please enter a username.");
+	      } else if (!this._password[0]) {
+	        return callback("Please enter a password.");
+	      }
+
+	      // now check to see if length of all arrays are the same and > 0
+	      var hostLength = this._host.length;
+	      if (hostLength < 1) {
+	        return callback("Must have at least one server to connect to.");
+	      }
+	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) {
+	        return callback("Array connection parameters must be of equal length.");
+	      }
+
+	      var clients = [];
+	      // eslint-disable-next-line no-restricted-syntax
+	      try {
+	        clients = this.initClients();
+	      } catch (e) {
+	        return callback(e.message);
+	      }
+
+	      var _loop = function _loop(h) {
+	        var client = clients[h];
 
 	        client.connect(_this2._user[h], _this2._password[h], _this2._dbName[h], function (error, sessionId) {
 	          if (error) {
@@ -655,7 +687,7 @@
 	        });
 	      };
 
-	      for (var h = 0; h < hostLength; h++) {
+	      for (var h = 0; h < clients.length; h++) {
 	        _loop(h);
 	      }
 

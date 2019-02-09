@@ -92,61 +92,36 @@ class MapdCon {
     return this
   }
 
-  /**
-   * Create a connection to the MapD server, generating a client and session ID.
-   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-   * @return {MapdCon} Object.
-   *
-   * @example <caption>Connect to a MapD server:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect((err, con) => console.log(con.sessionId()));
-   *
-   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
-   */
-  connect(callback) {
-    // TODO: should be its own function
+  initClients() {
     const allAreArrays =
       Array.isArray(this._host) &&
       Array.isArray(this._port) &&
-      Array.isArray(this._user) &&
-      Array.isArray(this._password) &&
       Array.isArray(this._dbName)
     if (!allAreArrays) {
-      return callback("All connection parameters must be arrays.")
+      throw new Error("Host, port, and dbName must be arrays.")
     }
 
     this._client = []
     this._sessionId = []
 
-    if (!this._user[0]) {
-      return callback("Please enter a username.")
-    } else if (!this._password[0]) {
-      return callback("Please enter a password.")
-    } else if (!this._dbName[0]) {
-      return callback("Please enter a database.")
+    if (!this._dbName[0]) {
+      throw new Error("Please enter a database.")
     } else if (!this._host[0]) {
-      return callback("Please enter a host name.")
+      throw new Error("Please enter a host name.")
     } else if (!this._port[0]) {
-      return callback("Please enter a port.")
+      throw new Error("Please enter a port.")
     }
 
     // now check to see if length of all arrays are the same and > 0
     const hostLength = this._host.length
     if (hostLength < 1) {
-      return callback("Must have at least one server to connect to.")
+      throw new Error("Must have at least one server to connect to.")
     }
     if (
       hostLength !== this._port.length ||
-      hostLength !== this._user.length ||
-      hostLength !== this._password.length ||
       hostLength !== this._dbName.length
     ) {
-      return callback("Array connection parameters must be of equal length.")
+      throw new Error("Array connection parameters must be of equal length.")
     }
 
     if (!this._protocol) {
@@ -156,6 +131,8 @@ class MapdCon {
     }
 
     const transportUrls = this.getEndpoints()
+    const clients = []
+
     for (let h = 0; h < hostLength; h++) {
       let client = null
 
@@ -200,8 +177,64 @@ class MapdCon {
       } else {
         const thriftTransport = new Thrift.Transport(transportUrls[h])
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
+        clients.push(new MapDClientV2(thriftProtocol))
       }
+    }
+
+    return clients
+  }
+
+  /**
+   * Create a connection to the MapD server, generating a client and session ID.
+   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+   * @return {MapdCon} Object.
+   *
+   * @example <caption>Connect to a MapD server:</caption>
+   * var con = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect((err, con) => console.log(con.sessionId()));
+   *
+   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+   */
+  connect(callback) {
+    if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
+      return callback("Username and password must be arrays.")
+    }
+
+    if (!this._user[0]) {
+      return callback("Please enter a username.")
+    } else if (!this._password[0]) {
+      return callback("Please enter a password.")
+    }
+
+    // now check to see if length of all arrays are the same and > 0
+    const hostLength = this._host.length
+    if (hostLength < 1) {
+      return callback("Must have at least one server to connect to.")
+    }
+    if (
+      hostLength !== this._port.length ||
+      hostLength !== this._user.length ||
+      hostLength !== this._password.length ||
+      hostLength !== this._dbName.length
+    ) {
+      return callback("Array connection parameters must be of equal length.")
+    }
+
+    let clients = []
+    // eslint-disable-next-line no-restricted-syntax
+    try {
+      clients = this.initClients()
+    } catch (e) {
+      return callback(e.message)
+    }
+
+    for (let h = 0; h < clients.length; h++) {
+      const client = clients[h]
 
       client.connect(
         this._user[h],
