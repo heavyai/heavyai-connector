@@ -174,6 +174,7 @@ class MapdCon {
           "user",
           "validateQuery"
         ])
+        clients.push(client)
       } else {
         const thriftTransport = new Thrift.Transport(transportUrls[h])
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
