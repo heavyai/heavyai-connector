@@ -61,6 +61,11 @@ TGeoFileLayerContents = {
   'NON_GEO' : 2,
   'UNSUPPORTED_GEO' : 3
 };
+TImportHeaderRow = {
+  'AUTODETECT' : 0,
+  'NO_HEADER' : 1,
+  'HAS_HEADER' : 2
+};
 TMergeType = {
   'UNION' : 0,
   'REDUCE' : 1
@@ -501,6 +506,7 @@ TColumnType = function(args) {
   this.src_name = null;
   this.is_system = null;
   this.is_physical = null;
+  this.col_id = null;
   if (args) {
     if (args.col_name !== undefined && args.col_name !== null) {
       this.col_name = args.col_name;
@@ -519,6 +525,9 @@ TColumnType = function(args) {
     }
     if (args.is_physical !== undefined && args.is_physical !== null) {
       this.is_physical = args.is_physical;
+    }
+    if (args.col_id !== undefined && args.col_id !== null) {
+      this.col_id = args.col_id;
     }
   }
 };
@@ -579,6 +588,13 @@ TColumnType.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 7:
+      if (ftype == Thrift.Type.I64) {
+        this.col_id = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -618,6 +634,11 @@ TColumnType.prototype.write = function(output) {
   if (this.is_physical !== null && this.is_physical !== undefined) {
     output.writeFieldBegin('is_physical', Thrift.Type.BOOL, 6);
     output.writeBool(this.is_physical);
+    output.writeFieldEnd();
+  }
+  if (this.col_id !== null && this.col_id !== undefined) {
+    output.writeFieldBegin('col_id', Thrift.Type.I64, 7);
+    output.writeI64(this.col_id);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1709,7 +1730,7 @@ TMapDException.prototype.write = function(output) {
 TCopyParams = function(args) {
   this.delimiter = null;
   this.null_str = null;
-  this.has_header = null;
+  this.has_header = 0;
   this.quoted = null;
   this.quote = null;
   this.escape = null;
@@ -1823,8 +1844,8 @@ TCopyParams.prototype.read = function(input) {
       }
       break;
       case 3:
-      if (ftype == Thrift.Type.BOOL) {
-        this.has_header = input.readBool().value;
+      if (ftype == Thrift.Type.I32) {
+        this.has_header = input.readI32().value;
       } else {
         input.skip(ftype);
       }
@@ -1977,8 +1998,8 @@ TCopyParams.prototype.write = function(output) {
     output.writeFieldEnd();
   }
   if (this.has_header !== null && this.has_header !== undefined) {
-    output.writeFieldBegin('has_header', Thrift.Type.BOOL, 3);
-    output.writeBool(this.has_header);
+    output.writeFieldBegin('has_header', Thrift.Type.I32, 3);
+    output.writeI32(this.has_header);
     output.writeFieldEnd();
   }
   if (this.quoted !== null && this.quoted !== undefined) {
@@ -3717,6 +3738,7 @@ TTableMeta = function(args) {
   this.is_replicated = null;
   this.shard_count = null;
   this.max_rows = null;
+  this.table_id = null;
   this.max_table_id = null;
   if (args) {
     if (args.table_name !== undefined && args.table_name !== null) {
@@ -3739,6 +3761,9 @@ TTableMeta = function(args) {
     }
     if (args.max_rows !== undefined && args.max_rows !== null) {
       this.max_rows = args.max_rows;
+    }
+    if (args.table_id !== undefined && args.table_id !== null) {
+      this.table_id = args.table_id;
     }
     if (args.max_table_id !== undefined && args.max_table_id !== null) {
       this.max_table_id = args.max_table_id;
@@ -3823,6 +3848,13 @@ TTableMeta.prototype.read = function(input) {
       break;
       case 8:
       if (ftype == Thrift.Type.I64) {
+        this.table_id = input.readI64().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 9:
+      if (ftype == Thrift.Type.I64) {
         this.max_table_id = input.readI64().value;
       } else {
         input.skip(ftype);
@@ -3883,8 +3915,13 @@ TTableMeta.prototype.write = function(output) {
     output.writeI64(this.max_rows);
     output.writeFieldEnd();
   }
+  if (this.table_id !== null && this.table_id !== undefined) {
+    output.writeFieldBegin('table_id', Thrift.Type.I64, 8);
+    output.writeI64(this.table_id);
+    output.writeFieldEnd();
+  }
   if (this.max_table_id !== null && this.max_table_id !== undefined) {
-    output.writeFieldBegin('max_table_id', Thrift.Type.I64, 8);
+    output.writeFieldBegin('max_table_id', Thrift.Type.I64, 9);
     output.writeI64(this.max_table_id);
     output.writeFieldEnd();
   }
@@ -5767,6 +5804,7 @@ TTablePermissions = function(args) {
   this.update_ = null;
   this.delete_ = null;
   this.truncate_ = null;
+  this.alter_ = null;
   if (args) {
     if (args.create_ !== undefined && args.create_ !== null) {
       this.create_ = args.create_;
@@ -5788,6 +5826,9 @@ TTablePermissions = function(args) {
     }
     if (args.truncate_ !== undefined && args.truncate_ !== null) {
       this.truncate_ = args.truncate_;
+    }
+    if (args.alter_ !== undefined && args.alter_ !== null) {
+      this.alter_ = args.alter_;
     }
   }
 };
@@ -5854,6 +5895,13 @@ TTablePermissions.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 8:
+      if (ftype == Thrift.Type.BOOL) {
+        this.alter_ = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -5898,6 +5946,11 @@ TTablePermissions.prototype.write = function(output) {
   if (this.truncate_ !== null && this.truncate_ !== undefined) {
     output.writeFieldBegin('truncate_', Thrift.Type.BOOL, 7);
     output.writeBool(this.truncate_);
+    output.writeFieldEnd();
+  }
+  if (this.alter_ !== null && this.alter_ !== undefined) {
+    output.writeFieldBegin('alter_', Thrift.Type.BOOL, 8);
+    output.writeBool(this.alter_);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
