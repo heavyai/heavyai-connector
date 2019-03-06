@@ -804,6 +804,14 @@ class MapdCon {
       })
     )
 
+  getSessionInfoAsync() {
+    thriftWrapper.wrapThrift(
+      "get_session_info",
+      this.overSingleClient,
+      args => args
+    )
+  }
+
   detectColumnTypes(fileName, copyParams, callback) {
     const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
     this._client[0].detect_column_types(
