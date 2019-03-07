@@ -405,6 +405,9 @@
 	      }));
 	    };
 
+	    this.getSessionInfoAsync = this.handleErrors(this.wrapThrift("get_session_info", this.overSingleClient, function (args) {
+	      return args;
+	    }));
 	    this.detectColumnTypesAsync = this.handleErrors(function (fileName, copyParams) {
 	      return new Promise(function (resolve, reject) {
 	        _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {
