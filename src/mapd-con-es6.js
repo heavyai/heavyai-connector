@@ -1563,7 +1563,7 @@ class MapdCon {
     if (!arguments.length) {
       return this._sessionId
     }
-    this._sessionId = sessionId
+    this._sessionId = arrayify(sessionId)
     return this
   }
 
