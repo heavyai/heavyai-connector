@@ -405,9 +405,9 @@
 	      }));
 	    };
 
-	    this.getSessionInfoAsync = this.handleErrors(this.wrapThrift("get_session_info", this.overSingleClient, function (args) {
+	    this.getSessionInfoAsync = this.wrapThrift("get_session_info", this.overSingleClient, function (args) {
 	      return args;
-	    }));
+	    });
 	    this.detectColumnTypesAsync = this.handleErrors(function (fileName, copyParams) {
 	      return new Promise(function (resolve, reject) {
 	        _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {
@@ -623,7 +623,7 @@
 	          clients.push(new _mapdClientV2.default(thriftProtocol));
 	        }
 	      }
-
+	      this._client = clients;
 	      return clients;
 	    }
 
@@ -1576,7 +1576,7 @@
 	      if (!arguments.length) {
 	        return this._sessionId;
 	      }
-	      this._sessionId = _sessionId;
+	      this._sessionId = arrayify(_sessionId);
 	      return this;
 	    }
 
