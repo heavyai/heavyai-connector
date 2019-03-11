@@ -181,7 +181,7 @@ class MapdCon {
         clients.push(new MapDClientV2(thriftProtocol))
       }
     }
-
+    this._client = clients
     return clients
   }
 
