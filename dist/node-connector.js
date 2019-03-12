@@ -17623,9 +17623,7 @@ module.exports =
 	      this._client = [];
 	      this._sessionId = [];
 
-	      if (!this._dbName[0]) {
-	        throw new Error("Please enter a database.");
-	      } else if (!this._host[0]) {
+	      if (!this._host[0]) {
 	        throw new Error("Please enter a host name.");
 	      } else if (!this._port[0]) {
 	        throw new Error("Please enter a port.");
@@ -17636,7 +17634,7 @@ module.exports =
 	      if (hostLength < 1) {
 	        throw new Error("Must have at least one server to connect to.");
 	      }
-	      if (hostLength !== this._port.length || hostLength !== this._dbName.length) {
+	      if (hostLength !== this._port.length) {
 	        throw new Error("Array connection parameters must be of equal length.");
 	      }
 
@@ -17676,7 +17674,7 @@ module.exports =
 	        }
 	      }
 	      this._client = clients;
-	      return clients;
+	      return this;
 	    }
 
 	    /**
@@ -17705,7 +17703,9 @@ module.exports =
 	        return callback("Username and password must be arrays.");
 	      }
 
-	      if (!this._user[0]) {
+	      if (!this._dbName[0]) {
+	        throw new Error("Please enter a database.");
+	      } else if (!this._user[0]) {
 	        return callback("Please enter a username.");
 	      } else if (!this._password[0]) {
 	        return callback("Please enter a password.");
@@ -17723,7 +17723,8 @@ module.exports =
 	      var clients = [];
 	      // eslint-disable-next-line no-restricted-syntax
 	      try {
-	        clients = this.initClients();
+	        this.initClients();
+	        clients = this._client;
 	      } catch (e) {
 	        return callback(e.message);
 	      }
