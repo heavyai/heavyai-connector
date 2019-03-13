@@ -17251,10 +17251,6 @@ module.exports =
 	  return typeof window === "undefined";
 	}
 
-	function isTimeoutError(result) {
-	  return result instanceof window.TMapDException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
-	}
-
 	var MapdCon = function () {
 	  function MapdCon() {
 	    var _this = this;
@@ -17297,7 +17293,7 @@ module.exports =
 	          var promise = method.apply(_this, args);
 
 	          promise.then(success).catch(function (error) {
-	            if (isTimeoutError(error)) {
+	            if (_this.isTimeoutError(error)) {
 	              // Reconnect, then try the method once more
 	              return _this.connectAsync().then(function () {
 	                var retriedPromise = method.apply(_this, args);
@@ -17790,7 +17786,7 @@ module.exports =
 	      if (this._sessionId !== null) {
 	        for (var c = 0; c < this._client.length; c++) {
 	          this._client[c].disconnect(this._sessionId[c], function (error) {
-	            if (error && !isTimeoutError(error)) {
+	            if (error && !_this3.isTimeoutError(error)) {
 	              return callback(error, _this3);
 	            }
 
@@ -18921,6 +18917,11 @@ module.exports =
 	          reject(e);
 	        }
 	      });
+	    }
+	  }, {
+	    key: "isTimeoutError",
+	    value: function isTimeoutError(result) {
+	      return result instanceof window.TMapDException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
 	    }
 	  }]);
 

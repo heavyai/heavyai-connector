@@ -31,14 +31,6 @@ function isNodeRuntime() {
   return typeof window === "undefined"
 }
 
-function isTimeoutError(result) {
-  return (
-    result instanceof window.TMapDException &&
-    (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
-      String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
-  )
-}
-
 class MapdCon {
   constructor() {
     this._host = null
@@ -299,7 +291,7 @@ class MapdCon {
     if (this._sessionId !== null) {
       for (let c = 0; c < this._client.length; c++) {
         this._client[c].disconnect(this._sessionId[c], error => {
-          if (error && !isTimeoutError(error)) {
+          if (error && !this.isTimeoutError(error)) {
             return callback(error, this)
           }
 
@@ -351,7 +343,7 @@ class MapdCon {
       const promise = method.apply(this, args)
 
       promise.then(success).catch(error => {
-        if (isTimeoutError(error)) {
+        if (this.isTimeoutError(error)) {
           // Reconnect, then try the method once more
           return this.connectAsync().then(() => {
             const retriedPromise = method.apply(this, args)
@@ -1805,6 +1797,14 @@ class MapdCon {
         reject(e)
       }
     })
+  }
+
+  isTimeoutError(result) {
+    return (
+      result instanceof window.TMapDException &&
+      (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
+        String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
+    )
   }
 }
 
