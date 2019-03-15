@@ -241,7 +241,7 @@
 	          var promise = method.apply(_this, args);
 
 	          promise.then(success).catch(function (error) {
-	            if (_this.isTimeoutError(error)) {
+	            if (_this.isTimeoutError(error) && !_this._usingSAML) {
 	              // Reconnect, then try the method once more
 	              return _this.connectAsync().then(function () {
 	                var retriedPromise = method.apply(_this, args);
@@ -401,9 +401,9 @@
 	      }));
 	    };
 
-	    this.getSessionInfoAsync = this.wrapThrift("get_session_info", this.overSingleClient, function (args) {
+	    this.getSessionInfoAsync = this.handleErrors(this.wrapThrift("get_session_info", this.overSingleClient, function (args) {
 	      return args;
-	    });
+	    }));
 	    this.detectColumnTypesAsync = this.handleErrors(function (fileName, copyParams) {
 	      return new Promise(function (resolve, reject) {
 	        _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {
@@ -516,6 +516,7 @@
 	    this._client = null;
 	    this._sessionId = null;
 	    this._protocol = null;
+	    this._usingSAML = false;
 	    this._datumEnum = {};
 	    this._logging = false;
 	    this._platform = "mapd";
@@ -1779,6 +1780,21 @@
 	        return this._protocol;
 	      }
 	      this._protocol = arrayify(_protocol);
+	      return this;
+	    }
+
+	    /**
+	     * Whether we're using SAML to authenticate
+	     * @param {Boolean} usingSAML
+	     */
+
+	  }, {
+	    key: "usingSAML",
+	    value: function usingSAML(_usingSAML) {
+	      if (!arguments.length) {
+	        return this._usingSAML;
+	      }
+	      this._usingSAML = _usingSAML;
 	      return this;
 	    }
 
