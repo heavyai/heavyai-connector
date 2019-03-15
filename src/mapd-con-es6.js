@@ -85,6 +85,12 @@ class MapdCon {
     return this
   }
 
+  /**
+   * Initializes the connector for use. This is similar to `connect()`, but stops short of
+   * actually connecting to the server.
+   *
+   * @return {MapdCon} Object.
+   */
   initClients() {
     const allAreArrays =
       Array.isArray(this._host) &&
@@ -1738,7 +1744,9 @@ class MapdCon {
 
   /**
    * Disables logic that automatically tries to reconnect to the server if there's an error
-   * @param {Boolean} disableAutoReconnect
+   *
+   * @param {Boolean?} disable - If true, disables auto-reconnect
+   * @return {Boolean|MapdCon} The status of auto-reconnect, or MapdCon itself.
    */
   disableAutoReconnect(disable) {
     if (!arguments.length) {
