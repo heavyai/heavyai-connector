@@ -241,7 +241,7 @@
 	          var promise = method.apply(_this, args);
 
 	          promise.then(success).catch(function (error) {
-	            if (_this.isTimeoutError(error) && !_this._disableReconnect) {
+	            if (_this.isTimeoutError(error) && !_this._disableAutoReconnect) {
 	              // Reconnect, then try the method once more
 	              return _this.connectAsync().then(function () {
 	                var retriedPromise = method.apply(_this, args);
@@ -516,7 +516,7 @@
 	    this._client = null;
 	    this._sessionId = null;
 	    this._protocol = null;
-	    this._disableReconnect = false;
+	    this._disableAutoReconnect = false;
 	    this._datumEnum = {};
 	    this._logging = false;
 	    this._platform = "mapd";
@@ -556,6 +556,14 @@
 	    // return this to allow chaining off of instantiation
 	    return this;
 	  }
+
+	  /**
+	   * Initializes the connector for use. This is similar to `connect()`, but stops short of
+	   * actually connecting to the server.
+	   *
+	   * @return {MapdCon} Object.
+	   */
+
 
 	  _createClass(MapdCon, [{
 	    key: "initClients",
@@ -1785,7 +1793,9 @@
 
 	    /**
 	     * Disables logic that automatically tries to reconnect to the server if there's an error
-	     * @param {Boolean} disableAutoReconnect
+	     *
+	     * @param {Boolean?} disable - If true, disables auto-reconnect
+	     * @return {Boolean|MapdCon} The status of auto-reconnect, or MapdCon itself.
 	     */
 
 	  }, {
@@ -1997,7 +2007,7 @@
 	 *  that as per FE-5318 this will default to 7 (i.e. `std::numeric_limits<float>::digits10 + 1`)
 	 *  to match core
 	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
-	*/
+	 */
 	function realToDecimal(real, precision) {
 	  return Number(Number.parseFloat(real).toPrecision(precision));
 	}

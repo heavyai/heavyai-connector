@@ -41,7 +41,7 @@ class MapdCon {
     this._client = null
     this._sessionId = null
     this._protocol = null
-    this._disableReconnect = false
+    this._disableAutoReconnect = false
     this._datumEnum = {}
     this._logging = false
     this._platform = "mapd"
@@ -344,7 +344,7 @@ class MapdCon {
       const promise = method.apply(this, args)
 
       promise.then(success).catch(error => {
-        if (this.isTimeoutError(error) && !this._disableReconnect) {
+        if (this.isTimeoutError(error) && !this._disableAutoReconnect) {
           // Reconnect, then try the method once more
           return this.connectAsync().then(() => {
             const retriedPromise = method.apply(this, args)
