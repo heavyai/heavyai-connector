@@ -41,6 +41,7 @@ class MapdCon {
     this._client = null
     this._sessionId = null
     this._protocol = null
+    this._usingSAML = false
     this._datumEnum = {}
     this._logging = false
     this._platform = "mapd"
@@ -343,7 +344,7 @@ class MapdCon {
       const promise = method.apply(this, args)
 
       promise.then(success).catch(error => {
-        if (this.isTimeoutError(error)) {
+        if (this.isTimeoutError(error) && !this._usingSAML) {
           // Reconnect, then try the method once more
           return this.connectAsync().then(() => {
             const retriedPromise = method.apply(this, args)
@@ -1734,6 +1735,18 @@ class MapdCon {
       return this._protocol
     }
     this._protocol = arrayify(protocol)
+    return this
+  }
+
+  /**
+   * Whether we're using SAML to authenticate
+   * @param {Boolean} usingSAML
+   */
+  usingSAML(usingSAML) {
+    if (!arguments.length) {
+      return this._usingSAML
+    }
+    this._usingSAML = usingSAML
     return this
   }
 
