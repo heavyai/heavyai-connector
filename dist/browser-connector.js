@@ -241,7 +241,7 @@
 	          var promise = method.apply(_this, args);
 
 	          promise.then(success).catch(function (error) {
-	            if (_this.isTimeoutError(error) && !_this._usingSAML) {
+	            if (_this.isTimeoutError(error) && !_this._disableReconnect) {
 	              // Reconnect, then try the method once more
 	              return _this.connectAsync().then(function () {
 	                var retriedPromise = method.apply(_this, args);
@@ -516,7 +516,7 @@
 	    this._client = null;
 	    this._sessionId = null;
 	    this._protocol = null;
-	    this._usingSAML = false;
+	    this._disableReconnect = false;
 	    this._datumEnum = {};
 	    this._logging = false;
 	    this._platform = "mapd";
@@ -1784,17 +1784,17 @@
 	    }
 
 	    /**
-	     * Whether we're using SAML to authenticate
-	     * @param {Boolean} usingSAML
+	     * Disables logic that automatically tries to reconnect to the server if there's an error
+	     * @param {Boolean} disableAutoReconnect
 	     */
 
 	  }, {
-	    key: "usingSAML",
-	    value: function usingSAML(_usingSAML) {
+	    key: "disableAutoReconnect",
+	    value: function disableAutoReconnect(disable) {
 	      if (!arguments.length) {
-	        return this._usingSAML;
+	        return this._disableAutoReconnect;
 	      }
-	      this._usingSAML = _usingSAML;
+	      this._disableAutoReconnect = disable;
 	      return this;
 	    }
 

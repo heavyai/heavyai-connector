@@ -41,7 +41,7 @@ class MapdCon {
     this._client = null
     this._sessionId = null
     this._protocol = null
-    this._usingSAML = false
+    this._disableReconnect = false
     this._datumEnum = {}
     this._logging = false
     this._platform = "mapd"
@@ -344,7 +344,7 @@ class MapdCon {
       const promise = method.apply(this, args)
 
       promise.then(success).catch(error => {
-        if (this.isTimeoutError(error) && !this._usingSAML) {
+        if (this.isTimeoutError(error) && !this._disableReconnect) {
           // Reconnect, then try the method once more
           return this.connectAsync().then(() => {
             const retriedPromise = method.apply(this, args)
@@ -1737,14 +1737,14 @@ class MapdCon {
   }
 
   /**
-   * Whether we're using SAML to authenticate
-   * @param {Boolean} usingSAML
+   * Disables logic that automatically tries to reconnect to the server if there's an error
+   * @param {Boolean} disableAutoReconnect
    */
-  usingSAML(usingSAML) {
+  disableAutoReconnect(disable) {
     if (!arguments.length) {
-      return this._usingSAML
+      return this._disableAutoReconnect
     }
-    this._usingSAML = usingSAML
+    this._disableAutoReconnect = disable
     return this
   }
 
