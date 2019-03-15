@@ -2,7 +2,7 @@ import {
   CORE_CPP_DOUBLE_PRECISION,
   CORE_CPP_FLOAT_PRECISION,
   realToDecimal,
-  timestampToMs,
+  timestampToMs
 } from "./helpers"
 
 /**
@@ -76,18 +76,16 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
               break
             case "FLOAT":
               const floatValue = elemDatum.val.real_val
-              const floatWithPrecision = fieldPrecision ? floatValue : realToDecimal(
-                floatValue,
-                CORE_CPP_FLOAT_PRECISION
-              )
+              const floatWithPrecision = fieldPrecision
+                ? floatValue
+                : realToDecimal(floatValue, CORE_CPP_FLOAT_PRECISION)
               row[fieldName].push(floatWithPrecision)
               break
             case "DOUBLE":
               const doubleValue = elemDatum.val.real_val
-              const doubleWithPrecision = fieldPrecision ? doubleValue : realToDecimal(
-                doubleValue,
-                CORE_CPP_DOUBLE_PRECISION
-              )
+              const doubleWithPrecision = fieldPrecision
+                ? doubleValue
+                : realToDecimal(doubleValue, CORE_CPP_DOUBLE_PRECISION)
               row[fieldName].push(doubleWithPrecision)
               break
             case "DECIMAL":
@@ -127,18 +125,16 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             break
           case "FLOAT":
             const floatValue = scalarDatum.val.real_val
-            const floatWithPrecision = fieldPrecision ? floatValue : realToDecimal(
-              floatValue,
-              CORE_CPP_FLOAT_PRECISION
-            )
+            const floatWithPrecision = fieldPrecision
+              ? floatValue
+              : realToDecimal(floatValue, CORE_CPP_FLOAT_PRECISION)
             row[fieldName].push(floatWithPrecision)
             break
           case "DOUBLE":
             const doubleValue = scalarDatum.val.real_val
-            const doubleWithPrecision = fieldPrecision ? doubleValue : realToDecimal(
-              doubleValue,
-              CORE_CPP_DOUBLE_PRECISION
-            )
+            const doubleWithPrecision = fieldPrecision
+              ? doubleValue
+              : realToDecimal(doubleValue, CORE_CPP_DOUBLE_PRECISION)
             row[fieldName].push(doubleWithPrecision)
             break
           case "DECIMAL":
