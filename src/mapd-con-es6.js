@@ -795,10 +795,8 @@ class MapdCon {
       })
     )
 
-  getSessionInfoAsync = this.wrapThrift(
-    "get_session_info",
-    this.overSingleClient,
-    args => args
+  getSessionInfoAsync = this.handleErrors(
+    this.wrapThrift("get_session_info", this.overSingleClient, args => args)
   )
 
   detectColumnTypes(fileName, copyParams, callback) {
