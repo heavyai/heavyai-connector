@@ -1,6 +1,6 @@
 /* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-const { TDatumType, TEncodingType, TPixel } =
+const { TDatumType, TEncodingType, TPixel, TMapDException } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
   isNodeRuntime() && require("../build/thrift/node/mapd.thrift.js") // eslint-disable-line global-require
@@ -227,6 +227,8 @@ class MapdCon {
     try {
       this.initClients()
       clients = this._client
+      // Reset the client property, so we can add only the ones that we can connect to below
+      this._client = []
     } catch (e) {
       return callback(e.message)
     }
@@ -1820,7 +1822,7 @@ class MapdCon {
 
   isTimeoutError(result) {
     return (
-      result instanceof window.TMapDException &&
+      result instanceof TMapDException &&
       (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
         String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
     )

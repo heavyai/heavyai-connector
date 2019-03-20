@@ -17227,7 +17227,8 @@ module.exports =
 	var _ref = isNodeRuntime() && __webpack_require__(52) || window,
 	    TDatumType = _ref.TDatumType,
 	    TEncodingType = _ref.TEncodingType,
-	    TPixel = _ref.TPixel; // eslint-disable-line global-require
+	    TPixel = _ref.TPixel,
+	    TMapDException = _ref.TMapDException; // eslint-disable-line global-require
 
 
 	var MapDThrift = isNodeRuntime() && __webpack_require__(54); // eslint-disable-line global-require
@@ -17730,6 +17731,8 @@ module.exports =
 	      try {
 	        this.initClients();
 	        clients = this._client;
+	        // Reset the client property, so we can add only the ones that we can connect to below
+	        this._client = [];
 	      } catch (e) {
 	        return callback(e.message);
 	      }
@@ -18947,7 +18950,7 @@ module.exports =
 	  }, {
 	    key: "isTimeoutError",
 	    value: function isTimeoutError(result) {
-	      return result instanceof window.TMapDException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+	      return result instanceof TMapDException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
 	    }
 	  }]);
 
