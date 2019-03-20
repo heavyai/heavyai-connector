@@ -53,9 +53,10 @@ ttypes.TDeviceType = {
   'CPU' : 0,
   'GPU' : 1
 };
-ttypes.TTableType = {
+ttypes.TFileType = {
   'DELIMITED' : 0,
-  'POLYGON' : 1
+  'POLYGON' : 1,
+  'PARQUET' : 2
 };
 ttypes.TPartitionDetail = {
   'DEFAULT' : 0,
@@ -1749,7 +1750,7 @@ var TCopyParams = module.exports.TCopyParams = function(args) {
   this.array_begin = null;
   this.array_end = null;
   this.threads = null;
-  this.table_type = 0;
+  this.file_type = 0;
   this.s3_access_key = null;
   this.s3_secret_key = null;
   this.s3_region = null;
@@ -1793,8 +1794,8 @@ var TCopyParams = module.exports.TCopyParams = function(args) {
     if (args.threads !== undefined && args.threads !== null) {
       this.threads = args.threads;
     }
-    if (args.table_type !== undefined && args.table_type !== null) {
-      this.table_type = args.table_type;
+    if (args.file_type !== undefined && args.file_type !== null) {
+      this.file_type = args.file_type;
     }
     if (args.s3_access_key !== undefined && args.s3_access_key !== null) {
       this.s3_access_key = args.s3_access_key;
@@ -1918,7 +1919,7 @@ TCopyParams.prototype.read = function(input) {
       break;
       case 12:
       if (ftype == Thrift.Type.I32) {
-        this.table_type = input.readI32();
+        this.file_type = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -2052,9 +2053,9 @@ TCopyParams.prototype.write = function(output) {
     output.writeI32(this.threads);
     output.writeFieldEnd();
   }
-  if (this.table_type !== null && this.table_type !== undefined) {
-    output.writeFieldBegin('table_type', Thrift.Type.I32, 12);
-    output.writeI32(this.table_type);
+  if (this.file_type !== null && this.file_type !== undefined) {
+    output.writeFieldBegin('file_type', Thrift.Type.I32, 12);
+    output.writeI32(this.file_type);
     output.writeFieldEnd();
   }
   if (this.s3_access_key !== null && this.s3_access_key !== undefined) {
