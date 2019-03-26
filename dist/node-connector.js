@@ -17680,6 +17680,7 @@ module.exports =
 	        }
 	      }
 	      this._client = clients;
+	      this._numConnections = this._client.length;
 	      return this;
 	    }
 
@@ -17747,7 +17748,6 @@ module.exports =
 	          }
 	          _this2._client.push(client);
 	          _this2._sessionId.push(sessionId);
-	          _this2._numConnections = _this2._client.length;
 	          callback(null, _this2);
 	        });
 	      };
