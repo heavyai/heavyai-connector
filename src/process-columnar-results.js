@@ -1,4 +1,9 @@
-import { timestampToMs } from "./helpers"
+import {
+  CORE_CPP_DOUBLE_PRECISION,
+  CORE_CPP_FLOAT_PRECISION,
+  realToDecimal,
+  timestampToMs
+} from "./helpers"
 
 /**
  * Process the column-based results from the query in a row-based format.
@@ -75,7 +80,21 @@ export default function processColumnarResults(
               )
               break
             case "FLOAT":
+              const float_value = data.columns[c].data.arr_col[r].data.real_col[e]
+              const floatWithPrecision = fieldPrecision ? float_value : realToDecimal(
+                float_value,
+                CORE_CPP_FLOAT_PRECISION
+              )
+              row[fieldName].push(floatWithPrecision)
+              break
             case "DOUBLE":
+              const double_value = data.columns[c].data.arr_col[r].data.real_col[e]
+              const doubleWithPrecision = fieldPrecision ? double_value : realToDecimal(
+                double_value,
+                CORE_CPP_DOUBLE_PRECISION
+              )
+              row[fieldName].push(doubleWithPrecision)
+              break
             case "DECIMAL":
               row[fieldName].push(
                 data.columns[c].data.arr_col[r].data.real_col[e]
@@ -112,7 +131,21 @@ export default function processColumnarResults(
             row[fieldName] = data.columns[c].data.int_col[r]
             break
           case "FLOAT":
+            const float_value = data.columns[c].data.real_col[r]
+            const floatWithPrecision = fieldPrecision ? float_value : realToDecimal(
+              float_value,
+              CORE_CPP_FLOAT_PRECISION
+            )
+            row[fieldName] = floatWithPrecision
+            break
           case "DOUBLE":
+            const double_value = data.columns[c].data.real_col[r]
+            const doubleWithPrecision = fieldPrecision ? double_value : realToDecimal(
+              double_value,
+              CORE_CPP_DOUBLE_PRECISION
+            )
+            row[fieldName] = doubleWithPrecision
+            break
           case "DECIMAL":
             row[fieldName] = data.columns[c].data.real_col[r]
             break
