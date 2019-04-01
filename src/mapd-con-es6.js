@@ -1177,7 +1177,7 @@ class MapdCon {
             columns: this.convertFromThriftTypes(rowDict)
           })
         } else {
-          callback(new Error("Table (" + tableName + ") not found" + error))
+          callback(new Error("Table (" + tableName + ") not found"))
         }
       }
     )

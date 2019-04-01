@@ -18425,7 +18425,7 @@ module.exports =
 	            columns: _this6.convertFromThriftTypes(rowDict)
 	          }));
 	        } else {
-	          callback(new Error("Table (" + tableName + ") not found" + error));
+	          callback(new Error("Table (" + tableName + ") not found"));
 	        }
 	      });
 	    }
