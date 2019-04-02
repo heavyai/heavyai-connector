@@ -10590,6 +10590,12 @@ module.exports =
 	  'NO_HEADER': 1,
 	  'HAS_HEADER': 2
 	};
+	ttypes.TRole = {
+	  'SERVER': 0,
+	  'AGGREGATOR': 1,
+	  'LEAF': 2,
+	  'STRING_DICTIONARY': 3
+	};
 	ttypes.TMergeType = {
 	  'UNION': 0,
 	  'REDUCE': 1
@@ -12209,6 +12215,7 @@ module.exports =
 	  this.geo_coords_srid = 4326;
 	  this.sanitize_column_names = true;
 	  this.geo_layer_name = null;
+	  this.s3_endpoint = null;
 	  if (args) {
 	    if (args.delimiter !== undefined && args.delimiter !== null) {
 	      this.delimiter = args.delimiter;
@@ -12272,6 +12279,9 @@ module.exports =
 	    }
 	    if (args.geo_layer_name !== undefined && args.geo_layer_name !== null) {
 	      this.geo_layer_name = args.geo_layer_name;
+	    }
+	    if (args.s3_endpoint !== undefined && args.s3_endpoint !== null) {
+	      this.s3_endpoint = args.s3_endpoint;
 	    }
 	  }
 	};
@@ -12434,6 +12444,13 @@ module.exports =
 	          input.skip(ftype);
 	        }
 	        break;
+	      case 22:
+	        if (ftype == Thrift.Type.STRING) {
+	          this.s3_endpoint = input.readString();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
 	      default:
 	        input.skip(ftype);
 	    }
@@ -12548,6 +12565,11 @@ module.exports =
 	  if (this.geo_layer_name !== null && this.geo_layer_name !== undefined) {
 	    output.writeFieldBegin('geo_layer_name', Thrift.Type.STRING, 21);
 	    output.writeString(this.geo_layer_name);
+	    output.writeFieldEnd();
+	  }
+	  if (this.s3_endpoint !== null && this.s3_endpoint !== undefined) {
+	    output.writeFieldBegin('s3_endpoint', Thrift.Type.STRING, 22);
+	    output.writeString(this.s3_endpoint);
 	    output.writeFieldEnd();
 	  }
 	  output.writeFieldStop();
@@ -13048,6 +13070,7 @@ module.exports =
 	  this.edition = null;
 	  this.host_name = null;
 	  this.poly_rendering_enabled = null;
+	  this.role = null;
 	  if (args) {
 	    if (args.read_only !== undefined && args.read_only !== null) {
 	      this.read_only = args.read_only;
@@ -13069,6 +13092,9 @@ module.exports =
 	    }
 	    if (args.poly_rendering_enabled !== undefined && args.poly_rendering_enabled !== null) {
 	      this.poly_rendering_enabled = args.poly_rendering_enabled;
+	    }
+	    if (args.role !== undefined && args.role !== null) {
+	      this.role = args.role;
 	    }
 	  }
 	};
@@ -13133,6 +13159,13 @@ module.exports =
 	          input.skip(ftype);
 	        }
 	        break;
+	      case 8:
+	        if (ftype == Thrift.Type.I32) {
+	          this.role = input.readI32();
+	        } else {
+	          input.skip(ftype);
+	        }
+	        break;
 	      default:
 	        input.skip(ftype);
 	    }
@@ -13177,6 +13210,11 @@ module.exports =
 	  if (this.poly_rendering_enabled !== null && this.poly_rendering_enabled !== undefined) {
 	    output.writeFieldBegin('poly_rendering_enabled', Thrift.Type.BOOL, 7);
 	    output.writeBool(this.poly_rendering_enabled);
+	    output.writeFieldEnd();
+	  }
+	  if (this.role !== null && this.role !== undefined) {
+	    output.writeFieldBegin('role', Thrift.Type.I32, 8);
+	    output.writeI32(this.role);
 	    output.writeFieldEnd();
 	  }
 	  output.writeFieldStop();
