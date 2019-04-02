@@ -1,6 +1,6 @@
 /* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-const { TDatumType, TEncodingType, TPixel } =
+const { TDatumType, TEncodingType, TPixel, TMapDException } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
   isNodeRuntime() && require("../build/thrift/node/mapd.thrift.js") // eslint-disable-line global-require
@@ -31,14 +31,6 @@ function isNodeRuntime() {
   return typeof window === "undefined"
 }
 
-function isTimeoutError(result) {
-  return (
-    result instanceof window.TMapDException &&
-    (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
-      String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
-  )
-}
-
 class MapdCon {
   constructor() {
     this._host = null
@@ -49,6 +41,7 @@ class MapdCon {
     this._client = null
     this._sessionId = null
     this._protocol = null
+    this._disableAutoReconnect = false
     this._datumEnum = {}
     this._logging = false
     this._platform = "mapd"
@@ -93,60 +86,36 @@ class MapdCon {
   }
 
   /**
-   * Create a connection to the MapD server, generating a client and session ID.
-   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+   * Initializes the connector for use. This is similar to `connect()`, but stops short of
+   * actually connecting to the server.
+   *
    * @return {MapdCon} Object.
-   *
-   * @example <caption>Connect to a MapD server:</caption>
-   * var con = new MapdCon()
-   *   .host('localhost')
-   *   .port('8080')
-   *   .dbName('myDatabase')
-   *   .user('foo')
-   *   .password('bar')
-   *   .connect((err, con) => console.log(con.sessionId()));
-   *
-   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
    */
-  connect(callback) {
-    // TODO: should be its own function
+  initClients() {
     const allAreArrays =
       Array.isArray(this._host) &&
       Array.isArray(this._port) &&
-      Array.isArray(this._user) &&
-      Array.isArray(this._password) &&
       Array.isArray(this._dbName)
     if (!allAreArrays) {
-      return callback("All connection parameters must be arrays.")
+      throw new Error("Host, port, and dbName must be arrays.")
     }
 
     this._client = []
     this._sessionId = []
 
-    if (!this._user[0]) {
-      return callback("Please enter a username.")
-    } else if (!this._password[0]) {
-      return callback("Please enter a password.")
-    } else if (!this._dbName[0]) {
-      return callback("Please enter a database.")
-    } else if (!this._host[0]) {
-      return callback("Please enter a host name.")
+    if (!this._host[0]) {
+      throw new Error("Please enter a host name.")
     } else if (!this._port[0]) {
-      return callback("Please enter a port.")
+      throw new Error("Please enter a port.")
     }
 
     // now check to see if length of all arrays are the same and > 0
     const hostLength = this._host.length
     if (hostLength < 1) {
-      return callback("Must have at least one server to connect to.")
+      throw new Error("Must have at least one server to connect to.")
     }
-    if (
-      hostLength !== this._port.length ||
-      hostLength !== this._user.length ||
-      hostLength !== this._password.length ||
-      hostLength !== this._dbName.length
-    ) {
-      return callback("Array connection parameters must be of equal length.")
+    if (hostLength !== this._port.length) {
+      throw new Error("Array connection parameters must be of equal length.")
     }
 
     if (!this._protocol) {
@@ -156,6 +125,8 @@ class MapdCon {
     }
 
     const transportUrls = this.getEndpoints()
+    const clients = []
+
     for (let h = 0; h < hostLength; h++) {
       let client = null
 
@@ -197,11 +168,74 @@ class MapdCon {
           "user",
           "validateQuery"
         ])
+        clients.push(client)
       } else {
         const thriftTransport = new Thrift.Transport(transportUrls[h])
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
+        clients.push(new MapDClientV2(thriftProtocol))
       }
+    }
+    this._client = clients
+    this._numConnections = this._client.length
+    return this
+  }
+
+  /**
+   * Create a connection to the MapD server, generating a client and session ID.
+   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+   * @return {MapdCon} Object.
+   *
+   * @example <caption>Connect to a MapD server:</caption>
+   * var con = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect((err, con) => console.log(con.sessionId()));
+   *
+   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+   */
+  connect(callback) {
+    if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
+      return callback("Username and password must be arrays.")
+    }
+
+    if (!this._dbName[0]) {
+      throw new Error("Please enter a database.")
+    } else if (!this._user[0]) {
+      return callback("Please enter a username.")
+    } else if (!this._password[0]) {
+      return callback("Please enter a password.")
+    }
+
+    // now check to see if length of all arrays are the same and > 0
+    const hostLength = this._host.length
+    if (hostLength < 1) {
+      return callback("Must have at least one server to connect to.")
+    }
+    if (
+      hostLength !== this._port.length ||
+      hostLength !== this._user.length ||
+      hostLength !== this._password.length ||
+      hostLength !== this._dbName.length
+    ) {
+      return callback("Array connection parameters must be of equal length.")
+    }
+
+    let clients = []
+    // eslint-disable-next-line no-restricted-syntax
+    try {
+      this.initClients()
+      clients = this._client
+      // Reset the client property, so we can add only the ones that we can connect to below
+      this._client = []
+    } catch (e) {
+      return callback(e.message)
+    }
+
+    for (let h = 0; h < clients.length; h++) {
+      const client = clients[h]
 
       client.connect(
         this._user[h],
@@ -214,7 +248,6 @@ class MapdCon {
           }
           this._client.push(client)
           this._sessionId.push(sessionId)
-          this._numConnections = this._client.length
           callback(null, this)
         }
       )
@@ -267,7 +300,7 @@ class MapdCon {
     if (this._sessionId !== null) {
       for (let c = 0; c < this._client.length; c++) {
         this._client[c].disconnect(this._sessionId[c], error => {
-          if (error && !isTimeoutError(error)) {
+          if (error && !this.isTimeoutError(error)) {
             return callback(error, this)
           }
 
@@ -319,7 +352,7 @@ class MapdCon {
       const promise = method.apply(this, args)
 
       promise.then(success).catch(error => {
-        if (isTimeoutError(error)) {
+        if (this.isTimeoutError(error) && !this._disableAutoReconnect) {
           // Reconnect, then try the method once more
           return this.connectAsync().then(() => {
             const retriedPromise = method.apply(this, args)
@@ -769,6 +802,10 @@ class MapdCon {
         database_permissions_: new TDatabasePermissions(dbPrivs)
       })
     )
+
+  getSessionInfoAsync = this.handleErrors(
+    this.wrapThrift("get_session_info", this.overSingleClient, args => args)
+  )
 
   detectColumnTypes(fileName, copyParams, callback) {
     const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
@@ -1525,7 +1562,7 @@ class MapdCon {
     if (!arguments.length) {
       return this._sessionId
     }
-    this._sessionId = sessionId
+    this._sessionId = arrayify(sessionId)
     return this
   }
 
@@ -1708,6 +1745,20 @@ class MapdCon {
   }
 
   /**
+   * Disables logic that automatically tries to reconnect to the server if there's an error
+   *
+   * @param {Boolean?} disable - If true, disables auto-reconnect
+   * @return {Boolean|MapdCon} The status of auto-reconnect, or MapdCon itself.
+   */
+  disableAutoReconnect(disable) {
+    if (!arguments.length) {
+      return this._disableAutoReconnect
+    }
+    this._disableAutoReconnect = disable
+    return this
+  }
+
+  /**
    * Generates a list of endpoints from the connection parameters.
    * @return {Array<String>} List of endpoints.
    *
@@ -1767,6 +1818,14 @@ class MapdCon {
         reject(e)
       }
     })
+  }
+
+  isTimeoutError(result) {
+    return (
+      result instanceof TMapDException &&
+      (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
+        String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
+    )
   }
 }
 

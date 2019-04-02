@@ -175,7 +175,8 @@
 	var _ref = isNodeRuntime() && __webpack_require__(121) || window,
 	    TDatumType = _ref.TDatumType,
 	    TEncodingType = _ref.TEncodingType,
-	    TPixel = _ref.TPixel; // eslint-disable-line global-require
+	    TPixel = _ref.TPixel,
+	    TMapDException = _ref.TMapDException; // eslint-disable-line global-require
 
 
 	var MapDThrift = isNodeRuntime() && __webpack_require__(16); // eslint-disable-line global-require
@@ -197,10 +198,6 @@
 
 	function isNodeRuntime() {
 	  return typeof window === "undefined";
-	}
-
-	function isTimeoutError(result) {
-	  return result instanceof window.TMapDException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
 	}
 
 	var MapdCon = function () {
@@ -245,7 +242,7 @@
 	          var promise = method.apply(_this, args);
 
 	          promise.then(success).catch(function (error) {
-	            if (isTimeoutError(error)) {
+	            if (_this.isTimeoutError(error) && !_this._disableAutoReconnect) {
 	              // Reconnect, then try the method once more
 	              return _this.connectAsync().then(function () {
 	                var retriedPromise = method.apply(_this, args);
@@ -405,6 +402,9 @@
 	      }));
 	    };
 
+	    this.getSessionInfoAsync = this.handleErrors(this.wrapThrift("get_session_info", this.overSingleClient, function (args) {
+	      return args;
+	    }));
 	    this.detectColumnTypesAsync = this.handleErrors(function (fileName, copyParams) {
 	      return new Promise(function (resolve, reject) {
 	        _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {
@@ -517,6 +517,7 @@
 	    this._client = null;
 	    this._sessionId = null;
 	    this._protocol = null;
+	    this._disableAutoReconnect = false;
 	    this._datumEnum = {};
 	    this._logging = false;
 	    this._platform = "mapd";
@@ -558,56 +559,37 @@
 	  }
 
 	  /**
-	   * Create a connection to the MapD server, generating a client and session ID.
-	   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+	   * Initializes the connector for use. This is similar to `connect()`, but stops short of
+	   * actually connecting to the server.
+	   *
 	   * @return {MapdCon} Object.
-	   *
-	   * @example <caption>Connect to a MapD server:</caption>
-	   * var con = new MapdCon()
-	   *   .host('localhost')
-	   *   .port('8080')
-	   *   .dbName('myDatabase')
-	   *   .user('foo')
-	   *   .password('bar')
-	   *   .connect((err, con) => console.log(con.sessionId()));
-	   *
-	   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
 	   */
 
 
 	  _createClass(MapdCon, [{
-	    key: "connect",
-	    value: function connect(callback) {
-	      var _this2 = this;
-
-	      // TODO: should be its own function
-	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._user) && Array.isArray(this._password) && Array.isArray(this._dbName);
+	    key: "initClients",
+	    value: function initClients() {
+	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._dbName);
 	      if (!allAreArrays) {
-	        return callback("All connection parameters must be arrays.");
+	        throw new Error("Host, port, and dbName must be arrays.");
 	      }
 
 	      this._client = [];
 	      this._sessionId = [];
 
-	      if (!this._user[0]) {
-	        return callback("Please enter a username.");
-	      } else if (!this._password[0]) {
-	        return callback("Please enter a password.");
-	      } else if (!this._dbName[0]) {
-	        return callback("Please enter a database.");
-	      } else if (!this._host[0]) {
-	        return callback("Please enter a host name.");
+	      if (!this._host[0]) {
+	        throw new Error("Please enter a host name.");
 	      } else if (!this._port[0]) {
-	        return callback("Please enter a port.");
+	        throw new Error("Please enter a port.");
 	      }
 
 	      // now check to see if length of all arrays are the same and > 0
 	      var hostLength = this._host.length;
 	      if (hostLength < 1) {
-	        return callback("Must have at least one server to connect to.");
+	        throw new Error("Must have at least one server to connect to.");
 	      }
-	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) {
-	        return callback("Array connection parameters must be of equal length.");
+	      if (hostLength !== this._port.length) {
+	        throw new Error("Array connection parameters must be of equal length.");
 	      }
 
 	      if (!this._protocol) {
@@ -617,8 +599,9 @@
 	      }
 
 	      var transportUrls = this.getEndpoints();
+	      var clients = [];
 
-	      var _loop = function _loop(h) {
+	      for (var h = 0; h < hostLength; h++) {
 	        var client = null;
 
 	        if (isNodeRuntime()) {
@@ -636,12 +619,75 @@
 	          });
 	          connection.on("error", console.error); // eslint-disable-line no-console
 	          client = thriftWrapper.createClient(MapDThrift, connection);
-	          resetThriftClientOnArgumentErrorForMethods(_this2, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          resetThriftClientOnArgumentErrorForMethods(this, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
+	          clients.push(client);
 	        } else {
 	          var thriftTransport = new Thrift.Transport(transportUrls[h]);
 	          var thriftProtocol = new Thrift.Protocol(thriftTransport);
-	          client = new _mapdClientV2.default(thriftProtocol);
+	          clients.push(new _mapdClientV2.default(thriftProtocol));
 	        }
+	      }
+	      this._client = clients;
+	      this._numConnections = this._client.length;
+	      return this;
+	    }
+
+	    /**
+	     * Create a connection to the MapD server, generating a client and session ID.
+	     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+	     * @return {MapdCon} Object.
+	     *
+	     * @example <caption>Connect to a MapD server:</caption>
+	     * var con = new MapdCon()
+	     *   .host('localhost')
+	     *   .port('8080')
+	     *   .dbName('myDatabase')
+	     *   .user('foo')
+	     *   .password('bar')
+	     *   .connect((err, con) => console.log(con.sessionId()));
+	     *
+	     *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+	     */
+
+	  }, {
+	    key: "connect",
+	    value: function connect(callback) {
+	      var _this2 = this;
+
+	      if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
+	        return callback("Username and password must be arrays.");
+	      }
+
+	      if (!this._dbName[0]) {
+	        throw new Error("Please enter a database.");
+	      } else if (!this._user[0]) {
+	        return callback("Please enter a username.");
+	      } else if (!this._password[0]) {
+	        return callback("Please enter a password.");
+	      }
+
+	      // now check to see if length of all arrays are the same and > 0
+	      var hostLength = this._host.length;
+	      if (hostLength < 1) {
+	        return callback("Must have at least one server to connect to.");
+	      }
+	      if (hostLength !== this._port.length || hostLength !== this._user.length || hostLength !== this._password.length || hostLength !== this._dbName.length) {
+	        return callback("Array connection parameters must be of equal length.");
+	      }
+
+	      var clients = [];
+	      // eslint-disable-next-line no-restricted-syntax
+	      try {
+	        this.initClients();
+	        clients = this._client;
+	        // Reset the client property, so we can add only the ones that we can connect to below
+	        this._client = [];
+	      } catch (e) {
+	        return callback(e.message);
+	      }
+
+	      var _loop = function _loop(h) {
+	        var client = clients[h];
 
 	        client.connect(_this2._user[h], _this2._password[h], _this2._dbName[h], function (error, sessionId) {
 	          if (error) {
@@ -650,12 +696,11 @@
 	          }
 	          _this2._client.push(client);
 	          _this2._sessionId.push(sessionId);
-	          _this2._numConnections = _this2._client.length;
 	          callback(null, _this2);
 	        });
 	      };
 
-	      for (var h = 0; h < hostLength; h++) {
+	      for (var h = 0; h < clients.length; h++) {
 	        _loop(h);
 	      }
 
@@ -701,7 +746,7 @@
 	      if (this._sessionId !== null) {
 	        for (var c = 0; c < this._client.length; c++) {
 	          this._client[c].disconnect(this._sessionId[c], function (error) {
-	            if (error && !isTimeoutError(error)) {
+	            if (error && !_this3.isTimeoutError(error)) {
 	              return callback(error, _this3);
 	            }
 
@@ -1540,7 +1585,7 @@
 	      if (!arguments.length) {
 	        return this._sessionId;
 	      }
-	      this._sessionId = _sessionId;
+	      this._sessionId = arrayify(_sessionId);
 	      return this;
 	    }
 
@@ -1750,6 +1795,23 @@
 	    }
 
 	    /**
+	     * Disables logic that automatically tries to reconnect to the server if there's an error
+	     *
+	     * @param {Boolean?} disable - If true, disables auto-reconnect
+	     * @return {Boolean|MapdCon} The status of auto-reconnect, or MapdCon itself.
+	     */
+
+	  }, {
+	    key: "disableAutoReconnect",
+	    value: function disableAutoReconnect(disable) {
+	      if (!arguments.length) {
+	        return this._disableAutoReconnect;
+	      }
+	      this._disableAutoReconnect = disable;
+	      return this;
+	    }
+
+	    /**
 	     * Generates a list of endpoints from the connection parameters.
 	     * @return {Array<String>} List of endpoints.
 	     *
@@ -1832,6 +1894,11 @@
 	          reject(e);
 	        }
 	      });
+	    }
+	  }, {
+	    key: "isTimeoutError",
+	    value: function isTimeoutError(result) {
+	      return result instanceof TMapDException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
 	    }
 	  }]);
 
@@ -1943,7 +2010,7 @@
 	 *  that as per FE-5318 this will default to 7 (i.e. `std::numeric_limits<float>::digits10 + 1`)
 	 *  to match core
 	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
-	*/
+	 */
 	function realToDecimal(real, precision) {
 	  return Number(Number.parseFloat(real).toPrecision(precision));
 	}
