@@ -1,9 +1,4 @@
-import {
-  CORE_CPP_DOUBLE_PRECISION,
-  CORE_CPP_FLOAT_PRECISION,
-  realToDecimal,
-  timestampToMs
-} from "./helpers"
+import { timestampToMs } from "./helpers"
 
 /**
  * Query for row-based results from the server. In general, is inefficient and should be
@@ -75,19 +70,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
               row[fieldName].push(elemDatum.val.int_val)
               break
             case "FLOAT":
-              const floatValue = elemDatum.val.real_val
-              const floatWithPrecision = fieldPrecision
-                ? floatValue
-                : realToDecimal(floatValue, CORE_CPP_FLOAT_PRECISION)
-              row[fieldName].push(floatWithPrecision)
-              break
             case "DOUBLE":
-              const doubleValue = elemDatum.val.real_val
-              const doubleWithPrecision = fieldPrecision
-                ? doubleValue
-                : realToDecimal(doubleValue, CORE_CPP_DOUBLE_PRECISION)
-              row[fieldName].push(doubleWithPrecision)
-              break
             case "DECIMAL":
               row[fieldName].push(elemDatum.val.real_val)
               break
@@ -124,19 +107,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             row[fieldName] = scalarDatum.val.int_val
             break
           case "FLOAT":
-            const floatValue = scalarDatum.val.real_val
-            const floatWithPrecision = fieldPrecision
-              ? floatValue
-              : realToDecimal(floatValue, CORE_CPP_FLOAT_PRECISION)
-            row[fieldName].push(floatWithPrecision)
-            break
           case "DOUBLE":
-            const doubleValue = scalarDatum.val.real_val
-            const doubleWithPrecision = fieldPrecision
-              ? doubleValue
-              : realToDecimal(doubleValue, CORE_CPP_DOUBLE_PRECISION)
-            row[fieldName].push(doubleWithPrecision)
-            break
           case "DECIMAL":
             row[fieldName] = scalarDatum.val.real_val
             break
