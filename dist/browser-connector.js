@@ -1965,10 +1965,6 @@
 	  value: true
 	});
 	exports.timestampToMs = timestampToMs;
-	exports.realToDecimal = realToDecimal;
-	var CORE_CPP_FLOAT_PRECISION = exports.CORE_CPP_FLOAT_PRECISION = 7;
-	var CORE_CPP_DOUBLE_PRECISION = exports.CORE_CPP_DOUBLE_PRECISION = 16;
-
 	var convertObjectToThriftCopyParams = exports.convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
 	  return new TCopyParams(obj);
 	}; // eslint-disable-line no-undef
@@ -2001,18 +1997,6 @@
 	  var timeInMs = timestamp / divisor;
 
 	  return timeInMs;
-	}
-
-	/**
-	 *
-	 * @param {Double} real - The double precision value from the database connector
-	 * @param {Number} precision - The precision of the decimal column in the database. Note
-	 *  that as per FE-5318 this will default to 7 (i.e. `std::numeric_limits<float>::digits10 + 1`)
-	 *  to match core
-	 * @returns {Double} - The equivalent decimal number encoded in a double precision number
-	 */
-	function realToDecimal(real, precision) {
-	  return Number(Number.parseFloat(real).toPrecision(precision));
 	}
 
 /***/ }),
@@ -28381,15 +28365,7 @@
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.int_col[e]);
 	              break;
 	            case "FLOAT":
-	              var float_value = data.columns[_c].data.arr_col[r].data.real_col[e];
-	              var floatWithPrecision = fieldPrecision ? float_value : (0, _helpers.realToDecimal)(float_value, _helpers.CORE_CPP_FLOAT_PRECISION);
-	              row[fieldName].push(floatWithPrecision);
-	              break;
 	            case "DOUBLE":
-	              var double_value = data.columns[_c].data.arr_col[r].data.real_col[e];
-	              var doubleWithPrecision = fieldPrecision ? double_value : (0, _helpers.realToDecimal)(double_value, _helpers.CORE_CPP_DOUBLE_PRECISION);
-	              row[fieldName].push(doubleWithPrecision);
-	              break;
 	            case "DECIMAL":
 	              row[fieldName].push(data.columns[_c].data.arr_col[r].data.real_col[e]);
 	              break;
@@ -28419,15 +28395,7 @@
 	            row[fieldName] = data.columns[_c].data.int_col[r];
 	            break;
 	          case "FLOAT":
-	            var _float_value = data.columns[_c].data.real_col[r];
-	            var _floatWithPrecision = fieldPrecision ? _float_value : (0, _helpers.realToDecimal)(_float_value, _helpers.CORE_CPP_FLOAT_PRECISION);
-	            row[fieldName] = _floatWithPrecision;
-	            break;
 	          case "DOUBLE":
-	            var _double_value = data.columns[_c].data.real_col[r];
-	            var _doubleWithPrecision = fieldPrecision ? _double_value : (0, _helpers.realToDecimal)(_double_value, _helpers.CORE_CPP_DOUBLE_PRECISION);
-	            row[fieldName] = _doubleWithPrecision;
-	            break;
 	          case "DECIMAL":
 	            row[fieldName] = data.columns[_c].data.real_col[r];
 	            break;
@@ -28541,15 +28509,7 @@
 	              row[fieldName].push(elemDatum.val.int_val);
 	              break;
 	            case "FLOAT":
-	              var floatValue = elemDatum.val.real_val;
-	              var floatWithPrecision = fieldPrecision ? floatValue : (0, _helpers.realToDecimal)(floatValue, _helpers.CORE_CPP_FLOAT_PRECISION);
-	              row[fieldName].push(floatWithPrecision);
-	              break;
 	            case "DOUBLE":
-	              var doubleValue = elemDatum.val.real_val;
-	              var doubleWithPrecision = fieldPrecision ? doubleValue : (0, _helpers.realToDecimal)(doubleValue, _helpers.CORE_CPP_DOUBLE_PRECISION);
-	              row[fieldName].push(doubleWithPrecision);
-	              break;
 	            case "DECIMAL":
 	              row[fieldName].push(elemDatum.val.real_val);
 	              break;
@@ -28583,15 +28543,7 @@
 	            row[fieldName] = scalarDatum.val.int_val;
 	            break;
 	          case "FLOAT":
-	            var _floatValue = scalarDatum.val.real_val;
-	            var _floatWithPrecision = fieldPrecision ? _floatValue : (0, _helpers.realToDecimal)(_floatValue, _helpers.CORE_CPP_FLOAT_PRECISION);
-	            row[fieldName].push(_floatWithPrecision);
-	            break;
 	          case "DOUBLE":
-	            var _doubleValue = scalarDatum.val.real_val;
-	            var _doubleWithPrecision = fieldPrecision ? _doubleValue : (0, _helpers.realToDecimal)(_doubleValue, _helpers.CORE_CPP_DOUBLE_PRECISION);
-	            row[fieldName].push(_doubleWithPrecision);
-	            break;
 	          case "DECIMAL":
 	            row[fieldName] = scalarDatum.val.real_val;
 	            break;
