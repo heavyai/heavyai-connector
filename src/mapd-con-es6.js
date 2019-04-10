@@ -325,6 +325,17 @@ export class MapdCon {
     return this
   }
 
+  disconnectAsync = () =>
+    new Promise((resolve, reject) => {
+      this.disconnect((error, con) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(con)
+        }
+      })
+    })
+
   removeConnection(conId) {
     if (conId < 0 || conId >= this.numConnections) {
       const err = {
