@@ -2034,6 +2034,60 @@ export class MapdCon {
     })
   }
 
+  /**
+   * Clears cpu memory server-side.
+   * @param {Function} callback A callback that takes (`err, results`). When successful,
+   *                   err is null and results is undefined as the method returns nothing.
+   * @returns {undefined} This method returns nothing and instead relies on the callback
+   */
+  clearCpuMemory(callback) {
+    this._client[0].clear_cpu_memory(this._sessionId[0], callback);
+  }
+
+  /**
+   * Clears cpu memory server side.
+   * @returns {Promise.<undefined>} Undefined (when successful) or Error.
+   */
+  clearCpuMemoryAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.clearCpuMemory((err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      })
+  );
+
+  /**
+   * Clears gpu memory server-side.
+   * @param {Function} callback A callback that takes (`err, results`). When successful,
+   *                   err is null and results is undefined as the method returns nothing.
+   * @returns {undefined} This method returns nothing and instead relies on the callback
+   */
+  clearGpuMemory(callback) {
+    this._client[0].clear_gpu_memory(this._sessionId[0], callback);
+  }
+
+  /**
+   * Clears gpu memory server side.
+   * @returns {Promise.<undefined>} Undefined (when successful) or Error.
+   */
+  clearGpuMemoryAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.clearGpuMemory((err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      })
+  );
+
   isTimeoutError(result) {
     return (
       result instanceof TOmniSciException &&

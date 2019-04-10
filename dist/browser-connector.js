@@ -31078,6 +31078,28 @@ var MapdCon = /*#__PURE__*/function () {
 	        });
 	      });
 	    });
+	    this.clearCpuMemoryAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.clearCpuMemory(function (err, result) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
+	    this.clearGpuMemoryAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.clearGpuMemory(function (err, result) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 
 	    this._host = null;
 	    this._user = null;
@@ -32519,6 +32541,44 @@ var MapdCon = /*#__PURE__*/function () {
 	        }
 	      });
 	    }
+
+	    /**
+	     * Clears cpu memory server-side.
+	     * @param {Function} callback A callback that takes (`err, results`). When successful,
+	     *                   err is null and results is undefined as the method returns nothing.
+	     * @returns {undefined} This method returns nothing and instead relies on the callback
+	     */
+
+	  }, {
+	    key: "clearCpuMemory",
+	    value: function clearCpuMemory(callback) {
+	      this._client[0].clear_cpu_memory(this._sessionId[0], callback);
+	    }
+
+	    /**
+	     * Clears cpu memory server side.
+	     * @returns {Promise.<undefined>} Undefined (when successful) or Error.
+	     */
+
+	  }, {
+	    key: "clearGpuMemory",
+
+
+	    /**
+	     * Clears gpu memory server-side.
+	     * @param {Function} callback A callback that takes (`err, results`). When successful,
+	     *                   err is null and results is undefined as the method returns nothing.
+	     * @returns {undefined} This method returns nothing and instead relies on the callback
+	     */
+	    value: function clearGpuMemory(callback) {
+	      this._client[0].clear_gpu_memory(this._sessionId[0], callback);
+	    }
+
+	    /**
+	     * Clears gpu memory server side.
+	     * @returns {Promise.<undefined>} Undefined (when successful) or Error.
+	     */
+
 	  }, {
 	    key: "isTimeoutError",
 	    value: function isTimeoutError(result) {
