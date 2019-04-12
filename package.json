@@ -60,8 +60,10 @@
       "test/"
     ]
   },
+  "devDependencies": {
+    "codecov": "^2.2.0"
+  },
   "dependencies": {
-    "codecov": "^2.2.0",
     "eventemitter3": "^3.1.0",
     "script-loader": "^0.7.0",
     "thrift": "^0.10.0"
