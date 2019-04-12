@@ -1323,7 +1323,6 @@
 	      var _this6 = this;
 
 	      this._client[0].get_table_details(this._sessionId[0], tableName, function (error, fields) {
-	        console.log("fields => ", fields);
 	        if (fields) {
 	          var rowDict = fields.row_desc.reduce(function (accum, value) {
 	            accum[value.col_name] = value;
