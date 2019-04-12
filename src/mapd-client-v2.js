@@ -11,7 +11,7 @@ export default function MapDClientV2(protocol) {
 MapDClientV2.prototype = Object.create(MapDClient.prototype)
 
 /* eslint-disable no-unused-expressions */
-!(function () {
+!(function() {
   [
     "connect",
     "sql_execute",
@@ -39,14 +39,9 @@ MapDClientV2.prototype = Object.create(MapDClient.prototype)
     "detect_column_types",
     "set_license_key",
     "get_license_claims"
-  ]
-  .forEach((funcName) => {
+  ].forEach(funcName => {
     MapDClientV2.prototype[funcName] = function(...args) {
-      return wrapWithErrorHandling(
-        this,
-        funcName
-      )(...args)
+      return wrapWithErrorHandling(this, funcName)(...args)
     }
   })
-
 })()
