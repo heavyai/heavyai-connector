@@ -112,7 +112,8 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       expect(connectError).to.not.be.an("error")
       session.getFields("flights_donotmodify", (getFieldsError, data) => {
         expect(getFieldsError).to.not.be.an("error")
-        expect(data).to.deep.equal([
+        expect(data.view_sql).to.be.a("string")
+        expect(data.columns).to.deep.equal([
           {
             is_array: false,
             is_dict: false,
