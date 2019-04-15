@@ -1170,7 +1170,10 @@ class MapdCon {
             accum[value.col_name] = value
             return accum
           }, {})
-          callback(null, this.convertFromThriftTypes(rowDict))
+          callback(null, {
+            ...fields,
+            columns: this.convertFromThriftTypes(rowDict)
+          })
         } else {
           callback(new Error("Table (" + tableName + ") not found" + error))
         }
