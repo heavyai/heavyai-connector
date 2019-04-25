@@ -5,45 +5,9 @@
 //
 
 
-TDatumType = {
-  'SMALLINT' : 0,
-  'INT' : 1,
-  'BIGINT' : 2,
-  'FLOAT' : 3,
-  'DECIMAL' : 4,
-  'DOUBLE' : 5,
-  'STR' : 6,
-  'TIME' : 7,
-  'TIMESTAMP' : 8,
-  'DATE' : 9,
-  'BOOL' : 10,
-  'INTERVAL_DAY_TIME' : 11,
-  'INTERVAL_YEAR_MONTH' : 12,
-  'POINT' : 13,
-  'LINESTRING' : 14,
-  'POLYGON' : 15,
-  'MULTIPOLYGON' : 16,
-  'TINYINT' : 17,
-  'GEOMETRY' : 18,
-  'GEOGRAPHY' : 19
-};
-TEncodingType = {
-  'NONE' : 0,
-  'FIXED' : 1,
-  'RL' : 2,
-  'DIFF' : 3,
-  'DICT' : 4,
-  'SPARSE' : 5,
-  'GEOINT' : 6,
-  'DATE_IN_DAYS' : 7
-};
 TExecuteMode = {
   'GPU' : 1,
   'CPU' : 2
-};
-TDeviceType = {
-  'CPU' : 0,
-  'GPU' : 1
 };
 TFileType = {
   'DELIMITED' : 0,
@@ -337,168 +301,6 @@ TStringValue.prototype.write = function(output) {
   if (this.is_null !== null && this.is_null !== undefined) {
     output.writeFieldBegin('is_null', Thrift.Type.BOOL, 2);
     output.writeBool(this.is_null);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-TTypeInfo = function(args) {
-  this.type = null;
-  this.encoding = null;
-  this.nullable = null;
-  this.is_array = null;
-  this.precision = null;
-  this.scale = null;
-  this.comp_param = null;
-  this.size = -1;
-  if (args) {
-    if (args.type !== undefined && args.type !== null) {
-      this.type = args.type;
-    }
-    if (args.encoding !== undefined && args.encoding !== null) {
-      this.encoding = args.encoding;
-    }
-    if (args.nullable !== undefined && args.nullable !== null) {
-      this.nullable = args.nullable;
-    }
-    if (args.is_array !== undefined && args.is_array !== null) {
-      this.is_array = args.is_array;
-    }
-    if (args.precision !== undefined && args.precision !== null) {
-      this.precision = args.precision;
-    }
-    if (args.scale !== undefined && args.scale !== null) {
-      this.scale = args.scale;
-    }
-    if (args.comp_param !== undefined && args.comp_param !== null) {
-      this.comp_param = args.comp_param;
-    }
-    if (args.size !== undefined && args.size !== null) {
-      this.size = args.size;
-    }
-  }
-};
-TTypeInfo.prototype = {};
-TTypeInfo.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.I32) {
-        this.encoding = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.BOOL) {
-        this.nullable = input.readBool().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.BOOL) {
-        this.is_array = input.readBool().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.I32) {
-        this.precision = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.I32) {
-        this.scale = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.I32) {
-        this.comp_param = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 8:
-      if (ftype == Thrift.Type.I32) {
-        this.size = input.readI32().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TTypeInfo.prototype.write = function(output) {
-  output.writeStructBegin('TTypeInfo');
-  if (this.type !== null && this.type !== undefined) {
-    output.writeFieldBegin('type', Thrift.Type.I32, 1);
-    output.writeI32(this.type);
-    output.writeFieldEnd();
-  }
-  if (this.encoding !== null && this.encoding !== undefined) {
-    output.writeFieldBegin('encoding', Thrift.Type.I32, 4);
-    output.writeI32(this.encoding);
-    output.writeFieldEnd();
-  }
-  if (this.nullable !== null && this.nullable !== undefined) {
-    output.writeFieldBegin('nullable', Thrift.Type.BOOL, 2);
-    output.writeBool(this.nullable);
-    output.writeFieldEnd();
-  }
-  if (this.is_array !== null && this.is_array !== undefined) {
-    output.writeFieldBegin('is_array', Thrift.Type.BOOL, 3);
-    output.writeBool(this.is_array);
-    output.writeFieldEnd();
-  }
-  if (this.precision !== null && this.precision !== undefined) {
-    output.writeFieldBegin('precision', Thrift.Type.I32, 5);
-    output.writeI32(this.precision);
-    output.writeFieldEnd();
-  }
-  if (this.scale !== null && this.scale !== undefined) {
-    output.writeFieldBegin('scale', Thrift.Type.I32, 6);
-    output.writeI32(this.scale);
-    output.writeFieldEnd();
-  }
-  if (this.comp_param !== null && this.comp_param !== undefined) {
-    output.writeFieldBegin('comp_param', Thrift.Type.I32, 7);
-    output.writeI32(this.comp_param);
-    output.writeFieldEnd();
-  }
-  if (this.size !== null && this.size !== undefined) {
-    output.writeFieldBegin('size', Thrift.Type.I32, 8);
-    output.writeI32(this.size);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1091,7 +893,7 @@ TStepResult = function(args) {
   this.node_id = null;
   if (args) {
     if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
-      this.serialized_rows = args.serialized_rows;
+      this.serialized_rows = new TSerializedRows(args.serialized_rows);
     }
     if (args.uncompressed_size !== undefined && args.uncompressed_size !== null) {
       this.uncompressed_size = args.uncompressed_size;
@@ -1128,8 +930,9 @@ TStepResult.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.serialized_rows = input.readBinary().value;
+      if (ftype == Thrift.Type.STRUCT) {
+        this.serialized_rows = new TSerializedRows();
+        this.serialized_rows.read(input);
       } else {
         input.skip(ftype);
       }
@@ -1202,8 +1005,8 @@ TStepResult.prototype.read = function(input) {
 TStepResult.prototype.write = function(output) {
   output.writeStructBegin('TStepResult');
   if (this.serialized_rows !== null && this.serialized_rows !== undefined) {
-    output.writeFieldBegin('serialized_rows', Thrift.Type.STRING, 1);
-    output.writeBinary(this.serialized_rows);
+    output.writeFieldBegin('serialized_rows', Thrift.Type.STRUCT, 1);
+    this.serialized_rows.write(output);
     output.writeFieldEnd();
   }
   if (this.uncompressed_size !== null && this.uncompressed_size !== undefined) {
@@ -5189,15 +4992,19 @@ TRenderParseResult.prototype.write = function(output) {
 };
 
 TRawRenderPassDataResult = function(args) {
-  this.num_channels = null;
+  this.num_pixel_channels = null;
+  this.num_pixel_samples = null;
   this.pixels = null;
   this.row_ids_A = null;
   this.row_ids_B = null;
   this.table_ids = null;
   this.accum_data = null;
   if (args) {
-    if (args.num_channels !== undefined && args.num_channels !== null) {
-      this.num_channels = args.num_channels;
+    if (args.num_pixel_channels !== undefined && args.num_pixel_channels !== null) {
+      this.num_pixel_channels = args.num_pixel_channels;
+    }
+    if (args.num_pixel_samples !== undefined && args.num_pixel_samples !== null) {
+      this.num_pixel_samples = args.num_pixel_samples;
     }
     if (args.pixels !== undefined && args.pixels !== null) {
       this.pixels = args.pixels;
@@ -5232,40 +5039,47 @@ TRawRenderPassDataResult.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.num_channels = input.readI32().value;
+        this.num_pixel_channels = input.readI32().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.pixels = input.readBinary().value;
+      if (ftype == Thrift.Type.I32) {
+        this.num_pixel_samples = input.readI32().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.row_ids_A = input.readBinary().value;
+        this.pixels = input.readBinary().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.row_ids_B = input.readBinary().value;
+        this.row_ids_A = input.readBinary().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.table_ids = input.readBinary().value;
+        this.row_ids_B = input.readBinary().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.table_ids = input.readBinary().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
       if (ftype == Thrift.Type.STRING) {
         this.accum_data = input.readBinary().value;
       } else {
@@ -5283,33 +5097,38 @@ TRawRenderPassDataResult.prototype.read = function(input) {
 
 TRawRenderPassDataResult.prototype.write = function(output) {
   output.writeStructBegin('TRawRenderPassDataResult');
-  if (this.num_channels !== null && this.num_channels !== undefined) {
-    output.writeFieldBegin('num_channels', Thrift.Type.I32, 1);
-    output.writeI32(this.num_channels);
+  if (this.num_pixel_channels !== null && this.num_pixel_channels !== undefined) {
+    output.writeFieldBegin('num_pixel_channels', Thrift.Type.I32, 1);
+    output.writeI32(this.num_pixel_channels);
+    output.writeFieldEnd();
+  }
+  if (this.num_pixel_samples !== null && this.num_pixel_samples !== undefined) {
+    output.writeFieldBegin('num_pixel_samples', Thrift.Type.I32, 2);
+    output.writeI32(this.num_pixel_samples);
     output.writeFieldEnd();
   }
   if (this.pixels !== null && this.pixels !== undefined) {
-    output.writeFieldBegin('pixels', Thrift.Type.STRING, 2);
+    output.writeFieldBegin('pixels', Thrift.Type.STRING, 3);
     output.writeBinary(this.pixels);
     output.writeFieldEnd();
   }
   if (this.row_ids_A !== null && this.row_ids_A !== undefined) {
-    output.writeFieldBegin('row_ids_A', Thrift.Type.STRING, 3);
+    output.writeFieldBegin('row_ids_A', Thrift.Type.STRING, 4);
     output.writeBinary(this.row_ids_A);
     output.writeFieldEnd();
   }
   if (this.row_ids_B !== null && this.row_ids_B !== undefined) {
-    output.writeFieldBegin('row_ids_B', Thrift.Type.STRING, 4);
+    output.writeFieldBegin('row_ids_B', Thrift.Type.STRING, 5);
     output.writeBinary(this.row_ids_B);
     output.writeFieldEnd();
   }
   if (this.table_ids !== null && this.table_ids !== undefined) {
-    output.writeFieldBegin('table_ids', Thrift.Type.STRING, 5);
+    output.writeFieldBegin('table_ids', Thrift.Type.STRING, 6);
     output.writeBinary(this.table_ids);
     output.writeFieldEnd();
   }
   if (this.accum_data !== null && this.accum_data !== undefined) {
-    output.writeFieldBegin('accum_data', Thrift.Type.STRING, 6);
+    output.writeFieldBegin('accum_data', Thrift.Type.STRING, 7);
     output.writeBinary(this.accum_data);
     output.writeFieldEnd();
   }
