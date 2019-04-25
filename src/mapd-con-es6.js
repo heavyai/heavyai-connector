@@ -1165,7 +1165,9 @@ class MapdCon {
       this._sessionId[0],
       tableName,
       (error, fields) => {
-        if (fields) {
+        if (error) {
+          callback(error)
+        } else if (fields) {
           const rowDict = fields.row_desc.reduce((accum, value) => {
             accum[value.col_name] = value
             return accum
@@ -1175,7 +1177,7 @@ class MapdCon {
             columns: this.convertFromThriftTypes(rowDict)
           })
         } else {
-          callback(new Error("Table (" + tableName + ") not found" + error))
+          callback(new Error("Table (" + tableName + ") not found"))
         }
       }
     )
