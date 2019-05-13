@@ -12,8 +12,8 @@ if [ "$TRAVIS_BRANCH" = "master" ]
   git clone "${REPO_PATH}" ${DOWNLOAD_PATH}
   
   cd ${DOWNLOAD_PATH}
-    yarn
-    git checkout yarn.lock
+    npm install
+    git checkout package-lock.json
     git fetch --all
     git checkout gh-pages
     git pull --rebase origin master
