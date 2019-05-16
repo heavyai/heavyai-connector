@@ -4,6 +4,8 @@ module.exports = {
   ecmaFeatures: {modules: true},
   entry: [
     "script!./build/thrift/browser/thrift.js",
+    "script!./build/thrift/browser/common_types.js",
+    "script!./build/thrift/browser/serialized_result_set_types.js",
     "script!./build/thrift/browser/mapd_types.js",
     "script!./build/thrift/browser/mapd.thrift.js",
     "script!./build/thrift/browser/completion_hints_types.js",
