@@ -18,7 +18,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   let connector
   beforeEach(() => {
     connector = new Connector()
-      .protocol("http")
+      .protocol("https")
       .host("metis.mapd.com")
       .port("443")
       .dbName("mapd")
