@@ -18,11 +18,11 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   let connector
   beforeEach(() => {
     connector = new Connector()
-      .protocol("https")
-      .host("metis.mapd.com")
-      .port("443")
-      .dbName("mapd")
-      .user("mapd")
+      .protocol("http")
+      .host("localhost")
+      .port("6273")
+      .dbName("omnisci")
+      .user("admin")
       .password("HyperInteractive")
   })
 
