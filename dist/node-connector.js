@@ -18558,14 +18558,18 @@ module.exports =
 
 	/* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-	var _ref = isNodeRuntime() && __webpack_require__(54) || window,
+	var _ref = isNodeRuntime() && __webpack_require__(52) || window,
 	    TDatumType = _ref.TDatumType,
-	    TEncodingType = _ref.TEncodingType,
-	    TPixel = _ref.TPixel,
-	    TMapDException = _ref.TMapDException; // eslint-disable-line global-require
+	    TEncodingType = _ref.TEncodingType; // eslint-disable-line global-require
+
+
+	var _ref2 = isNodeRuntime() && __webpack_require__(54) || window,
+	    TPixel = _ref2.TPixel,
+	    TMapDException = _ref2.TMapDException; // eslint-disable-line global-require
 
 
 	var MapDThrift = isNodeRuntime() && __webpack_require__(56); // eslint-disable-line global-require
+	__webpack_require__(53);
 	var Thrift = isNodeRuntime() && __webpack_require__(1) || window.Thrift; // eslint-disable-line global-require
 	var thriftWrapper = Thrift;
 	var parseUrl = isNodeRuntime() && __webpack_require__(23).parse; // eslint-disable-line global-require
@@ -18738,21 +18742,21 @@ module.exports =
 	    this.deleteDashboardAsync = this.handleErrors(this.wrapThrift("delete_dashboard", this.overAllClients, function (args) {
 	      return args;
 	    }));
-	    this.shareDashboardAsync = this.handleErrors(this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
-	      var _ref3 = _slicedToArray(_ref2, 4),
-	          dashboardId = _ref3[0],
-	          groups = _ref3[1],
-	          objects = _ref3[2],
-	          permissions = _ref3[3];
+	    this.shareDashboardAsync = this.handleErrors(this.wrapThrift("share_dashboard", this.overAllClients, function (_ref3) {
+	      var _ref4 = _slicedToArray(_ref3, 4),
+	          dashboardId = _ref4[0],
+	          groups = _ref4[1],
+	          objects = _ref4[2],
+	          permissions = _ref4[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
 	    }));
-	    this.unshareDashboardAsync = this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref4) {
-	      var _ref5 = _slicedToArray(_ref4, 4),
-	          dashboardId = _ref5[0],
-	          groups = _ref5[1],
-	          objects = _ref5[2],
-	          permissions = _ref5[3];
+	    this.unshareDashboardAsync = this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref5) {
+	      var _ref6 = _slicedToArray(_ref5, 4),
+	          dashboardId = _ref6[0],
+	          groups = _ref6[1],
+	          objects = _ref6[2],
+	          permissions = _ref6[3];
 
 	      return [dashboardId, groups, objects, new TDashboardPermissions(permissions)];
 	    }));
@@ -18762,22 +18766,22 @@ module.exports =
 	    this.getDbObjectsForGranteeAsync = this.handleErrors(this.wrapThrift("get_db_objects_for_grantee", this.overSingleClient, function (args) {
 	      return args;
 	    }));
-	    this.getDbObjectPrivsAsync = this.handleErrors(this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref6) {
-	      var _ref7 = _slicedToArray(_ref6, 2),
-	          objectName = _ref7[0],
-	          type = _ref7[1];
+	    this.getDbObjectPrivsAsync = this.handleErrors(this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref7) {
+	      var _ref8 = _slicedToArray(_ref7, 2),
+	          objectName = _ref8[0],
+	          type = _ref8[1];
 
 	      return [objectName, TDBObjectType[type]];
 	    }));
 	    this.getAllRolesForUserAsync = this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
 	      return args;
 	    }));
-	    this.hasObjectPrivilegesAsync = this.handleErrors(this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref8) {
-	      var _ref9 = _slicedToArray(_ref8, 4),
-	          granteeName = _ref9[0],
-	          objectName = _ref9[1],
-	          objectType = _ref9[2],
-	          permissions = _ref9[3];
+	    this.hasObjectPrivilegesAsync = this.handleErrors(this.wrapThrift("has_object_privilege", this.overSingleClient, function (_ref9) {
+	      var _ref10 = _slicedToArray(_ref9, 4),
+	          granteeName = _ref10[0],
+	          objectName = _ref10[1],
+	          objectType = _ref10[2],
+	          permissions = _ref10[3];
 
 	      return [granteeName, objectName, objectType, permissions];
 	    }));
@@ -20230,12 +20234,12 @@ module.exports =
 
 	  }, {
 	    key: "setLicenseKey",
-	    value: function setLicenseKey(key, _ref10) {
+	    value: function setLicenseKey(key, _ref11) {
 	      var _this10 = this;
 
-	      var protocol = _ref10.protocol,
-	          host = _ref10.host,
-	          port = _ref10.port;
+	      var protocol = _ref11.protocol,
+	          host = _ref11.host,
+	          port = _ref11.port;
 
 	      return new Promise(function (resolve) {
 	        var client = Array.isArray(_this10._client) && _this10._client[0];
@@ -20260,12 +20264,12 @@ module.exports =
 
 	  }, {
 	    key: "getLicenseClaims",
-	    value: function getLicenseClaims(_ref11) {
+	    value: function getLicenseClaims(_ref12) {
 	      var _this11 = this;
 
-	      var protocol = _ref11.protocol,
-	          host = _ref11.host,
-	          port = _ref11.port;
+	      var protocol = _ref12.protocol,
+	          host = _ref12.host,
+	          port = _ref12.port;
 
 	      return new Promise(function (resolve, reject) {
 	        var client = Array.isArray(_this11._client) && _this11._client[0];
