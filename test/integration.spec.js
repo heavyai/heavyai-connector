@@ -19,10 +19,10 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   beforeEach(() => {
     connector = new Connector()
       .protocol("http")
-      .host("localhost")
-      .port("6273")
-      .dbName("omnisci")
-      .user("admin")
+      .host("metis.mapd.com")
+      .port("443")
+      .dbName("mapd")
+      .user("mapd")
       .password("HyperInteractive")
   })
 

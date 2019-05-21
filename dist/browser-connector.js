@@ -211,7 +211,6 @@
 
 
 	var MapDThrift = isNodeRuntime() && __webpack_require__(20); // eslint-disable-line global-require
-	__webpack_require__(126);
 	var Thrift = isNodeRuntime() && __webpack_require__(21) || window.Thrift; // eslint-disable-line global-require
 	var thriftWrapper = Thrift;
 	var parseUrl = isNodeRuntime() && __webpack_require__(67).parse; // eslint-disable-line global-require
