@@ -1,6 +1,8 @@
 /* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-const { TDatumType, TEncodingType, TPixel, TMapDException } =
+const { TDatumType, TEncodingType } =
+  (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
+const { TPixel, TMapDException } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
   isNodeRuntime() && require("../build/thrift/node/mapd.thrift.js") // eslint-disable-line global-require

@@ -9899,17 +9899,13 @@ MapD_execute_first_step_result.prototype.write = function(output) {
 MapD_broadcast_serialized_rows_args = function(args) {
   this.serialized_rows = null;
   this.row_desc = null;
-  this.uncompressed_size = null;
   this.query_id = null;
   if (args) {
     if (args.serialized_rows !== undefined && args.serialized_rows !== null) {
-      this.serialized_rows = args.serialized_rows;
+      this.serialized_rows = new TSerializedRows(args.serialized_rows);
     }
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
-    }
-    if (args.uncompressed_size !== undefined && args.uncompressed_size !== null) {
-      this.uncompressed_size = args.uncompressed_size;
     }
     if (args.query_id !== undefined && args.query_id !== null) {
       this.query_id = args.query_id;
@@ -9931,8 +9927,9 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.serialized_rows = input.readString().value;
+      if (ftype == Thrift.Type.STRUCT) {
+        this.serialized_rows = new TSerializedRows();
+        this.serialized_rows.read(input);
       } else {
         input.skip(ftype);
       }
@@ -9960,13 +9957,6 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.uncompressed_size = input.readI64().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.I64) {
         this.query_id = input.readI64().value;
       } else {
         input.skip(ftype);
@@ -9984,8 +9974,8 @@ MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
 MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_broadcast_serialized_rows_args');
   if (this.serialized_rows !== null && this.serialized_rows !== undefined) {
-    output.writeFieldBegin('serialized_rows', Thrift.Type.STRING, 1);
-    output.writeString(this.serialized_rows);
+    output.writeFieldBegin('serialized_rows', Thrift.Type.STRUCT, 1);
+    this.serialized_rows.write(output);
     output.writeFieldEnd();
   }
   if (this.row_desc !== null && this.row_desc !== undefined) {
@@ -10002,13 +9992,8 @@ MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
     output.writeListEnd();
     output.writeFieldEnd();
   }
-  if (this.uncompressed_size !== null && this.uncompressed_size !== undefined) {
-    output.writeFieldBegin('uncompressed_size', Thrift.Type.I64, 3);
-    output.writeI64(this.uncompressed_size);
-    output.writeFieldEnd();
-  }
   if (this.query_id !== null && this.query_id !== undefined) {
-    output.writeFieldBegin('query_id', Thrift.Type.I64, 4);
+    output.writeFieldBegin('query_id', Thrift.Type.I64, 3);
     output.writeI64(this.query_id);
     output.writeFieldEnd();
   }
@@ -15662,19 +15647,18 @@ MapDClient.prototype.recv_execute_first_step = function() {
   }
   throw 'execute_first_step failed: unknown result';
 };
-MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, uncompressed_size, query_id, callback) {
-  this.send_broadcast_serialized_rows(serialized_rows, row_desc, uncompressed_size, query_id, callback); 
+MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
+  this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id, callback); 
   if (!callback) {
   this.recv_broadcast_serialized_rows();
   }
 };
 
-MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows, row_desc, uncompressed_size, query_id, callback) {
+MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
   this.output.writeMessageBegin('broadcast_serialized_rows', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_broadcast_serialized_rows_args();
   args.serialized_rows = serialized_rows;
   args.row_desc = row_desc;
-  args.uncompressed_size = uncompressed_size;
   args.query_id = query_id;
   args.write(this.output);
   this.output.writeMessageEnd();
