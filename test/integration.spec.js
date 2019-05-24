@@ -554,7 +554,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
           (pixelError, data) => {
             expect(pixelError).to.not.be.an("error")
             const lon = data[0].row_set[0].dest_lon
-            expect(lon).to.be.within(-119.056800843, -119.056800841)
+            expect(lon).to.be.within(-119.056770325, -119.056770323)
             done()
           }
         )
