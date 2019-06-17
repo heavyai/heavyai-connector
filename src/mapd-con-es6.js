@@ -1157,6 +1157,49 @@ class MapdCon {
       })
   )
 
+  getTablesMeta(callback) {
+    this._client[0].get_tables_meta(this._sessionId[0], (error, tables) => {
+      if (error) {
+        callback(error)
+      } else {
+        callback(null, tables)
+      }
+    })
+  }
+
+  /**
+   * Get names and catalog metadata for tables that exist on the current session's connection.
+   * @return {Promise.<TTableMeta[]>} The list of objects containing table metadata.
+   *
+   * @example <caption>Get the list of tables with metadata from a connection:</caption>
+   *
+   *  con.getTablesMetaAsync().then(res => console.log(res))
+   *
+   *  [
+   *   {
+   *    table_name: 'my_table_name',
+   *    col_datum_types: [TDatumType::BOOL, TDatumType::DOUBLE],
+   *    col_names: ['bool_col', 'double_col'],
+   *    is_view: false,
+   *    is_replicated: false,
+   *    shard_count: 0,
+   *    max_rows: -1
+   *   },
+   *  ...]
+   */
+  getTablesMetaAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.getTablesMeta.bind(this)((error, tables) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(tables)
+          }
+        })
+      })
+  )
+
   /**
    * Submits an SQL string to the backend and returns a completion hints object.
    * @param {String} queryString A fragment of SQL input.
