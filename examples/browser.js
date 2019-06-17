@@ -36,7 +36,7 @@ connector
     // handle result of getFieldsAsync
     console.log(
       "All fields for 'flights_donotmodify':",
-      values[1].reduce((o, x) => Object.assign(o, { [x.name]: x }), {})
+      values[1].columns.reduce((o, x) => Object.assign(o, { [x.name]: x }), {})
     )
 
     // handle result of first query
