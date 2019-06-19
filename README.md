@@ -5,18 +5,24 @@ A JavaScript library for connecting to a MapD GPU database and running queries.
 
 ![alt text](https://cloud.githubusercontent.com/assets/2932405/25765834/e18ae5c2-31a3-11e7-9afc-989dcf42941c.png "Connector Example with a d3 rendered chart")
 
-# Quick Start
-```bash
-npm
-npm run build
-npm run docs # opens API docs in your browser.
-```
+# Quick Start for Users
+
+Install with `npm install @mapd/connector`. Then import `@mapd/connector` in your JavaScript program. 
+
 # Documentation
 Visit our [API Docs](http://omnisci.github.io/mapd-connector/docs/)
 
 # Example
 
 Open [example.html](https://omnisci.github.io/mapd-connector/examples/browser.html) in your browser for a basic query call.
+
+# Quick Start for Developers
+
+```bash
+yarn
+npm run build
+npm run docs # opens API docs in your browser.
+```
 
 # Testing
 
