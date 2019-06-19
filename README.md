@@ -7,7 +7,7 @@ A JavaScript library for connecting to a MapD GPU database and running queries.
 
 # Quick Start for Users
 
-Install with `npm install @mapd/connector` or `yarn add @mapd/connector`. Then import `@mapd/connector` in your JavaScript program. 
+Install with `npm install @mapd/connector`. Then import `@mapd/connector` in your JavaScript program. 
 
 # Documentation
 Visit our [API Docs](http://omnisci.github.io/mapd-connector/docs/)
