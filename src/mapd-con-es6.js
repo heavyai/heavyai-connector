@@ -944,17 +944,63 @@ class MapdCon {
     }
   }
 
+  // This is a *Promise* cache, not a result cache. If queryAsync is called for the same query twice
+  // while the first is still in flight, it will return the Promise from the first call, saving
+  // an unnecessary duplicate trip and sharing the results to both callers once they come back.
+  //
+  // This only survives while requests are in flight in the default 'transient' mode, but if transient
+  // is off then it will act as a long-term cache, returning the resolved Promise with immediate results.
+
+  queryCache = {}
+
+  // Whether or not the query cache should immediately evict entries once they return with results
+  queryCacheTransient = true
+
+  // [TESTING ONLY - REMOVE] Track some stats around the caching
+  totalQueriesRequested = 0
+  totalQueriesSent = 0
+
+  setQueryCacheTransient = (value) => {
+    if (value) {
+      // Reset and clear out any nontransient entries
+      this.queryCache = {}
+    }
+    this.queryCacheTransient = value
+  }
+
   queryAsync = this.handleErrors(
-    (query, options) =>
-      new Promise((resolve, reject) => {
-        this.query(query, options, (error, result) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(result)
-          }
+    (query, options) => {
+      const cacheEntry = this.queryCache[query]
+
+      this.totalQueriesRequested++
+
+      if (cacheEntry) {
+        console.log("[mapd-connector] Cache hit: ", query)
+
+        return cacheEntry
+      } else {
+        this.totalQueriesSent++
+        console.log(`[mapd-connector] Query count (sent / requested): ${this.totalQueriesSent} / ${this.totalQueriesRequested}`)
+
+        const queryPromise = new Promise((resolve, reject) => {
+          this.query(query, options, (error, result) => {
+            if (this.queryCacheTransient) {
+              delete this.queryCache[query]
+            }
+
+            if (error) {
+              reject(error)
+            } else {
+              resolve(result)
+            }
+          })
         })
-      })
+
+        this.queryCache[query] = queryPromise
+
+        return queryPromise
+      }
+    }
   )
 
   /**

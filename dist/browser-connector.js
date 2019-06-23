@@ -448,16 +448,50 @@
 	        });
 	      });
 	    });
+	    this.queryCache = {};
+	    this.queryCacheTransient = true;
+	    this.totalQueriesRequested = 0;
+	    this.totalQueriesSent = 0;
+
+	    this.setQueryCacheTransient = function (value) {
+	      if (value) {
+	        // Reset and clear out any nontransient entries
+	        _this.queryCache = {};
+	      }
+	      _this.queryCacheTransient = value;
+	    };
+
 	    this.queryAsync = this.handleErrors(function (query, options) {
-	      return new Promise(function (resolve, reject) {
-	        _this.query(query, options, function (error, result) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(result);
-	          }
+	      var cacheEntry = _this.queryCache[query];
+
+	      _this.totalQueriesRequested++;
+
+	      if (cacheEntry) {
+	        console.log("[mapd-connector] Cache hit: ", query);
+
+	        return cacheEntry;
+	      } else {
+	        _this.totalQueriesSent++;
+	        console.log("[mapd-connector] Query count (sent / requested): " + _this.totalQueriesSent + " / " + _this.totalQueriesRequested);
+
+	        var queryPromise = new Promise(function (resolve, reject) {
+	          _this.query(query, options, function (error, result) {
+	            if (_this.queryCacheTransient) {
+	              delete _this.queryCache[query];
+	            }
+
+	            if (error) {
+	              reject(error);
+	            } else {
+	              resolve(result);
+	            }
+	          });
 	        });
-	      });
+
+	        _this.queryCache[query] = queryPromise;
+
+	        return queryPromise;
+	      }
 	    });
 	    this.validateQuery = this.handleErrors(function (query) {
 	      return new Promise(function (resolve, reject) {
@@ -1175,6 +1209,19 @@
 	        }
 	      }
 	    }
+
+	    // This is a *Promise* cache, not a result cache. If queryAsync is called for the same query twice
+	    // while the first is still in flight, it will return the Promise from the first call, saving
+	    // an unnecessary duplicate trip and sharing the results to both callers once they come back.
+	    //
+	    // This only survives while requests are in flight in the default 'transient' mode, but if transient
+	    // is off then it will act as a long-term cache, returning the resolved Promise with immediate results.
+
+	    // Whether or not the query cache should immediately evict entries once they return with results
+
+
+	    // [TESTING ONLY - REMOVE] Track some stats around the caching
+
 
 	    /**
 	     * Submit a query to validate that the backend can create a result set based on the SQL statement.
