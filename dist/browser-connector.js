@@ -467,12 +467,9 @@
 	      _this.totalQueriesRequested++;
 
 	      if (cacheEntry) {
-	        console.log("[mapd-connector] Cache hit: ", query);
-
 	        return cacheEntry;
 	      } else {
 	        _this.totalQueriesSent++;
-	        console.log("[mapd-connector] Query count (sent / requested): " + _this.totalQueriesSent + " / " + _this.totalQueriesRequested);
 
 	        var queryPromise = new Promise(function (resolve, reject) {
 	          _this.query(query, options, function (error, result) {

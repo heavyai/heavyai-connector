@@ -975,13 +975,10 @@ class MapdCon {
       this.totalQueriesRequested++
 
       if (cacheEntry) {
-        console.log("[mapd-connector] Cache hit: ", query)
-
         return cacheEntry
       } else {
         this.totalQueriesSent++
-        console.log(`[mapd-connector] Query count (sent / requested): ${this.totalQueriesSent} / ${this.totalQueriesRequested}`)
-
+        
         const queryPromise = new Promise((resolve, reject) => {
           this.query(query, options, (error, result) => {
             if (this.queryCacheTransient) {
