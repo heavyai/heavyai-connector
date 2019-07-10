@@ -6482,6 +6482,7 @@ var TSessionInfo = module.exports.TSessionInfo = function(args) {
   this.user = null;
   this.database = null;
   this.start_time = null;
+  this.is_super = null;
   if (args) {
     if (args.user !== undefined && args.user !== null) {
       this.user = args.user;
@@ -6491,6 +6492,9 @@ var TSessionInfo = module.exports.TSessionInfo = function(args) {
     }
     if (args.start_time !== undefined && args.start_time !== null) {
       this.start_time = args.start_time;
+    }
+    if (args.is_super !== undefined && args.is_super !== null) {
+      this.is_super = args.is_super;
     }
   }
 };
@@ -6529,6 +6533,13 @@ TSessionInfo.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_super = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -6553,6 +6564,11 @@ TSessionInfo.prototype.write = function(output) {
   if (this.start_time !== null && this.start_time !== undefined) {
     output.writeFieldBegin('start_time', Thrift.Type.I64, 3);
     output.writeI64(this.start_time);
+    output.writeFieldEnd();
+  }
+  if (this.is_super !== null && this.is_super !== undefined) {
+    output.writeFieldBegin('is_super', Thrift.Type.BOOL, 4);
+    output.writeBool(this.is_super);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

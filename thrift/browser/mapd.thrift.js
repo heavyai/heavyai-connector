@@ -12234,6 +12234,309 @@ MapD_get_license_claims_result.prototype.write = function(output) {
   return;
 };
 
+MapD_get_device_parameters_args = function(args) {
+};
+MapD_get_device_parameters_args.prototype = {};
+MapD_get_device_parameters_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_device_parameters_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_device_parameters_args');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_get_device_parameters_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = Thrift.copyMap(args.success, [null]);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_get_device_parameters_result.prototype = {};
+MapD_get_device_parameters_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.MAP) {
+        var _size608 = 0;
+        var _rtmp3612;
+        this.success = {};
+        var _ktype609 = 0;
+        var _vtype610 = 0;
+        _rtmp3612 = input.readMapBegin();
+        _ktype609 = _rtmp3612.ktype;
+        _vtype610 = _rtmp3612.vtype;
+        _size608 = _rtmp3612.size;
+        for (var _i613 = 0; _i613 < _size608; ++_i613)
+        {
+          if (_i613 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key614 = null;
+          var val615 = null;
+          key614 = input.readString().value;
+          val615 = input.readString().value;
+          this.success[key614] = val615;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_get_device_parameters_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_device_parameters_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.MAP, 0);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.success));
+    for (var kiter616 in this.success)
+    {
+      if (this.success.hasOwnProperty(kiter616))
+      {
+        var viter617 = this.success[kiter616];
+        output.writeString(kiter616);
+        output.writeString(viter617);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_register_runtime_udf_args = function(args) {
+  this.session = null;
+  this.signatures = null;
+  this.device_ir_map = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.signatures !== undefined && args.signatures !== null) {
+      this.signatures = args.signatures;
+    }
+    if (args.device_ir_map !== undefined && args.device_ir_map !== null) {
+      this.device_ir_map = Thrift.copyMap(args.device_ir_map, [null]);
+    }
+  }
+};
+MapD_register_runtime_udf_args.prototype = {};
+MapD_register_runtime_udf_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.signatures = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.MAP) {
+        var _size618 = 0;
+        var _rtmp3622;
+        this.device_ir_map = {};
+        var _ktype619 = 0;
+        var _vtype620 = 0;
+        _rtmp3622 = input.readMapBegin();
+        _ktype619 = _rtmp3622.ktype;
+        _vtype620 = _rtmp3622.vtype;
+        _size618 = _rtmp3622.size;
+        for (var _i623 = 0; _i623 < _size618; ++_i623)
+        {
+          if (_i623 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key624 = null;
+          var val625 = null;
+          key624 = input.readString().value;
+          val625 = input.readString().value;
+          this.device_ir_map[key624] = val625;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_register_runtime_udf_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_register_runtime_udf_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.signatures !== null && this.signatures !== undefined) {
+    output.writeFieldBegin('signatures', Thrift.Type.STRING, 2);
+    output.writeString(this.signatures);
+    output.writeFieldEnd();
+  }
+  if (this.device_ir_map !== null && this.device_ir_map !== undefined) {
+    output.writeFieldBegin('device_ir_map', Thrift.Type.MAP, 3);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.device_ir_map));
+    for (var kiter626 in this.device_ir_map)
+    {
+      if (this.device_ir_map.hasOwnProperty(kiter626))
+      {
+        var viter627 = this.device_ir_map[kiter626];
+        output.writeString(kiter626);
+        output.writeString(viter627);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_register_runtime_udf_result = function(args) {
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_register_runtime_udf_result.prototype = {};
+MapD_register_runtime_udf_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_register_runtime_udf_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_register_runtime_udf_result');
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapDClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
@@ -16387,4 +16690,106 @@ MapDClient.prototype.recv_get_license_claims = function() {
     return result.success;
   }
   throw 'get_license_claims failed: unknown result';
+};
+MapDClient.prototype.get_device_parameters = function(callback) {
+  this.send_get_device_parameters(callback); 
+  if (!callback) {
+    return this.recv_get_device_parameters();
+  }
+};
+
+MapDClient.prototype.send_get_device_parameters = function(callback) {
+  this.output.writeMessageBegin('get_device_parameters', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_get_device_parameters_args();
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_get_device_parameters();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_get_device_parameters = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_get_device_parameters_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'get_device_parameters failed: unknown result';
+};
+MapDClient.prototype.register_runtime_udf = function(session, signatures, device_ir_map, callback) {
+  this.send_register_runtime_udf(session, signatures, device_ir_map, callback); 
+  if (!callback) {
+  this.recv_register_runtime_udf();
+  }
+};
+
+MapDClient.prototype.send_register_runtime_udf = function(session, signatures, device_ir_map, callback) {
+  this.output.writeMessageBegin('register_runtime_udf', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_register_runtime_udf_args();
+  args.session = session;
+  args.signatures = signatures;
+  args.device_ir_map = device_ir_map;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_register_runtime_udf();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_register_runtime_udf = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_register_runtime_udf_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  return;
 };
