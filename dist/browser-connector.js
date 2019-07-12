@@ -450,8 +450,6 @@
 	    });
 	    this.queryCache = {};
 	    this.queryCacheTransient = true;
-	    this.totalQueriesRequested = 0;
-	    this.totalQueriesSent = 0;
 
 	    this.setQueryCacheTransient = function (value) {
 	      if (value) {
@@ -464,13 +462,9 @@
 	    this.queryAsync = this.handleErrors(function (query, options) {
 	      var cacheEntry = _this.queryCache[query];
 
-	      _this.totalQueriesRequested++;
-
 	      if (cacheEntry) {
 	        return cacheEntry;
 	      } else {
-	        _this.totalQueriesSent++;
-
 	        var queryPromise = new Promise(function (resolve, reject) {
 	          _this.query(query, options, function (error, result) {
 	            if (_this.queryCacheTransient) {
@@ -1215,9 +1209,6 @@
 	    // is off then it will act as a long-term cache, returning the resolved Promise with immediate results.
 
 	    // Whether or not the query cache should immediately evict entries once they return with results
-
-
-	    // [TESTING ONLY - REMOVE] Track some stats around the caching
 
 
 	    /**

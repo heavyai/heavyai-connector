@@ -956,11 +956,7 @@ class MapdCon {
   // Whether or not the query cache should immediately evict entries once they return with results
   queryCacheTransient = true
 
-  // [TESTING ONLY - REMOVE] Track some stats around the caching
-  totalQueriesRequested = 0
-  totalQueriesSent = 0
-
-  setQueryCacheTransient = (value) => {
+  setQueryCacheTransient = value => {
     if (value) {
       // Reset and clear out any nontransient entries
       this.queryCache = {}
@@ -968,37 +964,31 @@ class MapdCon {
     this.queryCacheTransient = value
   }
 
-  queryAsync = this.handleErrors(
-    (query, options) => {
-      const cacheEntry = this.queryCache[query]
+  queryAsync = this.handleErrors((query, options) => {
+    const cacheEntry = this.queryCache[query]
 
-      this.totalQueriesRequested++
+    if (cacheEntry) {
+      return cacheEntry
+    } else {
+      const queryPromise = new Promise((resolve, reject) => {
+        this.query(query, options, (error, result) => {
+          if (this.queryCacheTransient) {
+            delete this.queryCache[query]
+          }
 
-      if (cacheEntry) {
-        return cacheEntry
-      } else {
-        this.totalQueriesSent++
-        
-        const queryPromise = new Promise((resolve, reject) => {
-          this.query(query, options, (error, result) => {
-            if (this.queryCacheTransient) {
-              delete this.queryCache[query]
-            }
-
-            if (error) {
-              reject(error)
-            } else {
-              resolve(result)
-            }
-          })
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
         })
+      })
 
-        this.queryCache[query] = queryPromise
+      this.queryCache[query] = queryPromise
 
-        return queryPromise
-      }
+      return queryPromise
     }
-  )
+  })
 
   /**
    * Submit a query to validate that the backend can create a result set based on the SQL statement.
