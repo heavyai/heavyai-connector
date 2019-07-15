@@ -18,6 +18,7 @@ if (isNodeRuntime()) {
 
 import * as helpers from "./helpers"
 
+import clone from "clone"
 import EventEmitter from "eventemitter3"
 
 import MapDClientV2 from "./mapd-client-v2"
@@ -964,11 +965,25 @@ class MapdCon {
     this.queryCacheTransient = value
   }
 
+  // We need to clone the original cached promise, so that the object returned is cloned for each consumer.
+  // This is because (unfortunately) Immerse still has a few locations that mutate the results object.
+  clonePromise = promise =>
+    new Promise((resolve, reject) => {
+      promise
+        .then(result => {
+          // Pass circular: false for slightly better performance - we know there won't be any circular refs
+          resolve(clone(result, false))
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+
   queryAsync = this.handleErrors((query, options) => {
     const cacheEntry = this.queryCache[query]
 
     if (cacheEntry) {
-      return cacheEntry
+      return this.clonePromise(cacheEntry)
     } else {
       const queryPromise = new Promise((resolve, reject) => {
         this.query(query, options, (error, result) => {
@@ -986,7 +1001,7 @@ class MapdCon {
 
       this.queryCache[query] = queryPromise
 
-      return queryPromise
+      return this.clonePromise(queryPromise)
     }
   })
 

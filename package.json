@@ -61,6 +61,7 @@
     ]
   },
   "dependencies": {
+    "clone": "^2.1.2",
     "codecov": "^2.2.0",
     "eventemitter3": "^3.1.0",
     "script-loader": "^0.7.0",
