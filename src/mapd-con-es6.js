@@ -18,7 +18,7 @@ if (isNodeRuntime()) {
 
 import * as helpers from "./helpers"
 
-import clone from "clone"
+import clone from "ramda.clone"
 import EventEmitter from "eventemitter3"
 
 import MapDClientV2 from "./mapd-client-v2"
@@ -971,8 +971,7 @@ class MapdCon {
     new Promise((resolve, reject) => {
       promise
         .then(result => {
-          // Pass circular: false for slightly better performance - we know there won't be any circular refs
-          resolve(clone(result, false))
+          resolve(clone(result))
         })
         .catch(error => {
           reject(error)
