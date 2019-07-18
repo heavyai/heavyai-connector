@@ -107,6 +107,77 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
+  // Note that this test assumes the list of dashboards (and their metadata) on Metis aren't
+  // changed. If they do change, this test will fail. The only exception is each dash's
+  // `update_time`, which we filter out since that is too volatile to rely on.
+  it(".getDashboardsAsync", done => {
+    connector.connect((connectError, session) => {
+      expect(connectError).to.not.be.an("error")
+      session
+        .getDashboardsAsync()
+        // eslint-disable-next-line max-nested-callbacks
+        .then(data => {
+          // The `update_time` field is too volatile to rely on for unit tests, so strip it out
+          const dataNoUpdateTime = data.map(d =>
+            Object.assign({}, d, { update_time: null })
+          )
+          expect(dataNoUpdateTime).to.deep.equal([
+            {
+              dashboard_name: "__E2E_LINE_CHART_BRUSH__DO_NOT_MODIFY__",
+              dashboard_state: "",
+              image_hash: "",
+              update_time: null,
+              dashboard_metadata:
+                '{"table":"flights_donotmodify","version":"v2"}',
+              dashboard_id: 452,
+              dashboard_owner: "mapd",
+              is_dash_shared: false
+            },
+            {
+              dashboard_name:
+                "__E2E_MULTI_BIN_DIM_HEATMAP_FILTER__DO_NOT_MODIFY__",
+              dashboard_state: "",
+              image_hash: "",
+              update_time: null,
+              dashboard_metadata:
+                '{"table":"flights_donotmodify","version":"v2"}',
+              dashboard_id: 451,
+              dashboard_owner: "mapd",
+              is_dash_shared: false
+            },
+            {
+              dashboard_name: "__E2E_NUMBER_CHART__DO_NOT_MODIFY__",
+              dashboard_state: "",
+              image_hash: "",
+              update_time: null,
+              dashboard_metadata:
+                '{"table":"flights_donotmodify","version":"v2"}',
+              dashboard_id: 450,
+              dashboard_owner: "mapd",
+              is_dash_shared: false
+            },
+            {
+              dashboard_name: "__E2E__ALL_CHARTS__DO_NOT_MODIFY__",
+              dashboard_state: "",
+              image_hash: "",
+              update_time: null,
+              dashboard_metadata:
+                '{"table":"contributions_donotmodify","version":"v2"}',
+              dashboard_id: 449,
+              dashboard_owner: "mapd",
+              is_dash_shared: false
+            }
+          ])
+          done()
+        })
+        // eslint-disable-next-line max-nested-callbacks
+        .catch(getDashboardsAsyncError => {
+          expect(getDashboardsAsyncError).to.not.be.an("error")
+          done()
+        })
+    })
+  })
+
   it(".getFields", done => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
