@@ -357,8 +357,9 @@ class MapdCon {
         if (this.isTimeoutError(error) && !this._disableAutoReconnect) {
           // Reconnect, then try the method once more
           return this.connectAsync().then(() => {
-            const retriedPromise = method.apply(this, args)
+            this.events.emit("reconnected", this)
 
+            const retriedPromise = method.apply(this, args)
             retriedPromise.then(success).catch(failure)
           })
         } else {

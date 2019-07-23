@@ -18670,8 +18670,9 @@ module.exports =
 	            if (_this.isTimeoutError(error) && !_this._disableAutoReconnect) {
 	              // Reconnect, then try the method once more
 	              return _this.connectAsync().then(function () {
-	                var retriedPromise = method.apply(_this, args);
+	                _this.events.emit("reconnected", _this);
 
+	                var retriedPromise = method.apply(_this, args);
 	                retriedPromise.then(success).catch(failure);
 	              });
 	            } else {
