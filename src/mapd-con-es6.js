@@ -1,6 +1,8 @@
 /* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-const { TDatumType, TEncodingType, TPixel, TMapDException } =
+const { TDatumType, TEncodingType } =
+  (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
+const { TPixel, TMapDException } =
   (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
   isNodeRuntime() && require("../build/thrift/node/mapd.thrift.js") // eslint-disable-line global-require
@@ -365,7 +367,21 @@ class MapdCon {
       })
     })
 
-  promisifyThriftMethod = (client, sessionId, methodName, args) =>
+  promisifyThriftMethodNode = (client, sessionId, methodName, args) =>
+    new Promise((resolve, reject) => {
+      client[methodName].apply(
+        client,
+        [sessionId].concat(args, (err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result)
+          }
+        })
+      )
+    })
+
+  promisifyThriftMethodBrowser = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
       client[methodName].apply(
         client,
@@ -378,6 +394,10 @@ class MapdCon {
         })
       )
     })
+
+  promisifyThriftMethod = isNodeRuntime()
+    ? this.promisifyThriftMethodNode
+    : this.promisifyThriftMethodBrowser
 
   overSingleClient = "SINGLE_CLIENT"
   overAllClients = "ALL_CLIENTS"
@@ -1044,8 +1064,8 @@ class MapdCon {
           tables.map(table => ({
             name: table.table_name,
             num_cols: Number(table.num_cols.toString()),
-            col_datum_types: table.col_datum_types.map(
-              type => this._datumEnum[type]
+            col_datum_types: table.col_types.map(
+              type => this._datumEnum[type.type]
             ),
             is_view: table.is_view,
             is_replicated: table.is_replicated,
@@ -1165,14 +1185,19 @@ class MapdCon {
       this._sessionId[0],
       tableName,
       (error, fields) => {
-        if (fields) {
+        if (error) {
+          callback(error)
+        } else if (fields) {
           const rowDict = fields.row_desc.reduce((accum, value) => {
             accum[value.col_name] = value
             return accum
           }, {})
-          callback(null, this.convertFromThriftTypes(rowDict))
+          callback(null, {
+            ...fields,
+            columns: this.convertFromThriftTypes(rowDict)
+          })
         } else {
-          callback(new Error("Table (" + tableName + ") not found" + error))
+          callback(new Error("Table (" + tableName + ") not found"))
         }
       }
     )
