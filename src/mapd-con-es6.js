@@ -368,7 +368,21 @@ class MapdCon {
       })
     })
 
-  promisifyThriftMethod = (client, sessionId, methodName, args) =>
+  promisifyThriftMethodNode = (client, sessionId, methodName, args) =>
+    new Promise((resolve, reject) => {
+      client[methodName].apply(
+        client,
+        [sessionId].concat(args, (err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result)
+          }
+        })
+      )
+    })
+
+  promisifyThriftMethodBrowser = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
       client[methodName].apply(
         client,
@@ -381,6 +395,10 @@ class MapdCon {
         })
       )
     })
+
+  promisifyThriftMethod = isNodeRuntime()
+    ? this.promisifyThriftMethodNode
+    : this.promisifyThriftMethodBrowser
 
   overSingleClient = "SINGLE_CLIENT"
   overAllClients = "ALL_CLIENTS"

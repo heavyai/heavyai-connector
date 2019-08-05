@@ -292,7 +292,19 @@
 	      };
 	    };
 
-	    this.promisifyThriftMethod = function (client, sessionId, methodName, args) {
+	    this.promisifyThriftMethodNode = function (client, sessionId, methodName, args) {
+	      return new Promise(function (resolve, reject) {
+	        client[methodName].apply(client, [sessionId].concat(args, function (err, result) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            resolve(result);
+	          }
+	        }));
+	      });
+	    };
+
+	    this.promisifyThriftMethodBrowser = function (client, sessionId, methodName, args) {
 	      return new Promise(function (resolve, reject) {
 	        client[methodName].apply(client, [sessionId].concat(args, function (result) {
 	          if (result instanceof Error) {
@@ -304,6 +316,7 @@
 	      });
 	    };
 
+	    this.promisifyThriftMethod = isNodeRuntime() ? this.promisifyThriftMethodNode : this.promisifyThriftMethodBrowser;
 	    this.overSingleClient = "SINGLE_CLIENT";
 	    this.overAllClients = "ALL_CLIENTS";
 

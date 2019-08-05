@@ -22,6 +22,7 @@ connector
   .then(session =>
     // now that we have a session open we can make some db calls:
     Promise.all([
+      session.getDashboardsAsync(),
       session.getTablesAsync(),
       session.getFieldsAsync("flights_donotmodify"),
       session.queryAsync(query, defaultQueryOptions),
@@ -30,25 +31,31 @@ connector
   )
   // values is an array of results from all the promises above
   .then(values => {
+    // handle result of getDashboardsAsync
+    console.log(
+      "All dashboards available at metis.mapd.com:\n",
+      values[0].map(dash => dash.dashboard_name)
+    )
+
     // handle result of getTablesAsync
     console.log(
-      "All tables available at metis.mapd.com:\n\n",
-      values[0].map(x => x.name)
+      "\nAll tables available at metis.mapd.com:\n\n",
+      values[1].map(x => x.name)
     )
 
     // handle result of getFieldsAsync
     console.log(
       "\nAll fields for 'flights_donotmodify':\n\n",
-      values[1].reduce((o, x) => Object.assign(o, { [x.name]: x }), {})
+      values[2].columns.reduce((o, x) => Object.assign(o, { [x.name]: x }), {})
     )
 
     // handle result of first query
-    console.log("\nQuery 1 results:\n\n", Number(values[2][0].n))
+    console.log("\nQuery 1 results:\n\n", Number(values[3][0].n))
 
     // handle result of second query
     console.log(
       "\nQuery 2 results:\n\n",
-      values[3].reduce((o, x) => Object.assign(o, { [x.key0]: x.val }), {})
+      values[4].reduce((o, x) => Object.assign(o, { [x.key0]: x.val }), {})
     )
   })
   .catch(error => {
