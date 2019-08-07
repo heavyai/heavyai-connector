@@ -18574,15 +18574,19 @@ module.exports =
 
 	var helpers = _interopRequireWildcard(_helpers);
 
-	var _eventemitter = __webpack_require__(60);
+	var _ramda = __webpack_require__(60);
+
+	var _ramda2 = _interopRequireDefault(_ramda);
+
+	var _eventemitter = __webpack_require__(62);
 
 	var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
-	var _mapdClientV = __webpack_require__(61);
+	var _mapdClientV = __webpack_require__(63);
 
 	var _mapdClientV2 = _interopRequireDefault(_mapdClientV);
 
-	var _processQueryResults = __webpack_require__(63);
+	var _processQueryResults = __webpack_require__(65);
 
 	var _processQueryResults2 = _interopRequireDefault(_processQueryResults);
 
@@ -18855,16 +18859,51 @@ module.exports =
 	        });
 	      });
 	    });
-	    this.queryAsync = this.handleErrors(function (query, options) {
+	    this.queryCache = {};
+	    this.queryCacheTransient = true;
+
+	    this.setQueryCacheTransient = function (value) {
+	      if (value) {
+	        // Reset and clear out any nontransient entries
+	        _this.queryCache = {};
+	      }
+	      _this.queryCacheTransient = value;
+	    };
+
+	    this.clonePromise = function (promise) {
 	      return new Promise(function (resolve, reject) {
-	        _this.query(query, options, function (error, result) {
-	          if (error) {
-	            reject(error);
-	          } else {
-	            resolve(result);
-	          }
+	        promise.then(function (result) {
+	          resolve((0, _ramda2.default)(result));
+	        }).catch(function (error) {
+	          reject(error);
 	        });
 	      });
+	    };
+
+	    this.queryAsync = this.handleErrors(function (query, options) {
+	      var cacheEntry = _this.queryCache[query];
+
+	      if (cacheEntry) {
+	        return _this.clonePromise(cacheEntry);
+	      } else {
+	        var queryPromise = new Promise(function (resolve, reject) {
+	          _this.query(query, options, function (error, result) {
+	            if (_this.queryCacheTransient) {
+	              delete _this.queryCache[query];
+	            }
+
+	            if (error) {
+	              reject(error);
+	            } else {
+	              resolve(result);
+	            }
+	          });
+	        });
+
+	        _this.queryCache[query] = queryPromise;
+
+	        return _this.clonePromise(queryPromise);
+	      }
 	    });
 	    this.validateQuery = this.handleErrors(function (query) {
 	      return new Promise(function (resolve, reject) {
@@ -19582,6 +19621,20 @@ module.exports =
 	        }
 	      }
 	    }
+
+	    // This is a *Promise* cache, not a result cache. If queryAsync is called for the same query twice
+	    // while the first is still in flight, it will return the Promise from the first call, saving
+	    // an unnecessary duplicate trip and sharing the results to both callers once they come back.
+	    //
+	    // This only survives while requests are in flight in the default 'transient' mode, but if transient
+	    // is off then it will act as a long-term cache, returning the resolved Promise with immediate results.
+
+	    // Whether or not the query cache should immediately evict entries once they return with results
+
+
+	    // We need to clone the original cached promise, so that the object returned is cloned for each consumer.
+	    // This is because (unfortunately) Immerse still has a few locations that mutate the results object.
+
 
 	    /**
 	     * Submit a query to validate that the backend can create a result set based on the SQL statement.
@@ -20447,6 +20500,166 @@ module.exports =
 
 	'use strict';
 
+	module.exports = __webpack_require__(61).clone;
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	//  Ramda v0.26.1
+	//  https://github.com/ramda/ramda
+	//  (c) 2013-2019 Scott Sauyet, Michael Hurley, and David Chambers
+	//  Ramda may be freely distributed under the MIT license.
+
+	(function (global, factory) {
+	   true ? factory(exports) :
+	  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	  (factory((global.R = {})));
+	}(this, (function (exports) { 'use strict';
+
+	  function _cloneRegExp(pattern) {
+	    return new RegExp(pattern.source, (pattern.global     ? 'g' : '') +
+	                                      (pattern.ignoreCase ? 'i' : '') +
+	                                      (pattern.multiline  ? 'm' : '') +
+	                                      (pattern.sticky     ? 'y' : '') +
+	                                      (pattern.unicode    ? 'u' : ''));
+	  }
+
+	  function _isPlaceholder(a) {
+	    return a != null &&
+	           typeof a === 'object' &&
+	           a['@@functional/placeholder'] === true;
+	  }
+
+	  /**
+	   * Optimized internal one-arity curry function.
+	   *
+	   * @private
+	   * @category Function
+	   * @param {Function} fn The function to curry.
+	   * @return {Function} The curried function.
+	   */
+	  function _curry1(fn) {
+	    return function f1(a) {
+	      if (arguments.length === 0 || _isPlaceholder(a)) {
+	        return f1;
+	      } else {
+	        return fn.apply(this, arguments);
+	      }
+	    };
+	  }
+
+	  /**
+	   * Gives a single-word string description of the (native) type of a value,
+	   * returning such answers as 'Object', 'Number', 'Array', or 'Null'. Does not
+	   * attempt to distinguish user Object types any further, reporting them all as
+	   * 'Object'.
+	   *
+	   * @func
+	   * @memberOf R
+	   * @since v0.8.0
+	   * @category Type
+	   * @sig (* -> {*}) -> String
+	   * @param {*} val The value to test
+	   * @return {String}
+	   * @example
+	   *
+	   *      R.type({}); //=> "Object"
+	   *      R.type(1); //=> "Number"
+	   *      R.type(false); //=> "Boolean"
+	   *      R.type('s'); //=> "String"
+	   *      R.type(null); //=> "Null"
+	   *      R.type([]); //=> "Array"
+	   *      R.type(/[A-z]/); //=> "RegExp"
+	   *      R.type(() => {}); //=> "Function"
+	   *      R.type(undefined); //=> "Undefined"
+	   */
+	  var type = _curry1(function type(val) {
+	    return val === null
+	      ? 'Null'
+	      : val === undefined
+	        ? 'Undefined'
+	        : Object.prototype.toString.call(val).slice(8, -1);
+	  });
+
+	  /**
+	   * Copies an object.
+	   *
+	   * @private
+	   * @param {*} value The value to be copied
+	   * @param {Array} refFrom Array containing the source references
+	   * @param {Array} refTo Array containing the copied source references
+	   * @param {Boolean} deep Whether or not to perform deep cloning.
+	   * @return {*} The copied value.
+	   */
+	  function _clone(value, refFrom, refTo, deep) {
+	    var copy = function copy(copiedValue) {
+	      var len = refFrom.length;
+	      var idx = 0;
+	      while (idx < len) {
+	        if (value === refFrom[idx]) {
+	          return refTo[idx];
+	        }
+	        idx += 1;
+	      }
+	      refFrom[idx + 1] = value;
+	      refTo[idx + 1] = copiedValue;
+	      for (var key in value) {
+	        copiedValue[key] = deep ?
+	          _clone(value[key], refFrom, refTo, true) : value[key];
+	      }
+	      return copiedValue;
+	    };
+	    switch (type(value)) {
+	      case 'Object':  return copy({});
+	      case 'Array':   return copy([]);
+	      case 'Date':    return new Date(value.valueOf());
+	      case 'RegExp':  return _cloneRegExp(value);
+	      default:        return value;
+	    }
+	  }
+
+	  /**
+	   * Creates a deep copy of the value which may contain (nested) `Array`s and
+	   * `Object`s, `Number`s, `String`s, `Boolean`s and `Date`s. `Function`s are
+	   * assigned by reference rather than copied
+	   *
+	   * Dispatches to a `clone` method if present.
+	   *
+	   * @func
+	   * @memberOf R
+	   * @since v0.1.0
+	   * @category Object
+	   * @sig {*} -> {*}
+	   * @param {*} value The object or array to clone
+	   * @return {*} A deeply cloned copy of `val`
+	   * @example
+	   *
+	   *      const objects = [{}, {}, {}];
+	   *      const objectsClone = R.clone(objects);
+	   *      objects === objectsClone; //=> false
+	   *      objects[0] === objectsClone[0]; //=> false
+	   */
+	  var clone = _curry1(function clone(value) {
+	    return value != null && typeof value.clone === 'function' ?
+	      value.clone() :
+	      _clone(value, [], [], true);
+	  });
+
+	  exports.clone = clone;
+
+	  Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var has = Object.prototype.hasOwnProperty
 	  , prefix = '~';
 
@@ -20784,7 +20997,7 @@ module.exports =
 
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20794,7 +21007,7 @@ module.exports =
 	});
 	exports.default = MapDClientV2;
 
-	var _wrapWithErrorHandling = __webpack_require__(62);
+	var _wrapWithErrorHandling = __webpack_require__(64);
 
 	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(56).Client; // eslint-disable-line global-require
 
@@ -20814,7 +21027,7 @@ module.exports =
 	}();
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20884,7 +21097,7 @@ module.exports =
 	/* eslint-enable consistent-this */
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20894,11 +21107,11 @@ module.exports =
 	});
 	exports.default = processQueryResults;
 
-	var _processColumnarResults = __webpack_require__(64);
+	var _processColumnarResults = __webpack_require__(66);
 
 	var _processColumnarResults2 = _interopRequireDefault(_processColumnarResults);
 
-	var _processRowResults = __webpack_require__(65);
+	var _processRowResults = __webpack_require__(67);
 
 	var _processRowResults2 = _interopRequireDefault(_processRowResults);
 
@@ -20995,7 +21208,7 @@ module.exports =
 	}
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21135,7 +21348,7 @@ module.exports =
 	}
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
