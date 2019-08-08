@@ -467,11 +467,15 @@
 	    });
 	    this.queryCache = {};
 	    this.queryCacheTransient = true;
+	    this.queryCacheHits = 0;
 
 	    this.setQueryCacheTransient = function (value) {
 	      if (value) {
 	        // Reset and clear out any nontransient entries
 	        _this.queryCache = {};
+	        console.log("%cQuery cache set to transient - queries now cached only while in flight", "border: 2px solid #a0f;");
+	      } else {
+	        console.log("%cQuery cache set to nontransient - queries now cached indefinitely", "background-color: #a0f; color: white;");
 	      }
 	      _this.queryCacheTransient = value;
 	    };
@@ -490,6 +494,8 @@
 	      var cacheEntry = _this.queryCache[query];
 
 	      if (cacheEntry) {
+	        _this.queryCacheHits++;
+	        console.log("%cQuery cache hit (" + _this.queryCacheHits + " total):\n" + query, "color: #a0f;");
 	        return _this.clonePromise(cacheEntry);
 	      } else {
 	        var queryPromise = new Promise(function (resolve, reject) {

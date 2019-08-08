@@ -975,10 +975,21 @@ class MapdCon {
   // Whether or not the query cache should immediately evict entries once they return with results
   queryCacheTransient = true
 
+  queryCacheHits = 0
+
   setQueryCacheTransient = value => {
     if (value) {
       // Reset and clear out any nontransient entries
       this.queryCache = {}
+      console.log(
+        "%cQuery cache set to transient - queries now cached only while in flight",
+        "border: 2px solid #a0f;"
+      )
+    } else {
+      console.log(
+        "%cQuery cache set to nontransient - queries now cached indefinitely",
+        "background-color: #a0f; color: white;"
+      )
     }
     this.queryCacheTransient = value
   }
@@ -1000,6 +1011,11 @@ class MapdCon {
     const cacheEntry = this.queryCache[query]
 
     if (cacheEntry) {
+      this.queryCacheHits++
+      console.log(
+        `%cQuery cache hit (${this.queryCacheHits} total):\n${query}`,
+        "color: #a0f;"
+      )
       return this.clonePromise(cacheEntry)
     } else {
       const queryPromise = new Promise((resolve, reject) => {
