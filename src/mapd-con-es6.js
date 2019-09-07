@@ -67,12 +67,14 @@ class MapdCon {
       if (error) {
         if (this._logging && options.query) {
           console.error(options.query, "\n", error)
+          this.events.emit("query-error", { query: options.query, error })
         }
         callback(error)
       } else {
         const processor = processQueryResults(
           this._logging,
-          this.updateQueryTimes
+          this.updateQueryTimes,
+          this.events
         )
         const processResultsObject = processor(
           options,
@@ -385,12 +387,18 @@ class MapdCon {
 
   promisifyThriftMethodBrowser = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
+      const start = performance.now()
       client[methodName].apply(
         client,
         [sessionId].concat(args, result => {
           if (result instanceof Error) {
             reject(result)
           } else {
+            this.events.emit("thrift-timing", {
+              method: methodName,
+              args,
+              time: performance.now() - start
+            })
             resolve(result)
           }
         })

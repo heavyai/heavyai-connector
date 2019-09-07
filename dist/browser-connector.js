@@ -307,10 +307,16 @@
 
 	    this.promisifyThriftMethodBrowser = function (client, sessionId, methodName, args) {
 	      return new Promise(function (resolve, reject) {
+	        var start = performance.now();
 	        client[methodName].apply(client, [sessionId].concat(args, function (result) {
 	          if (result instanceof Error) {
 	            reject(result);
 	          } else {
+	            _this.events.emit("thrift-timing", {
+	              method: methodName,
+	              args: args,
+	              time: performance.now() - start
+	            });
 	            resolve(result);
 	          }
 	        }));
@@ -629,10 +635,11 @@
 	      if (error) {
 	        if (_this._logging && options.query) {
 	          console.error(options.query, "\n", error);
+	          _this.events.emit("query-error", { query: options.query, error: error });
 	        }
 	        callback(error);
 	      } else {
-	        var processor = (0, _processQueryResults2.default)(_this._logging, _this.updateQueryTimes);
+	        var processor = (0, _processQueryResults2.default)(_this._logging, _this.updateQueryTimes, _this.events);
 	        var processResultsObject = processor(options, _this._datumEnum, result, callback);
 	        return processResultsObject;
 	      }
@@ -29788,6 +29795,7 @@
 	 *
 	 * @param {Boolean} logging If enabled, shows on the console how long the query took to run.
 	 * @param {Function} updateQueryTimes A function that updates internal query times on the connector.
+	 * @param {Object} events The EventEmitter to log to.
 	 * @param {Object} options A list of options for processing the results.
 	 * @param {Boolean} options.isImage Set to true when querying for backend-rendered images.
 	 * @param {Boolean} options.eliminateNullRows Removes null rows.
@@ -29801,7 +29809,7 @@
 	 * @return {Object} Null if image with callbacks, result if image with callbacks,
 	 *                  otherwise formatted results.
 	 */
-	function processQueryResults(logging, updateQueryTimes) {
+	function processQueryResults(logging, updateQueryTimes, events) {
 	  return function (options, _datumEnum, result, callback) {
 	    var isImage = false;
 	    var eliminateNullRows = false;
@@ -29826,6 +29834,7 @@
 	    // should use node_env
 	    if (logging && result.execution_time_ms) {
 	      console.log(query, "on Server", conId, "- Execution Time:", result.execution_time_ms, " ms, Total Time:", result.total_time_ms + "ms");
+	      events.emit("query", { query: query, result: result });
 	    }
 
 	    if (isImage && hasCallback) {

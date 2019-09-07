@@ -5,6 +5,7 @@ import processRowResults from "./process-row-results"
  *
  * @param {Boolean} logging If enabled, shows on the console how long the query took to run.
  * @param {Function} updateQueryTimes A function that updates internal query times on the connector.
+ * @param {Object} events The EventEmitter to log to.
  * @param {Object} options A list of options for processing the results.
  * @param {Boolean} options.isImage Set to true when querying for backend-rendered images.
  * @param {Boolean} options.eliminateNullRows Removes null rows.
@@ -18,7 +19,7 @@ import processRowResults from "./process-row-results"
  * @return {Object} Null if image with callbacks, result if image with callbacks,
  *                  otherwise formatted results.
  */
-export default function processQueryResults(logging, updateQueryTimes) {
+export default function processQueryResults(logging, updateQueryTimes, events) {
   return function(options, _datumEnum, result, callback) {
     let isImage = false
     let eliminateNullRows = false
@@ -65,6 +66,7 @@ export default function processQueryResults(logging, updateQueryTimes) {
         " ms, Total Time:",
         result.total_time_ms + "ms"
       )
+      events.emit("query", { query, result })
     }
 
     if (isImage && hasCallback) {
