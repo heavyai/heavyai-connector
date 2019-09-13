@@ -13789,22 +13789,9 @@ var MapdCon = /*#__PURE__*/function () {
       var columnFormat = true; // BOOL
 
       var curNonce = (_this._nonce++).toString();
+      var context = _this;
       return _this._client[_this._lastRenderCon].get_result_row_for_pixel(_this._sessionId[_this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
-        results = Array.isArray(results) ? results.pixel_rows : [results];
-        var processResultsOptions = {
-          isImage: false,
-          eliminateNullRows: false,
-          query: "pixel request",
-          queryId: -2
-        };
-        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(_this._logging, _this.updateQueryTimes);
-        var numPixels = results.length;
-
-        for (var p = 0; p < numPixels; p++) {
-          results[p].row_set = processor(processResultsOptions, _this._datumEnum, results[p]);
-        }
-
-        return results;
+        return context.processHitTestResults(results);
       });
     }));
 
@@ -14119,8 +14106,50 @@ var MapdCon = /*#__PURE__*/function () {
      */
 
   }, {
-    key: "sessionId",
-    // ** Configuration methods **
+    key: "processHitTestResults",
+
+    /**
+     * Formats results from getResultRowForPixel calls.
+     *
+     * @param {Array|Object} results Unformatted results of getResultRowForPixel call.
+     *
+     * @returns {Object} An object with formatted hit-test results.
+     */
+    value: function processHitTestResults(results) {
+      var processResultsOptions = {
+        isImage: false,
+        eliminateNullRows: false,
+        query: "getResultRowForPixel request",
+        queryId: -2
+      };
+      results.row_set = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(false, function () {})(processResultsOptions, this._datumEnum, results);
+
+      if (typeof results.pixel.x.valueOf === "function") {
+        // TPixels x/y values are I64, which gets converted to a special thrift Int64 representation,
+        // so need to convert to real javascript numbers via the 'valueOf' member function.
+        results.pixel.x = results.pixel.x.valueOf();
+        results.pixel.y = results.pixel.y.valueOf();
+      } // eslint-disable-next-line no-console
+
+
+      console.assert(results.table_id.length === results.row_id.length);
+
+      if (results.table_id.length && typeof results.table_id[0].valueOf === "function") {
+        // eslint-disable-next-line no-console
+        console.assert(_typeof(results.table_id[0].valueOf) === _typeof(results.row_id[0].valueOf));
+
+        for (var i = 0; i < results.table_id.length; ++i) {
+          results.table_id[i] = results.table_id[i].valueOf();
+          results.row_id[i] = results.row_id[i].valueOf();
+        }
+      } // For backwards compatibility, we need to make the returned results an array.
+      // Previously getResultRowForPixel results were passed thru the processPixelResults()
+      // function which converts the rsults into for a long time
+      // an array, so clients expect the results to be an array.
+
+
+      return [results];
+    } // ** Configuration methods **
 
     /**
      * Get or set the session ID used by the server to serve the correct data.
@@ -14137,6 +14166,9 @@ var MapdCon = /*#__PURE__*/function () {
      * var con = new MapdCon().connect().sessionId(3415846410);
      * // NOTE: It is generally unsafe to set the session ID manually.
      */
+
+  }, {
+    key: "sessionId",
     value: function sessionId(_sessionId) {
       if (!arguments.length) {
         return this._sessionId;

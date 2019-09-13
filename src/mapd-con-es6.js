@@ -1597,6 +1597,7 @@ export class MapdCon {
 
       const columnFormat = true // BOOL
       const curNonce = (this._nonce++).toString()
+      const context = this
 
       return this._client[this._lastRenderCon]
         .get_result_row_for_pixel(
@@ -1608,31 +1609,7 @@ export class MapdCon {
           pixelRadius,
           curNonce
         )
-        .then((results) => {
-          results = Array.isArray(results) ? results.pixel_rows : [results]
-
-          const processResultsOptions = {
-            isImage: false,
-            eliminateNullRows: false,
-            query: "pixel request",
-            queryId: -2
-          }
-          const processor = processQueryResults(
-            this._logging,
-            this.updateQueryTimes
-          )
-
-          const numPixels = results.length
-          for (let p = 0; p < numPixels; p++) {
-            results[p].row_set = processor(
-              processResultsOptions,
-              this._datumEnum,
-              results[p]
-            )
-          }
-
-          return results
-        })
+        .then((results) => context.processHitTestResults(results))
     }
   )
 
@@ -1648,6 +1625,57 @@ export class MapdCon {
    * @returns {String} Current result nonce
    */
   getResultRowForPixel = this.callbackify("getResultRowForPixelAsync", 4)
+
+  /**
+   * Formats results from getResultRowForPixel calls.
+   *
+   * @param {Array|Object} results Unformatted results of getResultRowForPixel call.
+   *
+   * @returns {Object} An object with formatted hit-test results.
+   */
+  processHitTestResults(results) {
+    const processResultsOptions = {
+      isImage: false,
+      eliminateNullRows: false,
+      query: "getResultRowForPixel request",
+      queryId: -2
+    }
+    results.row_set = processQueryResults(false, () => {})(
+      processResultsOptions,
+      this._datumEnum,
+      results
+    )
+
+    if (typeof results.pixel.x.valueOf === "function") {
+      // TPixels x/y values are I64, which gets converted to a special thrift Int64 representation,
+      // so need to convert to real javascript numbers via the 'valueOf' member function.
+      results.pixel.x = results.pixel.x.valueOf()
+      results.pixel.y = results.pixel.y.valueOf()
+    }
+
+    // eslint-disable-next-line no-console
+    console.assert(results.table_id.length === results.row_id.length)
+
+    if (
+      results.table_id.length &&
+      typeof results.table_id[0].valueOf === "function"
+    ) {
+      // eslint-disable-next-line no-console
+      console.assert(
+        typeof results.table_id[0].valueOf === typeof results.row_id[0].valueOf
+      )
+      for (let i = 0; i < results.table_id.length; ++i) {
+        results.table_id[i] = results.table_id[i].valueOf()
+        results.row_id[i] = results.row_id[i].valueOf()
+      }
+    }
+
+    // For backwards compatibility, we need to make the returned results an array.
+    // Previously getResultRowForPixel results were passed thru the processPixelResults()
+    // function which converts the rsults into for a long time
+    // an array, so clients expect the results to be an array.
+    return [results]
+  }
 
   // ** Configuration methods **
 
