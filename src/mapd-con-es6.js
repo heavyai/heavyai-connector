@@ -1575,7 +1575,7 @@ class MapdCon {
     const curNonce = (this._nonce++).toString()
 
     if (!callback) {
-      return this.processPixelResults(
+      return this.processHitTestResults(
         undefined, // eslint-disable-line no-undefined
         this._client[this._lastRenderCon].get_result_row_for_pixel(
           this._sessionId[this._lastRenderCon],
@@ -1597,7 +1597,7 @@ class MapdCon {
       columnFormat,
       pixelRadius,
       curNonce,
-      this.processPixelResults.bind(this, callback)
+      this.processHitTestResults.bind(this, callback)
     )
 
     return curNonce
@@ -1663,6 +1663,69 @@ class MapdCon {
       return callback(error, results)
     } else {
       return results
+    }
+  }
+
+  /**
+   * Formats results from getResultRowForPixel calls.
+   *
+   * @param {Function} callback A callback function with the signature `(err, result) => result`.
+   * @param {Object} error An error if thrown; otherwise null.
+   * @param {Array|Object} results Unformatted results of getResultRowForPixel call.
+   *
+   * @returns {Object} An object with formatted hit-test results.
+   */
+  processHitTestResults(callback, error, results) {
+    if (error) {
+      if (callback) {
+        return callback(error, results)
+      } else {
+        throw new Error(
+          `Unable to process getResultRowForPixel() results: ${error}`
+        )
+      }
+    }
+
+    const processResultsOptions = {
+      isImage: false,
+      eliminateNullRows: false,
+      query: "getResultRowForPixel request",
+      queryId: -2
+    }
+    results.row_set = this.processResults(processResultsOptions, results)
+
+    if (typeof results.pixel.x.valueOf === "function") {
+      // TPixels x/y values are I64, which gets converted to a special thrift Int64 representation,
+      // so need to convert to real javascript numbers via the 'valueOf' member function.
+      results.pixel.x = results.pixel.x.valueOf()
+      results.pixel.y = results.pixel.y.valueOf()
+    }
+
+    // eslint-disable-next-line no-console
+    console.assert(results.table_id.length === results.row_id.length)
+
+    if (
+      results.table_id.length &&
+      typeof results.table_id[0].valueOf === "function"
+    ) {
+      // eslint-disable-next-line no-console
+      console.assert(
+        typeof results.table_id[0].valueOf === typeof results.row_id[0].valueOf
+      )
+      for (let i = 0; i < results.table_id.length; ++i) {
+        results.table_id[i] = results.table_id[i].valueOf()
+        results.row_id[i] = results.row_id[i].valueOf()
+      }
+    }
+
+    // For backwards compatibility, we need to make the returned results an array.
+    // Previously getResultRowForPixel results were passed thru the processPixelResults()
+    // function which converts the rsults into for a long time
+    // an array, so clients expect the results to be an array.
+    if (callback) {
+      return callback(error, [results])
+    } else {
+      return [results]
     }
   }
 
@@ -1952,7 +2015,7 @@ class MapdCon {
    * @returns {undefined} This method returns nothing and instead relies on the callback
    */
   clearCpuMemory(callback) {
-    this._client[0].clear_cpu_memory(this._sessionId[0], callback);
+    this._client[0].clear_cpu_memory(this._sessionId[0], callback)
   }
 
   /**
@@ -1964,13 +2027,13 @@ class MapdCon {
       new Promise((resolve, reject) => {
         this.clearCpuMemory((err, result) => {
           if (err) {
-            reject(err);
+            reject(err)
           } else {
-            resolve(result);
+            resolve(result)
           }
-        });
+        })
       })
-  );
+  )
 
   /**
    * Clears gpu memory server-side.
@@ -1979,7 +2042,7 @@ class MapdCon {
    * @returns {undefined} This method returns nothing and instead relies on the callback
    */
   clearGpuMemory(callback) {
-    this._client[0].clear_gpu_memory(this._sessionId[0], callback);
+    this._client[0].clear_gpu_memory(this._sessionId[0], callback)
   }
 
   /**
@@ -1991,13 +2054,13 @@ class MapdCon {
       new Promise((resolve, reject) => {
         this.clearGpuMemory((err, result) => {
           if (err) {
-            reject(err);
+            reject(err)
           } else {
-            resolve(result);
+            resolve(result)
           }
-        });
+        })
       })
-  );
+  )
 
   isTimeoutError(result) {
     return (

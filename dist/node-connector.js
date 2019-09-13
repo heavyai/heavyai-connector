@@ -27275,11 +27275,11 @@ module.exports =
 	      var curNonce = (this._nonce++).toString();
 
 	      if (!callback) {
-	        return this.processPixelResults(undefined, // eslint-disable-line no-undefined
+	        return this.processHitTestResults(undefined, // eslint-disable-line no-undefined
 	        this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));
 	      }
 
-	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processPixelResults.bind(this, callback));
+	      this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce, this.processHitTestResults.bind(this, callback));
 
 	      return curNonce;
 	    }
@@ -27323,6 +27323,65 @@ module.exports =
 	        return callback(error, results);
 	      } else {
 	        return results;
+	      }
+	    }
+
+	    /**
+	     * Formats results from getResultRowForPixel calls.
+	     *
+	     * @param {Function} callback A callback function with the signature `(err, result) => result`.
+	     * @param {Object} error An error if thrown; otherwise null.
+	     * @param {Array|Object} results Unformatted results of getResultRowForPixel call.
+	     *
+	     * @returns {Object} An object with formatted hit-test results.
+	     */
+
+	  }, {
+	    key: "processHitTestResults",
+	    value: function processHitTestResults(callback, error, results) {
+	      if (error) {
+	        if (callback) {
+	          return callback(error, results);
+	        } else {
+	          throw new Error("Unable to process getResultRowForPixel() results: " + error);
+	        }
+	      }
+
+	      var processResultsOptions = {
+	        isImage: false,
+	        eliminateNullRows: false,
+	        query: "getResultRowForPixel request",
+	        queryId: -2
+	      };
+	      results.row_set = this.processResults(processResultsOptions, results);
+
+	      if (typeof results.pixel.x.valueOf === "function") {
+	        // TPixels x/y values are I64, which gets converted to a special thrift Int64 representation,
+	        // so need to convert to real javascript numbers via the 'valueOf' member function.
+	        results.pixel.x = results.pixel.x.valueOf();
+	        results.pixel.y = results.pixel.y.valueOf();
+	      }
+
+	      // eslint-disable-next-line no-console
+	      console.assert(results.table_id.length === results.row_id.length);
+
+	      if (results.table_id.length && typeof results.table_id[0].valueOf === "function") {
+	        // eslint-disable-next-line no-console
+	        console.assert(_typeof(results.table_id[0].valueOf) === _typeof(results.row_id[0].valueOf));
+	        for (var i = 0; i < results.table_id.length; ++i) {
+	          results.table_id[i] = results.table_id[i].valueOf();
+	          results.row_id[i] = results.row_id[i].valueOf();
+	        }
+	      }
+
+	      // For backwards compatibility, we need to make the returned results an array.
+	      // Previously getResultRowForPixel results were passed thru the processPixelResults()
+	      // function which converts the rsults into for a long time
+	      // an array, so clients expect the results to be an array.
+	      if (callback) {
+	        return callback(error, [results]);
+	      } else {
+	        return [results];
 	      }
 	    }
 
