@@ -18,6 +18,7 @@ if (isNodeRuntime()) {
 
 import * as helpers from "./helpers"
 
+import clone from "ramda.clone"
 import EventEmitter from "eventemitter3"
 
 import MapDClientV2 from "./mapd-client-v2"
@@ -357,8 +358,9 @@ class MapdCon {
         if (this.isTimeoutError(error) && !this._disableAutoReconnect) {
           // Reconnect, then try the method once more
           return this.connectAsync().then(() => {
-            const retriedPromise = method.apply(this, args)
+            this.events.emit("reconnected", this)
 
+            const retriedPromise = method.apply(this, args)
             retriedPromise.then(success).catch(failure)
           })
         } else {
@@ -367,7 +369,21 @@ class MapdCon {
       })
     })
 
-  promisifyThriftMethod = (client, sessionId, methodName, args) =>
+  promisifyThriftMethodNode = (client, sessionId, methodName, args) =>
+    new Promise((resolve, reject) => {
+      client[methodName].apply(
+        client,
+        [sessionId].concat(args, (err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result)
+          }
+        })
+      )
+    })
+
+  promisifyThriftMethodBrowser = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
       client[methodName].apply(
         client,
@@ -380,6 +396,10 @@ class MapdCon {
         })
       )
     })
+
+  promisifyThriftMethod = isNodeRuntime()
+    ? this.promisifyThriftMethodNode
+    : this.promisifyThriftMethodBrowser
 
   overSingleClient = "SINGLE_CLIENT"
   overAllClients = "ALL_CLIENTS"
@@ -944,10 +964,51 @@ class MapdCon {
     }
   }
 
-  queryAsync = this.handleErrors(
-    (query, options) =>
-      new Promise((resolve, reject) => {
+  // This is a *Promise* cache, not a result cache. If queryAsync is called for the same query twice
+  // while the first is still in flight, it will return the Promise from the first call, saving
+  // an unnecessary duplicate trip and sharing the results to both callers once they come back.
+  //
+  // This only survives while requests are in flight in the default 'transient' mode, but if transient
+  // is off then it will act as a long-term cache, returning the resolved Promise with immediate results.
+
+  queryCache = {}
+
+  // Whether or not the query cache should immediately evict entries once they return with results
+  queryCacheTransient = true
+
+  setQueryCacheTransient = value => {
+    if (value) {
+      // Reset and clear out any nontransient entries
+      this.queryCache = {}
+    }
+    this.queryCacheTransient = value
+  }
+
+  // We need to clone the original cached promise, so that the object returned is cloned for each consumer.
+  // This is because (unfortunately) Immerse still has a few locations that mutate the results object.
+  clonePromise = promise =>
+    new Promise((resolve, reject) => {
+      promise
+        .then(result => {
+          resolve(clone(result))
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+
+  queryAsync = this.handleErrors((query, options) => {
+    const cacheEntry = this.queryCache[query]
+
+    if (cacheEntry) {
+      return this.clonePromise(cacheEntry)
+    } else {
+      const queryPromise = new Promise((resolve, reject) => {
         this.query(query, options, (error, result) => {
+          if (this.queryCacheTransient) {
+            delete this.queryCache[query]
+          }
+
           if (error) {
             reject(error)
           } else {
@@ -955,7 +1016,12 @@ class MapdCon {
           }
         })
       })
-  )
+
+      this.queryCache[query] = queryPromise
+
+      return this.clonePromise(queryPromise)
+    }
+  })
 
   /**
    * Submit a query to validate that the backend can create a result set based on the SQL statement.
