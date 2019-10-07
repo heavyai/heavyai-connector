@@ -160,6 +160,144 @@ MapD_connect_result.prototype.write = function(output) {
   return;
 };
 
+MapD_krb5_connect_args = function(args) {
+  this.inputToken = null;
+  this.dbname = null;
+  if (args) {
+    if (args.inputToken !== undefined && args.inputToken !== null) {
+      this.inputToken = args.inputToken;
+    }
+    if (args.dbname !== undefined && args.dbname !== null) {
+      this.dbname = args.dbname;
+    }
+  }
+};
+MapD_krb5_connect_args.prototype = {};
+MapD_krb5_connect_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.inputToken = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.dbname = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_krb5_connect_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_krb5_connect_args');
+  if (this.inputToken !== null && this.inputToken !== undefined) {
+    output.writeFieldBegin('inputToken', Thrift.Type.STRING, 1);
+    output.writeString(this.inputToken);
+    output.writeFieldEnd();
+  }
+  if (this.dbname !== null && this.dbname !== undefined) {
+    output.writeFieldBegin('dbname', Thrift.Type.STRING, 2);
+    output.writeString(this.dbname);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_krb5_connect_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = new TKrb5Session(args.success);
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_krb5_connect_result.prototype = {};
+MapD_krb5_connect_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new TKrb5Session();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_krb5_connect_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_krb5_connect_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapD_disconnect_args = function(args) {
   this.session = null;
   if (args) {
@@ -9189,7 +9327,7 @@ MapD_start_query_result.prototype.write = function(output) {
   return;
 };
 
-MapD_execute_first_step_args = function(args) {
+MapD_execute_query_step_args = function(args) {
   this.pending_query = null;
   if (args) {
     if (args.pending_query !== undefined && args.pending_query !== null) {
@@ -9197,8 +9335,8 @@ MapD_execute_first_step_args = function(args) {
     }
   }
 };
-MapD_execute_first_step_args.prototype = {};
-MapD_execute_first_step_args.prototype.read = function(input) {
+MapD_execute_query_step_args.prototype = {};
+MapD_execute_query_step_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9231,8 +9369,8 @@ MapD_execute_first_step_args.prototype.read = function(input) {
   return;
 };
 
-MapD_execute_first_step_args.prototype.write = function(output) {
-  output.writeStructBegin('MapD_execute_first_step_args');
+MapD_execute_query_step_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_execute_query_step_args');
   if (this.pending_query !== null && this.pending_query !== undefined) {
     output.writeFieldBegin('pending_query', Thrift.Type.STRUCT, 1);
     this.pending_query.write(output);
@@ -9243,7 +9381,7 @@ MapD_execute_first_step_args.prototype.write = function(output) {
   return;
 };
 
-MapD_execute_first_step_result = function(args) {
+MapD_execute_query_step_result = function(args) {
   this.success = null;
   this.e = null;
   if (args instanceof TMapDException) {
@@ -9259,8 +9397,8 @@ MapD_execute_first_step_result = function(args) {
     }
   }
 };
-MapD_execute_first_step_result.prototype = {};
-MapD_execute_first_step_result.prototype.read = function(input) {
+MapD_execute_query_step_result.prototype = {};
+MapD_execute_query_step_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9298,8 +9436,8 @@ MapD_execute_first_step_result.prototype.read = function(input) {
   return;
 };
 
-MapD_execute_first_step_result.prototype.write = function(output) {
-  output.writeStructBegin('MapD_execute_first_step_result');
+MapD_execute_query_step_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_execute_query_step_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -10845,6 +10983,159 @@ MapD_get_all_roles_for_user_result.prototype.write = function(output) {
   return;
 };
 
+MapD_has_role_args = function(args) {
+  this.session = null;
+  this.granteeName = null;
+  this.roleName = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+    if (args.granteeName !== undefined && args.granteeName !== null) {
+      this.granteeName = args.granteeName;
+    }
+    if (args.roleName !== undefined && args.roleName !== null) {
+      this.roleName = args.roleName;
+    }
+  }
+};
+MapD_has_role_args.prototype = {};
+MapD_has_role_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.granteeName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.roleName = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_has_role_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_has_role_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
+  if (this.granteeName !== null && this.granteeName !== undefined) {
+    output.writeFieldBegin('granteeName', Thrift.Type.STRING, 2);
+    output.writeString(this.granteeName);
+    output.writeFieldEnd();
+  }
+  if (this.roleName !== null && this.roleName !== undefined) {
+    output.writeFieldBegin('roleName', Thrift.Type.STRING, 3);
+    output.writeString(this.roleName);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+MapD_has_role_result = function(args) {
+  this.success = null;
+  this.e = null;
+  if (args instanceof TMapDException) {
+    this.e = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined && args.success !== null) {
+      this.success = args.success;
+    }
+    if (args.e !== undefined && args.e !== null) {
+      this.e = args.e;
+    }
+  }
+};
+MapD_has_role_result.prototype = {};
+MapD_has_role_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.BOOL) {
+        this.success = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.e = new TMapDException();
+        this.e.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+MapD_has_role_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_has_role_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.BOOL, 0);
+    output.writeBool(this.success);
+    output.writeFieldEnd();
+  }
+  if (this.e !== null && this.e !== undefined) {
+    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+    this.e.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 MapD_has_object_privilege_args = function(args) {
   this.session = null;
   this.granteeName = null;
@@ -11324,6 +11615,12 @@ MapD_get_license_claims_result.prototype.write = function(output) {
 };
 
 MapD_get_device_parameters_args = function(args) {
+  this.session = null;
+  if (args) {
+    if (args.session !== undefined && args.session !== null) {
+      this.session = args.session;
+    }
+  }
 };
 MapD_get_device_parameters_args.prototype = {};
 MapD_get_device_parameters_args.prototype.read = function(input) {
@@ -11337,7 +11634,21 @@ MapD_get_device_parameters_args.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.session = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -11346,6 +11657,11 @@ MapD_get_device_parameters_args.prototype.read = function(input) {
 
 MapD_get_device_parameters_args.prototype.write = function(output) {
   output.writeStructBegin('MapD_get_device_parameters_args');
+  if (this.session !== null && this.session !== undefined) {
+    output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+    output.writeString(this.session);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -11685,6 +12001,59 @@ MapDClient.prototype.recv_connect = function() {
     return result.success;
   }
   throw 'connect failed: unknown result';
+};
+MapDClient.prototype.krb5_connect = function(inputToken, dbname, callback) {
+  this.send_krb5_connect(inputToken, dbname, callback); 
+  if (!callback) {
+    return this.recv_krb5_connect();
+  }
+};
+
+MapDClient.prototype.send_krb5_connect = function(inputToken, dbname, callback) {
+  this.output.writeMessageBegin('krb5_connect', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_krb5_connect_args();
+  args.inputToken = inputToken;
+  args.dbname = dbname;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_krb5_connect();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_krb5_connect = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_krb5_connect_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'krb5_connect failed: unknown result';
 };
 MapDClient.prototype.disconnect = function(session, callback) {
   this.send_disconnect(session, callback); 
@@ -14779,16 +15148,16 @@ MapDClient.prototype.recv_start_query = function() {
   }
   throw 'start_query failed: unknown result';
 };
-MapDClient.prototype.execute_first_step = function(pending_query, callback) {
-  this.send_execute_first_step(pending_query, callback); 
+MapDClient.prototype.execute_query_step = function(pending_query, callback) {
+  this.send_execute_query_step(pending_query, callback); 
   if (!callback) {
-    return this.recv_execute_first_step();
+    return this.recv_execute_query_step();
   }
 };
 
-MapDClient.prototype.send_execute_first_step = function(pending_query, callback) {
-  this.output.writeMessageBegin('execute_first_step', Thrift.MessageType.CALL, this.seqid);
-  var args = new MapD_execute_first_step_args();
+MapDClient.prototype.send_execute_query_step = function(pending_query, callback) {
+  this.output.writeMessageBegin('execute_query_step', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_execute_query_step_args();
   args.pending_query = pending_query;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14797,7 +15166,7 @@ MapDClient.prototype.send_execute_first_step = function(pending_query, callback)
     this.output.getTransport().flush(true, function() {
       var result = null;
       try {
-        result = self.recv_execute_first_step();
+        result = self.recv_execute_query_step();
       } catch (e) {
         result = e;
       }
@@ -14808,7 +15177,7 @@ MapDClient.prototype.send_execute_first_step = function(pending_query, callback)
   }
 };
 
-MapDClient.prototype.recv_execute_first_step = function() {
+MapDClient.prototype.recv_execute_query_step = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14819,7 +15188,7 @@ MapDClient.prototype.recv_execute_first_step = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new MapD_execute_first_step_result();
+  var result = new MapD_execute_query_step_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14829,7 +15198,7 @@ MapDClient.prototype.recv_execute_first_step = function() {
   if (null !== result.success) {
     return result.success;
   }
-  throw 'execute_first_step failed: unknown result';
+  throw 'execute_query_step failed: unknown result';
 };
 MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
   this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id, callback); 
@@ -15303,6 +15672,60 @@ MapDClient.prototype.recv_get_all_roles_for_user = function() {
   }
   throw 'get_all_roles_for_user failed: unknown result';
 };
+MapDClient.prototype.has_role = function(session, granteeName, roleName, callback) {
+  this.send_has_role(session, granteeName, roleName, callback); 
+  if (!callback) {
+    return this.recv_has_role();
+  }
+};
+
+MapDClient.prototype.send_has_role = function(session, granteeName, roleName, callback) {
+  this.output.writeMessageBegin('has_role', Thrift.MessageType.CALL, this.seqid);
+  var args = new MapD_has_role_args();
+  args.session = session;
+  args.granteeName = granteeName;
+  args.roleName = roleName;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  if (callback) {
+    var self = this;
+    this.output.getTransport().flush(true, function() {
+      var result = null;
+      try {
+        result = self.recv_has_role();
+      } catch (e) {
+        result = e;
+      }
+      callback(result);
+    });
+  } else {
+    return this.output.getTransport().flush();
+  }
+};
+
+MapDClient.prototype.recv_has_role = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new MapD_has_role_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.e) {
+    throw result.e;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'has_role failed: unknown result';
+};
 MapDClient.prototype.has_object_privilege = function(session, granteeName, ObjectName, objectType, permissions, callback) {
   this.send_has_object_privilege(session, granteeName, ObjectName, objectType, permissions, callback); 
   if (!callback) {
@@ -15466,16 +15889,17 @@ MapDClient.prototype.recv_get_license_claims = function() {
   }
   throw 'get_license_claims failed: unknown result';
 };
-MapDClient.prototype.get_device_parameters = function(callback) {
-  this.send_get_device_parameters(callback); 
+MapDClient.prototype.get_device_parameters = function(session, callback) {
+  this.send_get_device_parameters(session, callback); 
   if (!callback) {
     return this.recv_get_device_parameters();
   }
 };
 
-MapDClient.prototype.send_get_device_parameters = function(callback) {
+MapDClient.prototype.send_get_device_parameters = function(session, callback) {
   this.output.writeMessageBegin('get_device_parameters', Thrift.MessageType.CALL, this.seqid);
   var args = new MapD_get_device_parameters_args();
+  args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
