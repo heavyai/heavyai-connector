@@ -883,6 +883,72 @@ TStringRow.prototype.write = function(output) {
   return;
 };
 
+TKrb5Session = function(args) {
+  this.sessionId = null;
+  this.krbToken = null;
+  if (args) {
+    if (args.sessionId !== undefined && args.sessionId !== null) {
+      this.sessionId = args.sessionId;
+    }
+    if (args.krbToken !== undefined && args.krbToken !== null) {
+      this.krbToken = args.krbToken;
+    }
+  }
+};
+TKrb5Session.prototype = {};
+TKrb5Session.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.sessionId = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.krbToken = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TKrb5Session.prototype.write = function(output) {
+  output.writeStructBegin('TKrb5Session');
+  if (this.sessionId !== null && this.sessionId !== undefined) {
+    output.writeFieldBegin('sessionId', Thrift.Type.STRING, 1);
+    output.writeString(this.sessionId);
+    output.writeFieldEnd();
+  }
+  if (this.krbToken !== null && this.krbToken !== undefined) {
+    output.writeFieldBegin('krbToken', Thrift.Type.STRING, 2);
+    output.writeString(this.krbToken);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TStepResult = function(args) {
   this.serialized_rows = null;
   this.execution_finished = null;
@@ -6218,6 +6284,7 @@ TDBObject = function(args) {
   this.objectType = null;
   this.privs = null;
   this.grantee = null;
+  this.privilegeObjectType = null;
   if (args) {
     if (args.objectName !== undefined && args.objectName !== null) {
       this.objectName = args.objectName;
@@ -6230,6 +6297,9 @@ TDBObject = function(args) {
     }
     if (args.grantee !== undefined && args.grantee !== null) {
       this.grantee = args.grantee;
+    }
+    if (args.privilegeObjectType !== undefined && args.privilegeObjectType !== null) {
+      this.privilegeObjectType = args.privilegeObjectType;
     }
   }
 };
@@ -6288,6 +6358,13 @@ TDBObject.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.I32) {
+        this.privilegeObjectType = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -6326,6 +6403,11 @@ TDBObject.prototype.write = function(output) {
   if (this.grantee !== null && this.grantee !== undefined) {
     output.writeFieldBegin('grantee', Thrift.Type.STRING, 4);
     output.writeString(this.grantee);
+    output.writeFieldEnd();
+  }
+  if (this.privilegeObjectType !== null && this.privilegeObjectType !== undefined) {
+    output.writeFieldBegin('privilegeObjectType', Thrift.Type.I32, 5);
+    output.writeI32(this.privilegeObjectType);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
