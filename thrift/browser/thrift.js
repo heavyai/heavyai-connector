@@ -346,7 +346,7 @@ Thrift.TXHRTransport.prototype = {
       }
 
       xreq.open('POST', this.url, !!async);
-
+      xreq.withCredentials = true
       if (xreq.setRequestHeader) {
           xreq.setRequestHeader('Accept', 'application/vnd.apache.thrift.json; charset=utf-8');
           xreq.setRequestHeader('Content-Type', 'application/vnd.apache.thrift.json; charset=utf-8');
