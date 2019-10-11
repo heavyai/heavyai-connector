@@ -19116,15 +19116,20 @@ module.exports =
 	    return this;
 	  }
 
-	  /**
-	   * Initializes the connector for use. This is similar to `connect()`, but stops short of
-	   * actually connecting to the server.
-	   *
-	   * @return {MapdCon} Object.
-	   */
-
-
 	  _createClass(MapdCon, [{
+	    key: "xhrWithCredentials",
+	    value: function xhrWithCredentials(enabled) {
+	      Thrift.xhrWithCredentials = enabled;
+	    }
+
+	    /**
+	     * Initializes the connector for use. This is similar to `connect()`, but stops short of
+	     * actually connecting to the server.
+	     *
+	     * @return {MapdCon} Object.
+	     */
+
+	  }, {
 	    key: "initClients",
 	    value: function initClients() {
 	      var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._dbName);
