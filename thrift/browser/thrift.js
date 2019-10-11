@@ -131,7 +131,9 @@ var Thrift = {
     F.prototype = superConstructor.prototype;
     constructor.prototype = new F();
     constructor.prototype.name = name || "";
-  }
+  },
+
+  xhrWithCredentials: false
 };
 
 /**
@@ -346,7 +348,7 @@ Thrift.TXHRTransport.prototype = {
       }
 
       xreq.open('POST', this.url, !!async);
-      xreq.withCredentials = true
+      xreq.withCredentials = Thrift.xhrWithCredentials
       if (xreq.setRequestHeader) {
           xreq.setRequestHeader('Accept', 'application/vnd.apache.thrift.json; charset=utf-8');
           xreq.setRequestHeader('Content-Type', 'application/vnd.apache.thrift.json; charset=utf-8');
