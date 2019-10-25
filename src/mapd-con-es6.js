@@ -88,6 +88,10 @@ class MapdCon {
     return this
   }
 
+  crossDomain(enabled) {
+    Thrift.crossDomain = enabled
+  }
+
   xhrWithCredentials(enabled) {
     Thrift.xhrWithCredentials = enabled
   }

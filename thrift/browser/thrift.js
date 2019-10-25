@@ -133,6 +133,8 @@ var Thrift = {
     constructor.prototype.name = name || "";
   },
 
+  crossDomain: false,
+
   xhrWithCredentials: false
 };
 
@@ -404,6 +406,7 @@ Thrift.TXHRTransport.prototype = {
                   return value;
               }
           },
+          crossDomain: Thrift.crossDomain,
           context: client,
           success: jQuery.makeArray(args).pop()
       });
