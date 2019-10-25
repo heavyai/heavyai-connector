@@ -19117,6 +19117,11 @@ module.exports =
 	  }
 
 	  _createClass(MapdCon, [{
+	    key: "crossDomain",
+	    value: function crossDomain(enabled) {
+	      Thrift.crossDomain = enabled;
+	    }
+	  }, {
 	    key: "xhrWithCredentials",
 	    value: function xhrWithCredentials(enabled) {
 	      Thrift.xhrWithCredentials = enabled;
