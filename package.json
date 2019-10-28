@@ -19,6 +19,8 @@
     "test:unit": "mocha ./test/*.unit.spec.js --require ./test/config.js --require ./test/setup.js"
   },
   "main": "dist/node-connector.js",
+  "unpkg": "dist/browser-connector.js",
+  "jsdelivr": "dist/browser-connector.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/mapd/mapd-connector"
