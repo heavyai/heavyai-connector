@@ -88,6 +88,10 @@ class MapdCon {
     return this
   }
 
+  xhrWithCredentials(enabled) {
+    Thrift.xhrWithCredentials = enabled
+  }
+
   /**
    * Initializes the connector for use. This is similar to `connect()`, but stops short of
    * actually connecting to the server.
