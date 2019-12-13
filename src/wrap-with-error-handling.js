@@ -28,15 +28,21 @@ export function wrapMethod(context, method, isError) {
     if (args.length === arity) {
       const callback = args.pop()
       MapDClient.prototype[method].call(context, ...args, result => {
-        if (isError(result)) {
-          callback(result)
+        if (window.generateUpsell) {
+          callback(new Error("UPSELL"))
         } else {
-          callback(null, result)
+          if (isError(result)) {
+            callback(result)
+          } else {
+            callback(null, result)
+          }
         }
       })
     } else if (args.length === arity - 1) {
       const result = MapDClient.prototype[method].call(context, ...args)
-      if (isError(result)) {
+      if (window.generateUpsell) {
+        throw new Error("UPSELL")
+      } else if (isError(result)) {
         throw result
       }
       return result

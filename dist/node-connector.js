@@ -21157,17 +21157,23 @@ module.exports =
 
 	      var callback = args.pop();
 	      (_MapDClient$prototype = MapDClient.prototype[method]).call.apply(_MapDClient$prototype, [context].concat(args, [function (result) {
-	        if (isError(result)) {
-	          callback(result);
+	        if (window.generateUpsell) {
+	          callback(new Error("UPSELL"));
 	        } else {
-	          callback(null, result);
+	          if (isError(result)) {
+	            callback(result);
+	          } else {
+	            callback(null, result);
+	          }
 	        }
 	      }]));
 	    } else if (args.length === arity - 1) {
 	      var _MapDClient$prototype2;
 
 	      var result = (_MapDClient$prototype2 = MapDClient.prototype[method]).call.apply(_MapDClient$prototype2, [context].concat(args));
-	      if (isError(result)) {
+	      if (window.generateUpsell) {
+	        throw new Error("UPSELL");
+	      } else if (isError(result)) {
 	        throw result;
 	      }
 	      return result;
