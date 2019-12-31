@@ -18751,17 +18751,7 @@ module.exports =
 	          var promise = method.apply(_this, args);
 
 	          promise.then(success).catch(function (error) {
-	            if (_this.isTimeoutError(error) && !_this._disableAutoReconnect) {
-	              // Reconnect, then try the method once more
-	              return _this.connectAsync().then(function () {
-	                _this.events.emit("reconnected", _this);
-
-	                var retriedPromise = method.apply(_this, args);
-	                retriedPromise.then(success).catch(failure);
-	              });
-	            } else {
-	              return failure(error);
-	            }
+	            return failure(error);
 	          });
 	        });
 	      };
@@ -21105,7 +21095,7 @@ module.exports =
 
 	/* eslint-disable no-unused-expressions */
 	!function () {
-	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "create_link", "get_link_view", "detect_column_types", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
+	  ;["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "create_link", "get_link_view", "detect_column_types", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
 	    MapDClientV2.prototype[funcName] = function () {
 	      return (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, funcName).apply(undefined, arguments);
 	    };
