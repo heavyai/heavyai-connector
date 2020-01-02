@@ -287,17 +287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var promise = method.apply(_this, args);
 
 	          promise.then(success).catch(function (error) {
-	            if (_this.isTimeoutError(error) && !_this._disableAutoReconnect) {
-	              // Reconnect, then try the method once more
-	              return _this.connectAsync().then(function () {
-	                _this.events.emit("reconnected", _this);
-
-	                var retriedPromise = method.apply(_this, args);
-	                retriedPromise.then(success).catch(failure);
-	              });
-	            } else {
-	              return failure(error);
-	            }
+	            return failure(error);
 	          });
 	        });
 	      };

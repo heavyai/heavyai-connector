@@ -358,19 +358,7 @@ class MapdCon {
 
       const promise = method.apply(this, args)
 
-      promise.then(success).catch(error => {
-        if (this.isTimeoutError(error) && !this._disableAutoReconnect) {
-          // Reconnect, then try the method once more
-          return this.connectAsync().then(() => {
-            this.events.emit("reconnected", this)
-
-            const retriedPromise = method.apply(this, args)
-            retriedPromise.then(success).catch(failure)
-          })
-        } else {
-          return failure(error)
-        }
-      })
+      promise.then(success).catch(error => failure(error))
     })
 
   promisifyThriftMethodNode = (client, sessionId, methodName, args) =>
