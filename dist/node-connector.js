@@ -18732,6 +18732,13 @@ module.exports =
 	    };
 
 	    this.events = new _eventemitter2.default();
+	    this.EVENT_NAMES = {
+	      ERROR: "error",
+	      METHOD_CALLED: "method-called"
+
+	      // ** Method wrappers **
+
+	    };
 
 	    this.handleErrors = function (method) {
 	      return function () {
@@ -18744,7 +18751,7 @@ module.exports =
 	            return resolve(result);
 	          };
 	          var failure = function failure(error) {
-	            _this.events.emit("error", error);
+	            _this.events.emit(_this.EVENT_NAMES.ERROR, error);
 	            return reject(error);
 	          };
 
@@ -18771,6 +18778,7 @@ module.exports =
 
 	    this.promisifyThriftMethodBrowser = function (client, sessionId, methodName, args) {
 	      return new Promise(function (resolve, reject) {
+	        _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, methodName);
 	        client[methodName].apply(client, [sessionId].concat(args, function (result) {
 	          if (result instanceof Error) {
 	            reject(result);
@@ -18958,6 +18966,7 @@ module.exports =
 	        return _this.clonePromise(cacheEntry);
 	      } else {
 	        var queryPromise = new Promise(function (resolve, reject) {
+	          _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, "sql_execute");
 	          _this.query(query, options, function (error, result) {
 	            if (_this.queryCacheTransient) {
 	              delete _this.queryCache[query];
@@ -19327,8 +19336,6 @@ module.exports =
 	      this._sessionId.splice(conId, 1);
 	      this._numConnections--;
 	    }
-
-	    // ** Method wrappers **
 
 	    // Wrap a Thrift method to perform session check and mapping over
 	    // all clients (for mutating methods)
@@ -21095,7 +21102,7 @@ module.exports =
 
 	/* eslint-disable no-unused-expressions */
 	!function () {
-	  ;["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "create_link", "get_link_view", "detect_column_types", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
+	  ["connect", "sql_execute", "sql_validate", "render", "render_vega", "get_result_row_for_pixel", "get_completion_hints", "get_tables", "get_table_details", "get_tables_meta", "get_fields", "get_status", "get_server_status", "get_hardware_info", "create_link", "get_link_view", "detect_column_types", "send_create_table", "send_import_table", "detect_column_types", "set_license_key", "get_license_claims"].forEach(function (funcName) {
 	    MapDClientV2.prototype[funcName] = function () {
 	      return (0, _wrapWithErrorHandling.wrapWithErrorHandling)(this, funcName).apply(undefined, arguments);
 	    };

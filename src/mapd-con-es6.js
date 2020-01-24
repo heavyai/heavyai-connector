@@ -345,6 +345,10 @@ class MapdCon {
   }
 
   events = new EventEmitter()
+  EVENT_NAMES = {
+    ERROR: "error",
+    METHOD_CALLED: "method-called"
+  }
 
   // ** Method wrappers **
 
@@ -352,7 +356,7 @@ class MapdCon {
     new Promise((resolve, reject) => {
       const success = result => resolve(result)
       const failure = error => {
-        this.events.emit("error", error)
+        this.events.emit(this.EVENT_NAMES.ERROR, error)
         return reject(error)
       }
 
@@ -377,6 +381,7 @@ class MapdCon {
 
   promisifyThriftMethodBrowser = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
+      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
       client[methodName].apply(
         client,
         [sessionId].concat(args, result => {
@@ -996,6 +1001,7 @@ class MapdCon {
       return this.clonePromise(cacheEntry)
     } else {
       const queryPromise = new Promise((resolve, reject) => {
+        this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute")
         this.query(query, options, (error, result) => {
           if (this.queryCacheTransient) {
             delete this.queryCache[query]
