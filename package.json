@@ -1,7 +1,7 @@
 {
   "name": "@mapd/connector",
-  "description": "Connector to mapdql",
-  "version": "4.7.2",
+  "description": "Connector to omniscidb",
+  "version": "5.1.0",
   "license": "Apache-2.0",
   "scripts": {
     "build": "bash scripts/build.sh",
@@ -23,7 +23,7 @@
   "jsdelivr": "dist/browser-connector.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/mapd/mapd-connector"
+    "url": "http://github.com/omnisci/mapd-connector"
   },
   "devDependencies": {
     "@types/thrift": "^0.10.7",
