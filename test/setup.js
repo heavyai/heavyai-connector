@@ -3,7 +3,7 @@ import jsdom from "jsdom"
 
 const scripts = `
   <script>
-    ${fs.readFileSync("./thrift/browser/thrift.js", "utf-8")}
+    ${fs.readFileSync("./node_modules/thrift/lib/nodejs/lib/thrift/index.js", "utf-8")}
     ${fs.readFileSync("./thrift/browser/mapd.thrift.js", "utf-8")}
     ${fs.readFileSync("./thrift/browser/mapd_types.js", "utf-8")}
   </script>
@@ -17,9 +17,9 @@ global.window = win
 propagateToGlobal(win)
 
 function propagateToGlobal(window) {
-  for (let key in window) {
-    if (!window.hasOwnProperty(key)) continue
-    if (key in global) continue
+  for (const key in window) {
+    if (!window.hasOwnProperty(key)) {continue}
+    if (key in global) {continue}
     global[key] = window[key]
   }
 }

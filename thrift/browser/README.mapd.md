@@ -1,3 +1,5 @@
+FE-10574 2/21/2020 Note: If we successfully upgrade to 0.12.0 we can remove this note.
+
 Note that `thrift/browser/thrift.js` contains the following patch
 due to poor performance for large arrays in V8/Chrome.
 

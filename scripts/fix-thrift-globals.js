@@ -18,7 +18,7 @@ const filePathsBrowser = [
   "thrift/browser/serialized_result_set_types.js",
   "thrift/browser/mapd_types.js",
   "thrift/browser/mapd.thrift.js",
-  "thrift/browser/thrift.js"
+  "node_modules/thrift/lib/nodejs/lib/thrift/index.js"
 ]
 const filePathsNode = [
   "thrift/node/completion_hints_types.js",

@@ -3,7 +3,7 @@ const path = require("path")
 module.exports = {
   ecmaFeatures: {modules: true},
   entry: [
-    "script!./build/thrift/browser/thrift.js",
+    "script!./node_modules/thrift/lib/nodejs/lib/thrift/index.js",
     "script!./build/thrift/browser/common_types.js",
     "script!./build/thrift/browser/serialized_result_set_types.js",
     "script!./build/thrift/browser/mapd_types.js",
