@@ -23,6 +23,7 @@ const filePathsBrowser = [
 const filePathsNode = [
   "thrift/node/completion_hints_types.js",
   "thrift/node/common_types.js",
+  "thrift/node/extension_functions_types.js",
   "thrift/node/serialized_result_set_types.js",
   "thrift/node/mapd_types.js",
   "thrift/node/mapd.thrift.js"

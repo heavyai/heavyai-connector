@@ -4,6 +4,7 @@ module.exports = {
   entry: [
     "./node_modules/thrift/lib/nodejs/lib/thrift/index.js",
     "./build/thrift/node/common_types.js",
+    "./build/thrift/node/extension_functions_types.js",
     "./build/thrift/node/serialized_result_set_types.js",
     "./build/thrift/node/mapd_types.js",
     "./build/thrift/node/mapd.thrift.js",
