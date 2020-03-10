@@ -46,13 +46,13 @@ module.exports =
 /***/ (function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	__webpack_require__(52);
-	__webpack_require__(53);
 	__webpack_require__(54);
 	__webpack_require__(55);
-	__webpack_require__(57);
 	__webpack_require__(56);
-	module.exports = __webpack_require__(58);
+	__webpack_require__(57);
+	__webpack_require__(59);
+	__webpack_require__(58);
+	module.exports = __webpack_require__(60);
 
 
 /***/ }),
@@ -79,20 +79,27 @@ module.exports =
 	 */
 	exports.Thrift = __webpack_require__(2);
 
-	var connection = __webpack_require__(4);
+	var log = __webpack_require__(4);
+	exports.setLogFunc = log.setLogFunc;
+	exports.setLogLevel = log.setLogLevel;
+	exports.getLogLevel = log.getLogLevel;
+
+	var connection = __webpack_require__(5);
 	exports.Connection = connection.Connection;
 	exports.createClient = connection.createClient;
 	exports.createConnection = connection.createConnection;
+	exports.createUDSConnection = connection.createUDSConnection;
 	exports.createSSLConnection = connection.createSSLConnection;
 	exports.createStdIOClient = connection.createStdIOClient;
 	exports.createStdIOConnection = connection.createStdIOConnection;
 
-	var httpConnection = __webpack_require__(16);
+	var httpConnection = __webpack_require__(19);
 	exports.HttpConnection = httpConnection.HttpConnection;
 	exports.createHttpConnection = httpConnection.createHttpConnection;
+	exports.createHttpUDSConnection = httpConnection.createHttpUDSConnection;
 	exports.createHttpClient = httpConnection.createHttpClient;
 
-	var wsConnection = __webpack_require__(19);
+	var wsConnection = __webpack_require__(22);
 	exports.WSConnection = wsConnection.WSConnection;
 	exports.createWSConnection = wsConnection.createWSConnection;
 	exports.createWSClient = wsConnection.createWSClient;
@@ -106,14 +113,14 @@ module.exports =
 	exports.createServer = server.createServer;
 	exports.createMultiplexServer = server.createMultiplexServer;
 
-	var web_server = __webpack_require__(47);
+	var web_server = __webpack_require__(48);
 	exports.createWebServer = web_server.createWebServer;
 
-	exports.Int64 = __webpack_require__(13);
-	exports.Q = __webpack_require__(50);
+	exports.Int64 = __webpack_require__(15);
+	exports.Q = __webpack_require__(52);
 
-	var mprocessor = __webpack_require__(49);
-	var mprotocol = __webpack_require__(51);
+	var mprocessor = __webpack_require__(51);
+	var mprotocol = __webpack_require__(53);
 	exports.Multiplexer = mprotocol.Multiplexer;
 	exports.MultiplexedProcessor = mprocessor.MultiplexedProcessor;
 
@@ -121,11 +128,12 @@ module.exports =
 	 * Export transport and protocol so they can be used outside of a
 	 * cassandra/server context
 	 */
-	exports.TFramedTransport = __webpack_require__(39);
-	exports.TBufferedTransport = __webpack_require__(8);
-	exports.TBinaryProtocol = __webpack_require__(11);
+	exports.TFramedTransport = __webpack_require__(40);
+	exports.TBufferedTransport = __webpack_require__(10);
+	exports.TBinaryProtocol = __webpack_require__(16);
 	exports.TJSONProtocol = __webpack_require__(42);
-	exports.TCompactProtocol = __webpack_require__(41);
+	exports.TCompactProtocol = __webpack_require__(14);
+	exports.THeaderProtocol = __webpack_require__(47);
 
 
 /***/ }),
@@ -394,19 +402,114 @@ module.exports =
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
+
 	var util = __webpack_require__(3);
-	var EventEmitter = __webpack_require__(5).EventEmitter;
-	var net = __webpack_require__(6);
-	var tls = __webpack_require__(7);
+
+	var disabled = function () {};
+	var logFunc = console.log;
+	var logLevel = 'error'; // default level
+
+	function factory(level) {
+	  return function () {
+	    // better use spread syntax, but due to compatibility,
+	    // use legacy method here.
+	    var args = ['thrift: [' + level + '] '].concat(Array.from(arguments));
+	    return logFunc(util.format.apply(null, args));
+	  };
+	}
+
+	var trace = disabled;
+	var debug = disabled;
+	var error = disabled;
+	var warning = disabled;
+	var info = disabled;
+
+	exports.setLogFunc = function (func) {
+	  logFunc = func;
+	};
+
+	var setLogLevel = exports.setLogLevel = function (level) {
+	  trace = debug = error = warning = info = disabled;
+	  logLevel = level;
+	  switch (logLevel) {
+	  case 'trace':
+	    trace = factory('TRACE');
+	  case 'debug':
+	    debug = factory('DEBUG');
+	  case 'error':
+	    error = factory('ERROR');
+	  case 'warning':
+	    warning = factory('WARN');
+	  case 'info':
+	    info = factory('INFO');
+	  }
+	};
+
+	// set default
+	setLogLevel(logLevel);
+
+	exports.getLogLevel = function () {
+	  return logLevel;
+	};
+
+	exports.trace = function () {
+	  return trace.apply(null, arguments);
+	};
+
+	exports.debug = function () {
+	  return debug.apply(null, arguments);
+	};
+
+	exports.error = function () {
+	  return error.apply(null, arguments);
+	};
+
+	exports.warning = function () {
+	  return warning.apply(null, arguments);
+	};
+
+	exports.info = function () {
+	  return info.apply(null, arguments);
+	};
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+	var util = __webpack_require__(3);
+	var EventEmitter = __webpack_require__(6).EventEmitter;
+	var constants = __webpack_require__(7);
+	var net = __webpack_require__(8);
+	var tls = __webpack_require__(9);
 	var thrift = __webpack_require__(2);
+	var log = __webpack_require__(4);
 
-	var TBufferedTransport = __webpack_require__(8);
-	var TBinaryProtocol = __webpack_require__(11);
-	var InputBufferUnderrunError = __webpack_require__(10);
+	var TBufferedTransport = __webpack_require__(10);
+	var TBinaryProtocol = __webpack_require__(16);
+	var InputBufferUnderrunError = __webpack_require__(12);
 
-	var createClient = __webpack_require__(14);
+	var createClient = __webpack_require__(17);
 
-	var binary = __webpack_require__(9);
+	var binary = __webpack_require__(11);
 
 	var Connection = exports.Connection = function(stream, options) {
 	  var self = this;
@@ -450,10 +553,7 @@ module.exports =
 	    this.framePos = 0;
 	    this.frame = null;
 	    self.initialize_retry_vars();
-
-	    self.offline_queue.forEach(function(data) {
-	      self.connection.write(data);
-	    });
+	    self.flush_offline_queue();
 
 	    self.emit("connect");
 	  });
@@ -499,7 +599,6 @@ module.exports =
 	        var service_name = self.seqId2Service[header.rseqid];
 	        if (service_name) {
 	          client = self.client[service_name];
-	          delete self.seqId2Service[header.rseqid];
 	        }
 	        /*jshint -W083 */
 	        client._reqs[dummy_seqid] = function(err, success){
@@ -507,6 +606,9 @@ module.exports =
 
 	          var callback = client._reqs[header.rseqid];
 	          delete client._reqs[header.rseqid];
+	          if (service_name) {
+	            delete self.seqId2Service[header.rseqid];
+	          }
 	          if (callback) {
 	            callback(err, success);
 	          }
@@ -551,6 +653,18 @@ module.exports =
 	  this.attempts = 0;
 	};
 
+	Connection.prototype.flush_offline_queue = function () {
+	  var self = this;
+	  var offline_queue = this.offline_queue;
+
+	  // Reset offline queue
+	  this.offline_queue = [];
+	  // Attempt to write queued items
+	  offline_queue.forEach(function(data) {
+	    self.write(data);
+	  });
+	};
+
 	Connection.prototype.write = function(data) {
 	  if (!this.connected) {
 	    this.offline_queue.push(data);
@@ -579,9 +693,7 @@ module.exports =
 	    this.retry_delay = Math.floor(this.retry_delay * this.retry_backoff);
 	  }
 
-	  if (self._debug) {
-	    console.log("Retry connection in " + this.retry_delay + " ms");
-	  }
+	  log.debug("Retry connection in " + this.retry_delay + " ms");
 
 	  if (this.max_attempts && this.attempts >= this.max_attempts) {
 	    this.retry_timer = null;
@@ -597,9 +709,12 @@ module.exports =
 	  });
 
 	  this.retry_timer = setTimeout(function () {
-	    if (self._debug) {
-	       console.log("Retrying connection...");
-		}
+	    if (self.connection.destroyed) {
+	      self.retry_timer = null;
+	      return;
+	    }
+
+	    log.debug("Retrying connection...");
 
 	    self.retry_totaltime += self.retry_delay;
 
@@ -610,13 +725,21 @@ module.exports =
 	       return;
 	    }
 
-	    self.connection.connect(self.port, self.host);
+	    if (self.path !== undefined) {
+	      self.connection.connect(self.path);
+	    } else {
+	      self.connection.connect(self.port, self.host);
+	    }
 	    self.retry_timer = null;
 	  }, this.retry_delay);
 	};
 
 	exports.createConnection = function(host, port, options) {
-	  var stream = net.createConnection(port, host);
+	  var stream = net.createConnection( {
+	    port: port, 
+	    host: host,
+	    timeout: options.connect_timeout || options.timeout || 0
+	  });
 	  var connection = new Connection(stream, options);
 	  connection.host = host;
 	  connection.port = port;
@@ -624,7 +747,20 @@ module.exports =
 	  return connection;
 	};
 
+	exports.createUDSConnection = function(path, options) {
+	  var stream = net.createConnection(path);
+	  var connection = new Connection(stream, options);
+	  connection.path = path;
+
+	  return connection;
+	};
+
 	exports.createSSLConnection = function(host, port, options) {
+	  if (!('secureProtocol' in options) && !('secureOptions' in options)) {
+	    options.secureProtocol = "SSLv23_method";
+	    options.secureOptions = constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_SSLv3;
+	  }
+
 	  var stream = tls.connect(port, host, options);
 	  var connection = new Connection(stream, options);
 	  connection.host = host;
@@ -636,7 +772,7 @@ module.exports =
 
 	exports.createClient = createClient;
 
-	var child_process = __webpack_require__(15);
+	var child_process = __webpack_require__(18);
 	var StdIOConnection = exports.StdIOConnection = function(command, options) {
 	  var command_parts = command.split(' ');
 	  command = command_parts[0];
@@ -646,20 +782,19 @@ module.exports =
 	  var self = this;
 	  EventEmitter.call(this);
 
-	  this._debug = options.debug || false;
 	  this.connection = child.stdin;
 	  this.options = options || {};
 	  this.transport = this.options.transport || TBufferedTransport;
 	  this.protocol = this.options.protocol || TBinaryProtocol;
 	  this.offline_queue = [];
 
-	  if(this._debug === true){
-	    this.child.stderr.on('data',function(err){
-	      console.log(err.toString(),'CHILD ERROR');
+	  if (log.getLogLevel() === 'debug') {
+	    this.child.stderr.on('data', function (err) {
+	      log.debug(err.toString(), 'CHILD ERROR');
 	    });
 
-	    this.child.on('exit',function(code,signal){
-	      console.log(code+':'+signal,'CHILD EXITED');
+	    this.child.on('exit', function (code,signal) {
+	      log.debug(code + ':' + signal, 'CHILD EXITED');
 	    });
 	  }
 
@@ -668,10 +803,7 @@ module.exports =
 	  this.frame = null;
 	  this.connected = true;
 
-	  self.offline_queue.forEach(function(data) {
-	      self.connection.write(data);
-	  });
-
+	  self.flush_offline_queue();
 
 	  this.connection.addListener("error", function(err) {
 	    self.emit("error", err);
@@ -716,6 +848,18 @@ module.exports =
 	  this.connection.end();
 	};
 
+	StdIOConnection.prototype.flush_offline_queue = function () {
+	  var self = this;
+	  var offline_queue = this.offline_queue;
+
+	  // Reset offline queue
+	  this.offline_queue = [];
+	  // Attempt to write queued items
+	  offline_queue.forEach(function(data) {
+	    self.write(data);
+	  });
+	};
+
 	StdIOConnection.prototype.write = function(data) {
 	  if (!this.connected) {
 	    this.offline_queue.push(data);
@@ -732,25 +876,31 @@ module.exports =
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 	module.exports = require("events");
 
 /***/ }),
-/* 6 */
+/* 7 */
+/***/ (function(module, exports) {
+
+	module.exports = require("constants");
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports) {
 
 	module.exports = require("net");
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports) {
 
 	module.exports = require("tls");
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -772,8 +922,9 @@ module.exports =
 	 * under the License.
 	 */
 
-	var binary = __webpack_require__(9);
-	var InputBufferUnderrunError = __webpack_require__(10);
+	var binary = __webpack_require__(11);
+	var InputBufferUnderrunError = __webpack_require__(12);
+	var THeaderTransport = __webpack_require__(13);
 
 	module.exports = TBufferedTransport;
 
@@ -787,6 +938,16 @@ module.exports =
 	  this.outCount = 0;
 	  this.onFlush = callback;
 	};
+
+	TBufferedTransport.prototype = new THeaderTransport();
+
+	TBufferedTransport.prototype.reset = function() {
+	  this.inBuf = new Buffer(this.defaultReadBufferSize);
+	  this.readCursor = 0;
+	  this.writeCursor = 0;
+	  this.outBuffers = [];
+	  this.outCount = 0;
+	}
 
 	TBufferedTransport.receiver = function(callback, seqid) {
 	  var reader = new TBufferedTransport();
@@ -931,7 +1092,7 @@ module.exports =
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports) {
 
 	/*
@@ -1105,7 +1266,7 @@ module.exports =
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -1141,7 +1302,7 @@ module.exports =
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -1163,4005 +1324,330 @@ module.exports =
 	 * under the License.
 	 */
 
-	var log = __webpack_require__(12);
-	var binary = __webpack_require__(9);
-	var Int64 = __webpack_require__(13);
-	var Thrift = __webpack_require__(2);
-	var Type = Thrift.Type;
+	var util = __webpack_require__(3);
+	var TCompactProtocol = __webpack_require__(14);
+	var TBinaryProtocol = __webpack_require__(16);
+	var InputBufferUnderrunError = __webpack_require__(12);
 
-	module.exports = TBinaryProtocol;
-
-	// JavaScript supports only numeric doubles, therefore even hex values are always signed.
-	// The largest integer value which can be represented in JavaScript is +/-2^53.
-	// Bitwise operations convert numbers to 32 bit integers but perform sign extension
-	// upon assigning values back to variables.
-	var VERSION_MASK = -65536,   // 0xffff0000
-	    VERSION_1 = -2147418112, // 0x80010000
-	    TYPE_MASK = 0x000000ff;
-
-	function TBinaryProtocol(trans, strictRead, strictWrite) {
-	  this.trans = trans;
-	  this.strictRead = (strictRead !== undefined ? strictRead : false);
-	  this.strictWrite = (strictWrite !== undefined ? strictWrite : true);
-	};
-
-	TBinaryProtocol.prototype.flush = function() {
-	  return this.trans.flush();
-	};
-
-	TBinaryProtocol.prototype.writeMessageBegin = function(name, type, seqid) {
-	    if (this.strictWrite) {
-	      this.writeI32(VERSION_1 | type);
-	      this.writeString(name);
-	      this.writeI32(seqid);
-	    } else {
-	      this.writeString(name);
-	      this.writeByte(type);
-	      this.writeI32(seqid);
-	    }
-	    // Record client seqid to find callback again
-	    if (this._seqid) {
-	      // TODO better logging log warning
-	      log.warning('SeqId already set', { 'name': name });
-	    } else {
-	      this._seqid = seqid;
-	      this.trans.setCurrSeqId(seqid);
-	    }
-	};
-
-	TBinaryProtocol.prototype.writeMessageEnd = function() {
-	    if (this._seqid) {
-	        this._seqid = null;
-	    } else {
-	        log.warning('No seqid to unset');
-	    }
-	};
-
-	TBinaryProtocol.prototype.writeStructBegin = function(name) {
-	};
-
-	TBinaryProtocol.prototype.writeStructEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.writeFieldBegin = function(name, type, id) {
-	  this.writeByte(type);
-	  this.writeI16(id);
-	};
-
-	TBinaryProtocol.prototype.writeFieldEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.writeFieldStop = function() {
-	  this.writeByte(Type.STOP);
-	};
-
-	TBinaryProtocol.prototype.writeMapBegin = function(ktype, vtype, size) {
-	  this.writeByte(ktype);
-	  this.writeByte(vtype);
-	  this.writeI32(size);
-	};
-
-	TBinaryProtocol.prototype.writeMapEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.writeListBegin = function(etype, size) {
-	  this.writeByte(etype);
-	  this.writeI32(size);
-	};
-
-	TBinaryProtocol.prototype.writeListEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.writeSetBegin = function(etype, size) {
-	  this.writeByte(etype);
-	  this.writeI32(size);
-	};
-
-	TBinaryProtocol.prototype.writeSetEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.writeBool = function(bool) {
-	  if (bool) {
-	    this.writeByte(1);
-	  } else {
-	    this.writeByte(0);
-	  }
-	};
-
-	TBinaryProtocol.prototype.writeByte = function(b) {
-	  this.trans.write(new Buffer([b]));
-	};
-
-	TBinaryProtocol.prototype.writeI16 = function(i16) {
-	  this.trans.write(binary.writeI16(new Buffer(2), i16));
-	};
-
-	TBinaryProtocol.prototype.writeI32 = function(i32) {
-	  this.trans.write(binary.writeI32(new Buffer(4), i32));
-	};
-
-	TBinaryProtocol.prototype.writeI64 = function(i64) {
-	  if (i64.buffer) {
-	    this.trans.write(i64.buffer);
-	  } else {
-	    this.trans.write(new Int64(i64).buffer);
-	  }
-	};
-
-	TBinaryProtocol.prototype.writeDouble = function(dub) {
-	  this.trans.write(binary.writeDouble(new Buffer(8), dub));
-	};
-
-	TBinaryProtocol.prototype.writeStringOrBinary = function(name, encoding, arg) {
-	  if (typeof(arg) === 'string') {
-	    this.writeI32(Buffer.byteLength(arg, encoding));
-	    this.trans.write(new Buffer(arg, encoding));
-	  } else if ((arg instanceof Buffer) ||
-	             (Object.prototype.toString.call(arg) == '[object Uint8Array]')) {
-	    // Buffers in Node.js under Browserify may extend UInt8Array instead of
-	    // defining a new object. We detect them here so we can write them
-	    // correctly
-	    this.writeI32(arg.length);
-	    this.trans.write(arg);
-	  } else {
-	    throw new Error(name + ' called without a string/Buffer argument: ' + arg);
-	  }
-	};
-
-	TBinaryProtocol.prototype.writeString = function(arg) {
-	  this.writeStringOrBinary('writeString', 'utf8', arg);
-	};
-
-	TBinaryProtocol.prototype.writeBinary = function(arg) {
-	  this.writeStringOrBinary('writeBinary', 'binary', arg);
-	};
-
-	TBinaryProtocol.prototype.readMessageBegin = function() {
-	  var sz = this.readI32();
-	  var type, name, seqid;
-
-	  if (sz < 0) {
-	    var version = sz & VERSION_MASK;
-	    if (version != VERSION_1) {
-	      console.log("BAD: " + version);
-	      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.BAD_VERSION, "Bad version in readMessageBegin: " + sz);
-	    }
-	    type = sz & TYPE_MASK;
-	    name = this.readString();
-	    seqid = this.readI32();
-	  } else {
-	    if (this.strictRead) {
-	      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.BAD_VERSION, "No protocol version header");
-	    }
-	    name = this.trans.read(sz);
-	    type = this.readByte();
-	    seqid = this.readI32();
-	  }
-	  return {fname: name, mtype: type, rseqid: seqid};
-	};
-
-	TBinaryProtocol.prototype.readMessageEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.readStructBegin = function() {
-	  return {fname: ''};
-	};
-
-	TBinaryProtocol.prototype.readStructEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.readFieldBegin = function() {
-	  var type = this.readByte();
-	  if (type == Type.STOP) {
-	    return {fname: null, ftype: type, fid: 0};
-	  }
-	  var id = this.readI16();
-	  return {fname: null, ftype: type, fid: id};
-	};
-
-	TBinaryProtocol.prototype.readFieldEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.readMapBegin = function() {
-	  var ktype = this.readByte();
-	  var vtype = this.readByte();
-	  var size = this.readI32();
-	  return {ktype: ktype, vtype: vtype, size: size};
-	};
-
-	TBinaryProtocol.prototype.readMapEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.readListBegin = function() {
-	  var etype = this.readByte();
-	  var size = this.readI32();
-	  return {etype: etype, size: size};
-	};
-
-	TBinaryProtocol.prototype.readListEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.readSetBegin = function() {
-	  var etype = this.readByte();
-	  var size = this.readI32();
-	  return {etype: etype, size: size};
-	};
-
-	TBinaryProtocol.prototype.readSetEnd = function() {
-	};
-
-	TBinaryProtocol.prototype.readBool = function() {
-	  var b = this.readByte();
-	  if (b === 0) {
-	    return false;
-	  }
-	  return true;
-	};
-
-	TBinaryProtocol.prototype.readByte = function() {
-	  return this.trans.readByte();
-	};
-
-	TBinaryProtocol.prototype.readI16 = function() {
-	  return this.trans.readI16();
-	};
-
-	TBinaryProtocol.prototype.readI32 = function() {
-	  return this.trans.readI32();
-	};
-
-	TBinaryProtocol.prototype.readI64 = function() {
-	  var buff = this.trans.read(8);
-	  return new Int64(buff);
-	};
-
-	TBinaryProtocol.prototype.readDouble = function() {
-	  return this.trans.readDouble();
-	};
-
-	TBinaryProtocol.prototype.readBinary = function() {
-	  var len = this.readI32();
-	  if (len === 0) {
-	    return new Buffer(0);
-	  }
-
-	  if (len < 0) {
-	    throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.NEGATIVE_SIZE, "Negative binary size");
-	  }
-	  return this.trans.read(len);
-	};
-
-	TBinaryProtocol.prototype.readString = function() {
-	  var len = this.readI32();
-	  if (len === 0) {
-	    return "";
-	  }
-
-	  if (len < 0) {
-	    throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.NEGATIVE_SIZE, "Negative string size");
-	  }
-	  return this.trans.readString(len);
-	};
-
-	TBinaryProtocol.prototype.getTransport = function() {
-	  return this.trans;
-	};
-
-	TBinaryProtocol.prototype.skip = function(type) {
-	  switch (type) {
-	    case Type.STOP:
-	      return;
-	    case Type.BOOL:
-	      this.readBool();
-	      break;
-	    case Type.BYTE:
-	      this.readByte();
-	      break;
-	    case Type.I16:
-	      this.readI16();
-	      break;
-	    case Type.I32:
-	      this.readI32();
-	      break;
-	    case Type.I64:
-	      this.readI64();
-	      break;
-	    case Type.DOUBLE:
-	      this.readDouble();
-	      break;
-	    case Type.STRING:
-	      this.readString();
-	      break;
-	    case Type.STRUCT:
-	      this.readStructBegin();
-	      while (true) {
-	        var r = this.readFieldBegin();
-	        if (r.ftype === Type.STOP) {
-	          break;
-	        }
-	        this.skip(r.ftype);
-	        this.readFieldEnd();
-	      }
-	      this.readStructEnd();
-	      break;
-	    case Type.MAP:
-	      var mapBegin = this.readMapBegin();
-	      for (var i = 0; i < mapBegin.size; ++i) {
-	        this.skip(mapBegin.ktype);
-	        this.skip(mapBegin.vtype);
-	      }
-	      this.readMapEnd();
-	      break;
-	    case Type.SET:
-	      var setBegin = this.readSetBegin();
-	      for (var i2 = 0; i2 < setBegin.size; ++i2) {
-	        this.skip(setBegin.etype);
-	      }
-	      this.readSetEnd();
-	      break;
-	    case Type.LIST:
-	      var listBegin = this.readListBegin();
-	      for (var i3 = 0; i3 < listBegin.size; ++i3) {
-	        this.skip(listBegin.etype);
-	      }
-	      this.readListEnd();
-	      break;
-	    default:
-	      throw new  Error("Invalid type: " + type);
-	  }
-	};
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-
-	module.exports = {
-	  'info' : function logInfo() {},
-	  'warning' : function logWarning() {},
-	  'error' : function logError() {},
-	  'debug' : function logDebug() {},
-	  'trace' : function logTrace() {}
-	};
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-	//     Int64.js
-	//
-	//     Copyright (c) 2012 Robert Kieffer
-	//     MIT License - http://opensource.org/licenses/mit-license.php
-
-	/**
-	 * Support for handling 64-bit int numbers in Javascript (node.js)
-	 *
-	 * JS Numbers are IEEE-754 binary double-precision floats, which limits the
-	 * range of values that can be represented with integer precision to:
-	 *
-	 * 2^^53 <= N <= 2^53
-	 *
-	 * Int64 objects wrap a node Buffer that holds the 8-bytes of int64 data.  These
-	 * objects operate directly on the buffer which means that if they are created
-	 * using an existing buffer then setting the value will modify the Buffer, and
-	 * vice-versa.
-	 *
-	 * Internal Representation
-	 *
-	 * The internal buffer format is Big Endian.  I.e. the most-significant byte is
-	 * at buffer[0], the least-significant at buffer[7].  For the purposes of
-	 * converting to/from JS native numbers, the value is assumed to be a signed
-	 * integer stored in 2's complement form.
-	 *
-	 * For details about IEEE-754 see:
-	 * http://en.wikipedia.org/wiki/Double_precision_floating-point_format
-	 */
-
-	// Useful masks and values for bit twiddling
-	var MASK31 =  0x7fffffff, VAL31 = 0x80000000;
-	var MASK32 =  0xffffffff, VAL32 = 0x100000000;
-
-	// Map for converting hex octets to strings
-	var _HEX = [];
-	for (var i = 0; i < 256; i++) {
-	  _HEX[i] = (i > 0xF ? '' : '0') + i.toString(16);
+	function THeaderTransportError(message) {
+	  Error.call(this);
+	  Error.captureStackTrace(this, this.constructor);
+	  this.name = this.constructor.name;
+	  this.message = message;
 	}
 
-	//
-	// Int64
-	//
+	util.inherits(THeaderTransportError, Error);
+
+	module.exports = THeaderTransport;
+
+	// from HeaderFormat.md
+	var COMPACT_PROTOCOL_OFFSET = 0;
+	var COMPACT_PROTOCOL_VERSION_OFFSET = 1;
+	var FRAME_SIZE_OFFSET = 0;
+	var HEADER_MAGIC_OFFSET = 32 / 8;
+	var FLAGS_OFFSET = 48 / 8;
+	var SEQID_OFFSET = 64 / 8;
+	var HEADER_SIZE_OFFSET = 96 / 8;
+	var HEADER_START_OFFSET = 112 / 8;
+
+	var HEADER_MAGIC = 0x0FFF;
+
+	var TINFO_HEADER_KEY_VALUE_TYPE = 0x01;
+	var MAX_FRAME_SIZE = 0x3FFFFFFF;
+
+	 // A helper class for reading/writing varints. Uses
+	 // TCompactProtocol under the hood
+	function VarintHelper(readBuffer) {
+	  var TBufferedTransport = __webpack_require__(10);
+	  this.outputBuffer = null;
+	  var _this = this;
+	  this.transport = new TBufferedTransport(null, function(output) {
+	    _this.outputBuffer = output;
+	  });
+
+	  this.transport.inBuf = readBuffer || Buffer.alloc(0);
+	  this.transport.writeCursor = this.transport.inBuf.length;
+	  this.protocol = new TCompactProtocol(this.transport);
+	};
+
+	VarintHelper.prototype.readVarint32 = function() {
+	  return this.protocol.readVarint32();
+	};
+
+	VarintHelper.prototype.writeVarint32 = function(i) {
+	  this.protocol.writeVarint32(i);
+	};
+
+	VarintHelper.prototype.readString = function() {
+	  return this.protocol.readString();
+	};
+
+	VarintHelper.prototype.writeString = function(str) {
+	  this.protocol.writeString(str);
+	}
+
+	VarintHelper.prototype.getOutCount = function() {
+	  return this.transport.outCount;
+	};
+
+	VarintHelper.prototype.write = function(str) {
+	  this.transport.write(str);
+	};
+
+	VarintHelper.prototype.toBuffer = function() {
+	  this.transport.flush();
+	  return this.outputBuffer;
+	};
+
+	// from lib/cpp/src/thrift/protocol/TProtocolTypes.h
+	THeaderTransport.SubprotocolId = {
+	  BINARY: 0,
+	  JSON: 1,
+	  COMPACT: 2,
+	};
 
 	/**
-	 * Constructor accepts any of the following argument types:
-	 *
-	 * new Int64(buffer[, offset=0]) - Existing Buffer with byte offset
-	 * new Int64(Uint8Array[, offset=0]) - Existing Uint8Array with a byte offset
-	 * new Int64(string)             - Hex string (throws if n is outside int64 range)
-	 * new Int64(number)             - Number (throws if n is outside int64 range)
-	 * new Int64(hi, lo)             - Raw bits as two 32-bit values
+	  An abstract transport used as a prototype for other transports
+	  to enable reading/writing theaders. This should NOT be used as a standalone transport
+	  The methods in this transport are called by THeaderProtocol, which will call readHeaders/writeHeaders
+	  in the read/writeMessageBegin methods and parse/write headers to/from a request
+	  prior to reading/writing.
+
+	  The reason this is not a standalone transport type is because different transport types
+	  have their own individual static receiver methods that are called prior to instantiation.
+	  There doesn't seem to be a way for THeaderTransport to know which receiver method to use
+	  without reworking the server API.
+
+	  For reading headers from a request, the parsed headers can be retrieved via
+	  getReadHeader. Similarly, you can set headers to be written on the client via
+	  setWriteHeader.
 	 */
-	var Int64 = module.exports = function(a1, a2) {
-	  if (a1 instanceof Buffer) {
-	    this.buffer = a1;
-	    this.offset = a2 || 0;
-	  } else if (Object.prototype.toString.call(a1) == '[object Uint8Array]') {
-	    // Under Browserify, Buffers can extend Uint8Arrays rather than an
-	    // instance of Buffer. We could assume the passed in Uint8Array is actually
-	    // a buffer but that won't handle the case where a raw Uint8Array is passed
-	    // in. We construct a new Buffer just in case.
-	    this.buffer = new Buffer(a1);
-	    this.offset = a2 || 0;
-	  } else {
-	    this.buffer = this.buffer || new Buffer(8);
-	    this.offset = 0;
-	    this.setValue.apply(this, arguments);
+	function THeaderTransport() {
+	  this.maxFrameSize = MAX_FRAME_SIZE;
+	  this.protocolId = THeaderTransport.SubprotocolId.BINARY;
+	  this.rheaders = {};
+	  this.wheaders = {};
+	  this.inBuf = Buffer.alloc(0);
+	  this.outCount = 0;
+	  this.flags = null;
+	  this.seqid = 0;
+	  this.shouldWriteHeaders = true;
+	};
+
+	var validateHeaders = function(key, value) {
+	  if (typeof key !== 'string' || typeof value !== 'string') {
+	    throw new THeaderTransportError('Header key and values must be strings');
 	  }
 	};
 
-
-	// Max integer value that JS can accurately represent
-	Int64.MAX_INT = Math.pow(2, 53);
-
-	// Min integer value that JS can accurately represent
-	Int64.MIN_INT = -Math.pow(2, 53);
-
-	Int64.prototype = {
-	  /**
-	   * Do in-place 2's compliment.  See
-	   * http://en.wikipedia.org/wiki/Two's_complement
-	   */
-	  _2scomp: function() {
-	    var b = this.buffer, o = this.offset, carry = 1;
-	    for (var i = o + 7; i >= o; i--) {
-	      var v = (b[i] ^ 0xff) + carry;
-	      b[i] = v & 0xff;
-	      carry = v >> 8;
-	    }
-	  },
-
-	  /**
-	   * Set the value. Takes any of the following arguments:
-	   *
-	   * setValue(string) - A hexidecimal string
-	   * setValue(number) - Number (throws if n is outside int64 range)
-	   * setValue(hi, lo) - Raw bits as two 32-bit values
-	   */
-	  setValue: function(hi, lo) {
-	    var negate = false;
-	    if (arguments.length == 1) {
-	      if (typeof(hi) == 'number') {
-	        // Simplify bitfield retrieval by using abs() value.  We restore sign
-	        // later
-	        negate = hi < 0;
-	        hi = Math.abs(hi);
-	        lo = hi % VAL32;
-	        hi = hi / VAL32;
-	        if (hi > VAL32) throw new RangeError(hi  + ' is outside Int64 range');
-	        hi = hi | 0;
-	      } else if (typeof(hi) == 'string') {
-	        hi = (hi + '').replace(/^0x/, '');
-	        lo = hi.substr(-8);
-	        hi = hi.length > 8 ? hi.substr(0, hi.length - 8) : '';
-	        hi = parseInt(hi, 16);
-	        lo = parseInt(lo, 16);
-	      } else {
-	        throw new Error(hi + ' must be a Number or String');
-	      }
-	    }
-
-	    // Technically we should throw if hi or lo is outside int32 range here, but
-	    // it's not worth the effort. Anything past the 32'nd bit is ignored.
-
-	    // Copy bytes to buffer
-	    var b = this.buffer, o = this.offset;
-	    for (var i = 7; i >= 0; i--) {
-	      b[o+i] = lo & 0xff;
-	      lo = i == 4 ? hi : lo >>> 8;
-	    }
-
-	    // Restore sign of passed argument
-	    if (negate) this._2scomp();
-	  },
-
-	  /**
-	   * Convert to a native JS number.
-	   *
-	   * WARNING: Do not expect this value to be accurate to integer precision for
-	   * large (positive or negative) numbers!
-	   *
-	   * @param allowImprecise If true, no check is performed to verify the
-	   * returned value is accurate to integer precision.  If false, imprecise
-	   * numbers (very large positive or negative numbers) will be forced to +/-
-	   * Infinity.
-	   */
-	  toNumber: function(allowImprecise) {
-	    var b = this.buffer, o = this.offset;
-
-	    // Running sum of octets, doing a 2's complement
-	    var negate = b[o] & 0x80, x = 0, carry = 1;
-	    for (var i = 7, m = 1; i >= 0; i--, m *= 256) {
-	      var v = b[o+i];
-
-	      // 2's complement for negative numbers
-	      if (negate) {
-	        v = (v ^ 0xff) + carry;
-	        carry = v >> 8;
-	        v = v & 0xff;
-	      }
-
-	      x += v * m;
-	    }
-
-	    // Return Infinity if we've lost integer precision
-	    if (!allowImprecise && x >= Int64.MAX_INT) {
-	      return negate ? -Infinity : Infinity;
-	    }
-
-	    return negate ? -x : x;
-	  },
-
-	  /**
-	   * Convert to a JS Number. Returns +/-Infinity for values that can't be
-	   * represented to integer precision.
-	   */
-	  valueOf: function() {
-	    return this.toNumber(false);
-	  },
-
-	  /**
-	   * Return string value
-	   *
-	   * @param radix Just like Number#toString()'s radix
-	   */
-	  toString: function(radix) {
-	    return this.valueOf().toString(radix || 10);
-	  },
-
-	  /**
-	   * Return a string showing the buffer octets, with MSB on the left.
-	   *
-	   * @param sep separator string. default is '' (empty string)
-	   */
-	  toOctetString: function(sep) {
-	    var out = new Array(8);
-	    var b = this.buffer, o = this.offset;
-	    for (var i = 0; i < 8; i++) {
-	      out[i] = _HEX[b[o+i]];
-	    }
-	    return out.join(sep || '');
-	  },
-
-	  /**
-	   * Returns the int64's 8 bytes in a buffer.
-	   *
-	   * @param {bool} [rawBuffer=false]  If no offset and this is true, return the internal buffer.  Should only be used if
-	   *                                  you're discarding the Int64 afterwards, as it breaks encapsulation.
-	   */
-	  toBuffer: function(rawBuffer) {
-	    if (rawBuffer && this.offset === 0) return this.buffer;
-
-	    var out = new Buffer(8);
-	    this.buffer.copy(out, 0, this.offset, this.offset + 8);
-	    return out;
-	  },
-
-	  /**
-	   * Copy 8 bytes of int64 into target buffer at target offset.
-	   *
-	   * @param {Buffer} targetBuffer       Buffer to copy into.
-	   * @param {number} [targetOffset=0]   Offset into target buffer.
-	   */
-	  copy: function(targetBuffer, targetOffset) {
-	    this.buffer.copy(targetBuffer, targetOffset || 0, this.offset, this.offset + 8);
-	  },
-
-	  /**
-	   * Pretty output in console.log
-	   */
-	  inspect: function() {
-	    return '[Int64 value:' + this + ' octets:' + this.toOctetString(' ') + ']';
+	var validateProtocolId = function(protocolId) {
+	  var protocols = Object.keys(THeaderTransport.SubprotocolId);
+	  for (var i = 0; i < protocols.length; i++) {
+	    if (protocolId === THeaderTransport.SubprotocolId[protocols[i]]) return true;
 	  }
+
+	  throw new Error(protocolId + ' is not a valid protocol id');
+	};
+
+	THeaderTransport.prototype.setSeqId = function(seqid) {
+	  this.seqid = seqid;
+	};
+
+	THeaderTransport.prototype.getSeqId = function(seqid) {
+	  return this.seqid;
+	};
+
+	THeaderTransport.prototype.setFlags = function(flags) {
+	  this.flags = flags;
+	};
+
+	THeaderTransport.prototype.getReadHeaders = function() {
+	  return this.rheaders;
+	};
+
+	THeaderTransport.prototype.setReadHeader = function(key, value) {
+	  validateHeaders(key, value);
+	  this.rheaders[key] = value;
+	};
+
+	THeaderTransport.prototype.clearReadHeaders = function() {
+	  this.rheaders = {};
+	};
+
+	THeaderTransport.prototype.getWriteHeaders = function() {
+	  return this.wheaders;
+	};
+
+	THeaderTransport.prototype.setWriteHeader = function(key, value) {
+	  validateHeaders(key, value);
+	  this.wheaders[key] = value;
+	};
+
+	THeaderTransport.prototype.clearWriteHeaders = function() {
+	  this.wheaders = {};
+	};
+
+	THeaderTransport.prototype.setMaxFrameSize = function(frameSize) {
+	  this.maxFrameSize = frameSize;
+	};
+
+	THeaderTransport.prototype.setProtocolId = function(protocolId) {
+	  validateProtocolId(protocolId);
+	  this.protocolId = protocolId;
+	};
+
+	THeaderTransport.prototype.getProtocolId = function() {
+	  return this.protocolId;
+	};
+
+	var isUnframedBinary = function(readBuffer) {
+	  var version = readBuffer.readInt32BE();
+	  return (version & TBinaryProtocol.VERSION_MASK) === TBinaryProtocol.VERSION_1;
+	}
+
+	var isUnframedCompact = function(readBuffer) {
+	  var protocolId = readBuffer.readInt8(COMPACT_PROTOCOL_OFFSET);
+	  var version = readBuffer.readInt8(COMPACT_PROTOCOL_VERSION_OFFSET);
+	  return protocolId === TCompactProtocol.PROTOCOL_ID &&
+	    (version & TCompactProtocol.VERSION_MASK) === TCompactProtocol.VERSION_N;
+	}
+
+	THeaderTransport.prototype.readHeaders = function() {
+	  var readBuffer = this.inBuf;
+
+	  var isUnframed = false;
+	  if (isUnframedBinary(readBuffer)) {
+	    this.setProtocolId(THeaderTransport.SubprotocolId.BINARY);
+	    isUnframed = true;
+	  }
+
+	  if (isUnframedCompact(readBuffer)) {
+	    this.setProtocolId(THeaderTransport.SubprotocolId.COMPACT);
+	    isUnframed = true;
+	  }
+
+	  if (isUnframed) {
+	    this.shouldWriteHeaders = false;
+	    return;
+	  }
+
+	  var frameSize = readBuffer.readInt32BE(FRAME_SIZE_OFFSET);
+	  if (frameSize > this.maxFrameSize) {
+	    throw new THeaderTransportError('Frame exceeds maximum frame size');
+	  }
+
+	  var headerMagic = readBuffer.readInt16BE(HEADER_MAGIC_OFFSET);
+	  this.shouldWriteHeaders = headerMagic === HEADER_MAGIC;
+	  if (!this.shouldWriteHeaders) {
+	    return;
+	  }
+
+	  this.setFlags(readBuffer.readInt16BE(FLAGS_OFFSET));
+	  this.setSeqId(readBuffer.readInt32BE(SEQID_OFFSET));
+	  var headerSize = readBuffer.readInt16BE(HEADER_SIZE_OFFSET) * 4;
+	  var endOfHeaders = HEADER_START_OFFSET + headerSize;
+	  if (endOfHeaders > readBuffer.length) {
+	    throw new THeaderTransportError('Header size is greater than frame size');
+	  }
+
+	  var headerBuffer = Buffer.alloc(headerSize);
+	  readBuffer.copy(headerBuffer, 0, HEADER_START_OFFSET, endOfHeaders);
+
+	  var varintHelper = new VarintHelper(headerBuffer);
+	  this.setProtocolId(varintHelper.readVarint32());
+	  var transformCount = varintHelper.readVarint32();
+	  if (transformCount > 0) {
+	    throw new THeaderTransportError('Transforms are not yet supported');
+	  }
+
+	  while (true) {
+	    try {
+	      var headerType = varintHelper.readVarint32();
+	      if (headerType !== TINFO_HEADER_KEY_VALUE_TYPE) {
+	        break;
+	      }
+
+	      var numberOfHeaders = varintHelper.readVarint32();
+	      for (var i = 0; i < numberOfHeaders; i++) {
+	        var key = varintHelper.readString();
+	        var value = varintHelper.readString();
+	        this.setReadHeader(key, value);
+	      }
+	    } catch (e) {
+	      if (e instanceof InputBufferUnderrunError) {
+	        break;
+	      }
+	      throw e;
+	    }
+	  }
+
+	  // moves the read cursor past the headers
+	  this.read(endOfHeaders);
+	  return this.getReadHeaders();
+	};
+
+	THeaderTransport.prototype.writeHeaders = function() {
+	  // only write headers on the server if the client contained headers
+	  if (!this.shouldWriteHeaders) {
+	    return;
+	  }
+	  var headers = this.getWriteHeaders();
+
+	  var varintWriter = new VarintHelper();
+	  varintWriter.writeVarint32(this.protocolId);
+	  varintWriter.writeVarint32(0); // transforms not supported
+
+	  // writing info header key values
+	  var headerKeys = Object.keys(headers);
+	  if (headerKeys.length > 0) {
+	    varintWriter.writeVarint32(TINFO_HEADER_KEY_VALUE_TYPE);
+	    varintWriter.writeVarint32(headerKeys.length);
+	    for (var i = 0; i < headerKeys.length; i++) {
+	      var key = headerKeys[i];
+	      var value = headers[key];
+
+	      varintWriter.writeString(key);
+	      varintWriter.writeString(value);
+	    }
+	  }
+	 var headerSizeWithoutPadding = varintWriter.getOutCount();
+	  var paddingNeeded = (4 - (headerSizeWithoutPadding % 4)) % 4;
+
+	  var headerSize = Buffer.alloc(2);
+	  headerSize.writeInt16BE(Math.floor((headerSizeWithoutPadding + paddingNeeded) / 4));
+
+	  var paddingBuffer = Buffer.alloc(paddingNeeded);
+	  paddingBuffer.fill(0x00);
+	  varintWriter.write(paddingBuffer);
+	  var headerContentBuffer = varintWriter.toBuffer();
+	  var frameSize = Buffer.alloc(4);
+	  frameSize.writeInt32BE(10 + this.outCount + headerContentBuffer.length);
+	  var headerMagic = Buffer.alloc(2);
+	  headerMagic.writeInt16BE(HEADER_MAGIC);
+
+	  // flags are not yet supported, so write a zero
+	  var flags = Buffer.alloc(2);
+	  flags.writeInt16BE(0);
+
+	  var seqid = Buffer.alloc(4);
+	  seqid.writeInt32BE(this.getSeqId());
+
+	  var headerBuffer = Buffer.concat([
+	    frameSize,
+	    headerMagic,
+	    flags,
+	    seqid,
+	    headerSize,
+	    headerContentBuffer,
+	  ]);
+
+	  this.outBuffers.unshift(headerBuffer);
+	  this.outCount += headerBuffer.length;
 	};
 
 
 /***/ }),
 /* 14 */
-/***/ (function(module, exports) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-
-	module.exports = createClient;
-
-	/**
-	 * Creates a new client object for the specified Thrift service.
-	 * @param {object} ServiceClient - The module containing the generated service client
-	 * @param {Connection} Connection - The connection to use.
-	 * @returns {object} The client object.
-	 */
-	function createClient(ServiceClient, connection) {
-	  // TODO validate required options and throw otherwise
-	  if (ServiceClient.Client) {
-	    ServiceClient = ServiceClient.Client;
-	  }
-	  // TODO detangle these initialization calls
-	  // creating "client" requires
-	  //   - new service client instance
-	  //
-	  // New service client instance requires
-	  //   - new transport instance
-	  //   - protocol class reference
-	  //
-	  // New transport instance requires
-	  //   - Buffer to use (or none)
-	  //   - Callback to call on flush
-
-	  // Wrap the write method
-	  var writeCb = function(buf, seqid) {
-	    connection.write(buf, seqid);
-	  };
-	  var transport = new connection.transport(undefined, writeCb);
-	  var client = new ServiceClient(transport, connection.protocol);
-	  transport.client = client;
-	  connection.client = client;
-	  return client;
-	};
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-	module.exports = require("child_process");
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-	var util = __webpack_require__(3);
-	var http = __webpack_require__(17);
-	var https = __webpack_require__(18);
-	var EventEmitter = __webpack_require__(5).EventEmitter;
-	var thrift = __webpack_require__(2);
-
-	var TBufferedTransport = __webpack_require__(8);
-	var TBinaryProtocol = __webpack_require__(11);
-	var InputBufferUnderrunError = __webpack_require__(10);
-
-	var createClient = __webpack_require__(14);
-
-	/**
-	 * @class
-	 * @name ConnectOptions
-	 * @property {string} transport - The Thrift layered transport to use (TBufferedTransport, etc).
-	 * @property {string} protocol - The Thrift serialization protocol to use (TBinaryProtocol, etc.).
-	 * @property {string} path - The URL path to POST to (e.g. "/", "/mySvc", "/thrift/quoteSvc", etc.).
-	 * @property {object} headers - A standard Node.js header hash, an object hash containing key/value
-	 *        pairs where the key is the header name string and the value is the header value string.
-	 * @property {boolean} https - True causes the connection to use https, otherwise http is used.
-	 * @property {object} nodeOptions - Options passed on to node.
-	 * @example
-	 *     //Use a connection that requires ssl/tls, closes the connection after each request,
-	 *     //  uses the buffered transport layer, uses the JSON protocol and directs RPC traffic
-	 *     //  to https://thrift.example.com:9090/hello
-	 *     var thrift = require('thrift');
-	 *     var options = {
-	 *        transport: thrift.TBufferedTransport,
-	 *        protocol: thrift.TJSONProtocol,
-	 *        path: "/hello",
-	 *        headers: {"Connection": "close"},
-	 *        https: true
-	 *     };
-	 *     var con = thrift.createHttpConnection("thrift.example.com", 9090, options);
-	 *     var client = thrift.createHttpClient(myService, connection);
-	 *     client.myServiceFunction();
-	 */
-
-	/**
-	 * Initializes a Thrift HttpConnection instance (use createHttpConnection() rather than
-	 *    instantiating directly).
-	 * @constructor
-	 * @param {string} host - The host name or IP to connect to.
-	 * @param {number} port - The TCP port to connect to.
-	 * @param {ConnectOptions} options - The configuration options to use.
-	 * @throws {error} Exceptions other than InputBufferUnderrunError are rethrown
-	 * @event {error} The "error" event is fired when a Node.js error event occurs during
-	 *     request or response processing, in which case the node error is passed on. An "error"
-	 *     event may also be fired when the connection can not map a response back to the
-	 *     appropriate client (an internal error), generating a TApplicationException.
-	 * @classdesc HttpConnection objects provide Thrift end point transport
-	 *     semantics implemented over the Node.js http.request() method.
-	 * @see {@link createHttpConnection}
-	 */
-	var HttpConnection = exports.HttpConnection = function(host, port, options) {
-	  //Initialize the emitter base object
-	  EventEmitter.call(this);
-
-	  //Set configuration
-	  var self = this;
-	  this.options = options || {};
-	  this.host = host;
-	  this.port = port;
-	  this.https = this.options.https || false;
-	  this.transport = this.options.transport || TBufferedTransport;
-	  this.protocol = this.options.protocol || TBinaryProtocol;
-
-	  //Prepare Node.js options
-	  this.nodeOptions = {
-	    host: this.host,
-	    port: this.port || 80,
-	    path: this.options.path || '/',
-	    method: 'POST',
-	    headers: this.options.headers || {},
-	    responseType: this.options.responseType || null
-	  };
-	  for (var attrname in this.options.nodeOptions) {
-	    this.nodeOptions[attrname] = this.options.nodeOptions[attrname];
-	  }
-	  /*jshint -W069 */
-	  if (! this.nodeOptions.headers['Connection']) {
-	    this.nodeOptions.headers['Connection'] = 'keep-alive';
-	  }
-	  /*jshint +W069 */
-
-	  //The sequence map is used to map seqIDs back to the
-	  //  calling client in multiplexed scenarios
-	  this.seqId2Service = {};
-
-	  function decodeCallback(transport_with_data) {
-	    var proto = new self.protocol(transport_with_data);
-	    try {
-	      while (true) {
-	        var header = proto.readMessageBegin();
-	        var dummy_seqid = header.rseqid * -1;
-	        var client = self.client;
-	        //The Multiplexed Protocol stores a hash of seqid to service names
-	        //  in seqId2Service. If the SeqId is found in the hash we need to
-	        //  lookup the appropriate client for this call.
-	        //  The client var is a single client object when not multiplexing,
-	        //  when using multiplexing it is a service name keyed hash of client
-	        //  objects.
-	        //NOTE: The 2 way interdependencies between protocols, transports,
-	        //  connections and clients in the Node.js implementation are irregular
-	        //  and make the implementation difficult to extend and maintain. We
-	        //  should bring this stuff inline with typical thrift I/O stack
-	        //  operation soon.
-	        //  --ra
-	        var service_name = self.seqId2Service[header.rseqid];
-	        if (service_name) {
-	          client = self.client[service_name];
-	          delete self.seqId2Service[header.rseqid];
-	        }
-	        /*jshint -W083 */
-	        client._reqs[dummy_seqid] = function(err, success){
-	          transport_with_data.commitPosition();
-	          var clientCallback = client._reqs[header.rseqid];
-	          delete client._reqs[header.rseqid];
-	          if (clientCallback) {
-	            process.nextTick(function() {
-	              clientCallback(err, success);
-	            });
-	          }
-	        };
-	        /*jshint +W083 */
-	        if(client['recv_' + header.fname]) {
-	          client['recv_' + header.fname](proto, header.mtype, dummy_seqid);
-	        } else {
-	          delete client._reqs[dummy_seqid];
-	          self.emit("error",
-	                    new thrift.TApplicationException(
-	                       thrift.TApplicationExceptionType.WRONG_METHOD_NAME,
-	                       "Received a response to an unknown RPC function"));
-	        }
-	      }
-	    }
-	    catch (e) {
-	      if (e instanceof InputBufferUnderrunError) {
-	        transport_with_data.rollbackPosition();
-	      } else {
-	        self.emit('error', e);
-	      }
-	    }
-	  }
-
-
-	  //Response handler
-	  //////////////////////////////////////////////////
-	  this.responseCallback = function(response) {
-	    var data = [];
-	    var dataLen = 0;
-
-	    response.on('error', function (e) {
-	      self.emit("error", e);
-	    });
-
-	    // When running directly under node, chunk will be a buffer,
-	    // however, when running in a Browser (e.g. Browserify), chunk
-	    // will be a string or an ArrayBuffer.
-	    response.on('data', function (chunk) {
-	      if ((typeof chunk == 'string') ||
-	          (Object.prototype.toString.call(chunk) == '[object Uint8Array]')) {
-	        // Wrap ArrayBuffer/string in a Buffer so data[i].copy will work
-	        data.push(new Buffer(chunk));
-	      } else {
-	        data.push(chunk);
-	      }
-	      dataLen += chunk.length;
-	    });
-
-	    response.on('end', function(){
-	      var buf = new Buffer(dataLen);
-	      for (var i=0, len=data.length, pos=0; i<len; i++) {
-	        data[i].copy(buf, pos);
-	        pos += data[i].length;
-	      }
-	      //Get the receiver function for the transport and
-	      //  call it with the buffer
-	      self.transport.receiver(decodeCallback)(buf);
-	    });
-	  };
-	};
-	util.inherits(HttpConnection, EventEmitter);
-
-	/**
-	 * Writes Thrift message data to the connection
-	 * @param {Buffer} data - A Node.js Buffer containing the data to write
-	 * @returns {void} No return value.
-	 * @event {error} the "error" event is raised upon request failure passing the
-	 *     Node.js error object to the listener.
-	 */
-	HttpConnection.prototype.write = function(data) {
-	  var self = this;
-	  self.nodeOptions.headers["Content-length"] = data.length;
-	  var req = (self.https) ?
-	      https.request(self.nodeOptions, self.responseCallback) :
-	      http.request(self.nodeOptions, self.responseCallback);
-	  req.on('error', function(err) {
-	    self.emit("error", err);
-	  });
-	  req.write(data);
-	  req.end();
-	};
-
-	/**
-	 * Creates a new HttpConnection object, used by Thrift clients to connect
-	 *    to Thrift HTTP based servers.
-	 * @param {string} host - The host name or IP to connect to.
-	 * @param {number} port - The TCP port to connect to.
-	 * @param {ConnectOptions} options - The configuration options to use.
-	 * @returns {HttpConnection} The connection object.
-	 * @see {@link ConnectOptions}
-	 */
-	exports.createHttpConnection = function(host, port, options) {
-	  return new HttpConnection(host, port, options);
-	};
-
-	exports.createHttpClient = createClient
-
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-	module.exports = require("http");
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-	module.exports = require("https");
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-	var util = __webpack_require__(3);
-	var WebSocket = __webpack_require__(20);
-	var EventEmitter = __webpack_require__(5).EventEmitter;
-	var thrift = __webpack_require__(2);
-	var ttransport = __webpack_require__(38);
-	var tprotocol = __webpack_require__(40);
-
-	var TBufferedTransport = __webpack_require__(8);
-	var TJSONProtocol = __webpack_require__(42);
-	var InputBufferUnderrunError = __webpack_require__(10);
-
-	var createClient = __webpack_require__(14);
-
-	exports.WSConnection = WSConnection;
-
-	/**
-	 * @class
-	 * @name WSConnectOptions
-	 * @property {string} transport - The Thrift layered transport to use (TBufferedTransport, etc).
-	 * @property {string} protocol - The Thrift serialization protocol to use (TJSONProtocol, etc.).
-	 * @property {string} path - The URL path to connect to (e.g. "/", "/mySvc", "/thrift/quoteSvc", etc.).
-	 * @property {object} headers - A standard Node.js header hash, an object hash containing key/value
-	 *        pairs where the key is the header name string and the value is the header value string.
-	 * @property {boolean} secure - True causes the connection to use wss, otherwise ws is used.
-	 * @property {object} wsOptions - Options passed on to WebSocket.
-	 * @example
-	 *     //Use a secured websocket connection
-	 *     //  uses the buffered transport layer, uses the JSON protocol and directs RPC traffic
-	 *     //  to wss://thrift.example.com:9090/hello
-	 *     var thrift = require('thrift');
-	 *     var options = {
-	 *        transport: thrift.TBufferedTransport,
-	 *        protocol: thrift.TJSONProtocol,
-	 *        path: "/hello",
-	 *        secure: true
-	 *     };
-	 *     var con = thrift.createWSConnection("thrift.example.com", 9090, options);
-	 *     con.open()
-	 *     var client = thrift.createWSClient(myService, connection);
-	 *     client.myServiceFunction();
-	 *     con.close()
-	 */
-
-	/**
-	 * Initializes a Thrift WSConnection instance (use createWSConnection() rather than
-	 *    instantiating directly).
-	 * @constructor
-	 * @param {string} host - The host name or IP to connect to.
-	 * @param {number} port - The TCP port to connect to.
-	 * @param {WSConnectOptions} options - The configuration options to use.
-	 * @throws {error} Exceptions other than ttransport.InputBufferUnderrunError are rethrown
-	 * @event {error} The "error" event is fired when a Node.js error event occurs during
-	 *     request or response processing, in which case the node error is passed on. An "error"
-	 *     event may also be fired when the connectison can not map a response back to the
-	 *     appropriate client (an internal error), generating a TApplicationException.
-	 * @classdesc WSConnection objects provide Thrift end point transport
-	 *     semantics implemented using Websockets.
-	 * @see {@link createWSConnection}
-	 */
-	function WSConnection(host, port, options) {
-	  //Initialize the emitter base object
-	  EventEmitter.call(this);
-
-	  //Set configuration
-	  var self = this;
-	  this.options = options || {};
-	  this.host = host;
-	  this.port = port;
-	  this.secure = this.options.secure || false;
-	  this.transport = this.options.transport || TBufferedTransport;
-	  this.protocol = this.options.protocol || TJSONProtocol;
-	  this.path = this.options.path;
-	  this.send_pending = [];
-
-	  //The sequence map is used to map seqIDs back to the
-	  //  calling client in multiplexed scenarios
-	  this.seqId2Service = {};
-
-	  //Prepare WebSocket options
-	  this.wsOptions = {
-	    host: this.host,
-	    port: this.port || 80,
-	    path: this.options.path || '/',
-	    headers: this.options.headers || {}
-	  };
-	  for (var attrname in this.options.wsOptions) {
-	    this.wsOptions[attrname] = this.options.wsOptions[attrname];
-	  }
-	};
-	util.inherits(WSConnection, EventEmitter);
-
-	WSConnection.prototype.__reset = function() {
-	  this.socket = null; //The web socket
-	  this.send_pending = []; //Buffers/Callback pairs waiting to be sent
-	};
-
-	WSConnection.prototype.__onOpen = function() {
-	  var self = this;
-	  this.emit("open");
-	  if (this.send_pending.length > 0) {
-	    //If the user made calls before the connection was fully
-	    //open, send them now
-	    this.send_pending.forEach(function(data) {
-	      self.socket.send(data);
-	    });
-	    this.send_pending = [];
-	  }
-	};
-
-	WSConnection.prototype.__onClose = function(evt) {
-	  this.emit("close");
-	  this.__reset();
-	};
-
-	WSConnection.prototype.__decodeCallback = function(transport_with_data) {
-	  var proto = new this.protocol(transport_with_data);
-	  try {
-	    while (true) {
-	      var header = proto.readMessageBegin();
-	      var dummy_seqid = header.rseqid * -1;
-	      var client = this.client;
-	      //The Multiplexed Protocol stores a hash of seqid to service names
-	      //  in seqId2Service. If the SeqId is found in the hash we need to
-	      //  lookup the appropriate client for this call.
-	      //  The client var is a single client object when not multiplexing,
-	      //  when using multiplexing it is a service name keyed hash of client
-	      //  objects.
-	      //NOTE: The 2 way interdependencies between protocols, transports,
-	      //  connections and clients in the Node.js implementation are irregular
-	      //  and make the implementation difficult to extend and maintain. We
-	      //  should bring this stuff inline with typical thrift I/O stack
-	      //  operation soon.
-	      //  --ra
-	      var service_name = this.seqId2Service[header.rseqid];
-	      if (service_name) {
-	        client = this.client[service_name];
-	        delete this.seqId2Service[header.rseqid];
-	      }
-	      /*jshint -W083 */
-	      client._reqs[dummy_seqid] = function(err, success) {
-	        transport_with_data.commitPosition();
-	        var clientCallback = client._reqs[header.rseqid];
-	        delete client._reqs[header.rseqid];
-	        if (clientCallback) {
-	          clientCallback(err, success);
-	        }
-	      };
-	      /*jshint +W083 */
-	      if (client['recv_' + header.fname]) {
-	        client['recv_' + header.fname](proto, header.mtype, dummy_seqid);
-	      } else {
-	        delete client._reqs[dummy_seqid];
-	        this.emit("error",
-	          new thrift.TApplicationException(
-	            thrift.TApplicationExceptionType.WRONG_METHOD_NAME,
-	            "Received a response to an unknown RPC function"));
-	      }
-	    }
-	  } catch (e) {
-	    if (e instanceof InputBufferUnderrunError) {
-	      transport_with_data.rollbackPosition();
-	    } else {
-	      throw e;
-	    }
-	  }
-	};
-
-	WSConnection.prototype.__onData = function(data) {
-	  if (Object.prototype.toString.call(data) == "[object ArrayBuffer]") {
-	    data = new Uint8Array(data);
-	  }
-	  var buf = new Buffer(data);
-	  this.transport.receiver(this.__decodeCallback.bind(this))(buf);
-
-	};
-
-	WSConnection.prototype.__onMessage = function(evt) {
-	  this.__onData(evt.data);
-	};
-
-	WSConnection.prototype.__onError = function(evt) {
-	  this.emit("error", evt);
-	  this.socket.close();
-	};
-
-	/**
-	 * Returns true if the transport is open
-	 * @readonly
-	 * @returns {boolean}
-	 */
-	WSConnection.prototype.isOpen = function() {
-	  return this.socket && this.socket.readyState == this.socket.OPEN;
-	};
-
-	/**
-	 * Opens the transport connection
-	 */
-	WSConnection.prototype.open = function() {
-	  //If OPEN/CONNECTING/CLOSING ignore additional opens
-	  if (this.socket && this.socket.readyState != this.socket.CLOSED) {
-	    return;
-	  }
-	  //If there is no socket or the socket is closed:
-	  this.socket = new WebSocket(this.uri(), "", this.wsOptions);
-	  this.socket.binaryType = 'arraybuffer';
-	  this.socket.onopen = this.__onOpen.bind(this);
-	  this.socket.onmessage = this.__onMessage.bind(this);
-	  this.socket.onerror = this.__onError.bind(this);
-	  this.socket.onclose = this.__onClose.bind(this);
-	};
-
-	/**
-	 * Closes the transport connection
-	 */
-	WSConnection.prototype.close = function() {
-	  this.socket.close();
-	};
-
-	/**
-	 * Return URI for the connection
-	 * @returns {string} URI
-	 */
-	WSConnection.prototype.uri = function() {
-	  var schema = this.secure ? 'wss' : 'ws';
-	  var port = '';
-	  var path = this.path || '/';
-	  var host = this.host;
-
-	  // avoid port if default for schema
-	  if (this.port && (('wss' == schema && this.port != 443) ||
-	    ('ws' == schema && this.port != 80))) {
-	    port = ':' + this.port;
-	  }
-
-	  return schema + '://' + host + port + path;
-	};
-
-	/**
-	 * Writes Thrift message data to the connection
-	 * @param {Buffer} data - A Node.js Buffer containing the data to write
-	 * @returns {void} No return value.
-	 * @event {error} the "error" event is raised upon request failure passing the
-	 *     Node.js error object to the listener.
-	 */
-	WSConnection.prototype.write = function(data) {
-	  if (this.isOpen()) {
-	    //Send data and register a callback to invoke the client callback
-	    this.socket.send(data);
-	  } else {
-	    //Queue the send to go out __onOpen
-	    this.send_pending.push(data);
-	  }
-	};
-
-	/**
-	 * Creates a new WSConnection object, used by Thrift clients to connect
-	 *    to Thrift HTTP based servers.
-	 * @param {string} host - The host name or IP to connect to.
-	 * @param {number} port - The TCP port to connect to.
-	 * @param {WSConnectOptions} options - The configuration options to use.
-	 * @returns {WSConnection} The connection object.
-	 * @see {@link WSConnectOptions}
-	 */
-	exports.createWSConnection = function(host, port, options) {
-	  return new WSConnection(host, port, options);
-	};
-
-	exports.createWSClient = createClient;
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	module.exports = __webpack_require__(21);
-	module.exports.Server = __webpack_require__(37);
-	module.exports.Sender = __webpack_require__(27);
-	module.exports.Receiver = __webpack_require__(31);
-
-	module.exports.createServer = function (options, connectionListener) {
-	  var server = new module.exports.Server(options);
-	  if (typeof connectionListener === 'function') {
-	    server.on('connection', connectionListener);
-	  }
-	  return server;
-	};
-
-	module.exports.connect = module.exports.createConnection = function (address, openListener) {
-	  var client = new module.exports(address);
-	  if (typeof openListener === 'function') {
-	    client.on('open', openListener);
-	  }
-	  return client;
-	};
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var util = __webpack_require__(3)
-	  , events = __webpack_require__(5)
-	  , http = __webpack_require__(17)
-	  , https = __webpack_require__(18)
-	  , crypto = __webpack_require__(22)
-	  , url = __webpack_require__(23)
-	  , stream = __webpack_require__(24)
-	  , Options = __webpack_require__(25)
-	  , Sender = __webpack_require__(27)
-	  , Receiver = __webpack_require__(31)
-	  , SenderHixie = __webpack_require__(35)
-	  , ReceiverHixie = __webpack_require__(36);
-
-	/**
-	 * Constants
-	 */
-
-	// Default protocol version
-
-	var protocolVersion = 13;
-
-	// Close timeout
-
-	var closeTimeout = 30000; // Allow 5 seconds to terminate the connection cleanly
-
-	/**
-	 * WebSocket implementation
-	 */
-
-	function WebSocket(address, protocols, options) {
-
-	  if (protocols && !Array.isArray(protocols) && 'object' == typeof protocols) {
-	    // accept the "options" Object as the 2nd argument
-	    options = protocols;
-	    protocols = null;
-	  }
-	  if ('string' == typeof protocols) {
-	    protocols = [ protocols ];
-	  }
-	  if (!Array.isArray(protocols)) {
-	    protocols = [];
-	  }
-	  // TODO: actually handle the `Sub-Protocols` part of the WebSocket client
-
-	  this._socket = null;
-	  this.bytesReceived = 0;
-	  this.readyState = null;
-	  this.supports = {};
-
-	  if (Array.isArray(address)) {
-	    initAsServerClient.apply(this, address.concat(options));
-	  } else {
-	    initAsClient.apply(this, [address, protocols, options]);
-	  }
-	}
-
-	/**
-	 * Inherits from EventEmitter.
-	 */
-
-	util.inherits(WebSocket, events.EventEmitter);
-
-	/**
-	 * Ready States
-	 */
-
-	["CONNECTING", "OPEN", "CLOSING", "CLOSED"].forEach(function (state, index) {
-	    WebSocket.prototype[state] = WebSocket[state] = index;
-	});
-
-	/**
-	 * Gracefully closes the connection, after sending a description message to the server
-	 *
-	 * @param {Object} data to be sent to the server
-	 * @api public
-	 */
-
-	WebSocket.prototype.close = function(code, data) {
-	  if (this.readyState == WebSocket.CLOSING || this.readyState == WebSocket.CLOSED) return;
-	  if (this.readyState == WebSocket.CONNECTING) {
-	    this.readyState = WebSocket.CLOSED;
-	    return;
-	  }
-	  try {
-	    this.readyState = WebSocket.CLOSING;
-	    this._closeCode = code;
-	    this._closeMessage = data;
-	    var mask = !this._isServer;
-	    this._sender.close(code, data, mask);
-	  }
-	  catch (e) {
-	    this.emit('error', e);
-	  }
-	  finally {
-	    this.terminate();
-	  }
-	}
-
-	/**
-	 * Pause the client stream
-	 *
-	 * @api public
-	 */
-
-	WebSocket.prototype.pause = function() {
-	  if (this.readyState != WebSocket.OPEN) throw new Error('not opened');
-	  return this._socket.pause();
-	}
-
-	/**
-	 * Sends a ping
-	 *
-	 * @param {Object} data to be sent to the server
-	 * @param {Object} Members - mask: boolean, binary: boolean
-	 * @param {boolean} dontFailWhenClosed indicates whether or not to throw if the connection isnt open
-	 * @api public
-	 */
-
-	WebSocket.prototype.ping = function(data, options, dontFailWhenClosed) {
-	  if (this.readyState != WebSocket.OPEN) {
-	    if (dontFailWhenClosed === true) return;
-	    throw new Error('not opened');
-	  }
-	  options = options || {};
-	  if (typeof options.mask == 'undefined') options.mask = !this._isServer;
-	  this._sender.ping(data, options);
-	}
-
-	/**
-	 * Sends a pong
-	 *
-	 * @param {Object} data to be sent to the server
-	 * @param {Object} Members - mask: boolean, binary: boolean
-	 * @param {boolean} dontFailWhenClosed indicates whether or not to throw if the connection isnt open
-	 * @api public
-	 */
-
-	WebSocket.prototype.pong = function(data, options, dontFailWhenClosed) {
-	  if (this.readyState != WebSocket.OPEN) {
-	    if (dontFailWhenClosed === true) return;
-	    throw new Error('not opened');
-	  }
-	  options = options || {};
-	  if (typeof options.mask == 'undefined') options.mask = !this._isServer;
-	  this._sender.pong(data, options);
-	}
-
-	/**
-	 * Resume the client stream
-	 *
-	 * @api public
-	 */
-
-	WebSocket.prototype.resume = function() {
-	  if (this.readyState != WebSocket.OPEN) throw new Error('not opened');
-	  return this._socket.resume();
-	}
-
-	/**
-	 * Sends a piece of data
-	 *
-	 * @param {Object} data to be sent to the server
-	 * @param {Object} Members - mask: boolean, binary: boolean
-	 * @param {function} Optional callback which is executed after the send completes
-	 * @api public
-	 */
-
-	WebSocket.prototype.send = function(data, options, cb) {
-	  if (typeof options == 'function') {
-	    cb = options;
-	    options = {};
-	  }
-	  if (this.readyState != WebSocket.OPEN) {
-	    if (typeof cb == 'function') cb(new Error('not opened'));
-	    else throw new Error('not opened');
-	    return;
-	  }
-	  if (!data) data = '';
-	  if (this._queue) {
-	    var self = this;
-	    this._queue.push(function() { self.send(data, options, cb); });
-	    return;
-	  }
-	  options = options || {};
-	  options.fin = true;
-	  if (typeof options.binary == 'undefined') {
-	    options.binary = (data instanceof ArrayBuffer || data instanceof Buffer ||
-	      data instanceof Uint8Array ||
-	      data instanceof Uint16Array ||
-	      data instanceof Uint32Array ||
-	      data instanceof Int8Array ||
-	      data instanceof Int16Array ||
-	      data instanceof Int32Array ||
-	      data instanceof Float32Array ||
-	      data instanceof Float64Array);
-	  }
-	  if (typeof options.mask == 'undefined') options.mask = !this._isServer;
-	  var readable = typeof stream.Readable == 'function' ? stream.Readable : stream.Stream;
-	  if (data instanceof readable) {
-	    startQueue(this);
-	    var self = this;
-	    sendStream(this, data, options, function(error) {
-	      process.nextTick(function() { executeQueueSends(self); });
-	      if (typeof cb == 'function') cb(error);
-	    });
-	  }
-	  else this._sender.send(data, options, cb);
-	}
-
-	/**
-	 * Streams data through calls to a user supplied function
-	 *
-	 * @param {Object} Members - mask: boolean, binary: boolean
-	 * @param {function} 'function (error, send)' which is executed on successive ticks of which send is 'function (data, final)'.
-	 * @api public
-	 */
-
-	WebSocket.prototype.stream = function(options, cb) {
-	  if (typeof options == 'function') {
-	    cb = options;
-	    options = {};
-	  }
-	  var self = this;
-	  if (typeof cb != 'function') throw new Error('callback must be provided');
-	  if (this.readyState != WebSocket.OPEN) {
-	    if (typeof cb == 'function') cb(new Error('not opened'));
-	    else throw new Error('not opened');
-	    return;
-	  }
-	  if (this._queue) {
-	    this._queue.push(function() { self.stream(options, cb); });
-	    return;
-	  }
-	  options = options || {};
-	  if (typeof options.mask == 'undefined') options.mask = !this._isServer;
-	  startQueue(this);
-	  var send = function(data, final) {
-	    try {
-	      if (self.readyState != WebSocket.OPEN) throw new Error('not opened');
-	      options.fin = final === true;
-	      self._sender.send(data, options);
-	      if (!final) process.nextTick(cb.bind(null, null, send));
-	      else executeQueueSends(self);
-	    }
-	    catch (e) {
-	      if (typeof cb == 'function') cb(e);
-	      else {
-	        delete self._queue;
-	        self.emit('error', e);
-	      }
-	    }
-	  }
-	  process.nextTick(cb.bind(null, null, send));
-	}
-
-	/**
-	 * Immediately shuts down the connection
-	 *
-	 * @api public
-	 */
-
-	WebSocket.prototype.terminate = function() {
-	  if (this.readyState == WebSocket.CLOSED) return;
-	  if (this._socket) {
-	    try {
-	      // End the connection
-	      this._socket.end();
-	    }
-	    catch (e) {
-	      // Socket error during end() call, so just destroy it right now
-	      cleanupWebsocketResources.call(this, true);
-	      return;
-	    }
-
-	    // Add a timeout to ensure that the connection is completely
-	    // cleaned up within 30 seconds, even if the clean close procedure
-	    // fails for whatever reason
-	    this._closeTimer = setTimeout(cleanupWebsocketResources.bind(this, true), closeTimeout);
-	  }
-	  else if (this.readyState == WebSocket.CONNECTING) {
-	    cleanupWebsocketResources.call(this, true);
-	  }
-	};
-
-	/**
-	 * Expose bufferedAmount
-	 *
-	 * @api public
-	 */
-
-	Object.defineProperty(WebSocket.prototype, 'bufferedAmount', {
-	  get: function get() {
-	    var amount = 0;
-	    if (this._socket) {
-	      amount = this._socket.bufferSize || 0;
-	    }
-	    return amount;
-	  }
-	});
-
-	/**
-	 * Emulates the W3C Browser based WebSocket interface using function members.
-	 *
-	 * @see http://dev.w3.org/html5/websockets/#the-websocket-interface
-	 * @api public
-	 */
-
-	['open', 'error', 'close', 'message'].forEach(function(method) {
-	  Object.defineProperty(WebSocket.prototype, 'on' + method, {
-	    /**
-	     * Returns the current listener
-	     *
-	     * @returns {Mixed} the set function or undefined
-	     * @api public
-	     */
-
-	    get: function get() {
-	      var listener = this.listeners(method)[0];
-	      return listener ? (listener._listener ? listener._listener : listener) : undefined;
-	    },
-
-	    /**
-	     * Start listening for events
-	     *
-	     * @param {Function} listener the listener
-	     * @returns {Mixed} the set function or undefined
-	     * @api public
-	     */
-
-	    set: function set(listener) {
-	      this.removeAllListeners(method);
-	      this.addEventListener(method, listener);
-	    }
-	  });
-	});
-
-	/**
-	 * Emulates the W3C Browser based WebSocket interface using addEventListener.
-	 *
-	 * @see https://developer.mozilla.org/en/DOM/element.addEventListener
-	 * @see http://dev.w3.org/html5/websockets/#the-websocket-interface
-	 * @api public
-	 */
-	WebSocket.prototype.addEventListener = function(method, listener) {
-	  var target = this;
-	  if (typeof listener === 'function') {
-	    if (method === 'message') {
-	      function onMessage (data, flags) {
-	        listener.call(this, new MessageEvent(data, flags.binary ? 'Binary' : 'Text', target));
-	      }
-	      // store a reference so we can return the original function from the addEventListener hook
-	      onMessage._listener = listener;
-	      this.on(method, onMessage);
-	    } else if (method === 'close') {
-	      function onClose (code, message) {
-	        listener.call(this, new CloseEvent(code, message, target));
-	      }
-	      // store a reference so we can return the original function from the addEventListener hook
-	      onClose._listener = listener;
-	      this.on(method, onClose);
-	    } else if (method === 'error') {
-	      function onError (event) {
-	        event.target = target;
-	        listener.call(this, event);
-	      }
-	      // store a reference so we can return the original function from the addEventListener hook
-	      onError._listener = listener;
-	      this.on(method, onError);
-	    } else if (method === 'open') {
-	      function onOpen () {
-	        listener.call(this, new OpenEvent(target));
-	      }
-	      // store a reference so we can return the original function from the addEventListener hook
-	      onOpen._listener = listener;
-	      this.on(method, onOpen);
-	    } else {
-	      this.on(method, listener);
-	    }
-	  }
-	}
-
-	module.exports = WebSocket;
-
-	/**
-	 * W3C MessageEvent
-	 *
-	 * @see http://www.w3.org/TR/html5/comms.html
-	 * @api private
-	 */
-
-	function MessageEvent(dataArg, typeArg, target) {
-	  this.data = dataArg;
-	  this.type = typeArg;
-	  this.target = target;
-	}
-
-	/**
-	 * W3C CloseEvent
-	 *
-	 * @see http://www.w3.org/TR/html5/comms.html
-	 * @api private
-	 */
-
-	function CloseEvent(code, reason, target) {
-	  this.wasClean = (typeof code == 'undefined' || code == 1000);
-	  this.code = code;
-	  this.reason = reason;
-	  this.target = target;
-	}
-
-	/**
-	 * W3C OpenEvent
-	 *
-	 * @see http://www.w3.org/TR/html5/comms.html
-	 * @api private
-	 */
-
-	function OpenEvent(target) {
-	  this.target = target;
-	}
-
-	/**
-	 * Entirely private apis,
-	 * which may or may not be bound to a sepcific WebSocket instance.
-	 */
-
-	function initAsServerClient(req, socket, upgradeHead, options) {
-	  options = new Options({
-	    protocolVersion: protocolVersion,
-	    protocol: null
-	  }).merge(options);
-
-	  // expose state properties
-	  this.protocol = options.value.protocol;
-	  this.protocolVersion = options.value.protocolVersion;
-	  this.supports.binary = (this.protocolVersion != 'hixie-76');
-	  this.upgradeReq = req;
-	  this.readyState = WebSocket.CONNECTING;
-	  this._isServer = true;
-
-	  // establish connection
-	  if (options.value.protocolVersion == 'hixie-76') establishConnection.call(this, ReceiverHixie, SenderHixie, socket, upgradeHead);
-	  else establishConnection.call(this, Receiver, Sender, socket, upgradeHead);
-	}
-
-	function initAsClient(address, protocols, options) {
-	  options = new Options({
-	    origin: null,
-	    protocolVersion: protocolVersion,
-	    host: null,
-	    headers: null,
-	    protocol: null,
-	    agent: null,
-
-	    // ssl-related options
-	    pfx: null,
-	    key: null,
-	    passphrase: null,
-	    cert: null,
-	    ca: null,
-	    ciphers: null,
-	    rejectUnauthorized: null
-	  }).merge(options);
-	  if (options.value.protocolVersion != 8 && options.value.protocolVersion != 13) {
-	    throw new Error('unsupported protocol version');
-	  }
-
-	  // verify url and establish http class
-	  var serverUrl = url.parse(address);
-	  var isUnixSocket = serverUrl.protocol === 'ws+unix:';
-	  if (!serverUrl.host && !isUnixSocket) throw new Error('invalid url');
-	  var isSecure = serverUrl.protocol === 'wss:' || serverUrl.protocol === 'https:';
-	  var httpObj = isSecure ? https : http;
-	  var port = serverUrl.port || (isSecure ? 443 : 80);
-	  var auth = serverUrl.auth;
-
-	  // expose state properties
-	  this._isServer = false;
-	  this.url = address;
-	  this.protocolVersion = options.value.protocolVersion;
-	  this.supports.binary = (this.protocolVersion != 'hixie-76');
-
-	  // begin handshake
-	  var key = new Buffer(options.value.protocolVersion + '-' + Date.now()).toString('base64');
-	  var shasum = crypto.createHash('sha1');
-	  shasum.update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11');
-	  var expectedServerKey = shasum.digest('base64');
-
-	  var agent = options.value.agent;
-
-	  var headerHost = serverUrl.hostname;
-	  // Append port number to Host and Origin header, only if specified in the url and non-default
-	  if(serverUrl.port) {
-	    if((isSecure && (port != 443)) || (!isSecure && (port != 80))){
-	      headerHost = headerHost + ':' + port;
-	    }
-	  }
-
-	  var requestOptions = {
-	    port: port,
-	    host: serverUrl.hostname,
-	    headers: {
-	      'Connection': 'Upgrade',
-	      'Upgrade': 'websocket',
-	      'Host': headerHost,
-	      'Origin': headerHost,
-	      'Sec-WebSocket-Version': options.value.protocolVersion,
-	      'Sec-WebSocket-Key': key
-	    }
-	  };
-
-	  // If we have basic auth.
-	  if (auth) {
-	    requestOptions.headers['Authorization'] = 'Basic ' + new Buffer(auth).toString('base64');
-	  }
-
-	  if (options.value.protocol) {
-	    requestOptions.headers['Sec-WebSocket-Protocol'] = options.value.protocol;
-	  }
-
-	  if (options.value.host) {
-	    requestOptions.headers['Host'] = options.value.host;
-	  }
-
-	  if (options.value.headers) {
-	    for (var header in options.value.headers) {
-	       if (options.value.headers.hasOwnProperty(header)) {
-	        requestOptions.headers[header] = options.value.headers[header];
-	       }
-	    }
-	  }
-
-	  if (options.isDefinedAndNonNull('pfx')
-	   || options.isDefinedAndNonNull('key')
-	   || options.isDefinedAndNonNull('passphrase')
-	   || options.isDefinedAndNonNull('cert')
-	   || options.isDefinedAndNonNull('ca')
-	   || options.isDefinedAndNonNull('ciphers')
-	   || options.isDefinedAndNonNull('rejectUnauthorized')) {
-
-	    if (options.isDefinedAndNonNull('pfx')) requestOptions.pfx = options.value.pfx;
-	    if (options.isDefinedAndNonNull('key')) requestOptions.key = options.value.key;
-	    if (options.isDefinedAndNonNull('passphrase')) requestOptions.passphrase = options.value.passphrase;
-	    if (options.isDefinedAndNonNull('cert')) requestOptions.cert = options.value.cert;
-	    if (options.isDefinedAndNonNull('ca')) requestOptions.ca = options.value.ca;
-	    if (options.isDefinedAndNonNull('ciphers')) requestOptions.ciphers = options.value.ciphers;
-	    if (options.isDefinedAndNonNull('rejectUnauthorized')) requestOptions.rejectUnauthorized = options.value.rejectUnauthorized;
-
-	    if (!agent) {
-	        // global agent ignores client side certificates
-	        agent = new httpObj.Agent(requestOptions);
-	    }
-	  }
-
-	  requestOptions.path = serverUrl.path || '/';
-
-	  if (agent) {
-	    requestOptions.agent = agent;
-	  }
-
-	  if (isUnixSocket) {
-	    requestOptions.socketPath = serverUrl.pathname;
-	  }
-	  if (options.value.origin) {
-	    if (options.value.protocolVersion < 13) requestOptions.headers['Sec-WebSocket-Origin'] = options.value.origin;
-	    else requestOptions.headers['Origin'] = options.value.origin;
-	  }
-
-	  var self = this;
-	  var req = httpObj.request(requestOptions);
-
-	  req.on('error', function(error) {
-	    self.emit('error', error);
-	    cleanupWebsocketResources.call(this, error);
-	  });
-
-	  req.once('response', function(res) {
-	    if (!self.emit('unexpected-response', req, res)) {
-	      var error = new Error('unexpected server response (' + res.statusCode + ')');
-	      req.abort();
-	      self.emit('error', error);
-	    }
-	    cleanupWebsocketResources.call(this, error);
-	  });
-
-	  req.once('upgrade', function(res, socket, upgradeHead) {
-	    if (self.readyState == WebSocket.CLOSED) {
-	      // client closed before server accepted connection
-	      self.emit('close');
-	      self.removeAllListeners();
-	      socket.end();
-	      return;
-	    }
-	    var serverKey = res.headers['sec-websocket-accept'];
-	    if (typeof serverKey == 'undefined' || serverKey !== expectedServerKey) {
-	      self.emit('error', 'invalid server key');
-	      self.removeAllListeners();
-	      socket.end();
-	      return;
-	    }
-
-	    var serverProt = res.headers['sec-websocket-protocol'];
-	    var protList = (options.value.protocol || "").split(/, */);
-	    var protError = null;
-	    if (!options.value.protocol && serverProt) {
-	        protError = 'server sent a subprotocol even though none requested';
-	    } else if (options.value.protocol && !serverProt) {
-	        protError = 'server sent no subprotocol even though requested';
-	    } else if (serverProt && protList.indexOf(serverProt) === -1) {
-	        protError = 'server responded with an invalid protocol';
-	    }
-	    if (protError) {
-	        self.emit('error', protError);
-	        self.removeAllListeners();
-	        socket.end();
-	        return;
-	    } else if (serverProt) {
-	        self.protocol = serverProt;
-	    }
-
-	    establishConnection.call(self, Receiver, Sender, socket, upgradeHead);
-
-	    // perform cleanup on http resources
-	    req.removeAllListeners();
-	    req = null;
-	    agent = null;
-	  });
-
-	  req.end();
-	  this.readyState = WebSocket.CONNECTING;
-	}
-
-	function establishConnection(ReceiverClass, SenderClass, socket, upgradeHead) {
-	  this._socket = socket;
-	  socket.setTimeout(0);
-	  socket.setNoDelay(true);
-	  var self = this;
-	  this._receiver = new ReceiverClass();
-
-	  // socket cleanup handlers
-	  socket.on('end', cleanupWebsocketResources.bind(this));
-	  socket.on('close', cleanupWebsocketResources.bind(this));
-	  socket.on('error', cleanupWebsocketResources.bind(this));
-
-	  // ensure that the upgradeHead is added to the receiver
-	  function firstHandler(data) {
-	    if (self.readyState != WebSocket.OPEN) return;
-	    if (upgradeHead && upgradeHead.length > 0) {
-	      self.bytesReceived += upgradeHead.length;
-	      var head = upgradeHead;
-	      upgradeHead = null;
-	      self._receiver.add(head);
-	    }
-	    dataHandler = realHandler;
-	    if (data) {
-	      self.bytesReceived += data.length;
-	      self._receiver.add(data);
-	    }
-	  }
-	  // subsequent packets are pushed straight to the receiver
-	  function realHandler(data) {
-	    if (data) self.bytesReceived += data.length;
-	    self._receiver.add(data);
-	  }
-	  var dataHandler = firstHandler;
-	  // if data was passed along with the http upgrade,
-	  // this will schedule a push of that on to the receiver.
-	  // this has to be done on next tick, since the caller
-	  // hasn't had a chance to set event handlers on this client
-	  // object yet.
-	  process.nextTick(firstHandler);
-
-	  // receiver event handlers
-	  self._receiver.ontext = function (data, flags) {
-	    flags = flags || {};
-	    self.emit('message', data, flags);
-	  };
-	  self._receiver.onbinary = function (data, flags) {
-	    flags = flags || {};
-	    flags.binary = true;
-	    self.emit('message', data, flags);
-	  };
-	  self._receiver.onping = function(data, flags) {
-	    flags = flags || {};
-	    self.pong(data, {mask: !self._isServer, binary: flags.binary === true}, true);
-	    self.emit('ping', data, flags);
-	  };
-	  self._receiver.onpong = function(data, flags) {
-	    self.emit('pong', data, flags);
-	  };
-	  self._receiver.onclose = function(code, data, flags) {
-	    flags = flags || {};
-	    self.close(code, data);
-	  };
-	  self._receiver.onerror = function(reason, errorCode) {
-	    // close the connection when the receiver reports a HyBi error code
-	    self.close(typeof errorCode != 'undefined' ? errorCode : 1002, '');
-	    self.emit('error', reason, errorCode);
-	  };
-
-	  // finalize the client
-	  this._sender = new SenderClass(socket);
-	  this._sender.on('error', function(error) {
-	    self.close(1002, '');
-	    self.emit('error', error);
-	  });
-	  this.readyState = WebSocket.OPEN;
-	  this.emit('open');
-
-	  socket.on('data', dataHandler);
-	}
-
-	function startQueue(instance) {
-	  instance._queue = instance._queue || [];
-	}
-
-	function executeQueueSends(instance) {
-	  var queue = instance._queue;
-	  if (typeof queue == 'undefined') return;
-	  delete instance._queue;
-	  for (var i = 0, l = queue.length; i < l; ++i) {
-	    queue[i]();
-	  }
-	}
-
-	function sendStream(instance, stream, options, cb) {
-	  stream.on('data', function(data) {
-	    if (instance.readyState != WebSocket.OPEN) {
-	      if (typeof cb == 'function') cb(new Error('not opened'));
-	      else {
-	        delete instance._queue;
-	        instance.emit('error', new Error('not opened'));
-	      }
-	      return;
-	    }
-	    options.fin = false;
-	    instance._sender.send(data, options);
-	  });
-	  stream.on('end', function() {
-	    if (instance.readyState != WebSocket.OPEN) {
-	      if (typeof cb == 'function') cb(new Error('not opened'));
-	      else {
-	        delete instance._queue;
-	        instance.emit('error', new Error('not opened'));
-	      }
-	      return;
-	    }
-	    options.fin = true;
-	    instance._sender.send(null, options);
-	    if (typeof cb == 'function') cb(null);
-	  });
-	}
-
-	function cleanupWebsocketResources(error) {
-	  if (this.readyState == WebSocket.CLOSED) return;
-	  var emitClose = this.readyState != WebSocket.CONNECTING;
-	  this.readyState = WebSocket.CLOSED;
-
-	  clearTimeout(this._closeTimer);
-	  this._closeTimer = null;
-	  if (emitClose) this.emit('close', this._closeCode || 1000, this._closeMessage || '');
-
-	  if (this._socket) {
-	    this._socket.removeAllListeners();
-	    // catch all socket error after removing all standard handlers
-	    var socket = this._socket;
-	    this._socket.on('error', function() {
-	      try { socket.destroy(); } catch (e) {}
-	    });
-	    try {
-	      if (!error) this._socket.end();
-	      else this._socket.destroy();
-	    }
-	    catch (e) { /* Ignore termination errors */ }
-	    this._socket = null;
-	  }
-	  if (this._sender) {
-	    this._sender.removeAllListeners();
-	    this._sender = null;
-	  }
-	  if (this._receiver) {
-	    this._receiver.cleanup();
-	    this._receiver = null;
-	  }
-	  this.removeAllListeners();
-	  this.on('error', function() {}); // catch all errors after this
-	  delete this._queue;
-	}
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports) {
-
-	module.exports = require("crypto");
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-	module.exports = require("url");
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports) {
-
-	module.exports = require("stream");
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var fs = __webpack_require__(26);
-
-	function Options(defaults) {
-	  var internalValues = {};
-	  var values = this.value = {};
-	  Object.keys(defaults).forEach(function(key) {
-	    internalValues[key] = defaults[key];
-	    Object.defineProperty(values, key, {
-	      get: function() { return internalValues[key]; },
-	      configurable: false,
-	      enumerable: true
-	    });
-	  });
-	  this.reset = function() {
-	    Object.keys(defaults).forEach(function(key) {
-	      internalValues[key] = defaults[key];
-	    });
-	    return this;
-	  };
-	  this.merge = function(options, required) {
-	    options = options || {};
-	    if (Object.prototype.toString.call(required) === '[object Array]') {
-	      var missing = [];
-	      for (var i = 0, l = required.length; i < l; ++i) {
-	        var key = required[i];
-	        if (!(key in options)) {
-	          missing.push(key);
-	        }
-	      }
-	      if (missing.length > 0) {
-	        if (missing.length > 1) {
-	          throw new Error('options ' +
-	            missing.slice(0, missing.length - 1).join(', ') + ' and ' +
-	            missing[missing.length - 1] + ' must be defined');
-	        }
-	        else throw new Error('option ' + missing[0] + ' must be defined');
-	      }
-	    }
-	    Object.keys(options).forEach(function(key) {
-	      if (key in internalValues) {
-	        internalValues[key] = options[key];
-	      }
-	    });
-	    return this;
-	  };
-	  this.copy = function(keys) {
-	    var obj = {};
-	    Object.keys(defaults).forEach(function(key) {
-	      if (keys.indexOf(key) !== -1) {
-	        obj[key] = values[key];
-	      }
-	    });
-	    return obj;
-	  };
-	  this.read = function(filename, cb) {
-	    if (typeof cb == 'function') {
-	      var self = this;
-	      fs.readFile(filename, function(error, data) {
-	        if (error) return cb(error);
-	        var conf = JSON.parse(data);
-	        self.merge(conf);
-	        cb();
-	      });
-	    }
-	    else {
-	      var conf = JSON.parse(fs.readFileSync(filename));
-	      this.merge(conf);
-	    }
-	    return this;
-	  };
-	  this.isDefined = function(key) {
-	    return typeof values[key] != 'undefined';
-	  };
-	  this.isDefinedAndNonNull = function(key) {
-	    return typeof values[key] != 'undefined' && values[key] !== null;
-	  };
-	  Object.freeze(values);
-	  Object.freeze(this);
-	}
-
-	module.exports = Options;
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-	module.exports = require("fs");
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var events = __webpack_require__(5)
-	  , util = __webpack_require__(3)
-	  , EventEmitter = events.EventEmitter
-	  , ErrorCodes = __webpack_require__(28)
-	  , bufferUtil = __webpack_require__(29).BufferUtil;
-
-	/**
-	 * HyBi Sender implementation
-	 */
-
-	function Sender(socket) {
-	  this._socket = socket;
-	  this.firstFragment = true;
-	}
-
-	/**
-	 * Inherits from EventEmitter.
-	 */
-
-	util.inherits(Sender, events.EventEmitter);
-
-	/**
-	 * Sends a close instruction to the remote party.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.close = function(code, data, mask) {
-	  if (typeof code !== 'undefined') {
-	    if (typeof code !== 'number' ||
-	      !ErrorCodes.isValidErrorCode(code)) throw new Error('first argument must be a valid error code number');
-	  }
-	  code = code || 1000;
-	  var dataBuffer = new Buffer(2 + (data ? Buffer.byteLength(data) : 0));
-	  writeUInt16BE.call(dataBuffer, code, 0);
-	  if (dataBuffer.length > 2) dataBuffer.write(data, 2);
-	  this.frameAndSend(0x8, dataBuffer, true, mask);
-	};
-
-	/**
-	 * Sends a ping message to the remote party.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.ping = function(data, options) {
-	  var mask = options && options.mask;
-	  this.frameAndSend(0x9, data || '', true, mask);
-	};
-
-	/**
-	 * Sends a pong message to the remote party.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.pong = function(data, options) {
-	  var mask = options && options.mask;
-	  this.frameAndSend(0xa, data || '', true, mask);
-	};
-
-	/**
-	 * Sends text or binary data to the remote party.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.send = function(data, options, cb) {
-	  var finalFragment = options && options.fin === false ? false : true;
-	  var mask = options && options.mask;
-	  var opcode = options && options.binary ? 2 : 1;
-	  if (this.firstFragment === false) opcode = 0;
-	  else this.firstFragment = false;
-	  if (finalFragment) this.firstFragment = true
-	  this.frameAndSend(opcode, data, finalFragment, mask, cb);
-	};
-
-	/**
-	 * Frames and sends a piece of data according to the HyBi WebSocket protocol.
-	 *
-	 * @api private
-	 */
-
-	Sender.prototype.frameAndSend = function(opcode, data, finalFragment, maskData, cb) {
-	  var canModifyData = false;
-
-	  if (!data) {
-	    try {
-	      this._socket.write(new Buffer([opcode | (finalFragment ? 0x80 : 0), 0 | (maskData ? 0x80 : 0)].concat(maskData ? [0, 0, 0, 0] : [])), 'binary', cb);
-	    }
-	    catch (e) {
-	      if (typeof cb == 'function') cb(e);
-	      else this.emit('error', e);
-	    }
-	    return;
-	  }
-
-	  if (!Buffer.isBuffer(data)) {
-	    canModifyData = true;
-	    if (data && (typeof data.byteLength !== 'undefined' || typeof data.buffer !== 'undefined')) {
-	      data = getArrayBuffer(data);
-	    } else {
-	      data = new Buffer(data);
-	    }
-	  }
-
-	  var dataLength = data.length
-	    , dataOffset = maskData ? 6 : 2
-	    , secondByte = dataLength;
-
-	  if (dataLength >= 65536) {
-	    dataOffset += 8;
-	    secondByte = 127;
-	  }
-	  else if (dataLength > 125) {
-	    dataOffset += 2;
-	    secondByte = 126;
-	  }
-
-	  var mergeBuffers = dataLength < 32768 || (maskData && !canModifyData);
-	  var totalLength = mergeBuffers ? dataLength + dataOffset : dataOffset;
-	  var outputBuffer = new Buffer(totalLength);
-	  outputBuffer[0] = finalFragment ? opcode | 0x80 : opcode;
-
-	  switch (secondByte) {
-	    case 126:
-	      writeUInt16BE.call(outputBuffer, dataLength, 2);
-	      break;
-	    case 127:
-	      writeUInt32BE.call(outputBuffer, 0, 2);
-	      writeUInt32BE.call(outputBuffer, dataLength, 6);
-	  }
-
-	  if (maskData) {
-	    outputBuffer[1] = secondByte | 0x80;
-	    var mask = this._randomMask || (this._randomMask = getRandomMask());
-	    outputBuffer[dataOffset - 4] = mask[0];
-	    outputBuffer[dataOffset - 3] = mask[1];
-	    outputBuffer[dataOffset - 2] = mask[2];
-	    outputBuffer[dataOffset - 1] = mask[3];
-	    if (mergeBuffers) {
-	      bufferUtil.mask(data, mask, outputBuffer, dataOffset, dataLength);
-	      try {
-	        this._socket.write(outputBuffer, 'binary', cb);
-	      }
-	      catch (e) {
-	        if (typeof cb == 'function') cb(e);
-	        else this.emit('error', e);
-	      }
-	    }
-	    else {
-	      bufferUtil.mask(data, mask, data, 0, dataLength);
-	      try {
-	        this._socket.write(outputBuffer, 'binary');
-	        this._socket.write(data, 'binary', cb);
-	      }
-	      catch (e) {
-	        if (typeof cb == 'function') cb(e);
-	        else this.emit('error', e);
-	      }
-	    }
-	  }
-	  else {
-	    outputBuffer[1] = secondByte;
-	    if (mergeBuffers) {
-	      data.copy(outputBuffer, dataOffset);
-	      try {
-	        this._socket.write(outputBuffer, 'binary', cb);
-	      }
-	      catch (e) {
-	        if (typeof cb == 'function') cb(e);
-	        else this.emit('error', e);
-	      }
-	    }
-	    else {
-	      try {
-	        this._socket.write(outputBuffer, 'binary');
-	        this._socket.write(data, 'binary', cb);
-	      }
-	      catch (e) {
-	        if (typeof cb == 'function') cb(e);
-	        else this.emit('error', e);
-	      }
-	    }
-	  }
-	};
-
-	module.exports = Sender;
-
-	function writeUInt16BE(value, offset) {
-	  this[offset] = (value & 0xff00)>>8;
-	  this[offset+1] = value & 0xff;
-	}
-
-	function writeUInt32BE(value, offset) {
-	  this[offset] = (value & 0xff000000)>>24;
-	  this[offset+1] = (value & 0xff0000)>>16;
-	  this[offset+2] = (value & 0xff00)>>8;
-	  this[offset+3] = value & 0xff;
-	}
-
-	function getArrayBuffer(data) {
-	  // data is either an ArrayBuffer or ArrayBufferView.
-	  var array = new Uint8Array(data.buffer || data)
-	    , l = data.byteLength || data.length
-	    , o = data.byteOffset || 0
-	    , buffer = new Buffer(l);
-	  for (var i = 0; i < l; ++i) {
-	    buffer[i] = array[o+i];
-	  }
-	  return buffer;
-	}
-
-	function getRandomMask() {
-	  return new Buffer([
-	    ~~(Math.random() * 255),
-	    ~~(Math.random() * 255),
-	    ~~(Math.random() * 255),
-	    ~~(Math.random() * 255)
-	  ]);
-	}
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	module.exports = {
-	  isValidErrorCode: function(code) {
-	    return (code >= 1000 && code <= 1011 && code != 1004 && code != 1005 && code != 1006) ||
-	         (code >= 3000 && code <= 4999);
-	  },
-	  1000: 'normal',
-	  1001: 'going away',
-	  1002: 'protocol error',
-	  1003: 'unsupported data',
-	  1004: 'reserved',
-	  1005: 'reserved for extensions',
-	  1006: 'reserved for extensions',
-	  1007: 'inconsistent or invalid data',
-	  1008: 'policy violation',
-	  1009: 'message too big',
-	  1010: 'extension handshake missing',
-	  1011: 'an unexpected condition prevented the request from being fulfilled',
-	};
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	try {
-	  module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../build/Release/bufferutil\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	} catch (e) { try {
-	  module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../build/default/bufferutil\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	} catch (e) { try {
-	  module.exports = __webpack_require__(30);
-	} catch (e) {
-	  console.error('bufferutil.node seems to not have been built. Run npm install.');
-	  throw e;
-	}}}
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	module.exports.BufferUtil = {
-	  merge: function(mergedBuffer, buffers) {
-	    var offset = 0;
-	    for (var i = 0, l = buffers.length; i < l; ++i) {
-	      var buf = buffers[i];
-	      buf.copy(mergedBuffer, offset);
-	      offset += buf.length;
-	    }
-	  },
-	  mask: function(source, mask, output, offset, length) {
-	    var maskNum = mask.readUInt32LE(0, true);
-	    var i = 0;
-	    for (; i < length - 3; i += 4) {
-	      var num = maskNum ^ source.readUInt32LE(i, true);
-	      if (num < 0) num = 4294967296 + num;
-	      output.writeUInt32LE(num, offset + i, true);
-	    }
-	    switch (length % 4) {
-	      case 3: output[offset + i + 2] = source[i + 2] ^ mask[2];
-	      case 2: output[offset + i + 1] = source[i + 1] ^ mask[1];
-	      case 1: output[offset + i] = source[i] ^ mask[0];
-	      case 0:;
-	    }
-	  },
-	  unmask: function(data, mask) {
-	    var maskNum = mask.readUInt32LE(0, true);
-	    var length = data.length;
-	    var i = 0;
-	    for (; i < length - 3; i += 4) {
-	      var num = maskNum ^ data.readUInt32LE(i, true);
-	      if (num < 0) num = 4294967296 + num;
-	      data.writeUInt32LE(num, i, true);
-	    }
-	    switch (length % 4) {
-	      case 3: data[i + 2] = data[i + 2] ^ mask[2];
-	      case 2: data[i + 1] = data[i + 1] ^ mask[1];
-	      case 1: data[i] = data[i] ^ mask[0];
-	      case 0:;
-	    }
-	  }
-	}
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var util = __webpack_require__(3)
-	  , Validation = __webpack_require__(32).Validation
-	  , ErrorCodes = __webpack_require__(28)
-	  , BufferPool = __webpack_require__(34)
-	  , bufferUtil = __webpack_require__(29).BufferUtil;
-
-	/**
-	 * HyBi Receiver implementation
-	 */
-
-	function Receiver () {
-	  // memory pool for fragmented messages
-	  var fragmentedPoolPrevUsed = -1;
-	  this.fragmentedBufferPool = new BufferPool(1024, function(db, length) {
-	    return db.used + length;
-	  }, function(db) {
-	    return fragmentedPoolPrevUsed = fragmentedPoolPrevUsed >= 0 ?
-	      (fragmentedPoolPrevUsed + db.used) / 2 :
-	      db.used;
-	  });
-
-	  // memory pool for unfragmented messages
-	  var unfragmentedPoolPrevUsed = -1;
-	  this.unfragmentedBufferPool = new BufferPool(1024, function(db, length) {
-	    return db.used + length;
-	  }, function(db) {
-	    return unfragmentedPoolPrevUsed = unfragmentedPoolPrevUsed >= 0 ?
-	      (unfragmentedPoolPrevUsed + db.used) / 2 :
-	      db.used;
-	  });
-
-	  this.state = {
-	    activeFragmentedOperation: null,
-	    lastFragment: false,
-	    masked: false,
-	    opcode: 0,
-	    fragmentedOperation: false
-	  };
-	  this.overflow = [];
-	  this.headerBuffer = new Buffer(10);
-	  this.expectOffset = 0;
-	  this.expectBuffer = null;
-	  this.expectHandler = null;
-	  this.currentMessage = [];
-	  this.expectHeader(2, this.processPacket);
-	  this.dead = false;
-
-	  this.onerror = function() {};
-	  this.ontext = function() {};
-	  this.onbinary = function() {};
-	  this.onclose = function() {};
-	  this.onping = function() {};
-	  this.onpong = function() {};
-	}
-
-	module.exports = Receiver;
-
-	/**
-	 * Add new data to the parser.
-	 *
-	 * @api public
-	 */
-
-	Receiver.prototype.add = function(data) {
-	  var dataLength = data.length;
-	  if (dataLength == 0) return;
-	  if (this.expectBuffer == null) {
-	    this.overflow.push(data);
-	    return;
-	  }
-	  var toRead = Math.min(dataLength, this.expectBuffer.length - this.expectOffset);
-	  fastCopy(toRead, data, this.expectBuffer, this.expectOffset);
-	  this.expectOffset += toRead;
-	  if (toRead < dataLength) {
-	    this.overflow.push(data.slice(toRead));
-	  }
-	  while (this.expectBuffer && this.expectOffset == this.expectBuffer.length) {
-	    var bufferForHandler = this.expectBuffer;
-	    this.expectBuffer = null;
-	    this.expectOffset = 0;
-	    this.expectHandler.call(this, bufferForHandler);
-	  }
-	};
-
-	/**
-	 * Releases all resources used by the receiver.
-	 *
-	 * @api public
-	 */
-
-	Receiver.prototype.cleanup = function() {
-	  this.dead = true;
-	  this.overflow = null;
-	  this.headerBuffer = null;
-	  this.expectBuffer = null;
-	  this.expectHandler = null;
-	  this.unfragmentedBufferPool = null;
-	  this.fragmentedBufferPool = null;
-	  this.state = null;
-	  this.currentMessage = null;
-	  this.onerror = null;
-	  this.ontext = null;
-	  this.onbinary = null;
-	  this.onclose = null;
-	  this.onping = null;
-	  this.onpong = null;
-	};
-
-	/**
-	 * Waits for a certain amount of header bytes to be available, then fires a callback.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.expectHeader = function(length, handler) {
-	  if (length == 0) {
-	    handler(null);
-	    return;
-	  }
-	  this.expectBuffer = this.headerBuffer.slice(this.expectOffset, this.expectOffset + length);
-	  this.expectHandler = handler;
-	  var toRead = length;
-	  while (toRead > 0 && this.overflow.length > 0) {
-	    var fromOverflow = this.overflow.pop();
-	    if (toRead < fromOverflow.length) this.overflow.push(fromOverflow.slice(toRead));
-	    var read = Math.min(fromOverflow.length, toRead);
-	    fastCopy(read, fromOverflow, this.expectBuffer, this.expectOffset);
-	    this.expectOffset += read;
-	    toRead -= read;
-	  }
-	};
-
-	/**
-	 * Waits for a certain amount of data bytes to be available, then fires a callback.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.expectData = function(length, handler) {
-	  if (length == 0) {
-	    handler(null);
-	    return;
-	  }
-	  this.expectBuffer = this.allocateFromPool(length, this.state.fragmentedOperation);
-	  this.expectHandler = handler;
-	  var toRead = length;
-	  while (toRead > 0 && this.overflow.length > 0) {
-	    var fromOverflow = this.overflow.pop();
-	    if (toRead < fromOverflow.length) this.overflow.push(fromOverflow.slice(toRead));
-	    var read = Math.min(fromOverflow.length, toRead);
-	    fastCopy(read, fromOverflow, this.expectBuffer, this.expectOffset);
-	    this.expectOffset += read;
-	    toRead -= read;
-	  }
-	};
-
-	/**
-	 * Allocates memory from the buffer pool.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.allocateFromPool = function(length, isFragmented) {
-	  return (isFragmented ? this.fragmentedBufferPool : this.unfragmentedBufferPool).get(length);
-	};
-
-	/**
-	 * Start processing a new packet.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.processPacket = function (data) {
-	  if ((data[0] & 0x70) != 0) {
-	    this.error('reserved fields must be empty', 1002);
-	    return;
-	  }
-	  this.state.lastFragment = (data[0] & 0x80) == 0x80;
-	  this.state.masked = (data[1] & 0x80) == 0x80;
-	  var opcode = data[0] & 0xf;
-	  if (opcode === 0) {
-	    // continuation frame
-	    this.state.fragmentedOperation = true;
-	    this.state.opcode = this.state.activeFragmentedOperation;
-	    if (!(this.state.opcode == 1 || this.state.opcode == 2)) {
-	      this.error('continuation frame cannot follow current opcode', 1002);
-	      return;
-	    }
-	  }
-	  else {
-	    if (opcode < 3 && this.state.activeFragmentedOperation != null) {
-	      this.error('data frames after the initial data frame must have opcode 0', 1002);
-	      return;
-	    }
-	    this.state.opcode = opcode;
-	    if (this.state.lastFragment === false) {
-	      this.state.fragmentedOperation = true;
-	      this.state.activeFragmentedOperation = opcode;
-	    }
-	    else this.state.fragmentedOperation = false;
-	  }
-	  var handler = opcodes[this.state.opcode];
-	  if (typeof handler == 'undefined') this.error('no handler for opcode ' + this.state.opcode, 1002);
-	  else {
-	    handler.start.call(this, data);
-	  }
-	};
-
-	/**
-	 * Endprocessing a packet.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.endPacket = function() {
-	  if (!this.state.fragmentedOperation) this.unfragmentedBufferPool.reset(true);
-	  else if (this.state.lastFragment) this.fragmentedBufferPool.reset(false);
-	  this.expectOffset = 0;
-	  this.expectBuffer = null;
-	  this.expectHandler = null;
-	  if (this.state.lastFragment && this.state.opcode === this.state.activeFragmentedOperation) {
-	    // end current fragmented operation
-	    this.state.activeFragmentedOperation = null;
-	  }
-	  this.state.lastFragment = false;
-	  this.state.opcode = this.state.activeFragmentedOperation != null ? this.state.activeFragmentedOperation : 0;
-	  this.state.masked = false;
-	  this.expectHeader(2, this.processPacket);
-	};
-
-	/**
-	 * Reset the parser state.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.reset = function() {
-	  if (this.dead) return;
-	  this.state = {
-	    activeFragmentedOperation: null,
-	    lastFragment: false,
-	    masked: false,
-	    opcode: 0,
-	    fragmentedOperation: false
-	  };
-	  this.fragmentedBufferPool.reset(true);
-	  this.unfragmentedBufferPool.reset(true);
-	  this.expectOffset = 0;
-	  this.expectBuffer = null;
-	  this.expectHandler = null;
-	  this.overflow = [];
-	  this.currentMessage = [];
-	};
-
-	/**
-	 * Unmask received data.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.unmask = function (mask, buf, binary) {
-	  if (mask != null && buf != null) bufferUtil.unmask(buf, mask);
-	  if (binary) return buf;
-	  return buf != null ? buf.toString('utf8') : '';
-	};
-
-	/**
-	 * Concatenates a list of buffers.
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.concatBuffers = function(buffers) {
-	  var length = 0;
-	  for (var i = 0, l = buffers.length; i < l; ++i) length += buffers[i].length;
-	  var mergedBuffer = new Buffer(length);
-	  bufferUtil.merge(mergedBuffer, buffers);
-	  return mergedBuffer;
-	};
-
-	/**
-	 * Handles an error
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.error = function (reason, protocolErrorCode) {
-	  this.reset();
-	  this.onerror(reason, protocolErrorCode);
-	  return this;
-	};
-
-	/**
-	 * Buffer utilities
-	 */
-
-	function readUInt16BE(start) {
-	  return (this[start]<<8) +
-	         this[start+1];
-	}
-
-	function readUInt32BE(start) {
-	  return (this[start]<<24) +
-	         (this[start+1]<<16) +
-	         (this[start+2]<<8) +
-	         this[start+3];
-	}
-
-	function fastCopy(length, srcBuffer, dstBuffer, dstOffset) {
-	  switch (length) {
-	    default: srcBuffer.copy(dstBuffer, dstOffset, 0, length); break;
-	    case 16: dstBuffer[dstOffset+15] = srcBuffer[15];
-	    case 15: dstBuffer[dstOffset+14] = srcBuffer[14];
-	    case 14: dstBuffer[dstOffset+13] = srcBuffer[13];
-	    case 13: dstBuffer[dstOffset+12] = srcBuffer[12];
-	    case 12: dstBuffer[dstOffset+11] = srcBuffer[11];
-	    case 11: dstBuffer[dstOffset+10] = srcBuffer[10];
-	    case 10: dstBuffer[dstOffset+9] = srcBuffer[9];
-	    case 9: dstBuffer[dstOffset+8] = srcBuffer[8];
-	    case 8: dstBuffer[dstOffset+7] = srcBuffer[7];
-	    case 7: dstBuffer[dstOffset+6] = srcBuffer[6];
-	    case 6: dstBuffer[dstOffset+5] = srcBuffer[5];
-	    case 5: dstBuffer[dstOffset+4] = srcBuffer[4];
-	    case 4: dstBuffer[dstOffset+3] = srcBuffer[3];
-	    case 3: dstBuffer[dstOffset+2] = srcBuffer[2];
-	    case 2: dstBuffer[dstOffset+1] = srcBuffer[1];
-	    case 1: dstBuffer[dstOffset] = srcBuffer[0];
-	  }
-	}
-
-	/**
-	 * Opcode handlers
-	 */
-
-	var opcodes = {
-	  // text
-	  '1': {
-	    start: function(data) {
-	      var self = this;
-	      // decode length
-	      var firstLength = data[1] & 0x7f;
-	      if (firstLength < 126) {
-	        opcodes['1'].getData.call(self, firstLength);
-	      }
-	      else if (firstLength == 126) {
-	        self.expectHeader(2, function(data) {
-	          opcodes['1'].getData.call(self, readUInt16BE.call(data, 0));
-	        });
-	      }
-	      else if (firstLength == 127) {
-	        self.expectHeader(8, function(data) {
-	          if (readUInt32BE.call(data, 0) != 0) {
-	            self.error('packets with length spanning more than 32 bit is currently not supported', 1008);
-	            return;
-	          }
-	          opcodes['1'].getData.call(self, readUInt32BE.call(data, 4));
-	        });
-	      }
-	    },
-	    getData: function(length) {
-	      var self = this;
-	      if (self.state.masked) {
-	        self.expectHeader(4, function(data) {
-	          var mask = data;
-	          self.expectData(length, function(data) {
-	            opcodes['1'].finish.call(self, mask, data);
-	          });
-	        });
-	      }
-	      else {
-	        self.expectData(length, function(data) {
-	          opcodes['1'].finish.call(self, null, data);
-	        });
-	      }
-	    },
-	    finish: function(mask, data) {
-	      var packet = this.unmask(mask, data, true);
-	      if (packet != null) this.currentMessage.push(packet);
-	      if (this.state.lastFragment) {
-	        var messageBuffer = this.concatBuffers(this.currentMessage);
-	        if (!Validation.isValidUTF8(messageBuffer)) {
-	          this.error('invalid utf8 sequence', 1007);
-	          return;
-	        }
-	        this.ontext(messageBuffer.toString('utf8'), {masked: this.state.masked, buffer: messageBuffer});
-	        this.currentMessage = [];
-	      }
-	      this.endPacket();
-	    }
-	  },
-	  // binary
-	  '2': {
-	    start: function(data) {
-	      var self = this;
-	      // decode length
-	      var firstLength = data[1] & 0x7f;
-	      if (firstLength < 126) {
-	        opcodes['2'].getData.call(self, firstLength);
-	      }
-	      else if (firstLength == 126) {
-	        self.expectHeader(2, function(data) {
-	          opcodes['2'].getData.call(self, readUInt16BE.call(data, 0));
-	        });
-	      }
-	      else if (firstLength == 127) {
-	        self.expectHeader(8, function(data) {
-	          if (readUInt32BE.call(data, 0) != 0) {
-	            self.error('packets with length spanning more than 32 bit is currently not supported', 1008);
-	            return;
-	          }
-	          opcodes['2'].getData.call(self, readUInt32BE.call(data, 4, true));
-	        });
-	      }
-	    },
-	    getData: function(length) {
-	      var self = this;
-	      if (self.state.masked) {
-	        self.expectHeader(4, function(data) {
-	          var mask = data;
-	          self.expectData(length, function(data) {
-	            opcodes['2'].finish.call(self, mask, data);
-	          });
-	        });
-	      }
-	      else {
-	        self.expectData(length, function(data) {
-	          opcodes['2'].finish.call(self, null, data);
-	        });
-	      }
-	    },
-	    finish: function(mask, data) {
-	      var packet = this.unmask(mask, data, true);
-	      if (packet != null) this.currentMessage.push(packet);
-	      if (this.state.lastFragment) {
-	        var messageBuffer = this.concatBuffers(this.currentMessage);
-	        this.onbinary(messageBuffer, {masked: this.state.masked, buffer: messageBuffer});
-	        this.currentMessage = [];
-	      }
-	      this.endPacket();
-	    }
-	  },
-	  // close
-	  '8': {
-	    start: function(data) {
-	      var self = this;
-	      if (self.state.lastFragment == false) {
-	        self.error('fragmented close is not supported', 1002);
-	        return;
-	      }
-
-	      // decode length
-	      var firstLength = data[1] & 0x7f;
-	      if (firstLength < 126) {
-	        opcodes['8'].getData.call(self, firstLength);
-	      }
-	      else {
-	        self.error('control frames cannot have more than 125 bytes of data', 1002);
-	      }
-	    },
-	    getData: function(length) {
-	      var self = this;
-	      if (self.state.masked) {
-	        self.expectHeader(4, function(data) {
-	          var mask = data;
-	          self.expectData(length, function(data) {
-	            opcodes['8'].finish.call(self, mask, data);
-	          });
-	        });
-	      }
-	      else {
-	        self.expectData(length, function(data) {
-	          opcodes['8'].finish.call(self, null, data);
-	        });
-	      }
-	    },
-	    finish: function(mask, data) {
-	      var self = this;
-	      data = self.unmask(mask, data, true);
-	      if (data && data.length == 1) {
-	        self.error('close packets with data must be at least two bytes long', 1002);
-	        return;
-	      }
-	      var code = data && data.length > 1 ? readUInt16BE.call(data, 0) : 1000;
-	      if (!ErrorCodes.isValidErrorCode(code)) {
-	        self.error('invalid error code', 1002);
-	        return;
-	      }
-	      var message = '';
-	      if (data && data.length > 2) {
-	        var messageBuffer = data.slice(2);
-	        if (!Validation.isValidUTF8(messageBuffer)) {
-	          self.error('invalid utf8 sequence', 1007);
-	          return;
-	        }
-	        message = messageBuffer.toString('utf8');
-	      }
-	      this.onclose(code, message, {masked: self.state.masked});
-	      this.reset();
-	    },
-	  },
-	  // ping
-	  '9': {
-	    start: function(data) {
-	      var self = this;
-	      if (self.state.lastFragment == false) {
-	        self.error('fragmented ping is not supported', 1002);
-	        return;
-	      }
-
-	      // decode length
-	      var firstLength = data[1] & 0x7f;
-	      if (firstLength < 126) {
-	        opcodes['9'].getData.call(self, firstLength);
-	      }
-	      else {
-	        self.error('control frames cannot have more than 125 bytes of data', 1002);
-	      }
-	    },
-	    getData: function(length) {
-	      var self = this;
-	      if (self.state.masked) {
-	        self.expectHeader(4, function(data) {
-	          var mask = data;
-	          self.expectData(length, function(data) {
-	            opcodes['9'].finish.call(self, mask, data);
-	          });
-	        });
-	      }
-	      else {
-	        self.expectData(length, function(data) {
-	          opcodes['9'].finish.call(self, null, data);
-	        });
-	      }
-	    },
-	    finish: function(mask, data) {
-	      this.onping(this.unmask(mask, data, true), {masked: this.state.masked, binary: true});
-	      this.endPacket();
-	    }
-	  },
-	  // pong
-	  '10': {
-	    start: function(data) {
-	      var self = this;
-	      if (self.state.lastFragment == false) {
-	        self.error('fragmented pong is not supported', 1002);
-	        return;
-	      }
-
-	      // decode length
-	      var firstLength = data[1] & 0x7f;
-	      if (firstLength < 126) {
-	        opcodes['10'].getData.call(self, firstLength);
-	      }
-	      else {
-	        self.error('control frames cannot have more than 125 bytes of data', 1002);
-	      }
-	    },
-	    getData: function(length) {
-	      var self = this;
-	      if (this.state.masked) {
-	        this.expectHeader(4, function(data) {
-	          var mask = data;
-	          self.expectData(length, function(data) {
-	            opcodes['10'].finish.call(self, mask, data);
-	          });
-	        });
-	      }
-	      else {
-	        this.expectData(length, function(data) {
-	          opcodes['10'].finish.call(self, null, data);
-	        });
-	      }
-	    },
-	    finish: function(mask, data) {
-	      this.onpong(this.unmask(mask, data, true), {masked: this.state.masked, binary: true});
-	      this.endPacket();
-	    }
-	  }
-	}
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	try {
-	  module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../build/Release/validation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	} catch (e) { try {
-	  module.exports = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../build/default/validation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	} catch (e) { try {
-	  module.exports = __webpack_require__(33);
-	} catch (e) {
-	  console.error('validation.node seems to not have been built. Run npm install.');
-	  throw e;
-	}}}
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-	 
-	module.exports.Validation = {
-	  isValidUTF8: function(buffer) {
-	    return true;
-	  }
-	};
-
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var util = __webpack_require__(3);
-
-	function BufferPool(initialSize, growStrategy, shrinkStrategy) {
-	  if (typeof initialSize === 'function') {
-	    shrinkStrategy = growStrategy;
-	    growStrategy = initialSize;
-	    initialSize = 0;
-	  }
-	  else if (typeof initialSize === 'undefined') {
-	    initialSize = 0;
-	  }
-	  this._growStrategy = (growStrategy || function(db, size) {
-	    return db.used + size;
-	  }).bind(null, this);
-	  this._shrinkStrategy = (shrinkStrategy || function(db) {
-	    return initialSize;
-	  }).bind(null, this);
-	  this._buffer = initialSize ? new Buffer(initialSize) : null;
-	  this._offset = 0;
-	  this._used = 0;
-	  this._changeFactor = 0;
-	  this.__defineGetter__('size', function(){
-	    return this._buffer == null ? 0 : this._buffer.length;
-	  });
-	  this.__defineGetter__('used', function(){
-	    return this._used;
-	  });
-	}
-
-	BufferPool.prototype.get = function(length) {
-	  if (this._buffer == null || this._offset + length > this._buffer.length) {
-	    var newBuf = new Buffer(this._growStrategy(length));
-	    this._buffer = newBuf;
-	    this._offset = 0;
-	  }
-	  this._used += length;
-	  var buf = this._buffer.slice(this._offset, this._offset + length);
-	  this._offset += length;
-	  return buf;
-	}
-
-	BufferPool.prototype.reset = function(forceNewBuffer) {
-	  var len = this._shrinkStrategy();
-	  if (len < this.size) this._changeFactor -= 1;
-	  if (forceNewBuffer || this._changeFactor < -2) {
-	    this._changeFactor = 0;
-	    this._buffer = len ? new Buffer(len) : null;
-	  }
-	  this._offset = 0;
-	  this._used = 0;
-	}
-
-	module.exports = BufferPool;
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var events = __webpack_require__(5)
-	  , util = __webpack_require__(3)
-	  , EventEmitter = events.EventEmitter;
-
-	/**
-	 * Hixie Sender implementation
-	 */
-
-	function Sender(socket) {
-	  this.socket = socket;
-	  this.continuationFrame = false;
-	  this.isClosed = false;
-	}
-
-	module.exports = Sender;
-
-	/**
-	 * Inherits from EventEmitter.
-	 */
-
-	util.inherits(Sender, events.EventEmitter);
-
-	/**
-	 * Frames and writes data.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.send = function(data, options, cb) {
-	  if (this.isClosed) return;
-
-	  var isString = typeof data == 'string'
-	    , length = isString ? Buffer.byteLength(data) : data.length
-	    , lengthbytes = (length > 127) ? 2 : 1 // assume less than 2**14 bytes
-	    , writeStartMarker = this.continuationFrame == false
-	    , writeEndMarker = !options || !(typeof options.fin != 'undefined' && !options.fin)
-	    , buffer = new Buffer((writeStartMarker ? ((options && options.binary) ? (1 + lengthbytes) : 1) : 0) + length + ((writeEndMarker && !(options && options.binary)) ? 1 : 0))
-	    , offset = writeStartMarker ? 1 : 0;
-
-	  if (writeStartMarker) {
-	    if (options && options.binary) {
-	      buffer.write('\x80', 'binary');
-	      // assume length less than 2**14 bytes
-	      if (lengthbytes > 1)
-	        buffer.write(String.fromCharCode(128+length/128), offset++, 'binary');
-	      buffer.write(String.fromCharCode(length&0x7f), offset++, 'binary');
-	    } else
-	      buffer.write('\x00', 'binary');
-	  }
-
-	  if (isString) buffer.write(data, offset, 'utf8');
-	  else data.copy(buffer, offset, 0);
-
-	  if (writeEndMarker) {
-	    if (options && options.binary) {
-	      // sending binary, not writing end marker
-	    } else
-	      buffer.write('\xff', offset + length, 'binary');
-	    this.continuationFrame = false;
-	  }
-	  else this.continuationFrame = true;
-
-	  try {
-	    this.socket.write(buffer, 'binary', cb);
-	  } catch (e) {
-	    this.error(e.toString());
-	  }
-	};
-
-	/**
-	 * Sends a close instruction to the remote party.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.close = function(code, data, mask, cb) {
-	  if (this.isClosed) return;
-	  this.isClosed = true;
-	  try {
-	    if (this.continuationFrame) this.socket.write(new Buffer([0xff], 'binary'));
-	    this.socket.write(new Buffer([0xff, 0x00]), 'binary', cb);
-	  } catch (e) {
-	    this.error(e.toString());
-	  }
-	};
-
-	/**
-	 * Sends a ping message to the remote party. Not available for hixie.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.ping = function(data, options) {};
-
-	/**
-	 * Sends a pong message to the remote party. Not available for hixie.
-	 *
-	 * @api public
-	 */
-
-	Sender.prototype.pong = function(data, options) {};
-
-	/**
-	 * Handles an error
-	 *
-	 * @api private
-	 */
-
-	Sender.prototype.error = function (reason) {
-	  this.emit('error', reason);
-	  return this;
-	};
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var util = __webpack_require__(3);
-
-	/**
-	 * State constants
-	 */
-
-	var EMPTY = 0
-	  , BODY = 1;
-	var BINARYLENGTH = 2
-	  , BINARYBODY = 3;
-
-	/**
-	 * Hixie Receiver implementation
-	 */
-
-	function Receiver () {
-	  this.state = EMPTY;
-	  this.buffers = [];
-	  this.messageEnd = -1;
-	  this.spanLength = 0;
-	  this.dead = false;
-
-	  this.onerror = function() {};
-	  this.ontext = function() {};
-	  this.onbinary = function() {};
-	  this.onclose = function() {};
-	  this.onping = function() {};
-	  this.onpong = function() {};
-	}
-
-	module.exports = Receiver;
-
-	/**
-	 * Add new data to the parser.
-	 *
-	 * @api public
-	 */
-
-	Receiver.prototype.add = function(data) {
-	  var self = this;
-	  function doAdd() {
-	    if (self.state === EMPTY) {
-	      if (data.length == 2 && data[0] == 0xFF && data[1] == 0x00) {
-	        self.reset();
-	        self.onclose();
-	        return;
-	      }
-	      if (data[0] === 0x80) {
-	        self.messageEnd = 0;
-	        self.state = BINARYLENGTH;
-	        data = data.slice(1);
-	      } else {
-
-	      if (data[0] !== 0x00) {
-	        self.error('payload must start with 0x00 byte', true);
-	        return;
-	      }
-	      data = data.slice(1);
-	      self.state = BODY;
-
-	      }
-	    }
-	    if (self.state === BINARYLENGTH) {
-	      var i = 0;
-	      while ((i < data.length) && (data[i] & 0x80)) {
-	        self.messageEnd = 128 * self.messageEnd + (data[i] & 0x7f);
-	        ++i;
-	      }
-	      if (i < data.length) {
-	        self.messageEnd = 128 * self.messageEnd + (data[i] & 0x7f);
-	        self.state = BINARYBODY;
-	        ++i;
-	      }
-	      if (i > 0)
-	        data = data.slice(i);
-	    }
-	    if (self.state === BINARYBODY) {
-	      var dataleft = self.messageEnd - self.spanLength;
-	      if (data.length >= dataleft) {
-	        // consume the whole buffer to finish the frame
-	        self.buffers.push(data);
-	        self.spanLength += dataleft;
-	        self.messageEnd = dataleft;
-	        return self.parse();
-	      }
-	      // frame's not done even if we consume it all
-	      self.buffers.push(data);
-	      self.spanLength += data.length;
-	      return;
-	    }
-	    self.buffers.push(data);
-	    if ((self.messageEnd = bufferIndex(data, 0xFF)) != -1) {
-	      self.spanLength += self.messageEnd;
-	      return self.parse();
-	    }
-	    else self.spanLength += data.length;
-	  }
-	  while(data) data = doAdd();
-	};
-
-	/**
-	 * Releases all resources used by the receiver.
-	 *
-	 * @api public
-	 */
-
-	Receiver.prototype.cleanup = function() {
-	  this.dead = true;
-	  this.state = EMPTY;
-	  this.buffers = [];
-	};
-
-	/**
-	 * Process buffered data.
-	 *
-	 * @api public
-	 */
-
-	Receiver.prototype.parse = function() {
-	  var output = new Buffer(this.spanLength);
-	  var outputIndex = 0;
-	  for (var bi = 0, bl = this.buffers.length; bi < bl - 1; ++bi) {
-	    var buffer = this.buffers[bi];
-	    buffer.copy(output, outputIndex);
-	    outputIndex += buffer.length;
-	  }
-	  var lastBuffer = this.buffers[this.buffers.length - 1];
-	  if (this.messageEnd > 0) lastBuffer.copy(output, outputIndex, 0, this.messageEnd);
-	  if (this.state !== BODY) --this.messageEnd;
-	  var tail = null;
-	  if (this.messageEnd < lastBuffer.length - 1) {
-	    tail = lastBuffer.slice(this.messageEnd + 1);
-	  }
-	  this.reset();
-	  this.ontext(output.toString('utf8'));
-	  return tail;
-	};
-
-	/**
-	 * Handles an error
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.error = function (reason, terminate) {
-	  this.reset();
-	  this.onerror(reason, terminate);
-	  return this;
-	};
-
-	/**
-	 * Reset parser state
-	 *
-	 * @api private
-	 */
-
-	Receiver.prototype.reset = function (reason) {
-	  if (this.dead) return;
-	  this.state = EMPTY;
-	  this.buffers = [];
-	  this.messageEnd = -1;
-	  this.spanLength = 0;
-	};
-
-	/**
-	 * Internal api
-	 */
-
-	function bufferIndex(buffer, byte) {
-	  for (var i = 0, l = buffer.length; i < l; ++i) {
-	    if (buffer[i] === byte) return i;
-	  }
-	  return -1;
-	}
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*!
-	 * ws: a node.js websocket client
-	 * Copyright(c) 2011 Einar Otto Stangvik <einaros@gmail.com>
-	 * MIT Licensed
-	 */
-
-	var util = __webpack_require__(3)
-	  , events = __webpack_require__(5)
-	  , http = __webpack_require__(17)
-	  , crypto = __webpack_require__(22)
-	  , Options = __webpack_require__(25)
-	  , WebSocket = __webpack_require__(21)
-	  , tls = __webpack_require__(7)
-	  , url = __webpack_require__(23);
-
-	/**
-	 * WebSocket Server implementation
-	 */
-
-	function WebSocketServer(options, callback) {
-	  options = new Options({
-	    host: '0.0.0.0',
-	    port: null,
-	    server: null,
-	    verifyClient: null,
-	    handleProtocols: null,
-	    path: null,
-	    noServer: false,
-	    disableHixie: false,
-	    clientTracking: true
-	  }).merge(options);
-
-	  if (!options.isDefinedAndNonNull('port') && !options.isDefinedAndNonNull('server') && !options.value.noServer) {
-	    throw new TypeError('`port` or a `server` must be provided');
-	  }
-
-	  var self = this;
-
-	  if (options.isDefinedAndNonNull('port')) {
-	    this._server = http.createServer(function (req, res) {
-	      res.writeHead(200, {'Content-Type': 'text/plain'});
-	      res.end('Not implemented');
-	    });
-	    this._server.listen(options.value.port, options.value.host, callback);
-	    this._closeServer = function() { if (self._server) self._server.close(); };
-	  }
-	  else if (options.value.server) {
-	    this._server = options.value.server;
-	    if (options.value.path) {
-	      // take note of the path, to avoid collisions when multiple websocket servers are
-	      // listening on the same http server
-	      if (this._server._webSocketPaths && options.value.server._webSocketPaths[options.value.path]) {
-	        throw new Error('two instances of WebSocketServer cannot listen on the same http server path');
-	      }
-	      if (typeof this._server._webSocketPaths !== 'object') {
-	        this._server._webSocketPaths = {};
-	      }
-	      this._server._webSocketPaths[options.value.path] = 1;
-	    }
-	  }
-	  if (this._server) this._server.once('listening', function() { self.emit('listening'); });
-
-	  if (typeof this._server != 'undefined') {
-	    this._server.on('error', function(error) {
-	      self.emit('error', error)
-	    });
-	    this._server.on('upgrade', function(req, socket, upgradeHead) {
-	      //copy upgradeHead to avoid retention of large slab buffers used in node core
-	      var head = new Buffer(upgradeHead.length);
-	      upgradeHead.copy(head);
-
-	      self.handleUpgrade(req, socket, head, function(client) {
-	        self.emit('connection'+req.url, client);
-	        self.emit('connection', client);
-	      });
-	    });
-	  }
-
-	  this.options = options.value;
-	  this.path = options.value.path;
-	  this.clients = [];
-	}
-
-	/**
-	 * Inherits from EventEmitter.
-	 */
-
-	util.inherits(WebSocketServer, events.EventEmitter);
-
-	/**
-	 * Immediately shuts down the connection.
-	 *
-	 * @api public
-	 */
-
-	WebSocketServer.prototype.close = function() {
-	  // terminate all associated clients
-	  var error = null;
-	  try {
-	    for (var i = 0, l = this.clients.length; i < l; ++i) {
-	      this.clients[i].terminate();
-	    }
-	  }
-	  catch (e) {
-	    error = e;
-	  }
-
-	  // remove path descriptor, if any
-	  if (this.path && this._server._webSocketPaths) {
-	    delete this._server._webSocketPaths[this.path];
-	    if (Object.keys(this._server._webSocketPaths).length == 0) {
-	      delete this._server._webSocketPaths;
-	    }
-	  }
-
-	  // close the http server if it was internally created
-	  try {
-	    if (typeof this._closeServer !== 'undefined') {
-	      this._closeServer();
-	    }
-	  }
-	  finally {
-	    delete this._server;
-	  }
-	  if (error) throw error;
-	}
-
-	/**
-	 * Handle a HTTP Upgrade request.
-	 *
-	 * @api public
-	 */
-
-	WebSocketServer.prototype.handleUpgrade = function(req, socket, upgradeHead, cb) {
-	  // check for wrong path
-	  if (this.options.path) {
-	    var u = url.parse(req.url);
-	    if (u && u.pathname !== this.options.path) return;
-	  }
-
-	  if (typeof req.headers.upgrade === 'undefined' || req.headers.upgrade.toLowerCase() !== 'websocket') {
-	    abortConnection(socket, 400, 'Bad Request');
-	    return;
-	  }
-
-	  if (req.headers['sec-websocket-key1']) handleHixieUpgrade.apply(this, arguments);
-	  else handleHybiUpgrade.apply(this, arguments);
-	}
-
-	module.exports = WebSocketServer;
-
-	/**
-	 * Entirely private apis,
-	 * which may or may not be bound to a sepcific WebSocket instance.
-	 */
-
-	function handleHybiUpgrade(req, socket, upgradeHead, cb) {
-	  // handle premature socket errors
-	  var errorHandler = function() {
-	    try { socket.destroy(); } catch (e) {}
-	  }
-	  socket.on('error', errorHandler);
-
-	  // verify key presence
-	  if (!req.headers['sec-websocket-key']) {
-	    abortConnection(socket, 400, 'Bad Request');
-	    return;
-	  }
-
-	  // verify version
-	  var version = parseInt(req.headers['sec-websocket-version']);
-	  if ([8, 13].indexOf(version) === -1) {
-	    abortConnection(socket, 400, 'Bad Request');
-	    return;
-	  }
-
-	  // verify protocol
-	  var protocols = req.headers['sec-websocket-protocol'];
-
-	  // verify client
-	  var origin = version < 13 ?
-	    req.headers['sec-websocket-origin'] :
-	    req.headers['origin'];
-
-	  // handler to call when the connection sequence completes
-	  var self = this;
-	  var completeHybiUpgrade2 = function(protocol) {
-
-	    // calc key
-	    var key = req.headers['sec-websocket-key'];
-	    var shasum = crypto.createHash('sha1');
-	    shasum.update(key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
-	    key = shasum.digest('base64');
-
-	    var headers = [
-	        'HTTP/1.1 101 Switching Protocols'
-	      , 'Upgrade: websocket'
-	      , 'Connection: Upgrade'
-	      , 'Sec-WebSocket-Accept: ' + key
-	    ];
-
-	    if (typeof protocol != 'undefined') {
-	      headers.push('Sec-WebSocket-Protocol: ' + protocol);
-	    }
-
-	    // allows external modification/inspection of handshake headers
-	    self.emit('headers', headers);
-
-	    socket.setTimeout(0);
-	    socket.setNoDelay(true);
-	    try {
-	      socket.write(headers.concat('', '').join('\r\n'));
-	    }
-	    catch (e) {
-	      // if the upgrade write fails, shut the connection down hard
-	      try { socket.destroy(); } catch (e) {}
-	      return;
-	    }
-
-	    var client = new WebSocket([req, socket, upgradeHead], {
-	      protocolVersion: version,
-	      protocol: protocol
-	    });
-
-	    if (self.options.clientTracking) {
-	      self.clients.push(client);
-	      client.on('close', function() {
-	        var index = self.clients.indexOf(client);
-	        if (index != -1) {
-	          self.clients.splice(index, 1);
-	        }
-	      });
-	    }
-
-	    // signal upgrade complete
-	    socket.removeListener('error', errorHandler);
-	    cb(client);
-	  }
-
-	  // optionally call external protocol selection handler before
-	  // calling completeHybiUpgrade2
-	  var completeHybiUpgrade1 = function() {
-	    // choose from the sub-protocols
-	    if (typeof self.options.handleProtocols == 'function') {
-	        var protList = (protocols || "").split(/, */);
-	        var callbackCalled = false;
-	        var res = self.options.handleProtocols(protList, function(result, protocol) {
-	          callbackCalled = true;
-	          if (!result) abortConnection(socket, 404, 'Unauthorized')
-	          else completeHybiUpgrade2(protocol);
-	        });
-	        if (!callbackCalled) {
-	            // the handleProtocols handler never called our callback
-	            abortConnection(socket, 501, 'Could not process protocols');
-	        }
-	        return;
-	    } else {
-	        if (typeof protocols !== 'undefined') {
-	            completeHybiUpgrade2(protocols.split(/, */)[0]);
-	        }
-	        else {
-	            completeHybiUpgrade2();
-	        }
-	    }
-	  }
-
-	  // optionally call external client verification handler
-	  if (typeof this.options.verifyClient == 'function') {
-	    var info = {
-	      origin: origin,
-	      secure: typeof req.connection.authorized !== 'undefined' || typeof req.connection.encrypted !== 'undefined',
-	      req: req
-	    };
-	    if (this.options.verifyClient.length == 2) {
-	      this.options.verifyClient(info, function(result, code, name) {
-	        if (typeof code === 'undefined') code = 401;
-	        if (typeof name === 'undefined') name = http.STATUS_CODES[code];
-
-	        if (!result) abortConnection(socket, code, name);
-	        else completeHybiUpgrade1();
-	      });
-	      return;
-	    }
-	    else if (!this.options.verifyClient(info)) {
-	      abortConnection(socket, 401, 'Unauthorized');
-	      return;
-	    }
-	  }
-
-	  completeHybiUpgrade1();
-	}
-
-	function handleHixieUpgrade(req, socket, upgradeHead, cb) {
-	  // handle premature socket errors
-	  var errorHandler = function() {
-	    try { socket.destroy(); } catch (e) {}
-	  }
-	  socket.on('error', errorHandler);
-
-	  // bail if options prevent hixie
-	  if (this.options.disableHixie) {
-	    abortConnection(socket, 401, 'Hixie support disabled');
-	    return;
-	  }
-
-	  // verify key presence
-	  if (!req.headers['sec-websocket-key2']) {
-	    abortConnection(socket, 400, 'Bad Request');
-	    return;
-	  }
-
-	  var origin = req.headers['origin']
-	    , self = this;
-
-	  // setup handshake completion to run after client has been verified
-	  var onClientVerified = function() {
-	    var wshost;
-	    if (!req.headers['x-forwarded-host'])
-	        wshost = req.headers.host;
-	    else
-	        wshost = req.headers['x-forwarded-host'];
-	    var location = ((req.headers['x-forwarded-proto'] === 'https' || socket.encrypted) ? 'wss' : 'ws') + '://' + wshost + req.url
-	      , protocol = req.headers['sec-websocket-protocol'];
-
-	    // handshake completion code to run once nonce has been successfully retrieved
-	    var completeHandshake = function(nonce, rest) {
-	      // calculate key
-	      var k1 = req.headers['sec-websocket-key1']
-	        , k2 = req.headers['sec-websocket-key2']
-	        , md5 = crypto.createHash('md5');
-
-	      [k1, k2].forEach(function (k) {
-	        var n = parseInt(k.replace(/[^\d]/g, ''))
-	          , spaces = k.replace(/[^ ]/g, '').length;
-	        if (spaces === 0 || n % spaces !== 0){
-	          abortConnection(socket, 400, 'Bad Request');
-	          return;
-	        }
-	        n /= spaces;
-	        md5.update(String.fromCharCode(
-	          n >> 24 & 0xFF,
-	          n >> 16 & 0xFF,
-	          n >> 8  & 0xFF,
-	          n       & 0xFF));
-	      });
-	      md5.update(nonce.toString('binary'));
-
-	      var headers = [
-	          'HTTP/1.1 101 Switching Protocols'
-	        , 'Upgrade: WebSocket'
-	        , 'Connection: Upgrade'
-	        , 'Sec-WebSocket-Location: ' + location
-	      ];
-	      if (typeof protocol != 'undefined') headers.push('Sec-WebSocket-Protocol: ' + protocol);
-	      if (typeof origin != 'undefined') headers.push('Sec-WebSocket-Origin: ' + origin);
-
-	      socket.setTimeout(0);
-	      socket.setNoDelay(true);
-	      try {
-	        // merge header and hash buffer
-	        var headerBuffer = new Buffer(headers.concat('', '').join('\r\n'));
-	        var hashBuffer = new Buffer(md5.digest('binary'), 'binary');
-	        var handshakeBuffer = new Buffer(headerBuffer.length + hashBuffer.length);
-	        headerBuffer.copy(handshakeBuffer, 0);
-	        hashBuffer.copy(handshakeBuffer, headerBuffer.length);
-
-	        // do a single write, which - upon success - causes a new client websocket to be setup
-	        socket.write(handshakeBuffer, 'binary', function(err) {
-	          if (err) return; // do not create client if an error happens
-	          var client = new WebSocket([req, socket, rest], {
-	            protocolVersion: 'hixie-76',
-	            protocol: protocol
-	          });
-	          if (self.options.clientTracking) {
-	            self.clients.push(client);
-	            client.on('close', function() {
-	              var index = self.clients.indexOf(client);
-	              if (index != -1) {
-	                self.clients.splice(index, 1);
-	              }
-	            });
-	          }
-
-	          // signal upgrade complete
-	          socket.removeListener('error', errorHandler);
-	          cb(client);
-	        });
-	      }
-	      catch (e) {
-	        try { socket.destroy(); } catch (e) {}
-	        return;
-	      }
-	    }
-
-	    // retrieve nonce
-	    var nonceLength = 8;
-	    if (upgradeHead && upgradeHead.length >= nonceLength) {
-	      var nonce = upgradeHead.slice(0, nonceLength);
-	      var rest = upgradeHead.length > nonceLength ? upgradeHead.slice(nonceLength) : null;
-	      completeHandshake.call(self, nonce, rest);
-	    }
-	    else {
-	      // nonce not present in upgradeHead, so we must wait for enough data
-	      // data to arrive before continuing
-	      var nonce = new Buffer(nonceLength);
-	      upgradeHead.copy(nonce, 0);
-	      var received = upgradeHead.length;
-	      var rest = null;
-	      var handler = function (data) {
-	        var toRead = Math.min(data.length, nonceLength - received);
-	        if (toRead === 0) return;
-	        data.copy(nonce, received, 0, toRead);
-	        received += toRead;
-	        if (received == nonceLength) {
-	          socket.removeListener('data', handler);
-	          if (toRead < data.length) rest = data.slice(toRead);
-	          completeHandshake.call(self, nonce, rest);
-	        }
-	      }
-	      socket.on('data', handler);
-	    }
-	  }
-
-	  // verify client
-	  if (typeof this.options.verifyClient == 'function') {
-	    var info = {
-	      origin: origin,
-	      secure: typeof req.connection.authorized !== 'undefined' || typeof req.connection.encrypted !== 'undefined',
-	      req: req
-	    };
-	    if (this.options.verifyClient.length == 2) {
-	      var self = this;
-	      this.options.verifyClient(info, function(result, code, name) {
-	        if (typeof code === 'undefined') code = 401;
-	        if (typeof name === 'undefined') name = http.STATUS_CODES[code];
-
-	        if (!result) abortConnection(socket, code, name);
-	        else onClientVerified.apply(self);
-	      });
-	      return;
-	    }
-	    else if (!this.options.verifyClient(info)) {
-	      abortConnection(socket, 401, 'Unauthorized');
-	      return;
-	    }
-	  }
-
-	  // no client verification required
-	  onClientVerified();
-	}
-
-	function abortConnection(socket, code, name) {
-	  try {
-	    var response = [
-	      'HTTP/1.1 ' + code + ' ' + name,
-	      'Content-type: text/html'
-	    ];
-	    socket.write(response.concat('', '').join('\r\n'));
-	  }
-	  catch (e) { /* ignore errors - we've aborted this connection */ }
-	  finally {
-	    // ensure that an early aborted connection is shut down completely
-	    try { socket.destroy(); } catch (e) {}
-	  }
-	}
-
-
-/***/ }),
-/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -5183,252 +1669,8 @@ module.exports =
 	 * under the License.
 	 */
 
-	module.exports.TBufferedTransport = __webpack_require__(8);
-	module.exports.TFramedTransport = __webpack_require__(39);
-	module.exports.InputBufferUnderrunError = __webpack_require__(10);
-
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-
-	var binary = __webpack_require__(9);
-	var InputBufferUnderrunError = __webpack_require__(10);
-
-	module.exports = TFramedTransport;
-
-	function TFramedTransport(buffer, callback) {
-	  this.inBuf = buffer || new Buffer(0);
-	  this.outBuffers = [];
-	  this.outCount = 0;
-	  this.readPos = 0;
-	  this.onFlush = callback;
-	};
-
-	TFramedTransport.receiver = function(callback, seqid) {
-	  var residual = null;
-
-	  return function(data) {
-	    // Prepend any residual data from our previous read
-	    if (residual) {
-	      data = Buffer.concat([residual, data]);
-	      residual = null;
-	    }
-
-	    // framed transport
-	    while (data.length) {
-	      if (data.length < 4) {
-	        // Not enough bytes to continue, save and resume on next packet
-	        residual = data;
-	        return;
-	      }
-	      var frameSize = binary.readI32(data, 0);
-	      if (data.length < 4 + frameSize) {
-	        // Not enough bytes to continue, save and resume on next packet
-	        residual = data;
-	        return;
-	      }
-
-	      var frame = data.slice(4, 4 + frameSize);
-	      residual = data.slice(4 + frameSize);
-
-	      callback(new TFramedTransport(frame), seqid);
-
-	      data = residual;
-	      residual = null;
-	    }
-	  };
-	};
-
-	TFramedTransport.prototype.commitPosition = function(){},
-	TFramedTransport.prototype.rollbackPosition = function(){},
-
-	  // TODO: Implement open/close support
-	TFramedTransport.prototype.isOpen = function() {
-	  return true;
-	};
-	TFramedTransport.prototype.open = function() {};
-	TFramedTransport.prototype.close =  function() {};
-
-	  // Set the seqid of the message in the client
-	  // So that callbacks can be found
-	TFramedTransport.prototype.setCurrSeqId = function(seqid) {
-	  this._seqid = seqid;
-	};
-
-	TFramedTransport.prototype.ensureAvailable = function(len) {
-	  if (this.readPos + len > this.inBuf.length) {
-	    throw new InputBufferUnderrunError();
-	  }
-	};
-
-	TFramedTransport.prototype.read = function(len) { // this function will be used for each frames.
-	  this.ensureAvailable(len);
-	  var end = this.readPos + len;
-
-	  if (this.inBuf.length < end) {
-	    throw new Error('read(' + len + ') failed - not enough data');
-	  }
-
-	  var buf = this.inBuf.slice(this.readPos, end);
-	  this.readPos = end;
-	  return buf;
-	};
-
-	TFramedTransport.prototype.readByte = function() {
-	  this.ensureAvailable(1);
-	  return binary.readByte(this.inBuf[this.readPos++]);
-	};
-
-	TFramedTransport.prototype.readI16 = function() {
-	  this.ensureAvailable(2);
-	  var i16 = binary.readI16(this.inBuf, this.readPos);
-	  this.readPos += 2;
-	  return i16;
-	};
-
-	TFramedTransport.prototype.readI32 = function() {
-	  this.ensureAvailable(4);
-	  var i32 = binary.readI32(this.inBuf, this.readPos);
-	  this.readPos += 4;
-	  return i32;
-	};
-
-	TFramedTransport.prototype.readDouble = function() {
-	  this.ensureAvailable(8);
-	  var d = binary.readDouble(this.inBuf, this.readPos);
-	  this.readPos += 8;
-	  return d;
-	};
-
-	TFramedTransport.prototype.readString = function(len) {
-	  this.ensureAvailable(len);
-	  var str = this.inBuf.toString('utf8', this.readPos, this.readPos + len);
-	  this.readPos += len;
-	  return str;
-	};
-
-	TFramedTransport.prototype.borrow = function() {
-	  return {
-	    buf: this.inBuf,
-	    readIndex: this.readPos,
-	    writeIndex: this.inBuf.length
-	  };
-	};
-
-	TFramedTransport.prototype.consume = function(bytesConsumed) {
-	  this.readPos += bytesConsumed;
-	};
-
-	TFramedTransport.prototype.write = function(buf, encoding) {
-	  if (typeof(buf) === "string") {
-	    buf = new Buffer(buf, encoding || 'utf8');
-	  }
-	  this.outBuffers.push(buf);
-	  this.outCount += buf.length;
-	};
-
-	TFramedTransport.prototype.flush = function() {
-	  // If the seqid of the callback is available pass it to the onFlush
-	  // Then remove the current seqid
-	  var seqid = this._seqid;
-	  this._seqid = null;
-
-	  var out = new Buffer(this.outCount),
-	      pos = 0;
-	  this.outBuffers.forEach(function(buf) {
-	    buf.copy(out, pos, 0);
-	    pos += buf.length;
-	  });
-
-	  if (this.onFlush) {
-	    // TODO: optimize this better, allocate one buffer instead of both:
-	    var msg = new Buffer(out.length + 4);
-	    binary.writeI32(msg, out.length);
-	    out.copy(msg, 4, 0, out.length);
-	    if (this.onFlush) {
-	      // Passing seqid through this call to get it to the connection
-	      this.onFlush(msg, seqid);
-	    }
-	  }
-
-	  this.outBuffers = [];
-	  this.outCount = 0;
-	};
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-
-	module.exports.TBinaryProtocol = __webpack_require__(11);
-	module.exports.TCompactProtocol = __webpack_require__(41);
-	module.exports.TJSONProtocol = __webpack_require__(42);
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/*
-	 * Licensed to the Apache Software Foundation (ASF) under one
-	 * or more contributor license agreements. See the NOTICE file
-	 * distributed with this work for additional information
-	 * regarding copyright ownership. The ASF licenses this file
-	 * to you under the Apache License, Version 2.0 (the
-	 * "License"); you may not use this file except in compliance
-	 * with the License. You may obtain a copy of the License at
-	 *
-	 *   http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing,
-	 * software distributed under the License is distributed on an
-	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-	 * KIND, either express or implied. See the License for the
-	 * specific language governing permissions and limitations
-	 * under the License.
-	 */
-
-	var log = __webpack_require__(12);
-	var Int64 = __webpack_require__(13);
+	var log = __webpack_require__(4);
+	var Int64 = __webpack_require__(15);
 	var Thrift = __webpack_require__(2);
 	var Type = Thrift.Type;
 
@@ -5659,7 +1901,6 @@ module.exports =
 
 	  // Record client seqid to find callback again
 	  if (this._seqid) {
-	    // TODO better logging log warning
 	    log.warning('SeqId already set', { 'name': name });
 	  } else {
 	    this._seqid = seqid;
@@ -6265,8 +2506,6 @@ module.exports =
 
 	TCompactProtocol.prototype.skip = function(type) {
 	  switch (type) {
-	    case Type.STOP:
-	      return;
 	    case Type.BOOL:
 	      this.readBool();
 	      break;
@@ -6329,6 +2568,4818 @@ module.exports =
 
 
 /***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+	//     Int64.js
+	//
+	//     Copyright (c) 2012 Robert Kieffer
+	//     MIT License - http://opensource.org/licenses/mit-license.php
+
+	/**
+	 * Support for handling 64-bit int numbers in Javascript (node.js)
+	 *
+	 * JS Numbers are IEEE-754 binary double-precision floats, which limits the
+	 * range of values that can be represented with integer precision to:
+	 *
+	 * 2^^53 <= N <= 2^53
+	 *
+	 * Int64 objects wrap a node Buffer that holds the 8-bytes of int64 data.  These
+	 * objects operate directly on the buffer which means that if they are created
+	 * using an existing buffer then setting the value will modify the Buffer, and
+	 * vice-versa.
+	 *
+	 * Internal Representation
+	 *
+	 * The internal buffer format is Big Endian.  I.e. the most-significant byte is
+	 * at buffer[0], the least-significant at buffer[7].  For the purposes of
+	 * converting to/from JS native numbers, the value is assumed to be a signed
+	 * integer stored in 2's complement form.
+	 *
+	 * For details about IEEE-754 see:
+	 * http://en.wikipedia.org/wiki/Double_precision_floating-point_format
+	 */
+
+	// Useful masks and values for bit twiddling
+	var MASK31 =  0x7fffffff, VAL31 = 0x80000000;
+	var MASK32 =  0xffffffff, VAL32 = 0x100000000;
+
+	// Map for converting hex octets to strings
+	var _HEX = [];
+	for (var i = 0; i < 256; i++) {
+	  _HEX[i] = (i > 0xF ? '' : '0') + i.toString(16);
+	}
+
+	//
+	// Int64
+	//
+
+	/**
+	 * Constructor accepts any of the following argument types:
+	 *
+	 * new Int64(buffer[, offset=0]) - Existing Buffer with byte offset
+	 * new Int64(Uint8Array[, offset=0]) - Existing Uint8Array with a byte offset
+	 * new Int64(string)             - Hex string (throws if n is outside int64 range)
+	 * new Int64(number)             - Number (throws if n is outside int64 range)
+	 * new Int64(hi, lo)             - Raw bits as two 32-bit values
+	 */
+	var Int64 = module.exports = function(a1, a2) {
+	  if (a1 instanceof Buffer) {
+	    this.buffer = a1;
+	    this.offset = a2 || 0;
+	  } else if (Object.prototype.toString.call(a1) == '[object Uint8Array]') {
+	    // Under Browserify, Buffers can extend Uint8Arrays rather than an
+	    // instance of Buffer. We could assume the passed in Uint8Array is actually
+	    // a buffer but that won't handle the case where a raw Uint8Array is passed
+	    // in. We construct a new Buffer just in case.
+	    this.buffer = new Buffer(a1);
+	    this.offset = a2 || 0;
+	  } else {
+	    this.buffer = this.buffer || new Buffer(8);
+	    this.offset = 0;
+	    this.setValue.apply(this, arguments);
+	  }
+	};
+
+
+	// Max integer value that JS can accurately represent
+	Int64.MAX_INT = Math.pow(2, 53);
+
+	// Min integer value that JS can accurately represent
+	Int64.MIN_INT = -Math.pow(2, 53);
+
+	Int64.prototype = {
+
+	  constructor: Int64,
+
+	  /**
+	   * Do in-place 2's compliment.  See
+	   * http://en.wikipedia.org/wiki/Two's_complement
+	   */
+	  _2scomp: function() {
+	    var b = this.buffer, o = this.offset, carry = 1;
+	    for (var i = o + 7; i >= o; i--) {
+	      var v = (b[i] ^ 0xff) + carry;
+	      b[i] = v & 0xff;
+	      carry = v >> 8;
+	    }
+	  },
+
+	  /**
+	   * Set the value. Takes any of the following arguments:
+	   *
+	   * setValue(string) - A hexidecimal string
+	   * setValue(number) - Number (throws if n is outside int64 range)
+	   * setValue(hi, lo) - Raw bits as two 32-bit values
+	   */
+	  setValue: function(hi, lo) {
+	    var negate = false;
+	    if (arguments.length == 1) {
+	      if (typeof(hi) == 'number') {
+	        // Simplify bitfield retrieval by using abs() value.  We restore sign
+	        // later
+	        negate = hi < 0;
+	        hi = Math.abs(hi);
+	        lo = hi % VAL32;
+	        hi = hi / VAL32;
+	        if (hi > VAL32) throw new RangeError(hi  + ' is outside Int64 range');
+	        hi = hi | 0;
+	      } else if (typeof(hi) == 'string') {
+	        hi = (hi + '').replace(/^0x/, '');
+	        lo = hi.substr(-8);
+	        hi = hi.length > 8 ? hi.substr(0, hi.length - 8) : '';
+	        hi = parseInt(hi, 16);
+	        lo = parseInt(lo, 16);
+	      } else {
+	        throw new Error(hi + ' must be a Number or String');
+	      }
+	    }
+
+	    // Technically we should throw if hi or lo is outside int32 range here, but
+	    // it's not worth the effort. Anything past the 32'nd bit is ignored.
+
+	    // Copy bytes to buffer
+	    var b = this.buffer, o = this.offset;
+	    for (var i = 7; i >= 0; i--) {
+	      b[o+i] = lo & 0xff;
+	      lo = i == 4 ? hi : lo >>> 8;
+	    }
+
+	    // Restore sign of passed argument
+	    if (negate) this._2scomp();
+	  },
+
+	  /**
+	   * Convert to a native JS number.
+	   *
+	   * WARNING: Do not expect this value to be accurate to integer precision for
+	   * large (positive or negative) numbers!
+	   *
+	   * @param allowImprecise If true, no check is performed to verify the
+	   * returned value is accurate to integer precision.  If false, imprecise
+	   * numbers (very large positive or negative numbers) will be forced to +/-
+	   * Infinity.
+	   */
+	  toNumber: function(allowImprecise) {
+	    var b = this.buffer, o = this.offset;
+
+	    // Running sum of octets, doing a 2's complement
+	    var negate = b[o] & 0x80, x = 0, carry = 1;
+	    for (var i = 7, m = 1; i >= 0; i--, m *= 256) {
+	      var v = b[o+i];
+
+	      // 2's complement for negative numbers
+	      if (negate) {
+	        v = (v ^ 0xff) + carry;
+	        carry = v >> 8;
+	        v = v & 0xff;
+	      }
+
+	      x += v * m;
+	    }
+
+	    // Return Infinity if we've lost integer precision
+	    if (!allowImprecise && x >= Int64.MAX_INT) {
+	      return negate ? -Infinity : Infinity;
+	    }
+
+	    return negate ? -x : x;
+	  },
+
+	  /**
+	   * Convert to a JS Number. Returns +/-Infinity for values that can't be
+	   * represented to integer precision.
+	   */
+	  valueOf: function() {
+	    return this.toNumber(false);
+	  },
+
+	  /**
+	   * Return string value
+	   *
+	   * @param radix Just like Number#toString()'s radix
+	   */
+	  toString: function(radix) {
+	    return this.valueOf().toString(radix || 10);
+	  },
+
+	  /**
+	   * Return a string showing the buffer octets, with MSB on the left.
+	   *
+	   * @param sep separator string. default is '' (empty string)
+	   */
+	  toOctetString: function(sep) {
+	    var out = new Array(8);
+	    var b = this.buffer, o = this.offset;
+	    for (var i = 0; i < 8; i++) {
+	      out[i] = _HEX[b[o+i]];
+	    }
+	    return out.join(sep || '');
+	  },
+
+	  /**
+	   * Returns the int64's 8 bytes in a buffer.
+	   *
+	   * @param {bool} [rawBuffer=false]  If no offset and this is true, return the internal buffer.  Should only be used if
+	   *                                  you're discarding the Int64 afterwards, as it breaks encapsulation.
+	   */
+	  toBuffer: function(rawBuffer) {
+	    if (rawBuffer && this.offset === 0) return this.buffer;
+
+	    var out = new Buffer(8);
+	    this.buffer.copy(out, 0, this.offset, this.offset + 8);
+	    return out;
+	  },
+
+	  /**
+	   * Copy 8 bytes of int64 into target buffer at target offset.
+	   *
+	   * @param {Buffer} targetBuffer       Buffer to copy into.
+	   * @param {number} [targetOffset=0]   Offset into target buffer.
+	   */
+	  copy: function(targetBuffer, targetOffset) {
+	    this.buffer.copy(targetBuffer, targetOffset || 0, this.offset, this.offset + 8);
+	  },
+
+	  /**
+	   * Returns a number indicating whether this comes before or after or is the
+	   * same as the other in sort order.
+	   *
+	   * @param {Int64} other  Other Int64 to compare.
+	   */
+	  compare: function(other) {
+
+	    // If sign bits differ ...
+	    if ((this.buffer[this.offset] & 0x80) != (other.buffer[other.offset] & 0x80)) {
+	      return other.buffer[other.offset] - this.buffer[this.offset];
+	    }
+
+	    // otherwise, compare bytes lexicographically
+	    for (var i = 0; i < 8; i++) {
+	      if (this.buffer[this.offset+i] !== other.buffer[other.offset+i]) {
+	        return this.buffer[this.offset+i] - other.buffer[other.offset+i];
+	      }
+	    }
+	    return 0;
+	  },
+
+	  /**
+	   * Returns a boolean indicating if this integer is equal to other.
+	   *
+	   * @param {Int64} other  Other Int64 to compare.
+	   */
+	  equals: function(other) {
+	    return this.compare(other) === 0;
+	  },
+
+	  /**
+	   * Pretty output in console.log
+	   */
+	  inspect: function() {
+	    return '[Int64 value:' + this + ' octets:' + this.toOctetString(' ') + ']';
+	  }
+	};
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+
+	var log = __webpack_require__(4);
+	var binary = __webpack_require__(11);
+	var Int64 = __webpack_require__(15);
+	var Thrift = __webpack_require__(2);
+	var Type = Thrift.Type;
+
+	module.exports = TBinaryProtocol;
+
+	// JavaScript supports only numeric doubles, therefore even hex values are always signed.
+	// The largest integer value which can be represented in JavaScript is +/-2^53.
+	// Bitwise operations convert numbers to 32 bit integers but perform sign extension
+	// upon assigning values back to variables.
+	var VERSION_MASK = -65536,   // 0xffff0000
+	    VERSION_1 = -2147418112, // 0x80010000
+	    TYPE_MASK = 0x000000ff;
+
+	TBinaryProtocol.VERSION_MASK = VERSION_MASK;
+	TBinaryProtocol.VERSION_1 = VERSION_1;
+	TBinaryProtocol.TYPE_MASK = TYPE_MASK
+
+	function TBinaryProtocol(trans, strictRead, strictWrite) {
+	  this.trans = trans;
+	  this.strictRead = (strictRead !== undefined ? strictRead : false);
+	  this.strictWrite = (strictWrite !== undefined ? strictWrite : true);
+	  this._seqid = null;
+	};
+
+	TBinaryProtocol.prototype.flush = function() {
+	  return this.trans.flush();
+	};
+
+	TBinaryProtocol.prototype.writeMessageBegin = function(name, type, seqid) {
+	    if (this.strictWrite) {
+	      this.writeI32(VERSION_1 | type);
+	      this.writeString(name);
+	      this.writeI32(seqid);
+	    } else {
+	      this.writeString(name);
+	      this.writeByte(type);
+	      this.writeI32(seqid);
+	    }
+	    // Record client seqid to find callback again
+	    if (this._seqid !== null) {
+	      log.warning('SeqId already set', { 'name': name });
+	    } else {
+	      this._seqid = seqid;
+	      this.trans.setCurrSeqId(seqid);
+	    }
+	};
+
+	TBinaryProtocol.prototype.writeMessageEnd = function() {
+	    if (this._seqid !== null) {
+	        this._seqid = null;
+	    } else {
+	        log.warning('No seqid to unset');
+	    }
+	};
+
+	TBinaryProtocol.prototype.writeStructBegin = function(name) {
+	};
+
+	TBinaryProtocol.prototype.writeStructEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.writeFieldBegin = function(name, type, id) {
+	  this.writeByte(type);
+	  this.writeI16(id);
+	};
+
+	TBinaryProtocol.prototype.writeFieldEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.writeFieldStop = function() {
+	  this.writeByte(Type.STOP);
+	};
+
+	TBinaryProtocol.prototype.writeMapBegin = function(ktype, vtype, size) {
+	  this.writeByte(ktype);
+	  this.writeByte(vtype);
+	  this.writeI32(size);
+	};
+
+	TBinaryProtocol.prototype.writeMapEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.writeListBegin = function(etype, size) {
+	  this.writeByte(etype);
+	  this.writeI32(size);
+	};
+
+	TBinaryProtocol.prototype.writeListEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.writeSetBegin = function(etype, size) {
+	  this.writeByte(etype);
+	  this.writeI32(size);
+	};
+
+	TBinaryProtocol.prototype.writeSetEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.writeBool = function(bool) {
+	  if (bool) {
+	    this.writeByte(1);
+	  } else {
+	    this.writeByte(0);
+	  }
+	};
+
+	TBinaryProtocol.prototype.writeByte = function(b) {
+	  this.trans.write(new Buffer([b]));
+	};
+
+	TBinaryProtocol.prototype.writeI16 = function(i16) {
+	  this.trans.write(binary.writeI16(new Buffer(2), i16));
+	};
+
+	TBinaryProtocol.prototype.writeI32 = function(i32) {
+	  this.trans.write(binary.writeI32(new Buffer(4), i32));
+	};
+
+	TBinaryProtocol.prototype.writeI64 = function(i64) {
+	  if (i64.buffer) {
+	    this.trans.write(i64.buffer);
+	  } else {
+	    this.trans.write(new Int64(i64).buffer);
+	  }
+	};
+
+	TBinaryProtocol.prototype.writeDouble = function(dub) {
+	  this.trans.write(binary.writeDouble(new Buffer(8), dub));
+	};
+
+	TBinaryProtocol.prototype.writeStringOrBinary = function(name, encoding, arg) {
+	  if (typeof(arg) === 'string') {
+	    this.writeI32(Buffer.byteLength(arg, encoding));
+	    this.trans.write(new Buffer(arg, encoding));
+	  } else if ((arg instanceof Buffer) ||
+	             (Object.prototype.toString.call(arg) == '[object Uint8Array]')) {
+	    // Buffers in Node.js under Browserify may extend UInt8Array instead of
+	    // defining a new object. We detect them here so we can write them
+	    // correctly
+	    this.writeI32(arg.length);
+	    this.trans.write(arg);
+	  } else {
+	    throw new Error(name + ' called without a string/Buffer argument: ' + arg);
+	  }
+	};
+
+	TBinaryProtocol.prototype.writeString = function(arg) {
+	  this.writeStringOrBinary('writeString', 'utf8', arg);
+	};
+
+	TBinaryProtocol.prototype.writeBinary = function(arg) {
+	  this.writeStringOrBinary('writeBinary', 'binary', arg);
+	};
+
+	TBinaryProtocol.prototype.readMessageBegin = function() {
+	  var sz = this.readI32();
+	  var type, name, seqid;
+
+	  if (sz < 0) {
+	    var version = sz & VERSION_MASK;
+	    if (version != VERSION_1) {
+	      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.BAD_VERSION, "Bad version in readMessageBegin: " + sz);
+	    }
+	    type = sz & TYPE_MASK;
+	    name = this.readString();
+	    seqid = this.readI32();
+	  } else {
+	    if (this.strictRead) {
+	      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.BAD_VERSION, "No protocol version header");
+	    }
+	    name = this.trans.read(sz);
+	    type = this.readByte();
+	    seqid = this.readI32();
+	  }
+	  return {fname: name, mtype: type, rseqid: seqid};
+	};
+
+	TBinaryProtocol.prototype.readMessageEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.readStructBegin = function() {
+	  return {fname: ''};
+	};
+
+	TBinaryProtocol.prototype.readStructEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.readFieldBegin = function() {
+	  var type = this.readByte();
+	  if (type == Type.STOP) {
+	    return {fname: null, ftype: type, fid: 0};
+	  }
+	  var id = this.readI16();
+	  return {fname: null, ftype: type, fid: id};
+	};
+
+	TBinaryProtocol.prototype.readFieldEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.readMapBegin = function() {
+	  var ktype = this.readByte();
+	  var vtype = this.readByte();
+	  var size = this.readI32();
+	  return {ktype: ktype, vtype: vtype, size: size};
+	};
+
+	TBinaryProtocol.prototype.readMapEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.readListBegin = function() {
+	  var etype = this.readByte();
+	  var size = this.readI32();
+	  return {etype: etype, size: size};
+	};
+
+	TBinaryProtocol.prototype.readListEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.readSetBegin = function() {
+	  var etype = this.readByte();
+	  var size = this.readI32();
+	  return {etype: etype, size: size};
+	};
+
+	TBinaryProtocol.prototype.readSetEnd = function() {
+	};
+
+	TBinaryProtocol.prototype.readBool = function() {
+	  var b = this.readByte();
+	  if (b === 0) {
+	    return false;
+	  }
+	  return true;
+	};
+
+	TBinaryProtocol.prototype.readByte = function() {
+	  return this.trans.readByte();
+	};
+
+	TBinaryProtocol.prototype.readI16 = function() {
+	  return this.trans.readI16();
+	};
+
+	TBinaryProtocol.prototype.readI32 = function() {
+	  return this.trans.readI32();
+	};
+
+	TBinaryProtocol.prototype.readI64 = function() {
+	  var buff = this.trans.read(8);
+	  return new Int64(buff);
+	};
+
+	TBinaryProtocol.prototype.readDouble = function() {
+	  return this.trans.readDouble();
+	};
+
+	TBinaryProtocol.prototype.readBinary = function() {
+	  var len = this.readI32();
+	  if (len === 0) {
+	    return new Buffer(0);
+	  }
+
+	  if (len < 0) {
+	    throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.NEGATIVE_SIZE, "Negative binary size");
+	  }
+	  return this.trans.read(len);
+	};
+
+	TBinaryProtocol.prototype.readString = function() {
+	  var len = this.readI32();
+	  if (len === 0) {
+	    return "";
+	  }
+
+	  if (len < 0) {
+	    throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.NEGATIVE_SIZE, "Negative string size");
+	  }
+	  return this.trans.readString(len);
+	};
+
+	TBinaryProtocol.prototype.getTransport = function() {
+	  return this.trans;
+	};
+
+	TBinaryProtocol.prototype.skip = function(type) {
+	  switch (type) {
+	    case Type.BOOL:
+	      this.readBool();
+	      break;
+	    case Type.BYTE:
+	      this.readByte();
+	      break;
+	    case Type.I16:
+	      this.readI16();
+	      break;
+	    case Type.I32:
+	      this.readI32();
+	      break;
+	    case Type.I64:
+	      this.readI64();
+	      break;
+	    case Type.DOUBLE:
+	      this.readDouble();
+	      break;
+	    case Type.STRING:
+	      this.readString();
+	      break;
+	    case Type.STRUCT:
+	      this.readStructBegin();
+	      while (true) {
+	        var r = this.readFieldBegin();
+	        if (r.ftype === Type.STOP) {
+	          break;
+	        }
+	        this.skip(r.ftype);
+	        this.readFieldEnd();
+	      }
+	      this.readStructEnd();
+	      break;
+	    case Type.MAP:
+	      var mapBegin = this.readMapBegin();
+	      for (var i = 0; i < mapBegin.size; ++i) {
+	        this.skip(mapBegin.ktype);
+	        this.skip(mapBegin.vtype);
+	      }
+	      this.readMapEnd();
+	      break;
+	    case Type.SET:
+	      var setBegin = this.readSetBegin();
+	      for (var i2 = 0; i2 < setBegin.size; ++i2) {
+	        this.skip(setBegin.etype);
+	      }
+	      this.readSetEnd();
+	      break;
+	    case Type.LIST:
+	      var listBegin = this.readListBegin();
+	      for (var i3 = 0; i3 < listBegin.size; ++i3) {
+	        this.skip(listBegin.etype);
+	      }
+	      this.readListEnd();
+	      break;
+	    default:
+	      throw new  Error("Invalid type: " + type);
+	  }
+	};
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+
+	module.exports = createClient;
+
+	/**
+	 * Creates a new client object for the specified Thrift service.
+	 * @param {object} ServiceClient - The module containing the generated service client
+	 * @param {Connection} Connection - The connection to use.
+	 * @returns {object} The client object.
+	 */
+	function createClient(ServiceClient, connection) {
+	  // TODO validate required options and throw otherwise
+	  if (ServiceClient.Client) {
+	    ServiceClient = ServiceClient.Client;
+	  }
+	  // TODO detangle these initialization calls
+	  // creating "client" requires
+	  //   - new service client instance
+	  //
+	  // New service client instance requires
+	  //   - new transport instance
+	  //   - protocol class reference
+	  //
+	  // New transport instance requires
+	  //   - Buffer to use (or none)
+	  //   - Callback to call on flush
+
+	  // Wrap the write method
+	  var writeCb = function(buf, seqid) {
+	    connection.write(buf, seqid);
+	  };
+	  var transport = new connection.transport(undefined, writeCb);
+	  var client = new ServiceClient(transport, connection.protocol);
+	  transport.client = client;
+	  connection.client = client;
+	  return client;
+	};
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+	module.exports = require("child_process");
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+	var util = __webpack_require__(3);
+	var http = __webpack_require__(20);
+	var https = __webpack_require__(21);
+	var EventEmitter = __webpack_require__(6).EventEmitter;
+	var thrift = __webpack_require__(2);
+
+	var TBufferedTransport = __webpack_require__(10);
+	var TBinaryProtocol = __webpack_require__(16);
+	var InputBufferUnderrunError = __webpack_require__(12);
+
+	var createClient = __webpack_require__(17);
+
+	/**
+	 * @class
+	 * @name ConnectOptions
+	 * @property {string} transport - The Thrift layered transport to use (TBufferedTransport, etc).
+	 * @property {string} protocol - The Thrift serialization protocol to use (TBinaryProtocol, etc.).
+	 * @property {string} path - The URL path to POST to (e.g. "/", "/mySvc", "/thrift/quoteSvc", etc.).
+	 * @property {object} headers - A standard Node.js header hash, an object hash containing key/value
+	 *        pairs where the key is the header name string and the value is the header value string.
+	 * @property {boolean} https - True causes the connection to use https, otherwise http is used.
+	 * @property {object} nodeOptions - Options passed on to node.
+	 * @example
+	 *     //Use a connection that requires ssl/tls, closes the connection after each request,
+	 *     //  uses the buffered transport layer, uses the JSON protocol and directs RPC traffic
+	 *     //  to https://thrift.example.com:9090/hello
+	 *     var thrift = require('thrift');
+	 *     var options = {
+	 *        transport: thrift.TBufferedTransport,
+	 *        protocol: thrift.TJSONProtocol,
+	 *        path: "/hello",
+	 *        headers: {"Connection": "close"},
+	 *        https: true
+	 *     };
+	 *     var con = thrift.createHttpConnection("thrift.example.com", 9090, options);
+	 *     var client = thrift.createHttpClient(myService, connection);
+	 *     client.myServiceFunction();
+	 */
+
+	/**
+	 * Initializes a Thrift HttpConnection instance (use createHttpConnection() rather than
+	 *    instantiating directly).
+	 * @constructor
+	 * @param {ConnectOptions} options - The configuration options to use.
+	 * @throws {error} Exceptions other than InputBufferUnderrunError are rethrown
+	 * @event {error} The "error" event is fired when a Node.js error event occurs during
+	 *     request or response processing, in which case the node error is passed on. An "error"
+	 *     event may also be fired when the connection can not map a response back to the
+	 *     appropriate client (an internal error), generating a TApplicationException.
+	 * @classdesc HttpConnection objects provide Thrift end point transport
+	 *     semantics implemented over the Node.js http.request() method.
+	 * @see {@link createHttpConnection}
+	 */
+	var HttpConnection = exports.HttpConnection = function(options) {
+	  //Initialize the emitter base object
+	  EventEmitter.call(this);
+
+	  //Set configuration
+	  var self = this;
+	  this.options = options || {};
+	  this.host = this.options.host;
+	  this.port = this.options.port;
+	  this.socketPath = this.options.socketPath;
+	  this.https = this.options.https || false;
+	  this.transport = this.options.transport || TBufferedTransport;
+	  this.protocol = this.options.protocol || TBinaryProtocol;
+
+	  //Prepare Node.js options
+	  this.nodeOptions = {
+	    host: this.host,
+	    port: this.port,
+	    socketPath: this.socketPath,
+	    path: this.options.path || '/',
+	    method: 'POST',
+	    headers: this.options.headers || {},
+	    responseType: this.options.responseType || null
+	  };
+	  for (var attrname in this.options.nodeOptions) {
+	    this.nodeOptions[attrname] = this.options.nodeOptions[attrname];
+	  }
+	  /*jshint -W069 */
+	  if (! this.nodeOptions.headers['Connection']) {
+	    this.nodeOptions.headers['Connection'] = 'keep-alive';
+	  }
+	  /*jshint +W069 */
+
+	  //The sequence map is used to map seqIDs back to the
+	  //  calling client in multiplexed scenarios
+	  this.seqId2Service = {};
+
+	  function decodeCallback(transport_with_data) {
+	    var proto = new self.protocol(transport_with_data);
+	    try {
+	      while (true) {
+	        var header = proto.readMessageBegin();
+	        var dummy_seqid = header.rseqid * -1;
+	        var client = self.client;
+	        //The Multiplexed Protocol stores a hash of seqid to service names
+	        //  in seqId2Service. If the SeqId is found in the hash we need to
+	        //  lookup the appropriate client for this call.
+	        //  The client var is a single client object when not multiplexing,
+	        //  when using multiplexing it is a service name keyed hash of client
+	        //  objects.
+	        //NOTE: The 2 way interdependencies between protocols, transports,
+	        //  connections and clients in the Node.js implementation are irregular
+	        //  and make the implementation difficult to extend and maintain. We
+	        //  should bring this stuff inline with typical thrift I/O stack
+	        //  operation soon.
+	        //  --ra
+	        var service_name = self.seqId2Service[header.rseqid];
+	        if (service_name) {
+	          client = self.client[service_name];
+	          delete self.seqId2Service[header.rseqid];
+	        }
+	        /*jshint -W083 */
+	        client._reqs[dummy_seqid] = function(err, success){
+	          transport_with_data.commitPosition();
+	          var clientCallback = client._reqs[header.rseqid];
+	          delete client._reqs[header.rseqid];
+	          if (clientCallback) {
+	            process.nextTick(function() {
+	              clientCallback(err, success);
+	            });
+	          }
+	        };
+	        /*jshint +W083 */
+	        if(client['recv_' + header.fname]) {
+	          client['recv_' + header.fname](proto, header.mtype, dummy_seqid);
+	        } else {
+	          delete client._reqs[dummy_seqid];
+	          self.emit("error",
+	                    new thrift.TApplicationException(
+	                       thrift.TApplicationExceptionType.WRONG_METHOD_NAME,
+	                       "Received a response to an unknown RPC function"));
+	        }
+	      }
+	    }
+	    catch (e) {
+	      if (e instanceof InputBufferUnderrunError) {
+	        transport_with_data.rollbackPosition();
+	      } else {
+	        self.emit('error', e);
+	      }
+	    }
+	  }
+
+
+	  //Response handler
+	  //////////////////////////////////////////////////
+	  this.responseCallback = function(response) {
+	    var data = [];
+	    var dataLen = 0;
+
+	    if (response.statusCode !== 200) {
+	      this.emit("error", new THTTPException(response));
+	    }
+
+	    response.on('error', function (e) {
+	      self.emit("error", e);
+	    });
+
+	    // When running directly under node, chunk will be a buffer,
+	    // however, when running in a Browser (e.g. Browserify), chunk
+	    // will be a string or an ArrayBuffer.
+	    response.on('data', function (chunk) {
+	      if ((typeof chunk == 'string') ||
+	          (Object.prototype.toString.call(chunk) == '[object Uint8Array]')) {
+	        // Wrap ArrayBuffer/string in a Buffer so data[i].copy will work
+	        data.push(new Buffer(chunk));
+	      } else {
+	        data.push(chunk);
+	      }
+	      dataLen += chunk.length;
+	    });
+
+	    response.on('end', function(){
+	      var buf = new Buffer(dataLen);
+	      for (var i=0, len=data.length, pos=0; i<len; i++) {
+	        data[i].copy(buf, pos);
+	        pos += data[i].length;
+	      }
+	      //Get the receiver function for the transport and
+	      //  call it with the buffer
+	      self.transport.receiver(decodeCallback)(buf);
+	    });
+	  };
+	};
+	util.inherits(HttpConnection, EventEmitter);
+
+	/**
+	 * Writes Thrift message data to the connection
+	 * @param {Buffer} data - A Node.js Buffer containing the data to write
+	 * @returns {void} No return value.
+	 * @event {error} the "error" event is raised upon request failure passing the
+	 *     Node.js error object to the listener.
+	 */
+	HttpConnection.prototype.write = function(data) {
+	  var self = this;
+	  var opts = self.nodeOptions;
+	  opts.headers["Content-length"] = data.length;
+	  if (!opts.headers["Content-Type"])
+	    opts.headers["Content-Type"] = "application/x-thrift";  
+	  var req = (self.https) ?
+	      https.request(opts, self.responseCallback) :
+	      http.request(opts, self.responseCallback);
+	  req.on('error', function(err) {
+	    self.emit("error", err);
+	  });
+	  req.write(data);
+	  req.end();
+	};
+
+	/**
+	 * Creates a new HttpConnection object, used by Thrift clients to connect
+	 *    to Thrift HTTP based servers.
+	 * @param {string} host - The host name or IP to connect to.
+	 * @param {number} port - The TCP port to connect to.
+	 * @param {ConnectOptions} options - The configuration options to use.
+	 * @returns {HttpConnection} The connection object.
+	 * @see {@link ConnectOptions}
+	 */
+	exports.createHttpConnection = function(host, port, options) {
+	  options.host = host;
+	  options.port = port || 80;
+	  return new HttpConnection(options);
+	};
+
+	exports.createHttpUDSConnection = function(path, options) {
+	  options.socketPath = path;
+	  return new HttpConnection(options);
+	};
+
+	exports.createHttpClient = createClient
+
+
+	function THTTPException(response) {
+	  thrift.TApplicationException.call(this);
+	  Error.captureStackTrace(this, this.constructor);
+	  this.name = this.constructor.name;
+	  this.statusCode = response.statusCode;
+	  this.response = response;
+	  this.type = thrift.TApplicationExceptionType.PROTOCOL_ERROR;
+	  this.message = "Received a response with a bad HTTP status code: " + response.statusCode;
+	}
+	util.inherits(THTTPException, thrift.TApplicationException);
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+	module.exports = require("http");
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+	module.exports = require("https");
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+	var util = __webpack_require__(3);
+	var WebSocket = __webpack_require__(23);
+	var EventEmitter = __webpack_require__(6).EventEmitter;
+	var thrift = __webpack_require__(2);
+	var ttransport = __webpack_require__(39);
+	var tprotocol = __webpack_require__(41);
+
+	var TBufferedTransport = __webpack_require__(10);
+	var TJSONProtocol = __webpack_require__(42);
+	var InputBufferUnderrunError = __webpack_require__(12);
+
+	var createClient = __webpack_require__(17);
+
+	exports.WSConnection = WSConnection;
+
+	/**
+	 * @class
+	 * @name WSConnectOptions
+	 * @property {string} transport - The Thrift layered transport to use (TBufferedTransport, etc).
+	 * @property {string} protocol - The Thrift serialization protocol to use (TJSONProtocol, etc.).
+	 * @property {string} path - The URL path to connect to (e.g. "/", "/mySvc", "/thrift/quoteSvc", etc.).
+	 * @property {object} headers - A standard Node.js header hash, an object hash containing key/value
+	 *        pairs where the key is the header name string and the value is the header value string.
+	 * @property {boolean} secure - True causes the connection to use wss, otherwise ws is used.
+	 * @property {object} wsOptions - Options passed on to WebSocket.
+	 * @example
+	 *     //Use a secured websocket connection
+	 *     //  uses the buffered transport layer, uses the JSON protocol and directs RPC traffic
+	 *     //  to wss://thrift.example.com:9090/hello
+	 *     var thrift = require('thrift');
+	 *     var options = {
+	 *        transport: thrift.TBufferedTransport,
+	 *        protocol: thrift.TJSONProtocol,
+	 *        path: "/hello",
+	 *        secure: true
+	 *     };
+	 *     var con = thrift.createWSConnection("thrift.example.com", 9090, options);
+	 *     con.open()
+	 *     var client = thrift.createWSClient(myService, connection);
+	 *     client.myServiceFunction();
+	 *     con.close()
+	 */
+
+	/**
+	 * Initializes a Thrift WSConnection instance (use createWSConnection() rather than
+	 *    instantiating directly).
+	 * @constructor
+	 * @param {string} host - The host name or IP to connect to.
+	 * @param {number} port - The TCP port to connect to.
+	 * @param {WSConnectOptions} options - The configuration options to use.
+	 * @throws {error} Exceptions other than ttransport.InputBufferUnderrunError are rethrown
+	 * @event {error} The "error" event is fired when a Node.js error event occurs during
+	 *     request or response processing, in which case the node error is passed on. An "error"
+	 *     event may also be fired when the connectison can not map a response back to the
+	 *     appropriate client (an internal error), generating a TApplicationException.
+	 * @classdesc WSConnection objects provide Thrift end point transport
+	 *     semantics implemented using Websockets.
+	 * @see {@link createWSConnection}
+	 */
+	function WSConnection(host, port, options) {
+	  //Initialize the emitter base object
+	  EventEmitter.call(this);
+
+	  //Set configuration
+	  var self = this;
+	  this.options = options || {};
+	  this.host = host;
+	  this.port = port;
+	  this.secure = this.options.secure || false;
+	  this.transport = this.options.transport || TBufferedTransport;
+	  this.protocol = this.options.protocol || TJSONProtocol;
+	  this.path = this.options.path;
+	  this.send_pending = [];
+
+	  //The sequence map is used to map seqIDs back to the
+	  //  calling client in multiplexed scenarios
+	  this.seqId2Service = {};
+
+	  //Prepare WebSocket options
+	  this.wsOptions = {
+	    host: this.host,
+	    port: this.port || 80,
+	    path: this.options.path || '/',
+	    headers: this.options.headers || {}
+	  };
+	  for (var attrname in this.options.wsOptions) {
+	    this.wsOptions[attrname] = this.options.wsOptions[attrname];
+	  }
+	};
+	util.inherits(WSConnection, EventEmitter);
+
+	WSConnection.prototype.__reset = function() {
+	  this.socket = null; //The web socket
+	  this.send_pending = []; //Buffers/Callback pairs waiting to be sent
+	};
+
+	WSConnection.prototype.__onOpen = function() {
+	  var self = this;
+	  this.emit("open");
+	  if (this.send_pending.length > 0) {
+	    //If the user made calls before the connection was fully
+	    //open, send them now
+	    this.send_pending.forEach(function(data) {
+	      self.socket.send(data);
+	    });
+	    this.send_pending = [];
+	  }
+	};
+
+	WSConnection.prototype.__onClose = function(evt) {
+	  this.emit("close");
+	  this.__reset();
+	};
+
+	WSConnection.prototype.__decodeCallback = function(transport_with_data) {
+	  var proto = new this.protocol(transport_with_data);
+	  try {
+	    while (true) {
+	      var header = proto.readMessageBegin();
+	      var dummy_seqid = header.rseqid * -1;
+	      var client = this.client;
+	      //The Multiplexed Protocol stores a hash of seqid to service names
+	      //  in seqId2Service. If the SeqId is found in the hash we need to
+	      //  lookup the appropriate client for this call.
+	      //  The client var is a single client object when not multiplexing,
+	      //  when using multiplexing it is a service name keyed hash of client
+	      //  objects.
+	      //NOTE: The 2 way interdependencies between protocols, transports,
+	      //  connections and clients in the Node.js implementation are irregular
+	      //  and make the implementation difficult to extend and maintain. We
+	      //  should bring this stuff inline with typical thrift I/O stack
+	      //  operation soon.
+	      //  --ra
+	      var service_name = this.seqId2Service[header.rseqid];
+	      if (service_name) {
+	        client = this.client[service_name];
+	        delete this.seqId2Service[header.rseqid];
+	      }
+	      /*jshint -W083 */
+	      client._reqs[dummy_seqid] = function(err, success) {
+	        transport_with_data.commitPosition();
+	        var clientCallback = client._reqs[header.rseqid];
+	        delete client._reqs[header.rseqid];
+	        if (clientCallback) {
+	          clientCallback(err, success);
+	        }
+	      };
+	      /*jshint +W083 */
+	      if (client['recv_' + header.fname]) {
+	        client['recv_' + header.fname](proto, header.mtype, dummy_seqid);
+	      } else {
+	        delete client._reqs[dummy_seqid];
+	        this.emit("error",
+	          new thrift.TApplicationException(
+	            thrift.TApplicationExceptionType.WRONG_METHOD_NAME,
+	            "Received a response to an unknown RPC function"));
+	      }
+	    }
+	  } catch (e) {
+	    if (e instanceof InputBufferUnderrunError) {
+	      transport_with_data.rollbackPosition();
+	    } else {
+	      throw e;
+	    }
+	  }
+	};
+
+	WSConnection.prototype.__onData = function(data) {
+	  if (Object.prototype.toString.call(data) == "[object ArrayBuffer]") {
+	    data = new Uint8Array(data);
+	  }
+	  var buf = new Buffer(data);
+	  this.transport.receiver(this.__decodeCallback.bind(this))(buf);
+
+	};
+
+	WSConnection.prototype.__onMessage = function(evt) {
+	  this.__onData(evt.data);
+	};
+
+	WSConnection.prototype.__onError = function(evt) {
+	  this.emit("error", evt);
+	  this.socket.close();
+	};
+
+	/**
+	 * Returns true if the transport is open
+	 * @readonly
+	 * @returns {boolean}
+	 */
+	WSConnection.prototype.isOpen = function() {
+	  return this.socket && this.socket.readyState == this.socket.OPEN;
+	};
+
+	/**
+	 * Opens the transport connection
+	 */
+	WSConnection.prototype.open = function() {
+	  //If OPEN/CONNECTING/CLOSING ignore additional opens
+	  if (this.socket && this.socket.readyState != this.socket.CLOSED) {
+	    return;
+	  }
+	  //If there is no socket or the socket is closed:
+	  this.socket = new WebSocket(this.uri(), "", this.wsOptions);
+	  this.socket.binaryType = 'arraybuffer';
+	  this.socket.onopen = this.__onOpen.bind(this);
+	  this.socket.onmessage = this.__onMessage.bind(this);
+	  this.socket.onerror = this.__onError.bind(this);
+	  this.socket.onclose = this.__onClose.bind(this);
+	};
+
+	/**
+	 * Closes the transport connection
+	 */
+	WSConnection.prototype.close = function() {
+	  this.socket.close();
+	};
+
+	/**
+	 * Return URI for the connection
+	 * @returns {string} URI
+	 */
+	WSConnection.prototype.uri = function() {
+	  var schema = this.secure ? 'wss' : 'ws';
+	  var port = '';
+	  var path = this.path || '/';
+	  var host = this.host;
+
+	  // avoid port if default for schema
+	  if (this.port && (('wss' == schema && this.port != 443) ||
+	    ('ws' == schema && this.port != 80))) {
+	    port = ':' + this.port;
+	  }
+
+	  return schema + '://' + host + port + path;
+	};
+
+	/**
+	 * Writes Thrift message data to the connection
+	 * @param {Buffer} data - A Node.js Buffer containing the data to write
+	 * @returns {void} No return value.
+	 * @event {error} the "error" event is raised upon request failure passing the
+	 *     Node.js error object to the listener.
+	 */
+	WSConnection.prototype.write = function(data) {
+	  if (this.isOpen()) {
+	    //Send data and register a callback to invoke the client callback
+	    this.socket.send(data);
+	  } else {
+	    //Queue the send to go out __onOpen
+	    this.send_pending.push(data);
+	  }
+	};
+
+	/**
+	 * Creates a new WSConnection object, used by Thrift clients to connect
+	 *    to Thrift HTTP based servers.
+	 * @param {string} host - The host name or IP to connect to.
+	 * @param {number} port - The TCP port to connect to.
+	 * @param {WSConnectOptions} options - The configuration options to use.
+	 * @returns {WSConnection} The connection object.
+	 * @see {@link WSConnectOptions}
+	 */
+	exports.createWSConnection = function(host, port, options) {
+	  return new WSConnection(host, port, options);
+	};
+
+	exports.createWSClient = createClient;
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	const WebSocket = __webpack_require__(24);
+
+	WebSocket.Server = __webpack_require__(38);
+	WebSocket.Receiver = __webpack_require__(34);
+	WebSocket.Sender = __webpack_require__(37);
+
+	module.exports = WebSocket;
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	const EventEmitter = __webpack_require__(6);
+	const crypto = __webpack_require__(25);
+	const https = __webpack_require__(21);
+	const http = __webpack_require__(20);
+	const net = __webpack_require__(8);
+	const tls = __webpack_require__(9);
+	const url = __webpack_require__(26);
+
+	const PerMessageDeflate = __webpack_require__(27);
+	const EventTarget = __webpack_require__(32);
+	const extension = __webpack_require__(33);
+	const constants = __webpack_require__(31);
+	const Receiver = __webpack_require__(34);
+	const Sender = __webpack_require__(37);
+
+	const readyStates = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'];
+	const kWebSocket = constants.kWebSocket;
+	const protocolVersions = [8, 13];
+	const closeTimeout = 30 * 1000; // Allow 30 seconds to terminate the connection cleanly.
+
+	/**
+	 * Class representing a WebSocket.
+	 *
+	 * @extends EventEmitter
+	 */
+	class WebSocket extends EventEmitter {
+	  /**
+	   * Create a new `WebSocket`.
+	   *
+	   * @param {(String|url.Url|url.URL)} address The URL to which to connect
+	   * @param {(String|String[])} protocols The subprotocols
+	   * @param {Object} options Connection options
+	   */
+	  constructor (address, protocols, options) {
+	    super();
+
+	    this.readyState = WebSocket.CONNECTING;
+	    this.protocol = '';
+
+	    this._binaryType = constants.BINARY_TYPES[0];
+	    this._closeFrameReceived = false;
+	    this._closeFrameSent = false;
+	    this._closeMessage = '';
+	    this._closeTimer = null;
+	    this._closeCode = 1006;
+	    this._extensions = {};
+	    this._isServer = true;
+	    this._receiver = null;
+	    this._sender = null;
+	    this._socket = null;
+
+	    if (address !== null) {
+	      if (Array.isArray(protocols)) {
+	        protocols = protocols.join(', ');
+	      } else if (typeof protocols === 'object' && protocols !== null) {
+	        options = protocols;
+	        protocols = undefined;
+	      }
+
+	      initAsClient.call(this, address, protocols, options);
+	    }
+	  }
+
+	  get CONNECTING () { return WebSocket.CONNECTING; }
+	  get CLOSING () { return WebSocket.CLOSING; }
+	  get CLOSED () { return WebSocket.CLOSED; }
+	  get OPEN () { return WebSocket.OPEN; }
+
+	  /**
+	   * This deviates from the WHATWG interface since ws doesn't support the required
+	   * default "blob" type (instead we define a custom "nodebuffer" type).
+	   *
+	   * @type {String}
+	   */
+	  get binaryType () {
+	    return this._binaryType;
+	  }
+
+	  set binaryType (type) {
+	    if (constants.BINARY_TYPES.indexOf(type) < 0) return;
+
+	    this._binaryType = type;
+
+	    //
+	    // Allow to change `binaryType` on the fly.
+	    //
+	    if (this._receiver) this._receiver._binaryType = type;
+	  }
+
+	  /**
+	   * @type {Number}
+	   */
+	  get bufferedAmount () {
+	    if (!this._socket) return 0;
+
+	    //
+	    // `socket.bufferSize` is `undefined` if the socket is closed.
+	    //
+	    return (this._socket.bufferSize || 0) + this._sender._bufferedBytes;
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  get extensions () {
+	    return Object.keys(this._extensions).join();
+	  }
+
+	  /**
+	   * Set up the socket and the internal resources.
+	   *
+	   * @param {net.Socket} socket The network socket between the server and client
+	   * @param {Buffer} head The first packet of the upgraded stream
+	   * @param {Number} maxPayload The maximum allowed message size
+	   * @private
+	   */
+	  setSocket (socket, head, maxPayload) {
+	    const receiver = new Receiver(
+	      this._binaryType,
+	      this._extensions,
+	      maxPayload
+	    );
+
+	    this._sender = new Sender(socket, this._extensions);
+	    this._receiver = receiver;
+	    this._socket = socket;
+
+	    receiver[kWebSocket] = this;
+	    socket[kWebSocket] = this;
+
+	    receiver.on('conclude', receiverOnConclude);
+	    receiver.on('drain', receiverOnDrain);
+	    receiver.on('error', receiverOnError);
+	    receiver.on('message', receiverOnMessage);
+	    receiver.on('ping', receiverOnPing);
+	    receiver.on('pong', receiverOnPong);
+
+	    socket.setTimeout(0);
+	    socket.setNoDelay();
+
+	    if (head.length > 0) socket.unshift(head);
+
+	    socket.on('close', socketOnClose);
+	    socket.on('data', socketOnData);
+	    socket.on('end', socketOnEnd);
+	    socket.on('error', socketOnError);
+
+	    this.readyState = WebSocket.OPEN;
+	    this.emit('open');
+	  }
+
+	  /**
+	   * Emit the `'close'` event.
+	   *
+	   * @private
+	   */
+	  emitClose () {
+	    this.readyState = WebSocket.CLOSED;
+
+	    if (!this._socket) {
+	      this.emit('close', this._closeCode, this._closeMessage);
+	      return;
+	    }
+
+	    if (this._extensions[PerMessageDeflate.extensionName]) {
+	      this._extensions[PerMessageDeflate.extensionName].cleanup();
+	    }
+
+	    this._receiver.removeAllListeners();
+	    this.emit('close', this._closeCode, this._closeMessage);
+	  }
+
+	  /**
+	   * Start a closing handshake.
+	   *
+	   *          +----------+   +-----------+   +----------+
+	   *     - - -|ws.close()|-->|close frame|-->|ws.close()|- - -
+	   *    |     +----------+   +-----------+   +----------+     |
+	   *          +----------+   +-----------+         |
+	   * CLOSING  |ws.close()|<--|close frame|<--+-----+       CLOSING
+	   *          +----------+   +-----------+   |
+	   *    |           |                        |   +---+        |
+	   *                +------------------------+-->|fin| - - - -
+	   *    |         +---+                      |   +---+
+	   *     - - - - -|fin|<---------------------+
+	   *              +---+
+	   *
+	   * @param {Number} code Status code explaining why the connection is closing
+	   * @param {String} data A string explaining why the connection is closing
+	   * @public
+	   */
+	  close (code, data) {
+	    if (this.readyState === WebSocket.CLOSED) return;
+	    if (this.readyState === WebSocket.CONNECTING) {
+	      const msg = 'WebSocket was closed before the connection was established';
+	      return abortHandshake(this, this._req, msg);
+	    }
+
+	    if (this.readyState === WebSocket.CLOSING) {
+	      if (this._closeFrameSent && this._closeFrameReceived) this._socket.end();
+	      return;
+	    }
+
+	    this.readyState = WebSocket.CLOSING;
+	    this._sender.close(code, data, !this._isServer, (err) => {
+	      //
+	      // This error is handled by the `'error'` listener on the socket. We only
+	      // want to know if the close frame has been sent here.
+	      //
+	      if (err) return;
+
+	      this._closeFrameSent = true;
+
+	      if (this._socket.writable) {
+	        if (this._closeFrameReceived) this._socket.end();
+
+	        //
+	        // Ensure that the connection is closed even if the closing handshake
+	        // fails.
+	        //
+	        this._closeTimer = setTimeout(
+	          this._socket.destroy.bind(this._socket),
+	          closeTimeout
+	        );
+	      }
+	    });
+	  }
+
+	  /**
+	   * Send a ping.
+	   *
+	   * @param {*} data The data to send
+	   * @param {Boolean} mask Indicates whether or not to mask `data`
+	   * @param {Function} cb Callback which is executed when the ping is sent
+	   * @public
+	   */
+	  ping (data, mask, cb) {
+	    if (typeof data === 'function') {
+	      cb = data;
+	      data = mask = undefined;
+	    } else if (typeof mask === 'function') {
+	      cb = mask;
+	      mask = undefined;
+	    }
+
+	    if (this.readyState !== WebSocket.OPEN) {
+	      const err = new Error(
+	        `WebSocket is not open: readyState ${this.readyState} ` +
+	          `(${readyStates[this.readyState]})`
+	      );
+
+	      if (cb) return cb(err);
+	      throw err;
+	    }
+
+	    if (typeof data === 'number') data = data.toString();
+	    if (mask === undefined) mask = !this._isServer;
+	    this._sender.ping(data || constants.EMPTY_BUFFER, mask, cb);
+	  }
+
+	  /**
+	   * Send a pong.
+	   *
+	   * @param {*} data The data to send
+	   * @param {Boolean} mask Indicates whether or not to mask `data`
+	   * @param {Function} cb Callback which is executed when the pong is sent
+	   * @public
+	   */
+	  pong (data, mask, cb) {
+	    if (typeof data === 'function') {
+	      cb = data;
+	      data = mask = undefined;
+	    } else if (typeof mask === 'function') {
+	      cb = mask;
+	      mask = undefined;
+	    }
+
+	    if (this.readyState !== WebSocket.OPEN) {
+	      const err = new Error(
+	        `WebSocket is not open: readyState ${this.readyState} ` +
+	          `(${readyStates[this.readyState]})`
+	      );
+
+	      if (cb) return cb(err);
+	      throw err;
+	    }
+
+	    if (typeof data === 'number') data = data.toString();
+	    if (mask === undefined) mask = !this._isServer;
+	    this._sender.pong(data || constants.EMPTY_BUFFER, mask, cb);
+	  }
+
+	  /**
+	   * Send a data message.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Object} options Options object
+	   * @param {Boolean} options.compress Specifies whether or not to compress `data`
+	   * @param {Boolean} options.binary Specifies whether `data` is binary or text
+	   * @param {Boolean} options.fin Specifies whether the fragment is the last one
+	   * @param {Boolean} options.mask Specifies whether or not to mask `data`
+	   * @param {Function} cb Callback which is executed when data is written out
+	   * @public
+	   */
+	  send (data, options, cb) {
+	    if (typeof options === 'function') {
+	      cb = options;
+	      options = {};
+	    }
+
+	    if (this.readyState !== WebSocket.OPEN) {
+	      const err = new Error(
+	        `WebSocket is not open: readyState ${this.readyState} ` +
+	          `(${readyStates[this.readyState]})`
+	      );
+
+	      if (cb) return cb(err);
+	      throw err;
+	    }
+
+	    if (typeof data === 'number') data = data.toString();
+
+	    const opts = Object.assign({
+	      binary: typeof data !== 'string',
+	      mask: !this._isServer,
+	      compress: true,
+	      fin: true
+	    }, options);
+
+	    if (!this._extensions[PerMessageDeflate.extensionName]) {
+	      opts.compress = false;
+	    }
+
+	    this._sender.send(data || constants.EMPTY_BUFFER, opts, cb);
+	  }
+
+	  /**
+	   * Forcibly close the connection.
+	   *
+	   * @public
+	   */
+	  terminate () {
+	    if (this.readyState === WebSocket.CLOSED) return;
+	    if (this.readyState === WebSocket.CONNECTING) {
+	      const msg = 'WebSocket was closed before the connection was established';
+	      return abortHandshake(this, this._req, msg);
+	    }
+
+	    if (this._socket) {
+	      this.readyState = WebSocket.CLOSING;
+	      this._socket.destroy();
+	    }
+	  }
+	}
+
+	readyStates.forEach((readyState, i) => {
+	  WebSocket[readyStates[i]] = i;
+	});
+
+	//
+	// Add the `onopen`, `onerror`, `onclose`, and `onmessage` attributes.
+	// See https://html.spec.whatwg.org/multipage/comms.html#the-websocket-interface
+	//
+	['open', 'error', 'close', 'message'].forEach((method) => {
+	  Object.defineProperty(WebSocket.prototype, `on${method}`, {
+	    /**
+	     * Return the listener of the event.
+	     *
+	     * @return {(Function|undefined)} The event listener or `undefined`
+	     * @public
+	     */
+	    get () {
+	      const listeners = this.listeners(method);
+	      for (var i = 0; i < listeners.length; i++) {
+	        if (listeners[i]._listener) return listeners[i]._listener;
+	      }
+	    },
+	    /**
+	     * Add a listener for the event.
+	     *
+	     * @param {Function} listener The listener to add
+	     * @public
+	     */
+	    set (listener) {
+	      const listeners = this.listeners(method);
+	      for (var i = 0; i < listeners.length; i++) {
+	        //
+	        // Remove only the listeners added via `addEventListener`.
+	        //
+	        if (listeners[i]._listener) this.removeListener(method, listeners[i]);
+	      }
+	      this.addEventListener(method, listener);
+	    }
+	  });
+	});
+
+	WebSocket.prototype.addEventListener = EventTarget.addEventListener;
+	WebSocket.prototype.removeEventListener = EventTarget.removeEventListener;
+
+	module.exports = WebSocket;
+
+	/**
+	 * Initialize a WebSocket client.
+	 *
+	 * @param {(String|url.Url|url.URL)} address The URL to which to connect
+	 * @param {String} protocols The subprotocols
+	 * @param {Object} options Connection options
+	 * @param {(Boolean|Object)} options.perMessageDeflate Enable/disable permessage-deflate
+	 * @param {Number} options.handshakeTimeout Timeout in milliseconds for the handshake request
+	 * @param {Number} options.protocolVersion Value of the `Sec-WebSocket-Version` header
+	 * @param {String} options.origin Value of the `Origin` or `Sec-WebSocket-Origin` header
+	 * @private
+	 */
+	function initAsClient (address, protocols, options) {
+	  options = Object.assign({
+	    protocolVersion: protocolVersions[1],
+	    perMessageDeflate: true
+	  }, options, {
+	    createConnection: undefined,
+	    socketPath: undefined,
+	    hostname: undefined,
+	    protocol: undefined,
+	    timeout: undefined,
+	    method: undefined,
+	    auth: undefined,
+	    host: undefined,
+	    path: undefined,
+	    port: undefined
+	  });
+
+	  if (protocolVersions.indexOf(options.protocolVersion) === -1) {
+	    throw new RangeError(
+	      `Unsupported protocol version: ${options.protocolVersion} ` +
+	        `(supported versions: ${protocolVersions.join(', ')})`
+	    );
+	  }
+
+	  this._isServer = false;
+
+	  var parsedUrl;
+
+	  if (typeof address === 'object' && address.href !== undefined) {
+	    parsedUrl = address;
+	    this.url = address.href;
+	  } else {
+	    parsedUrl = url.parse(address);
+	    this.url = address;
+	  }
+
+	  const isUnixSocket = parsedUrl.protocol === 'ws+unix:';
+
+	  if (!parsedUrl.host && (!isUnixSocket || !parsedUrl.pathname)) {
+	    throw new Error(`Invalid URL: ${this.url}`);
+	  }
+
+	  const isSecure = parsedUrl.protocol === 'wss:' || parsedUrl.protocol === 'https:';
+	  const key = crypto.randomBytes(16).toString('base64');
+	  const httpObj = isSecure ? https : http;
+	  const path = parsedUrl.search
+	    ? `${parsedUrl.pathname || '/'}${parsedUrl.search}`
+	    : parsedUrl.pathname || '/';
+	  var perMessageDeflate;
+
+	  options.createConnection = isSecure ? tlsConnect : netConnect;
+	  options.port = parsedUrl.port || (isSecure ? 443 : 80);
+	  options.host = parsedUrl.hostname.startsWith('[')
+	    ? parsedUrl.hostname.slice(1, -1)
+	    : parsedUrl.hostname;
+	  options.headers = Object.assign({
+	    'Sec-WebSocket-Version': options.protocolVersion,
+	    'Sec-WebSocket-Key': key,
+	    'Connection': 'Upgrade',
+	    'Upgrade': 'websocket'
+	  }, options.headers);
+	  options.path = path;
+
+	  if (options.perMessageDeflate) {
+	    perMessageDeflate = new PerMessageDeflate(
+	      options.perMessageDeflate !== true ? options.perMessageDeflate : {},
+	      false
+	    );
+	    options.headers['Sec-WebSocket-Extensions'] = extension.format({
+	      [PerMessageDeflate.extensionName]: perMessageDeflate.offer()
+	    });
+	  }
+	  if (protocols) {
+	    options.headers['Sec-WebSocket-Protocol'] = protocols;
+	  }
+	  if (options.origin) {
+	    if (options.protocolVersion < 13) {
+	      options.headers['Sec-WebSocket-Origin'] = options.origin;
+	    } else {
+	      options.headers.Origin = options.origin;
+	    }
+	  }
+	  if (parsedUrl.auth) {
+	    options.auth = parsedUrl.auth;
+	  } else if (parsedUrl.username || parsedUrl.password) {
+	    options.auth = `${parsedUrl.username}:${parsedUrl.password}`;
+	  }
+
+	  if (isUnixSocket) {
+	    const parts = path.split(':');
+
+	    if (options.agent == null && process.versions.modules < 57) {
+	      //
+	      // Setting `socketPath` in conjunction with `createConnection` without an
+	      // agent throws an error on Node.js < 8. Work around the issue by using a
+	      // different property.
+	      //
+	      options._socketPath = parts[0];
+	    } else {
+	      options.socketPath = parts[0];
+	    }
+
+	    options.path = parts[1];
+	  }
+
+	  var req = this._req = httpObj.get(options);
+
+	  if (options.handshakeTimeout) {
+	    req.setTimeout(
+	      options.handshakeTimeout,
+	      () => abortHandshake(this, req, 'Opening handshake has timed out')
+	    );
+	  }
+
+	  req.on('error', (err) => {
+	    if (this._req.aborted) return;
+
+	    req = this._req = null;
+	    this.readyState = WebSocket.CLOSING;
+	    this.emit('error', err);
+	    this.emitClose();
+	  });
+
+	  req.on('response', (res) => {
+	    if (this.emit('unexpected-response', req, res)) return;
+
+	    abortHandshake(this, req, `Unexpected server response: ${res.statusCode}`);
+	  });
+
+	  req.on('upgrade', (res, socket, head) => {
+	    this.emit('upgrade', res);
+
+	    //
+	    // The user may have closed the connection from a listener of the `upgrade`
+	    // event.
+	    //
+	    if (this.readyState !== WebSocket.CONNECTING) return;
+
+	    req = this._req = null;
+
+	    const digest = crypto.createHash('sha1')
+	      .update(key + constants.GUID, 'binary')
+	      .digest('base64');
+
+	    if (res.headers['sec-websocket-accept'] !== digest) {
+	      abortHandshake(this, socket, 'Invalid Sec-WebSocket-Accept header');
+	      return;
+	    }
+
+	    const serverProt = res.headers['sec-websocket-protocol'];
+	    const protList = (protocols || '').split(/, */);
+	    var protError;
+
+	    if (!protocols && serverProt) {
+	      protError = 'Server sent a subprotocol but none was requested';
+	    } else if (protocols && !serverProt) {
+	      protError = 'Server sent no subprotocol';
+	    } else if (serverProt && protList.indexOf(serverProt) === -1) {
+	      protError = 'Server sent an invalid subprotocol';
+	    }
+
+	    if (protError) {
+	      abortHandshake(this, socket, protError);
+	      return;
+	    }
+
+	    if (serverProt) this.protocol = serverProt;
+
+	    if (perMessageDeflate) {
+	      try {
+	        const extensions = extension.parse(
+	          res.headers['sec-websocket-extensions']
+	        );
+
+	        if (extensions[PerMessageDeflate.extensionName]) {
+	          perMessageDeflate.accept(
+	            extensions[PerMessageDeflate.extensionName]
+	          );
+	          this._extensions[PerMessageDeflate.extensionName] = perMessageDeflate;
+	        }
+	      } catch (err) {
+	        abortHandshake(this, socket, 'Invalid Sec-WebSocket-Extensions header');
+	        return;
+	      }
+	    }
+
+	    this.setSocket(socket, head, 0);
+	  });
+	}
+
+	/**
+	 * Create a `net.Socket` and initiate a connection.
+	 *
+	 * @param {Object} options Connection options
+	 * @return {net.Socket} The newly created socket used to start the connection
+	 * @private
+	 */
+	function netConnect (options) {
+	  options.path = options.socketPath || options._socketPath || undefined;
+	  return net.connect(options);
+	}
+
+	/**
+	 * Create a `tls.TLSSocket` and initiate a connection.
+	 *
+	 * @param {Object} options Connection options
+	 * @return {tls.TLSSocket} The newly created socket used to start the connection
+	 * @private
+	 */
+	function tlsConnect (options) {
+	  options.path = options.socketPath || options._socketPath || undefined;
+	  options.servername = options.servername || options.host;
+	  return tls.connect(options);
+	}
+
+	/**
+	 * Abort the handshake and emit an error.
+	 *
+	 * @param {WebSocket} websocket The WebSocket instance
+	 * @param {(http.ClientRequest|net.Socket)} stream The request to abort or the
+	 *     socket to destroy
+	 * @param {String} message The error message
+	 * @private
+	 */
+	function abortHandshake (websocket, stream, message) {
+	  websocket.readyState = WebSocket.CLOSING;
+
+	  const err = new Error(message);
+	  Error.captureStackTrace(err, abortHandshake);
+
+	  if (stream.setHeader) {
+	    stream.abort();
+	    stream.once('abort', websocket.emitClose.bind(websocket));
+	    websocket.emit('error', err);
+	  } else {
+	    stream.destroy(err);
+	    stream.once('error', websocket.emit.bind(websocket, 'error'));
+	    stream.once('close', websocket.emitClose.bind(websocket));
+	  }
+	}
+
+	/**
+	 * The listener of the `Receiver` `'conclude'` event.
+	 *
+	 * @param {Number} code The status code
+	 * @param {String} reason The reason for closing
+	 * @private
+	 */
+	function receiverOnConclude (code, reason) {
+	  const websocket = this[kWebSocket];
+
+	  websocket._socket.removeListener('data', socketOnData);
+	  websocket._socket.resume();
+
+	  websocket._closeFrameReceived = true;
+	  websocket._closeMessage = reason;
+	  websocket._closeCode = code;
+
+	  if (code === 1005) websocket.close();
+	  else websocket.close(code, reason);
+	}
+
+	/**
+	 * The listener of the `Receiver` `'drain'` event.
+	 *
+	 * @private
+	 */
+	function receiverOnDrain () {
+	  this[kWebSocket]._socket.resume();
+	}
+
+	/**
+	 * The listener of the `Receiver` `'error'` event.
+	 *
+	 * @param {(RangeError|Error)} err The emitted error
+	 * @private
+	 */
+	function receiverOnError (err) {
+	  const websocket = this[kWebSocket];
+
+	  websocket._socket.removeListener('data', socketOnData);
+
+	  websocket.readyState = WebSocket.CLOSING;
+	  websocket._closeCode = err[constants.kStatusCode];
+	  websocket.emit('error', err);
+	  websocket._socket.destroy();
+	}
+
+	/**
+	 * The listener of the `Receiver` `'finish'` event.
+	 *
+	 * @private
+	 */
+	function receiverOnFinish () {
+	  this[kWebSocket].emitClose();
+	}
+
+	/**
+	 * The listener of the `Receiver` `'message'` event.
+	 *
+	 * @param {(String|Buffer|ArrayBuffer|Buffer[])} data The message
+	 * @private
+	 */
+	function receiverOnMessage (data) {
+	  this[kWebSocket].emit('message', data);
+	}
+
+	/**
+	 * The listener of the `Receiver` `'ping'` event.
+	 *
+	 * @param {Buffer} data The data included in the ping frame
+	 * @private
+	 */
+	function receiverOnPing (data) {
+	  const websocket = this[kWebSocket];
+
+	  websocket.pong(data, !websocket._isServer, constants.NOOP);
+	  websocket.emit('ping', data);
+	}
+
+	/**
+	 * The listener of the `Receiver` `'pong'` event.
+	 *
+	 * @param {Buffer} data The data included in the pong frame
+	 * @private
+	 */
+	function receiverOnPong (data) {
+	  this[kWebSocket].emit('pong', data);
+	}
+
+	/**
+	 * The listener of the `net.Socket` `'close'` event.
+	 *
+	 * @private
+	 */
+	function socketOnClose () {
+	  const websocket = this[kWebSocket];
+
+	  this.removeListener('close', socketOnClose);
+	  this.removeListener('end', socketOnEnd);
+
+	  websocket.readyState = WebSocket.CLOSING;
+
+	  //
+	  // The close frame might not have been received or the `'end'` event emitted,
+	  // for example, if the socket was destroyed due to an error. Ensure that the
+	  // `receiver` stream is closed after writing any remaining buffered data to
+	  // it. If the readable side of the socket is in flowing mode then there is no
+	  // buffered data as everything has been already written and `readable.read()`
+	  // will return `null`. If instead, the socket is paused, any possible buffered
+	  // data will be read as a single chunk and emitted synchronously in a single
+	  // `'data'` event.
+	  //
+	  websocket._socket.read();
+	  websocket._receiver.end();
+
+	  this.removeListener('data', socketOnData);
+	  this[kWebSocket] = undefined;
+
+	  clearTimeout(websocket._closeTimer);
+
+	  if (
+	    websocket._receiver._writableState.finished ||
+	    websocket._receiver._writableState.errorEmitted
+	  ) {
+	    websocket.emitClose();
+	  } else {
+	    websocket._receiver.on('error', receiverOnFinish);
+	    websocket._receiver.on('finish', receiverOnFinish);
+	  }
+	}
+
+	/**
+	 * The listener of the `net.Socket` `'data'` event.
+	 *
+	 * @param {Buffer} chunk A chunk of data
+	 * @private
+	 */
+	function socketOnData (chunk) {
+	  if (!this[kWebSocket]._receiver.write(chunk)) {
+	    this.pause();
+	  }
+	}
+
+	/**
+	 * The listener of the `net.Socket` `'end'` event.
+	 *
+	 * @private
+	 */
+	function socketOnEnd () {
+	  const websocket = this[kWebSocket];
+
+	  websocket.readyState = WebSocket.CLOSING;
+	  websocket._receiver.end();
+	  this.end();
+	}
+
+	/**
+	 * The listener of the `net.Socket` `'error'` event.
+	 *
+	 * @private
+	 */
+	function socketOnError () {
+	  const websocket = this[kWebSocket];
+
+	  this.removeListener('error', socketOnError);
+	  this.on('error', constants.NOOP);
+
+	  if (websocket) {
+	    websocket.readyState = WebSocket.CLOSING;
+	    this.destroy();
+	  }
+	}
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+	module.exports = require("crypto");
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+	module.exports = require("url");
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	const Limiter = __webpack_require__(28);
+	const zlib = __webpack_require__(29);
+
+	const bufferUtil = __webpack_require__(30);
+	const constants = __webpack_require__(31);
+
+	const TRAILER = Buffer.from([0x00, 0x00, 0xff, 0xff]);
+	const EMPTY_BLOCK = Buffer.from([0x00]);
+
+	const kPerMessageDeflate = Symbol('permessage-deflate');
+	const kWriteInProgress = Symbol('write-in-progress');
+	const kPendingClose = Symbol('pending-close');
+	const kTotalLength = Symbol('total-length');
+	const kCallback = Symbol('callback');
+	const kBuffers = Symbol('buffers');
+	const kError = Symbol('error');
+
+	//
+	// We limit zlib concurrency, which prevents severe memory fragmentation
+	// as documented in https://github.com/nodejs/node/issues/8871#issuecomment-250915913
+	// and https://github.com/websockets/ws/issues/1202
+	//
+	// Intentionally global; it's the global thread pool that's an issue.
+	//
+	let zlibLimiter;
+
+	/**
+	 * permessage-deflate implementation.
+	 */
+	class PerMessageDeflate {
+	  /**
+	   * Creates a PerMessageDeflate instance.
+	   *
+	   * @param {Object} options Configuration options
+	   * @param {Boolean} options.serverNoContextTakeover Request/accept disabling
+	   *     of server context takeover
+	   * @param {Boolean} options.clientNoContextTakeover Advertise/acknowledge
+	   *     disabling of client context takeover
+	   * @param {(Boolean|Number)} options.serverMaxWindowBits Request/confirm the
+	   *     use of a custom server window size
+	   * @param {(Boolean|Number)} options.clientMaxWindowBits Advertise support
+	   *     for, or request, a custom client window size
+	   * @param {Object} options.zlibDeflateOptions Options to pass to zlib on deflate
+	   * @param {Object} options.zlibInflateOptions Options to pass to zlib on inflate
+	   * @param {Number} options.threshold Size (in bytes) below which messages
+	   *     should not be compressed
+	   * @param {Number} options.concurrencyLimit The number of concurrent calls to
+	   *     zlib
+	   * @param {Boolean} isServer Create the instance in either server or client
+	   *     mode
+	   * @param {Number} maxPayload The maximum allowed message length
+	   */
+	  constructor (options, isServer, maxPayload) {
+	    this._maxPayload = maxPayload | 0;
+	    this._options = options || {};
+	    this._threshold = this._options.threshold !== undefined
+	      ? this._options.threshold
+	      : 1024;
+	    this._isServer = !!isServer;
+	    this._deflate = null;
+	    this._inflate = null;
+
+	    this.params = null;
+
+	    if (!zlibLimiter) {
+	      const concurrency = this._options.concurrencyLimit !== undefined
+	        ? this._options.concurrencyLimit
+	        : 10;
+	      zlibLimiter = new Limiter({ concurrency });
+	    }
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  static get extensionName () {
+	    return 'permessage-deflate';
+	  }
+
+	  /**
+	   * Create an extension negotiation offer.
+	   *
+	   * @return {Object} Extension parameters
+	   * @public
+	   */
+	  offer () {
+	    const params = {};
+
+	    if (this._options.serverNoContextTakeover) {
+	      params.server_no_context_takeover = true;
+	    }
+	    if (this._options.clientNoContextTakeover) {
+	      params.client_no_context_takeover = true;
+	    }
+	    if (this._options.serverMaxWindowBits) {
+	      params.server_max_window_bits = this._options.serverMaxWindowBits;
+	    }
+	    if (this._options.clientMaxWindowBits) {
+	      params.client_max_window_bits = this._options.clientMaxWindowBits;
+	    } else if (this._options.clientMaxWindowBits == null) {
+	      params.client_max_window_bits = true;
+	    }
+
+	    return params;
+	  }
+
+	  /**
+	   * Accept an extension negotiation offer/response.
+	   *
+	   * @param {Array} configurations The extension negotiation offers/reponse
+	   * @return {Object} Accepted configuration
+	   * @public
+	   */
+	  accept (configurations) {
+	    configurations = this.normalizeParams(configurations);
+
+	    this.params = this._isServer
+	      ? this.acceptAsServer(configurations)
+	      : this.acceptAsClient(configurations);
+
+	    return this.params;
+	  }
+
+	  /**
+	   * Releases all resources used by the extension.
+	   *
+	   * @public
+	   */
+	  cleanup () {
+	    if (this._inflate) {
+	      if (this._inflate[kWriteInProgress]) {
+	        this._inflate[kPendingClose] = true;
+	      } else {
+	        this._inflate.close();
+	        this._inflate = null;
+	      }
+	    }
+	    if (this._deflate) {
+	      if (this._deflate[kWriteInProgress]) {
+	        this._deflate[kPendingClose] = true;
+	      } else {
+	        this._deflate.close();
+	        this._deflate = null;
+	      }
+	    }
+	  }
+
+	  /**
+	   *  Accept an extension negotiation offer.
+	   *
+	   * @param {Array} offers The extension negotiation offers
+	   * @return {Object} Accepted configuration
+	   * @private
+	   */
+	  acceptAsServer (offers) {
+	    const opts = this._options;
+	    const accepted = offers.find((params) => {
+	      if (
+	        (opts.serverNoContextTakeover === false &&
+	          params.server_no_context_takeover) ||
+	        (params.server_max_window_bits &&
+	          (opts.serverMaxWindowBits === false ||
+	            (typeof opts.serverMaxWindowBits === 'number' &&
+	              opts.serverMaxWindowBits > params.server_max_window_bits))) ||
+	        (typeof opts.clientMaxWindowBits === 'number' &&
+	          !params.client_max_window_bits)
+	      ) {
+	        return false;
+	      }
+
+	      return true;
+	    });
+
+	    if (!accepted) {
+	      throw new Error('None of the extension offers can be accepted');
+	    }
+
+	    if (opts.serverNoContextTakeover) {
+	      accepted.server_no_context_takeover = true;
+	    }
+	    if (opts.clientNoContextTakeover) {
+	      accepted.client_no_context_takeover = true;
+	    }
+	    if (typeof opts.serverMaxWindowBits === 'number') {
+	      accepted.server_max_window_bits = opts.serverMaxWindowBits;
+	    }
+	    if (typeof opts.clientMaxWindowBits === 'number') {
+	      accepted.client_max_window_bits = opts.clientMaxWindowBits;
+	    } else if (
+	      accepted.client_max_window_bits === true ||
+	      opts.clientMaxWindowBits === false
+	    ) {
+	      delete accepted.client_max_window_bits;
+	    }
+
+	    return accepted;
+	  }
+
+	  /**
+	   * Accept the extension negotiation response.
+	   *
+	   * @param {Array} response The extension negotiation response
+	   * @return {Object} Accepted configuration
+	   * @private
+	   */
+	  acceptAsClient (response) {
+	    const params = response[0];
+
+	    if (
+	      this._options.clientNoContextTakeover === false &&
+	      params.client_no_context_takeover
+	    ) {
+	      throw new Error('Unexpected parameter "client_no_context_takeover"');
+	    }
+
+	    if (!params.client_max_window_bits) {
+	      if (typeof this._options.clientMaxWindowBits === 'number') {
+	        params.client_max_window_bits = this._options.clientMaxWindowBits;
+	      }
+	    } else if (
+	      this._options.clientMaxWindowBits === false ||
+	      (typeof this._options.clientMaxWindowBits === 'number' &&
+	        params.client_max_window_bits > this._options.clientMaxWindowBits)
+	    ) {
+	      throw new Error(
+	        'Unexpected or invalid parameter "client_max_window_bits"'
+	      );
+	    }
+
+	    return params;
+	  }
+
+	  /**
+	   * Normalize parameters.
+	   *
+	   * @param {Array} configurations The extension negotiation offers/reponse
+	   * @return {Array} The offers/response with normalized parameters
+	   * @private
+	   */
+	  normalizeParams (configurations) {
+	    configurations.forEach((params) => {
+	      Object.keys(params).forEach((key) => {
+	        var value = params[key];
+
+	        if (value.length > 1) {
+	          throw new Error(`Parameter "${key}" must have only a single value`);
+	        }
+
+	        value = value[0];
+
+	        if (key === 'client_max_window_bits') {
+	          if (value !== true) {
+	            const num = +value;
+	            if (!Number.isInteger(num) || num < 8 || num > 15) {
+	              throw new TypeError(
+	                `Invalid value for parameter "${key}": ${value}`
+	              );
+	            }
+	            value = num;
+	          } else if (!this._isServer) {
+	            throw new TypeError(
+	              `Invalid value for parameter "${key}": ${value}`
+	            );
+	          }
+	        } else if (key === 'server_max_window_bits') {
+	          const num = +value;
+	          if (!Number.isInteger(num) || num < 8 || num > 15) {
+	            throw new TypeError(
+	              `Invalid value for parameter "${key}": ${value}`
+	            );
+	          }
+	          value = num;
+	        } else if (
+	          key === 'client_no_context_takeover' ||
+	          key === 'server_no_context_takeover'
+	        ) {
+	          if (value !== true) {
+	            throw new TypeError(
+	              `Invalid value for parameter "${key}": ${value}`
+	            );
+	          }
+	        } else {
+	          throw new Error(`Unknown parameter "${key}"`);
+	        }
+
+	        params[key] = value;
+	      });
+	    });
+
+	    return configurations;
+	  }
+
+	  /**
+	   * Decompress data. Concurrency limited by async-limiter.
+	   *
+	   * @param {Buffer} data Compressed data
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @public
+	   */
+	  decompress (data, fin, callback) {
+	    zlibLimiter.push((done) => {
+	      this._decompress(data, fin, (err, result) => {
+	        done();
+	        callback(err, result);
+	      });
+	    });
+	  }
+
+	  /**
+	   * Compress data. Concurrency limited by async-limiter.
+	   *
+	   * @param {Buffer} data Data to compress
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @public
+	   */
+	  compress (data, fin, callback) {
+	    zlibLimiter.push((done) => {
+	      this._compress(data, fin, (err, result) => {
+	        done();
+	        callback(err, result);
+	      });
+	    });
+	  }
+
+	  /**
+	   * Decompress data.
+	   *
+	   * @param {Buffer} data Compressed data
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @private
+	   */
+	  _decompress (data, fin, callback) {
+	    const endpoint = this._isServer ? 'client' : 'server';
+
+	    if (!this._inflate) {
+	      const key = `${endpoint}_max_window_bits`;
+	      const windowBits = typeof this.params[key] !== 'number'
+	        ? zlib.Z_DEFAULT_WINDOWBITS
+	        : this.params[key];
+
+	      this._inflate = zlib.createInflateRaw(
+	        Object.assign({}, this._options.zlibInflateOptions, { windowBits })
+	      );
+	      this._inflate[kPerMessageDeflate] = this;
+	      this._inflate[kTotalLength] = 0;
+	      this._inflate[kBuffers] = [];
+	      this._inflate.on('error', inflateOnError);
+	      this._inflate.on('data', inflateOnData);
+	    }
+
+	    this._inflate[kCallback] = callback;
+	    this._inflate[kWriteInProgress] = true;
+
+	    this._inflate.write(data);
+	    if (fin) this._inflate.write(TRAILER);
+
+	    this._inflate.flush(() => {
+	      const err = this._inflate[kError];
+
+	      if (err) {
+	        this._inflate.close();
+	        this._inflate = null;
+	        callback(err);
+	        return;
+	      }
+
+	      const data = bufferUtil.concat(
+	        this._inflate[kBuffers],
+	        this._inflate[kTotalLength]
+	      );
+
+	      if (
+	        (fin && this.params[`${endpoint}_no_context_takeover`]) ||
+	        this._inflate[kPendingClose]
+	      ) {
+	        this._inflate.close();
+	        this._inflate = null;
+	      } else {
+	        this._inflate[kWriteInProgress] = false;
+	        this._inflate[kTotalLength] = 0;
+	        this._inflate[kBuffers] = [];
+	      }
+
+	      callback(null, data);
+	    });
+	  }
+
+	  /**
+	   * Compress data.
+	   *
+	   * @param {Buffer} data Data to compress
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @private
+	   */
+	  _compress (data, fin, callback) {
+	    if (!data || data.length === 0) {
+	      process.nextTick(callback, null, EMPTY_BLOCK);
+	      return;
+	    }
+
+	    const endpoint = this._isServer ? 'server' : 'client';
+
+	    if (!this._deflate) {
+	      const key = `${endpoint}_max_window_bits`;
+	      const windowBits = typeof this.params[key] !== 'number'
+	        ? zlib.Z_DEFAULT_WINDOWBITS
+	        : this.params[key];
+
+	      this._deflate = zlib.createDeflateRaw(
+	        Object.assign(
+	          // TODO deprecate memLevel/level and recommend zlibDeflateOptions instead
+	          {
+	            memLevel: this._options.memLevel,
+	            level: this._options.level
+	          },
+	          this._options.zlibDeflateOptions,
+	          { windowBits }
+	        )
+	      );
+
+	      this._deflate[kTotalLength] = 0;
+	      this._deflate[kBuffers] = [];
+
+	      //
+	      // `zlib.DeflateRaw` emits an `'error'` event only when an attempt to use
+	      // it is made after it has already been closed. This cannot happen here,
+	      // so we only add a listener for the `'data'` event.
+	      //
+	      this._deflate.on('data', deflateOnData);
+	    }
+
+	    this._deflate[kWriteInProgress] = true;
+
+	    this._deflate.write(data);
+	    this._deflate.flush(zlib.Z_SYNC_FLUSH, () => {
+	      var data = bufferUtil.concat(
+	        this._deflate[kBuffers],
+	        this._deflate[kTotalLength]
+	      );
+
+	      if (fin) data = data.slice(0, data.length - 4);
+
+	      if (
+	        (fin && this.params[`${endpoint}_no_context_takeover`]) ||
+	        this._deflate[kPendingClose]
+	      ) {
+	        this._deflate.close();
+	        this._deflate = null;
+	      } else {
+	        this._deflate[kWriteInProgress] = false;
+	        this._deflate[kTotalLength] = 0;
+	        this._deflate[kBuffers] = [];
+	      }
+
+	      callback(null, data);
+	    });
+	  }
+	}
+
+	module.exports = PerMessageDeflate;
+
+	/**
+	 * The listener of the `zlib.DeflateRaw` stream `'data'` event.
+	 *
+	 * @param {Buffer} chunk A chunk of data
+	 * @private
+	 */
+	function deflateOnData (chunk) {
+	  this[kBuffers].push(chunk);
+	  this[kTotalLength] += chunk.length;
+	}
+
+	/**
+	 * The listener of the `zlib.InflateRaw` stream `'data'` event.
+	 *
+	 * @param {Buffer} chunk A chunk of data
+	 * @private
+	 */
+	function inflateOnData (chunk) {
+	  this[kTotalLength] += chunk.length;
+
+	  if (
+	    this[kPerMessageDeflate]._maxPayload < 1 ||
+	    this[kTotalLength] <= this[kPerMessageDeflate]._maxPayload
+	  ) {
+	    this[kBuffers].push(chunk);
+	    return;
+	  }
+
+	  this[kError] = new RangeError('Max payload size exceeded');
+	  this[kError][constants.kStatusCode] = 1009;
+	  this.removeListener('data', inflateOnData);
+	  this.reset();
+	}
+
+	/**
+	 * The listener of the `zlib.InflateRaw` stream `'error'` event.
+	 *
+	 * @param {Error} err The emitted error
+	 * @private
+	 */
+	function inflateOnError (err) {
+	  //
+	  // There is no need to call `Zlib#close()` as the handle is automatically
+	  // closed when an error is emitted.
+	  //
+	  this[kPerMessageDeflate]._inflate = null;
+	  err[constants.kStatusCode] = 1007;
+	  this[kCallback](err);
+	}
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	function Queue(options) {
+	  if (!(this instanceof Queue)) {
+	    return new Queue(options);
+	  }
+
+	  options = options || {};
+	  this.concurrency = options.concurrency || Infinity;
+	  this.pending = 0;
+	  this.jobs = [];
+	  this.cbs = [];
+	  this._done = done.bind(this);
+	}
+
+	var arrayAddMethods = [
+	  'push',
+	  'unshift',
+	  'splice'
+	];
+
+	arrayAddMethods.forEach(function(method) {
+	  Queue.prototype[method] = function() {
+	    var methodResult = Array.prototype[method].apply(this.jobs, arguments);
+	    this._run();
+	    return methodResult;
+	  };
+	});
+
+	Object.defineProperty(Queue.prototype, 'length', {
+	  get: function() {
+	    return this.pending + this.jobs.length;
+	  }
+	});
+
+	Queue.prototype._run = function() {
+	  if (this.pending === this.concurrency) {
+	    return;
+	  }
+	  if (this.jobs.length) {
+	    var job = this.jobs.shift();
+	    this.pending++;
+	    job(this._done);
+	    this._run();
+	  }
+
+	  if (this.pending === 0) {
+	    while (this.cbs.length !== 0) {
+	      var cb = this.cbs.pop();
+	      process.nextTick(cb);
+	    }
+	  }
+	};
+
+	Queue.prototype.onDone = function(cb) {
+	  if (typeof cb === 'function') {
+	    this.cbs.push(cb);
+	    this._run();
+	  }
+	};
+
+	function done() {
+	  this.pending--;
+	  this._run();
+	}
+
+	module.exports = Queue;
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+	module.exports = require("zlib");
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/**
+	 * Merges an array of buffers into a new buffer.
+	 *
+	 * @param {Buffer[]} list The array of buffers to concat
+	 * @param {Number} totalLength The total length of buffers in the list
+	 * @return {Buffer} The resulting buffer
+	 * @public
+	 */
+	function concat (list, totalLength) {
+	  const target = Buffer.allocUnsafe(totalLength);
+	  var offset = 0;
+
+	  for (var i = 0; i < list.length; i++) {
+	    const buf = list[i];
+	    buf.copy(target, offset);
+	    offset += buf.length;
+	  }
+
+	  return target;
+	}
+
+	/**
+	 * Masks a buffer using the given mask.
+	 *
+	 * @param {Buffer} source The buffer to mask
+	 * @param {Buffer} mask The mask to use
+	 * @param {Buffer} output The buffer where to store the result
+	 * @param {Number} offset The offset at which to start writing
+	 * @param {Number} length The number of bytes to mask.
+	 * @public
+	 */
+	function _mask (source, mask, output, offset, length) {
+	  for (var i = 0; i < length; i++) {
+	    output[offset + i] = source[i] ^ mask[i & 3];
+	  }
+	}
+
+	/**
+	 * Unmasks a buffer using the given mask.
+	 *
+	 * @param {Buffer} buffer The buffer to unmask
+	 * @param {Buffer} mask The mask to use
+	 * @public
+	 */
+	function _unmask (buffer, mask) {
+	  // Required until https://github.com/nodejs/node/issues/9006 is resolved.
+	  const length = buffer.length;
+	  for (var i = 0; i < length; i++) {
+	    buffer[i] ^= mask[i & 3];
+	  }
+	}
+
+	try {
+	  const bufferUtil = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"bufferutil\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	  const bu = bufferUtil.BufferUtil || bufferUtil;
+
+	  module.exports = {
+	    mask (source, mask, output, offset, length) {
+	      if (length < 48) _mask(source, mask, output, offset, length);
+	      else bu.mask(source, mask, output, offset, length);
+	    },
+	    unmask (buffer, mask) {
+	      if (buffer.length < 32) _unmask(buffer, mask);
+	      else bu.unmask(buffer, mask);
+	    },
+	    concat
+	  };
+	} catch (e) /* istanbul ignore next */ {
+	  module.exports = { concat, mask: _mask, unmask: _unmask };
+	}
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	module.exports = {
+	  BINARY_TYPES: ['nodebuffer', 'arraybuffer', 'fragments'],
+	  GUID: '258EAFA5-E914-47DA-95CA-C5AB0DC85B11',
+	  kStatusCode: Symbol('status-code'),
+	  kWebSocket: Symbol('websocket'),
+	  EMPTY_BUFFER: Buffer.alloc(0),
+	  NOOP: () => {}
+	};
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	/**
+	 * Class representing an event.
+	 *
+	 * @private
+	 */
+	class Event {
+	  /**
+	   * Create a new `Event`.
+	   *
+	   * @param {String} type The name of the event
+	   * @param {Object} target A reference to the target to which the event was dispatched
+	   */
+	  constructor (type, target) {
+	    this.target = target;
+	    this.type = type;
+	  }
+	}
+
+	/**
+	 * Class representing a message event.
+	 *
+	 * @extends Event
+	 * @private
+	 */
+	class MessageEvent extends Event {
+	  /**
+	   * Create a new `MessageEvent`.
+	   *
+	   * @param {(String|Buffer|ArrayBuffer|Buffer[])} data The received data
+	   * @param {WebSocket} target A reference to the target to which the event was dispatched
+	   */
+	  constructor (data, target) {
+	    super('message', target);
+
+	    this.data = data;
+	  }
+	}
+
+	/**
+	 * Class representing a close event.
+	 *
+	 * @extends Event
+	 * @private
+	 */
+	class CloseEvent extends Event {
+	  /**
+	   * Create a new `CloseEvent`.
+	   *
+	   * @param {Number} code The status code explaining why the connection is being closed
+	   * @param {String} reason A human-readable string explaining why the connection is closing
+	   * @param {WebSocket} target A reference to the target to which the event was dispatched
+	   */
+	  constructor (code, reason, target) {
+	    super('close', target);
+
+	    this.wasClean = target._closeFrameReceived && target._closeFrameSent;
+	    this.reason = reason;
+	    this.code = code;
+	  }
+	}
+
+	/**
+	 * Class representing an open event.
+	 *
+	 * @extends Event
+	 * @private
+	 */
+	class OpenEvent extends Event {
+	  /**
+	   * Create a new `OpenEvent`.
+	   *
+	   * @param {WebSocket} target A reference to the target to which the event was dispatched
+	   */
+	  constructor (target) {
+	    super('open', target);
+	  }
+	}
+
+	/**
+	 * Class representing an error event.
+	 *
+	 * @extends Event
+	 * @private
+	 */
+	class ErrorEvent extends Event {
+	  /**
+	   * Create a new `ErrorEvent`.
+	   *
+	   * @param {Object} error The error that generated this event
+	   * @param {WebSocket} target A reference to the target to which the event was dispatched
+	   */
+	  constructor (error, target) {
+	    super('error', target);
+
+	    this.message = error.message;
+	    this.error = error;
+	  }
+	}
+
+	/**
+	 * This provides methods for emulating the `EventTarget` interface. It's not
+	 * meant to be used directly.
+	 *
+	 * @mixin
+	 */
+	const EventTarget = {
+	  /**
+	   * Register an event listener.
+	   *
+	   * @param {String} method A string representing the event type to listen for
+	   * @param {Function} listener The listener to add
+	   * @public
+	   */
+	  addEventListener (method, listener) {
+	    if (typeof listener !== 'function') return;
+
+	    function onMessage (data) {
+	      listener.call(this, new MessageEvent(data, this));
+	    }
+
+	    function onClose (code, message) {
+	      listener.call(this, new CloseEvent(code, message, this));
+	    }
+
+	    function onError (error) {
+	      listener.call(this, new ErrorEvent(error, this));
+	    }
+
+	    function onOpen () {
+	      listener.call(this, new OpenEvent(this));
+	    }
+
+	    if (method === 'message') {
+	      onMessage._listener = listener;
+	      this.on(method, onMessage);
+	    } else if (method === 'close') {
+	      onClose._listener = listener;
+	      this.on(method, onClose);
+	    } else if (method === 'error') {
+	      onError._listener = listener;
+	      this.on(method, onError);
+	    } else if (method === 'open') {
+	      onOpen._listener = listener;
+	      this.on(method, onOpen);
+	    } else {
+	      this.on(method, listener);
+	    }
+	  },
+
+	  /**
+	   * Remove an event listener.
+	   *
+	   * @param {String} method A string representing the event type to remove
+	   * @param {Function} listener The listener to remove
+	   * @public
+	   */
+	  removeEventListener (method, listener) {
+	    const listeners = this.listeners(method);
+
+	    for (var i = 0; i < listeners.length; i++) {
+	      if (listeners[i] === listener || listeners[i]._listener === listener) {
+	        this.removeListener(method, listeners[i]);
+	      }
+	    }
+	  }
+	};
+
+	module.exports = EventTarget;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	//
+	// Allowed token characters:
+	//
+	// '!', '#', '$', '%', '&', ''', '*', '+', '-',
+	// '.', 0-9, A-Z, '^', '_', '`', a-z, '|', '~'
+	//
+	// tokenChars[32] === 0 // ' '
+	// tokenChars[33] === 1 // '!'
+	// tokenChars[34] === 0 // '"'
+	// ...
+	//
+	const tokenChars = [
+	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+	  0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, // 32 - 47
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
+	  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, // 80 - 95
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0 // 112 - 127
+	];
+
+	/**
+	 * Adds an offer to the map of extension offers or a parameter to the map of
+	 * parameters.
+	 *
+	 * @param {Object} dest The map of extension offers or parameters
+	 * @param {String} name The extension or parameter name
+	 * @param {(Object|Boolean|String)} elem The extension parameters or the
+	 *     parameter value
+	 * @private
+	 */
+	function push (dest, name, elem) {
+	  if (Object.prototype.hasOwnProperty.call(dest, name)) dest[name].push(elem);
+	  else dest[name] = [elem];
+	}
+
+	/**
+	 * Parses the `Sec-WebSocket-Extensions` header into an object.
+	 *
+	 * @param {String} header The field value of the header
+	 * @return {Object} The parsed object
+	 * @public
+	 */
+	function parse (header) {
+	  const offers = {};
+
+	  if (header === undefined || header === '') return offers;
+
+	  var params = {};
+	  var mustUnescape = false;
+	  var isEscaping = false;
+	  var inQuotes = false;
+	  var extensionName;
+	  var paramName;
+	  var start = -1;
+	  var end = -1;
+
+	  for (var i = 0; i < header.length; i++) {
+	    const code = header.charCodeAt(i);
+
+	    if (extensionName === undefined) {
+	      if (end === -1 && tokenChars[code] === 1) {
+	        if (start === -1) start = i;
+	      } else if (code === 0x20/* ' ' */|| code === 0x09/* '\t' */) {
+	        if (end === -1 && start !== -1) end = i;
+	      } else if (code === 0x3b/* ';' */ || code === 0x2c/* ',' */) {
+	        if (start === -1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+
+	        if (end === -1) end = i;
+	        const name = header.slice(start, end);
+	        if (code === 0x2c) {
+	          push(offers, name, params);
+	          params = {};
+	        } else {
+	          extensionName = name;
+	        }
+
+	        start = end = -1;
+	      } else {
+	        throw new SyntaxError(`Unexpected character at index ${i}`);
+	      }
+	    } else if (paramName === undefined) {
+	      if (end === -1 && tokenChars[code] === 1) {
+	        if (start === -1) start = i;
+	      } else if (code === 0x20 || code === 0x09) {
+	        if (end === -1 && start !== -1) end = i;
+	      } else if (code === 0x3b || code === 0x2c) {
+	        if (start === -1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+
+	        if (end === -1) end = i;
+	        push(params, header.slice(start, end), true);
+	        if (code === 0x2c) {
+	          push(offers, extensionName, params);
+	          params = {};
+	          extensionName = undefined;
+	        }
+
+	        start = end = -1;
+	      } else if (code === 0x3d/* '=' */&& start !== -1 && end === -1) {
+	        paramName = header.slice(start, i);
+	        start = end = -1;
+	      } else {
+	        throw new SyntaxError(`Unexpected character at index ${i}`);
+	      }
+	    } else {
+	      //
+	      // The value of a quoted-string after unescaping must conform to the
+	      // token ABNF, so only token characters are valid.
+	      // Ref: https://tools.ietf.org/html/rfc6455#section-9.1
+	      //
+	      if (isEscaping) {
+	        if (tokenChars[code] !== 1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+	        if (start === -1) start = i;
+	        else if (!mustUnescape) mustUnescape = true;
+	        isEscaping = false;
+	      } else if (inQuotes) {
+	        if (tokenChars[code] === 1) {
+	          if (start === -1) start = i;
+	        } else if (code === 0x22/* '"' */ && start !== -1) {
+	          inQuotes = false;
+	          end = i;
+	        } else if (code === 0x5c/* '\' */) {
+	          isEscaping = true;
+	        } else {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+	      } else if (code === 0x22 && header.charCodeAt(i - 1) === 0x3d) {
+	        inQuotes = true;
+	      } else if (end === -1 && tokenChars[code] === 1) {
+	        if (start === -1) start = i;
+	      } else if (start !== -1 && (code === 0x20 || code === 0x09)) {
+	        if (end === -1) end = i;
+	      } else if (code === 0x3b || code === 0x2c) {
+	        if (start === -1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+
+	        if (end === -1) end = i;
+	        var value = header.slice(start, end);
+	        if (mustUnescape) {
+	          value = value.replace(/\\/g, '');
+	          mustUnescape = false;
+	        }
+	        push(params, paramName, value);
+	        if (code === 0x2c) {
+	          push(offers, extensionName, params);
+	          params = {};
+	          extensionName = undefined;
+	        }
+
+	        paramName = undefined;
+	        start = end = -1;
+	      } else {
+	        throw new SyntaxError(`Unexpected character at index ${i}`);
+	      }
+	    }
+	  }
+
+	  if (start === -1 || inQuotes) {
+	    throw new SyntaxError('Unexpected end of input');
+	  }
+
+	  if (end === -1) end = i;
+	  const token = header.slice(start, end);
+	  if (extensionName === undefined) {
+	    push(offers, token, {});
+	  } else {
+	    if (paramName === undefined) {
+	      push(params, token, true);
+	    } else if (mustUnescape) {
+	      push(params, paramName, token.replace(/\\/g, ''));
+	    } else {
+	      push(params, paramName, token);
+	    }
+	    push(offers, extensionName, params);
+	  }
+
+	  return offers;
+	}
+
+	/**
+	 * Builds the `Sec-WebSocket-Extensions` header field value.
+	 *
+	 * @param {Object} extensions The map of extensions and parameters to format
+	 * @return {String} A string representing the given object
+	 * @public
+	 */
+	function format (extensions) {
+	  return Object.keys(extensions).map((extension) => {
+	    var configurations = extensions[extension];
+	    if (!Array.isArray(configurations)) configurations = [configurations];
+	    return configurations.map((params) => {
+	      return [extension].concat(Object.keys(params).map((k) => {
+	        var values = params[k];
+	        if (!Array.isArray(values)) values = [values];
+	        return values.map((v) => v === true ? k : `${k}=${v}`).join('; ');
+	      })).join('; ');
+	    }).join(', ');
+	  }).join(', ');
+	}
+
+	module.exports = { format, parse };
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	const stream = __webpack_require__(35);
+
+	const PerMessageDeflate = __webpack_require__(27);
+	const bufferUtil = __webpack_require__(30);
+	const validation = __webpack_require__(36);
+	const constants = __webpack_require__(31);
+
+	const GET_INFO = 0;
+	const GET_PAYLOAD_LENGTH_16 = 1;
+	const GET_PAYLOAD_LENGTH_64 = 2;
+	const GET_MASK = 3;
+	const GET_DATA = 4;
+	const INFLATING = 5;
+
+	/**
+	 * HyBi Receiver implementation.
+	 *
+	 * @extends stream.Writable
+	 */
+	class Receiver extends stream.Writable {
+	  /**
+	   * Creates a Receiver instance.
+	   *
+	   * @param {String} binaryType The type for binary data
+	   * @param {Object} extensions An object containing the negotiated extensions
+	   * @param {Number} maxPayload The maximum allowed message length
+	   */
+	  constructor (binaryType, extensions, maxPayload) {
+	    super();
+
+	    this._binaryType = binaryType || constants.BINARY_TYPES[0];
+	    this[constants.kWebSocket] = undefined;
+	    this._extensions = extensions || {};
+	    this._maxPayload = maxPayload | 0;
+
+	    this._bufferedBytes = 0;
+	    this._buffers = [];
+
+	    this._compressed = false;
+	    this._payloadLength = 0;
+	    this._mask = undefined;
+	    this._fragmented = 0;
+	    this._masked = false;
+	    this._fin = false;
+	    this._opcode = 0;
+
+	    this._totalPayloadLength = 0;
+	    this._messageLength = 0;
+	    this._fragments = [];
+
+	    this._state = GET_INFO;
+	    this._loop = false;
+	  }
+
+	  /**
+	   * Implements `Writable.prototype._write()`.
+	   *
+	   * @param {Buffer} chunk The chunk of data to write
+	   * @param {String} encoding The character encoding of `chunk`
+	   * @param {Function} cb Callback
+	   */
+	  _write (chunk, encoding, cb) {
+	    if (this._opcode === 0x08) return cb();
+
+	    this._bufferedBytes += chunk.length;
+	    this._buffers.push(chunk);
+	    this.startLoop(cb);
+	  }
+
+	  /**
+	   * Consumes `n` bytes from the buffered data.
+	   *
+	   * @param {Number} n The number of bytes to consume
+	   * @return {Buffer} The consumed bytes
+	   * @private
+	   */
+	  consume (n) {
+	    this._bufferedBytes -= n;
+
+	    if (n === this._buffers[0].length) return this._buffers.shift();
+
+	    if (n < this._buffers[0].length) {
+	      const buf = this._buffers[0];
+	      this._buffers[0] = buf.slice(n);
+	      return buf.slice(0, n);
+	    }
+
+	    const dst = Buffer.allocUnsafe(n);
+
+	    do {
+	      const buf = this._buffers[0];
+
+	      if (n >= buf.length) {
+	        this._buffers.shift().copy(dst, dst.length - n);
+	      } else {
+	        buf.copy(dst, dst.length - n, 0, n);
+	        this._buffers[0] = buf.slice(n);
+	      }
+
+	      n -= buf.length;
+	    } while (n > 0);
+
+	    return dst;
+	  }
+
+	  /**
+	   * Starts the parsing loop.
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  startLoop (cb) {
+	    var err;
+	    this._loop = true;
+
+	    do {
+	      switch (this._state) {
+	        case GET_INFO:
+	          err = this.getInfo();
+	          break;
+	        case GET_PAYLOAD_LENGTH_16:
+	          err = this.getPayloadLength16();
+	          break;
+	        case GET_PAYLOAD_LENGTH_64:
+	          err = this.getPayloadLength64();
+	          break;
+	        case GET_MASK:
+	          this.getMask();
+	          break;
+	        case GET_DATA:
+	          err = this.getData(cb);
+	          break;
+	        default: // `INFLATING`
+	          this._loop = false;
+	          return;
+	      }
+	    } while (this._loop);
+
+	    cb(err);
+	  }
+
+	  /**
+	   * Reads the first two bytes of a frame.
+	   *
+	   * @return {(RangeError|undefined)} A possible error
+	   * @private
+	   */
+	  getInfo () {
+	    if (this._bufferedBytes < 2) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    const buf = this.consume(2);
+
+	    if ((buf[0] & 0x30) !== 0x00) {
+	      this._loop = false;
+	      return error(RangeError, 'RSV2 and RSV3 must be clear', true, 1002);
+	    }
+
+	    const compressed = (buf[0] & 0x40) === 0x40;
+
+	    if (compressed && !this._extensions[PerMessageDeflate.extensionName]) {
+	      this._loop = false;
+	      return error(RangeError, 'RSV1 must be clear', true, 1002);
+	    }
+
+	    this._fin = (buf[0] & 0x80) === 0x80;
+	    this._opcode = buf[0] & 0x0f;
+	    this._payloadLength = buf[1] & 0x7f;
+
+	    if (this._opcode === 0x00) {
+	      if (compressed) {
+	        this._loop = false;
+	        return error(RangeError, 'RSV1 must be clear', true, 1002);
+	      }
+
+	      if (!this._fragmented) {
+	        this._loop = false;
+	        return error(RangeError, 'invalid opcode 0', true, 1002);
+	      }
+
+	      this._opcode = this._fragmented;
+	    } else if (this._opcode === 0x01 || this._opcode === 0x02) {
+	      if (this._fragmented) {
+	        this._loop = false;
+	        return error(RangeError, `invalid opcode ${this._opcode}`, true, 1002);
+	      }
+
+	      this._compressed = compressed;
+	    } else if (this._opcode > 0x07 && this._opcode < 0x0b) {
+	      if (!this._fin) {
+	        this._loop = false;
+	        return error(RangeError, 'FIN must be set', true, 1002);
+	      }
+
+	      if (compressed) {
+	        this._loop = false;
+	        return error(RangeError, 'RSV1 must be clear', true, 1002);
+	      }
+
+	      if (this._payloadLength > 0x7d) {
+	        this._loop = false;
+	        return error(
+	          RangeError,
+	          `invalid payload length ${this._payloadLength}`,
+	          true,
+	          1002
+	        );
+	      }
+	    } else {
+	      this._loop = false;
+	      return error(RangeError, `invalid opcode ${this._opcode}`, true, 1002);
+	    }
+
+	    if (!this._fin && !this._fragmented) this._fragmented = this._opcode;
+	    this._masked = (buf[1] & 0x80) === 0x80;
+
+	    if (this._payloadLength === 126) this._state = GET_PAYLOAD_LENGTH_16;
+	    else if (this._payloadLength === 127) this._state = GET_PAYLOAD_LENGTH_64;
+	    else return this.haveLength();
+	  }
+
+	  /**
+	   * Gets extended payload length (7+16).
+	   *
+	   * @return {(RangeError|undefined)} A possible error
+	   * @private
+	   */
+	  getPayloadLength16 () {
+	    if (this._bufferedBytes < 2) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    this._payloadLength = this.consume(2).readUInt16BE(0);
+	    return this.haveLength();
+	  }
+
+	  /**
+	   * Gets extended payload length (7+64).
+	   *
+	   * @return {(RangeError|undefined)} A possible error
+	   * @private
+	   */
+	  getPayloadLength64 () {
+	    if (this._bufferedBytes < 8) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    const buf = this.consume(8);
+	    const num = buf.readUInt32BE(0);
+
+	    //
+	    // The maximum safe integer in JavaScript is 2^53 - 1. An error is returned
+	    // if payload length is greater than this number.
+	    //
+	    if (num > Math.pow(2, 53 - 32) - 1) {
+	      this._loop = false;
+	      return error(
+	        RangeError,
+	        'Unsupported WebSocket frame: payload length > 2^53 - 1',
+	        false,
+	        1009
+	      );
+	    }
+
+	    this._payloadLength = num * Math.pow(2, 32) + buf.readUInt32BE(4);
+	    return this.haveLength();
+	  }
+
+	  /**
+	   * Payload length has been read.
+	   *
+	   * @return {(RangeError|undefined)} A possible error
+	   * @private
+	   */
+	  haveLength () {
+	    if (this._payloadLength && this._opcode < 0x08) {
+	      this._totalPayloadLength += this._payloadLength;
+	      if (this._totalPayloadLength > this._maxPayload && this._maxPayload > 0) {
+	        this._loop = false;
+	        return error(RangeError, 'Max payload size exceeded', false, 1009);
+	      }
+	    }
+
+	    if (this._masked) this._state = GET_MASK;
+	    else this._state = GET_DATA;
+	  }
+
+	  /**
+	   * Reads mask bytes.
+	   *
+	   * @private
+	   */
+	  getMask () {
+	    if (this._bufferedBytes < 4) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    this._mask = this.consume(4);
+	    this._state = GET_DATA;
+	  }
+
+	  /**
+	   * Reads data bytes.
+	   *
+	   * @param {Function} cb Callback
+	   * @return {(Error|RangeError|undefined)} A possible error
+	   * @private
+	   */
+	  getData (cb) {
+	    var data = constants.EMPTY_BUFFER;
+
+	    if (this._payloadLength) {
+	      if (this._bufferedBytes < this._payloadLength) {
+	        this._loop = false;
+	        return;
+	      }
+
+	      data = this.consume(this._payloadLength);
+	      if (this._masked) bufferUtil.unmask(data, this._mask);
+	    }
+
+	    if (this._opcode > 0x07) return this.controlMessage(data);
+
+	    if (this._compressed) {
+	      this._state = INFLATING;
+	      this.decompress(data, cb);
+	      return;
+	    }
+
+	    if (data.length) {
+	      //
+	      // This message is not compressed so its lenght is the sum of the payload
+	      // length of all fragments.
+	      //
+	      this._messageLength = this._totalPayloadLength;
+	      this._fragments.push(data);
+	    }
+
+	    return this.dataMessage();
+	  }
+
+	  /**
+	   * Decompresses data.
+	   *
+	   * @param {Buffer} data Compressed data
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  decompress (data, cb) {
+	    const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
+
+	    perMessageDeflate.decompress(data, this._fin, (err, buf) => {
+	      if (err) return cb(err);
+
+	      if (buf.length) {
+	        this._messageLength += buf.length;
+	        if (this._messageLength > this._maxPayload && this._maxPayload > 0) {
+	          return cb(error(RangeError, 'Max payload size exceeded', false, 1009));
+	        }
+
+	        this._fragments.push(buf);
+	      }
+
+	      const er = this.dataMessage();
+	      if (er) return cb(er);
+
+	      this.startLoop(cb);
+	    });
+	  }
+
+	  /**
+	   * Handles a data message.
+	   *
+	   * @return {(Error|undefined)} A possible error
+	   * @private
+	   */
+	  dataMessage () {
+	    if (this._fin) {
+	      const messageLength = this._messageLength;
+	      const fragments = this._fragments;
+
+	      this._totalPayloadLength = 0;
+	      this._messageLength = 0;
+	      this._fragmented = 0;
+	      this._fragments = [];
+
+	      if (this._opcode === 2) {
+	        var data;
+
+	        if (this._binaryType === 'nodebuffer') {
+	          data = toBuffer(fragments, messageLength);
+	        } else if (this._binaryType === 'arraybuffer') {
+	          data = toArrayBuffer(toBuffer(fragments, messageLength));
+	        } else {
+	          data = fragments;
+	        }
+
+	        this.emit('message', data);
+	      } else {
+	        const buf = toBuffer(fragments, messageLength);
+
+	        if (!validation.isValidUTF8(buf)) {
+	          this._loop = false;
+	          return error(Error, 'invalid UTF-8 sequence', true, 1007);
+	        }
+
+	        this.emit('message', buf.toString());
+	      }
+	    }
+
+	    this._state = GET_INFO;
+	  }
+
+	  /**
+	   * Handles a control message.
+	   *
+	   * @param {Buffer} data Data to handle
+	   * @return {(Error|RangeError|undefined)} A possible error
+	   * @private
+	   */
+	  controlMessage (data) {
+	    if (this._opcode === 0x08) {
+	      this._loop = false;
+
+	      if (data.length === 0) {
+	        this.emit('conclude', 1005, '');
+	        this.end();
+	      } else if (data.length === 1) {
+	        return error(RangeError, 'invalid payload length 1', true, 1002);
+	      } else {
+	        const code = data.readUInt16BE(0);
+
+	        if (!validation.isValidStatusCode(code)) {
+	          return error(RangeError, `invalid status code ${code}`, true, 1002);
+	        }
+
+	        const buf = data.slice(2);
+
+	        if (!validation.isValidUTF8(buf)) {
+	          return error(Error, 'invalid UTF-8 sequence', true, 1007);
+	        }
+
+	        this.emit('conclude', code, buf.toString());
+	        this.end();
+	      }
+
+	      return;
+	    }
+
+	    if (this._opcode === 0x09) this.emit('ping', data);
+	    else this.emit('pong', data);
+
+	    this._state = GET_INFO;
+	  }
+	}
+
+	module.exports = Receiver;
+
+	/**
+	 * Builds an error object.
+	 *
+	 * @param {(Error|RangeError)} ErrorCtor The error constructor
+	 * @param {String} message The error message
+	 * @param {Boolean} prefix Specifies whether or not to add a default prefix to
+	 *     `message`
+	 * @param {Number} statusCode The status code
+	 * @return {(Error|RangeError)} The error
+	 * @private
+	 */
+	function error (ErrorCtor, message, prefix, statusCode) {
+	  const err = new ErrorCtor(
+	    prefix ? `Invalid WebSocket frame: ${message}` : message
+	  );
+
+	  Error.captureStackTrace(err, error);
+	  err[constants.kStatusCode] = statusCode;
+	  return err;
+	}
+
+	/**
+	 * Makes a buffer from a list of fragments.
+	 *
+	 * @param {Buffer[]} fragments The list of fragments composing the message
+	 * @param {Number} messageLength The length of the message
+	 * @return {Buffer}
+	 * @private
+	 */
+	function toBuffer (fragments, messageLength) {
+	  if (fragments.length === 1) return fragments[0];
+	  if (fragments.length > 1) return bufferUtil.concat(fragments, messageLength);
+	  return constants.EMPTY_BUFFER;
+	}
+
+	/**
+	 * Converts a buffer to an `ArrayBuffer`.
+	 *
+	 * @param {Buffer} The buffer to convert
+	 * @return {ArrayBuffer} Converted buffer
+	 */
+	function toArrayBuffer (buf) {
+	  if (buf.byteOffset === 0 && buf.byteLength === buf.buffer.byteLength) {
+	    return buf.buffer;
+	  }
+
+	  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+	}
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports) {
+
+	module.exports = require("stream");
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	try {
+	  const isValidUTF8 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"utf-8-validate\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
+	  exports.isValidUTF8 = typeof isValidUTF8 === 'object'
+	    ? isValidUTF8.Validation.isValidUTF8 // utf-8-validate@<3.0.0
+	    : isValidUTF8;
+	} catch (e) /* istanbul ignore next */ {
+	  exports.isValidUTF8 = () => true;
+	}
+
+	/**
+	 * Checks if a status code is allowed in a close frame.
+	 *
+	 * @param {Number} code The status code
+	 * @return {Boolean} `true` if the status code is valid, else `false`
+	 * @public
+	 */
+	exports.isValidStatusCode = (code) => {
+	  return (
+	    (code >= 1000 &&
+	      code <= 1013 &&
+	      code !== 1004 &&
+	      code !== 1005 &&
+	      code !== 1006) ||
+	    (code >= 3000 && code <= 4999)
+	  );
+	};
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	const crypto = __webpack_require__(25);
+
+	const PerMessageDeflate = __webpack_require__(27);
+	const bufferUtil = __webpack_require__(30);
+	const validation = __webpack_require__(36);
+	const constants = __webpack_require__(31);
+
+	/**
+	 * HyBi Sender implementation.
+	 */
+	class Sender {
+	  /**
+	   * Creates a Sender instance.
+	   *
+	   * @param {net.Socket} socket The connection socket
+	   * @param {Object} extensions An object containing the negotiated extensions
+	   */
+	  constructor (socket, extensions) {
+	    this._extensions = extensions || {};
+	    this._socket = socket;
+
+	    this._firstFragment = true;
+	    this._compress = false;
+
+	    this._bufferedBytes = 0;
+	    this._deflating = false;
+	    this._queue = [];
+	  }
+
+	  /**
+	   * Frames a piece of data according to the HyBi WebSocket protocol.
+	   *
+	   * @param {Buffer} data The data to frame
+	   * @param {Object} options Options object
+	   * @param {Number} options.opcode The opcode
+	   * @param {Boolean} options.readOnly Specifies whether `data` can be modified
+	   * @param {Boolean} options.fin Specifies whether or not to set the FIN bit
+	   * @param {Boolean} options.mask Specifies whether or not to mask `data`
+	   * @param {Boolean} options.rsv1 Specifies whether or not to set the RSV1 bit
+	   * @return {Buffer[]} The framed data as a list of `Buffer` instances
+	   * @public
+	   */
+	  static frame (data, options) {
+	    const merge = data.length < 1024 || (options.mask && options.readOnly);
+	    var offset = options.mask ? 6 : 2;
+	    var payloadLength = data.length;
+
+	    if (data.length >= 65536) {
+	      offset += 8;
+	      payloadLength = 127;
+	    } else if (data.length > 125) {
+	      offset += 2;
+	      payloadLength = 126;
+	    }
+
+	    const target = Buffer.allocUnsafe(merge ? data.length + offset : offset);
+
+	    target[0] = options.fin ? options.opcode | 0x80 : options.opcode;
+	    if (options.rsv1) target[0] |= 0x40;
+
+	    if (payloadLength === 126) {
+	      target.writeUInt16BE(data.length, 2);
+	    } else if (payloadLength === 127) {
+	      target.writeUInt32BE(0, 2);
+	      target.writeUInt32BE(data.length, 6);
+	    }
+
+	    if (!options.mask) {
+	      target[1] = payloadLength;
+	      if (merge) {
+	        data.copy(target, offset);
+	        return [target];
+	      }
+
+	      return [target, data];
+	    }
+
+	    const mask = crypto.randomBytes(4);
+
+	    target[1] = payloadLength | 0x80;
+	    target[offset - 4] = mask[0];
+	    target[offset - 3] = mask[1];
+	    target[offset - 2] = mask[2];
+	    target[offset - 1] = mask[3];
+
+	    if (merge) {
+	      bufferUtil.mask(data, mask, target, offset, data.length);
+	      return [target];
+	    }
+
+	    bufferUtil.mask(data, mask, data, 0, data.length);
+	    return [target, data];
+	  }
+
+	  /**
+	   * Sends a close message to the other peer.
+	   *
+	   * @param {(Number|undefined)} code The status code component of the body
+	   * @param {String} data The message component of the body
+	   * @param {Boolean} mask Specifies whether or not to mask the message
+	   * @param {Function} cb Callback
+	   * @public
+	   */
+	  close (code, data, mask, cb) {
+	    var buf;
+
+	    if (code === undefined) {
+	      buf = constants.EMPTY_BUFFER;
+	    } else if (typeof code !== 'number' || !validation.isValidStatusCode(code)) {
+	      throw new TypeError('First argument must be a valid error code number');
+	    } else if (data === undefined || data === '') {
+	      buf = Buffer.allocUnsafe(2);
+	      buf.writeUInt16BE(code, 0);
+	    } else {
+	      buf = Buffer.allocUnsafe(2 + Buffer.byteLength(data));
+	      buf.writeUInt16BE(code, 0);
+	      buf.write(data, 2);
+	    }
+
+	    if (this._deflating) {
+	      this.enqueue([this.doClose, buf, mask, cb]);
+	    } else {
+	      this.doClose(buf, mask, cb);
+	    }
+	  }
+
+	  /**
+	   * Frames and sends a close message.
+	   *
+	   * @param {Buffer} data The message to send
+	   * @param {Boolean} mask Specifies whether or not to mask `data`
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  doClose (data, mask, cb) {
+	    this.sendFrame(Sender.frame(data, {
+	      fin: true,
+	      rsv1: false,
+	      opcode: 0x08,
+	      mask,
+	      readOnly: false
+	    }), cb);
+	  }
+
+	  /**
+	   * Sends a ping message to the other peer.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Boolean} mask Specifies whether or not to mask `data`
+	   * @param {Function} cb Callback
+	   * @public
+	   */
+	  ping (data, mask, cb) {
+	    var readOnly = true;
+
+	    if (!Buffer.isBuffer(data)) {
+	      if (data instanceof ArrayBuffer) {
+	        data = Buffer.from(data);
+	      } else if (ArrayBuffer.isView(data)) {
+	        data = viewToBuffer(data);
+	      } else {
+	        data = Buffer.from(data);
+	        readOnly = false;
+	      }
+	    }
+
+	    if (this._deflating) {
+	      this.enqueue([this.doPing, data, mask, readOnly, cb]);
+	    } else {
+	      this.doPing(data, mask, readOnly, cb);
+	    }
+	  }
+
+	  /**
+	   * Frames and sends a ping message.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Boolean} mask Specifies whether or not to mask `data`
+	   * @param {Boolean} readOnly Specifies whether `data` can be modified
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  doPing (data, mask, readOnly, cb) {
+	    this.sendFrame(Sender.frame(data, {
+	      fin: true,
+	      rsv1: false,
+	      opcode: 0x09,
+	      mask,
+	      readOnly
+	    }), cb);
+	  }
+
+	  /**
+	   * Sends a pong message to the other peer.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Boolean} mask Specifies whether or not to mask `data`
+	   * @param {Function} cb Callback
+	   * @public
+	   */
+	  pong (data, mask, cb) {
+	    var readOnly = true;
+
+	    if (!Buffer.isBuffer(data)) {
+	      if (data instanceof ArrayBuffer) {
+	        data = Buffer.from(data);
+	      } else if (ArrayBuffer.isView(data)) {
+	        data = viewToBuffer(data);
+	      } else {
+	        data = Buffer.from(data);
+	        readOnly = false;
+	      }
+	    }
+
+	    if (this._deflating) {
+	      this.enqueue([this.doPong, data, mask, readOnly, cb]);
+	    } else {
+	      this.doPong(data, mask, readOnly, cb);
+	    }
+	  }
+
+	  /**
+	   * Frames and sends a pong message.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Boolean} mask Specifies whether or not to mask `data`
+	   * @param {Boolean} readOnly Specifies whether `data` can be modified
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  doPong (data, mask, readOnly, cb) {
+	    this.sendFrame(Sender.frame(data, {
+	      fin: true,
+	      rsv1: false,
+	      opcode: 0x0a,
+	      mask,
+	      readOnly
+	    }), cb);
+	  }
+
+	  /**
+	   * Sends a data message to the other peer.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Object} options Options object
+	   * @param {Boolean} options.compress Specifies whether or not to compress `data`
+	   * @param {Boolean} options.binary Specifies whether `data` is binary or text
+	   * @param {Boolean} options.fin Specifies whether the fragment is the last one
+	   * @param {Boolean} options.mask Specifies whether or not to mask `data`
+	   * @param {Function} cb Callback
+	   * @public
+	   */
+	  send (data, options, cb) {
+	    var opcode = options.binary ? 2 : 1;
+	    var rsv1 = options.compress;
+	    var readOnly = true;
+
+	    if (!Buffer.isBuffer(data)) {
+	      if (data instanceof ArrayBuffer) {
+	        data = Buffer.from(data);
+	      } else if (ArrayBuffer.isView(data)) {
+	        data = viewToBuffer(data);
+	      } else {
+	        data = Buffer.from(data);
+	        readOnly = false;
+	      }
+	    }
+
+	    const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
+
+	    if (this._firstFragment) {
+	      this._firstFragment = false;
+	      if (rsv1 && perMessageDeflate) {
+	        rsv1 = data.length >= perMessageDeflate._threshold;
+	      }
+	      this._compress = rsv1;
+	    } else {
+	      rsv1 = false;
+	      opcode = 0;
+	    }
+
+	    if (options.fin) this._firstFragment = true;
+
+	    if (perMessageDeflate) {
+	      const opts = {
+	        fin: options.fin,
+	        rsv1,
+	        opcode,
+	        mask: options.mask,
+	        readOnly
+	      };
+
+	      if (this._deflating) {
+	        this.enqueue([this.dispatch, data, this._compress, opts, cb]);
+	      } else {
+	        this.dispatch(data, this._compress, opts, cb);
+	      }
+	    } else {
+	      this.sendFrame(Sender.frame(data, {
+	        fin: options.fin,
+	        rsv1: false,
+	        opcode,
+	        mask: options.mask,
+	        readOnly
+	      }), cb);
+	    }
+	  }
+
+	  /**
+	   * Dispatches a data message.
+	   *
+	   * @param {Buffer} data The message to send
+	   * @param {Boolean} compress Specifies whether or not to compress `data`
+	   * @param {Object} options Options object
+	   * @param {Number} options.opcode The opcode
+	   * @param {Boolean} options.readOnly Specifies whether `data` can be modified
+	   * @param {Boolean} options.fin Specifies whether or not to set the FIN bit
+	   * @param {Boolean} options.mask Specifies whether or not to mask `data`
+	   * @param {Boolean} options.rsv1 Specifies whether or not to set the RSV1 bit
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  dispatch (data, compress, options, cb) {
+	    if (!compress) {
+	      this.sendFrame(Sender.frame(data, options), cb);
+	      return;
+	    }
+
+	    const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
+
+	    this._deflating = true;
+	    perMessageDeflate.compress(data, options.fin, (_, buf) => {
+	      options.readOnly = false;
+	      this.sendFrame(Sender.frame(buf, options), cb);
+	      this._deflating = false;
+	      this.dequeue();
+	    });
+	  }
+
+	  /**
+	   * Executes queued send operations.
+	   *
+	   * @private
+	   */
+	  dequeue () {
+	    while (!this._deflating && this._queue.length) {
+	      const params = this._queue.shift();
+
+	      this._bufferedBytes -= params[1].length;
+	      params[0].apply(this, params.slice(1));
+	    }
+	  }
+
+	  /**
+	   * Enqueues a send operation.
+	   *
+	   * @param {Array} params Send operation parameters.
+	   * @private
+	   */
+	  enqueue (params) {
+	    this._bufferedBytes += params[1].length;
+	    this._queue.push(params);
+	  }
+
+	  /**
+	   * Sends a frame.
+	   *
+	   * @param {Buffer[]} list The frame to send
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  sendFrame (list, cb) {
+	    if (list.length === 2) {
+	      this._socket.write(list[0]);
+	      this._socket.write(list[1], cb);
+	    } else {
+	      this._socket.write(list[0], cb);
+	    }
+	  }
+	}
+
+	module.exports = Sender;
+
+	/**
+	 * Converts an `ArrayBuffer` view into a buffer.
+	 *
+	 * @param {(DataView|TypedArray)} view The view to convert
+	 * @return {Buffer} Converted view
+	 * @private
+	 */
+	function viewToBuffer (view) {
+	  const buf = Buffer.from(view.buffer);
+
+	  if (view.byteLength !== view.buffer.byteLength) {
+	    return buf.slice(view.byteOffset, view.byteOffset + view.byteLength);
+	  }
+
+	  return buf;
+	}
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	const EventEmitter = __webpack_require__(6);
+	const crypto = __webpack_require__(25);
+	const http = __webpack_require__(20);
+	const url = __webpack_require__(26);
+
+	const PerMessageDeflate = __webpack_require__(27);
+	const extension = __webpack_require__(33);
+	const constants = __webpack_require__(31);
+	const WebSocket = __webpack_require__(24);
+
+	/**
+	 * Class representing a WebSocket server.
+	 *
+	 * @extends EventEmitter
+	 */
+	class WebSocketServer extends EventEmitter {
+	  /**
+	   * Create a `WebSocketServer` instance.
+	   *
+	   * @param {Object} options Configuration options
+	   * @param {String} options.host The hostname where to bind the server
+	   * @param {Number} options.port The port where to bind the server
+	   * @param {http.Server} options.server A pre-created HTTP/S server to use
+	   * @param {Function} options.verifyClient An hook to reject connections
+	   * @param {Function} options.handleProtocols An hook to handle protocols
+	   * @param {String} options.path Accept only connections matching this path
+	   * @param {Boolean} options.noServer Enable no server mode
+	   * @param {Boolean} options.clientTracking Specifies whether or not to track clients
+	   * @param {(Boolean|Object)} options.perMessageDeflate Enable/disable permessage-deflate
+	   * @param {Number} options.maxPayload The maximum allowed message size
+	   * @param {Function} callback A listener for the `listening` event
+	   */
+	  constructor (options, callback) {
+	    super();
+
+	    options = Object.assign({
+	      maxPayload: 100 * 1024 * 1024,
+	      perMessageDeflate: false,
+	      handleProtocols: null,
+	      clientTracking: true,
+	      verifyClient: null,
+	      noServer: false,
+	      backlog: null, // use default (511 as implemented in net.js)
+	      server: null,
+	      host: null,
+	      path: null,
+	      port: null
+	    }, options);
+
+	    if (options.port == null && !options.server && !options.noServer) {
+	      throw new TypeError(
+	        'One of the "port", "server", or "noServer" options must be specified'
+	      );
+	    }
+
+	    if (options.port != null) {
+	      this._server = http.createServer((req, res) => {
+	        const body = http.STATUS_CODES[426];
+
+	        res.writeHead(426, {
+	          'Content-Length': body.length,
+	          'Content-Type': 'text/plain'
+	        });
+	        res.end(body);
+	      });
+	      this._server.listen(options.port, options.host, options.backlog, callback);
+	    } else if (options.server) {
+	      this._server = options.server;
+	    }
+
+	    if (this._server) {
+	      this._removeListeners = addListeners(this._server, {
+	        listening: this.emit.bind(this, 'listening'),
+	        error: this.emit.bind(this, 'error'),
+	        upgrade: (req, socket, head) => {
+	          this.handleUpgrade(req, socket, head, (ws) => {
+	            this.emit('connection', ws, req);
+	          });
+	        }
+	      });
+	    }
+
+	    if (options.perMessageDeflate === true) options.perMessageDeflate = {};
+	    if (options.clientTracking) this.clients = new Set();
+	    this.options = options;
+	  }
+
+	  /**
+	   * Returns the bound address, the address family name, and port of the server
+	   * as reported by the operating system if listening on an IP socket.
+	   * If the server is listening on a pipe or UNIX domain socket, the name is
+	   * returned as a string.
+	   *
+	   * @return {(Object|String|null)} The address of the server
+	   * @public
+	   */
+	  address () {
+	    if (this.options.noServer) {
+	      throw new Error('The server is operating in "noServer" mode');
+	    }
+
+	    if (!this._server) return null;
+	    return this._server.address();
+	  }
+
+	  /**
+	   * Close the server.
+	   *
+	   * @param {Function} cb Callback
+	   * @public
+	   */
+	  close (cb) {
+	    //
+	    // Terminate all associated clients.
+	    //
+	    if (this.clients) {
+	      for (const client of this.clients) client.terminate();
+	    }
+
+	    const server = this._server;
+
+	    if (server) {
+	      this._removeListeners();
+	      this._removeListeners = this._server = null;
+
+	      //
+	      // Close the http server if it was internally created.
+	      //
+	      if (this.options.port != null) return server.close(cb);
+	    }
+
+	    if (cb) cb();
+	  }
+
+	  /**
+	   * See if a given request should be handled by this server instance.
+	   *
+	   * @param {http.IncomingMessage} req Request object to inspect
+	   * @return {Boolean} `true` if the request is valid, else `false`
+	   * @public
+	   */
+	  shouldHandle (req) {
+	    if (this.options.path && url.parse(req.url).pathname !== this.options.path) {
+	      return false;
+	    }
+
+	    return true;
+	  }
+
+	  /**
+	   * Handle a HTTP Upgrade request.
+	   *
+	   * @param {http.IncomingMessage} req The request object
+	   * @param {net.Socket} socket The network socket between the server and client
+	   * @param {Buffer} head The first packet of the upgraded stream
+	   * @param {Function} cb Callback
+	   * @public
+	   */
+	  handleUpgrade (req, socket, head, cb) {
+	    socket.on('error', socketOnError);
+
+	    const version = +req.headers['sec-websocket-version'];
+	    const extensions = {};
+
+	    if (
+	      req.method !== 'GET' || req.headers.upgrade.toLowerCase() !== 'websocket' ||
+	      !req.headers['sec-websocket-key'] || (version !== 8 && version !== 13) ||
+	      !this.shouldHandle(req)
+	    ) {
+	      return abortHandshake(socket, 400);
+	    }
+
+	    if (this.options.perMessageDeflate) {
+	      const perMessageDeflate = new PerMessageDeflate(
+	        this.options.perMessageDeflate,
+	        true,
+	        this.options.maxPayload
+	      );
+
+	      try {
+	        const offers = extension.parse(
+	          req.headers['sec-websocket-extensions']
+	        );
+
+	        if (offers[PerMessageDeflate.extensionName]) {
+	          perMessageDeflate.accept(offers[PerMessageDeflate.extensionName]);
+	          extensions[PerMessageDeflate.extensionName] = perMessageDeflate;
+	        }
+	      } catch (err) {
+	        return abortHandshake(socket, 400);
+	      }
+	    }
+
+	    //
+	    // Optionally call external client verification handler.
+	    //
+	    if (this.options.verifyClient) {
+	      const info = {
+	        origin: req.headers[`${version === 8 ? 'sec-websocket-origin' : 'origin'}`],
+	        secure: !!(req.connection.authorized || req.connection.encrypted),
+	        req
+	      };
+
+	      if (this.options.verifyClient.length === 2) {
+	        this.options.verifyClient(info, (verified, code, message, headers) => {
+	          if (!verified) {
+	            return abortHandshake(socket, code || 401, message, headers);
+	          }
+
+	          this.completeUpgrade(extensions, req, socket, head, cb);
+	        });
+	        return;
+	      }
+
+	      if (!this.options.verifyClient(info)) return abortHandshake(socket, 401);
+	    }
+
+	    this.completeUpgrade(extensions, req, socket, head, cb);
+	  }
+
+	  /**
+	   * Upgrade the connection to WebSocket.
+	   *
+	   * @param {Object} extensions The accepted extensions
+	   * @param {http.IncomingMessage} req The request object
+	   * @param {net.Socket} socket The network socket between the server and client
+	   * @param {Buffer} head The first packet of the upgraded stream
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  completeUpgrade (extensions, req, socket, head, cb) {
+	    //
+	    // Destroy the socket if the client has already sent a FIN packet.
+	    //
+	    if (!socket.readable || !socket.writable) return socket.destroy();
+
+	    const key = crypto.createHash('sha1')
+	      .update(req.headers['sec-websocket-key'] + constants.GUID, 'binary')
+	      .digest('base64');
+
+	    const headers = [
+	      'HTTP/1.1 101 Switching Protocols',
+	      'Upgrade: websocket',
+	      'Connection: Upgrade',
+	      `Sec-WebSocket-Accept: ${key}`
+	    ];
+
+	    const ws = new WebSocket(null);
+	    var protocol = req.headers['sec-websocket-protocol'];
+
+	    if (protocol) {
+	      protocol = protocol.trim().split(/ *, */);
+
+	      //
+	      // Optionally call external protocol selection handler.
+	      //
+	      if (this.options.handleProtocols) {
+	        protocol = this.options.handleProtocols(protocol, req);
+	      } else {
+	        protocol = protocol[0];
+	      }
+
+	      if (protocol) {
+	        headers.push(`Sec-WebSocket-Protocol: ${protocol}`);
+	        ws.protocol = protocol;
+	      }
+	    }
+
+	    if (extensions[PerMessageDeflate.extensionName]) {
+	      const params = extensions[PerMessageDeflate.extensionName].params;
+	      const value = extension.format({
+	        [PerMessageDeflate.extensionName]: [params]
+	      });
+	      headers.push(`Sec-WebSocket-Extensions: ${value}`);
+	      ws._extensions = extensions;
+	    }
+
+	    //
+	    // Allow external modification/inspection of handshake headers.
+	    //
+	    this.emit('headers', headers, req);
+
+	    socket.write(headers.concat('\r\n').join('\r\n'));
+	    socket.removeListener('error', socketOnError);
+
+	    ws.setSocket(socket, head, this.options.maxPayload);
+
+	    if (this.clients) {
+	      this.clients.add(ws);
+	      ws.on('close', () => this.clients.delete(ws));
+	    }
+
+	    cb(ws);
+	  }
+	}
+
+	module.exports = WebSocketServer;
+
+	/**
+	 * Add event listeners on an `EventEmitter` using a map of <event, listener>
+	 * pairs.
+	 *
+	 * @param {EventEmitter} server The event emitter
+	 * @param {Object.<String, Function>} map The listeners to add
+	 * @return {Function} A function that will remove the added listeners when called
+	 * @private
+	 */
+	function addListeners (server, map) {
+	  for (const event of Object.keys(map)) server.on(event, map[event]);
+
+	  return function removeListeners () {
+	    for (const event of Object.keys(map)) {
+	      server.removeListener(event, map[event]);
+	    }
+	  };
+	}
+
+	/**
+	 * Handle premature socket errors.
+	 *
+	 * @private
+	 */
+	function socketOnError () {
+	  this.destroy();
+	}
+
+	/**
+	 * Close the connection when preconditions are not fulfilled.
+	 *
+	 * @param {net.Socket} socket The socket of the upgrade request
+	 * @param {Number} code The HTTP response status code
+	 * @param {String} [message] The HTTP response body
+	 * @param {Object} [headers] Additional HTTP response headers
+	 * @private
+	 */
+	function abortHandshake (socket, code, message, headers) {
+	  if (socket.writable) {
+	    message = message || http.STATUS_CODES[code];
+	    headers = Object.assign({
+	      'Connection': 'close',
+	      'Content-type': 'text/html',
+	      'Content-Length': Buffer.byteLength(message)
+	    }, headers);
+
+	    socket.write(
+	      `HTTP/1.1 ${code} ${http.STATUS_CODES[code]}\r\n` +
+	      Object.keys(headers).map(h => `${h}: ${headers[h]}`).join('\r\n') +
+	      '\r\n\r\n' +
+	      message
+	    );
+	  }
+
+	  socket.removeListener('error', socketOnError);
+	  socket.destroy();
+	}
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+
+	module.exports.TBufferedTransport = __webpack_require__(10);
+	module.exports.TFramedTransport = __webpack_require__(40);
+	module.exports.InputBufferUnderrunError = __webpack_require__(12);
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+
+	var binary = __webpack_require__(11);
+	var InputBufferUnderrunError = __webpack_require__(12);
+	var THeaderTransport = __webpack_require__(13);
+
+	module.exports = TFramedTransport;
+
+	function TFramedTransport(buffer, callback) {
+	  this.inBuf = buffer || new Buffer(0);
+	  this.outBuffers = [];
+	  this.outCount = 0;
+	  this.readPos = 0;
+	  this.onFlush = callback;
+	};
+
+	TFramedTransport.prototype = new THeaderTransport();
+
+	TFramedTransport.receiver = function(callback, seqid) {
+	  var residual = null;
+
+	  return function(data) {
+	    // Prepend any residual data from our previous read
+	    if (residual) {
+	      data = Buffer.concat([residual, data]);
+	      residual = null;
+	    }
+
+	    // framed transport
+	    while (data.length) {
+	      if (data.length < 4) {
+	        // Not enough bytes to continue, save and resume on next packet
+	        residual = data;
+	        return;
+	      }
+	      var frameSize = binary.readI32(data, 0);
+	      if (data.length < 4 + frameSize) {
+	        // Not enough bytes to continue, save and resume on next packet
+	        residual = data;
+	        return;
+	      }
+
+	      var frame = data.slice(4, 4 + frameSize);
+	      residual = data.slice(4 + frameSize);
+
+	      callback(new TFramedTransport(frame), seqid);
+
+	      data = residual;
+	      residual = null;
+	    }
+	  };
+	};
+
+	TFramedTransport.prototype.commitPosition = function(){},
+	TFramedTransport.prototype.rollbackPosition = function(){},
+
+	  // TODO: Implement open/close support
+	TFramedTransport.prototype.isOpen = function() {
+	  return true;
+	};
+	TFramedTransport.prototype.open = function() {};
+	TFramedTransport.prototype.close =  function() {};
+
+	  // Set the seqid of the message in the client
+	  // So that callbacks can be found
+	TFramedTransport.prototype.setCurrSeqId = function(seqid) {
+	  this._seqid = seqid;
+	};
+
+	TFramedTransport.prototype.ensureAvailable = function(len) {
+	  if (this.readPos + len > this.inBuf.length) {
+	    throw new InputBufferUnderrunError();
+	  }
+	};
+
+	TFramedTransport.prototype.read = function(len) { // this function will be used for each frames.
+	  this.ensureAvailable(len);
+	  var end = this.readPos + len;
+
+	  if (this.inBuf.length < end) {
+	    throw new Error('read(' + len + ') failed - not enough data');
+	  }
+
+	  var buf = this.inBuf.slice(this.readPos, end);
+	  this.readPos = end;
+	  return buf;
+	};
+
+	TFramedTransport.prototype.readByte = function() {
+	  this.ensureAvailable(1);
+	  return binary.readByte(this.inBuf[this.readPos++]);
+	};
+
+	TFramedTransport.prototype.readI16 = function() {
+	  this.ensureAvailable(2);
+	  var i16 = binary.readI16(this.inBuf, this.readPos);
+	  this.readPos += 2;
+	  return i16;
+	};
+
+	TFramedTransport.prototype.readI32 = function() {
+	  this.ensureAvailable(4);
+	  var i32 = binary.readI32(this.inBuf, this.readPos);
+	  this.readPos += 4;
+	  return i32;
+	};
+
+	TFramedTransport.prototype.readDouble = function() {
+	  this.ensureAvailable(8);
+	  var d = binary.readDouble(this.inBuf, this.readPos);
+	  this.readPos += 8;
+	  return d;
+	};
+
+	TFramedTransport.prototype.readString = function(len) {
+	  this.ensureAvailable(len);
+	  var str = this.inBuf.toString('utf8', this.readPos, this.readPos + len);
+	  this.readPos += len;
+	  return str;
+	};
+
+	TFramedTransport.prototype.borrow = function() {
+	  return {
+	    buf: this.inBuf,
+	    readIndex: this.readPos,
+	    writeIndex: this.inBuf.length
+	  };
+	};
+
+	TFramedTransport.prototype.consume = function(bytesConsumed) {
+	  this.readPos += bytesConsumed;
+	};
+
+	TFramedTransport.prototype.write = function(buf, encoding) {
+	  if (typeof(buf) === "string") {
+	    buf = new Buffer(buf, encoding || 'utf8');
+	  }
+	  this.outBuffers.push(buf);
+	  this.outCount += buf.length;
+	};
+
+	TFramedTransport.prototype.flush = function() {
+	  // If the seqid of the callback is available pass it to the onFlush
+	  // Then remove the current seqid
+	  var seqid = this._seqid;
+	  this._seqid = null;
+
+	  var out = new Buffer(this.outCount),
+	      pos = 0;
+	  this.outBuffers.forEach(function(buf) {
+	    buf.copy(out, pos, 0);
+	    pos += buf.length;
+	  });
+
+	  if (this.onFlush) {
+	    // TODO: optimize this better, allocate one buffer instead of both:
+	    var msg = new Buffer(out.length + 4);
+	    binary.writeI32(msg, out.length);
+	    out.copy(msg, 4, 0, out.length);
+	    if (this.onFlush) {
+	      // Passing seqid through this call to get it to the connection
+	      this.onFlush(msg, seqid);
+	    }
+	  }
+
+	  this.outBuffers = [];
+	  this.outCount = 0;
+	};
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+
+	module.exports.TBinaryProtocol = __webpack_require__(16);
+	module.exports.TCompactProtocol = __webpack_require__(14);
+	module.exports.TJSONProtocol = __webpack_require__(42);
+
+
+/***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6351,9 +7402,7 @@ module.exports =
 	 * under the License.
 	 */
 
-	var log = __webpack_require__(12);
-	var Int64 = __webpack_require__(13);
-	var InputBufferUnderrunError = __webpack_require__(38).InputBufferUnderrunError;
+	var Int64 = __webpack_require__(15);
 	var Thrift = __webpack_require__(2);
 	var Type = Thrift.Type;
 	var util = __webpack_require__(3);
@@ -6361,7 +7410,7 @@ module.exports =
 	var Int64Util = __webpack_require__(43);
 	var json_parse = __webpack_require__(44);
 
-	var InputBufferUnderrunError = __webpack_require__(10);
+	var InputBufferUnderrunError = __webpack_require__(12);
 
 	module.exports = TJSONProtocol;
 
@@ -7073,7 +8122,65 @@ module.exports =
 	 * Method to arbitrarily skip over data
 	 */
 	TJSONProtocol.prototype.skip = function(type) {
-	  throw new Error('skip not supported yet');
+	    switch (type) {
+	    case Type.BOOL:
+	      this.readBool();
+	      break;
+	    case Type.BYTE:
+	      this.readByte();
+	      break;
+	    case Type.I16:
+	      this.readI16();
+	      break;
+	    case Type.I32:
+	      this.readI32();
+	      break;
+	    case Type.I64:
+	      this.readI64();
+	      break;
+	    case Type.DOUBLE:
+	      this.readDouble();
+	      break;
+	    case Type.STRING:
+	      this.readString();
+	      break;
+	    case Type.STRUCT:
+	      this.readStructBegin();
+	      while (true) {
+	        var r = this.readFieldBegin();
+	        if (r.ftype === Type.STOP) {
+	          break;
+	        }
+	        this.skip(r.ftype);
+	        this.readFieldEnd();
+	      }
+	      this.readStructEnd();
+	      break;
+	    case Type.MAP:
+	      var mapBegin = this.readMapBegin();
+	      for (var i = 0; i < mapBegin.size; ++i) {
+	        this.skip(mapBegin.ktype);
+	        this.skip(mapBegin.vtype);
+	      }
+	      this.readMapEnd();
+	      break;
+	    case Type.SET:
+	      var setBegin = this.readSetBegin();
+	      for (var i2 = 0; i2 < setBegin.size; ++i2) {
+	        this.skip(setBegin.etype);
+	      }
+	      this.readSetEnd();
+	      break;
+	    case Type.LIST:
+	      var listBegin = this.readListBegin();
+	      for (var i3 = 0; i3 < listBegin.size; ++i3) {
+	        this.skip(listBegin.etype);
+	      }
+	      this.readListEnd();
+	      break;
+	    default:
+	      throw new  Error("Invalid type: " + type);
+	  }
 	};
 
 
@@ -7100,7 +8207,7 @@ module.exports =
 	 * under the License.
 	 */
 
-	var Int64 = __webpack_require__(13);
+	var Int64 = __webpack_require__(15);
 
 	var Int64Util = module.exports = {};
 
@@ -7200,7 +8307,7 @@ module.exports =
 	    prototype, push, r, t, text
 	*/
 
-	var Int64 = __webpack_require__(13);
+	var Int64 = __webpack_require__(15);
 	var Int64Util = __webpack_require__(43);
 
 	var json_parse = module.exports = (function () {
@@ -7502,14 +8609,14 @@ module.exports =
 	 * under the License.
 	 */
 	var util = __webpack_require__(3);
-	var EventEmitter = __webpack_require__(5).EventEmitter;
+	var EventEmitter = __webpack_require__(6).EventEmitter;
 	var thrift = __webpack_require__(2);
 
-	var TBufferedTransport = __webpack_require__(8);
+	var TBufferedTransport = __webpack_require__(10);
 	var TJSONProtocol = __webpack_require__(42);
-	var InputBufferUnderrunError = __webpack_require__(10);
+	var InputBufferUnderrunError = __webpack_require__(12);
 
-	var createClient = __webpack_require__(14);
+	var createClient = __webpack_require__(17);
 
 	exports.XHRConnection = XHRConnection;
 
@@ -7787,12 +8894,15 @@ module.exports =
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var net = __webpack_require__(6);
-	var tls = __webpack_require__(7);
 
-	var TBufferedTransport = __webpack_require__(8);
-	var TBinaryProtocol = __webpack_require__(11);
-	var InputBufferUnderrunError = __webpack_require__(10);
+	var constants = __webpack_require__(7);
+	var net = __webpack_require__(8);
+	var tls = __webpack_require__(9);
+
+	var TBufferedTransport = __webpack_require__(10);
+	var TBinaryProtocol = __webpack_require__(16);
+	var THeaderProtocol = __webpack_require__(47);
+	var InputBufferUnderrunError = __webpack_require__(12);
 
 	/**
 	 * Create a Thrift server which can serve one or multiple services.
@@ -7812,14 +8922,23 @@ module.exports =
 	    });
 	    stream.on('data', transport.receiver(function(transportWithData) {
 	      var input = new protocol(transportWithData);
-	      var output = new protocol(new transport(undefined, function(buf) {
+	      var outputCb = function(buf) {
 	        try {
 	            stream.write(buf);
 	        } catch (err) {
 	            self.emit('error', err);
 	            stream.end();
 	        }
-	      }));
+	      };
+
+	      var output = new protocol(new transport(undefined, outputCb));
+	      // Read and write need to be performed on the same transport
+	      // for THeaderProtocol because we should only respond with
+	      // headers if the request contains headers
+	      if (protocol === THeaderProtocol) {
+	        output = input;
+	        output.trans.onFlush = outputCb;
+	      }
 
 	      try {
 	        do {
@@ -7858,6 +8977,10 @@ module.exports =
 	  }
 
 	  if (options && options.tls) {
+	    if (!('secureProtocol' in options.tls) && !('secureOptions' in options.tls)) {
+	      options.tls.secureProtocol = "SSLv23_method";
+	      options.tls.secureOptions = constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_SSLv3;
+	    }
 	    return tls.createServer(options.tls, serverImpl);
 	  } else {
 	    return net.createServer(serverImpl);
@@ -7900,18 +9023,281 @@ module.exports =
 	 * specific language governing permissions and limitations
 	 * under the License.
 	 */
-	var http = __webpack_require__(17);
-	var https = __webpack_require__(18);
-	var url = __webpack_require__(23);
-	var path = __webpack_require__(48);
-	var fs = __webpack_require__(26);
-	var crypto = __webpack_require__(22);
+	var util = __webpack_require__(3);
+	var TBinaryProtocol = __webpack_require__(16);
+	var TCompactProtocol = __webpack_require__(14);
+	var THeaderTransport = __webpack_require__(13);
 
-	var MultiplexedProcessor = __webpack_require__(49).MultiplexedProcessor;
+	var ProtocolMap = {};
+	ProtocolMap[THeaderTransport.SubprotocolId.BINARY] = TBinaryProtocol;
+	ProtocolMap[THeaderTransport.SubprotocolId.COMPACT] = TCompactProtocol;
 
-	var TBufferedTransport = __webpack_require__(8);
-	var TBinaryProtocol = __webpack_require__(11);
-	var InputBufferUnderrunError = __webpack_require__(10);
+	module.exports = THeaderProtocol;
+
+	function THeaderProtocolError(message) {
+	  Error.call(this);
+	  Error.captureStackTrace(this, this.constructor);
+	  this.name = this.constructor.name;
+	  this.message = message;
+	}
+
+	util.inherits(THeaderProtocolError, Error);
+
+	/**
+	 * A framed protocol with headers.
+	 *
+	 * THeaderProtocol frames other Thrift protocols and adds support for
+	 * optional out-of-band headers. The currently supported subprotocols are
+	 * TBinaryProtocol and TCompactProtocol. It can currently only be used with
+	 * transports that inherit THeaderTransport.
+	 *
+	 * THeaderProtocol does not currently support THTTPServer, TNonblockingServer,
+	 * or TProcessPoolServer.
+	 *
+	 * See doc/specs/HeaderFormat.md for details of the wire format.
+	 */
+	function THeaderProtocol(trans) {
+	  if (!(trans instanceof THeaderTransport)) {
+	    throw new THeaderProtocolError(
+	      'Only transports that inherit THeaderTransport can be' +
+	      ' used with THeaderProtocol'
+	    );
+	  }
+	  this.trans = trans;
+	  this.setProtocol();
+	};
+
+	THeaderProtocol.prototype.flush = function() {
+	   // Headers must be written prior to flushing because because
+	   // you need to calculate the length of the payload for the length
+	   // field of the header
+	  this.trans.writeHeaders();
+	  return this.trans.flush();
+	};
+
+	THeaderProtocol.prototype.writeMessageBegin = function(name, type, seqid) {
+	  return this.protocol.writeMessageBegin(name, type, seqid);
+	};
+
+	THeaderProtocol.prototype.writeMessageEnd = function() {
+	  return this.protocol.writeMessageEnd();
+	};
+
+	THeaderProtocol.prototype.writeStructBegin = function(name) {
+	  return this.protocol.writeStructBegin(name);
+	};
+
+	THeaderProtocol.prototype.writeStructEnd = function() {
+	  return this.protocol.writeStructEnd();
+	};
+
+	THeaderProtocol.prototype.writeFieldBegin = function(name, type, id) {
+	  return this.protocol.writeFieldBegin(name, type, id);
+	}
+
+	THeaderProtocol.prototype.writeFieldEnd = function() {
+	  return this.protocol.writeFieldEnd();
+	};
+
+	THeaderProtocol.prototype.writeFieldStop = function() {
+	  return this.protocol.writeFieldStop();
+	};
+
+	THeaderProtocol.prototype.writeMapBegin = function(ktype, vtype, size) {
+	  return this.protocol.writeMapBegin(ktype, vtype, size);
+	};
+
+	THeaderProtocol.prototype.writeMapEnd = function() {
+	  return this.protocol.writeMapEnd();
+	};
+
+	THeaderProtocol.prototype.writeListBegin = function(etype, size) {
+	  return this.protocol.writeListBegin(etype, size);
+	};
+
+	THeaderProtocol.prototype.writeListEnd = function() {
+	  return this.protocol.writeListEnd();
+	};
+
+	THeaderProtocol.prototype.writeSetBegin = function(etype, size) {
+	  return this.protocol.writeSetBegin(etype, size);
+	};
+
+	THeaderProtocol.prototype.writeSetEnd = function() {
+	  return this.protocol.writeSetEnd();
+	};
+
+	THeaderProtocol.prototype.writeBool = function(b) {
+	  return this.protocol.writeBool(b);
+	};
+
+	THeaderProtocol.prototype.writeByte = function(b) {
+	  return this.protocol.writeByte(b);
+	};
+
+	THeaderProtocol.prototype.writeI16 = function(i16) {
+	  return this.protocol.writeI16(i16);
+	};
+
+	THeaderProtocol.prototype.writeI32 = function(i32) {
+	  return this.protocol.writeI32(i32);
+	};
+
+	THeaderProtocol.prototype.writeI64 = function(i64) {
+	  return this.protocol.writeI64(i64);
+	};
+
+	THeaderProtocol.prototype.writeDouble = function(dub) {
+	  return this.protocol.writeDouble(dub);
+	};
+
+	THeaderProtocol.prototype.writeStringOrBinary = function(name, encoding, arg) {
+	  return this.protocol.writeStringOrBinary(name, encoding, arg);
+	};
+
+	THeaderProtocol.prototype.writeString = function(arg) {
+	  return this.protocol.writeString(arg);
+	};
+
+	THeaderProtocol.prototype.writeBinary = function(arg) {
+	  return this.protocol.writeBinary(arg);
+	};
+
+	THeaderProtocol.prototype.readMessageBegin = function() {
+	  this.trans.readHeaders();
+	  this.setProtocol();
+	  return this.protocol.readMessageBegin();
+	};
+
+	THeaderProtocol.prototype.readMessageEnd = function() {
+	  return this.protocol.readMessageEnd();
+	};
+
+	THeaderProtocol.prototype.readStructBegin = function() {
+	  return this.protocol.readStructBegin();
+	};
+
+	THeaderProtocol.prototype.readStructEnd = function() {
+	  return this.protocol.readStructEnd();
+	};
+
+	THeaderProtocol.prototype.readFieldBegin = function() {
+	  return this.protocol.readFieldBegin();
+	};
+
+	THeaderProtocol.prototype.readFieldEnd = function() {
+	  return this.protocol.readFieldEnd();
+	};
+
+	THeaderProtocol.prototype.readMapBegin = function() {
+	  return this.protocol.readMapBegin();
+	};
+
+	THeaderProtocol.prototype.readMapEnd = function() {
+	  return this.protocol.readMapEnd();
+	};
+
+	THeaderProtocol.prototype.readListBegin = function() {
+	  return this.protocol.readListBegin();
+	};
+
+	THeaderProtocol.prototype.readListEnd = function() {
+	  return this.protocol.readListEnd();
+	};
+
+	THeaderProtocol.prototype.readSetBegin = function() {
+	  return this.protocol.readSetBegin();
+	};
+
+	THeaderProtocol.prototype.readSetEnd = function() {
+	  return this.protocol.readSetEnd();
+	};
+
+	THeaderProtocol.prototype.readBool = function() {
+	  return this.protocol.readBool();
+	};
+
+	THeaderProtocol.prototype.readByte = function() {
+	  return this.protocol.readByte();
+	};
+
+	THeaderProtocol.prototype.readI16 = function() {
+	  return this.protocol.readI16();
+	};
+
+	THeaderProtocol.prototype.readI32 = function() {
+	  return this.protocol.readI32();
+	};
+
+	THeaderProtocol.prototype.readI64 = function() {
+	  return this.protocol.readI64();
+	};
+
+	THeaderProtocol.prototype.readDouble = function() {
+	  return this.protocol.readDouble();
+	};
+
+	THeaderProtocol.prototype.readBinary = function() {
+	  return this.protocol.readBinary();
+	};
+
+	THeaderProtocol.prototype.readString = function() {
+	  return this.protocol.readString();
+	};
+
+	THeaderProtocol.prototype.getTransport = function() {
+	  return this.trans;
+	};
+
+	THeaderProtocol.prototype.skip = function(type) {
+	  return this.protocol.skip(type);
+	};
+
+	THeaderProtocol.prototype.setProtocol = function(subProtocolId) {
+	  var subProtocolId = this.trans.getProtocolId();
+	  if (!ProtocolMap[subProtocolId]) {
+	    throw new THeaderProtocolError('Headers not supported for protocol ' + subProtocolId);
+	  }
+
+	  this.protocol = new ProtocolMap[subProtocolId](this.trans);
+	};
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements. See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership. The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License. You may obtain a copy of the License at
+	 *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied. See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 */
+	var http = __webpack_require__(20);
+	var https = __webpack_require__(21);
+	var url = __webpack_require__(26);
+	var path = __webpack_require__(49);
+	var fs = __webpack_require__(50);
+	var crypto = __webpack_require__(25);
+	var log = __webpack_require__(4);
+
+	var MultiplexedProcessor = __webpack_require__(51).MultiplexedProcessor;
+
+	var TBufferedTransport = __webpack_require__(10);
+	var TBinaryProtocol = __webpack_require__(16);
+	var InputBufferUnderrunError = __webpack_require__(12);
 
 	// WSFrame constructor and prototype
 	/////////////////////////////////////////////////////////////////////
@@ -8168,7 +9554,7 @@ module.exports =
 	    '.jpeg': 'image/jpeg',
 	    '.gif': 'image/gif',
 	    '.png': 'image/png',
-	    '.svg': 'image/svg+xml'
+	    '.svg': 'image/svg+xml'
 	  };
 
 	  //Setup all of the services
@@ -8298,7 +9684,15 @@ module.exports =
 
 	    //Locate the file requested and send it
 	    var uri = url.parse(request.url).pathname;
-	    var filename = path.join(baseDir, uri);
+	    var filename = path.resolve(path.join(baseDir, uri));
+
+	    //Ensure the basedir path is not able to be escaped
+	    if (filename.indexOf(baseDir) != 0) {
+	      response.writeHead(400, "Invalid request path", {});
+	      response.end();
+	      return;
+	    }
+
 	    fs.exists(filename, function(exists) {
 	      if(!exists) {
 	        response.writeHead(404);
@@ -8431,7 +9825,7 @@ module.exports =
 	          frame = result.nextFrame;
 	        }
 	      } catch(e) {
-	        console.log("TWebSocketTransport Exception: " + e);
+	        log.error('TWebSocketTransport Exception: ' + e);
 	        socket.destroy();
 	      }
 	    });
@@ -8442,20 +9836,20 @@ module.exports =
 	};
 
 
-
-
-
-
-
-
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 	module.exports = require("path");
 
 /***/ }),
-/* 49 */
+/* 50 */
+/***/ (function(module, exports) {
+
+	module.exports = require("fs");
+
+/***/ }),
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -8524,14 +9918,14 @@ module.exports =
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// vim:ts=4:sts=4:sw=4:
 	/*!
 	 *
-	 * Copyright 2009-2012 Kris Kowal under the terms of the MIT
-	 * license found at http://github.com/kriskowal/q/raw/master/LICENSE
+	 * Copyright 2009-2017 Kris Kowal under the terms of the MIT
+	 * license found at https://github.com/kriskowal/q/blob/v1/LICENSE
 	 *
 	 * With parts by Tyler Close
 	 * Copyright 2007-2009 Tyler Close under the terms of the MIT X license found
@@ -8556,8 +9950,7 @@ module.exports =
 	 */
 
 	(function (definition) {
-	    // Turn off strict mode for this function so we can assign to global.Q
-	    /* jshint strict: false */
+	    "use strict";
 
 	    // This file will function properly as a <script> tag, or a module
 	    // using CommonJS and NodeJS or RequireJS module formats.  In
@@ -8585,8 +9978,25 @@ module.exports =
 	        }
 
 	    // <script>
+	    } else if (typeof window !== "undefined" || typeof self !== "undefined") {
+	        // Prefer window over self for add-on scripts. Use self for
+	        // non-windowed contexts.
+	        var global = typeof window !== "undefined" ? window : self;
+
+	        // Get the `window` object, save the previous Q global
+	        // and initialize Q as a global.
+	        var previousQ = global.Q;
+	        global.Q = definition();
+
+	        // Add a noConflict function so Q can be removed from the
+	        // global namespace.
+	        global.Q.noConflict = function () {
+	            global.Q = previousQ;
+	            return this;
+	        };
+
 	    } else {
-	        Q = definition();
+	        throw new Error("This environment was not anticipated by Q. Please file a bug.");
 	    }
 
 	})(function () {
@@ -8618,57 +10028,67 @@ module.exports =
 	    var flushing = false;
 	    var requestTick = void 0;
 	    var isNodeJS = false;
+	    // queue for late tasks, used by unhandled rejection tracking
+	    var laterQueue = [];
 
 	    function flush() {
 	        /* jshint loopfunc: true */
+	        var task, domain;
 
 	        while (head.next) {
 	            head = head.next;
-	            var task = head.task;
+	            task = head.task;
 	            head.task = void 0;
-	            var domain = head.domain;
+	            domain = head.domain;
 
 	            if (domain) {
 	                head.domain = void 0;
 	                domain.enter();
 	            }
+	            runSingle(task, domain);
 
-	            try {
-	                task();
+	        }
+	        while (laterQueue.length) {
+	            task = laterQueue.pop();
+	            runSingle(task);
+	        }
+	        flushing = false;
+	    }
+	    // runs a single function in the async queue
+	    function runSingle(task, domain) {
+	        try {
+	            task();
 
-	            } catch (e) {
-	                if (isNodeJS) {
-	                    // In node, uncaught exceptions are considered fatal errors.
-	                    // Re-throw them synchronously to interrupt flushing!
+	        } catch (e) {
+	            if (isNodeJS) {
+	                // In node, uncaught exceptions are considered fatal errors.
+	                // Re-throw them synchronously to interrupt flushing!
 
-	                    // Ensure continuation if the uncaught exception is suppressed
-	                    // listening "uncaughtException" events (as domains does).
-	                    // Continue in next event to avoid tick recursion.
-	                    if (domain) {
-	                        domain.exit();
-	                    }
-	                    setTimeout(flush, 0);
-	                    if (domain) {
-	                        domain.enter();
-	                    }
-
-	                    throw e;
-
-	                } else {
-	                    // In browsers, uncaught exceptions are not fatal.
-	                    // Re-throw them asynchronously to avoid slow-downs.
-	                    setTimeout(function() {
-	                       throw e;
-	                    }, 0);
+	                // Ensure continuation if the uncaught exception is suppressed
+	                // listening "uncaughtException" events (as domains does).
+	                // Continue in next event to avoid tick recursion.
+	                if (domain) {
+	                    domain.exit();
 	                }
-	            }
+	                setTimeout(flush, 0);
+	                if (domain) {
+	                    domain.enter();
+	                }
 
-	            if (domain) {
-	                domain.exit();
+	                throw e;
+
+	            } else {
+	                // In browsers, uncaught exceptions are not fatal.
+	                // Re-throw them asynchronously to avoid slow-downs.
+	                setTimeout(function () {
+	                    throw e;
+	                }, 0);
 	            }
 	        }
 
-	        flushing = false;
+	        if (domain) {
+	            domain.exit();
+	        }
 	    }
 
 	    nextTick = function (task) {
@@ -8684,9 +10104,16 @@ module.exports =
 	        }
 	    };
 
-	    if (typeof process !== "undefined" && process.nextTick) {
-	        // Node.js before 0.9. Note that some fake-Node environments, like the
-	        // Mocha test runner, introduce a `process` global without a `nextTick`.
+	    if (typeof process === "object" &&
+	        process.toString() === "[object process]" && process.nextTick) {
+	        // Ensure Q is in a real Node environment, with a `process.nextTick`.
+	        // To see through fake Node environments:
+	        // * Mocha test runner - exposes a `process` global without a `nextTick`
+	        // * Browserify - exposes a `process.nexTick` function that uses
+	        //   `setTimeout`. In this case `setImmediate` is preferred because
+	        //    it is faster. Browserify's `process.toString()` yields
+	        //   "[object Object]", while in a real Node environment
+	        //   `process.toString()` yields "[object process]".
 	        isNodeJS = true;
 
 	        requestTick = function () {
@@ -8730,7 +10157,16 @@ module.exports =
 	            setTimeout(flush, 0);
 	        };
 	    }
-
+	    // runs a task after all other tasks have been run
+	    // this is useful for unhandled rejection tracking that needs to happen
+	    // after all `then`d tasks have been run.
+	    nextTick.runAfter = function (task) {
+	        laterQueue.push(task);
+	        if (!flushing) {
+	            flushing = true;
+	            requestTick();
+	        }
+	    };
 	    return nextTick;
 	})();
 
@@ -8814,6 +10250,11 @@ module.exports =
 	    return new Type();
 	};
 
+	var object_defineProperty = Object.defineProperty || function (obj, prop, descriptor) {
+	    obj[prop] = descriptor.value;
+	    return obj;
+	};
+
 	var object_hasOwnProperty = uncurryThis(Object.prototype.hasOwnProperty);
 
 	var object_keys = Object.keys || function (object) {
@@ -8864,19 +10305,20 @@ module.exports =
 	        promise.stack &&
 	        typeof error === "object" &&
 	        error !== null &&
-	        error.stack &&
-	        error.stack.indexOf(STACK_JUMP_SEPARATOR) === -1
+	        error.stack
 	    ) {
 	        var stacks = [];
 	        for (var p = promise; !!p; p = p.source) {
-	            if (p.stack) {
+	            if (p.stack && (!error.__minimumStackCounter__ || error.__minimumStackCounter__ > p.stackCounter)) {
+	                object_defineProperty(error, "__minimumStackCounter__", {value: p.stackCounter, configurable: true});
 	                stacks.unshift(p.stack);
 	            }
 	        }
 	        stacks.unshift(error.stack);
 
 	        var concatedStacks = stacks.join("\n" + STACK_JUMP_SEPARATOR + "\n");
-	        error.stack = filterStackString(concatedStacks);
+	        var stack = filterStackString(concatedStacks);
+	        object_defineProperty(error, "stack", {value: stack, configurable: true});
 	    }
 	}
 
@@ -8979,7 +10421,7 @@ module.exports =
 	    // If the object is already a Promise, return it directly.  This enables
 	    // the resolve function to both be used to created references from objects,
 	    // but to tolerably coerce non-promises to promises.
-	    if (isPromise(value)) {
+	    if (value instanceof Promise) {
 	        return value;
 	    }
 
@@ -9002,6 +10444,19 @@ module.exports =
 	 * Controls whether or not long stack traces will be on
 	 */
 	Q.longStackSupport = false;
+
+	/**
+	 * The counter is used to determine the stopping point for building
+	 * long stack traces. In makeStackTraceLong we walk backwards through
+	 * the linked list of promises, only stacks which were created before
+	 * the rejection are concatenated.
+	 */
+	var longStackCounter = 1;
+
+	// enable long stacks if Q_DEBUG is set
+	if (typeof process === "object" && process && process.env && process.env.Q_DEBUG) {
+	    Q.longStackSupport = true;
+	}
 
 	/**
 	 * Constructs a {promise, resolve, reject} object.
@@ -9034,7 +10489,7 @@ module.exports =
 	                progressListeners.push(operands[1]);
 	            }
 	        } else {
-	            nextTick(function () {
+	            Q.nextTick(function () {
 	                resolvedPromise.promiseDispatch.apply(resolvedPromise, args);
 	            });
 	        }
@@ -9070,6 +10525,7 @@ module.exports =
 	            // At the same time, cut off the first line; it's always just
 	            // "[object Promise]\n", as per the `toString`.
 	            promise.stack = e.stack.substring(e.stack.indexOf("\n") + 1);
+	            promise.stackCounter = longStackCounter++;
 	        }
 	    }
 
@@ -9079,10 +10535,15 @@ module.exports =
 
 	    function become(newPromise) {
 	        resolvedPromise = newPromise;
-	        promise.source = newPromise;
+
+	        if (Q.longStackSupport && hasStacks) {
+	            // Only hold a reference to the new promise if long stacks
+	            // are enabled to reduce memory usage
+	            promise.source = newPromise;
+	        }
 
 	        array_reduce(messages, function (undefined, message) {
-	            nextTick(function () {
+	            Q.nextTick(function () {
 	                newPromise.promiseDispatch.apply(newPromise, message);
 	            });
 	        }, void 0);
@@ -9120,7 +10581,7 @@ module.exports =
 	        }
 
 	        array_reduce(progressListeners, function (undefined, progressListener) {
-	            nextTick(function () {
+	            Q.nextTick(function () {
 	                progressListener(progress);
 	            });
 	        }, void 0);
@@ -9207,21 +10668,21 @@ module.exports =
 	            // TODO: "===" should be Object.is or equiv
 	            return x;
 	        } else {
-	            throw new Error("Can't join: not the same: " + x + " " + y);
+	            throw new Error("Q can't join: not the same: " + x + " " + y);
 	        }
 	    });
 	};
 
 	/**
-	 * Returns a promise for the first of an array of promises to become fulfilled.
+	 * Returns a promise for the first of an array of promises to become settled.
 	 * @param answers {Array[Any*]} promises to race
-	 * @returns {Any*} the first promise to be fulfilled
+	 * @returns {Any*} the first promise to be settled
 	 */
 	Q.race = race;
 	function race(answerPs) {
-	    return promise(function(resolve, reject) {
+	    return promise(function (resolve, reject) {
 	        // Switch to this once we can assume at least ES5
-	        // answerPs.forEach(function(answerP) {
+	        // answerPs.forEach(function (answerP) {
 	        //     Q(answerP).then(resolve, reject);
 	        // });
 	        // Use this in the meantime
@@ -9335,7 +10796,7 @@ module.exports =
 	        return typeof progressed === "function" ? progressed(value) : value;
 	    }
 
-	    nextTick(function () {
+	    Q.nextTick(function () {
 	        self.promiseDispatch(function (value) {
 	            if (done) {
 	                return;
@@ -9374,6 +10835,30 @@ module.exports =
 	    }]);
 
 	    return deferred.promise;
+	};
+
+	Q.tap = function (promise, callback) {
+	    return Q(promise).tap(callback);
+	};
+
+	/**
+	 * Works almost like "finally", but not called for rejections.
+	 * Original resolution value is passed through callback unaffected.
+	 * Callback may return a promise that will be awaited for.
+	 * @param {Function} callback
+	 * @returns {Q.Promise}
+	 * @example
+	 * doSomething()
+	 *   .then(...)
+	 *   .tap(console.log)
+	 *   .then(...);
+	 */
+	Promise.prototype.tap = function (callback) {
+	    callback = Q(callback);
+
+	    return this.then(function (value) {
+	        return callback.fcall(value).thenResolve(value);
+	    });
 	};
 
 	/**
@@ -9441,9 +10926,7 @@ module.exports =
 	 */
 	Q.isPromise = isPromise;
 	function isPromise(object) {
-	    return isObject(object) &&
-	        typeof object.promiseDispatch === "function" &&
-	        typeof object.inspect === "function";
+	    return object instanceof Promise;
 	}
 
 	Q.isPromiseAlike = isPromiseAlike;
@@ -9497,6 +10980,7 @@ module.exports =
 	// shimmed environments, this would naturally be a `Set`.
 	var unhandledReasons = [];
 	var unhandledRejections = [];
+	var reportedUnhandledRejections = [];
 	var trackUnhandledRejections = true;
 
 	function resetUnhandledRejections() {
@@ -9511,6 +10995,14 @@ module.exports =
 	function trackRejection(promise, reason) {
 	    if (!trackUnhandledRejections) {
 	        return;
+	    }
+	    if (typeof process === "object" && typeof process.emit === "function") {
+	        Q.nextTick.runAfter(function () {
+	            if (array_indexOf(unhandledRejections, promise) !== -1) {
+	                process.emit("unhandledRejection", reason, promise);
+	                reportedUnhandledRejections.push(promise);
+	            }
+	        });
 	    }
 
 	    unhandledRejections.push(promise);
@@ -9528,6 +11020,15 @@ module.exports =
 
 	    var at = array_indexOf(unhandledRejections, promise);
 	    if (at !== -1) {
+	        if (typeof process === "object" && typeof process.emit === "function") {
+	            Q.nextTick.runAfter(function () {
+	                var atReport = array_indexOf(reportedUnhandledRejections, promise);
+	                if (atReport !== -1) {
+	                    process.emit("rejectionHandled", unhandledReasons[at], promise);
+	                    reportedUnhandledRejections.splice(atReport, 1);
+	                }
+	            });
+	        }
 	        unhandledRejections.splice(at, 1);
 	        unhandledReasons.splice(at, 1);
 	    }
@@ -9621,7 +11122,7 @@ module.exports =
 	 */
 	function coerce(promise) {
 	    var deferred = defer();
-	    nextTick(function () {
+	    Q.nextTick(function () {
 	        try {
 	            promise.then(deferred.resolve, deferred.reject, deferred.notify);
 	        } catch (exception) {
@@ -9722,7 +11223,7 @@ module.exports =
 	                    return reject(exception);
 	                }
 	                if (result.done) {
-	                    return result.value;
+	                    return Q(result.value);
 	                } else {
 	                    return when(result.value, callback, errback);
 	                }
@@ -9733,7 +11234,7 @@ module.exports =
 	                    result = generator[verb](arg);
 	                } catch (exception) {
 	                    if (isStopIteration(exception)) {
-	                        return exception.value;
+	                        return Q(exception.value);
 	                    } else {
 	                        return reject(exception);
 	                    }
@@ -9829,7 +11330,7 @@ module.exports =
 	Promise.prototype.dispatch = function (op, args) {
 	    var self = this;
 	    var deferred = defer();
-	    nextTick(function () {
+	    Q.nextTick(function () {
 	        self.promiseDispatch(deferred.resolve, op, args);
 	    });
 	    return deferred.promise;
@@ -10002,7 +11503,7 @@ module.exports =
 	Q.all = all;
 	function all(promises) {
 	    return when(promises, function (promises) {
-	        var countDown = 0;
+	        var pendingCount = 0;
 	        var deferred = defer();
 	        array_reduce(promises, function (undefined, promise, index) {
 	            var snapshot;
@@ -10012,12 +11513,12 @@ module.exports =
 	            ) {
 	                promises[index] = snapshot.value;
 	            } else {
-	                ++countDown;
+	                ++pendingCount;
 	                when(
 	                    promise,
 	                    function (value) {
 	                        promises[index] = value;
-	                        if (--countDown === 0) {
+	                        if (--pendingCount === 0) {
 	                            deferred.resolve(promises);
 	                        }
 	                    },
@@ -10028,7 +11529,7 @@ module.exports =
 	                );
 	            }
 	        }, void 0);
-	        if (countDown === 0) {
+	        if (pendingCount === 0) {
 	            deferred.resolve(promises);
 	        }
 	        return deferred.promise;
@@ -10037,6 +11538,57 @@ module.exports =
 
 	Promise.prototype.all = function () {
 	    return all(this);
+	};
+
+	/**
+	 * Returns the first resolved promise of an array. Prior rejected promises are
+	 * ignored.  Rejects only if all promises are rejected.
+	 * @param {Array*} an array containing values or promises for values
+	 * @returns a promise fulfilled with the value of the first resolved promise,
+	 * or a rejected promise if all promises are rejected.
+	 */
+	Q.any = any;
+
+	function any(promises) {
+	    if (promises.length === 0) {
+	        return Q.resolve();
+	    }
+
+	    var deferred = Q.defer();
+	    var pendingCount = 0;
+	    array_reduce(promises, function (prev, current, index) {
+	        var promise = promises[index];
+
+	        pendingCount++;
+
+	        when(promise, onFulfilled, onRejected, onProgress);
+	        function onFulfilled(result) {
+	            deferred.resolve(result);
+	        }
+	        function onRejected(err) {
+	            pendingCount--;
+	            if (pendingCount === 0) {
+	                var rejection = err || new Error("" + err);
+
+	                rejection.message = ("Q can't get fulfillment value from any promise, all " +
+	                    "promises were rejected. Last error message: " + rejection.message);
+
+	                deferred.reject(rejection);
+	            }
+	        }
+	        function onProgress(progress) {
+	            deferred.notify({
+	                index: index,
+	                value: progress
+	            });
+	        }
+	    }, undefined);
+
+	    return deferred.promise;
+	}
+
+	Promise.prototype.any = function () {
+	    return any(this);
 	};
 
 	/**
@@ -10145,6 +11697,9 @@ module.exports =
 
 	Promise.prototype.fin = // XXX legacy
 	Promise.prototype["finally"] = function (callback) {
+	    if (!callback || typeof callback.apply !== "function") {
+	        throw new Error("Q can't apply finally callback");
+	    }
 	    callback = Q(callback);
 	    return this.then(function (value) {
 	        return callback.fcall().then(function () {
@@ -10172,7 +11727,7 @@ module.exports =
 	    var onUnhandledError = function (error) {
 	        // forward to a future turn so that ``when``
 	        // does not catch it and turn it into a rejection.
-	        nextTick(function () {
+	        Q.nextTick(function () {
 	            makeStackTraceLong(error, promise);
 	            if (Q.onerror) {
 	                Q.onerror(error);
@@ -10199,18 +11754,22 @@ module.exports =
 	 * some milliseconds time out.
 	 * @param {Any*} promise
 	 * @param {Number} milliseconds timeout
-	 * @param {String} custom error message (optional)
+	 * @param {Any*} custom error message or Error object (optional)
 	 * @returns a promise for the resolution of the given promise if it is
 	 * fulfilled before the timeout, otherwise rejected.
 	 */
-	Q.timeout = function (object, ms, message) {
-	    return Q(object).timeout(ms, message);
+	Q.timeout = function (object, ms, error) {
+	    return Q(object).timeout(ms, error);
 	};
 
-	Promise.prototype.timeout = function (ms, message) {
+	Promise.prototype.timeout = function (ms, error) {
 	    var deferred = defer();
 	    var timeoutId = setTimeout(function () {
-	        deferred.reject(new Error(message || "Timed out after " + ms + " ms"));
+	        if (!error || "string" === typeof error) {
+	            error = new Error(error || "Timed out after " + ms + " ms");
+	            error.code = "ETIMEDOUT";
+	        }
+	        deferred.reject(error);
 	    }, ms);
 
 	    this.then(function (value) {
@@ -10304,6 +11863,9 @@ module.exports =
 	 */
 	Q.nfbind =
 	Q.denodeify = function (callback /*...args*/) {
+	    if (callback === undefined) {
+	        throw new Error("Q can't wrap an undefined function");
+	    }
 	    var baseArgs = array_slice(arguments, 1);
 	    return function () {
 	        var nodeArgs = baseArgs.concat(array_slice(arguments));
@@ -10412,17 +11974,21 @@ module.exports =
 	Promise.prototype.nodeify = function (nodeback) {
 	    if (nodeback) {
 	        this.then(function (value) {
-	            nextTick(function () {
+	            Q.nextTick(function () {
 	                nodeback(null, value);
 	            });
 	        }, function (error) {
-	            nextTick(function () {
+	            Q.nextTick(function () {
 	                nodeback(error);
 	            });
 	        });
 	    } else {
 	        return this;
 	    }
+	};
+
+	Q.noConflict = function() {
+	    throw new Error("Q.noConflict only works when Q is used as a global");
 	};
 
 	// All code before this point will be filtered from stack traces.
@@ -10434,7 +12000,7 @@ module.exports =
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -10491,17 +12057,17 @@ module.exports =
 	  if (ServiceClient.Client) {
 	    ServiceClient = ServiceClient.Client;
 	  }
-	  var self = this;
-	  ServiceClient.prototype.new_seqid = function() {
-	    self.seqid += 1;
-	    return self.seqid;
-	  };
 	  var writeCb = function(buf, seqid) {
 	    connection.write(buf,seqid);
 	  };
 	  var transport = new connection.transport(undefined, writeCb);
 	  var protocolWrapper = new Wrapper(serviceName, connection.protocol, connection);
 	  var client = new ServiceClient(transport, protocolWrapper);
+	  var self = this;
+	  client.new_seqid = function() {
+	    self.seqid += 1;
+	    return self.seqid;
+	  };
 
 	  if (typeof connection.client !== 'object') {
 	    connection.client = {};
@@ -10513,7 +12079,7 @@ module.exports =
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10527,7 +12093,7 @@ module.exports =
 	var thrift = __webpack_require__(1);
 	var Thrift = thrift.Thrift;
 	var Q = thrift.Q;
-	var Int64 = __webpack_require__(13);
+	var Int64 = __webpack_require__(15);
 
 	var ttypes = module.exports = {};
 	ttypes.TDeviceType = {
@@ -10726,7 +12292,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10740,7 +12306,7 @@ module.exports =
 	var thrift = __webpack_require__(1);
 	var Thrift = thrift.Thrift;
 	var Q = thrift.Q;
-	var Int64 = __webpack_require__(13);
+	var Int64 = __webpack_require__(15);
 
 	var ttypes = module.exports = {};
 	ttypes.TExtArgumentType = {
@@ -11039,7 +12605,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11053,9 +12619,9 @@ module.exports =
 	var thrift = __webpack_require__(1);
 	var Thrift = thrift.Thrift;
 	var Q = thrift.Q;
-	var Int64 = __webpack_require__(13);
+	var Int64 = __webpack_require__(15);
 
-	var common_ttypes = __webpack_require__(52);
+	var common_ttypes = __webpack_require__(54);
 
 	var ttypes = module.exports = {};
 	ttypes.TResultSetLayout = {
@@ -12235,7 +13801,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -12249,12 +13815,12 @@ module.exports =
 	var thrift = __webpack_require__(1);
 	var Thrift = thrift.Thrift;
 	var Q = thrift.Q;
-	var Int64 = __webpack_require__(13);
+	var Int64 = __webpack_require__(15);
 
-	var common_ttypes = __webpack_require__(52);
-	var completion_hints_ttypes = __webpack_require__(56);
-	var serialized_result_set_ttypes = __webpack_require__(54);
-	var extension_functions_ttypes = __webpack_require__(53);
+	var common_ttypes = __webpack_require__(54);
+	var completion_hints_ttypes = __webpack_require__(58);
+	var serialized_result_set_ttypes = __webpack_require__(56);
+	var extension_functions_ttypes = __webpack_require__(55);
 
 	var ttypes = module.exports = {};
 	ttypes.TExecuteMode = {
@@ -18627,7 +20193,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18641,7 +20207,7 @@ module.exports =
 	var thrift = __webpack_require__(1);
 	var Thrift = thrift.Thrift;
 	var Q = thrift.Q;
-	var Int64 = __webpack_require__(13);
+	var Int64 = __webpack_require__(15);
 
 	var ttypes = module.exports = {};
 	ttypes.TCompletionHintType = {
@@ -18749,7 +20315,7 @@ module.exports =
 	};
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";//
@@ -18757,11 +20323,11 @@ module.exports =
 	//
 	// DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 	//
-	"use strict";var thrift=__webpack_require__(1);var Thrift=thrift.Thrift;var Q=thrift.Q;var Int64=__webpack_require__(13);var common_ttypes=__webpack_require__(52);var completion_hints_ttypes=__webpack_require__(56);var serialized_result_set_ttypes=__webpack_require__(54);var extension_functions_ttypes=__webpack_require__(53);var ttypes=__webpack_require__(55);//HELPER FUNCTIONS AND STRUCTURES
+	"use strict";var thrift=__webpack_require__(1);var Thrift=thrift.Thrift;var Q=thrift.Q;var Int64=__webpack_require__(15);var common_ttypes=__webpack_require__(54);var completion_hints_ttypes=__webpack_require__(58);var serialized_result_set_ttypes=__webpack_require__(56);var extension_functions_ttypes=__webpack_require__(55);var ttypes=__webpack_require__(57);//HELPER FUNCTIONS AND STRUCTURES
 	var MapD_connect_args=function MapD_connect_args(args){this.user=null;this.passwd=null;this.dbname=null;if(args){if(args.user!==undefined&&args.user!==null){this.user=args.user;}if(args.passwd!==undefined&&args.passwd!==null){this.passwd=args.passwd;}if(args.dbname!==undefined&&args.dbname!==null){this.dbname=args.dbname;}}};MapD_connect_args.prototype={};MapD_connect_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.user=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.passwd=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.dbname=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_connect_args.prototype.write=function(output){output.writeStructBegin('MapD_connect_args');if(this.user!==null&&this.user!==undefined){output.writeFieldBegin('user',Thrift.Type.STRING,1);output.writeString(this.user);output.writeFieldEnd();}if(this.passwd!==null&&this.passwd!==undefined){output.writeFieldBegin('passwd',Thrift.Type.STRING,2);output.writeString(this.passwd);output.writeFieldEnd();}if(this.dbname!==null&&this.dbname!==undefined){output.writeFieldBegin('dbname',Thrift.Type.STRING,3);output.writeString(this.dbname);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_connect_result=function MapD_connect_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_connect_result.prototype={};MapD_connect_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_connect_result.prototype.write=function(output){output.writeStructBegin('MapD_connect_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_krb5_connect_args=function MapD_krb5_connect_args(args){this.inputToken=null;this.dbname=null;if(args){if(args.inputToken!==undefined&&args.inputToken!==null){this.inputToken=args.inputToken;}if(args.dbname!==undefined&&args.dbname!==null){this.dbname=args.dbname;}}};MapD_krb5_connect_args.prototype={};MapD_krb5_connect_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.inputToken=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.dbname=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_krb5_connect_args.prototype.write=function(output){output.writeStructBegin('MapD_krb5_connect_args');if(this.inputToken!==null&&this.inputToken!==undefined){output.writeFieldBegin('inputToken',Thrift.Type.STRING,1);output.writeString(this.inputToken);output.writeFieldEnd();}if(this.dbname!==null&&this.dbname!==undefined){output.writeFieldBegin('dbname',Thrift.Type.STRING,2);output.writeString(this.dbname);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_krb5_connect_result=function MapD_krb5_connect_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TKrb5Session(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_krb5_connect_result.prototype={};MapD_krb5_connect_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TKrb5Session();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_krb5_connect_result.prototype.write=function(output){output.writeStructBegin('MapD_krb5_connect_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_disconnect_args=function MapD_disconnect_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_disconnect_args.prototype={};MapD_disconnect_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_disconnect_args.prototype.write=function(output){output.writeStructBegin('MapD_disconnect_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_disconnect_result=function MapD_disconnect_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_disconnect_result.prototype={};MapD_disconnect_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_disconnect_result.prototype.write=function(output){output.writeStructBegin('MapD_disconnect_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_switch_database_args=function MapD_switch_database_args(args){this.session=null;this.dbname=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dbname!==undefined&&args.dbname!==null){this.dbname=args.dbname;}}};MapD_switch_database_args.prototype={};MapD_switch_database_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.dbname=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_switch_database_args.prototype.write=function(output){output.writeStructBegin('MapD_switch_database_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dbname!==null&&this.dbname!==undefined){output.writeFieldBegin('dbname',Thrift.Type.STRING,2);output.writeString(this.dbname);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_switch_database_result=function MapD_switch_database_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_switch_database_result.prototype={};MapD_switch_database_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_switch_database_result.prototype.write=function(output){output.writeStructBegin('MapD_switch_database_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_server_status_args=function MapD_get_server_status_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_server_status_args.prototype={};MapD_get_server_status_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_server_status_args.prototype.write=function(output){output.writeStructBegin('MapD_get_server_status_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_server_status_result=function MapD_get_server_status_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TServerStatus(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_server_status_result.prototype={};MapD_get_server_status_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TServerStatus();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_server_status_result.prototype.write=function(output){output.writeStructBegin('MapD_get_server_status_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_status_args=function MapD_get_status_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_status_args.prototype={};MapD_get_status_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_status_args.prototype.write=function(output){output.writeStructBegin('MapD_get_status_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_status_result=function MapD_get_status_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TServerStatus]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_status_result.prototype={};MapD_get_status_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3186=input.readListBegin();var _size185=_rtmp3186.size||0;for(var _i187=0;_i187<_size185;++_i187){var elem188=null;elem188=new ttypes.TServerStatus();elem188.read(input);this.success.push(elem188);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_status_result.prototype.write=function(output){output.writeStructBegin('MapD_get_status_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter189 in this.success){if(this.success.hasOwnProperty(iter189)){iter189=this.success[iter189];iter189.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_hardware_info_args=function MapD_get_hardware_info_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_hardware_info_args.prototype={};MapD_get_hardware_info_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_hardware_info_args.prototype.write=function(output){output.writeStructBegin('MapD_get_hardware_info_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_hardware_info_result=function MapD_get_hardware_info_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TClusterHardwareInfo(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_hardware_info_result.prototype={};MapD_get_hardware_info_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TClusterHardwareInfo();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_hardware_info_result.prototype.write=function(output){output.writeStructBegin('MapD_get_hardware_info_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_args=function MapD_get_tables_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_tables_args.prototype={};MapD_get_tables_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_args.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_result=function MapD_get_tables_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_tables_result.prototype={};MapD_get_tables_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3191=input.readListBegin();var _size190=_rtmp3191.size||0;for(var _i192=0;_i192<_size190;++_i192){var elem193=null;elem193=input.readString();this.success.push(elem193);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_result.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter194 in this.success){if(this.success.hasOwnProperty(iter194)){iter194=this.success[iter194];output.writeString(iter194);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_physical_tables_args=function MapD_get_physical_tables_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_physical_tables_args.prototype={};MapD_get_physical_tables_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_physical_tables_args.prototype.write=function(output){output.writeStructBegin('MapD_get_physical_tables_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_physical_tables_result=function MapD_get_physical_tables_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_physical_tables_result.prototype={};MapD_get_physical_tables_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3196=input.readListBegin();var _size195=_rtmp3196.size||0;for(var _i197=0;_i197<_size195;++_i197){var elem198=null;elem198=input.readString();this.success.push(elem198);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_physical_tables_result.prototype.write=function(output){output.writeStructBegin('MapD_get_physical_tables_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter199 in this.success){if(this.success.hasOwnProperty(iter199)){iter199=this.success[iter199];output.writeString(iter199);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_views_args=function MapD_get_views_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_views_args.prototype={};MapD_get_views_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_views_args.prototype.write=function(output){output.writeStructBegin('MapD_get_views_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_views_result=function MapD_get_views_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_views_result.prototype={};MapD_get_views_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3201=input.readListBegin();var _size200=_rtmp3201.size||0;for(var _i202=0;_i202<_size200;++_i202){var elem203=null;elem203=input.readString();this.success.push(elem203);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_views_result.prototype.write=function(output){output.writeStructBegin('MapD_get_views_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter204 in this.success){if(this.success.hasOwnProperty(iter204)){iter204=this.success[iter204];output.writeString(iter204);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_meta_args=function MapD_get_tables_meta_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_tables_meta_args.prototype={};MapD_get_tables_meta_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_meta_args.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_meta_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_tables_meta_result=function MapD_get_tables_meta_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TTableMeta]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_tables_meta_result.prototype={};MapD_get_tables_meta_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3206=input.readListBegin();var _size205=_rtmp3206.size||0;for(var _i207=0;_i207<_size205;++_i207){var elem208=null;elem208=new ttypes.TTableMeta();elem208.read(input);this.success.push(elem208);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_tables_meta_result.prototype.write=function(output){output.writeStructBegin('MapD_get_tables_meta_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter209 in this.success){if(this.success.hasOwnProperty(iter209)){iter209=this.success[iter209];iter209.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_details_args=function MapD_get_table_details_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_table_details_args.prototype={};MapD_get_table_details_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_details_args.prototype.write=function(output){output.writeStructBegin('MapD_get_table_details_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_details_result=function MapD_get_table_details_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TTableDetails(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_table_details_result.prototype={};MapD_get_table_details_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TTableDetails();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_details_result.prototype.write=function(output){output.writeStructBegin('MapD_get_table_details_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_internal_table_details_args=function MapD_get_internal_table_details_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_internal_table_details_args.prototype={};MapD_get_internal_table_details_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_internal_table_details_args.prototype.write=function(output){output.writeStructBegin('MapD_get_internal_table_details_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_internal_table_details_result=function MapD_get_internal_table_details_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TTableDetails(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_internal_table_details_result.prototype={};MapD_get_internal_table_details_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TTableDetails();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_internal_table_details_result.prototype.write=function(output){output.writeStructBegin('MapD_get_internal_table_details_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_users_args=function MapD_get_users_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_users_args.prototype={};MapD_get_users_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_users_args.prototype.write=function(output){output.writeStructBegin('MapD_get_users_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_users_result=function MapD_get_users_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_users_result.prototype={};MapD_get_users_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3211=input.readListBegin();var _size210=_rtmp3211.size||0;for(var _i212=0;_i212<_size210;++_i212){var elem213=null;elem213=input.readString();this.success.push(elem213);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_users_result.prototype.write=function(output){output.writeStructBegin('MapD_get_users_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter214 in this.success){if(this.success.hasOwnProperty(iter214)){iter214=this.success[iter214];output.writeString(iter214);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_databases_args=function MapD_get_databases_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_databases_args.prototype={};MapD_get_databases_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_databases_args.prototype.write=function(output){output.writeStructBegin('MapD_get_databases_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_databases_result=function MapD_get_databases_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDBInfo]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_databases_result.prototype={};MapD_get_databases_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3216=input.readListBegin();var _size215=_rtmp3216.size||0;for(var _i217=0;_i217<_size215;++_i217){var elem218=null;elem218=new ttypes.TDBInfo();elem218.read(input);this.success.push(elem218);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_databases_result.prototype.write=function(output){output.writeStructBegin('MapD_get_databases_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter219 in this.success){if(this.success.hasOwnProperty(iter219)){iter219=this.success[iter219];iter219.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_version_args=function MapD_get_version_args(args){};MapD_get_version_args.prototype={};MapD_get_version_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;if(ftype==Thrift.Type.STOP){break;}input.skip(ftype);input.readFieldEnd();}input.readStructEnd();return;};MapD_get_version_args.prototype.write=function(output){output.writeStructBegin('MapD_get_version_args');output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_version_result=function MapD_get_version_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_version_result.prototype={};MapD_get_version_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_version_result.prototype.write=function(output){output.writeStructBegin('MapD_get_version_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_heap_profile_args=function MapD_start_heap_profile_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_start_heap_profile_args.prototype={};MapD_start_heap_profile_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_heap_profile_args.prototype.write=function(output){output.writeStructBegin('MapD_start_heap_profile_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_heap_profile_result=function MapD_start_heap_profile_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_start_heap_profile_result.prototype={};MapD_start_heap_profile_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_heap_profile_result.prototype.write=function(output){output.writeStructBegin('MapD_start_heap_profile_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_stop_heap_profile_args=function MapD_stop_heap_profile_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_stop_heap_profile_args.prototype={};MapD_stop_heap_profile_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_stop_heap_profile_args.prototype.write=function(output){output.writeStructBegin('MapD_stop_heap_profile_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_stop_heap_profile_result=function MapD_stop_heap_profile_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_stop_heap_profile_result.prototype={};MapD_stop_heap_profile_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_stop_heap_profile_result.prototype.write=function(output){output.writeStructBegin('MapD_stop_heap_profile_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_heap_profile_args=function MapD_get_heap_profile_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_heap_profile_args.prototype={};MapD_get_heap_profile_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_heap_profile_args.prototype.write=function(output){output.writeStructBegin('MapD_get_heap_profile_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_heap_profile_result=function MapD_get_heap_profile_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_heap_profile_result.prototype={};MapD_get_heap_profile_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_heap_profile_result.prototype.write=function(output){output.writeStructBegin('MapD_get_heap_profile_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_memory_args=function MapD_get_memory_args(args){this.session=null;this.memory_level=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.memory_level!==undefined&&args.memory_level!==null){this.memory_level=args.memory_level;}}};MapD_get_memory_args.prototype={};MapD_get_memory_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.memory_level=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_memory_args.prototype.write=function(output){output.writeStructBegin('MapD_get_memory_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.memory_level!==null&&this.memory_level!==undefined){output.writeFieldBegin('memory_level',Thrift.Type.STRING,2);output.writeString(this.memory_level);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_memory_result=function MapD_get_memory_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TNodeMemoryInfo]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_memory_result.prototype={};MapD_get_memory_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3221=input.readListBegin();var _size220=_rtmp3221.size||0;for(var _i222=0;_i222<_size220;++_i222){var elem223=null;elem223=new ttypes.TNodeMemoryInfo();elem223.read(input);this.success.push(elem223);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_memory_result.prototype.write=function(output){output.writeStructBegin('MapD_get_memory_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter224 in this.success){if(this.success.hasOwnProperty(iter224)){iter224=this.success[iter224];iter224.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_cpu_memory_args=function MapD_clear_cpu_memory_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_clear_cpu_memory_args.prototype={};MapD_clear_cpu_memory_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_cpu_memory_args.prototype.write=function(output){output.writeStructBegin('MapD_clear_cpu_memory_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_cpu_memory_result=function MapD_clear_cpu_memory_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_clear_cpu_memory_result.prototype={};MapD_clear_cpu_memory_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_cpu_memory_result.prototype.write=function(output){output.writeStructBegin('MapD_clear_cpu_memory_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_gpu_memory_args=function MapD_clear_gpu_memory_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_clear_gpu_memory_args.prototype={};MapD_clear_gpu_memory_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_gpu_memory_args.prototype.write=function(output){output.writeStructBegin('MapD_clear_gpu_memory_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_clear_gpu_memory_result=function MapD_clear_gpu_memory_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_clear_gpu_memory_result.prototype={};MapD_clear_gpu_memory_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_clear_gpu_memory_result.prototype.write=function(output){output.writeStructBegin('MapD_clear_gpu_memory_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_args=function MapD_set_table_epoch_args(args){this.session=null;this.db_id=null;this.table_id=null;this.new_epoch=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.db_id!==undefined&&args.db_id!==null){this.db_id=args.db_id;}if(args.table_id!==undefined&&args.table_id!==null){this.table_id=args.table_id;}if(args.new_epoch!==undefined&&args.new_epoch!==null){this.new_epoch=args.new_epoch;}}};MapD_set_table_epoch_args.prototype={};MapD_set_table_epoch_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.db_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.table_id=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.new_epoch=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_args.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.db_id!==null&&this.db_id!==undefined){output.writeFieldBegin('db_id',Thrift.Type.I32,2);output.writeI32(this.db_id);output.writeFieldEnd();}if(this.table_id!==null&&this.table_id!==undefined){output.writeFieldBegin('table_id',Thrift.Type.I32,3);output.writeI32(this.table_id);output.writeFieldEnd();}if(this.new_epoch!==null&&this.new_epoch!==undefined){output.writeFieldBegin('new_epoch',Thrift.Type.I32,4);output.writeI32(this.new_epoch);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_result=function MapD_set_table_epoch_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_table_epoch_result.prototype={};MapD_set_table_epoch_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_result.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_by_name_args=function MapD_set_table_epoch_by_name_args(args){this.session=null;this.table_name=null;this.new_epoch=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.new_epoch!==undefined&&args.new_epoch!==null){this.new_epoch=args.new_epoch;}}};MapD_set_table_epoch_by_name_args.prototype={};MapD_set_table_epoch_by_name_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.new_epoch=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_by_name_args.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_by_name_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.new_epoch!==null&&this.new_epoch!==undefined){output.writeFieldBegin('new_epoch',Thrift.Type.I32,3);output.writeI32(this.new_epoch);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_table_epoch_by_name_result=function MapD_set_table_epoch_by_name_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_table_epoch_by_name_result.prototype={};MapD_set_table_epoch_by_name_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_table_epoch_by_name_result.prototype.write=function(output){output.writeStructBegin('MapD_set_table_epoch_by_name_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_args=function MapD_get_table_epoch_args(args){this.session=null;this.db_id=null;this.table_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.db_id!==undefined&&args.db_id!==null){this.db_id=args.db_id;}if(args.table_id!==undefined&&args.table_id!==null){this.table_id=args.table_id;}}};MapD_get_table_epoch_args.prototype={};MapD_get_table_epoch_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.db_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.table_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_args.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.db_id!==null&&this.db_id!==undefined){output.writeFieldBegin('db_id',Thrift.Type.I32,2);output.writeI32(this.db_id);output.writeFieldEnd();}if(this.table_id!==null&&this.table_id!==undefined){output.writeFieldBegin('table_id',Thrift.Type.I32,3);output.writeI32(this.table_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_result=function MapD_get_table_epoch_result(args){this.success=null;if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}}};MapD_get_table_epoch_result.prototype={};MapD_get_table_epoch_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.I32){this.success=input.readI32();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_result.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.I32,0);output.writeI32(this.success);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_by_name_args=function MapD_get_table_epoch_by_name_args(args){this.session=null;this.table_name=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}}};MapD_get_table_epoch_by_name_args.prototype={};MapD_get_table_epoch_by_name_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_by_name_args.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_by_name_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_table_epoch_by_name_result=function MapD_get_table_epoch_by_name_result(args){this.success=null;if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}}};MapD_get_table_epoch_by_name_result.prototype={};MapD_get_table_epoch_by_name_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.I32){this.success=input.readI32();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_table_epoch_by_name_result.prototype.write=function(output){output.writeStructBegin('MapD_get_table_epoch_by_name_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.I32,0);output.writeI32(this.success);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_session_info_args=function MapD_get_session_info_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_session_info_args.prototype={};MapD_get_session_info_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_session_info_args.prototype.write=function(output){output.writeStructBegin('MapD_get_session_info_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_session_info_result=function MapD_get_session_info_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TSessionInfo(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_session_info_result.prototype={};MapD_get_session_info_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TSessionInfo();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_session_info_result.prototype.write=function(output){output.writeStructBegin('MapD_get_session_info_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_args=function MapD_sql_execute_args(args){this.session=null;this.query=null;this.column_format=null;this.nonce=null;this.first_n=-1;this.at_most_n=-1;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}if(args.column_format!==undefined&&args.column_format!==null){this.column_format=args.column_format;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}if(args.first_n!==undefined&&args.first_n!==null){this.first_n=args.first_n;}if(args.at_most_n!==undefined&&args.at_most_n!==null){this.at_most_n=args.at_most_n;}}};MapD_sql_execute_args.prototype={};MapD_sql_execute_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.BOOL){this.column_format=input.readBool();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.I32){this.first_n=input.readI32();}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.I32){this.at_most_n=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}if(this.column_format!==null&&this.column_format!==undefined){output.writeFieldBegin('column_format',Thrift.Type.BOOL,3);output.writeBool(this.column_format);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,4);output.writeString(this.nonce);output.writeFieldEnd();}if(this.first_n!==null&&this.first_n!==undefined){output.writeFieldBegin('first_n',Thrift.Type.I32,5);output.writeI32(this.first_n);output.writeFieldEnd();}if(this.at_most_n!==null&&this.at_most_n!==undefined){output.writeFieldBegin('at_most_n',Thrift.Type.I32,6);output.writeI32(this.at_most_n);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_result=function MapD_sql_execute_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TQueryResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_execute_result.prototype={};MapD_sql_execute_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TQueryResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_df_args=function MapD_sql_execute_df_args(args){this.session=null;this.query=null;this.device_type=null;this.device_id=0;this.first_n=-1;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}if(args.device_type!==undefined&&args.device_type!==null){this.device_type=args.device_type;}if(args.device_id!==undefined&&args.device_id!==null){this.device_id=args.device_id;}if(args.first_n!==undefined&&args.first_n!==null){this.first_n=args.first_n;}}};MapD_sql_execute_df_args.prototype={};MapD_sql_execute_df_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.device_type=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.device_id=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.I32){this.first_n=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_df_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_df_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}if(this.device_type!==null&&this.device_type!==undefined){output.writeFieldBegin('device_type',Thrift.Type.I32,3);output.writeI32(this.device_type);output.writeFieldEnd();}if(this.device_id!==null&&this.device_id!==undefined){output.writeFieldBegin('device_id',Thrift.Type.I32,4);output.writeI32(this.device_id);output.writeFieldEnd();}if(this.first_n!==null&&this.first_n!==undefined){output.writeFieldBegin('first_n',Thrift.Type.I32,5);output.writeI32(this.first_n);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_df_result=function MapD_sql_execute_df_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDataFrame(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_execute_df_result.prototype={};MapD_sql_execute_df_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDataFrame();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_df_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_df_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_gdf_args=function MapD_sql_execute_gdf_args(args){this.session=null;this.query=null;this.device_id=0;this.first_n=-1;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}if(args.device_id!==undefined&&args.device_id!==null){this.device_id=args.device_id;}if(args.first_n!==undefined&&args.first_n!==null){this.first_n=args.first_n;}}};MapD_sql_execute_gdf_args.prototype={};MapD_sql_execute_gdf_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.device_id=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.first_n=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_gdf_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_gdf_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}if(this.device_id!==null&&this.device_id!==undefined){output.writeFieldBegin('device_id',Thrift.Type.I32,3);output.writeI32(this.device_id);output.writeFieldEnd();}if(this.first_n!==null&&this.first_n!==undefined){output.writeFieldBegin('first_n',Thrift.Type.I32,4);output.writeI32(this.first_n);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_execute_gdf_result=function MapD_sql_execute_gdf_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDataFrame(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_execute_gdf_result.prototype={};MapD_sql_execute_gdf_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDataFrame();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_execute_gdf_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_execute_gdf_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_deallocate_df_args=function MapD_deallocate_df_args(args){this.session=null;this.df=null;this.device_type=null;this.device_id=0;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.df!==undefined&&args.df!==null){this.df=new ttypes.TDataFrame(args.df);}if(args.device_type!==undefined&&args.device_type!==null){this.device_type=args.device_type;}if(args.device_id!==undefined&&args.device_id!==null){this.device_id=args.device_id;}}};MapD_deallocate_df_args.prototype={};MapD_deallocate_df_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRUCT){this.df=new ttypes.TDataFrame();this.df.read(input);}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.device_type=input.readI32();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.device_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_deallocate_df_args.prototype.write=function(output){output.writeStructBegin('MapD_deallocate_df_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.df!==null&&this.df!==undefined){output.writeFieldBegin('df',Thrift.Type.STRUCT,2);this.df.write(output);output.writeFieldEnd();}if(this.device_type!==null&&this.device_type!==undefined){output.writeFieldBegin('device_type',Thrift.Type.I32,3);output.writeI32(this.device_type);output.writeFieldEnd();}if(this.device_id!==null&&this.device_id!==undefined){output.writeFieldBegin('device_id',Thrift.Type.I32,4);output.writeI32(this.device_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_deallocate_df_result=function MapD_deallocate_df_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_deallocate_df_result.prototype={};MapD_deallocate_df_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_deallocate_df_result.prototype.write=function(output){output.writeStructBegin('MapD_deallocate_df_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_interrupt_args=function MapD_interrupt_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_interrupt_args.prototype={};MapD_interrupt_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_interrupt_args.prototype.write=function(output){output.writeStructBegin('MapD_interrupt_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_interrupt_result=function MapD_interrupt_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_interrupt_result.prototype={};MapD_interrupt_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_interrupt_result.prototype.write=function(output){output.writeStructBegin('MapD_interrupt_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_validate_args=function MapD_sql_validate_args(args){this.session=null;this.query=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query!==undefined&&args.query!==null){this.query=args.query;}}};MapD_sql_validate_args.prototype={};MapD_sql_validate_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_validate_args.prototype.write=function(output){output.writeStructBegin('MapD_sql_validate_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query!==null&&this.query!==undefined){output.writeFieldBegin('query',Thrift.Type.STRING,2);output.writeString(this.query);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_sql_validate_result=function MapD_sql_validate_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyMap(args.success,[ttypes.TColumnType]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_sql_validate_result.prototype={};MapD_sql_validate_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.MAP){this.success={};var _rtmp3226=input.readMapBegin();var _size225=_rtmp3226.size||0;for(var _i227=0;_i227<_size225;++_i227){var key228=null;var val229=null;key228=input.readString();val229=new ttypes.TColumnType();val229.read(input);this.success[key228]=val229;}input.readMapEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_sql_validate_result.prototype.write=function(output){output.writeStructBegin('MapD_sql_validate_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.MAP,0);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.STRUCT,Thrift.objectLength(this.success));for(var kiter230 in this.success){if(this.success.hasOwnProperty(kiter230)){var viter231=this.success[kiter230];output.writeString(kiter230);viter231.write(output);}}output.writeMapEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_completion_hints_args=function MapD_get_completion_hints_args(args){this.session=null;this.sql=null;this.cursor=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.sql!==undefined&&args.sql!==null){this.sql=args.sql;}if(args.cursor!==undefined&&args.cursor!==null){this.cursor=args.cursor;}}};MapD_get_completion_hints_args.prototype={};MapD_get_completion_hints_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.sql=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.cursor=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_completion_hints_args.prototype.write=function(output){output.writeStructBegin('MapD_get_completion_hints_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.sql!==null&&this.sql!==undefined){output.writeFieldBegin('sql',Thrift.Type.STRING,2);output.writeString(this.sql);output.writeFieldEnd();}if(this.cursor!==null&&this.cursor!==undefined){output.writeFieldBegin('cursor',Thrift.Type.I32,3);output.writeI32(this.cursor);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_completion_hints_result=function MapD_get_completion_hints_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[completion_hints_ttypes.TCompletionHint]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_completion_hints_result.prototype={};MapD_get_completion_hints_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3233=input.readListBegin();var _size232=_rtmp3233.size||0;for(var _i234=0;_i234<_size232;++_i234){var elem235=null;elem235=new completion_hints_ttypes.TCompletionHint();elem235.read(input);this.success.push(elem235);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_completion_hints_result.prototype.write=function(output){output.writeStructBegin('MapD_get_completion_hints_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter236 in this.success){if(this.success.hasOwnProperty(iter236)){iter236=this.success[iter236];iter236.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_execution_mode_args=function MapD_set_execution_mode_args(args){this.session=null;this.mode=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.mode!==undefined&&args.mode!==null){this.mode=args.mode;}}};MapD_set_execution_mode_args.prototype={};MapD_set_execution_mode_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.mode=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_execution_mode_args.prototype.write=function(output){output.writeStructBegin('MapD_set_execution_mode_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.mode!==null&&this.mode!==undefined){output.writeFieldBegin('mode',Thrift.Type.I32,2);output.writeI32(this.mode);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_execution_mode_result=function MapD_set_execution_mode_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_execution_mode_result.prototype={};MapD_set_execution_mode_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_execution_mode_result.prototype.write=function(output){output.writeStructBegin('MapD_set_execution_mode_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_render_vega_args=function MapD_render_vega_args(args){this.session=null;this.widget_id=null;this.vega_json=null;this.compression_level=null;this.nonce=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.widget_id!==undefined&&args.widget_id!==null){this.widget_id=args.widget_id;}if(args.vega_json!==undefined&&args.vega_json!==null){this.vega_json=args.vega_json;}if(args.compression_level!==undefined&&args.compression_level!==null){this.compression_level=args.compression_level;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_render_vega_args.prototype={};MapD_render_vega_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I64){this.widget_id=input.readI64();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.vega_json=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.compression_level=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_render_vega_args.prototype.write=function(output){output.writeStructBegin('MapD_render_vega_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.widget_id!==null&&this.widget_id!==undefined){output.writeFieldBegin('widget_id',Thrift.Type.I64,2);output.writeI64(this.widget_id);output.writeFieldEnd();}if(this.vega_json!==null&&this.vega_json!==undefined){output.writeFieldBegin('vega_json',Thrift.Type.STRING,3);output.writeString(this.vega_json);output.writeFieldEnd();}if(this.compression_level!==null&&this.compression_level!==undefined){output.writeFieldBegin('compression_level',Thrift.Type.I32,4);output.writeI32(this.compression_level);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,5);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_render_vega_result=function MapD_render_vega_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TRenderResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_render_vega_result.prototype={};MapD_render_vega_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TRenderResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_render_vega_result.prototype.write=function(output){output.writeStructBegin('MapD_render_vega_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_result_row_for_pixel_args=function MapD_get_result_row_for_pixel_args(args){this.session=null;this.widget_id=null;this.pixel=null;this.table_col_names=null;this.column_format=null;this.pixelRadius=null;this.nonce=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.widget_id!==undefined&&args.widget_id!==null){this.widget_id=args.widget_id;}if(args.pixel!==undefined&&args.pixel!==null){this.pixel=new ttypes.TPixel(args.pixel);}if(args.table_col_names!==undefined&&args.table_col_names!==null){this.table_col_names=Thrift.copyMap(args.table_col_names,[Thrift.copyList,null]);}if(args.column_format!==undefined&&args.column_format!==null){this.column_format=args.column_format;}if(args.pixelRadius!==undefined&&args.pixelRadius!==null){this.pixelRadius=args.pixelRadius;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_get_result_row_for_pixel_args.prototype={};MapD_get_result_row_for_pixel_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I64){this.widget_id=input.readI64();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.pixel=new ttypes.TPixel();this.pixel.read(input);}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.MAP){this.table_col_names={};var _rtmp3238=input.readMapBegin();var _size237=_rtmp3238.size||0;for(var _i239=0;_i239<_size237;++_i239){var key240=null;var val241=null;key240=input.readString();val241=[];var _rtmp3243=input.readListBegin();var _size242=_rtmp3243.size||0;for(var _i244=0;_i244<_size242;++_i244){var elem245=null;elem245=input.readString();val241.push(elem245);}input.readListEnd();this.table_col_names[key240]=val241;}input.readMapEnd();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.BOOL){this.column_format=input.readBool();}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.I32){this.pixelRadius=input.readI32();}else{input.skip(ftype);}break;case 7:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_result_row_for_pixel_args.prototype.write=function(output){output.writeStructBegin('MapD_get_result_row_for_pixel_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.widget_id!==null&&this.widget_id!==undefined){output.writeFieldBegin('widget_id',Thrift.Type.I64,2);output.writeI64(this.widget_id);output.writeFieldEnd();}if(this.pixel!==null&&this.pixel!==undefined){output.writeFieldBegin('pixel',Thrift.Type.STRUCT,3);this.pixel.write(output);output.writeFieldEnd();}if(this.table_col_names!==null&&this.table_col_names!==undefined){output.writeFieldBegin('table_col_names',Thrift.Type.MAP,4);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.LIST,Thrift.objectLength(this.table_col_names));for(var kiter246 in this.table_col_names){if(this.table_col_names.hasOwnProperty(kiter246)){var viter247=this.table_col_names[kiter246];output.writeString(kiter246);output.writeListBegin(Thrift.Type.STRING,viter247.length);for(var iter248 in viter247){if(viter247.hasOwnProperty(iter248)){iter248=viter247[iter248];output.writeString(iter248);}}output.writeListEnd();}}output.writeMapEnd();output.writeFieldEnd();}if(this.column_format!==null&&this.column_format!==undefined){output.writeFieldBegin('column_format',Thrift.Type.BOOL,5);output.writeBool(this.column_format);output.writeFieldEnd();}if(this.pixelRadius!==null&&this.pixelRadius!==undefined){output.writeFieldBegin('pixelRadius',Thrift.Type.I32,6);output.writeI32(this.pixelRadius);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,7);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_result_row_for_pixel_result=function MapD_get_result_row_for_pixel_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TPixelTableRowResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_result_row_for_pixel_result.prototype={};MapD_get_result_row_for_pixel_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TPixelTableRowResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_result_row_for_pixel_result.prototype.write=function(output){output.writeStructBegin('MapD_get_result_row_for_pixel_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_args=function MapD_get_dashboard_args(args){this.session=null;this.dashboard_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}}};MapD_get_dashboard_args.prototype={};MapD_get_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_result=function MapD_get_dashboard_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDashboard(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_dashboard_result.prototype={};MapD_get_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDashboard();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboards_args=function MapD_get_dashboards_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_dashboards_args.prototype={};MapD_get_dashboards_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboards_args.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboards_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboards_result=function MapD_get_dashboards_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDashboard]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_dashboards_result.prototype={};MapD_get_dashboards_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3250=input.readListBegin();var _size249=_rtmp3250.size||0;for(var _i251=0;_i251<_size249;++_i251){var elem252=null;elem252=new ttypes.TDashboard();elem252.read(input);this.success.push(elem252);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboards_result.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboards_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter253 in this.success){if(this.success.hasOwnProperty(iter253)){iter253=this.success[iter253];iter253.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_dashboard_args=function MapD_create_dashboard_args(args){this.session=null;this.dashboard_name=null;this.dashboard_state=null;this.image_hash=null;this.dashboard_metadata=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_name!==undefined&&args.dashboard_name!==null){this.dashboard_name=args.dashboard_name;}if(args.dashboard_state!==undefined&&args.dashboard_state!==null){this.dashboard_state=args.dashboard_state;}if(args.image_hash!==undefined&&args.image_hash!==null){this.image_hash=args.image_hash;}if(args.dashboard_metadata!==undefined&&args.dashboard_metadata!==null){this.dashboard_metadata=args.dashboard_metadata;}}};MapD_create_dashboard_args.prototype={};MapD_create_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.dashboard_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.dashboard_state=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.image_hash=input.readString();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRING){this.dashboard_metadata=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_create_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_name!==null&&this.dashboard_name!==undefined){output.writeFieldBegin('dashboard_name',Thrift.Type.STRING,2);output.writeString(this.dashboard_name);output.writeFieldEnd();}if(this.dashboard_state!==null&&this.dashboard_state!==undefined){output.writeFieldBegin('dashboard_state',Thrift.Type.STRING,3);output.writeString(this.dashboard_state);output.writeFieldEnd();}if(this.image_hash!==null&&this.image_hash!==undefined){output.writeFieldBegin('image_hash',Thrift.Type.STRING,4);output.writeString(this.image_hash);output.writeFieldEnd();}if(this.dashboard_metadata!==null&&this.dashboard_metadata!==undefined){output.writeFieldBegin('dashboard_metadata',Thrift.Type.STRING,5);output.writeString(this.dashboard_metadata);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_dashboard_result=function MapD_create_dashboard_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_create_dashboard_result.prototype={};MapD_create_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.I32){this.success=input.readI32();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_create_dashboard_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.I32,0);output.writeI32(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_replace_dashboard_args=function MapD_replace_dashboard_args(args){this.session=null;this.dashboard_id=null;this.dashboard_name=null;this.dashboard_owner=null;this.dashboard_state=null;this.image_hash=null;this.dashboard_metadata=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}if(args.dashboard_name!==undefined&&args.dashboard_name!==null){this.dashboard_name=args.dashboard_name;}if(args.dashboard_owner!==undefined&&args.dashboard_owner!==null){this.dashboard_owner=args.dashboard_owner;}if(args.dashboard_state!==undefined&&args.dashboard_state!==null){this.dashboard_state=args.dashboard_state;}if(args.image_hash!==undefined&&args.image_hash!==null){this.image_hash=args.image_hash;}if(args.dashboard_metadata!==undefined&&args.dashboard_metadata!==null){this.dashboard_metadata=args.dashboard_metadata;}}};MapD_replace_dashboard_args.prototype={};MapD_replace_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.dashboard_name=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.dashboard_owner=input.readString();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRING){this.dashboard_state=input.readString();}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.STRING){this.image_hash=input.readString();}else{input.skip(ftype);}break;case 7:if(ftype==Thrift.Type.STRING){this.dashboard_metadata=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_replace_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_replace_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}if(this.dashboard_name!==null&&this.dashboard_name!==undefined){output.writeFieldBegin('dashboard_name',Thrift.Type.STRING,3);output.writeString(this.dashboard_name);output.writeFieldEnd();}if(this.dashboard_owner!==null&&this.dashboard_owner!==undefined){output.writeFieldBegin('dashboard_owner',Thrift.Type.STRING,4);output.writeString(this.dashboard_owner);output.writeFieldEnd();}if(this.dashboard_state!==null&&this.dashboard_state!==undefined){output.writeFieldBegin('dashboard_state',Thrift.Type.STRING,5);output.writeString(this.dashboard_state);output.writeFieldEnd();}if(this.image_hash!==null&&this.image_hash!==undefined){output.writeFieldBegin('image_hash',Thrift.Type.STRING,6);output.writeString(this.image_hash);output.writeFieldEnd();}if(this.dashboard_metadata!==null&&this.dashboard_metadata!==undefined){output.writeFieldBegin('dashboard_metadata',Thrift.Type.STRING,7);output.writeString(this.dashboard_metadata);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_replace_dashboard_result=function MapD_replace_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_replace_dashboard_result.prototype={};MapD_replace_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_replace_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_replace_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_delete_dashboard_args=function MapD_delete_dashboard_args(args){this.session=null;this.dashboard_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}}};MapD_delete_dashboard_args.prototype={};MapD_delete_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_delete_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_delete_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_delete_dashboard_result=function MapD_delete_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_delete_dashboard_result.prototype={};MapD_delete_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_delete_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_delete_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_share_dashboard_args=function MapD_share_dashboard_args(args){this.session=null;this.dashboard_id=null;this.groups=null;this.objects=null;this.permissions=null;this.grant_role=false;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}if(args.groups!==undefined&&args.groups!==null){this.groups=Thrift.copyList(args.groups,[null]);}if(args.objects!==undefined&&args.objects!==null){this.objects=Thrift.copyList(args.objects,[null]);}if(args.permissions!==undefined&&args.permissions!==null){this.permissions=new ttypes.TDashboardPermissions(args.permissions);}if(args.grant_role!==undefined&&args.grant_role!==null){this.grant_role=args.grant_role;}}};MapD_share_dashboard_args.prototype={};MapD_share_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){this.groups=[];var _rtmp3255=input.readListBegin();var _size254=_rtmp3255.size||0;for(var _i256=0;_i256<_size254;++_i256){var elem257=null;elem257=input.readString();this.groups.push(elem257);}input.readListEnd();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.LIST){this.objects=[];var _rtmp3259=input.readListBegin();var _size258=_rtmp3259.size||0;for(var _i260=0;_i260<_size258;++_i260){var elem261=null;elem261=input.readString();this.objects.push(elem261);}input.readListEnd();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.permissions=new ttypes.TDashboardPermissions();this.permissions.read(input);}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.BOOL){this.grant_role=input.readBool();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_share_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_share_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}if(this.groups!==null&&this.groups!==undefined){output.writeFieldBegin('groups',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRING,this.groups.length);for(var iter262 in this.groups){if(this.groups.hasOwnProperty(iter262)){iter262=this.groups[iter262];output.writeString(iter262);}}output.writeListEnd();output.writeFieldEnd();}if(this.objects!==null&&this.objects!==undefined){output.writeFieldBegin('objects',Thrift.Type.LIST,4);output.writeListBegin(Thrift.Type.STRING,this.objects.length);for(var iter263 in this.objects){if(this.objects.hasOwnProperty(iter263)){iter263=this.objects[iter263];output.writeString(iter263);}}output.writeListEnd();output.writeFieldEnd();}if(this.permissions!==null&&this.permissions!==undefined){output.writeFieldBegin('permissions',Thrift.Type.STRUCT,5);this.permissions.write(output);output.writeFieldEnd();}if(this.grant_role!==null&&this.grant_role!==undefined){output.writeFieldBegin('grant_role',Thrift.Type.BOOL,6);output.writeBool(this.grant_role);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_share_dashboard_result=function MapD_share_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_share_dashboard_result.prototype={};MapD_share_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_share_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_share_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_unshare_dashboard_args=function MapD_unshare_dashboard_args(args){this.session=null;this.dashboard_id=null;this.groups=null;this.objects=null;this.permissions=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}if(args.groups!==undefined&&args.groups!==null){this.groups=Thrift.copyList(args.groups,[null]);}if(args.objects!==undefined&&args.objects!==null){this.objects=Thrift.copyList(args.objects,[null]);}if(args.permissions!==undefined&&args.permissions!==null){this.permissions=new ttypes.TDashboardPermissions(args.permissions);}}};MapD_unshare_dashboard_args.prototype={};MapD_unshare_dashboard_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){this.groups=[];var _rtmp3265=input.readListBegin();var _size264=_rtmp3265.size||0;for(var _i266=0;_i266<_size264;++_i266){var elem267=null;elem267=input.readString();this.groups.push(elem267);}input.readListEnd();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.LIST){this.objects=[];var _rtmp3269=input.readListBegin();var _size268=_rtmp3269.size||0;for(var _i270=0;_i270<_size268;++_i270){var elem271=null;elem271=input.readString();this.objects.push(elem271);}input.readListEnd();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.permissions=new ttypes.TDashboardPermissions();this.permissions.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_unshare_dashboard_args.prototype.write=function(output){output.writeStructBegin('MapD_unshare_dashboard_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}if(this.groups!==null&&this.groups!==undefined){output.writeFieldBegin('groups',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRING,this.groups.length);for(var iter272 in this.groups){if(this.groups.hasOwnProperty(iter272)){iter272=this.groups[iter272];output.writeString(iter272);}}output.writeListEnd();output.writeFieldEnd();}if(this.objects!==null&&this.objects!==undefined){output.writeFieldBegin('objects',Thrift.Type.LIST,4);output.writeListBegin(Thrift.Type.STRING,this.objects.length);for(var iter273 in this.objects){if(this.objects.hasOwnProperty(iter273)){iter273=this.objects[iter273];output.writeString(iter273);}}output.writeListEnd();output.writeFieldEnd();}if(this.permissions!==null&&this.permissions!==undefined){output.writeFieldBegin('permissions',Thrift.Type.STRUCT,5);this.permissions.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_unshare_dashboard_result=function MapD_unshare_dashboard_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_unshare_dashboard_result.prototype={};MapD_unshare_dashboard_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_unshare_dashboard_result.prototype.write=function(output){output.writeStructBegin('MapD_unshare_dashboard_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_grantees_args=function MapD_get_dashboard_grantees_args(args){this.session=null;this.dashboard_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.dashboard_id!==undefined&&args.dashboard_id!==null){this.dashboard_id=args.dashboard_id;}}};MapD_get_dashboard_grantees_args.prototype={};MapD_get_dashboard_grantees_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.dashboard_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_grantees_args.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_grantees_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.dashboard_id!==null&&this.dashboard_id!==undefined){output.writeFieldBegin('dashboard_id',Thrift.Type.I32,2);output.writeI32(this.dashboard_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_dashboard_grantees_result=function MapD_get_dashboard_grantees_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDashboardGrantees]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_dashboard_grantees_result.prototype={};MapD_get_dashboard_grantees_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3275=input.readListBegin();var _size274=_rtmp3275.size||0;for(var _i276=0;_i276<_size274;++_i276){var elem277=null;elem277=new ttypes.TDashboardGrantees();elem277.read(input);this.success.push(elem277);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_dashboard_grantees_result.prototype.write=function(output){output.writeStructBegin('MapD_get_dashboard_grantees_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter278 in this.success){if(this.success.hasOwnProperty(iter278)){iter278=this.success[iter278];iter278.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_link_view_args=function MapD_get_link_view_args(args){this.session=null;this.link=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.link!==undefined&&args.link!==null){this.link=args.link;}}};MapD_get_link_view_args.prototype={};MapD_get_link_view_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.link=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_link_view_args.prototype.write=function(output){output.writeStructBegin('MapD_get_link_view_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.link!==null&&this.link!==undefined){output.writeFieldBegin('link',Thrift.Type.STRING,2);output.writeString(this.link);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_link_view_result=function MapD_get_link_view_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TFrontendView(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_link_view_result.prototype={};MapD_get_link_view_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TFrontendView();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_link_view_result.prototype.write=function(output){output.writeStructBegin('MapD_get_link_view_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_link_args=function MapD_create_link_args(args){this.session=null;this.view_state=null;this.view_metadata=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.view_state!==undefined&&args.view_state!==null){this.view_state=args.view_state;}if(args.view_metadata!==undefined&&args.view_metadata!==null){this.view_metadata=args.view_metadata;}}};MapD_create_link_args.prototype={};MapD_create_link_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.view_state=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.view_metadata=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_link_args.prototype.write=function(output){output.writeStructBegin('MapD_create_link_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.view_state!==null&&this.view_state!==undefined){output.writeFieldBegin('view_state',Thrift.Type.STRING,2);output.writeString(this.view_state);output.writeFieldEnd();}if(this.view_metadata!==null&&this.view_metadata!==undefined){output.writeFieldBegin('view_metadata',Thrift.Type.STRING,3);output.writeString(this.view_metadata);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_link_result=function MapD_create_link_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_create_link_result.prototype={};MapD_create_link_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_link_result.prototype.write=function(output){output.writeStructBegin('MapD_create_link_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_args=function MapD_load_table_binary_args(args){this.session=null;this.table_name=null;this.rows=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.rows!==undefined&&args.rows!==null){this.rows=Thrift.copyList(args.rows,[ttypes.TRow]);}}};MapD_load_table_binary_args.prototype={};MapD_load_table_binary_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){this.rows=[];var _rtmp3280=input.readListBegin();var _size279=_rtmp3280.size||0;for(var _i281=0;_i281<_size279;++_i281){var elem282=null;elem282=new ttypes.TRow();elem282.read(input);this.rows.push(elem282);}input.readListEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.rows!==null&&this.rows!==undefined){output.writeFieldBegin('rows',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.rows.length);for(var iter283 in this.rows){if(this.rows.hasOwnProperty(iter283)){iter283=this.rows[iter283];iter283.write(output);}}output.writeListEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_result=function MapD_load_table_binary_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_binary_result.prototype={};MapD_load_table_binary_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_columnar_args=function MapD_load_table_binary_columnar_args(args){this.session=null;this.table_name=null;this.cols=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.cols!==undefined&&args.cols!==null){this.cols=Thrift.copyList(args.cols,[ttypes.TColumn]);}}};MapD_load_table_binary_columnar_args.prototype={};MapD_load_table_binary_columnar_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){this.cols=[];var _rtmp3285=input.readListBegin();var _size284=_rtmp3285.size||0;for(var _i286=0;_i286<_size284;++_i286){var elem287=null;elem287=new ttypes.TColumn();elem287.read(input);this.cols.push(elem287);}input.readListEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_columnar_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_columnar_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.cols!==null&&this.cols!==undefined){output.writeFieldBegin('cols',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.cols.length);for(var iter288 in this.cols){if(this.cols.hasOwnProperty(iter288)){iter288=this.cols[iter288];iter288.write(output);}}output.writeListEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_columnar_result=function MapD_load_table_binary_columnar_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_binary_columnar_result.prototype={};MapD_load_table_binary_columnar_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_columnar_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_columnar_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_arrow_args=function MapD_load_table_binary_arrow_args(args){this.session=null;this.table_name=null;this.arrow_stream=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.arrow_stream!==undefined&&args.arrow_stream!==null){this.arrow_stream=args.arrow_stream;}}};MapD_load_table_binary_arrow_args.prototype={};MapD_load_table_binary_arrow_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.arrow_stream=input.readBinary();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_arrow_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_arrow_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.arrow_stream!==null&&this.arrow_stream!==undefined){output.writeFieldBegin('arrow_stream',Thrift.Type.STRING,3);output.writeBinary(this.arrow_stream);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_binary_arrow_result=function MapD_load_table_binary_arrow_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_binary_arrow_result.prototype={};MapD_load_table_binary_arrow_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_binary_arrow_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_binary_arrow_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_args=function MapD_load_table_args(args){this.session=null;this.table_name=null;this.rows=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.rows!==undefined&&args.rows!==null){this.rows=Thrift.copyList(args.rows,[ttypes.TStringRow]);}}};MapD_load_table_args.prototype={};MapD_load_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){this.rows=[];var _rtmp3290=input.readListBegin();var _size289=_rtmp3290.size||0;for(var _i291=0;_i291<_size289;++_i291){var elem292=null;elem292=new ttypes.TStringRow();elem292.read(input);this.rows.push(elem292);}input.readListEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_args.prototype.write=function(output){output.writeStructBegin('MapD_load_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.rows!==null&&this.rows!==undefined){output.writeFieldBegin('rows',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.rows.length);for(var iter293 in this.rows){if(this.rows.hasOwnProperty(iter293)){iter293=this.rows[iter293];iter293.write(output);}}output.writeListEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_load_table_result=function MapD_load_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_load_table_result.prototype={};MapD_load_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_load_table_result.prototype.write=function(output){output.writeStructBegin('MapD_load_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_detect_column_types_args=function MapD_detect_column_types_args(args){this.session=null;this.file_name=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.file_name!==undefined&&args.file_name!==null){this.file_name=args.file_name;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_detect_column_types_args.prototype={};MapD_detect_column_types_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.file_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_detect_column_types_args.prototype.write=function(output){output.writeStructBegin('MapD_detect_column_types_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.file_name!==null&&this.file_name!==undefined){output.writeFieldBegin('file_name',Thrift.Type.STRING,2);output.writeString(this.file_name);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,3);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_detect_column_types_result=function MapD_detect_column_types_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TDetectResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_detect_column_types_result.prototype={};MapD_detect_column_types_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TDetectResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_detect_column_types_result.prototype.write=function(output){output.writeStructBegin('MapD_detect_column_types_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_table_args=function MapD_create_table_args(args){this.session=null;this.table_name=null;this.row_desc=null;this.file_type=0;this.create_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.row_desc!==undefined&&args.row_desc!==null){this.row_desc=Thrift.copyList(args.row_desc,[ttypes.TColumnType]);}if(args.file_type!==undefined&&args.file_type!==null){this.file_type=args.file_type;}if(args.create_params!==undefined&&args.create_params!==null){this.create_params=new ttypes.TCreateParams(args.create_params);}}};MapD_create_table_args.prototype={};MapD_create_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){this.row_desc=[];var _rtmp3295=input.readListBegin();var _size294=_rtmp3295.size||0;for(var _i296=0;_i296<_size294;++_i296){var elem297=null;elem297=new ttypes.TColumnType();elem297.read(input);this.row_desc.push(elem297);}input.readListEnd();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.file_type=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.create_params=new ttypes.TCreateParams();this.create_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_table_args.prototype.write=function(output){output.writeStructBegin('MapD_create_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.row_desc!==null&&this.row_desc!==undefined){output.writeFieldBegin('row_desc',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.row_desc.length);for(var iter298 in this.row_desc){if(this.row_desc.hasOwnProperty(iter298)){iter298=this.row_desc[iter298];iter298.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.file_type!==null&&this.file_type!==undefined){output.writeFieldBegin('file_type',Thrift.Type.I32,4);output.writeI32(this.file_type);output.writeFieldEnd();}if(this.create_params!==null&&this.create_params!==undefined){output.writeFieldBegin('create_params',Thrift.Type.STRUCT,5);this.create_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_create_table_result=function MapD_create_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_create_table_result.prototype={};MapD_create_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_create_table_result.prototype.write=function(output){output.writeStructBegin('MapD_create_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_args=function MapD_import_table_args(args){this.session=null;this.table_name=null;this.file_name=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.file_name!==undefined&&args.file_name!==null){this.file_name=args.file_name;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_import_table_args.prototype={};MapD_import_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.file_name=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_args.prototype.write=function(output){output.writeStructBegin('MapD_import_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.file_name!==null&&this.file_name!==undefined){output.writeFieldBegin('file_name',Thrift.Type.STRING,3);output.writeString(this.file_name);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,4);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_result=function MapD_import_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_import_table_result.prototype={};MapD_import_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_result.prototype.write=function(output){output.writeStructBegin('MapD_import_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_geo_table_args=function MapD_import_geo_table_args(args){this.session=null;this.table_name=null;this.file_name=null;this.copy_params=null;this.row_desc=null;this.create_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_name!==undefined&&args.table_name!==null){this.table_name=args.table_name;}if(args.file_name!==undefined&&args.file_name!==null){this.file_name=args.file_name;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}if(args.row_desc!==undefined&&args.row_desc!==null){this.row_desc=Thrift.copyList(args.row_desc,[ttypes.TColumnType]);}if(args.create_params!==undefined&&args.create_params!==null){this.create_params=new ttypes.TCreateParams(args.create_params);}}};MapD_import_geo_table_args.prototype={};MapD_import_geo_table_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.table_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.file_name=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.LIST){this.row_desc=[];var _rtmp3300=input.readListBegin();var _size299=_rtmp3300.size||0;for(var _i301=0;_i301<_size299;++_i301){var elem302=null;elem302=new ttypes.TColumnType();elem302.read(input);this.row_desc.push(elem302);}input.readListEnd();}else{input.skip(ftype);}break;case 6:if(ftype==Thrift.Type.STRUCT){this.create_params=new ttypes.TCreateParams();this.create_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_geo_table_args.prototype.write=function(output){output.writeStructBegin('MapD_import_geo_table_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_name!==null&&this.table_name!==undefined){output.writeFieldBegin('table_name',Thrift.Type.STRING,2);output.writeString(this.table_name);output.writeFieldEnd();}if(this.file_name!==null&&this.file_name!==undefined){output.writeFieldBegin('file_name',Thrift.Type.STRING,3);output.writeString(this.file_name);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,4);this.copy_params.write(output);output.writeFieldEnd();}if(this.row_desc!==null&&this.row_desc!==undefined){output.writeFieldBegin('row_desc',Thrift.Type.LIST,5);output.writeListBegin(Thrift.Type.STRUCT,this.row_desc.length);for(var iter303 in this.row_desc){if(this.row_desc.hasOwnProperty(iter303)){iter303=this.row_desc[iter303];iter303.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.create_params!==null&&this.create_params!==undefined){output.writeFieldBegin('create_params',Thrift.Type.STRUCT,6);this.create_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_geo_table_result=function MapD_import_geo_table_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_import_geo_table_result.prototype={};MapD_import_geo_table_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_geo_table_result.prototype.write=function(output){output.writeStructBegin('MapD_import_geo_table_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_status_args=function MapD_import_table_status_args(args){this.session=null;this.import_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.import_id!==undefined&&args.import_id!==null){this.import_id=args.import_id;}}};MapD_import_table_status_args.prototype={};MapD_import_table_status_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.import_id=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_status_args.prototype.write=function(output){output.writeStructBegin('MapD_import_table_status_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.import_id!==null&&this.import_id!==undefined){output.writeFieldBegin('import_id',Thrift.Type.STRING,2);output.writeString(this.import_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_import_table_status_result=function MapD_import_table_status_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TImportStatus(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_import_table_status_result.prototype={};MapD_import_table_status_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TImportStatus();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_import_table_status_result.prototype.write=function(output){output.writeStructBegin('MapD_import_table_status_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_first_geo_file_in_archive_args=function MapD_get_first_geo_file_in_archive_args(args){this.session=null;this.archive_path=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.archive_path!==undefined&&args.archive_path!==null){this.archive_path=args.archive_path;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_get_first_geo_file_in_archive_args.prototype={};MapD_get_first_geo_file_in_archive_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.archive_path=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_first_geo_file_in_archive_args.prototype.write=function(output){output.writeStructBegin('MapD_get_first_geo_file_in_archive_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.archive_path!==null&&this.archive_path!==undefined){output.writeFieldBegin('archive_path',Thrift.Type.STRING,2);output.writeString(this.archive_path);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,3);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_first_geo_file_in_archive_result=function MapD_get_first_geo_file_in_archive_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_first_geo_file_in_archive_result.prototype={};MapD_get_first_geo_file_in_archive_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRING){this.success=input.readString();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_first_geo_file_in_archive_result.prototype.write=function(output){output.writeStructBegin('MapD_get_first_geo_file_in_archive_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRING,0);output.writeString(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_files_in_archive_args=function MapD_get_all_files_in_archive_args(args){this.session=null;this.archive_path=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.archive_path!==undefined&&args.archive_path!==null){this.archive_path=args.archive_path;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_get_all_files_in_archive_args.prototype={};MapD_get_all_files_in_archive_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.archive_path=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_files_in_archive_args.prototype.write=function(output){output.writeStructBegin('MapD_get_all_files_in_archive_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.archive_path!==null&&this.archive_path!==undefined){output.writeFieldBegin('archive_path',Thrift.Type.STRING,2);output.writeString(this.archive_path);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,3);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_files_in_archive_result=function MapD_get_all_files_in_archive_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_all_files_in_archive_result.prototype={};MapD_get_all_files_in_archive_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3305=input.readListBegin();var _size304=_rtmp3305.size||0;for(var _i306=0;_i306<_size304;++_i306){var elem307=null;elem307=input.readString();this.success.push(elem307);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_files_in_archive_result.prototype.write=function(output){output.writeStructBegin('MapD_get_all_files_in_archive_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter308 in this.success){if(this.success.hasOwnProperty(iter308)){iter308=this.success[iter308];output.writeString(iter308);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_layers_in_geo_file_args=function MapD_get_layers_in_geo_file_args(args){this.session=null;this.file_name=null;this.copy_params=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.file_name!==undefined&&args.file_name!==null){this.file_name=args.file_name;}if(args.copy_params!==undefined&&args.copy_params!==null){this.copy_params=new ttypes.TCopyParams(args.copy_params);}}};MapD_get_layers_in_geo_file_args.prototype={};MapD_get_layers_in_geo_file_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.file_name=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRUCT){this.copy_params=new ttypes.TCopyParams();this.copy_params.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_layers_in_geo_file_args.prototype.write=function(output){output.writeStructBegin('MapD_get_layers_in_geo_file_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.file_name!==null&&this.file_name!==undefined){output.writeFieldBegin('file_name',Thrift.Type.STRING,2);output.writeString(this.file_name);output.writeFieldEnd();}if(this.copy_params!==null&&this.copy_params!==undefined){output.writeFieldBegin('copy_params',Thrift.Type.STRUCT,3);this.copy_params.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_layers_in_geo_file_result=function MapD_get_layers_in_geo_file_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TGeoFileLayerInfo]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_layers_in_geo_file_result.prototype={};MapD_get_layers_in_geo_file_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3310=input.readListBegin();var _size309=_rtmp3310.size||0;for(var _i311=0;_i311<_size309;++_i311){var elem312=null;elem312=new ttypes.TGeoFileLayerInfo();elem312.read(input);this.success.push(elem312);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_layers_in_geo_file_result.prototype.write=function(output){output.writeStructBegin('MapD_get_layers_in_geo_file_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter313 in this.success){if(this.success.hasOwnProperty(iter313)){iter313=this.success[iter313];iter313.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_check_table_consistency_args=function MapD_check_table_consistency_args(args){this.session=null;this.table_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.table_id!==undefined&&args.table_id!==null){this.table_id=args.table_id;}}};MapD_check_table_consistency_args.prototype={};MapD_check_table_consistency_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.table_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_check_table_consistency_args.prototype.write=function(output){output.writeStructBegin('MapD_check_table_consistency_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.table_id!==null&&this.table_id!==undefined){output.writeFieldBegin('table_id',Thrift.Type.I32,2);output.writeI32(this.table_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_check_table_consistency_result=function MapD_check_table_consistency_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TTableMeta(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_check_table_consistency_result.prototype={};MapD_check_table_consistency_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TTableMeta();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_check_table_consistency_result.prototype.write=function(output){output.writeStructBegin('MapD_check_table_consistency_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_query_args=function MapD_start_query_args(args){this.session=null;this.query_ra=null;this.just_explain=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.query_ra!==undefined&&args.query_ra!==null){this.query_ra=args.query_ra;}if(args.just_explain!==undefined&&args.just_explain!==null){this.just_explain=args.just_explain;}}};MapD_start_query_args.prototype={};MapD_start_query_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.query_ra=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.BOOL){this.just_explain=input.readBool();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_query_args.prototype.write=function(output){output.writeStructBegin('MapD_start_query_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.query_ra!==null&&this.query_ra!==undefined){output.writeFieldBegin('query_ra',Thrift.Type.STRING,2);output.writeString(this.query_ra);output.writeFieldEnd();}if(this.just_explain!==null&&this.just_explain!==undefined){output.writeFieldBegin('just_explain',Thrift.Type.BOOL,3);output.writeBool(this.just_explain);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_query_result=function MapD_start_query_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TPendingQuery(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_start_query_result.prototype={};MapD_start_query_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TPendingQuery();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_query_result.prototype.write=function(output){output.writeStructBegin('MapD_start_query_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_query_step_args=function MapD_execute_query_step_args(args){this.pending_query=null;if(args){if(args.pending_query!==undefined&&args.pending_query!==null){this.pending_query=new ttypes.TPendingQuery(args.pending_query);}}};MapD_execute_query_step_args.prototype={};MapD_execute_query_step_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.pending_query=new ttypes.TPendingQuery();this.pending_query.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_query_step_args.prototype.write=function(output){output.writeStructBegin('MapD_execute_query_step_args');if(this.pending_query!==null&&this.pending_query!==undefined){output.writeFieldBegin('pending_query',Thrift.Type.STRUCT,1);this.pending_query.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_query_step_result=function MapD_execute_query_step_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TStepResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_execute_query_step_result.prototype={};MapD_execute_query_step_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TStepResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_query_step_result.prototype.write=function(output){output.writeStructBegin('MapD_execute_query_step_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_broadcast_serialized_rows_args=function MapD_broadcast_serialized_rows_args(args){this.serialized_rows=null;this.row_desc=null;this.query_id=null;if(args){if(args.serialized_rows!==undefined&&args.serialized_rows!==null){this.serialized_rows=new serialized_result_set_ttypes.TSerializedRows(args.serialized_rows);}if(args.row_desc!==undefined&&args.row_desc!==null){this.row_desc=Thrift.copyList(args.row_desc,[ttypes.TColumnType]);}if(args.query_id!==undefined&&args.query_id!==null){this.query_id=args.query_id;}}};MapD_broadcast_serialized_rows_args.prototype={};MapD_broadcast_serialized_rows_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.serialized_rows=new serialized_result_set_ttypes.TSerializedRows();this.serialized_rows.read(input);}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.LIST){this.row_desc=[];var _rtmp3315=input.readListBegin();var _size314=_rtmp3315.size||0;for(var _i316=0;_i316<_size314;++_i316){var elem317=null;elem317=new ttypes.TColumnType();elem317.read(input);this.row_desc.push(elem317);}input.readListEnd();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I64){this.query_id=input.readI64();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_broadcast_serialized_rows_args.prototype.write=function(output){output.writeStructBegin('MapD_broadcast_serialized_rows_args');if(this.serialized_rows!==null&&this.serialized_rows!==undefined){output.writeFieldBegin('serialized_rows',Thrift.Type.STRUCT,1);this.serialized_rows.write(output);output.writeFieldEnd();}if(this.row_desc!==null&&this.row_desc!==undefined){output.writeFieldBegin('row_desc',Thrift.Type.LIST,2);output.writeListBegin(Thrift.Type.STRUCT,this.row_desc.length);for(var iter318 in this.row_desc){if(this.row_desc.hasOwnProperty(iter318)){iter318=this.row_desc[iter318];iter318.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.query_id!==null&&this.query_id!==undefined){output.writeFieldBegin('query_id',Thrift.Type.I64,3);output.writeI64(this.query_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_broadcast_serialized_rows_result=function MapD_broadcast_serialized_rows_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_broadcast_serialized_rows_result.prototype={};MapD_broadcast_serialized_rows_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_broadcast_serialized_rows_result.prototype.write=function(output){output.writeStructBegin('MapD_broadcast_serialized_rows_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_render_query_args=function MapD_start_render_query_args(args){this.session=null;this.widget_id=null;this.node_idx=null;this.vega_json=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.widget_id!==undefined&&args.widget_id!==null){this.widget_id=args.widget_id;}if(args.node_idx!==undefined&&args.node_idx!==null){this.node_idx=args.node_idx;}if(args.vega_json!==undefined&&args.vega_json!==null){this.vega_json=args.vega_json;}}};MapD_start_render_query_args.prototype={};MapD_start_render_query_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I64){this.widget_id=input.readI64();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I16){this.node_idx=input.readI16();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.STRING){this.vega_json=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_render_query_args.prototype.write=function(output){output.writeStructBegin('MapD_start_render_query_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.widget_id!==null&&this.widget_id!==undefined){output.writeFieldBegin('widget_id',Thrift.Type.I64,2);output.writeI64(this.widget_id);output.writeFieldEnd();}if(this.node_idx!==null&&this.node_idx!==undefined){output.writeFieldBegin('node_idx',Thrift.Type.I16,3);output.writeI16(this.node_idx);output.writeFieldEnd();}if(this.vega_json!==null&&this.vega_json!==undefined){output.writeFieldBegin('vega_json',Thrift.Type.STRING,4);output.writeString(this.vega_json);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_start_render_query_result=function MapD_start_render_query_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TPendingRenderQuery(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_start_render_query_result.prototype={};MapD_start_render_query_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TPendingRenderQuery();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_start_render_query_result.prototype.write=function(output){output.writeStructBegin('MapD_start_render_query_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_next_render_step_args=function MapD_execute_next_render_step_args(args){this.pending_render=null;this.merged_data=null;if(args){if(args.pending_render!==undefined&&args.pending_render!==null){this.pending_render=new ttypes.TPendingRenderQuery(args.pending_render);}if(args.merged_data!==undefined&&args.merged_data!==null){this.merged_data=Thrift.copyMap(args.merged_data,[Thrift.copyMap,Thrift.copyMap,Thrift.copyMap,Thrift.copyList,ttypes.TRenderDatum]);}}};MapD_execute_next_render_step_args.prototype={};MapD_execute_next_render_step_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.pending_render=new ttypes.TPendingRenderQuery();this.pending_render.read(input);}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.MAP){this.merged_data={};var _rtmp3320=input.readMapBegin();var _size319=_rtmp3320.size||0;for(var _i321=0;_i321<_size319;++_i321){var key322=null;var val323=null;key322=input.readString();val323={};var _rtmp3325=input.readMapBegin();var _size324=_rtmp3325.size||0;for(var _i326=0;_i326<_size324;++_i326){var key327=null;var val328=null;key327=input.readString();val328={};var _rtmp3330=input.readMapBegin();var _size329=_rtmp3330.size||0;for(var _i331=0;_i331<_size329;++_i331){var key332=null;var val333=null;key332=input.readString();val333={};var _rtmp3335=input.readMapBegin();var _size334=_rtmp3335.size||0;for(var _i336=0;_i336<_size334;++_i336){var key337=null;var val338=null;key337=input.readString();val338=[];var _rtmp3340=input.readListBegin();var _size339=_rtmp3340.size||0;for(var _i341=0;_i341<_size339;++_i341){var elem342=null;elem342=new ttypes.TRenderDatum();elem342.read(input);val338.push(elem342);}input.readListEnd();val333[key337]=val338;}input.readMapEnd();val328[key332]=val333;}input.readMapEnd();val323[key327]=val328;}input.readMapEnd();this.merged_data[key322]=val323;}input.readMapEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_next_render_step_args.prototype.write=function(output){output.writeStructBegin('MapD_execute_next_render_step_args');if(this.pending_render!==null&&this.pending_render!==undefined){output.writeFieldBegin('pending_render',Thrift.Type.STRUCT,1);this.pending_render.write(output);output.writeFieldEnd();}if(this.merged_data!==null&&this.merged_data!==undefined){output.writeFieldBegin('merged_data',Thrift.Type.MAP,2);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.MAP,Thrift.objectLength(this.merged_data));for(var kiter343 in this.merged_data){if(this.merged_data.hasOwnProperty(kiter343)){var viter344=this.merged_data[kiter343];output.writeString(kiter343);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.MAP,Thrift.objectLength(viter344));for(var kiter345 in viter344){if(viter344.hasOwnProperty(kiter345)){var viter346=viter344[kiter345];output.writeString(kiter345);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.MAP,Thrift.objectLength(viter346));for(var kiter347 in viter346){if(viter346.hasOwnProperty(kiter347)){var viter348=viter346[kiter347];output.writeString(kiter347);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.LIST,Thrift.objectLength(viter348));for(var kiter349 in viter348){if(viter348.hasOwnProperty(kiter349)){var viter350=viter348[kiter349];output.writeString(kiter349);output.writeListBegin(Thrift.Type.STRUCT,viter350.length);for(var iter351 in viter350){if(viter350.hasOwnProperty(iter351)){iter351=viter350[iter351];iter351.write(output);}}output.writeListEnd();}}output.writeMapEnd();}}output.writeMapEnd();}}output.writeMapEnd();}}output.writeMapEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_execute_next_render_step_result=function MapD_execute_next_render_step_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TRenderStepResult(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_execute_next_render_step_result.prototype={};MapD_execute_next_render_step_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TRenderStepResult();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_execute_next_render_step_result.prototype.write=function(output){output.writeStructBegin('MapD_execute_next_render_step_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_insert_data_args=function MapD_insert_data_args(args){this.session=null;this.insert_data=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.insert_data!==undefined&&args.insert_data!==null){this.insert_data=new ttypes.TInsertData(args.insert_data);}}};MapD_insert_data_args.prototype={};MapD_insert_data_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRUCT){this.insert_data=new ttypes.TInsertData();this.insert_data.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_insert_data_args.prototype.write=function(output){output.writeStructBegin('MapD_insert_data_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.insert_data!==null&&this.insert_data!==undefined){output.writeFieldBegin('insert_data',Thrift.Type.STRUCT,2);this.insert_data.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_insert_data_result=function MapD_insert_data_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_insert_data_result.prototype={};MapD_insert_data_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_insert_data_result.prototype.write=function(output){output.writeStructBegin('MapD_insert_data_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_checkpoint_args=function MapD_checkpoint_args(args){this.session=null;this.db_id=null;this.table_id=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.db_id!==undefined&&args.db_id!==null){this.db_id=args.db_id;}if(args.table_id!==undefined&&args.table_id!==null){this.table_id=args.table_id;}}};MapD_checkpoint_args.prototype={};MapD_checkpoint_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.I32){this.db_id=input.readI32();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.table_id=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_checkpoint_args.prototype.write=function(output){output.writeStructBegin('MapD_checkpoint_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.db_id!==null&&this.db_id!==undefined){output.writeFieldBegin('db_id',Thrift.Type.I32,2);output.writeI32(this.db_id);output.writeFieldEnd();}if(this.table_id!==null&&this.table_id!==undefined){output.writeFieldBegin('table_id',Thrift.Type.I32,3);output.writeI32(this.table_id);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_checkpoint_result=function MapD_checkpoint_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_checkpoint_result.prototype={};MapD_checkpoint_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_checkpoint_result.prototype.write=function(output){output.writeStructBegin('MapD_checkpoint_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_roles_args=function MapD_get_roles_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_roles_args.prototype={};MapD_get_roles_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_roles_args.prototype.write=function(output){output.writeStructBegin('MapD_get_roles_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_roles_result=function MapD_get_roles_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_roles_result.prototype={};MapD_get_roles_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3353=input.readListBegin();var _size352=_rtmp3353.size||0;for(var _i354=0;_i354<_size352;++_i354){var elem355=null;elem355=input.readString();this.success.push(elem355);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_roles_result.prototype.write=function(output){output.writeStructBegin('MapD_get_roles_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter356 in this.success){if(this.success.hasOwnProperty(iter356)){iter356=this.success[iter356];output.writeString(iter356);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_objects_for_grantee_args=function MapD_get_db_objects_for_grantee_args(args){this.session=null;this.roleName=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.roleName!==undefined&&args.roleName!==null){this.roleName=args.roleName;}}};MapD_get_db_objects_for_grantee_args.prototype={};MapD_get_db_objects_for_grantee_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.roleName=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_objects_for_grantee_args.prototype.write=function(output){output.writeStructBegin('MapD_get_db_objects_for_grantee_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.roleName!==null&&this.roleName!==undefined){output.writeFieldBegin('roleName',Thrift.Type.STRING,2);output.writeString(this.roleName);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_objects_for_grantee_result=function MapD_get_db_objects_for_grantee_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDBObject]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_db_objects_for_grantee_result.prototype={};MapD_get_db_objects_for_grantee_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3358=input.readListBegin();var _size357=_rtmp3358.size||0;for(var _i359=0;_i359<_size357;++_i359){var elem360=null;elem360=new ttypes.TDBObject();elem360.read(input);this.success.push(elem360);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_objects_for_grantee_result.prototype.write=function(output){output.writeStructBegin('MapD_get_db_objects_for_grantee_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter361 in this.success){if(this.success.hasOwnProperty(iter361)){iter361=this.success[iter361];iter361.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_object_privs_args=function MapD_get_db_object_privs_args(args){this.session=null;this.objectName=null;this.type=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.objectName!==undefined&&args.objectName!==null){this.objectName=args.objectName;}if(args.type!==undefined&&args.type!==null){this.type=args.type;}}};MapD_get_db_object_privs_args.prototype={};MapD_get_db_object_privs_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.objectName=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.I32){this.type=input.readI32();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_object_privs_args.prototype.write=function(output){output.writeStructBegin('MapD_get_db_object_privs_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.objectName!==null&&this.objectName!==undefined){output.writeFieldBegin('objectName',Thrift.Type.STRING,2);output.writeString(this.objectName);output.writeFieldEnd();}if(this.type!==null&&this.type!==undefined){output.writeFieldBegin('type',Thrift.Type.I32,3);output.writeI32(this.type);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_db_object_privs_result=function MapD_get_db_object_privs_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[ttypes.TDBObject]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_db_object_privs_result.prototype={};MapD_get_db_object_privs_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3363=input.readListBegin();var _size362=_rtmp3363.size||0;for(var _i364=0;_i364<_size362;++_i364){var elem365=null;elem365=new ttypes.TDBObject();elem365.read(input);this.success.push(elem365);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_db_object_privs_result.prototype.write=function(output){output.writeStructBegin('MapD_get_db_object_privs_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRUCT,this.success.length);for(var iter366 in this.success){if(this.success.hasOwnProperty(iter366)){iter366=this.success[iter366];iter366.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_roles_for_user_args=function MapD_get_all_roles_for_user_args(args){this.session=null;this.userName=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.userName!==undefined&&args.userName!==null){this.userName=args.userName;}}};MapD_get_all_roles_for_user_args.prototype={};MapD_get_all_roles_for_user_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.userName=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_roles_for_user_args.prototype.write=function(output){output.writeStructBegin('MapD_get_all_roles_for_user_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.userName!==null&&this.userName!==undefined){output.writeFieldBegin('userName',Thrift.Type.STRING,2);output.writeString(this.userName);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_all_roles_for_user_result=function MapD_get_all_roles_for_user_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyList(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_all_roles_for_user_result.prototype={};MapD_get_all_roles_for_user_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.LIST){this.success=[];var _rtmp3368=input.readListBegin();var _size367=_rtmp3368.size||0;for(var _i369=0;_i369<_size367;++_i369){var elem370=null;elem370=input.readString();this.success.push(elem370);}input.readListEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_all_roles_for_user_result.prototype.write=function(output){output.writeStructBegin('MapD_get_all_roles_for_user_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.LIST,0);output.writeListBegin(Thrift.Type.STRING,this.success.length);for(var iter371 in this.success){if(this.success.hasOwnProperty(iter371)){iter371=this.success[iter371];output.writeString(iter371);}}output.writeListEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_has_role_args=function MapD_has_role_args(args){this.session=null;this.granteeName=null;this.roleName=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.granteeName!==undefined&&args.granteeName!==null){this.granteeName=args.granteeName;}if(args.roleName!==undefined&&args.roleName!==null){this.roleName=args.roleName;}}};MapD_has_role_args.prototype={};MapD_has_role_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.granteeName=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.roleName=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_has_role_args.prototype.write=function(output){output.writeStructBegin('MapD_has_role_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.granteeName!==null&&this.granteeName!==undefined){output.writeFieldBegin('granteeName',Thrift.Type.STRING,2);output.writeString(this.granteeName);output.writeFieldEnd();}if(this.roleName!==null&&this.roleName!==undefined){output.writeFieldBegin('roleName',Thrift.Type.STRING,3);output.writeString(this.roleName);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_has_role_result=function MapD_has_role_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_has_role_result.prototype={};MapD_has_role_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.BOOL){this.success=input.readBool();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_has_role_result.prototype.write=function(output){output.writeStructBegin('MapD_has_role_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.BOOL,0);output.writeBool(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_has_object_privilege_args=function MapD_has_object_privilege_args(args){this.session=null;this.granteeName=null;this.ObjectName=null;this.objectType=null;this.permissions=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.granteeName!==undefined&&args.granteeName!==null){this.granteeName=args.granteeName;}if(args.ObjectName!==undefined&&args.ObjectName!==null){this.ObjectName=args.ObjectName;}if(args.objectType!==undefined&&args.objectType!==null){this.objectType=args.objectType;}if(args.permissions!==undefined&&args.permissions!==null){this.permissions=new ttypes.TDBObjectPermissions(args.permissions);}}};MapD_has_object_privilege_args.prototype={};MapD_has_object_privilege_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.granteeName=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.ObjectName=input.readString();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.I32){this.objectType=input.readI32();}else{input.skip(ftype);}break;case 5:if(ftype==Thrift.Type.STRUCT){this.permissions=new ttypes.TDBObjectPermissions();this.permissions.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_has_object_privilege_args.prototype.write=function(output){output.writeStructBegin('MapD_has_object_privilege_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.granteeName!==null&&this.granteeName!==undefined){output.writeFieldBegin('granteeName',Thrift.Type.STRING,2);output.writeString(this.granteeName);output.writeFieldEnd();}if(this.ObjectName!==null&&this.ObjectName!==undefined){output.writeFieldBegin('ObjectName',Thrift.Type.STRING,3);output.writeString(this.ObjectName);output.writeFieldEnd();}if(this.objectType!==null&&this.objectType!==undefined){output.writeFieldBegin('objectType',Thrift.Type.I32,4);output.writeI32(this.objectType);output.writeFieldEnd();}if(this.permissions!==null&&this.permissions!==undefined){output.writeFieldBegin('permissions',Thrift.Type.STRUCT,5);this.permissions.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_has_object_privilege_result=function MapD_has_object_privilege_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=args.success;}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_has_object_privilege_result.prototype={};MapD_has_object_privilege_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.BOOL){this.success=input.readBool();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_has_object_privilege_result.prototype.write=function(output){output.writeStructBegin('MapD_has_object_privilege_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.BOOL,0);output.writeBool(this.success);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_license_key_args=function MapD_set_license_key_args(args){this.session=null;this.key=null;this.nonce='';if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.key!==undefined&&args.key!==null){this.key=args.key;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_set_license_key_args.prototype={};MapD_set_license_key_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.key=input.readString();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_license_key_args.prototype.write=function(output){output.writeStructBegin('MapD_set_license_key_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.key!==null&&this.key!==undefined){output.writeFieldBegin('key',Thrift.Type.STRING,2);output.writeString(this.key);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,3);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_set_license_key_result=function MapD_set_license_key_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TLicenseInfo(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_set_license_key_result.prototype={};MapD_set_license_key_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TLicenseInfo();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_set_license_key_result.prototype.write=function(output){output.writeStructBegin('MapD_set_license_key_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_license_claims_args=function MapD_get_license_claims_args(args){this.session=null;this.nonce='';if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.nonce!==undefined&&args.nonce!==null){this.nonce=args.nonce;}}};MapD_get_license_claims_args.prototype={};MapD_get_license_claims_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.STRING){this.nonce=input.readString();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_license_claims_args.prototype.write=function(output){output.writeStructBegin('MapD_get_license_claims_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.nonce!==null&&this.nonce!==undefined){output.writeFieldBegin('nonce',Thrift.Type.STRING,2);output.writeString(this.nonce);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_license_claims_result=function MapD_get_license_claims_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=new ttypes.TLicenseInfo(args.success);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_license_claims_result.prototype={};MapD_get_license_claims_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.STRUCT){this.success=new ttypes.TLicenseInfo();this.success.read(input);}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_license_claims_result.prototype.write=function(output){output.writeStructBegin('MapD_get_license_claims_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.STRUCT,0);this.success.write(output);output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_device_parameters_args=function MapD_get_device_parameters_args(args){this.session=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}}};MapD_get_device_parameters_args.prototype={};MapD_get_device_parameters_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_device_parameters_args.prototype.write=function(output){output.writeStructBegin('MapD_get_device_parameters_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_get_device_parameters_result=function MapD_get_device_parameters_result(args){this.success=null;this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.success!==undefined&&args.success!==null){this.success=Thrift.copyMap(args.success,[null]);}if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_get_device_parameters_result.prototype={};MapD_get_device_parameters_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 0:if(ftype==Thrift.Type.MAP){this.success={};var _rtmp3373=input.readMapBegin();var _size372=_rtmp3373.size||0;for(var _i374=0;_i374<_size372;++_i374){var key375=null;var val376=null;key375=input.readString();val376=input.readString();this.success[key375]=val376;}input.readMapEnd();}else{input.skip(ftype);}break;case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_get_device_parameters_result.prototype.write=function(output){output.writeStructBegin('MapD_get_device_parameters_result');if(this.success!==null&&this.success!==undefined){output.writeFieldBegin('success',Thrift.Type.MAP,0);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.STRING,Thrift.objectLength(this.success));for(var kiter377 in this.success){if(this.success.hasOwnProperty(kiter377)){var viter378=this.success[kiter377];output.writeString(kiter377);output.writeString(viter378);}}output.writeMapEnd();output.writeFieldEnd();}if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_register_runtime_extension_functions_args=function MapD_register_runtime_extension_functions_args(args){this.session=null;this.udfs=null;this.udtfs=null;this.device_ir_map=null;if(args){if(args.session!==undefined&&args.session!==null){this.session=args.session;}if(args.udfs!==undefined&&args.udfs!==null){this.udfs=Thrift.copyList(args.udfs,[extension_functions_ttypes.TUserDefinedFunction]);}if(args.udtfs!==undefined&&args.udtfs!==null){this.udtfs=Thrift.copyList(args.udtfs,[extension_functions_ttypes.TUserDefinedTableFunction]);}if(args.device_ir_map!==undefined&&args.device_ir_map!==null){this.device_ir_map=Thrift.copyMap(args.device_ir_map,[null]);}}};MapD_register_runtime_extension_functions_args.prototype={};MapD_register_runtime_extension_functions_args.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRING){this.session=input.readString();}else{input.skip(ftype);}break;case 2:if(ftype==Thrift.Type.LIST){this.udfs=[];var _rtmp3380=input.readListBegin();var _size379=_rtmp3380.size||0;for(var _i381=0;_i381<_size379;++_i381){var elem382=null;elem382=new extension_functions_ttypes.TUserDefinedFunction();elem382.read(input);this.udfs.push(elem382);}input.readListEnd();}else{input.skip(ftype);}break;case 3:if(ftype==Thrift.Type.LIST){this.udtfs=[];var _rtmp3384=input.readListBegin();var _size383=_rtmp3384.size||0;for(var _i385=0;_i385<_size383;++_i385){var elem386=null;elem386=new extension_functions_ttypes.TUserDefinedTableFunction();elem386.read(input);this.udtfs.push(elem386);}input.readListEnd();}else{input.skip(ftype);}break;case 4:if(ftype==Thrift.Type.MAP){this.device_ir_map={};var _rtmp3388=input.readMapBegin();var _size387=_rtmp3388.size||0;for(var _i389=0;_i389<_size387;++_i389){var key390=null;var val391=null;key390=input.readString();val391=input.readString();this.device_ir_map[key390]=val391;}input.readMapEnd();}else{input.skip(ftype);}break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_register_runtime_extension_functions_args.prototype.write=function(output){output.writeStructBegin('MapD_register_runtime_extension_functions_args');if(this.session!==null&&this.session!==undefined){output.writeFieldBegin('session',Thrift.Type.STRING,1);output.writeString(this.session);output.writeFieldEnd();}if(this.udfs!==null&&this.udfs!==undefined){output.writeFieldBegin('udfs',Thrift.Type.LIST,2);output.writeListBegin(Thrift.Type.STRUCT,this.udfs.length);for(var iter392 in this.udfs){if(this.udfs.hasOwnProperty(iter392)){iter392=this.udfs[iter392];iter392.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.udtfs!==null&&this.udtfs!==undefined){output.writeFieldBegin('udtfs',Thrift.Type.LIST,3);output.writeListBegin(Thrift.Type.STRUCT,this.udtfs.length);for(var iter393 in this.udtfs){if(this.udtfs.hasOwnProperty(iter393)){iter393=this.udtfs[iter393];iter393.write(output);}}output.writeListEnd();output.writeFieldEnd();}if(this.device_ir_map!==null&&this.device_ir_map!==undefined){output.writeFieldBegin('device_ir_map',Thrift.Type.MAP,4);output.writeMapBegin(Thrift.Type.STRING,Thrift.Type.STRING,Thrift.objectLength(this.device_ir_map));for(var kiter394 in this.device_ir_map){if(this.device_ir_map.hasOwnProperty(kiter394)){var viter395=this.device_ir_map[kiter394];output.writeString(kiter394);output.writeString(viter395);}}output.writeMapEnd();output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapD_register_runtime_extension_functions_result=function MapD_register_runtime_extension_functions_result(args){this.e=null;if(args instanceof ttypes.TMapDException){this.e=args;return;}if(args){if(args.e!==undefined&&args.e!==null){this.e=args.e;}}};MapD_register_runtime_extension_functions_result.prototype={};MapD_register_runtime_extension_functions_result.prototype.read=function(input){input.readStructBegin();while(true){var ret=input.readFieldBegin();var ftype=ret.ftype;var fid=ret.fid;if(ftype==Thrift.Type.STOP){break;}switch(fid){case 1:if(ftype==Thrift.Type.STRUCT){this.e=new ttypes.TMapDException();this.e.read(input);}else{input.skip(ftype);}break;case 0:input.skip(ftype);break;default:input.skip(ftype);}input.readFieldEnd();}input.readStructEnd();return;};MapD_register_runtime_extension_functions_result.prototype.write=function(output){output.writeStructBegin('MapD_register_runtime_extension_functions_result');if(this.e!==null&&this.e!==undefined){output.writeFieldBegin('e',Thrift.Type.STRUCT,1);this.e.write(output);output.writeFieldEnd();}output.writeFieldStop();output.writeStructEnd();return;};var MapDClient=exports.Client=function(output,pClass){this.output=output;this.pClass=pClass;this._seqid=0;this._reqs={};};MapDClient.prototype={};MapDClient.prototype.seqid=function(){return this._seqid;};MapDClient.prototype.new_seqid=function(){return this._seqid+=1;};MapDClient.prototype.connect=function(user,passwd,dbname,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_connect(user,passwd,dbname);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_connect(user,passwd,dbname);}};MapDClient.prototype.send_connect=function(user,passwd,dbname){var output=new this.pClass(this.output);var params={user:user,passwd:passwd,dbname:dbname};var args=new MapD_connect_args(params);try{output.writeMessageBegin('connect',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_connect=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_connect_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('connect failed: unknown result');};MapDClient.prototype.krb5_connect=function(inputToken,dbname,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_krb5_connect(inputToken,dbname);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_krb5_connect(inputToken,dbname);}};MapDClient.prototype.send_krb5_connect=function(inputToken,dbname){var output=new this.pClass(this.output);var params={inputToken:inputToken,dbname:dbname};var args=new MapD_krb5_connect_args(params);try{output.writeMessageBegin('krb5_connect',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_krb5_connect=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_krb5_connect_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('krb5_connect failed: unknown result');};MapDClient.prototype.disconnect=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_disconnect(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_disconnect(session);}};MapDClient.prototype.send_disconnect=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_disconnect_args(params);try{output.writeMessageBegin('disconnect',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_disconnect=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_disconnect_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.switch_database=function(session,dbname,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_switch_database(session,dbname);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_switch_database(session,dbname);}};MapDClient.prototype.send_switch_database=function(session,dbname){var output=new this.pClass(this.output);var params={session:session,dbname:dbname};var args=new MapD_switch_database_args(params);try{output.writeMessageBegin('switch_database',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_switch_database=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_switch_database_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_server_status=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_server_status(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_server_status(session);}};MapDClient.prototype.send_get_server_status=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_server_status_args(params);try{output.writeMessageBegin('get_server_status',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_server_status=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_server_status_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_server_status failed: unknown result');};MapDClient.prototype.get_status=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_status(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_status(session);}};MapDClient.prototype.send_get_status=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_status_args(params);try{output.writeMessageBegin('get_status',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_status=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_status_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_status failed: unknown result');};MapDClient.prototype.get_hardware_info=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_hardware_info(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_hardware_info(session);}};MapDClient.prototype.send_get_hardware_info=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_hardware_info_args(params);try{output.writeMessageBegin('get_hardware_info',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_hardware_info=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_hardware_info_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_hardware_info failed: unknown result');};MapDClient.prototype.get_tables=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_tables(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_tables(session);}};MapDClient.prototype.send_get_tables=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_tables_args(params);try{output.writeMessageBegin('get_tables',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_tables=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_tables_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_tables failed: unknown result');};MapDClient.prototype.get_physical_tables=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_physical_tables(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_physical_tables(session);}};MapDClient.prototype.send_get_physical_tables=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_physical_tables_args(params);try{output.writeMessageBegin('get_physical_tables',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_physical_tables=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_physical_tables_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_physical_tables failed: unknown result');};MapDClient.prototype.get_views=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_views(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_views(session);}};MapDClient.prototype.send_get_views=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_views_args(params);try{output.writeMessageBegin('get_views',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_views=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_views_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_views failed: unknown result');};MapDClient.prototype.get_tables_meta=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_tables_meta(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_tables_meta(session);}};MapDClient.prototype.send_get_tables_meta=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_tables_meta_args(params);try{output.writeMessageBegin('get_tables_meta',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_tables_meta=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_tables_meta_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_tables_meta failed: unknown result');};MapDClient.prototype.get_table_details=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_table_details(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_table_details(session,table_name);}};MapDClient.prototype.send_get_table_details=function(session,table_name){var output=new this.pClass(this.output);var params={session:session,table_name:table_name};var args=new MapD_get_table_details_args(params);try{output.writeMessageBegin('get_table_details',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_table_details=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_table_details_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_table_details failed: unknown result');};MapDClient.prototype.get_internal_table_details=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_internal_table_details(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_internal_table_details(session,table_name);}};MapDClient.prototype.send_get_internal_table_details=function(session,table_name){var output=new this.pClass(this.output);var params={session:session,table_name:table_name};var args=new MapD_get_internal_table_details_args(params);try{output.writeMessageBegin('get_internal_table_details',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_internal_table_details=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_internal_table_details_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_internal_table_details failed: unknown result');};MapDClient.prototype.get_users=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_users(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_users(session);}};MapDClient.prototype.send_get_users=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_users_args(params);try{output.writeMessageBegin('get_users',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_users=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_users_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_users failed: unknown result');};MapDClient.prototype.get_databases=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_databases(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_databases(session);}};MapDClient.prototype.send_get_databases=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_databases_args(params);try{output.writeMessageBegin('get_databases',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_databases=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_databases_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_databases failed: unknown result');};MapDClient.prototype.get_version=function(callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_version();return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_version();}};MapDClient.prototype.send_get_version=function(){var output=new this.pClass(this.output);var args=new MapD_get_version_args();try{output.writeMessageBegin('get_version',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_version=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_version_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_version failed: unknown result');};MapDClient.prototype.start_heap_profile=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_start_heap_profile(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_start_heap_profile(session);}};MapDClient.prototype.send_start_heap_profile=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_start_heap_profile_args(params);try{output.writeMessageBegin('start_heap_profile',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_start_heap_profile=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_start_heap_profile_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.stop_heap_profile=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_stop_heap_profile(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_stop_heap_profile(session);}};MapDClient.prototype.send_stop_heap_profile=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_stop_heap_profile_args(params);try{output.writeMessageBegin('stop_heap_profile',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_stop_heap_profile=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_stop_heap_profile_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_heap_profile=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_heap_profile(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_heap_profile(session);}};MapDClient.prototype.send_get_heap_profile=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_heap_profile_args(params);try{output.writeMessageBegin('get_heap_profile',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_heap_profile=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_heap_profile_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_heap_profile failed: unknown result');};MapDClient.prototype.get_memory=function(session,memory_level,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_memory(session,memory_level);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_memory(session,memory_level);}};MapDClient.prototype.send_get_memory=function(session,memory_level){var output=new this.pClass(this.output);var params={session:session,memory_level:memory_level};var args=new MapD_get_memory_args(params);try{output.writeMessageBegin('get_memory',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_memory=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_memory_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_memory failed: unknown result');};MapDClient.prototype.clear_cpu_memory=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_clear_cpu_memory(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_clear_cpu_memory(session);}};MapDClient.prototype.send_clear_cpu_memory=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_clear_cpu_memory_args(params);try{output.writeMessageBegin('clear_cpu_memory',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_clear_cpu_memory=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_clear_cpu_memory_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.clear_gpu_memory=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_clear_gpu_memory(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_clear_gpu_memory(session);}};MapDClient.prototype.send_clear_gpu_memory=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_clear_gpu_memory_args(params);try{output.writeMessageBegin('clear_gpu_memory',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_clear_gpu_memory=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_clear_gpu_memory_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.set_table_epoch=function(session,db_id,table_id,new_epoch,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_table_epoch(session,db_id,table_id,new_epoch);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_table_epoch(session,db_id,table_id,new_epoch);}};MapDClient.prototype.send_set_table_epoch=function(session,db_id,table_id,new_epoch){var output=new this.pClass(this.output);var params={session:session,db_id:db_id,table_id:table_id,new_epoch:new_epoch};var args=new MapD_set_table_epoch_args(params);try{output.writeMessageBegin('set_table_epoch',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_set_table_epoch=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_table_epoch_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.set_table_epoch_by_name=function(session,table_name,new_epoch,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_table_epoch_by_name(session,table_name,new_epoch);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_table_epoch_by_name(session,table_name,new_epoch);}};MapDClient.prototype.send_set_table_epoch_by_name=function(session,table_name,new_epoch){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,new_epoch:new_epoch};var args=new MapD_set_table_epoch_by_name_args(params);try{output.writeMessageBegin('set_table_epoch_by_name',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_set_table_epoch_by_name=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_table_epoch_by_name_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_table_epoch=function(session,db_id,table_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_table_epoch(session,db_id,table_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_table_epoch(session,db_id,table_id);}};MapDClient.prototype.send_get_table_epoch=function(session,db_id,table_id){var output=new this.pClass(this.output);var params={session:session,db_id:db_id,table_id:table_id};var args=new MapD_get_table_epoch_args(params);try{output.writeMessageBegin('get_table_epoch',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_table_epoch=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_table_epoch_result();result.read(input);input.readMessageEnd();if(null!==result.success){return callback(null,result.success);}return callback('get_table_epoch failed: unknown result');};MapDClient.prototype.get_table_epoch_by_name=function(session,table_name,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_table_epoch_by_name(session,table_name);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_table_epoch_by_name(session,table_name);}};MapDClient.prototype.send_get_table_epoch_by_name=function(session,table_name){var output=new this.pClass(this.output);var params={session:session,table_name:table_name};var args=new MapD_get_table_epoch_by_name_args(params);try{output.writeMessageBegin('get_table_epoch_by_name',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_table_epoch_by_name=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_table_epoch_by_name_result();result.read(input);input.readMessageEnd();if(null!==result.success){return callback(null,result.success);}return callback('get_table_epoch_by_name failed: unknown result');};MapDClient.prototype.get_session_info=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_session_info(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_session_info(session);}};MapDClient.prototype.send_get_session_info=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_session_info_args(params);try{output.writeMessageBegin('get_session_info',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_session_info=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_session_info_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_session_info failed: unknown result');};MapDClient.prototype.sql_execute=function(session,query,column_format,nonce,first_n,at_most_n,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_execute(session,query,column_format,nonce,first_n,at_most_n);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_execute(session,query,column_format,nonce,first_n,at_most_n);}};MapDClient.prototype.send_sql_execute=function(session,query,column_format,nonce,first_n,at_most_n){var output=new this.pClass(this.output);var params={session:session,query:query,column_format:column_format,nonce:nonce,first_n:first_n,at_most_n:at_most_n};var args=new MapD_sql_execute_args(params);try{output.writeMessageBegin('sql_execute',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_sql_execute=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_execute_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_execute failed: unknown result');};MapDClient.prototype.sql_execute_df=function(session,query,device_type,device_id,first_n,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_execute_df(session,query,device_type,device_id,first_n);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_execute_df(session,query,device_type,device_id,first_n);}};MapDClient.prototype.send_sql_execute_df=function(session,query,device_type,device_id,first_n){var output=new this.pClass(this.output);var params={session:session,query:query,device_type:device_type,device_id:device_id,first_n:first_n};var args=new MapD_sql_execute_df_args(params);try{output.writeMessageBegin('sql_execute_df',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_sql_execute_df=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_execute_df_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_execute_df failed: unknown result');};MapDClient.prototype.sql_execute_gdf=function(session,query,device_id,first_n,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_execute_gdf(session,query,device_id,first_n);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_execute_gdf(session,query,device_id,first_n);}};MapDClient.prototype.send_sql_execute_gdf=function(session,query,device_id,first_n){var output=new this.pClass(this.output);var params={session:session,query:query,device_id:device_id,first_n:first_n};var args=new MapD_sql_execute_gdf_args(params);try{output.writeMessageBegin('sql_execute_gdf',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_sql_execute_gdf=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_execute_gdf_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_execute_gdf failed: unknown result');};MapDClient.prototype.deallocate_df=function(session,df,device_type,device_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_deallocate_df(session,df,device_type,device_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_deallocate_df(session,df,device_type,device_id);}};MapDClient.prototype.send_deallocate_df=function(session,df,device_type,device_id){var output=new this.pClass(this.output);var params={session:session,df:df,device_type:device_type,device_id:device_id};var args=new MapD_deallocate_df_args(params);try{output.writeMessageBegin('deallocate_df',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_deallocate_df=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_deallocate_df_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.interrupt=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_interrupt(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_interrupt(session);}};MapDClient.prototype.send_interrupt=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_interrupt_args(params);try{output.writeMessageBegin('interrupt',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_interrupt=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_interrupt_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.sql_validate=function(session,query,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_sql_validate(session,query);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_sql_validate(session,query);}};MapDClient.prototype.send_sql_validate=function(session,query){var output=new this.pClass(this.output);var params={session:session,query:query};var args=new MapD_sql_validate_args(params);try{output.writeMessageBegin('sql_validate',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_sql_validate=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_sql_validate_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('sql_validate failed: unknown result');};MapDClient.prototype.get_completion_hints=function(session,sql,cursor,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_completion_hints(session,sql,cursor);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_completion_hints(session,sql,cursor);}};MapDClient.prototype.send_get_completion_hints=function(session,sql,cursor){var output=new this.pClass(this.output);var params={session:session,sql:sql,cursor:cursor};var args=new MapD_get_completion_hints_args(params);try{output.writeMessageBegin('get_completion_hints',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_completion_hints=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_completion_hints_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_completion_hints failed: unknown result');};MapDClient.prototype.set_execution_mode=function(session,mode,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_execution_mode(session,mode);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_execution_mode(session,mode);}};MapDClient.prototype.send_set_execution_mode=function(session,mode){var output=new this.pClass(this.output);var params={session:session,mode:mode};var args=new MapD_set_execution_mode_args(params);try{output.writeMessageBegin('set_execution_mode',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_set_execution_mode=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_execution_mode_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.render_vega=function(session,widget_id,vega_json,compression_level,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_render_vega(session,widget_id,vega_json,compression_level,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_render_vega(session,widget_id,vega_json,compression_level,nonce);}};MapDClient.prototype.send_render_vega=function(session,widget_id,vega_json,compression_level,nonce){var output=new this.pClass(this.output);var params={session:session,widget_id:widget_id,vega_json:vega_json,compression_level:compression_level,nonce:nonce};var args=new MapD_render_vega_args(params);try{output.writeMessageBegin('render_vega',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_render_vega=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_render_vega_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('render_vega failed: unknown result');};MapDClient.prototype.get_result_row_for_pixel=function(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_result_row_for_pixel(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_result_row_for_pixel(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce);}};MapDClient.prototype.send_get_result_row_for_pixel=function(session,widget_id,pixel,table_col_names,column_format,pixelRadius,nonce){var output=new this.pClass(this.output);var params={session:session,widget_id:widget_id,pixel:pixel,table_col_names:table_col_names,column_format:column_format,pixelRadius:pixelRadius,nonce:nonce};var args=new MapD_get_result_row_for_pixel_args(params);try{output.writeMessageBegin('get_result_row_for_pixel',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_result_row_for_pixel=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_result_row_for_pixel_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_result_row_for_pixel failed: unknown result');};MapDClient.prototype.get_dashboard=function(session,dashboard_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_dashboard(session,dashboard_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_dashboard(session,dashboard_id);}};MapDClient.prototype.send_get_dashboard=function(session,dashboard_id){var output=new this.pClass(this.output);var params={session:session,dashboard_id:dashboard_id};var args=new MapD_get_dashboard_args(params);try{output.writeMessageBegin('get_dashboard',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_dashboard failed: unknown result');};MapDClient.prototype.get_dashboards=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_dashboards(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_dashboards(session);}};MapDClient.prototype.send_get_dashboards=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_dashboards_args(params);try{output.writeMessageBegin('get_dashboards',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_dashboards=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_dashboards_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_dashboards failed: unknown result');};MapDClient.prototype.create_dashboard=function(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_create_dashboard(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_create_dashboard(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata);}};MapDClient.prototype.send_create_dashboard=function(session,dashboard_name,dashboard_state,image_hash,dashboard_metadata){var output=new this.pClass(this.output);var params={session:session,dashboard_name:dashboard_name,dashboard_state:dashboard_state,image_hash:image_hash,dashboard_metadata:dashboard_metadata};var args=new MapD_create_dashboard_args(params);try{output.writeMessageBegin('create_dashboard',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_create_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_create_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('create_dashboard failed: unknown result');};MapDClient.prototype.replace_dashboard=function(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_replace_dashboard(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_replace_dashboard(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata);}};MapDClient.prototype.send_replace_dashboard=function(session,dashboard_id,dashboard_name,dashboard_owner,dashboard_state,image_hash,dashboard_metadata){var output=new this.pClass(this.output);var params={session:session,dashboard_id:dashboard_id,dashboard_name:dashboard_name,dashboard_owner:dashboard_owner,dashboard_state:dashboard_state,image_hash:image_hash,dashboard_metadata:dashboard_metadata};var args=new MapD_replace_dashboard_args(params);try{output.writeMessageBegin('replace_dashboard',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_replace_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_replace_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.delete_dashboard=function(session,dashboard_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_delete_dashboard(session,dashboard_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_delete_dashboard(session,dashboard_id);}};MapDClient.prototype.send_delete_dashboard=function(session,dashboard_id){var output=new this.pClass(this.output);var params={session:session,dashboard_id:dashboard_id};var args=new MapD_delete_dashboard_args(params);try{output.writeMessageBegin('delete_dashboard',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_delete_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_delete_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.share_dashboard=function(session,dashboard_id,groups,objects,permissions,grant_role,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_share_dashboard(session,dashboard_id,groups,objects,permissions,grant_role);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_share_dashboard(session,dashboard_id,groups,objects,permissions,grant_role);}};MapDClient.prototype.send_share_dashboard=function(session,dashboard_id,groups,objects,permissions,grant_role){var output=new this.pClass(this.output);var params={session:session,dashboard_id:dashboard_id,groups:groups,objects:objects,permissions:permissions,grant_role:grant_role};var args=new MapD_share_dashboard_args(params);try{output.writeMessageBegin('share_dashboard',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_share_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_share_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.unshare_dashboard=function(session,dashboard_id,groups,objects,permissions,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_unshare_dashboard(session,dashboard_id,groups,objects,permissions);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_unshare_dashboard(session,dashboard_id,groups,objects,permissions);}};MapDClient.prototype.send_unshare_dashboard=function(session,dashboard_id,groups,objects,permissions){var output=new this.pClass(this.output);var params={session:session,dashboard_id:dashboard_id,groups:groups,objects:objects,permissions:permissions};var args=new MapD_unshare_dashboard_args(params);try{output.writeMessageBegin('unshare_dashboard',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_unshare_dashboard=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_unshare_dashboard_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_dashboard_grantees=function(session,dashboard_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_dashboard_grantees(session,dashboard_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_dashboard_grantees(session,dashboard_id);}};MapDClient.prototype.send_get_dashboard_grantees=function(session,dashboard_id){var output=new this.pClass(this.output);var params={session:session,dashboard_id:dashboard_id};var args=new MapD_get_dashboard_grantees_args(params);try{output.writeMessageBegin('get_dashboard_grantees',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_dashboard_grantees=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_dashboard_grantees_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_dashboard_grantees failed: unknown result');};MapDClient.prototype.get_link_view=function(session,link,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_link_view(session,link);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_link_view(session,link);}};MapDClient.prototype.send_get_link_view=function(session,link){var output=new this.pClass(this.output);var params={session:session,link:link};var args=new MapD_get_link_view_args(params);try{output.writeMessageBegin('get_link_view',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_link_view=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_link_view_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_link_view failed: unknown result');};MapDClient.prototype.create_link=function(session,view_state,view_metadata,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_create_link(session,view_state,view_metadata);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_create_link(session,view_state,view_metadata);}};MapDClient.prototype.send_create_link=function(session,view_state,view_metadata){var output=new this.pClass(this.output);var params={session:session,view_state:view_state,view_metadata:view_metadata};var args=new MapD_create_link_args(params);try{output.writeMessageBegin('create_link',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_create_link=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_create_link_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('create_link failed: unknown result');};MapDClient.prototype.load_table_binary=function(session,table_name,rows,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table_binary(session,table_name,rows);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table_binary(session,table_name,rows);}};MapDClient.prototype.send_load_table_binary=function(session,table_name,rows){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,rows:rows};var args=new MapD_load_table_binary_args(params);try{output.writeMessageBegin('load_table_binary',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_load_table_binary=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_binary_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.load_table_binary_columnar=function(session,table_name,cols,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table_binary_columnar(session,table_name,cols);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table_binary_columnar(session,table_name,cols);}};MapDClient.prototype.send_load_table_binary_columnar=function(session,table_name,cols){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,cols:cols};var args=new MapD_load_table_binary_columnar_args(params);try{output.writeMessageBegin('load_table_binary_columnar',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_load_table_binary_columnar=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_binary_columnar_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.load_table_binary_arrow=function(session,table_name,arrow_stream,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table_binary_arrow(session,table_name,arrow_stream);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table_binary_arrow(session,table_name,arrow_stream);}};MapDClient.prototype.send_load_table_binary_arrow=function(session,table_name,arrow_stream){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,arrow_stream:arrow_stream};var args=new MapD_load_table_binary_arrow_args(params);try{output.writeMessageBegin('load_table_binary_arrow',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_load_table_binary_arrow=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_binary_arrow_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.load_table=function(session,table_name,rows,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_load_table(session,table_name,rows);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_load_table(session,table_name,rows);}};MapDClient.prototype.send_load_table=function(session,table_name,rows){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,rows:rows};var args=new MapD_load_table_args(params);try{output.writeMessageBegin('load_table',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_load_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_load_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.detect_column_types=function(session,file_name,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_detect_column_types(session,file_name,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_detect_column_types(session,file_name,copy_params);}};MapDClient.prototype.send_detect_column_types=function(session,file_name,copy_params){var output=new this.pClass(this.output);var params={session:session,file_name:file_name,copy_params:copy_params};var args=new MapD_detect_column_types_args(params);try{output.writeMessageBegin('detect_column_types',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_detect_column_types=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_detect_column_types_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('detect_column_types failed: unknown result');};MapDClient.prototype.create_table=function(session,table_name,row_desc,file_type,create_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_create_table(session,table_name,row_desc,file_type,create_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_create_table(session,table_name,row_desc,file_type,create_params);}};MapDClient.prototype.send_create_table=function(session,table_name,row_desc,file_type,create_params){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,row_desc:row_desc,file_type:file_type,create_params:create_params};var args=new MapD_create_table_args(params);try{output.writeMessageBegin('create_table',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_create_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_create_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.import_table=function(session,table_name,file_name,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_import_table(session,table_name,file_name,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_import_table(session,table_name,file_name,copy_params);}};MapDClient.prototype.send_import_table=function(session,table_name,file_name,copy_params){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,file_name:file_name,copy_params:copy_params};var args=new MapD_import_table_args(params);try{output.writeMessageBegin('import_table',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_import_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_import_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.import_geo_table=function(session,table_name,file_name,copy_params,row_desc,create_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_import_geo_table(session,table_name,file_name,copy_params,row_desc,create_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_import_geo_table(session,table_name,file_name,copy_params,row_desc,create_params);}};MapDClient.prototype.send_import_geo_table=function(session,table_name,file_name,copy_params,row_desc,create_params){var output=new this.pClass(this.output);var params={session:session,table_name:table_name,file_name:file_name,copy_params:copy_params,row_desc:row_desc,create_params:create_params};var args=new MapD_import_geo_table_args(params);try{output.writeMessageBegin('import_geo_table',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_import_geo_table=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_import_geo_table_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.import_table_status=function(session,import_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_import_table_status(session,import_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_import_table_status(session,import_id);}};MapDClient.prototype.send_import_table_status=function(session,import_id){var output=new this.pClass(this.output);var params={session:session,import_id:import_id};var args=new MapD_import_table_status_args(params);try{output.writeMessageBegin('import_table_status',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_import_table_status=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_import_table_status_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('import_table_status failed: unknown result');};MapDClient.prototype.get_first_geo_file_in_archive=function(session,archive_path,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_first_geo_file_in_archive(session,archive_path,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_first_geo_file_in_archive(session,archive_path,copy_params);}};MapDClient.prototype.send_get_first_geo_file_in_archive=function(session,archive_path,copy_params){var output=new this.pClass(this.output);var params={session:session,archive_path:archive_path,copy_params:copy_params};var args=new MapD_get_first_geo_file_in_archive_args(params);try{output.writeMessageBegin('get_first_geo_file_in_archive',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_first_geo_file_in_archive=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_first_geo_file_in_archive_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_first_geo_file_in_archive failed: unknown result');};MapDClient.prototype.get_all_files_in_archive=function(session,archive_path,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_all_files_in_archive(session,archive_path,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_all_files_in_archive(session,archive_path,copy_params);}};MapDClient.prototype.send_get_all_files_in_archive=function(session,archive_path,copy_params){var output=new this.pClass(this.output);var params={session:session,archive_path:archive_path,copy_params:copy_params};var args=new MapD_get_all_files_in_archive_args(params);try{output.writeMessageBegin('get_all_files_in_archive',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_all_files_in_archive=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_all_files_in_archive_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_all_files_in_archive failed: unknown result');};MapDClient.prototype.get_layers_in_geo_file=function(session,file_name,copy_params,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_layers_in_geo_file(session,file_name,copy_params);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_layers_in_geo_file(session,file_name,copy_params);}};MapDClient.prototype.send_get_layers_in_geo_file=function(session,file_name,copy_params){var output=new this.pClass(this.output);var params={session:session,file_name:file_name,copy_params:copy_params};var args=new MapD_get_layers_in_geo_file_args(params);try{output.writeMessageBegin('get_layers_in_geo_file',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_layers_in_geo_file=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_layers_in_geo_file_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_layers_in_geo_file failed: unknown result');};MapDClient.prototype.check_table_consistency=function(session,table_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_check_table_consistency(session,table_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_check_table_consistency(session,table_id);}};MapDClient.prototype.send_check_table_consistency=function(session,table_id){var output=new this.pClass(this.output);var params={session:session,table_id:table_id};var args=new MapD_check_table_consistency_args(params);try{output.writeMessageBegin('check_table_consistency',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_check_table_consistency=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_check_table_consistency_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('check_table_consistency failed: unknown result');};MapDClient.prototype.start_query=function(session,query_ra,just_explain,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_start_query(session,query_ra,just_explain);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_start_query(session,query_ra,just_explain);}};MapDClient.prototype.send_start_query=function(session,query_ra,just_explain){var output=new this.pClass(this.output);var params={session:session,query_ra:query_ra,just_explain:just_explain};var args=new MapD_start_query_args(params);try{output.writeMessageBegin('start_query',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_start_query=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_start_query_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('start_query failed: unknown result');};MapDClient.prototype.execute_query_step=function(pending_query,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_execute_query_step(pending_query);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_execute_query_step(pending_query);}};MapDClient.prototype.send_execute_query_step=function(pending_query){var output=new this.pClass(this.output);var params={pending_query:pending_query};var args=new MapD_execute_query_step_args(params);try{output.writeMessageBegin('execute_query_step',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_execute_query_step=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_execute_query_step_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('execute_query_step failed: unknown result');};MapDClient.prototype.broadcast_serialized_rows=function(serialized_rows,row_desc,query_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_broadcast_serialized_rows(serialized_rows,row_desc,query_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_broadcast_serialized_rows(serialized_rows,row_desc,query_id);}};MapDClient.prototype.send_broadcast_serialized_rows=function(serialized_rows,row_desc,query_id){var output=new this.pClass(this.output);var params={serialized_rows:serialized_rows,row_desc:row_desc,query_id:query_id};var args=new MapD_broadcast_serialized_rows_args(params);try{output.writeMessageBegin('broadcast_serialized_rows',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_broadcast_serialized_rows=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_broadcast_serialized_rows_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.start_render_query=function(session,widget_id,node_idx,vega_json,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_start_render_query(session,widget_id,node_idx,vega_json);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_start_render_query(session,widget_id,node_idx,vega_json);}};MapDClient.prototype.send_start_render_query=function(session,widget_id,node_idx,vega_json){var output=new this.pClass(this.output);var params={session:session,widget_id:widget_id,node_idx:node_idx,vega_json:vega_json};var args=new MapD_start_render_query_args(params);try{output.writeMessageBegin('start_render_query',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_start_render_query=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_start_render_query_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('start_render_query failed: unknown result');};MapDClient.prototype.execute_next_render_step=function(pending_render,merged_data,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_execute_next_render_step(pending_render,merged_data);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_execute_next_render_step(pending_render,merged_data);}};MapDClient.prototype.send_execute_next_render_step=function(pending_render,merged_data){var output=new this.pClass(this.output);var params={pending_render:pending_render,merged_data:merged_data};var args=new MapD_execute_next_render_step_args(params);try{output.writeMessageBegin('execute_next_render_step',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_execute_next_render_step=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_execute_next_render_step_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('execute_next_render_step failed: unknown result');};MapDClient.prototype.insert_data=function(session,insert_data,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_insert_data(session,insert_data);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_insert_data(session,insert_data);}};MapDClient.prototype.send_insert_data=function(session,insert_data){var output=new this.pClass(this.output);var params={session:session,insert_data:insert_data};var args=new MapD_insert_data_args(params);try{output.writeMessageBegin('insert_data',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_insert_data=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_insert_data_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.checkpoint=function(session,db_id,table_id,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_checkpoint(session,db_id,table_id);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_checkpoint(session,db_id,table_id);}};MapDClient.prototype.send_checkpoint=function(session,db_id,table_id){var output=new this.pClass(this.output);var params={session:session,db_id:db_id,table_id:table_id};var args=new MapD_checkpoint_args(params);try{output.writeMessageBegin('checkpoint',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_checkpoint=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_checkpoint_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};MapDClient.prototype.get_roles=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_roles(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_roles(session);}};MapDClient.prototype.send_get_roles=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_roles_args(params);try{output.writeMessageBegin('get_roles',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_roles=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_roles_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_roles failed: unknown result');};MapDClient.prototype.get_db_objects_for_grantee=function(session,roleName,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_db_objects_for_grantee(session,roleName);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_db_objects_for_grantee(session,roleName);}};MapDClient.prototype.send_get_db_objects_for_grantee=function(session,roleName){var output=new this.pClass(this.output);var params={session:session,roleName:roleName};var args=new MapD_get_db_objects_for_grantee_args(params);try{output.writeMessageBegin('get_db_objects_for_grantee',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_db_objects_for_grantee=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_db_objects_for_grantee_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_db_objects_for_grantee failed: unknown result');};MapDClient.prototype.get_db_object_privs=function(session,objectName,type,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_db_object_privs(session,objectName,type);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_db_object_privs(session,objectName,type);}};MapDClient.prototype.send_get_db_object_privs=function(session,objectName,type){var output=new this.pClass(this.output);var params={session:session,objectName:objectName,type:type};var args=new MapD_get_db_object_privs_args(params);try{output.writeMessageBegin('get_db_object_privs',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_db_object_privs=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_db_object_privs_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_db_object_privs failed: unknown result');};MapDClient.prototype.get_all_roles_for_user=function(session,userName,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_all_roles_for_user(session,userName);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_all_roles_for_user(session,userName);}};MapDClient.prototype.send_get_all_roles_for_user=function(session,userName){var output=new this.pClass(this.output);var params={session:session,userName:userName};var args=new MapD_get_all_roles_for_user_args(params);try{output.writeMessageBegin('get_all_roles_for_user',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_all_roles_for_user=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_all_roles_for_user_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_all_roles_for_user failed: unknown result');};MapDClient.prototype.has_role=function(session,granteeName,roleName,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_has_role(session,granteeName,roleName);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_has_role(session,granteeName,roleName);}};MapDClient.prototype.send_has_role=function(session,granteeName,roleName){var output=new this.pClass(this.output);var params={session:session,granteeName:granteeName,roleName:roleName};var args=new MapD_has_role_args(params);try{output.writeMessageBegin('has_role',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_has_role=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_has_role_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('has_role failed: unknown result');};MapDClient.prototype.has_object_privilege=function(session,granteeName,ObjectName,objectType,permissions,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_has_object_privilege(session,granteeName,ObjectName,objectType,permissions);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_has_object_privilege(session,granteeName,ObjectName,objectType,permissions);}};MapDClient.prototype.send_has_object_privilege=function(session,granteeName,ObjectName,objectType,permissions){var output=new this.pClass(this.output);var params={session:session,granteeName:granteeName,ObjectName:ObjectName,objectType:objectType,permissions:permissions};var args=new MapD_has_object_privilege_args(params);try{output.writeMessageBegin('has_object_privilege',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_has_object_privilege=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_has_object_privilege_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('has_object_privilege failed: unknown result');};MapDClient.prototype.set_license_key=function(session,key,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_set_license_key(session,key,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_set_license_key(session,key,nonce);}};MapDClient.prototype.send_set_license_key=function(session,key,nonce){var output=new this.pClass(this.output);var params={session:session,key:key,nonce:nonce};var args=new MapD_set_license_key_args(params);try{output.writeMessageBegin('set_license_key',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_set_license_key=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_set_license_key_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('set_license_key failed: unknown result');};MapDClient.prototype.get_license_claims=function(session,nonce,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_license_claims(session,nonce);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_license_claims(session,nonce);}};MapDClient.prototype.send_get_license_claims=function(session,nonce){var output=new this.pClass(this.output);var params={session:session,nonce:nonce};var args=new MapD_get_license_claims_args(params);try{output.writeMessageBegin('get_license_claims',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_license_claims=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_license_claims_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_license_claims failed: unknown result');};MapDClient.prototype.get_device_parameters=function(session,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_get_device_parameters(session);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_get_device_parameters(session);}};MapDClient.prototype.send_get_device_parameters=function(session){var output=new this.pClass(this.output);var params={session:session};var args=new MapD_get_device_parameters_args(params);try{output.writeMessageBegin('get_device_parameters',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_get_device_parameters=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_get_device_parameters_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}if(null!==result.success){return callback(null,result.success);}return callback('get_device_parameters failed: unknown result');};MapDClient.prototype.register_runtime_extension_functions=function(session,udfs,udtfs,device_ir_map,callback){this._seqid=this.new_seqid();if(callback===undefined){var _defer=Q.defer();this._reqs[this.seqid()]=function(error,result){if(error){_defer.reject(error);}else{_defer.resolve(result);}};this.send_register_runtime_extension_functions(session,udfs,udtfs,device_ir_map);return _defer.promise;}else{this._reqs[this.seqid()]=callback;this.send_register_runtime_extension_functions(session,udfs,udtfs,device_ir_map);}};MapDClient.prototype.send_register_runtime_extension_functions=function(session,udfs,udtfs,device_ir_map){var output=new this.pClass(this.output);var params={session:session,udfs:udfs,udtfs:udtfs,device_ir_map:device_ir_map};var args=new MapD_register_runtime_extension_functions_args(params);try{output.writeMessageBegin('register_runtime_extension_functions',Thrift.MessageType.CALL,this.seqid());args.write(output);output.writeMessageEnd();return this.output.flush();}catch(e){delete this._reqs[this.seqid()];if(typeof output.reset==='function'){output.reset();}throw e;}};MapDClient.prototype.recv_register_runtime_extension_functions=function(input,mtype,rseqid){var callback=this._reqs[rseqid]||function(){};delete this._reqs[rseqid];if(mtype==Thrift.MessageType.EXCEPTION){var x=new Thrift.TApplicationException();x.read(input);input.readMessageEnd();return callback(x);}var result=new MapD_register_runtime_extension_functions_result();result.read(input);input.readMessageEnd();if(null!==result.e){return callback(result.e);}callback(null);};var MapDProcessor=exports.Processor=function(handler){this._handler=handler;};MapDProcessor.prototype.process=function(input,output){var r=input.readMessageBegin();if(this['process_'+r.fname]){return this['process_'+r.fname].call(this,r.rseqid,input,output);}else{input.skip(Thrift.Type.STRUCT);input.readMessageEnd();var x=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN_METHOD,'Unknown function '+r.fname);output.writeMessageBegin(r.fname,Thrift.MessageType.EXCEPTION,r.rseqid);x.write(output);output.writeMessageEnd();output.flush();}};MapDProcessor.prototype.process_connect=function(seqid,input,output){var args=new MapD_connect_args();args.read(input);input.readMessageEnd();if(this._handler.connect.length===3){Q.fcall(this._handler.connect.bind(this._handler),args.user,args.passwd,args.dbname).then(function(result){var result_obj=new MapD_connect_result({success:result});output.writeMessageBegin("connect",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_connect_result(err);output.writeMessageBegin("connect",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("connect",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.connect(args.user,args.passwd,args.dbname,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_connect_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("connect",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("connect",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_krb5_connect=function(seqid,input,output){var args=new MapD_krb5_connect_args();args.read(input);input.readMessageEnd();if(this._handler.krb5_connect.length===2){Q.fcall(this._handler.krb5_connect.bind(this._handler),args.inputToken,args.dbname).then(function(result){var result_obj=new MapD_krb5_connect_result({success:result});output.writeMessageBegin("krb5_connect",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_krb5_connect_result(err);output.writeMessageBegin("krb5_connect",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("krb5_connect",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.krb5_connect(args.inputToken,args.dbname,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_krb5_connect_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("krb5_connect",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("krb5_connect",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_disconnect=function(seqid,input,output){var args=new MapD_disconnect_args();args.read(input);input.readMessageEnd();if(this._handler.disconnect.length===1){Q.fcall(this._handler.disconnect.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_disconnect_result({success:result});output.writeMessageBegin("disconnect",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_disconnect_result(err);output.writeMessageBegin("disconnect",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("disconnect",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.disconnect(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_disconnect_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("disconnect",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("disconnect",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_switch_database=function(seqid,input,output){var args=new MapD_switch_database_args();args.read(input);input.readMessageEnd();if(this._handler.switch_database.length===2){Q.fcall(this._handler.switch_database.bind(this._handler),args.session,args.dbname).then(function(result){var result_obj=new MapD_switch_database_result({success:result});output.writeMessageBegin("switch_database",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_switch_database_result(err);output.writeMessageBegin("switch_database",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("switch_database",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.switch_database(args.session,args.dbname,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_switch_database_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("switch_database",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("switch_database",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_server_status=function(seqid,input,output){var args=new MapD_get_server_status_args();args.read(input);input.readMessageEnd();if(this._handler.get_server_status.length===1){Q.fcall(this._handler.get_server_status.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_server_status_result({success:result});output.writeMessageBegin("get_server_status",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_server_status_result(err);output.writeMessageBegin("get_server_status",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_server_status",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_server_status(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_server_status_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_server_status",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_server_status",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_status=function(seqid,input,output){var args=new MapD_get_status_args();args.read(input);input.readMessageEnd();if(this._handler.get_status.length===1){Q.fcall(this._handler.get_status.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_status_result({success:result});output.writeMessageBegin("get_status",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_status_result(err);output.writeMessageBegin("get_status",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_status",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_status(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_status_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_status",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_status",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_hardware_info=function(seqid,input,output){var args=new MapD_get_hardware_info_args();args.read(input);input.readMessageEnd();if(this._handler.get_hardware_info.length===1){Q.fcall(this._handler.get_hardware_info.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_hardware_info_result({success:result});output.writeMessageBegin("get_hardware_info",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_hardware_info_result(err);output.writeMessageBegin("get_hardware_info",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_hardware_info",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_hardware_info(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_hardware_info_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_hardware_info",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_hardware_info",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_tables=function(seqid,input,output){var args=new MapD_get_tables_args();args.read(input);input.readMessageEnd();if(this._handler.get_tables.length===1){Q.fcall(this._handler.get_tables.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_tables_result({success:result});output.writeMessageBegin("get_tables",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_tables_result(err);output.writeMessageBegin("get_tables",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_tables(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_tables_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_tables",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_physical_tables=function(seqid,input,output){var args=new MapD_get_physical_tables_args();args.read(input);input.readMessageEnd();if(this._handler.get_physical_tables.length===1){Q.fcall(this._handler.get_physical_tables.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_physical_tables_result({success:result});output.writeMessageBegin("get_physical_tables",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_physical_tables_result(err);output.writeMessageBegin("get_physical_tables",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_physical_tables",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_physical_tables(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_physical_tables_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_physical_tables",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_physical_tables",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_views=function(seqid,input,output){var args=new MapD_get_views_args();args.read(input);input.readMessageEnd();if(this._handler.get_views.length===1){Q.fcall(this._handler.get_views.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_views_result({success:result});output.writeMessageBegin("get_views",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_views_result(err);output.writeMessageBegin("get_views",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_views",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_views(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_views_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_views",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_views",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_tables_meta=function(seqid,input,output){var args=new MapD_get_tables_meta_args();args.read(input);input.readMessageEnd();if(this._handler.get_tables_meta.length===1){Q.fcall(this._handler.get_tables_meta.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_tables_meta_result({success:result});output.writeMessageBegin("get_tables_meta",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_tables_meta_result(err);output.writeMessageBegin("get_tables_meta",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables_meta",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_tables_meta(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_tables_meta_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_tables_meta",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_tables_meta",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_table_details=function(seqid,input,output){var args=new MapD_get_table_details_args();args.read(input);input.readMessageEnd();if(this._handler.get_table_details.length===2){Q.fcall(this._handler.get_table_details.bind(this._handler),args.session,args.table_name).then(function(result){var result_obj=new MapD_get_table_details_result({success:result});output.writeMessageBegin("get_table_details",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_table_details_result(err);output.writeMessageBegin("get_table_details",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_details",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_table_details(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_table_details_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_table_details",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_details",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_internal_table_details=function(seqid,input,output){var args=new MapD_get_internal_table_details_args();args.read(input);input.readMessageEnd();if(this._handler.get_internal_table_details.length===2){Q.fcall(this._handler.get_internal_table_details.bind(this._handler),args.session,args.table_name).then(function(result){var result_obj=new MapD_get_internal_table_details_result({success:result});output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_internal_table_details_result(err);output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_internal_table_details(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_internal_table_details_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_internal_table_details",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_users=function(seqid,input,output){var args=new MapD_get_users_args();args.read(input);input.readMessageEnd();if(this._handler.get_users.length===1){Q.fcall(this._handler.get_users.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_users_result({success:result});output.writeMessageBegin("get_users",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_users_result(err);output.writeMessageBegin("get_users",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_users",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_users(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_users_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_users",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_users",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_databases=function(seqid,input,output){var args=new MapD_get_databases_args();args.read(input);input.readMessageEnd();if(this._handler.get_databases.length===1){Q.fcall(this._handler.get_databases.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_databases_result({success:result});output.writeMessageBegin("get_databases",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_databases_result(err);output.writeMessageBegin("get_databases",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_databases",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_databases(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_databases_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_databases",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_databases",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_version=function(seqid,input,output){var args=new MapD_get_version_args();args.read(input);input.readMessageEnd();if(this._handler.get_version.length===0){Q.fcall(this._handler.get_version.bind(this._handler)).then(function(result){var result_obj=new MapD_get_version_result({success:result});output.writeMessageBegin("get_version",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_version_result(err);output.writeMessageBegin("get_version",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_version",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_version(function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_version_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_version",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_version",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_start_heap_profile=function(seqid,input,output){var args=new MapD_start_heap_profile_args();args.read(input);input.readMessageEnd();if(this._handler.start_heap_profile.length===1){Q.fcall(this._handler.start_heap_profile.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_start_heap_profile_result({success:result});output.writeMessageBegin("start_heap_profile",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_start_heap_profile_result(err);output.writeMessageBegin("start_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.start_heap_profile(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_start_heap_profile_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("start_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_stop_heap_profile=function(seqid,input,output){var args=new MapD_stop_heap_profile_args();args.read(input);input.readMessageEnd();if(this._handler.stop_heap_profile.length===1){Q.fcall(this._handler.stop_heap_profile.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_stop_heap_profile_result({success:result});output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_stop_heap_profile_result(err);output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.stop_heap_profile(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_stop_heap_profile_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("stop_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_heap_profile=function(seqid,input,output){var args=new MapD_get_heap_profile_args();args.read(input);input.readMessageEnd();if(this._handler.get_heap_profile.length===1){Q.fcall(this._handler.get_heap_profile.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_heap_profile_result({success:result});output.writeMessageBegin("get_heap_profile",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_heap_profile_result(err);output.writeMessageBegin("get_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_heap_profile(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_heap_profile_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_heap_profile",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_heap_profile",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_memory=function(seqid,input,output){var args=new MapD_get_memory_args();args.read(input);input.readMessageEnd();if(this._handler.get_memory.length===2){Q.fcall(this._handler.get_memory.bind(this._handler),args.session,args.memory_level).then(function(result){var result_obj=new MapD_get_memory_result({success:result});output.writeMessageBegin("get_memory",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_memory_result(err);output.writeMessageBegin("get_memory",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_memory",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_memory(args.session,args.memory_level,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_memory_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_memory",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_memory",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_clear_cpu_memory=function(seqid,input,output){var args=new MapD_clear_cpu_memory_args();args.read(input);input.readMessageEnd();if(this._handler.clear_cpu_memory.length===1){Q.fcall(this._handler.clear_cpu_memory.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_clear_cpu_memory_result({success:result});output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_clear_cpu_memory_result(err);output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.clear_cpu_memory(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_clear_cpu_memory_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_cpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_clear_gpu_memory=function(seqid,input,output){var args=new MapD_clear_gpu_memory_args();args.read(input);input.readMessageEnd();if(this._handler.clear_gpu_memory.length===1){Q.fcall(this._handler.clear_gpu_memory.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_clear_gpu_memory_result({success:result});output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_clear_gpu_memory_result(err);output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.clear_gpu_memory(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_clear_gpu_memory_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("clear_gpu_memory",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_table_epoch=function(seqid,input,output){var args=new MapD_set_table_epoch_args();args.read(input);input.readMessageEnd();if(this._handler.set_table_epoch.length===4){Q.fcall(this._handler.set_table_epoch.bind(this._handler),args.session,args.db_id,args.table_id,args.new_epoch).then(function(result){var result_obj=new MapD_set_table_epoch_result({success:result});output.writeMessageBegin("set_table_epoch",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_table_epoch_result(err);output.writeMessageBegin("set_table_epoch",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_table_epoch(args.session,args.db_id,args.table_id,args.new_epoch,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_table_epoch_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_table_epoch",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_table_epoch_by_name=function(seqid,input,output){var args=new MapD_set_table_epoch_by_name_args();args.read(input);input.readMessageEnd();if(this._handler.set_table_epoch_by_name.length===3){Q.fcall(this._handler.set_table_epoch_by_name.bind(this._handler),args.session,args.table_name,args.new_epoch).then(function(result){var result_obj=new MapD_set_table_epoch_by_name_result({success:result});output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_table_epoch_by_name_result(err);output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_table_epoch_by_name(args.session,args.table_name,args.new_epoch,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_table_epoch_by_name_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_table_epoch=function(seqid,input,output){var args=new MapD_get_table_epoch_args();args.read(input);input.readMessageEnd();if(this._handler.get_table_epoch.length===3){Q.fcall(this._handler.get_table_epoch.bind(this._handler),args.session,args.db_id,args.table_id).then(function(result){var result_obj=new MapD_get_table_epoch_result({success:result});output.writeMessageBegin("get_table_epoch",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch",Thrift.MessageType.EXCEPTION,seqid);result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_table_epoch(args.session,args.db_id,args.table_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'){result_obj=new MapD_get_table_epoch_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_table_epoch",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_table_epoch_by_name=function(seqid,input,output){var args=new MapD_get_table_epoch_by_name_args();args.read(input);input.readMessageEnd();if(this._handler.get_table_epoch_by_name.length===2){Q.fcall(this._handler.get_table_epoch_by_name.bind(this._handler),args.session,args.table_name).then(function(result){var result_obj=new MapD_get_table_epoch_by_name_result({success:result});output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_table_epoch_by_name(args.session,args.table_name,function(err,result){var result_obj;if(err===null||typeof err==='undefined'){result_obj=new MapD_get_table_epoch_by_name_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_table_epoch_by_name",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_session_info=function(seqid,input,output){var args=new MapD_get_session_info_args();args.read(input);input.readMessageEnd();if(this._handler.get_session_info.length===1){Q.fcall(this._handler.get_session_info.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_session_info_result({success:result});output.writeMessageBegin("get_session_info",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_session_info_result(err);output.writeMessageBegin("get_session_info",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_session_info",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_session_info(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_session_info_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_session_info",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_session_info",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_execute=function(seqid,input,output){var args=new MapD_sql_execute_args();args.read(input);input.readMessageEnd();if(this._handler.sql_execute.length===6){Q.fcall(this._handler.sql_execute.bind(this._handler),args.session,args.query,args.column_format,args.nonce,args.first_n,args.at_most_n).then(function(result){var result_obj=new MapD_sql_execute_result({success:result});output.writeMessageBegin("sql_execute",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_execute_result(err);output.writeMessageBegin("sql_execute",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_execute(args.session,args.query,args.column_format,args.nonce,args.first_n,args.at_most_n,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_execute_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_execute",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_execute_df=function(seqid,input,output){var args=new MapD_sql_execute_df_args();args.read(input);input.readMessageEnd();if(this._handler.sql_execute_df.length===5){Q.fcall(this._handler.sql_execute_df.bind(this._handler),args.session,args.query,args.device_type,args.device_id,args.first_n).then(function(result){var result_obj=new MapD_sql_execute_df_result({success:result});output.writeMessageBegin("sql_execute_df",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_execute_df_result(err);output.writeMessageBegin("sql_execute_df",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_df",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_execute_df(args.session,args.query,args.device_type,args.device_id,args.first_n,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_execute_df_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_execute_df",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_df",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_execute_gdf=function(seqid,input,output){var args=new MapD_sql_execute_gdf_args();args.read(input);input.readMessageEnd();if(this._handler.sql_execute_gdf.length===4){Q.fcall(this._handler.sql_execute_gdf.bind(this._handler),args.session,args.query,args.device_id,args.first_n).then(function(result){var result_obj=new MapD_sql_execute_gdf_result({success:result});output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_execute_gdf_result(err);output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_execute_gdf(args.session,args.query,args.device_id,args.first_n,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_execute_gdf_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_execute_gdf",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_deallocate_df=function(seqid,input,output){var args=new MapD_deallocate_df_args();args.read(input);input.readMessageEnd();if(this._handler.deallocate_df.length===4){Q.fcall(this._handler.deallocate_df.bind(this._handler),args.session,args.df,args.device_type,args.device_id).then(function(result){var result_obj=new MapD_deallocate_df_result({success:result});output.writeMessageBegin("deallocate_df",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_deallocate_df_result(err);output.writeMessageBegin("deallocate_df",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("deallocate_df",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.deallocate_df(args.session,args.df,args.device_type,args.device_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_deallocate_df_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("deallocate_df",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("deallocate_df",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_interrupt=function(seqid,input,output){var args=new MapD_interrupt_args();args.read(input);input.readMessageEnd();if(this._handler.interrupt.length===1){Q.fcall(this._handler.interrupt.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_interrupt_result({success:result});output.writeMessageBegin("interrupt",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_interrupt_result(err);output.writeMessageBegin("interrupt",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("interrupt",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.interrupt(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_interrupt_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("interrupt",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("interrupt",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_sql_validate=function(seqid,input,output){var args=new MapD_sql_validate_args();args.read(input);input.readMessageEnd();if(this._handler.sql_validate.length===2){Q.fcall(this._handler.sql_validate.bind(this._handler),args.session,args.query).then(function(result){var result_obj=new MapD_sql_validate_result({success:result});output.writeMessageBegin("sql_validate",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_sql_validate_result(err);output.writeMessageBegin("sql_validate",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_validate",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.sql_validate(args.session,args.query,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_sql_validate_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("sql_validate",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("sql_validate",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_completion_hints=function(seqid,input,output){var args=new MapD_get_completion_hints_args();args.read(input);input.readMessageEnd();if(this._handler.get_completion_hints.length===3){Q.fcall(this._handler.get_completion_hints.bind(this._handler),args.session,args.sql,args.cursor).then(function(result){var result_obj=new MapD_get_completion_hints_result({success:result});output.writeMessageBegin("get_completion_hints",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_completion_hints_result(err);output.writeMessageBegin("get_completion_hints",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_completion_hints",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_completion_hints(args.session,args.sql,args.cursor,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_completion_hints_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_completion_hints",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_completion_hints",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_execution_mode=function(seqid,input,output){var args=new MapD_set_execution_mode_args();args.read(input);input.readMessageEnd();if(this._handler.set_execution_mode.length===2){Q.fcall(this._handler.set_execution_mode.bind(this._handler),args.session,args.mode).then(function(result){var result_obj=new MapD_set_execution_mode_result({success:result});output.writeMessageBegin("set_execution_mode",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_execution_mode_result(err);output.writeMessageBegin("set_execution_mode",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_execution_mode",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_execution_mode(args.session,args.mode,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_execution_mode_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_execution_mode",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_execution_mode",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_render_vega=function(seqid,input,output){var args=new MapD_render_vega_args();args.read(input);input.readMessageEnd();if(this._handler.render_vega.length===5){Q.fcall(this._handler.render_vega.bind(this._handler),args.session,args.widget_id,args.vega_json,args.compression_level,args.nonce).then(function(result){var result_obj=new MapD_render_vega_result({success:result});output.writeMessageBegin("render_vega",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_render_vega_result(err);output.writeMessageBegin("render_vega",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("render_vega",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.render_vega(args.session,args.widget_id,args.vega_json,args.compression_level,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_render_vega_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("render_vega",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("render_vega",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_result_row_for_pixel=function(seqid,input,output){var args=new MapD_get_result_row_for_pixel_args();args.read(input);input.readMessageEnd();if(this._handler.get_result_row_for_pixel.length===7){Q.fcall(this._handler.get_result_row_for_pixel.bind(this._handler),args.session,args.widget_id,args.pixel,args.table_col_names,args.column_format,args.pixelRadius,args.nonce).then(function(result){var result_obj=new MapD_get_result_row_for_pixel_result({success:result});output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_result_row_for_pixel_result(err);output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_result_row_for_pixel(args.session,args.widget_id,args.pixel,args.table_col_names,args.column_format,args.pixelRadius,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_result_row_for_pixel_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_result_row_for_pixel",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_dashboard=function(seqid,input,output){var args=new MapD_get_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.get_dashboard.length===2){Q.fcall(this._handler.get_dashboard.bind(this._handler),args.session,args.dashboard_id).then(function(result){var result_obj=new MapD_get_dashboard_result({success:result});output.writeMessageBegin("get_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_dashboard_result(err);output.writeMessageBegin("get_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_dashboard(args.session,args.dashboard_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_dashboards=function(seqid,input,output){var args=new MapD_get_dashboards_args();args.read(input);input.readMessageEnd();if(this._handler.get_dashboards.length===1){Q.fcall(this._handler.get_dashboards.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_dashboards_result({success:result});output.writeMessageBegin("get_dashboards",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_dashboards_result(err);output.writeMessageBegin("get_dashboards",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboards",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_dashboards(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_dashboards_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_dashboards",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboards",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_create_dashboard=function(seqid,input,output){var args=new MapD_create_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.create_dashboard.length===5){Q.fcall(this._handler.create_dashboard.bind(this._handler),args.session,args.dashboard_name,args.dashboard_state,args.image_hash,args.dashboard_metadata).then(function(result){var result_obj=new MapD_create_dashboard_result({success:result});output.writeMessageBegin("create_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_create_dashboard_result(err);output.writeMessageBegin("create_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.create_dashboard(args.session,args.dashboard_name,args.dashboard_state,args.image_hash,args.dashboard_metadata,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_create_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("create_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_replace_dashboard=function(seqid,input,output){var args=new MapD_replace_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.replace_dashboard.length===7){Q.fcall(this._handler.replace_dashboard.bind(this._handler),args.session,args.dashboard_id,args.dashboard_name,args.dashboard_owner,args.dashboard_state,args.image_hash,args.dashboard_metadata).then(function(result){var result_obj=new MapD_replace_dashboard_result({success:result});output.writeMessageBegin("replace_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_replace_dashboard_result(err);output.writeMessageBegin("replace_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("replace_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.replace_dashboard(args.session,args.dashboard_id,args.dashboard_name,args.dashboard_owner,args.dashboard_state,args.image_hash,args.dashboard_metadata,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_replace_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("replace_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("replace_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_delete_dashboard=function(seqid,input,output){var args=new MapD_delete_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.delete_dashboard.length===2){Q.fcall(this._handler.delete_dashboard.bind(this._handler),args.session,args.dashboard_id).then(function(result){var result_obj=new MapD_delete_dashboard_result({success:result});output.writeMessageBegin("delete_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_delete_dashboard_result(err);output.writeMessageBegin("delete_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("delete_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.delete_dashboard(args.session,args.dashboard_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_delete_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("delete_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("delete_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_share_dashboard=function(seqid,input,output){var args=new MapD_share_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.share_dashboard.length===6){Q.fcall(this._handler.share_dashboard.bind(this._handler),args.session,args.dashboard_id,args.groups,args.objects,args.permissions,args.grant_role).then(function(result){var result_obj=new MapD_share_dashboard_result({success:result});output.writeMessageBegin("share_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_share_dashboard_result(err);output.writeMessageBegin("share_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("share_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.share_dashboard(args.session,args.dashboard_id,args.groups,args.objects,args.permissions,args.grant_role,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_share_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("share_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("share_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_unshare_dashboard=function(seqid,input,output){var args=new MapD_unshare_dashboard_args();args.read(input);input.readMessageEnd();if(this._handler.unshare_dashboard.length===5){Q.fcall(this._handler.unshare_dashboard.bind(this._handler),args.session,args.dashboard_id,args.groups,args.objects,args.permissions).then(function(result){var result_obj=new MapD_unshare_dashboard_result({success:result});output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_unshare_dashboard_result(err);output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.unshare_dashboard(args.session,args.dashboard_id,args.groups,args.objects,args.permissions,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_unshare_dashboard_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("unshare_dashboard",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_dashboard_grantees=function(seqid,input,output){var args=new MapD_get_dashboard_grantees_args();args.read(input);input.readMessageEnd();if(this._handler.get_dashboard_grantees.length===2){Q.fcall(this._handler.get_dashboard_grantees.bind(this._handler),args.session,args.dashboard_id).then(function(result){var result_obj=new MapD_get_dashboard_grantees_result({success:result});output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_dashboard_grantees_result(err);output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_dashboard_grantees(args.session,args.dashboard_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_dashboard_grantees_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_dashboard_grantees",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_link_view=function(seqid,input,output){var args=new MapD_get_link_view_args();args.read(input);input.readMessageEnd();if(this._handler.get_link_view.length===2){Q.fcall(this._handler.get_link_view.bind(this._handler),args.session,args.link).then(function(result){var result_obj=new MapD_get_link_view_result({success:result});output.writeMessageBegin("get_link_view",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_link_view_result(err);output.writeMessageBegin("get_link_view",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_link_view",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_link_view(args.session,args.link,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_link_view_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_link_view",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_link_view",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_create_link=function(seqid,input,output){var args=new MapD_create_link_args();args.read(input);input.readMessageEnd();if(this._handler.create_link.length===3){Q.fcall(this._handler.create_link.bind(this._handler),args.session,args.view_state,args.view_metadata).then(function(result){var result_obj=new MapD_create_link_result({success:result});output.writeMessageBegin("create_link",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_create_link_result(err);output.writeMessageBegin("create_link",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_link",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.create_link(args.session,args.view_state,args.view_metadata,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_create_link_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("create_link",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_link",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table_binary=function(seqid,input,output){var args=new MapD_load_table_binary_args();args.read(input);input.readMessageEnd();if(this._handler.load_table_binary.length===3){Q.fcall(this._handler.load_table_binary.bind(this._handler),args.session,args.table_name,args.rows).then(function(result){var result_obj=new MapD_load_table_binary_result({success:result});output.writeMessageBegin("load_table_binary",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_binary_result(err);output.writeMessageBegin("load_table_binary",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table_binary(args.session,args.table_name,args.rows,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_binary_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table_binary",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table_binary_columnar=function(seqid,input,output){var args=new MapD_load_table_binary_columnar_args();args.read(input);input.readMessageEnd();if(this._handler.load_table_binary_columnar.length===3){Q.fcall(this._handler.load_table_binary_columnar.bind(this._handler),args.session,args.table_name,args.cols).then(function(result){var result_obj=new MapD_load_table_binary_columnar_result({success:result});output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_binary_columnar_result(err);output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table_binary_columnar(args.session,args.table_name,args.cols,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_binary_columnar_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_columnar",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table_binary_arrow=function(seqid,input,output){var args=new MapD_load_table_binary_arrow_args();args.read(input);input.readMessageEnd();if(this._handler.load_table_binary_arrow.length===3){Q.fcall(this._handler.load_table_binary_arrow.bind(this._handler),args.session,args.table_name,args.arrow_stream).then(function(result){var result_obj=new MapD_load_table_binary_arrow_result({success:result});output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_binary_arrow_result(err);output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table_binary_arrow(args.session,args.table_name,args.arrow_stream,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_binary_arrow_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table_binary_arrow",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_load_table=function(seqid,input,output){var args=new MapD_load_table_args();args.read(input);input.readMessageEnd();if(this._handler.load_table.length===3){Q.fcall(this._handler.load_table.bind(this._handler),args.session,args.table_name,args.rows).then(function(result){var result_obj=new MapD_load_table_result({success:result});output.writeMessageBegin("load_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_load_table_result(err);output.writeMessageBegin("load_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.load_table(args.session,args.table_name,args.rows,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_load_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("load_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("load_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_detect_column_types=function(seqid,input,output){var args=new MapD_detect_column_types_args();args.read(input);input.readMessageEnd();if(this._handler.detect_column_types.length===3){Q.fcall(this._handler.detect_column_types.bind(this._handler),args.session,args.file_name,args.copy_params).then(function(result){var result_obj=new MapD_detect_column_types_result({success:result});output.writeMessageBegin("detect_column_types",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_detect_column_types_result(err);output.writeMessageBegin("detect_column_types",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("detect_column_types",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.detect_column_types(args.session,args.file_name,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_detect_column_types_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("detect_column_types",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("detect_column_types",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_create_table=function(seqid,input,output){var args=new MapD_create_table_args();args.read(input);input.readMessageEnd();if(this._handler.create_table.length===5){Q.fcall(this._handler.create_table.bind(this._handler),args.session,args.table_name,args.row_desc,args.file_type,args.create_params).then(function(result){var result_obj=new MapD_create_table_result({success:result});output.writeMessageBegin("create_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_create_table_result(err);output.writeMessageBegin("create_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.create_table(args.session,args.table_name,args.row_desc,args.file_type,args.create_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_create_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("create_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("create_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_import_table=function(seqid,input,output){var args=new MapD_import_table_args();args.read(input);input.readMessageEnd();if(this._handler.import_table.length===4){Q.fcall(this._handler.import_table.bind(this._handler),args.session,args.table_name,args.file_name,args.copy_params).then(function(result){var result_obj=new MapD_import_table_result({success:result});output.writeMessageBegin("import_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_import_table_result(err);output.writeMessageBegin("import_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.import_table(args.session,args.table_name,args.file_name,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_import_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("import_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_import_geo_table=function(seqid,input,output){var args=new MapD_import_geo_table_args();args.read(input);input.readMessageEnd();if(this._handler.import_geo_table.length===6){Q.fcall(this._handler.import_geo_table.bind(this._handler),args.session,args.table_name,args.file_name,args.copy_params,args.row_desc,args.create_params).then(function(result){var result_obj=new MapD_import_geo_table_result({success:result});output.writeMessageBegin("import_geo_table",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_import_geo_table_result(err);output.writeMessageBegin("import_geo_table",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_geo_table",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.import_geo_table(args.session,args.table_name,args.file_name,args.copy_params,args.row_desc,args.create_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_import_geo_table_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("import_geo_table",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_geo_table",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_import_table_status=function(seqid,input,output){var args=new MapD_import_table_status_args();args.read(input);input.readMessageEnd();if(this._handler.import_table_status.length===2){Q.fcall(this._handler.import_table_status.bind(this._handler),args.session,args.import_id).then(function(result){var result_obj=new MapD_import_table_status_result({success:result});output.writeMessageBegin("import_table_status",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_import_table_status_result(err);output.writeMessageBegin("import_table_status",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table_status",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.import_table_status(args.session,args.import_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_import_table_status_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("import_table_status",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("import_table_status",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_first_geo_file_in_archive=function(seqid,input,output){var args=new MapD_get_first_geo_file_in_archive_args();args.read(input);input.readMessageEnd();if(this._handler.get_first_geo_file_in_archive.length===3){Q.fcall(this._handler.get_first_geo_file_in_archive.bind(this._handler),args.session,args.archive_path,args.copy_params).then(function(result){var result_obj=new MapD_get_first_geo_file_in_archive_result({success:result});output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_first_geo_file_in_archive_result(err);output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_first_geo_file_in_archive(args.session,args.archive_path,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_first_geo_file_in_archive_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_first_geo_file_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_all_files_in_archive=function(seqid,input,output){var args=new MapD_get_all_files_in_archive_args();args.read(input);input.readMessageEnd();if(this._handler.get_all_files_in_archive.length===3){Q.fcall(this._handler.get_all_files_in_archive.bind(this._handler),args.session,args.archive_path,args.copy_params).then(function(result){var result_obj=new MapD_get_all_files_in_archive_result({success:result});output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_all_files_in_archive_result(err);output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_all_files_in_archive(args.session,args.archive_path,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_all_files_in_archive_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_files_in_archive",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_layers_in_geo_file=function(seqid,input,output){var args=new MapD_get_layers_in_geo_file_args();args.read(input);input.readMessageEnd();if(this._handler.get_layers_in_geo_file.length===3){Q.fcall(this._handler.get_layers_in_geo_file.bind(this._handler),args.session,args.file_name,args.copy_params).then(function(result){var result_obj=new MapD_get_layers_in_geo_file_result({success:result});output.writeMessageBegin("get_layers_in_geo_file",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_layers_in_geo_file_result(err);output.writeMessageBegin("get_layers_in_geo_file",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_layers_in_geo_file",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_layers_in_geo_file(args.session,args.file_name,args.copy_params,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_layers_in_geo_file_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_layers_in_geo_file",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_layers_in_geo_file",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_check_table_consistency=function(seqid,input,output){var args=new MapD_check_table_consistency_args();args.read(input);input.readMessageEnd();if(this._handler.check_table_consistency.length===2){Q.fcall(this._handler.check_table_consistency.bind(this._handler),args.session,args.table_id).then(function(result){var result_obj=new MapD_check_table_consistency_result({success:result});output.writeMessageBegin("check_table_consistency",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_check_table_consistency_result(err);output.writeMessageBegin("check_table_consistency",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("check_table_consistency",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.check_table_consistency(args.session,args.table_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_check_table_consistency_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("check_table_consistency",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("check_table_consistency",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_start_query=function(seqid,input,output){var args=new MapD_start_query_args();args.read(input);input.readMessageEnd();if(this._handler.start_query.length===3){Q.fcall(this._handler.start_query.bind(this._handler),args.session,args.query_ra,args.just_explain).then(function(result){var result_obj=new MapD_start_query_result({success:result});output.writeMessageBegin("start_query",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_start_query_result(err);output.writeMessageBegin("start_query",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_query",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.start_query(args.session,args.query_ra,args.just_explain,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_start_query_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("start_query",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_query",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_execute_query_step=function(seqid,input,output){var args=new MapD_execute_query_step_args();args.read(input);input.readMessageEnd();if(this._handler.execute_query_step.length===1){Q.fcall(this._handler.execute_query_step.bind(this._handler),args.pending_query).then(function(result){var result_obj=new MapD_execute_query_step_result({success:result});output.writeMessageBegin("execute_query_step",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_execute_query_step_result(err);output.writeMessageBegin("execute_query_step",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_query_step",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.execute_query_step(args.pending_query,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_execute_query_step_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("execute_query_step",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_query_step",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_broadcast_serialized_rows=function(seqid,input,output){var args=new MapD_broadcast_serialized_rows_args();args.read(input);input.readMessageEnd();if(this._handler.broadcast_serialized_rows.length===3){Q.fcall(this._handler.broadcast_serialized_rows.bind(this._handler),args.serialized_rows,args.row_desc,args.query_id).then(function(result){var result_obj=new MapD_broadcast_serialized_rows_result({success:result});output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_broadcast_serialized_rows_result(err);output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.broadcast_serialized_rows(args.serialized_rows,args.row_desc,args.query_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_broadcast_serialized_rows_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("broadcast_serialized_rows",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_start_render_query=function(seqid,input,output){var args=new MapD_start_render_query_args();args.read(input);input.readMessageEnd();if(this._handler.start_render_query.length===4){Q.fcall(this._handler.start_render_query.bind(this._handler),args.session,args.widget_id,args.node_idx,args.vega_json).then(function(result){var result_obj=new MapD_start_render_query_result({success:result});output.writeMessageBegin("start_render_query",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_start_render_query_result(err);output.writeMessageBegin("start_render_query",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_render_query",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.start_render_query(args.session,args.widget_id,args.node_idx,args.vega_json,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_start_render_query_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("start_render_query",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("start_render_query",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_execute_next_render_step=function(seqid,input,output){var args=new MapD_execute_next_render_step_args();args.read(input);input.readMessageEnd();if(this._handler.execute_next_render_step.length===2){Q.fcall(this._handler.execute_next_render_step.bind(this._handler),args.pending_render,args.merged_data).then(function(result){var result_obj=new MapD_execute_next_render_step_result({success:result});output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_execute_next_render_step_result(err);output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.execute_next_render_step(args.pending_render,args.merged_data,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_execute_next_render_step_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("execute_next_render_step",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_insert_data=function(seqid,input,output){var args=new MapD_insert_data_args();args.read(input);input.readMessageEnd();if(this._handler.insert_data.length===2){Q.fcall(this._handler.insert_data.bind(this._handler),args.session,args.insert_data).then(function(result){var result_obj=new MapD_insert_data_result({success:result});output.writeMessageBegin("insert_data",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_insert_data_result(err);output.writeMessageBegin("insert_data",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("insert_data",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.insert_data(args.session,args.insert_data,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_insert_data_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("insert_data",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("insert_data",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_checkpoint=function(seqid,input,output){var args=new MapD_checkpoint_args();args.read(input);input.readMessageEnd();if(this._handler.checkpoint.length===3){Q.fcall(this._handler.checkpoint.bind(this._handler),args.session,args.db_id,args.table_id).then(function(result){var result_obj=new MapD_checkpoint_result({success:result});output.writeMessageBegin("checkpoint",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_checkpoint_result(err);output.writeMessageBegin("checkpoint",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("checkpoint",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.checkpoint(args.session,args.db_id,args.table_id,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_checkpoint_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("checkpoint",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("checkpoint",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_roles=function(seqid,input,output){var args=new MapD_get_roles_args();args.read(input);input.readMessageEnd();if(this._handler.get_roles.length===1){Q.fcall(this._handler.get_roles.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_roles_result({success:result});output.writeMessageBegin("get_roles",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_roles_result(err);output.writeMessageBegin("get_roles",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_roles",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_roles(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_roles_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_roles",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_roles",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_db_objects_for_grantee=function(seqid,input,output){var args=new MapD_get_db_objects_for_grantee_args();args.read(input);input.readMessageEnd();if(this._handler.get_db_objects_for_grantee.length===2){Q.fcall(this._handler.get_db_objects_for_grantee.bind(this._handler),args.session,args.roleName).then(function(result){var result_obj=new MapD_get_db_objects_for_grantee_result({success:result});output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_db_objects_for_grantee_result(err);output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_db_objects_for_grantee(args.session,args.roleName,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_db_objects_for_grantee_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_objects_for_grantee",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_db_object_privs=function(seqid,input,output){var args=new MapD_get_db_object_privs_args();args.read(input);input.readMessageEnd();if(this._handler.get_db_object_privs.length===3){Q.fcall(this._handler.get_db_object_privs.bind(this._handler),args.session,args.objectName,args.type).then(function(result){var result_obj=new MapD_get_db_object_privs_result({success:result});output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_db_object_privs_result(err);output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_db_object_privs(args.session,args.objectName,args.type,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_db_object_privs_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_db_object_privs",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_all_roles_for_user=function(seqid,input,output){var args=new MapD_get_all_roles_for_user_args();args.read(input);input.readMessageEnd();if(this._handler.get_all_roles_for_user.length===2){Q.fcall(this._handler.get_all_roles_for_user.bind(this._handler),args.session,args.userName).then(function(result){var result_obj=new MapD_get_all_roles_for_user_result({success:result});output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_all_roles_for_user_result(err);output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_all_roles_for_user(args.session,args.userName,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_all_roles_for_user_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_all_roles_for_user",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_has_role=function(seqid,input,output){var args=new MapD_has_role_args();args.read(input);input.readMessageEnd();if(this._handler.has_role.length===3){Q.fcall(this._handler.has_role.bind(this._handler),args.session,args.granteeName,args.roleName).then(function(result){var result_obj=new MapD_has_role_result({success:result});output.writeMessageBegin("has_role",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_has_role_result(err);output.writeMessageBegin("has_role",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("has_role",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.has_role(args.session,args.granteeName,args.roleName,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_has_role_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("has_role",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("has_role",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_has_object_privilege=function(seqid,input,output){var args=new MapD_has_object_privilege_args();args.read(input);input.readMessageEnd();if(this._handler.has_object_privilege.length===5){Q.fcall(this._handler.has_object_privilege.bind(this._handler),args.session,args.granteeName,args.ObjectName,args.objectType,args.permissions).then(function(result){var result_obj=new MapD_has_object_privilege_result({success:result});output.writeMessageBegin("has_object_privilege",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_has_object_privilege_result(err);output.writeMessageBegin("has_object_privilege",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("has_object_privilege",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.has_object_privilege(args.session,args.granteeName,args.ObjectName,args.objectType,args.permissions,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_has_object_privilege_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("has_object_privilege",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("has_object_privilege",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_set_license_key=function(seqid,input,output){var args=new MapD_set_license_key_args();args.read(input);input.readMessageEnd();if(this._handler.set_license_key.length===3){Q.fcall(this._handler.set_license_key.bind(this._handler),args.session,args.key,args.nonce).then(function(result){var result_obj=new MapD_set_license_key_result({success:result});output.writeMessageBegin("set_license_key",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_set_license_key_result(err);output.writeMessageBegin("set_license_key",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_license_key",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.set_license_key(args.session,args.key,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_set_license_key_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("set_license_key",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("set_license_key",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_license_claims=function(seqid,input,output){var args=new MapD_get_license_claims_args();args.read(input);input.readMessageEnd();if(this._handler.get_license_claims.length===2){Q.fcall(this._handler.get_license_claims.bind(this._handler),args.session,args.nonce).then(function(result){var result_obj=new MapD_get_license_claims_result({success:result});output.writeMessageBegin("get_license_claims",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_license_claims_result(err);output.writeMessageBegin("get_license_claims",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_license_claims",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_license_claims(args.session,args.nonce,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_license_claims_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_license_claims",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_license_claims",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_get_device_parameters=function(seqid,input,output){var args=new MapD_get_device_parameters_args();args.read(input);input.readMessageEnd();if(this._handler.get_device_parameters.length===1){Q.fcall(this._handler.get_device_parameters.bind(this._handler),args.session).then(function(result){var result_obj=new MapD_get_device_parameters_result({success:result});output.writeMessageBegin("get_device_parameters",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_get_device_parameters_result(err);output.writeMessageBegin("get_device_parameters",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_device_parameters",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.get_device_parameters(args.session,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_get_device_parameters_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("get_device_parameters",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("get_device_parameters",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};MapDProcessor.prototype.process_register_runtime_extension_functions=function(seqid,input,output){var args=new MapD_register_runtime_extension_functions_args();args.read(input);input.readMessageEnd();if(this._handler.register_runtime_extension_functions.length===4){Q.fcall(this._handler.register_runtime_extension_functions.bind(this._handler),args.session,args.udfs,args.udtfs,args.device_ir_map).then(function(result){var result_obj=new MapD_register_runtime_extension_functions_result({success:result});output.writeMessageBegin("register_runtime_extension_functions",Thrift.MessageType.REPLY,seqid);result_obj.write(output);output.writeMessageEnd();output.flush();}).catch(function(err){var result;if(err instanceof ttypes.TMapDException){result=new MapD_register_runtime_extension_functions_result(err);output.writeMessageBegin("register_runtime_extension_functions",Thrift.MessageType.REPLY,seqid);}else{result=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("register_runtime_extension_functions",Thrift.MessageType.EXCEPTION,seqid);}result.write(output);output.writeMessageEnd();output.flush();});}else{this._handler.register_runtime_extension_functions(args.session,args.udfs,args.udtfs,args.device_ir_map,function(err,result){var result_obj;if(err===null||typeof err==='undefined'||err instanceof ttypes.TMapDException){result_obj=new MapD_register_runtime_extension_functions_result(err!==null||typeof err==='undefined'?err:{success:result});output.writeMessageBegin("register_runtime_extension_functions",Thrift.MessageType.REPLY,seqid);}else{result_obj=new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN,err.message);output.writeMessageBegin("register_runtime_extension_functions",Thrift.MessageType.EXCEPTION,seqid);}result_obj.write(output);output.writeMessageEnd();output.flush();});}};
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -18778,23 +20344,23 @@ module.exports =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _helpers = __webpack_require__(60);
+	var _helpers = __webpack_require__(62);
 
 	var helpers = _interopRequireWildcard(_helpers);
 
-	var _ramda = __webpack_require__(61);
+	var _ramda = __webpack_require__(63);
 
 	var _ramda2 = _interopRequireDefault(_ramda);
 
-	var _eventemitter = __webpack_require__(63);
+	var _eventemitter = __webpack_require__(65);
 
 	var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
-	var _mapdClientV = __webpack_require__(64);
+	var _mapdClientV = __webpack_require__(66);
 
 	var _mapdClientV2 = _interopRequireDefault(_mapdClientV);
 
-	var _processQueryResults = __webpack_require__(66);
+	var _processQueryResults = __webpack_require__(68);
 
 	var _processQueryResults2 = _interopRequireDefault(_processQueryResults);
 
@@ -18806,20 +20372,20 @@ module.exports =
 
 	/* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-	var _ref = isNodeRuntime() && __webpack_require__(52) || window,
+	var _ref = isNodeRuntime() && __webpack_require__(54) || window,
 	    TDatumType = _ref.TDatumType,
 	    TEncodingType = _ref.TEncodingType; // eslint-disable-line global-require
 
 
-	var _ref2 = isNodeRuntime() && __webpack_require__(55) || window,
+	var _ref2 = isNodeRuntime() && __webpack_require__(57) || window,
 	    TPixel = _ref2.TPixel,
 	    TMapDException = _ref2.TMapDException; // eslint-disable-line global-require
 
 
-	var MapDThrift = isNodeRuntime() && __webpack_require__(57); // eslint-disable-line global-require
+	var MapDThrift = isNodeRuntime() && __webpack_require__(59); // eslint-disable-line global-require
 	var Thrift = isNodeRuntime() && __webpack_require__(1) || window.Thrift; // eslint-disable-line global-require
 	var thriftWrapper = Thrift;
-	var parseUrl = isNodeRuntime() && __webpack_require__(23).parse; // eslint-disable-line global-require
+	var parseUrl = isNodeRuntime() && __webpack_require__(26).parse; // eslint-disable-line global-require
 	if (isNodeRuntime()) {
 	  // Because browser Thrift and Node Thrift are exposed slightly differently.
 	  Thrift = Thrift.Thrift;
@@ -20643,10 +22209,10 @@ module.exports =
 	}
 	module.exports = MapdCon;
 	exports.default = MapdCon;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(61)(module)))
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports) {
 
 	module.exports = function(module) {
@@ -20662,7 +22228,7 @@ module.exports =
 
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -20706,16 +22272,16 @@ module.exports =
 	}
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(62).clone;
+	module.exports = __webpack_require__(64).clone;
 
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	//  Ramda v0.26.1
@@ -20866,7 +22432,7 @@ module.exports =
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21208,7 +22774,7 @@ module.exports =
 
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21218,9 +22784,9 @@ module.exports =
 	});
 	exports.default = MapDClientV2;
 
-	var _wrapWithErrorHandling = __webpack_require__(65);
+	var _wrapWithErrorHandling = __webpack_require__(67);
 
-	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(57).Client; // eslint-disable-line global-require
+	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(59).Client; // eslint-disable-line global-require
 
 	function MapDClientV2(protocol) {
 	  MapDClient.call(this, protocol);
@@ -21238,7 +22804,7 @@ module.exports =
 	}();
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21250,8 +22816,8 @@ module.exports =
 	exports.createResultError = createResultError;
 	exports.wrapMethod = wrapMethod;
 	exports.wrapWithErrorHandling = wrapWithErrorHandling;
-	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(57).Client; // eslint-disable-line global-require
-	var TMapDException = typeof window !== "undefined" && window.TMapDException || __webpack_require__(55).TMapDException; // eslint-disable-line global-require
+	var MapDClient = typeof window !== "undefined" && window.MapDClient || __webpack_require__(59).Client; // eslint-disable-line global-require
+	var TMapDException = typeof window !== "undefined" && window.TMapDException || __webpack_require__(57).TMapDException; // eslint-disable-line global-require
 	var Thrift = typeof window !== "undefined" && window.Thrift || __webpack_require__(1).Thrift; // eslint-disable-line global-require
 
 	function isResultError(result) {
@@ -21308,7 +22874,7 @@ module.exports =
 	/* eslint-enable consistent-this */
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21318,11 +22884,11 @@ module.exports =
 	});
 	exports.default = processQueryResults;
 
-	var _processColumnarResults = __webpack_require__(67);
+	var _processColumnarResults = __webpack_require__(69);
 
 	var _processColumnarResults2 = _interopRequireDefault(_processColumnarResults);
 
-	var _processRowResults = __webpack_require__(68);
+	var _processRowResults = __webpack_require__(70);
 
 	var _processRowResults2 = _interopRequireDefault(_processRowResults);
 
@@ -21419,7 +22985,7 @@ module.exports =
 	}
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21429,7 +22995,7 @@ module.exports =
 	});
 	exports.default = processColumnarResults;
 
-	var _helpers = __webpack_require__(60);
+	var _helpers = __webpack_require__(62);
 
 	/**
 	 * Process the column-based results from the query in a row-based format.
@@ -21559,7 +23125,7 @@ module.exports =
 	}
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21569,7 +23135,7 @@ module.exports =
 	});
 	exports.default = processRowResults;
 
-	var _helpers = __webpack_require__(60);
+	var _helpers = __webpack_require__(62);
 
 	/**
 	 * Query for row-based results from the server. In general, is inefficient and should be
