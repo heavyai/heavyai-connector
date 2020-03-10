@@ -16,6 +16,13 @@ module.exports = {
       {test: /\.js$/, loader: "babel-loader", exclude: /node_modules/}
     ]
   },
+  externals: {
+    thrift: "../src/noop.js",
+    url: "../src/noop.js",
+    "../build/thrift/node/mapd_types.js": "../src/noop.js",
+    "../build/thrift/node/common_types.js": "../src/noop.js",
+    "../build/thrift/node/mapd.thrift.js": "../src/noop.js",
+  },
   node: {
     child_process: "empty",
     fs: "empty",
