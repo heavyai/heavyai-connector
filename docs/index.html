@@ -295,6 +295,16 @@
               
                 
                 <li><a
+                  href='#gettablesmetaasync'
+                  class="">
+                  getTablesMetaAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#getcompletionhints'
                   class="">
                   getCompletionHints
@@ -2972,6 +2982,80 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='gettablesmetaasync'>
+      getTablesMetaAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get names and catalog metadata for tables that exist on the current session's connection.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getTablesMetaAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TTableMeta>></code>:
+        The list of objects containing table metadata.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Get the list of tables with metadata from a connection:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.getTablesMetaAsync().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))
+
+ [
+  {
+   <span class="hljs-attr">table_name</span>: <span class="hljs-string">'my_table_name'</span>,
+   <span class="hljs-attr">col_datum_types</span>: [TDatumType::BOOL, <span class="hljs-attr">TDatumType</span>::DOUBLE],
+   <span class="hljs-attr">col_names</span>: [<span class="hljs-string">'bool_col'</span>, <span class="hljs-string">'double_col'</span>],
+   <span class="hljs-attr">is_view</span>: <span class="hljs-literal">false</span>,
+   <span class="hljs-attr">is_replicated</span>: <span class="hljs-literal">false</span>,
+   <span class="hljs-attr">shard_count</span>: <span class="hljs-number">0</span>,
+   <span class="hljs-attr">max_rows</span>: <span class="hljs-number">-1</span>
+  },
+ ...]</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='getcompletionhints'>
       getCompletionHints
     </h3>
@@ -3206,7 +3290,7 @@ changing the order of the string key and numerical value.</p>
 </p>
       <pre class='p1 overflow-auto round fill-light'>con.getFields(<span class="hljs-string">'flights'</span>, (err, res) =&gt; <span class="hljs-built_in">console</span>.log(res))
 <span class="hljs-comment">// [{</span>
-  <span class="hljs-attr">name</span>: <span class="hljs-string">'fieldName'</span>,
+  name: <span class="hljs-string">'fieldName'</span>,
   <span class="hljs-attr">type</span>: <span class="hljs-string">'BIGINT'</span>,
   <span class="hljs-attr">is_array</span>: <span class="hljs-literal">false</span>,
   <span class="hljs-attr">is_dict</span>: <span class="hljs-literal">false</span>
