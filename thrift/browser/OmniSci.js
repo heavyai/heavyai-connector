@@ -7,7 +7,7 @@
 
 //HELPER FUNCTIONS AND STRUCTURES
 
-OmniSci_connect_args = function(args) {
+MapD_connect_args = function(args) {
   this.user = null;
   this.passwd = null;
   this.dbname = null;
@@ -23,8 +23,8 @@ OmniSci_connect_args = function(args) {
     }
   }
 };
-OmniSci_connect_args.prototype = {};
-OmniSci_connect_args.prototype.read = function(input) {
+MapD_connect_args.prototype = {};
+MapD_connect_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -67,8 +67,8 @@ OmniSci_connect_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_connect_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_connect_args');
+MapD_connect_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_connect_args');
   if (this.user !== null && this.user !== undefined) {
     output.writeFieldBegin('user', Thrift.Type.STRING, 1);
     output.writeString(this.user);
@@ -89,10 +89,10 @@ OmniSci_connect_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_connect_result = function(args) {
+MapD_connect_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -105,8 +105,8 @@ OmniSci_connect_result = function(args) {
     }
   }
 };
-OmniSci_connect_result.prototype = {};
-OmniSci_connect_result.prototype.read = function(input) {
+MapD_connect_result.prototype = {};
+MapD_connect_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -128,7 +128,7 @@ OmniSci_connect_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -143,8 +143,8 @@ OmniSci_connect_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_connect_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_connect_result');
+MapD_connect_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_connect_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRING, 0);
     output.writeString(this.success);
@@ -160,7 +160,7 @@ OmniSci_connect_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_krb5_connect_args = function(args) {
+MapD_krb5_connect_args = function(args) {
   this.inputToken = null;
   this.dbname = null;
   if (args) {
@@ -172,8 +172,8 @@ OmniSci_krb5_connect_args = function(args) {
     }
   }
 };
-OmniSci_krb5_connect_args.prototype = {};
-OmniSci_krb5_connect_args.prototype.read = function(input) {
+MapD_krb5_connect_args.prototype = {};
+MapD_krb5_connect_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -209,8 +209,8 @@ OmniSci_krb5_connect_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_krb5_connect_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_krb5_connect_args');
+MapD_krb5_connect_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_krb5_connect_args');
   if (this.inputToken !== null && this.inputToken !== undefined) {
     output.writeFieldBegin('inputToken', Thrift.Type.STRING, 1);
     output.writeString(this.inputToken);
@@ -226,10 +226,10 @@ OmniSci_krb5_connect_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_krb5_connect_result = function(args) {
+MapD_krb5_connect_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -242,8 +242,8 @@ OmniSci_krb5_connect_result = function(args) {
     }
   }
 };
-OmniSci_krb5_connect_result.prototype = {};
-OmniSci_krb5_connect_result.prototype.read = function(input) {
+MapD_krb5_connect_result.prototype = {};
+MapD_krb5_connect_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -266,7 +266,7 @@ OmniSci_krb5_connect_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -281,8 +281,8 @@ OmniSci_krb5_connect_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_krb5_connect_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_krb5_connect_result');
+MapD_krb5_connect_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_krb5_connect_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -298,7 +298,7 @@ OmniSci_krb5_connect_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_disconnect_args = function(args) {
+MapD_disconnect_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -306,8 +306,8 @@ OmniSci_disconnect_args = function(args) {
     }
   }
 };
-OmniSci_disconnect_args.prototype = {};
-OmniSci_disconnect_args.prototype.read = function(input) {
+MapD_disconnect_args.prototype = {};
+MapD_disconnect_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -339,8 +339,8 @@ OmniSci_disconnect_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_disconnect_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_disconnect_args');
+MapD_disconnect_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_disconnect_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -351,9 +351,9 @@ OmniSci_disconnect_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_disconnect_result = function(args) {
+MapD_disconnect_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -363,8 +363,8 @@ OmniSci_disconnect_result = function(args) {
     }
   }
 };
-OmniSci_disconnect_result.prototype = {};
-OmniSci_disconnect_result.prototype.read = function(input) {
+MapD_disconnect_result.prototype = {};
+MapD_disconnect_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -379,7 +379,7 @@ OmniSci_disconnect_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -397,8 +397,8 @@ OmniSci_disconnect_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_disconnect_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_disconnect_result');
+MapD_disconnect_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_disconnect_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -409,7 +409,7 @@ OmniSci_disconnect_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_switch_database_args = function(args) {
+MapD_switch_database_args = function(args) {
   this.session = null;
   this.dbname = null;
   if (args) {
@@ -421,8 +421,8 @@ OmniSci_switch_database_args = function(args) {
     }
   }
 };
-OmniSci_switch_database_args.prototype = {};
-OmniSci_switch_database_args.prototype.read = function(input) {
+MapD_switch_database_args.prototype = {};
+MapD_switch_database_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -458,8 +458,8 @@ OmniSci_switch_database_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_switch_database_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_switch_database_args');
+MapD_switch_database_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_switch_database_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -475,9 +475,9 @@ OmniSci_switch_database_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_switch_database_result = function(args) {
+MapD_switch_database_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -487,8 +487,8 @@ OmniSci_switch_database_result = function(args) {
     }
   }
 };
-OmniSci_switch_database_result.prototype = {};
-OmniSci_switch_database_result.prototype.read = function(input) {
+MapD_switch_database_result.prototype = {};
+MapD_switch_database_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -503,7 +503,7 @@ OmniSci_switch_database_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -521,8 +521,8 @@ OmniSci_switch_database_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_switch_database_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_switch_database_result');
+MapD_switch_database_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_switch_database_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -533,7 +533,7 @@ OmniSci_switch_database_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_clone_session_args = function(args) {
+MapD_clone_session_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -541,8 +541,8 @@ OmniSci_clone_session_args = function(args) {
     }
   }
 };
-OmniSci_clone_session_args.prototype = {};
-OmniSci_clone_session_args.prototype.read = function(input) {
+MapD_clone_session_args.prototype = {};
+MapD_clone_session_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -574,8 +574,8 @@ OmniSci_clone_session_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_clone_session_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_clone_session_args');
+MapD_clone_session_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clone_session_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -586,10 +586,10 @@ OmniSci_clone_session_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_clone_session_result = function(args) {
+MapD_clone_session_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -602,8 +602,8 @@ OmniSci_clone_session_result = function(args) {
     }
   }
 };
-OmniSci_clone_session_result.prototype = {};
-OmniSci_clone_session_result.prototype.read = function(input) {
+MapD_clone_session_result.prototype = {};
+MapD_clone_session_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -625,7 +625,7 @@ OmniSci_clone_session_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -640,8 +640,8 @@ OmniSci_clone_session_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_clone_session_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_clone_session_result');
+MapD_clone_session_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clone_session_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRING, 0);
     output.writeString(this.success);
@@ -657,7 +657,7 @@ OmniSci_clone_session_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_server_status_args = function(args) {
+MapD_get_server_status_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -665,8 +665,8 @@ OmniSci_get_server_status_args = function(args) {
     }
   }
 };
-OmniSci_get_server_status_args.prototype = {};
-OmniSci_get_server_status_args.prototype.read = function(input) {
+MapD_get_server_status_args.prototype = {};
+MapD_get_server_status_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -698,8 +698,8 @@ OmniSci_get_server_status_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_server_status_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_server_status_args');
+MapD_get_server_status_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_server_status_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -710,10 +710,10 @@ OmniSci_get_server_status_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_server_status_result = function(args) {
+MapD_get_server_status_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -726,8 +726,8 @@ OmniSci_get_server_status_result = function(args) {
     }
   }
 };
-OmniSci_get_server_status_result.prototype = {};
-OmniSci_get_server_status_result.prototype.read = function(input) {
+MapD_get_server_status_result.prototype = {};
+MapD_get_server_status_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -750,7 +750,7 @@ OmniSci_get_server_status_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -765,8 +765,8 @@ OmniSci_get_server_status_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_server_status_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_server_status_result');
+MapD_get_server_status_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_server_status_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -782,7 +782,7 @@ OmniSci_get_server_status_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_status_args = function(args) {
+MapD_get_status_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -790,8 +790,8 @@ OmniSci_get_status_args = function(args) {
     }
   }
 };
-OmniSci_get_status_args.prototype = {};
-OmniSci_get_status_args.prototype.read = function(input) {
+MapD_get_status_args.prototype = {};
+MapD_get_status_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -823,8 +823,8 @@ OmniSci_get_status_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_status_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_status_args');
+MapD_get_status_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_status_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -835,10 +835,10 @@ OmniSci_get_status_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_status_result = function(args) {
+MapD_get_status_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -851,8 +851,8 @@ OmniSci_get_status_result = function(args) {
     }
   }
 };
-OmniSci_get_status_result.prototype = {};
-OmniSci_get_status_result.prototype.read = function(input) {
+MapD_get_status_result.prototype = {};
+MapD_get_status_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -888,7 +888,7 @@ OmniSci_get_status_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -903,8 +903,8 @@ OmniSci_get_status_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_status_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_status_result');
+MapD_get_status_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_status_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -929,7 +929,7 @@ OmniSci_get_status_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_hardware_info_args = function(args) {
+MapD_get_hardware_info_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -937,8 +937,8 @@ OmniSci_get_hardware_info_args = function(args) {
     }
   }
 };
-OmniSci_get_hardware_info_args.prototype = {};
-OmniSci_get_hardware_info_args.prototype.read = function(input) {
+MapD_get_hardware_info_args.prototype = {};
+MapD_get_hardware_info_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -970,8 +970,8 @@ OmniSci_get_hardware_info_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_hardware_info_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_hardware_info_args');
+MapD_get_hardware_info_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_hardware_info_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -982,10 +982,10 @@ OmniSci_get_hardware_info_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_hardware_info_result = function(args) {
+MapD_get_hardware_info_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -998,8 +998,8 @@ OmniSci_get_hardware_info_result = function(args) {
     }
   }
 };
-OmniSci_get_hardware_info_result.prototype = {};
-OmniSci_get_hardware_info_result.prototype.read = function(input) {
+MapD_get_hardware_info_result.prototype = {};
+MapD_get_hardware_info_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1022,7 +1022,7 @@ OmniSci_get_hardware_info_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -1037,8 +1037,8 @@ OmniSci_get_hardware_info_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_hardware_info_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_hardware_info_result');
+MapD_get_hardware_info_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_hardware_info_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -1054,7 +1054,7 @@ OmniSci_get_hardware_info_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_tables_args = function(args) {
+MapD_get_tables_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -1062,8 +1062,8 @@ OmniSci_get_tables_args = function(args) {
     }
   }
 };
-OmniSci_get_tables_args.prototype = {};
-OmniSci_get_tables_args.prototype.read = function(input) {
+MapD_get_tables_args.prototype = {};
+MapD_get_tables_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1095,8 +1095,8 @@ OmniSci_get_tables_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_tables_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_tables_args');
+MapD_get_tables_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -1107,10 +1107,10 @@ OmniSci_get_tables_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_tables_result = function(args) {
+MapD_get_tables_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -1123,8 +1123,8 @@ OmniSci_get_tables_result = function(args) {
     }
   }
 };
-OmniSci_get_tables_result.prototype = {};
-OmniSci_get_tables_result.prototype.read = function(input) {
+MapD_get_tables_result.prototype = {};
+MapD_get_tables_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1159,7 +1159,7 @@ OmniSci_get_tables_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -1174,8 +1174,8 @@ OmniSci_get_tables_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_tables_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_tables_result');
+MapD_get_tables_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -1200,7 +1200,7 @@ OmniSci_get_tables_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_physical_tables_args = function(args) {
+MapD_get_physical_tables_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -1208,8 +1208,8 @@ OmniSci_get_physical_tables_args = function(args) {
     }
   }
 };
-OmniSci_get_physical_tables_args.prototype = {};
-OmniSci_get_physical_tables_args.prototype.read = function(input) {
+MapD_get_physical_tables_args.prototype = {};
+MapD_get_physical_tables_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1241,8 +1241,8 @@ OmniSci_get_physical_tables_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_physical_tables_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_physical_tables_args');
+MapD_get_physical_tables_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_physical_tables_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -1253,10 +1253,10 @@ OmniSci_get_physical_tables_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_physical_tables_result = function(args) {
+MapD_get_physical_tables_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -1269,8 +1269,8 @@ OmniSci_get_physical_tables_result = function(args) {
     }
   }
 };
-OmniSci_get_physical_tables_result.prototype = {};
-OmniSci_get_physical_tables_result.prototype.read = function(input) {
+MapD_get_physical_tables_result.prototype = {};
+MapD_get_physical_tables_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1305,7 +1305,7 @@ OmniSci_get_physical_tables_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -1320,8 +1320,8 @@ OmniSci_get_physical_tables_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_physical_tables_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_physical_tables_result');
+MapD_get_physical_tables_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_physical_tables_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -1346,7 +1346,7 @@ OmniSci_get_physical_tables_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_views_args = function(args) {
+MapD_get_views_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -1354,8 +1354,8 @@ OmniSci_get_views_args = function(args) {
     }
   }
 };
-OmniSci_get_views_args.prototype = {};
-OmniSci_get_views_args.prototype.read = function(input) {
+MapD_get_views_args.prototype = {};
+MapD_get_views_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1387,8 +1387,8 @@ OmniSci_get_views_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_views_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_views_args');
+MapD_get_views_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_views_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -1399,10 +1399,10 @@ OmniSci_get_views_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_views_result = function(args) {
+MapD_get_views_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -1415,8 +1415,8 @@ OmniSci_get_views_result = function(args) {
     }
   }
 };
-OmniSci_get_views_result.prototype = {};
-OmniSci_get_views_result.prototype.read = function(input) {
+MapD_get_views_result.prototype = {};
+MapD_get_views_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1451,7 +1451,7 @@ OmniSci_get_views_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -1466,8 +1466,8 @@ OmniSci_get_views_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_views_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_views_result');
+MapD_get_views_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_views_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -1492,7 +1492,7 @@ OmniSci_get_views_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_tables_meta_args = function(args) {
+MapD_get_tables_meta_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -1500,8 +1500,8 @@ OmniSci_get_tables_meta_args = function(args) {
     }
   }
 };
-OmniSci_get_tables_meta_args.prototype = {};
-OmniSci_get_tables_meta_args.prototype.read = function(input) {
+MapD_get_tables_meta_args.prototype = {};
+MapD_get_tables_meta_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1533,8 +1533,8 @@ OmniSci_get_tables_meta_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_tables_meta_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_tables_meta_args');
+MapD_get_tables_meta_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_meta_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -1545,10 +1545,10 @@ OmniSci_get_tables_meta_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_tables_meta_result = function(args) {
+MapD_get_tables_meta_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -1561,8 +1561,8 @@ OmniSci_get_tables_meta_result = function(args) {
     }
   }
 };
-OmniSci_get_tables_meta_result.prototype = {};
-OmniSci_get_tables_meta_result.prototype.read = function(input) {
+MapD_get_tables_meta_result.prototype = {};
+MapD_get_tables_meta_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1598,7 +1598,7 @@ OmniSci_get_tables_meta_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -1613,8 +1613,8 @@ OmniSci_get_tables_meta_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_tables_meta_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_tables_meta_result');
+MapD_get_tables_meta_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_tables_meta_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -1639,7 +1639,7 @@ OmniSci_get_tables_meta_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_table_details_args = function(args) {
+MapD_get_table_details_args = function(args) {
   this.session = null;
   this.table_name = null;
   if (args) {
@@ -1651,8 +1651,8 @@ OmniSci_get_table_details_args = function(args) {
     }
   }
 };
-OmniSci_get_table_details_args.prototype = {};
-OmniSci_get_table_details_args.prototype.read = function(input) {
+MapD_get_table_details_args.prototype = {};
+MapD_get_table_details_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1688,8 +1688,8 @@ OmniSci_get_table_details_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_table_details_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_table_details_args');
+MapD_get_table_details_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_details_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -1705,10 +1705,10 @@ OmniSci_get_table_details_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_table_details_result = function(args) {
+MapD_get_table_details_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -1721,8 +1721,8 @@ OmniSci_get_table_details_result = function(args) {
     }
   }
 };
-OmniSci_get_table_details_result.prototype = {};
-OmniSci_get_table_details_result.prototype.read = function(input) {
+MapD_get_table_details_result.prototype = {};
+MapD_get_table_details_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1745,7 +1745,7 @@ OmniSci_get_table_details_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -1760,8 +1760,8 @@ OmniSci_get_table_details_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_table_details_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_table_details_result');
+MapD_get_table_details_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_details_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -1777,7 +1777,7 @@ OmniSci_get_table_details_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_internal_table_details_args = function(args) {
+MapD_get_internal_table_details_args = function(args) {
   this.session = null;
   this.table_name = null;
   if (args) {
@@ -1789,8 +1789,8 @@ OmniSci_get_internal_table_details_args = function(args) {
     }
   }
 };
-OmniSci_get_internal_table_details_args.prototype = {};
-OmniSci_get_internal_table_details_args.prototype.read = function(input) {
+MapD_get_internal_table_details_args.prototype = {};
+MapD_get_internal_table_details_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1826,8 +1826,8 @@ OmniSci_get_internal_table_details_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_internal_table_details_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_internal_table_details_args');
+MapD_get_internal_table_details_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_internal_table_details_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -1843,10 +1843,10 @@ OmniSci_get_internal_table_details_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_internal_table_details_result = function(args) {
+MapD_get_internal_table_details_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -1859,8 +1859,8 @@ OmniSci_get_internal_table_details_result = function(args) {
     }
   }
 };
-OmniSci_get_internal_table_details_result.prototype = {};
-OmniSci_get_internal_table_details_result.prototype.read = function(input) {
+MapD_get_internal_table_details_result.prototype = {};
+MapD_get_internal_table_details_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1883,7 +1883,7 @@ OmniSci_get_internal_table_details_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -1898,8 +1898,8 @@ OmniSci_get_internal_table_details_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_internal_table_details_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_internal_table_details_result');
+MapD_get_internal_table_details_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_internal_table_details_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -1915,7 +1915,7 @@ OmniSci_get_internal_table_details_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_users_args = function(args) {
+MapD_get_users_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -1923,8 +1923,8 @@ OmniSci_get_users_args = function(args) {
     }
   }
 };
-OmniSci_get_users_args.prototype = {};
-OmniSci_get_users_args.prototype.read = function(input) {
+MapD_get_users_args.prototype = {};
+MapD_get_users_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -1956,8 +1956,8 @@ OmniSci_get_users_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_users_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_users_args');
+MapD_get_users_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_users_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -1968,10 +1968,10 @@ OmniSci_get_users_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_users_result = function(args) {
+MapD_get_users_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -1984,8 +1984,8 @@ OmniSci_get_users_result = function(args) {
     }
   }
 };
-OmniSci_get_users_result.prototype = {};
-OmniSci_get_users_result.prototype.read = function(input) {
+MapD_get_users_result.prototype = {};
+MapD_get_users_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2020,7 +2020,7 @@ OmniSci_get_users_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2035,8 +2035,8 @@ OmniSci_get_users_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_users_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_users_result');
+MapD_get_users_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_users_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -2061,7 +2061,7 @@ OmniSci_get_users_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_databases_args = function(args) {
+MapD_get_databases_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -2069,8 +2069,8 @@ OmniSci_get_databases_args = function(args) {
     }
   }
 };
-OmniSci_get_databases_args.prototype = {};
-OmniSci_get_databases_args.prototype.read = function(input) {
+MapD_get_databases_args.prototype = {};
+MapD_get_databases_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2102,8 +2102,8 @@ OmniSci_get_databases_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_databases_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_databases_args');
+MapD_get_databases_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_databases_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -2114,10 +2114,10 @@ OmniSci_get_databases_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_databases_result = function(args) {
+MapD_get_databases_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2130,8 +2130,8 @@ OmniSci_get_databases_result = function(args) {
     }
   }
 };
-OmniSci_get_databases_result.prototype = {};
-OmniSci_get_databases_result.prototype.read = function(input) {
+MapD_get_databases_result.prototype = {};
+MapD_get_databases_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2167,7 +2167,7 @@ OmniSci_get_databases_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2182,8 +2182,8 @@ OmniSci_get_databases_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_databases_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_databases_result');
+MapD_get_databases_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_databases_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -2208,10 +2208,10 @@ OmniSci_get_databases_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_version_args = function(args) {
+MapD_get_version_args = function(args) {
 };
-OmniSci_get_version_args.prototype = {};
-OmniSci_get_version_args.prototype.read = function(input) {
+MapD_get_version_args.prototype = {};
+MapD_get_version_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2229,17 +2229,17 @@ OmniSci_get_version_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_version_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_version_args');
+MapD_get_version_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_version_args');
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
-OmniSci_get_version_result = function(args) {
+MapD_get_version_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2252,8 +2252,8 @@ OmniSci_get_version_result = function(args) {
     }
   }
 };
-OmniSci_get_version_result.prototype = {};
-OmniSci_get_version_result.prototype.read = function(input) {
+MapD_get_version_result.prototype = {};
+MapD_get_version_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2275,7 +2275,7 @@ OmniSci_get_version_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2290,8 +2290,8 @@ OmniSci_get_version_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_version_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_version_result');
+MapD_get_version_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_version_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRING, 0);
     output.writeString(this.success);
@@ -2307,7 +2307,7 @@ OmniSci_get_version_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_start_heap_profile_args = function(args) {
+MapD_start_heap_profile_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -2315,8 +2315,8 @@ OmniSci_start_heap_profile_args = function(args) {
     }
   }
 };
-OmniSci_start_heap_profile_args.prototype = {};
-OmniSci_start_heap_profile_args.prototype.read = function(input) {
+MapD_start_heap_profile_args.prototype = {};
+MapD_start_heap_profile_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2348,8 +2348,8 @@ OmniSci_start_heap_profile_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_start_heap_profile_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_start_heap_profile_args');
+MapD_start_heap_profile_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_heap_profile_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -2360,9 +2360,9 @@ OmniSci_start_heap_profile_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_start_heap_profile_result = function(args) {
+MapD_start_heap_profile_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2372,8 +2372,8 @@ OmniSci_start_heap_profile_result = function(args) {
     }
   }
 };
-OmniSci_start_heap_profile_result.prototype = {};
-OmniSci_start_heap_profile_result.prototype.read = function(input) {
+MapD_start_heap_profile_result.prototype = {};
+MapD_start_heap_profile_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2388,7 +2388,7 @@ OmniSci_start_heap_profile_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2406,8 +2406,8 @@ OmniSci_start_heap_profile_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_start_heap_profile_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_start_heap_profile_result');
+MapD_start_heap_profile_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_heap_profile_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -2418,7 +2418,7 @@ OmniSci_start_heap_profile_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_stop_heap_profile_args = function(args) {
+MapD_stop_heap_profile_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -2426,8 +2426,8 @@ OmniSci_stop_heap_profile_args = function(args) {
     }
   }
 };
-OmniSci_stop_heap_profile_args.prototype = {};
-OmniSci_stop_heap_profile_args.prototype.read = function(input) {
+MapD_stop_heap_profile_args.prototype = {};
+MapD_stop_heap_profile_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2459,8 +2459,8 @@ OmniSci_stop_heap_profile_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_stop_heap_profile_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_stop_heap_profile_args');
+MapD_stop_heap_profile_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_stop_heap_profile_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -2471,9 +2471,9 @@ OmniSci_stop_heap_profile_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_stop_heap_profile_result = function(args) {
+MapD_stop_heap_profile_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2483,8 +2483,8 @@ OmniSci_stop_heap_profile_result = function(args) {
     }
   }
 };
-OmniSci_stop_heap_profile_result.prototype = {};
-OmniSci_stop_heap_profile_result.prototype.read = function(input) {
+MapD_stop_heap_profile_result.prototype = {};
+MapD_stop_heap_profile_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2499,7 +2499,7 @@ OmniSci_stop_heap_profile_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2517,8 +2517,8 @@ OmniSci_stop_heap_profile_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_stop_heap_profile_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_stop_heap_profile_result');
+MapD_stop_heap_profile_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_stop_heap_profile_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -2529,7 +2529,7 @@ OmniSci_stop_heap_profile_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_heap_profile_args = function(args) {
+MapD_get_heap_profile_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -2537,8 +2537,8 @@ OmniSci_get_heap_profile_args = function(args) {
     }
   }
 };
-OmniSci_get_heap_profile_args.prototype = {};
-OmniSci_get_heap_profile_args.prototype.read = function(input) {
+MapD_get_heap_profile_args.prototype = {};
+MapD_get_heap_profile_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2570,8 +2570,8 @@ OmniSci_get_heap_profile_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_heap_profile_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_heap_profile_args');
+MapD_get_heap_profile_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_heap_profile_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -2582,10 +2582,10 @@ OmniSci_get_heap_profile_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_heap_profile_result = function(args) {
+MapD_get_heap_profile_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2598,8 +2598,8 @@ OmniSci_get_heap_profile_result = function(args) {
     }
   }
 };
-OmniSci_get_heap_profile_result.prototype = {};
-OmniSci_get_heap_profile_result.prototype.read = function(input) {
+MapD_get_heap_profile_result.prototype = {};
+MapD_get_heap_profile_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2621,7 +2621,7 @@ OmniSci_get_heap_profile_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2636,8 +2636,8 @@ OmniSci_get_heap_profile_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_heap_profile_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_heap_profile_result');
+MapD_get_heap_profile_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_heap_profile_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRING, 0);
     output.writeString(this.success);
@@ -2653,7 +2653,7 @@ OmniSci_get_heap_profile_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_memory_args = function(args) {
+MapD_get_memory_args = function(args) {
   this.session = null;
   this.memory_level = null;
   if (args) {
@@ -2665,8 +2665,8 @@ OmniSci_get_memory_args = function(args) {
     }
   }
 };
-OmniSci_get_memory_args.prototype = {};
-OmniSci_get_memory_args.prototype.read = function(input) {
+MapD_get_memory_args.prototype = {};
+MapD_get_memory_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2702,8 +2702,8 @@ OmniSci_get_memory_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_memory_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_memory_args');
+MapD_get_memory_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -2719,10 +2719,10 @@ OmniSci_get_memory_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_memory_result = function(args) {
+MapD_get_memory_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2735,8 +2735,8 @@ OmniSci_get_memory_result = function(args) {
     }
   }
 };
-OmniSci_get_memory_result.prototype = {};
-OmniSci_get_memory_result.prototype.read = function(input) {
+MapD_get_memory_result.prototype = {};
+MapD_get_memory_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2772,7 +2772,7 @@ OmniSci_get_memory_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2787,8 +2787,8 @@ OmniSci_get_memory_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_memory_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_memory_result');
+MapD_get_memory_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_memory_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -2813,7 +2813,7 @@ OmniSci_get_memory_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_clear_cpu_memory_args = function(args) {
+MapD_clear_cpu_memory_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -2821,8 +2821,8 @@ OmniSci_clear_cpu_memory_args = function(args) {
     }
   }
 };
-OmniSci_clear_cpu_memory_args.prototype = {};
-OmniSci_clear_cpu_memory_args.prototype.read = function(input) {
+MapD_clear_cpu_memory_args.prototype = {};
+MapD_clear_cpu_memory_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2854,8 +2854,8 @@ OmniSci_clear_cpu_memory_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_clear_cpu_memory_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_clear_cpu_memory_args');
+MapD_clear_cpu_memory_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_cpu_memory_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -2866,9 +2866,9 @@ OmniSci_clear_cpu_memory_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_clear_cpu_memory_result = function(args) {
+MapD_clear_cpu_memory_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2878,8 +2878,8 @@ OmniSci_clear_cpu_memory_result = function(args) {
     }
   }
 };
-OmniSci_clear_cpu_memory_result.prototype = {};
-OmniSci_clear_cpu_memory_result.prototype.read = function(input) {
+MapD_clear_cpu_memory_result.prototype = {};
+MapD_clear_cpu_memory_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2894,7 +2894,7 @@ OmniSci_clear_cpu_memory_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -2912,8 +2912,8 @@ OmniSci_clear_cpu_memory_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_clear_cpu_memory_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_clear_cpu_memory_result');
+MapD_clear_cpu_memory_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_cpu_memory_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -2924,7 +2924,7 @@ OmniSci_clear_cpu_memory_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_clear_gpu_memory_args = function(args) {
+MapD_clear_gpu_memory_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -2932,8 +2932,8 @@ OmniSci_clear_gpu_memory_args = function(args) {
     }
   }
 };
-OmniSci_clear_gpu_memory_args.prototype = {};
-OmniSci_clear_gpu_memory_args.prototype.read = function(input) {
+MapD_clear_gpu_memory_args.prototype = {};
+MapD_clear_gpu_memory_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -2965,8 +2965,8 @@ OmniSci_clear_gpu_memory_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_clear_gpu_memory_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_clear_gpu_memory_args');
+MapD_clear_gpu_memory_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -2977,9 +2977,9 @@ OmniSci_clear_gpu_memory_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_clear_gpu_memory_result = function(args) {
+MapD_clear_gpu_memory_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -2989,8 +2989,8 @@ OmniSci_clear_gpu_memory_result = function(args) {
     }
   }
 };
-OmniSci_clear_gpu_memory_result.prototype = {};
-OmniSci_clear_gpu_memory_result.prototype.read = function(input) {
+MapD_clear_gpu_memory_result.prototype = {};
+MapD_clear_gpu_memory_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3005,7 +3005,7 @@ OmniSci_clear_gpu_memory_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -3023,8 +3023,8 @@ OmniSci_clear_gpu_memory_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_clear_gpu_memory_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_clear_gpu_memory_result');
+MapD_clear_gpu_memory_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_clear_gpu_memory_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -3035,7 +3035,7 @@ OmniSci_clear_gpu_memory_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_table_epoch_args = function(args) {
+MapD_set_table_epoch_args = function(args) {
   this.session = null;
   this.db_id = null;
   this.table_id = null;
@@ -3055,8 +3055,8 @@ OmniSci_set_table_epoch_args = function(args) {
     }
   }
 };
-OmniSci_set_table_epoch_args.prototype = {};
-OmniSci_set_table_epoch_args.prototype.read = function(input) {
+MapD_set_table_epoch_args.prototype = {};
+MapD_set_table_epoch_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3106,8 +3106,8 @@ OmniSci_set_table_epoch_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_table_epoch_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_table_epoch_args');
+MapD_set_table_epoch_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_table_epoch_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -3133,9 +3133,9 @@ OmniSci_set_table_epoch_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_table_epoch_result = function(args) {
+MapD_set_table_epoch_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -3145,8 +3145,8 @@ OmniSci_set_table_epoch_result = function(args) {
     }
   }
 };
-OmniSci_set_table_epoch_result.prototype = {};
-OmniSci_set_table_epoch_result.prototype.read = function(input) {
+MapD_set_table_epoch_result.prototype = {};
+MapD_set_table_epoch_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3161,7 +3161,7 @@ OmniSci_set_table_epoch_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -3179,8 +3179,8 @@ OmniSci_set_table_epoch_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_table_epoch_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_table_epoch_result');
+MapD_set_table_epoch_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_table_epoch_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -3191,7 +3191,7 @@ OmniSci_set_table_epoch_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_table_epoch_by_name_args = function(args) {
+MapD_set_table_epoch_by_name_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.new_epoch = null;
@@ -3207,8 +3207,8 @@ OmniSci_set_table_epoch_by_name_args = function(args) {
     }
   }
 };
-OmniSci_set_table_epoch_by_name_args.prototype = {};
-OmniSci_set_table_epoch_by_name_args.prototype.read = function(input) {
+MapD_set_table_epoch_by_name_args.prototype = {};
+MapD_set_table_epoch_by_name_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3251,8 +3251,8 @@ OmniSci_set_table_epoch_by_name_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_table_epoch_by_name_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_table_epoch_by_name_args');
+MapD_set_table_epoch_by_name_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_table_epoch_by_name_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -3273,9 +3273,9 @@ OmniSci_set_table_epoch_by_name_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_table_epoch_by_name_result = function(args) {
+MapD_set_table_epoch_by_name_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -3285,8 +3285,8 @@ OmniSci_set_table_epoch_by_name_result = function(args) {
     }
   }
 };
-OmniSci_set_table_epoch_by_name_result.prototype = {};
-OmniSci_set_table_epoch_by_name_result.prototype.read = function(input) {
+MapD_set_table_epoch_by_name_result.prototype = {};
+MapD_set_table_epoch_by_name_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3301,7 +3301,7 @@ OmniSci_set_table_epoch_by_name_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -3319,8 +3319,8 @@ OmniSci_set_table_epoch_by_name_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_table_epoch_by_name_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_table_epoch_by_name_result');
+MapD_set_table_epoch_by_name_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_table_epoch_by_name_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -3331,7 +3331,7 @@ OmniSci_set_table_epoch_by_name_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_table_epoch_args = function(args) {
+MapD_get_table_epoch_args = function(args) {
   this.session = null;
   this.db_id = null;
   this.table_id = null;
@@ -3347,8 +3347,8 @@ OmniSci_get_table_epoch_args = function(args) {
     }
   }
 };
-OmniSci_get_table_epoch_args.prototype = {};
-OmniSci_get_table_epoch_args.prototype.read = function(input) {
+MapD_get_table_epoch_args.prototype = {};
+MapD_get_table_epoch_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3391,8 +3391,8 @@ OmniSci_get_table_epoch_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_table_epoch_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_table_epoch_args');
+MapD_get_table_epoch_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_epoch_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -3413,7 +3413,7 @@ OmniSci_get_table_epoch_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_table_epoch_result = function(args) {
+MapD_get_table_epoch_result = function(args) {
   this.success = null;
   if (args) {
     if (args.success !== undefined && args.success !== null) {
@@ -3421,8 +3421,8 @@ OmniSci_get_table_epoch_result = function(args) {
     }
   }
 };
-OmniSci_get_table_epoch_result.prototype = {};
-OmniSci_get_table_epoch_result.prototype.read = function(input) {
+MapD_get_table_epoch_result.prototype = {};
+MapD_get_table_epoch_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3454,8 +3454,8 @@ OmniSci_get_table_epoch_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_table_epoch_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_table_epoch_result');
+MapD_get_table_epoch_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_epoch_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.I32, 0);
     output.writeI32(this.success);
@@ -3466,7 +3466,7 @@ OmniSci_get_table_epoch_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_table_epoch_by_name_args = function(args) {
+MapD_get_table_epoch_by_name_args = function(args) {
   this.session = null;
   this.table_name = null;
   if (args) {
@@ -3478,8 +3478,8 @@ OmniSci_get_table_epoch_by_name_args = function(args) {
     }
   }
 };
-OmniSci_get_table_epoch_by_name_args.prototype = {};
-OmniSci_get_table_epoch_by_name_args.prototype.read = function(input) {
+MapD_get_table_epoch_by_name_args.prototype = {};
+MapD_get_table_epoch_by_name_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3515,8 +3515,8 @@ OmniSci_get_table_epoch_by_name_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_table_epoch_by_name_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_table_epoch_by_name_args');
+MapD_get_table_epoch_by_name_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_epoch_by_name_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -3532,7 +3532,7 @@ OmniSci_get_table_epoch_by_name_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_table_epoch_by_name_result = function(args) {
+MapD_get_table_epoch_by_name_result = function(args) {
   this.success = null;
   if (args) {
     if (args.success !== undefined && args.success !== null) {
@@ -3540,8 +3540,8 @@ OmniSci_get_table_epoch_by_name_result = function(args) {
     }
   }
 };
-OmniSci_get_table_epoch_by_name_result.prototype = {};
-OmniSci_get_table_epoch_by_name_result.prototype.read = function(input) {
+MapD_get_table_epoch_by_name_result.prototype = {};
+MapD_get_table_epoch_by_name_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3573,8 +3573,8 @@ OmniSci_get_table_epoch_by_name_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_table_epoch_by_name_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_table_epoch_by_name_result');
+MapD_get_table_epoch_by_name_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_table_epoch_by_name_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.I32, 0);
     output.writeI32(this.success);
@@ -3585,6 +3585,7 @@ OmniSci_get_table_epoch_by_name_result.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< HEAD
 OmniSci_get_table_epochs_args = function(args) {
   this.session = null;
   this.db_id = null;
@@ -3877,6 +3878,9 @@ OmniSci_set_table_epochs_result.prototype.write = function(output) {
 };
 
 OmniSci_get_session_info_args = function(args) {
+=======
+MapD_get_session_info_args = function(args) {
+>>>>>>> Update Thrift
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -3884,8 +3888,8 @@ OmniSci_get_session_info_args = function(args) {
     }
   }
 };
-OmniSci_get_session_info_args.prototype = {};
-OmniSci_get_session_info_args.prototype.read = function(input) {
+MapD_get_session_info_args.prototype = {};
+MapD_get_session_info_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3917,8 +3921,8 @@ OmniSci_get_session_info_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_session_info_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_session_info_args');
+MapD_get_session_info_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_session_info_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -3929,10 +3933,10 @@ OmniSci_get_session_info_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_session_info_result = function(args) {
+MapD_get_session_info_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -3945,8 +3949,8 @@ OmniSci_get_session_info_result = function(args) {
     }
   }
 };
-OmniSci_get_session_info_result.prototype = {};
-OmniSci_get_session_info_result.prototype.read = function(input) {
+MapD_get_session_info_result.prototype = {};
+MapD_get_session_info_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -3969,7 +3973,7 @@ OmniSci_get_session_info_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -3984,8 +3988,8 @@ OmniSci_get_session_info_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_session_info_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_session_info_result');
+MapD_get_session_info_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_session_info_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -4001,7 +4005,7 @@ OmniSci_get_session_info_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_execute_args = function(args) {
+MapD_sql_execute_args = function(args) {
   this.session = null;
   this.query = null;
   this.column_format = null;
@@ -4029,8 +4033,8 @@ OmniSci_sql_execute_args = function(args) {
     }
   }
 };
-OmniSci_sql_execute_args.prototype = {};
-OmniSci_sql_execute_args.prototype.read = function(input) {
+MapD_sql_execute_args.prototype = {};
+MapD_sql_execute_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4094,8 +4098,8 @@ OmniSci_sql_execute_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_execute_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_execute_args');
+MapD_sql_execute_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -4131,10 +4135,10 @@ OmniSci_sql_execute_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_execute_result = function(args) {
+MapD_sql_execute_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -4147,8 +4151,8 @@ OmniSci_sql_execute_result = function(args) {
     }
   }
 };
-OmniSci_sql_execute_result.prototype = {};
-OmniSci_sql_execute_result.prototype.read = function(input) {
+MapD_sql_execute_result.prototype = {};
+MapD_sql_execute_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4171,7 +4175,7 @@ OmniSci_sql_execute_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -4186,8 +4190,8 @@ OmniSci_sql_execute_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_execute_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_execute_result');
+MapD_sql_execute_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -4203,7 +4207,7 @@ OmniSci_sql_execute_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_execute_df_args = function(args) {
+MapD_sql_execute_df_args = function(args) {
   this.session = null;
   this.query = null;
   this.device_type = null;
@@ -4231,8 +4235,8 @@ OmniSci_sql_execute_df_args = function(args) {
     }
   }
 };
-OmniSci_sql_execute_df_args.prototype = {};
-OmniSci_sql_execute_df_args.prototype.read = function(input) {
+MapD_sql_execute_df_args.prototype = {};
+MapD_sql_execute_df_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4296,8 +4300,8 @@ OmniSci_sql_execute_df_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_execute_df_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_execute_df_args');
+MapD_sql_execute_df_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_df_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -4333,10 +4337,10 @@ OmniSci_sql_execute_df_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_execute_df_result = function(args) {
+MapD_sql_execute_df_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -4349,8 +4353,8 @@ OmniSci_sql_execute_df_result = function(args) {
     }
   }
 };
-OmniSci_sql_execute_df_result.prototype = {};
-OmniSci_sql_execute_df_result.prototype.read = function(input) {
+MapD_sql_execute_df_result.prototype = {};
+MapD_sql_execute_df_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4373,7 +4377,7 @@ OmniSci_sql_execute_df_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -4388,8 +4392,8 @@ OmniSci_sql_execute_df_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_execute_df_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_execute_df_result');
+MapD_sql_execute_df_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_df_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -4405,7 +4409,7 @@ OmniSci_sql_execute_df_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_execute_gdf_args = function(args) {
+MapD_sql_execute_gdf_args = function(args) {
   this.session = null;
   this.query = null;
   this.device_id = 0;
@@ -4425,8 +4429,8 @@ OmniSci_sql_execute_gdf_args = function(args) {
     }
   }
 };
-OmniSci_sql_execute_gdf_args.prototype = {};
-OmniSci_sql_execute_gdf_args.prototype.read = function(input) {
+MapD_sql_execute_gdf_args.prototype = {};
+MapD_sql_execute_gdf_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4476,8 +4480,8 @@ OmniSci_sql_execute_gdf_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_execute_gdf_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_execute_gdf_args');
+MapD_sql_execute_gdf_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_gdf_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -4503,10 +4507,10 @@ OmniSci_sql_execute_gdf_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_execute_gdf_result = function(args) {
+MapD_sql_execute_gdf_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -4519,8 +4523,8 @@ OmniSci_sql_execute_gdf_result = function(args) {
     }
   }
 };
-OmniSci_sql_execute_gdf_result.prototype = {};
-OmniSci_sql_execute_gdf_result.prototype.read = function(input) {
+MapD_sql_execute_gdf_result.prototype = {};
+MapD_sql_execute_gdf_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4543,7 +4547,7 @@ OmniSci_sql_execute_gdf_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -4558,8 +4562,8 @@ OmniSci_sql_execute_gdf_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_execute_gdf_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_execute_gdf_result');
+MapD_sql_execute_gdf_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_execute_gdf_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -4575,7 +4579,7 @@ OmniSci_sql_execute_gdf_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_deallocate_df_args = function(args) {
+MapD_deallocate_df_args = function(args) {
   this.session = null;
   this.df = null;
   this.device_type = null;
@@ -4595,8 +4599,8 @@ OmniSci_deallocate_df_args = function(args) {
     }
   }
 };
-OmniSci_deallocate_df_args.prototype = {};
-OmniSci_deallocate_df_args.prototype.read = function(input) {
+MapD_deallocate_df_args.prototype = {};
+MapD_deallocate_df_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4647,8 +4651,8 @@ OmniSci_deallocate_df_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_deallocate_df_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_deallocate_df_args');
+MapD_deallocate_df_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_deallocate_df_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -4674,9 +4678,9 @@ OmniSci_deallocate_df_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_deallocate_df_result = function(args) {
+MapD_deallocate_df_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -4686,8 +4690,8 @@ OmniSci_deallocate_df_result = function(args) {
     }
   }
 };
-OmniSci_deallocate_df_result.prototype = {};
-OmniSci_deallocate_df_result.prototype.read = function(input) {
+MapD_deallocate_df_result.prototype = {};
+MapD_deallocate_df_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4702,7 +4706,7 @@ OmniSci_deallocate_df_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -4720,8 +4724,8 @@ OmniSci_deallocate_df_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_deallocate_df_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_deallocate_df_result');
+MapD_deallocate_df_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_deallocate_df_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -4732,7 +4736,7 @@ OmniSci_deallocate_df_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_interrupt_args = function(args) {
+MapD_interrupt_args = function(args) {
   this.query_session = null;
   this.interrupt_session = null;
   if (args) {
@@ -4744,8 +4748,8 @@ OmniSci_interrupt_args = function(args) {
     }
   }
 };
-OmniSci_interrupt_args.prototype = {};
-OmniSci_interrupt_args.prototype.read = function(input) {
+MapD_interrupt_args.prototype = {};
+MapD_interrupt_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4781,8 +4785,8 @@ OmniSci_interrupt_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_interrupt_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_interrupt_args');
+MapD_interrupt_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_interrupt_args');
   if (this.query_session !== null && this.query_session !== undefined) {
     output.writeFieldBegin('query_session', Thrift.Type.STRING, 1);
     output.writeString(this.query_session);
@@ -4798,9 +4802,9 @@ OmniSci_interrupt_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_interrupt_result = function(args) {
+MapD_interrupt_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -4810,8 +4814,8 @@ OmniSci_interrupt_result = function(args) {
     }
   }
 };
-OmniSci_interrupt_result.prototype = {};
-OmniSci_interrupt_result.prototype.read = function(input) {
+MapD_interrupt_result.prototype = {};
+MapD_interrupt_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4826,7 +4830,7 @@ OmniSci_interrupt_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -4844,8 +4848,8 @@ OmniSci_interrupt_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_interrupt_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_interrupt_result');
+MapD_interrupt_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_interrupt_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -4856,7 +4860,7 @@ OmniSci_interrupt_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_validate_args = function(args) {
+MapD_sql_validate_args = function(args) {
   this.session = null;
   this.query = null;
   if (args) {
@@ -4868,8 +4872,8 @@ OmniSci_sql_validate_args = function(args) {
     }
   }
 };
-OmniSci_sql_validate_args.prototype = {};
-OmniSci_sql_validate_args.prototype.read = function(input) {
+MapD_sql_validate_args.prototype = {};
+MapD_sql_validate_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4905,8 +4909,8 @@ OmniSci_sql_validate_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_validate_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_validate_args');
+MapD_sql_validate_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_validate_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -4922,10 +4926,10 @@ OmniSci_sql_validate_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_sql_validate_result = function(args) {
+MapD_sql_validate_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -4938,8 +4942,8 @@ OmniSci_sql_validate_result = function(args) {
     }
   }
 };
-OmniSci_sql_validate_result.prototype = {};
-OmniSci_sql_validate_result.prototype.read = function(input) {
+MapD_sql_validate_result.prototype = {};
+MapD_sql_validate_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -4975,7 +4979,7 @@ OmniSci_sql_validate_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -4990,8 +4994,8 @@ OmniSci_sql_validate_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_sql_validate_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_sql_validate_result');
+MapD_sql_validate_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_sql_validate_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -5016,7 +5020,7 @@ OmniSci_sql_validate_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_completion_hints_args = function(args) {
+MapD_get_completion_hints_args = function(args) {
   this.session = null;
   this.sql = null;
   this.cursor = null;
@@ -5032,8 +5036,8 @@ OmniSci_get_completion_hints_args = function(args) {
     }
   }
 };
-OmniSci_get_completion_hints_args.prototype = {};
-OmniSci_get_completion_hints_args.prototype.read = function(input) {
+MapD_get_completion_hints_args.prototype = {};
+MapD_get_completion_hints_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5076,8 +5080,8 @@ OmniSci_get_completion_hints_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_completion_hints_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_completion_hints_args');
+MapD_get_completion_hints_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_completion_hints_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -5098,10 +5102,10 @@ OmniSci_get_completion_hints_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_completion_hints_result = function(args) {
+MapD_get_completion_hints_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -5114,8 +5118,8 @@ OmniSci_get_completion_hints_result = function(args) {
     }
   }
 };
-OmniSci_get_completion_hints_result.prototype = {};
-OmniSci_get_completion_hints_result.prototype.read = function(input) {
+MapD_get_completion_hints_result.prototype = {};
+MapD_get_completion_hints_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5151,7 +5155,7 @@ OmniSci_get_completion_hints_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -5166,8 +5170,8 @@ OmniSci_get_completion_hints_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_completion_hints_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_completion_hints_result');
+MapD_get_completion_hints_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_completion_hints_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -5192,7 +5196,7 @@ OmniSci_get_completion_hints_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_execution_mode_args = function(args) {
+MapD_set_execution_mode_args = function(args) {
   this.session = null;
   this.mode = null;
   if (args) {
@@ -5204,8 +5208,8 @@ OmniSci_set_execution_mode_args = function(args) {
     }
   }
 };
-OmniSci_set_execution_mode_args.prototype = {};
-OmniSci_set_execution_mode_args.prototype.read = function(input) {
+MapD_set_execution_mode_args.prototype = {};
+MapD_set_execution_mode_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5241,8 +5245,8 @@ OmniSci_set_execution_mode_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_execution_mode_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_execution_mode_args');
+MapD_set_execution_mode_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_execution_mode_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -5258,9 +5262,9 @@ OmniSci_set_execution_mode_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_execution_mode_result = function(args) {
+MapD_set_execution_mode_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -5270,8 +5274,8 @@ OmniSci_set_execution_mode_result = function(args) {
     }
   }
 };
-OmniSci_set_execution_mode_result.prototype = {};
-OmniSci_set_execution_mode_result.prototype.read = function(input) {
+MapD_set_execution_mode_result.prototype = {};
+MapD_set_execution_mode_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5286,7 +5290,7 @@ OmniSci_set_execution_mode_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -5304,8 +5308,8 @@ OmniSci_set_execution_mode_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_execution_mode_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_execution_mode_result');
+MapD_set_execution_mode_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_execution_mode_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -5316,7 +5320,7 @@ OmniSci_set_execution_mode_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_render_vega_args = function(args) {
+MapD_render_vega_args = function(args) {
   this.session = null;
   this.widget_id = null;
   this.vega_json = null;
@@ -5340,8 +5344,8 @@ OmniSci_render_vega_args = function(args) {
     }
   }
 };
-OmniSci_render_vega_args.prototype = {};
-OmniSci_render_vega_args.prototype.read = function(input) {
+MapD_render_vega_args.prototype = {};
+MapD_render_vega_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5398,8 +5402,8 @@ OmniSci_render_vega_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_render_vega_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_render_vega_args');
+MapD_render_vega_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_render_vega_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -5430,10 +5434,10 @@ OmniSci_render_vega_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_render_vega_result = function(args) {
+MapD_render_vega_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -5446,8 +5450,8 @@ OmniSci_render_vega_result = function(args) {
     }
   }
 };
-OmniSci_render_vega_result.prototype = {};
-OmniSci_render_vega_result.prototype.read = function(input) {
+MapD_render_vega_result.prototype = {};
+MapD_render_vega_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5470,7 +5474,7 @@ OmniSci_render_vega_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -5485,8 +5489,8 @@ OmniSci_render_vega_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_render_vega_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_render_vega_result');
+MapD_render_vega_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_render_vega_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -5502,7 +5506,7 @@ OmniSci_render_vega_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_result_row_for_pixel_args = function(args) {
+MapD_get_result_row_for_pixel_args = function(args) {
   this.session = null;
   this.widget_id = null;
   this.pixel = null;
@@ -5534,8 +5538,8 @@ OmniSci_get_result_row_for_pixel_args = function(args) {
     }
   }
 };
-OmniSci_get_result_row_for_pixel_args.prototype = {};
-OmniSci_get_result_row_for_pixel_args.prototype.read = function(input) {
+MapD_get_result_row_for_pixel_args.prototype = {};
+MapD_get_result_row_for_pixel_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5642,8 +5646,8 @@ OmniSci_get_result_row_for_pixel_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_result_row_for_pixel_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_result_row_for_pixel_args');
+MapD_get_result_row_for_pixel_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_result_row_for_pixel_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -5703,10 +5707,10 @@ OmniSci_get_result_row_for_pixel_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_result_row_for_pixel_result = function(args) {
+MapD_get_result_row_for_pixel_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -5719,8 +5723,8 @@ OmniSci_get_result_row_for_pixel_result = function(args) {
     }
   }
 };
-OmniSci_get_result_row_for_pixel_result.prototype = {};
-OmniSci_get_result_row_for_pixel_result.prototype.read = function(input) {
+MapD_get_result_row_for_pixel_result.prototype = {};
+MapD_get_result_row_for_pixel_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5743,7 +5747,7 @@ OmniSci_get_result_row_for_pixel_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -5758,8 +5762,8 @@ OmniSci_get_result_row_for_pixel_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_result_row_for_pixel_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_result_row_for_pixel_result');
+MapD_get_result_row_for_pixel_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_result_row_for_pixel_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -5775,7 +5779,7 @@ OmniSci_get_result_row_for_pixel_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_dashboard_args = function(args) {
+MapD_get_dashboard_args = function(args) {
   this.session = null;
   this.dashboard_id = null;
   if (args) {
@@ -5787,8 +5791,8 @@ OmniSci_get_dashboard_args = function(args) {
     }
   }
 };
-OmniSci_get_dashboard_args.prototype = {};
-OmniSci_get_dashboard_args.prototype.read = function(input) {
+MapD_get_dashboard_args.prototype = {};
+MapD_get_dashboard_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5824,8 +5828,8 @@ OmniSci_get_dashboard_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_dashboard_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_dashboard_args');
+MapD_get_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboard_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -5841,10 +5845,10 @@ OmniSci_get_dashboard_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_dashboard_result = function(args) {
+MapD_get_dashboard_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -5857,8 +5861,8 @@ OmniSci_get_dashboard_result = function(args) {
     }
   }
 };
-OmniSci_get_dashboard_result.prototype = {};
-OmniSci_get_dashboard_result.prototype.read = function(input) {
+MapD_get_dashboard_result.prototype = {};
+MapD_get_dashboard_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5881,7 +5885,7 @@ OmniSci_get_dashboard_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -5896,8 +5900,8 @@ OmniSci_get_dashboard_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_dashboard_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_dashboard_result');
+MapD_get_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboard_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -5913,7 +5917,7 @@ OmniSci_get_dashboard_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_dashboards_args = function(args) {
+MapD_get_dashboards_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -5921,8 +5925,8 @@ OmniSci_get_dashboards_args = function(args) {
     }
   }
 };
-OmniSci_get_dashboards_args.prototype = {};
-OmniSci_get_dashboards_args.prototype.read = function(input) {
+MapD_get_dashboards_args.prototype = {};
+MapD_get_dashboards_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -5954,8 +5958,8 @@ OmniSci_get_dashboards_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_dashboards_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_dashboards_args');
+MapD_get_dashboards_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboards_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -5966,10 +5970,10 @@ OmniSci_get_dashboards_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_dashboards_result = function(args) {
+MapD_get_dashboards_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -5982,8 +5986,8 @@ OmniSci_get_dashboards_result = function(args) {
     }
   }
 };
-OmniSci_get_dashboards_result.prototype = {};
-OmniSci_get_dashboards_result.prototype.read = function(input) {
+MapD_get_dashboards_result.prototype = {};
+MapD_get_dashboards_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -6019,7 +6023,7 @@ OmniSci_get_dashboards_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -6034,8 +6038,8 @@ OmniSci_get_dashboards_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_dashboards_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_dashboards_result');
+MapD_get_dashboards_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboards_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -6060,7 +6064,7 @@ OmniSci_get_dashboards_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_create_dashboard_args = function(args) {
+MapD_create_dashboard_args = function(args) {
   this.session = null;
   this.dashboard_name = null;
   this.dashboard_state = null;
@@ -6084,8 +6088,8 @@ OmniSci_create_dashboard_args = function(args) {
     }
   }
 };
-OmniSci_create_dashboard_args.prototype = {};
-OmniSci_create_dashboard_args.prototype.read = function(input) {
+MapD_create_dashboard_args.prototype = {};
+MapD_create_dashboard_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -6142,8 +6146,8 @@ OmniSci_create_dashboard_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_create_dashboard_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_create_dashboard_args');
+MapD_create_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_dashboard_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -6174,10 +6178,10 @@ OmniSci_create_dashboard_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_create_dashboard_result = function(args) {
+MapD_create_dashboard_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -6190,8 +6194,8 @@ OmniSci_create_dashboard_result = function(args) {
     }
   }
 };
-OmniSci_create_dashboard_result.prototype = {};
-OmniSci_create_dashboard_result.prototype.read = function(input) {
+MapD_create_dashboard_result.prototype = {};
+MapD_create_dashboard_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -6213,7 +6217,7 @@ OmniSci_create_dashboard_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -6228,8 +6232,8 @@ OmniSci_create_dashboard_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_create_dashboard_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_create_dashboard_result');
+MapD_create_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_dashboard_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.I32, 0);
     output.writeI32(this.success);
@@ -6245,7 +6249,7 @@ OmniSci_create_dashboard_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_replace_dashboard_args = function(args) {
+MapD_replace_dashboard_args = function(args) {
   this.session = null;
   this.dashboard_id = null;
   this.dashboard_name = null;
@@ -6277,8 +6281,8 @@ OmniSci_replace_dashboard_args = function(args) {
     }
   }
 };
-OmniSci_replace_dashboard_args.prototype = {};
-OmniSci_replace_dashboard_args.prototype.read = function(input) {
+MapD_replace_dashboard_args.prototype = {};
+MapD_replace_dashboard_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -6349,8 +6353,8 @@ OmniSci_replace_dashboard_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_replace_dashboard_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_replace_dashboard_args');
+MapD_replace_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_replace_dashboard_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -6391,9 +6395,9 @@ OmniSci_replace_dashboard_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_replace_dashboard_result = function(args) {
+MapD_replace_dashboard_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -6403,8 +6407,8 @@ OmniSci_replace_dashboard_result = function(args) {
     }
   }
 };
-OmniSci_replace_dashboard_result.prototype = {};
-OmniSci_replace_dashboard_result.prototype.read = function(input) {
+MapD_replace_dashboard_result.prototype = {};
+MapD_replace_dashboard_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -6419,7 +6423,7 @@ OmniSci_replace_dashboard_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -6437,8 +6441,8 @@ OmniSci_replace_dashboard_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_replace_dashboard_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_replace_dashboard_result');
+MapD_replace_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_replace_dashboard_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -6449,7 +6453,7 @@ OmniSci_replace_dashboard_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_delete_dashboard_args = function(args) {
+MapD_delete_dashboard_args = function(args) {
   this.session = null;
   this.dashboard_id = null;
   if (args) {
@@ -6461,8 +6465,8 @@ OmniSci_delete_dashboard_args = function(args) {
     }
   }
 };
-OmniSci_delete_dashboard_args.prototype = {};
-OmniSci_delete_dashboard_args.prototype.read = function(input) {
+MapD_delete_dashboard_args.prototype = {};
+MapD_delete_dashboard_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -6498,8 +6502,8 @@ OmniSci_delete_dashboard_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_delete_dashboard_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_delete_dashboard_args');
+MapD_delete_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_dashboard_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -6515,9 +6519,9 @@ OmniSci_delete_dashboard_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_delete_dashboard_result = function(args) {
+MapD_delete_dashboard_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -6527,8 +6531,8 @@ OmniSci_delete_dashboard_result = function(args) {
     }
   }
 };
-OmniSci_delete_dashboard_result.prototype = {};
-OmniSci_delete_dashboard_result.prototype.read = function(input) {
+MapD_delete_dashboard_result.prototype = {};
+MapD_delete_dashboard_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -6543,7 +6547,7 @@ OmniSci_delete_dashboard_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -6561,8 +6565,8 @@ OmniSci_delete_dashboard_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_delete_dashboard_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_delete_dashboard_result');
+MapD_delete_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_delete_dashboard_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -6573,6 +6577,7 @@ OmniSci_delete_dashboard_result.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< HEAD
 OmniSci_share_dashboards_args = function(args) {
   this.session = null;
   this.dashboard_ids = null;
@@ -6921,6 +6926,9 @@ OmniSci_delete_dashboards_result.prototype.write = function(output) {
 };
 
 OmniSci_share_dashboard_args = function(args) {
+=======
+MapD_share_dashboard_args = function(args) {
+>>>>>>> Update Thrift
   this.session = null;
   this.dashboard_id = null;
   this.groups = null;
@@ -6948,8 +6956,8 @@ OmniSci_share_dashboard_args = function(args) {
     }
   }
 };
-OmniSci_share_dashboard_args.prototype = {};
-OmniSci_share_dashboard_args.prototype.read = function(input) {
+MapD_share_dashboard_args.prototype = {};
+MapD_share_dashboard_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7040,8 +7048,8 @@ OmniSci_share_dashboard_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_share_dashboard_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_share_dashboard_args');
+MapD_share_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_share_dashboard_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -7095,9 +7103,9 @@ OmniSci_share_dashboard_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_share_dashboard_result = function(args) {
+MapD_share_dashboard_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -7107,8 +7115,8 @@ OmniSci_share_dashboard_result = function(args) {
     }
   }
 };
-OmniSci_share_dashboard_result.prototype = {};
-OmniSci_share_dashboard_result.prototype.read = function(input) {
+MapD_share_dashboard_result.prototype = {};
+MapD_share_dashboard_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7123,7 +7131,7 @@ OmniSci_share_dashboard_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -7141,8 +7149,8 @@ OmniSci_share_dashboard_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_share_dashboard_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_share_dashboard_result');
+MapD_share_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_share_dashboard_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -7153,7 +7161,7 @@ OmniSci_share_dashboard_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_unshare_dashboard_args = function(args) {
+MapD_unshare_dashboard_args = function(args) {
   this.session = null;
   this.dashboard_id = null;
   this.groups = null;
@@ -7177,8 +7185,8 @@ OmniSci_unshare_dashboard_args = function(args) {
     }
   }
 };
-OmniSci_unshare_dashboard_args.prototype = {};
-OmniSci_unshare_dashboard_args.prototype.read = function(input) {
+MapD_unshare_dashboard_args.prototype = {};
+MapD_unshare_dashboard_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7262,8 +7270,8 @@ OmniSci_unshare_dashboard_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_unshare_dashboard_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_unshare_dashboard_args');
+MapD_unshare_dashboard_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_unshare_dashboard_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -7513,9 +7521,13 @@ OmniSci_unshare_dashboards_args.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< HEAD
 OmniSci_unshare_dashboards_result = function(args) {
+=======
+MapD_unshare_dashboard_result = function(args) {
+>>>>>>> Update Thrift
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -7525,8 +7537,13 @@ OmniSci_unshare_dashboards_result = function(args) {
     }
   }
 };
+<<<<<<< HEAD
 OmniSci_unshare_dashboards_result.prototype = {};
 OmniSci_unshare_dashboards_result.prototype.read = function(input) {
+=======
+MapD_unshare_dashboard_result.prototype = {};
+MapD_unshare_dashboard_result.prototype.read = function(input) {
+>>>>>>> Update Thrift
   input.readStructBegin();
   while (true)
   {
@@ -7541,7 +7558,7 @@ OmniSci_unshare_dashboards_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -7559,8 +7576,13 @@ OmniSci_unshare_dashboards_result.prototype.read = function(input) {
   return;
 };
 
+<<<<<<< HEAD
 OmniSci_unshare_dashboards_result.prototype.write = function(output) {
   output.writeStructBegin('OmniSci_unshare_dashboards_result');
+=======
+MapD_unshare_dashboard_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_unshare_dashboard_result');
+>>>>>>> Update Thrift
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -7571,7 +7593,7 @@ OmniSci_unshare_dashboards_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_dashboard_grantees_args = function(args) {
+MapD_get_dashboard_grantees_args = function(args) {
   this.session = null;
   this.dashboard_id = null;
   if (args) {
@@ -7583,8 +7605,8 @@ OmniSci_get_dashboard_grantees_args = function(args) {
     }
   }
 };
-OmniSci_get_dashboard_grantees_args.prototype = {};
-OmniSci_get_dashboard_grantees_args.prototype.read = function(input) {
+MapD_get_dashboard_grantees_args.prototype = {};
+MapD_get_dashboard_grantees_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7620,8 +7642,8 @@ OmniSci_get_dashboard_grantees_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_dashboard_grantees_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_dashboard_grantees_args');
+MapD_get_dashboard_grantees_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboard_grantees_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -7637,10 +7659,10 @@ OmniSci_get_dashboard_grantees_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_dashboard_grantees_result = function(args) {
+MapD_get_dashboard_grantees_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -7653,8 +7675,8 @@ OmniSci_get_dashboard_grantees_result = function(args) {
     }
   }
 };
-OmniSci_get_dashboard_grantees_result.prototype = {};
-OmniSci_get_dashboard_grantees_result.prototype.read = function(input) {
+MapD_get_dashboard_grantees_result.prototype = {};
+MapD_get_dashboard_grantees_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7690,7 +7712,7 @@ OmniSci_get_dashboard_grantees_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -7705,8 +7727,8 @@ OmniSci_get_dashboard_grantees_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_dashboard_grantees_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_dashboard_grantees_result');
+MapD_get_dashboard_grantees_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_dashboard_grantees_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -7731,7 +7753,7 @@ OmniSci_get_dashboard_grantees_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_link_view_args = function(args) {
+MapD_get_link_view_args = function(args) {
   this.session = null;
   this.link = null;
   if (args) {
@@ -7743,8 +7765,8 @@ OmniSci_get_link_view_args = function(args) {
     }
   }
 };
-OmniSci_get_link_view_args.prototype = {};
-OmniSci_get_link_view_args.prototype.read = function(input) {
+MapD_get_link_view_args.prototype = {};
+MapD_get_link_view_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7780,8 +7802,8 @@ OmniSci_get_link_view_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_link_view_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_link_view_args');
+MapD_get_link_view_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_link_view_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -7797,10 +7819,10 @@ OmniSci_get_link_view_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_link_view_result = function(args) {
+MapD_get_link_view_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -7813,8 +7835,8 @@ OmniSci_get_link_view_result = function(args) {
     }
   }
 };
-OmniSci_get_link_view_result.prototype = {};
-OmniSci_get_link_view_result.prototype.read = function(input) {
+MapD_get_link_view_result.prototype = {};
+MapD_get_link_view_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7837,7 +7859,7 @@ OmniSci_get_link_view_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -7852,8 +7874,8 @@ OmniSci_get_link_view_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_link_view_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_link_view_result');
+MapD_get_link_view_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_link_view_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -7869,7 +7891,7 @@ OmniSci_get_link_view_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_create_link_args = function(args) {
+MapD_create_link_args = function(args) {
   this.session = null;
   this.view_state = null;
   this.view_metadata = null;
@@ -7885,8 +7907,8 @@ OmniSci_create_link_args = function(args) {
     }
   }
 };
-OmniSci_create_link_args.prototype = {};
-OmniSci_create_link_args.prototype.read = function(input) {
+MapD_create_link_args.prototype = {};
+MapD_create_link_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7929,8 +7951,8 @@ OmniSci_create_link_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_create_link_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_create_link_args');
+MapD_create_link_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_link_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -7951,10 +7973,10 @@ OmniSci_create_link_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_create_link_result = function(args) {
+MapD_create_link_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -7967,8 +7989,8 @@ OmniSci_create_link_result = function(args) {
     }
   }
 };
-OmniSci_create_link_result.prototype = {};
-OmniSci_create_link_result.prototype.read = function(input) {
+MapD_create_link_result.prototype = {};
+MapD_create_link_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -7990,7 +8012,7 @@ OmniSci_create_link_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -8005,8 +8027,8 @@ OmniSci_create_link_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_create_link_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_create_link_result');
+MapD_create_link_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_link_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRING, 0);
     output.writeString(this.success);
@@ -8022,7 +8044,7 @@ OmniSci_create_link_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_binary_args = function(args) {
+MapD_load_table_binary_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.rows = null;
@@ -8042,8 +8064,8 @@ OmniSci_load_table_binary_args = function(args) {
     }
   }
 };
-OmniSci_load_table_binary_args.prototype = {};
-OmniSci_load_table_binary_args.prototype.read = function(input) {
+MapD_load_table_binary_args.prototype = {};
+MapD_load_table_binary_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8120,8 +8142,8 @@ OmniSci_load_table_binary_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_binary_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_binary_args');
+MapD_load_table_binary_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -8165,9 +8187,9 @@ OmniSci_load_table_binary_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_binary_result = function(args) {
+MapD_load_table_binary_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -8177,8 +8199,8 @@ OmniSci_load_table_binary_result = function(args) {
     }
   }
 };
-OmniSci_load_table_binary_result.prototype = {};
-OmniSci_load_table_binary_result.prototype.read = function(input) {
+MapD_load_table_binary_result.prototype = {};
+MapD_load_table_binary_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8193,7 +8215,7 @@ OmniSci_load_table_binary_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -8211,8 +8233,8 @@ OmniSci_load_table_binary_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_binary_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_binary_result');
+MapD_load_table_binary_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -8223,7 +8245,7 @@ OmniSci_load_table_binary_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_binary_columnar_args = function(args) {
+MapD_load_table_binary_columnar_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.cols = null;
@@ -8243,8 +8265,8 @@ OmniSci_load_table_binary_columnar_args = function(args) {
     }
   }
 };
-OmniSci_load_table_binary_columnar_args.prototype = {};
-OmniSci_load_table_binary_columnar_args.prototype.read = function(input) {
+MapD_load_table_binary_columnar_args.prototype = {};
+MapD_load_table_binary_columnar_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8321,8 +8343,8 @@ OmniSci_load_table_binary_columnar_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_binary_columnar_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_binary_columnar_args');
+MapD_load_table_binary_columnar_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_columnar_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -8366,9 +8388,9 @@ OmniSci_load_table_binary_columnar_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_binary_columnar_result = function(args) {
+MapD_load_table_binary_columnar_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -8378,8 +8400,8 @@ OmniSci_load_table_binary_columnar_result = function(args) {
     }
   }
 };
-OmniSci_load_table_binary_columnar_result.prototype = {};
-OmniSci_load_table_binary_columnar_result.prototype.read = function(input) {
+MapD_load_table_binary_columnar_result.prototype = {};
+MapD_load_table_binary_columnar_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8394,7 +8416,7 @@ OmniSci_load_table_binary_columnar_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -8412,8 +8434,8 @@ OmniSci_load_table_binary_columnar_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_binary_columnar_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_binary_columnar_result');
+MapD_load_table_binary_columnar_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_columnar_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -8424,7 +8446,7 @@ OmniSci_load_table_binary_columnar_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_binary_arrow_args = function(args) {
+MapD_load_table_binary_arrow_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.arrow_stream = null;
@@ -8444,8 +8466,8 @@ OmniSci_load_table_binary_arrow_args = function(args) {
     }
   }
 };
-OmniSci_load_table_binary_arrow_args.prototype = {};
-OmniSci_load_table_binary_arrow_args.prototype.read = function(input) {
+MapD_load_table_binary_arrow_args.prototype = {};
+MapD_load_table_binary_arrow_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8495,8 +8517,8 @@ OmniSci_load_table_binary_arrow_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_binary_arrow_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_binary_arrow_args');
+MapD_load_table_binary_arrow_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_arrow_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -8522,9 +8544,9 @@ OmniSci_load_table_binary_arrow_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_binary_arrow_result = function(args) {
+MapD_load_table_binary_arrow_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -8534,8 +8556,8 @@ OmniSci_load_table_binary_arrow_result = function(args) {
     }
   }
 };
-OmniSci_load_table_binary_arrow_result.prototype = {};
-OmniSci_load_table_binary_arrow_result.prototype.read = function(input) {
+MapD_load_table_binary_arrow_result.prototype = {};
+MapD_load_table_binary_arrow_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8550,7 +8572,7 @@ OmniSci_load_table_binary_arrow_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -8568,8 +8590,8 @@ OmniSci_load_table_binary_arrow_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_binary_arrow_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_binary_arrow_result');
+MapD_load_table_binary_arrow_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_binary_arrow_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -8580,7 +8602,7 @@ OmniSci_load_table_binary_arrow_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_args = function(args) {
+MapD_load_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.rows = null;
@@ -8600,8 +8622,8 @@ OmniSci_load_table_args = function(args) {
     }
   }
 };
-OmniSci_load_table_args.prototype = {};
-OmniSci_load_table_args.prototype.read = function(input) {
+MapD_load_table_args.prototype = {};
+MapD_load_table_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8678,8 +8700,8 @@ OmniSci_load_table_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_args');
+MapD_load_table_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -8723,9 +8745,9 @@ OmniSci_load_table_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_load_table_result = function(args) {
+MapD_load_table_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -8735,8 +8757,8 @@ OmniSci_load_table_result = function(args) {
     }
   }
 };
-OmniSci_load_table_result.prototype = {};
-OmniSci_load_table_result.prototype.read = function(input) {
+MapD_load_table_result.prototype = {};
+MapD_load_table_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8751,7 +8773,7 @@ OmniSci_load_table_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -8769,8 +8791,8 @@ OmniSci_load_table_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_load_table_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_load_table_result');
+MapD_load_table_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_load_table_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -8781,7 +8803,7 @@ OmniSci_load_table_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_detect_column_types_args = function(args) {
+MapD_detect_column_types_args = function(args) {
   this.session = null;
   this.file_name = null;
   this.copy_params = null;
@@ -8797,8 +8819,8 @@ OmniSci_detect_column_types_args = function(args) {
     }
   }
 };
-OmniSci_detect_column_types_args.prototype = {};
-OmniSci_detect_column_types_args.prototype.read = function(input) {
+MapD_detect_column_types_args.prototype = {};
+MapD_detect_column_types_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8842,8 +8864,8 @@ OmniSci_detect_column_types_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_detect_column_types_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_detect_column_types_args');
+MapD_detect_column_types_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_detect_column_types_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -8864,10 +8886,10 @@ OmniSci_detect_column_types_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_detect_column_types_result = function(args) {
+MapD_detect_column_types_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -8880,8 +8902,8 @@ OmniSci_detect_column_types_result = function(args) {
     }
   }
 };
-OmniSci_detect_column_types_result.prototype = {};
-OmniSci_detect_column_types_result.prototype.read = function(input) {
+MapD_detect_column_types_result.prototype = {};
+MapD_detect_column_types_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -8904,7 +8926,7 @@ OmniSci_detect_column_types_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -8919,8 +8941,8 @@ OmniSci_detect_column_types_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_detect_column_types_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_detect_column_types_result');
+MapD_detect_column_types_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_detect_column_types_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -8936,7 +8958,7 @@ OmniSci_detect_column_types_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_create_table_args = function(args) {
+MapD_create_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.row_desc = null;
@@ -8960,8 +8982,8 @@ OmniSci_create_table_args = function(args) {
     }
   }
 };
-OmniSci_create_table_args.prototype = {};
-OmniSci_create_table_args.prototype.read = function(input) {
+MapD_create_table_args.prototype = {};
+MapD_create_table_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9033,8 +9055,8 @@ OmniSci_create_table_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_create_table_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_create_table_args');
+MapD_create_table_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_table_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -9074,9 +9096,9 @@ OmniSci_create_table_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_create_table_result = function(args) {
+MapD_create_table_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -9086,8 +9108,8 @@ OmniSci_create_table_result = function(args) {
     }
   }
 };
-OmniSci_create_table_result.prototype = {};
-OmniSci_create_table_result.prototype.read = function(input) {
+MapD_create_table_result.prototype = {};
+MapD_create_table_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9102,7 +9124,7 @@ OmniSci_create_table_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -9120,8 +9142,8 @@ OmniSci_create_table_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_create_table_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_create_table_result');
+MapD_create_table_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_create_table_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -9132,7 +9154,7 @@ OmniSci_create_table_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_import_table_args = function(args) {
+MapD_import_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.file_name = null;
@@ -9152,8 +9174,8 @@ OmniSci_import_table_args = function(args) {
     }
   }
 };
-OmniSci_import_table_args.prototype = {};
-OmniSci_import_table_args.prototype.read = function(input) {
+MapD_import_table_args.prototype = {};
+MapD_import_table_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9204,8 +9226,8 @@ OmniSci_import_table_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_import_table_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_import_table_args');
+MapD_import_table_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_table_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -9231,9 +9253,9 @@ OmniSci_import_table_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_import_table_result = function(args) {
+MapD_import_table_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -9243,8 +9265,8 @@ OmniSci_import_table_result = function(args) {
     }
   }
 };
-OmniSci_import_table_result.prototype = {};
-OmniSci_import_table_result.prototype.read = function(input) {
+MapD_import_table_result.prototype = {};
+MapD_import_table_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9259,7 +9281,7 @@ OmniSci_import_table_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -9277,8 +9299,8 @@ OmniSci_import_table_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_import_table_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_import_table_result');
+MapD_import_table_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_table_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -9289,7 +9311,7 @@ OmniSci_import_table_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_import_geo_table_args = function(args) {
+MapD_import_geo_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.file_name = null;
@@ -9317,8 +9339,8 @@ OmniSci_import_geo_table_args = function(args) {
     }
   }
 };
-OmniSci_import_geo_table_args.prototype = {};
-OmniSci_import_geo_table_args.prototype.read = function(input) {
+MapD_import_geo_table_args.prototype = {};
+MapD_import_geo_table_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9398,8 +9420,8 @@ OmniSci_import_geo_table_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_import_geo_table_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_import_geo_table_args');
+MapD_import_geo_table_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_geo_table_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -9444,9 +9466,9 @@ OmniSci_import_geo_table_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_import_geo_table_result = function(args) {
+MapD_import_geo_table_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -9456,8 +9478,8 @@ OmniSci_import_geo_table_result = function(args) {
     }
   }
 };
-OmniSci_import_geo_table_result.prototype = {};
-OmniSci_import_geo_table_result.prototype.read = function(input) {
+MapD_import_geo_table_result.prototype = {};
+MapD_import_geo_table_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9472,7 +9494,7 @@ OmniSci_import_geo_table_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -9490,8 +9512,8 @@ OmniSci_import_geo_table_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_import_geo_table_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_import_geo_table_result');
+MapD_import_geo_table_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_geo_table_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -9502,7 +9524,7 @@ OmniSci_import_geo_table_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_import_table_status_args = function(args) {
+MapD_import_table_status_args = function(args) {
   this.session = null;
   this.import_id = null;
   if (args) {
@@ -9514,8 +9536,8 @@ OmniSci_import_table_status_args = function(args) {
     }
   }
 };
-OmniSci_import_table_status_args.prototype = {};
-OmniSci_import_table_status_args.prototype.read = function(input) {
+MapD_import_table_status_args.prototype = {};
+MapD_import_table_status_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9551,8 +9573,8 @@ OmniSci_import_table_status_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_import_table_status_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_import_table_status_args');
+MapD_import_table_status_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_table_status_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -9568,10 +9590,10 @@ OmniSci_import_table_status_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_import_table_status_result = function(args) {
+MapD_import_table_status_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -9584,8 +9606,8 @@ OmniSci_import_table_status_result = function(args) {
     }
   }
 };
-OmniSci_import_table_status_result.prototype = {};
-OmniSci_import_table_status_result.prototype.read = function(input) {
+MapD_import_table_status_result.prototype = {};
+MapD_import_table_status_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9608,7 +9630,7 @@ OmniSci_import_table_status_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -9623,8 +9645,8 @@ OmniSci_import_table_status_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_import_table_status_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_import_table_status_result');
+MapD_import_table_status_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_import_table_status_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -9640,7 +9662,7 @@ OmniSci_import_table_status_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_first_geo_file_in_archive_args = function(args) {
+MapD_get_first_geo_file_in_archive_args = function(args) {
   this.session = null;
   this.archive_path = null;
   this.copy_params = null;
@@ -9656,8 +9678,8 @@ OmniSci_get_first_geo_file_in_archive_args = function(args) {
     }
   }
 };
-OmniSci_get_first_geo_file_in_archive_args.prototype = {};
-OmniSci_get_first_geo_file_in_archive_args.prototype.read = function(input) {
+MapD_get_first_geo_file_in_archive_args.prototype = {};
+MapD_get_first_geo_file_in_archive_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9701,8 +9723,8 @@ OmniSci_get_first_geo_file_in_archive_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_first_geo_file_in_archive_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_first_geo_file_in_archive_args');
+MapD_get_first_geo_file_in_archive_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_first_geo_file_in_archive_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -9723,10 +9745,10 @@ OmniSci_get_first_geo_file_in_archive_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_first_geo_file_in_archive_result = function(args) {
+MapD_get_first_geo_file_in_archive_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -9739,8 +9761,8 @@ OmniSci_get_first_geo_file_in_archive_result = function(args) {
     }
   }
 };
-OmniSci_get_first_geo_file_in_archive_result.prototype = {};
-OmniSci_get_first_geo_file_in_archive_result.prototype.read = function(input) {
+MapD_get_first_geo_file_in_archive_result.prototype = {};
+MapD_get_first_geo_file_in_archive_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9762,7 +9784,7 @@ OmniSci_get_first_geo_file_in_archive_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -9777,8 +9799,8 @@ OmniSci_get_first_geo_file_in_archive_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_first_geo_file_in_archive_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_first_geo_file_in_archive_result');
+MapD_get_first_geo_file_in_archive_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_first_geo_file_in_archive_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRING, 0);
     output.writeString(this.success);
@@ -9794,7 +9816,7 @@ OmniSci_get_first_geo_file_in_archive_result.prototype.write = function(output) 
   return;
 };
 
-OmniSci_get_all_files_in_archive_args = function(args) {
+MapD_get_all_files_in_archive_args = function(args) {
   this.session = null;
   this.archive_path = null;
   this.copy_params = null;
@@ -9810,8 +9832,8 @@ OmniSci_get_all_files_in_archive_args = function(args) {
     }
   }
 };
-OmniSci_get_all_files_in_archive_args.prototype = {};
-OmniSci_get_all_files_in_archive_args.prototype.read = function(input) {
+MapD_get_all_files_in_archive_args.prototype = {};
+MapD_get_all_files_in_archive_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9855,8 +9877,8 @@ OmniSci_get_all_files_in_archive_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_all_files_in_archive_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_all_files_in_archive_args');
+MapD_get_all_files_in_archive_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_all_files_in_archive_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -9877,10 +9899,10 @@ OmniSci_get_all_files_in_archive_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_all_files_in_archive_result = function(args) {
+MapD_get_all_files_in_archive_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -9893,8 +9915,8 @@ OmniSci_get_all_files_in_archive_result = function(args) {
     }
   }
 };
-OmniSci_get_all_files_in_archive_result.prototype = {};
-OmniSci_get_all_files_in_archive_result.prototype.read = function(input) {
+MapD_get_all_files_in_archive_result.prototype = {};
+MapD_get_all_files_in_archive_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -9929,7 +9951,7 @@ OmniSci_get_all_files_in_archive_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -9944,8 +9966,8 @@ OmniSci_get_all_files_in_archive_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_all_files_in_archive_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_all_files_in_archive_result');
+MapD_get_all_files_in_archive_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_all_files_in_archive_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -9970,7 +9992,7 @@ OmniSci_get_all_files_in_archive_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_layers_in_geo_file_args = function(args) {
+MapD_get_layers_in_geo_file_args = function(args) {
   this.session = null;
   this.file_name = null;
   this.copy_params = null;
@@ -9986,8 +10008,8 @@ OmniSci_get_layers_in_geo_file_args = function(args) {
     }
   }
 };
-OmniSci_get_layers_in_geo_file_args.prototype = {};
-OmniSci_get_layers_in_geo_file_args.prototype.read = function(input) {
+MapD_get_layers_in_geo_file_args.prototype = {};
+MapD_get_layers_in_geo_file_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10031,8 +10053,8 @@ OmniSci_get_layers_in_geo_file_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_layers_in_geo_file_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_layers_in_geo_file_args');
+MapD_get_layers_in_geo_file_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_layers_in_geo_file_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -10053,10 +10075,10 @@ OmniSci_get_layers_in_geo_file_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_layers_in_geo_file_result = function(args) {
+MapD_get_layers_in_geo_file_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -10069,8 +10091,8 @@ OmniSci_get_layers_in_geo_file_result = function(args) {
     }
   }
 };
-OmniSci_get_layers_in_geo_file_result.prototype = {};
-OmniSci_get_layers_in_geo_file_result.prototype.read = function(input) {
+MapD_get_layers_in_geo_file_result.prototype = {};
+MapD_get_layers_in_geo_file_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10106,7 +10128,7 @@ OmniSci_get_layers_in_geo_file_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -10121,8 +10143,8 @@ OmniSci_get_layers_in_geo_file_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_layers_in_geo_file_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_layers_in_geo_file_result');
+MapD_get_layers_in_geo_file_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_layers_in_geo_file_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -10147,6 +10169,7 @@ OmniSci_get_layers_in_geo_file_result.prototype.write = function(output) {
   return;
 };
 
+<<<<<<< HEAD
 OmniSci_query_get_outer_fragment_count_args = function(args) {
   this.session = null;
   this.query = null;
@@ -10285,6 +10308,9 @@ OmniSci_query_get_outer_fragment_count_result.prototype.write = function(output)
 };
 
 OmniSci_check_table_consistency_args = function(args) {
+=======
+MapD_check_table_consistency_args = function(args) {
+>>>>>>> Update Thrift
   this.session = null;
   this.table_id = null;
   if (args) {
@@ -10296,8 +10322,8 @@ OmniSci_check_table_consistency_args = function(args) {
     }
   }
 };
-OmniSci_check_table_consistency_args.prototype = {};
-OmniSci_check_table_consistency_args.prototype.read = function(input) {
+MapD_check_table_consistency_args.prototype = {};
+MapD_check_table_consistency_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10333,8 +10359,8 @@ OmniSci_check_table_consistency_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_check_table_consistency_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_check_table_consistency_args');
+MapD_check_table_consistency_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_check_table_consistency_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -10350,10 +10376,10 @@ OmniSci_check_table_consistency_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_check_table_consistency_result = function(args) {
+MapD_check_table_consistency_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -10366,8 +10392,8 @@ OmniSci_check_table_consistency_result = function(args) {
     }
   }
 };
-OmniSci_check_table_consistency_result.prototype = {};
-OmniSci_check_table_consistency_result.prototype.read = function(input) {
+MapD_check_table_consistency_result.prototype = {};
+MapD_check_table_consistency_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10390,7 +10416,7 @@ OmniSci_check_table_consistency_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -10405,8 +10431,8 @@ OmniSci_check_table_consistency_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_check_table_consistency_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_check_table_consistency_result');
+MapD_check_table_consistency_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_check_table_consistency_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -10422,7 +10448,7 @@ OmniSci_check_table_consistency_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_start_query_args = function(args) {
+MapD_start_query_args = function(args) {
   this.leaf_session = null;
   this.parent_session = null;
   this.query_ra = null;
@@ -10446,8 +10472,8 @@ OmniSci_start_query_args = function(args) {
     }
   }
 };
-OmniSci_start_query_args.prototype = {};
-OmniSci_start_query_args.prototype.read = function(input) {
+MapD_start_query_args.prototype = {};
+MapD_start_query_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10517,8 +10543,8 @@ OmniSci_start_query_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_start_query_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_start_query_args');
+MapD_start_query_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_query_args');
   if (this.leaf_session !== null && this.leaf_session !== undefined) {
     output.writeFieldBegin('leaf_session', Thrift.Type.STRING, 1);
     output.writeString(this.leaf_session);
@@ -10558,10 +10584,10 @@ OmniSci_start_query_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_start_query_result = function(args) {
+MapD_start_query_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -10574,8 +10600,8 @@ OmniSci_start_query_result = function(args) {
     }
   }
 };
-OmniSci_start_query_result.prototype = {};
-OmniSci_start_query_result.prototype.read = function(input) {
+MapD_start_query_result.prototype = {};
+MapD_start_query_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10598,7 +10624,7 @@ OmniSci_start_query_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -10613,8 +10639,8 @@ OmniSci_start_query_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_start_query_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_start_query_result');
+MapD_start_query_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_query_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -10630,7 +10656,7 @@ OmniSci_start_query_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_execute_query_step_args = function(args) {
+MapD_execute_query_step_args = function(args) {
   this.pending_query = null;
   this.subquery_id = null;
   if (args) {
@@ -10642,8 +10668,8 @@ OmniSci_execute_query_step_args = function(args) {
     }
   }
 };
-OmniSci_execute_query_step_args.prototype = {};
-OmniSci_execute_query_step_args.prototype.read = function(input) {
+MapD_execute_query_step_args.prototype = {};
+MapD_execute_query_step_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10680,8 +10706,8 @@ OmniSci_execute_query_step_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_execute_query_step_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_execute_query_step_args');
+MapD_execute_query_step_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_execute_query_step_args');
   if (this.pending_query !== null && this.pending_query !== undefined) {
     output.writeFieldBegin('pending_query', Thrift.Type.STRUCT, 1);
     this.pending_query.write(output);
@@ -10697,10 +10723,10 @@ OmniSci_execute_query_step_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_execute_query_step_result = function(args) {
+MapD_execute_query_step_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -10713,8 +10739,8 @@ OmniSci_execute_query_step_result = function(args) {
     }
   }
 };
-OmniSci_execute_query_step_result.prototype = {};
-OmniSci_execute_query_step_result.prototype.read = function(input) {
+MapD_execute_query_step_result.prototype = {};
+MapD_execute_query_step_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10737,7 +10763,7 @@ OmniSci_execute_query_step_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -10752,8 +10778,8 @@ OmniSci_execute_query_step_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_execute_query_step_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_execute_query_step_result');
+MapD_execute_query_step_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_execute_query_step_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -10769,7 +10795,7 @@ OmniSci_execute_query_step_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_broadcast_serialized_rows_args = function(args) {
+MapD_broadcast_serialized_rows_args = function(args) {
   this.serialized_rows = null;
   this.row_desc = null;
   this.query_id = null;
@@ -10793,8 +10819,8 @@ OmniSci_broadcast_serialized_rows_args = function(args) {
     }
   }
 };
-OmniSci_broadcast_serialized_rows_args.prototype = {};
-OmniSci_broadcast_serialized_rows_args.prototype.read = function(input) {
+MapD_broadcast_serialized_rows_args.prototype = {};
+MapD_broadcast_serialized_rows_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10866,8 +10892,8 @@ OmniSci_broadcast_serialized_rows_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_broadcast_serialized_rows_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_broadcast_serialized_rows_args');
+MapD_broadcast_serialized_rows_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_broadcast_serialized_rows_args');
   if (this.serialized_rows !== null && this.serialized_rows !== undefined) {
     output.writeFieldBegin('serialized_rows', Thrift.Type.STRUCT, 1);
     this.serialized_rows.write(output);
@@ -10907,9 +10933,9 @@ OmniSci_broadcast_serialized_rows_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_broadcast_serialized_rows_result = function(args) {
+MapD_broadcast_serialized_rows_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -10919,8 +10945,8 @@ OmniSci_broadcast_serialized_rows_result = function(args) {
     }
   }
 };
-OmniSci_broadcast_serialized_rows_result.prototype = {};
-OmniSci_broadcast_serialized_rows_result.prototype.read = function(input) {
+MapD_broadcast_serialized_rows_result.prototype = {};
+MapD_broadcast_serialized_rows_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -10935,7 +10961,7 @@ OmniSci_broadcast_serialized_rows_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -10953,8 +10979,8 @@ OmniSci_broadcast_serialized_rows_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_broadcast_serialized_rows_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_broadcast_serialized_rows_result');
+MapD_broadcast_serialized_rows_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_broadcast_serialized_rows_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -10965,7 +10991,7 @@ OmniSci_broadcast_serialized_rows_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_start_render_query_args = function(args) {
+MapD_start_render_query_args = function(args) {
   this.session = null;
   this.widget_id = null;
   this.node_idx = null;
@@ -10985,8 +11011,8 @@ OmniSci_start_render_query_args = function(args) {
     }
   }
 };
-OmniSci_start_render_query_args.prototype = {};
-OmniSci_start_render_query_args.prototype.read = function(input) {
+MapD_start_render_query_args.prototype = {};
+MapD_start_render_query_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11036,8 +11062,8 @@ OmniSci_start_render_query_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_start_render_query_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_start_render_query_args');
+MapD_start_render_query_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_render_query_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -11063,10 +11089,10 @@ OmniSci_start_render_query_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_start_render_query_result = function(args) {
+MapD_start_render_query_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -11079,8 +11105,8 @@ OmniSci_start_render_query_result = function(args) {
     }
   }
 };
-OmniSci_start_render_query_result.prototype = {};
-OmniSci_start_render_query_result.prototype.read = function(input) {
+MapD_start_render_query_result.prototype = {};
+MapD_start_render_query_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11103,7 +11129,7 @@ OmniSci_start_render_query_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -11118,8 +11144,8 @@ OmniSci_start_render_query_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_start_render_query_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_start_render_query_result');
+MapD_start_render_query_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_start_render_query_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -11135,7 +11161,7 @@ OmniSci_start_render_query_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_execute_next_render_step_args = function(args) {
+MapD_execute_next_render_step_args = function(args) {
   this.pending_render = null;
   this.merged_data = null;
   if (args) {
@@ -11147,8 +11173,8 @@ OmniSci_execute_next_render_step_args = function(args) {
     }
   }
 };
-OmniSci_execute_next_render_step_args.prototype = {};
-OmniSci_execute_next_render_step_args.prototype.read = function(input) {
+MapD_execute_next_render_step_args.prototype = {};
+MapD_execute_next_render_step_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11287,8 +11313,8 @@ OmniSci_execute_next_render_step_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_execute_next_render_step_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_execute_next_render_step_args');
+MapD_execute_next_render_step_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_execute_next_render_step_args');
   if (this.pending_render !== null && this.pending_render !== undefined) {
     output.writeFieldBegin('pending_render', Thrift.Type.STRUCT, 1);
     this.pending_render.write(output);
@@ -11353,10 +11379,10 @@ OmniSci_execute_next_render_step_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_execute_next_render_step_result = function(args) {
+MapD_execute_next_render_step_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -11369,8 +11395,8 @@ OmniSci_execute_next_render_step_result = function(args) {
     }
   }
 };
-OmniSci_execute_next_render_step_result.prototype = {};
-OmniSci_execute_next_render_step_result.prototype.read = function(input) {
+MapD_execute_next_render_step_result.prototype = {};
+MapD_execute_next_render_step_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11393,7 +11419,7 @@ OmniSci_execute_next_render_step_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -11408,8 +11434,8 @@ OmniSci_execute_next_render_step_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_execute_next_render_step_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_execute_next_render_step_result');
+MapD_execute_next_render_step_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_execute_next_render_step_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -11425,7 +11451,7 @@ OmniSci_execute_next_render_step_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_insert_data_args = function(args) {
+MapD_insert_data_args = function(args) {
   this.session = null;
   this.insert_data = null;
   if (args) {
@@ -11437,8 +11463,8 @@ OmniSci_insert_data_args = function(args) {
     }
   }
 };
-OmniSci_insert_data_args.prototype = {};
-OmniSci_insert_data_args.prototype.read = function(input) {
+MapD_insert_data_args.prototype = {};
+MapD_insert_data_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11475,8 +11501,8 @@ OmniSci_insert_data_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_insert_data_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_insert_data_args');
+MapD_insert_data_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_insert_data_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -11492,9 +11518,9 @@ OmniSci_insert_data_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_insert_data_result = function(args) {
+MapD_insert_data_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -11504,8 +11530,8 @@ OmniSci_insert_data_result = function(args) {
     }
   }
 };
-OmniSci_insert_data_result.prototype = {};
-OmniSci_insert_data_result.prototype.read = function(input) {
+MapD_insert_data_result.prototype = {};
+MapD_insert_data_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11520,7 +11546,7 @@ OmniSci_insert_data_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -11538,8 +11564,8 @@ OmniSci_insert_data_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_insert_data_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_insert_data_result');
+MapD_insert_data_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_insert_data_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -11550,7 +11576,7 @@ OmniSci_insert_data_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_checkpoint_args = function(args) {
+MapD_checkpoint_args = function(args) {
   this.session = null;
   this.table_id = null;
   if (args) {
@@ -11562,8 +11588,8 @@ OmniSci_checkpoint_args = function(args) {
     }
   }
 };
-OmniSci_checkpoint_args.prototype = {};
-OmniSci_checkpoint_args.prototype.read = function(input) {
+MapD_checkpoint_args.prototype = {};
+MapD_checkpoint_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11599,8 +11625,8 @@ OmniSci_checkpoint_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_checkpoint_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_checkpoint_args');
+MapD_checkpoint_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_checkpoint_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -11616,9 +11642,9 @@ OmniSci_checkpoint_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_checkpoint_result = function(args) {
+MapD_checkpoint_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -11628,8 +11654,8 @@ OmniSci_checkpoint_result = function(args) {
     }
   }
 };
-OmniSci_checkpoint_result.prototype = {};
-OmniSci_checkpoint_result.prototype.read = function(input) {
+MapD_checkpoint_result.prototype = {};
+MapD_checkpoint_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11644,7 +11670,7 @@ OmniSci_checkpoint_result.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -11662,8 +11688,8 @@ OmniSci_checkpoint_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_checkpoint_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_checkpoint_result');
+MapD_checkpoint_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_checkpoint_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -11674,7 +11700,7 @@ OmniSci_checkpoint_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_roles_args = function(args) {
+MapD_get_roles_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -11682,8 +11708,8 @@ OmniSci_get_roles_args = function(args) {
     }
   }
 };
-OmniSci_get_roles_args.prototype = {};
-OmniSci_get_roles_args.prototype.read = function(input) {
+MapD_get_roles_args.prototype = {};
+MapD_get_roles_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11715,8 +11741,8 @@ OmniSci_get_roles_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_roles_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_roles_args');
+MapD_get_roles_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_roles_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -11727,10 +11753,10 @@ OmniSci_get_roles_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_roles_result = function(args) {
+MapD_get_roles_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -11743,8 +11769,8 @@ OmniSci_get_roles_result = function(args) {
     }
   }
 };
-OmniSci_get_roles_result.prototype = {};
-OmniSci_get_roles_result.prototype.read = function(input) {
+MapD_get_roles_result.prototype = {};
+MapD_get_roles_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11779,7 +11805,7 @@ OmniSci_get_roles_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -11794,8 +11820,8 @@ OmniSci_get_roles_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_roles_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_roles_result');
+MapD_get_roles_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_roles_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -11820,7 +11846,7 @@ OmniSci_get_roles_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_db_objects_for_grantee_args = function(args) {
+MapD_get_db_objects_for_grantee_args = function(args) {
   this.session = null;
   this.roleName = null;
   if (args) {
@@ -11832,8 +11858,8 @@ OmniSci_get_db_objects_for_grantee_args = function(args) {
     }
   }
 };
-OmniSci_get_db_objects_for_grantee_args.prototype = {};
-OmniSci_get_db_objects_for_grantee_args.prototype.read = function(input) {
+MapD_get_db_objects_for_grantee_args.prototype = {};
+MapD_get_db_objects_for_grantee_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11869,8 +11895,8 @@ OmniSci_get_db_objects_for_grantee_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_db_objects_for_grantee_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_db_objects_for_grantee_args');
+MapD_get_db_objects_for_grantee_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_db_objects_for_grantee_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -11886,10 +11912,10 @@ OmniSci_get_db_objects_for_grantee_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_db_objects_for_grantee_result = function(args) {
+MapD_get_db_objects_for_grantee_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -11902,8 +11928,8 @@ OmniSci_get_db_objects_for_grantee_result = function(args) {
     }
   }
 };
-OmniSci_get_db_objects_for_grantee_result.prototype = {};
-OmniSci_get_db_objects_for_grantee_result.prototype.read = function(input) {
+MapD_get_db_objects_for_grantee_result.prototype = {};
+MapD_get_db_objects_for_grantee_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -11939,7 +11965,7 @@ OmniSci_get_db_objects_for_grantee_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -11954,8 +11980,8 @@ OmniSci_get_db_objects_for_grantee_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_db_objects_for_grantee_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_db_objects_for_grantee_result');
+MapD_get_db_objects_for_grantee_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_db_objects_for_grantee_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -11980,7 +12006,7 @@ OmniSci_get_db_objects_for_grantee_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_db_object_privs_args = function(args) {
+MapD_get_db_object_privs_args = function(args) {
   this.session = null;
   this.objectName = null;
   this.type = null;
@@ -11996,8 +12022,8 @@ OmniSci_get_db_object_privs_args = function(args) {
     }
   }
 };
-OmniSci_get_db_object_privs_args.prototype = {};
-OmniSci_get_db_object_privs_args.prototype.read = function(input) {
+MapD_get_db_object_privs_args.prototype = {};
+MapD_get_db_object_privs_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12040,8 +12066,8 @@ OmniSci_get_db_object_privs_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_db_object_privs_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_db_object_privs_args');
+MapD_get_db_object_privs_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_db_object_privs_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -12062,10 +12088,10 @@ OmniSci_get_db_object_privs_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_db_object_privs_result = function(args) {
+MapD_get_db_object_privs_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -12078,8 +12104,8 @@ OmniSci_get_db_object_privs_result = function(args) {
     }
   }
 };
-OmniSci_get_db_object_privs_result.prototype = {};
-OmniSci_get_db_object_privs_result.prototype.read = function(input) {
+MapD_get_db_object_privs_result.prototype = {};
+MapD_get_db_object_privs_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12115,7 +12141,7 @@ OmniSci_get_db_object_privs_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -12130,8 +12156,8 @@ OmniSci_get_db_object_privs_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_db_object_privs_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_db_object_privs_result');
+MapD_get_db_object_privs_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_db_object_privs_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -12156,7 +12182,7 @@ OmniSci_get_db_object_privs_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_all_roles_for_user_args = function(args) {
+MapD_get_all_roles_for_user_args = function(args) {
   this.session = null;
   this.userName = null;
   if (args) {
@@ -12168,8 +12194,8 @@ OmniSci_get_all_roles_for_user_args = function(args) {
     }
   }
 };
-OmniSci_get_all_roles_for_user_args.prototype = {};
-OmniSci_get_all_roles_for_user_args.prototype.read = function(input) {
+MapD_get_all_roles_for_user_args.prototype = {};
+MapD_get_all_roles_for_user_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12205,8 +12231,8 @@ OmniSci_get_all_roles_for_user_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_all_roles_for_user_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_all_roles_for_user_args');
+MapD_get_all_roles_for_user_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_all_roles_for_user_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -12222,10 +12248,10 @@ OmniSci_get_all_roles_for_user_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_all_roles_for_user_result = function(args) {
+MapD_get_all_roles_for_user_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -12238,8 +12264,8 @@ OmniSci_get_all_roles_for_user_result = function(args) {
     }
   }
 };
-OmniSci_get_all_roles_for_user_result.prototype = {};
-OmniSci_get_all_roles_for_user_result.prototype.read = function(input) {
+MapD_get_all_roles_for_user_result.prototype = {};
+MapD_get_all_roles_for_user_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12274,7 +12300,7 @@ OmniSci_get_all_roles_for_user_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -12289,8 +12315,8 @@ OmniSci_get_all_roles_for_user_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_all_roles_for_user_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_all_roles_for_user_result');
+MapD_get_all_roles_for_user_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_all_roles_for_user_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -12315,7 +12341,7 @@ OmniSci_get_all_roles_for_user_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_has_role_args = function(args) {
+MapD_has_role_args = function(args) {
   this.session = null;
   this.granteeName = null;
   this.roleName = null;
@@ -12331,8 +12357,8 @@ OmniSci_has_role_args = function(args) {
     }
   }
 };
-OmniSci_has_role_args.prototype = {};
-OmniSci_has_role_args.prototype.read = function(input) {
+MapD_has_role_args.prototype = {};
+MapD_has_role_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12375,8 +12401,8 @@ OmniSci_has_role_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_has_role_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_has_role_args');
+MapD_has_role_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_has_role_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -12397,10 +12423,10 @@ OmniSci_has_role_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_has_role_result = function(args) {
+MapD_has_role_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -12413,8 +12439,8 @@ OmniSci_has_role_result = function(args) {
     }
   }
 };
-OmniSci_has_role_result.prototype = {};
-OmniSci_has_role_result.prototype.read = function(input) {
+MapD_has_role_result.prototype = {};
+MapD_has_role_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12436,7 +12462,7 @@ OmniSci_has_role_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -12451,8 +12477,8 @@ OmniSci_has_role_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_has_role_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_has_role_result');
+MapD_has_role_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_has_role_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.BOOL, 0);
     output.writeBool(this.success);
@@ -12468,7 +12494,7 @@ OmniSci_has_role_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_has_object_privilege_args = function(args) {
+MapD_has_object_privilege_args = function(args) {
   this.session = null;
   this.granteeName = null;
   this.ObjectName = null;
@@ -12492,8 +12518,8 @@ OmniSci_has_object_privilege_args = function(args) {
     }
   }
 };
-OmniSci_has_object_privilege_args.prototype = {};
-OmniSci_has_object_privilege_args.prototype.read = function(input) {
+MapD_has_object_privilege_args.prototype = {};
+MapD_has_object_privilege_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12551,8 +12577,8 @@ OmniSci_has_object_privilege_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_has_object_privilege_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_has_object_privilege_args');
+MapD_has_object_privilege_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_has_object_privilege_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -12583,10 +12609,10 @@ OmniSci_has_object_privilege_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_has_object_privilege_result = function(args) {
+MapD_has_object_privilege_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -12599,8 +12625,8 @@ OmniSci_has_object_privilege_result = function(args) {
     }
   }
 };
-OmniSci_has_object_privilege_result.prototype = {};
-OmniSci_has_object_privilege_result.prototype.read = function(input) {
+MapD_has_object_privilege_result.prototype = {};
+MapD_has_object_privilege_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12622,7 +12648,7 @@ OmniSci_has_object_privilege_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -12637,8 +12663,8 @@ OmniSci_has_object_privilege_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_has_object_privilege_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_has_object_privilege_result');
+MapD_has_object_privilege_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_has_object_privilege_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.BOOL, 0);
     output.writeBool(this.success);
@@ -12654,7 +12680,7 @@ OmniSci_has_object_privilege_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_license_key_args = function(args) {
+MapD_set_license_key_args = function(args) {
   this.session = null;
   this.key = null;
   this.nonce = '';
@@ -12670,8 +12696,8 @@ OmniSci_set_license_key_args = function(args) {
     }
   }
 };
-OmniSci_set_license_key_args.prototype = {};
-OmniSci_set_license_key_args.prototype.read = function(input) {
+MapD_set_license_key_args.prototype = {};
+MapD_set_license_key_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12714,8 +12740,8 @@ OmniSci_set_license_key_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_license_key_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_license_key_args');
+MapD_set_license_key_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_license_key_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -12736,10 +12762,10 @@ OmniSci_set_license_key_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_set_license_key_result = function(args) {
+MapD_set_license_key_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -12752,8 +12778,8 @@ OmniSci_set_license_key_result = function(args) {
     }
   }
 };
-OmniSci_set_license_key_result.prototype = {};
-OmniSci_set_license_key_result.prototype.read = function(input) {
+MapD_set_license_key_result.prototype = {};
+MapD_set_license_key_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12776,7 +12802,7 @@ OmniSci_set_license_key_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -12791,8 +12817,8 @@ OmniSci_set_license_key_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_set_license_key_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_set_license_key_result');
+MapD_set_license_key_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_set_license_key_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -12808,7 +12834,7 @@ OmniSci_set_license_key_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_license_claims_args = function(args) {
+MapD_get_license_claims_args = function(args) {
   this.session = null;
   this.nonce = '';
   if (args) {
@@ -12820,8 +12846,8 @@ OmniSci_get_license_claims_args = function(args) {
     }
   }
 };
-OmniSci_get_license_claims_args.prototype = {};
-OmniSci_get_license_claims_args.prototype.read = function(input) {
+MapD_get_license_claims_args.prototype = {};
+MapD_get_license_claims_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12857,8 +12883,8 @@ OmniSci_get_license_claims_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_license_claims_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_license_claims_args');
+MapD_get_license_claims_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_license_claims_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -12874,10 +12900,10 @@ OmniSci_get_license_claims_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_license_claims_result = function(args) {
+MapD_get_license_claims_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -12890,8 +12916,8 @@ OmniSci_get_license_claims_result = function(args) {
     }
   }
 };
-OmniSci_get_license_claims_result.prototype = {};
-OmniSci_get_license_claims_result.prototype.read = function(input) {
+MapD_get_license_claims_result.prototype = {};
+MapD_get_license_claims_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12914,7 +12940,7 @@ OmniSci_get_license_claims_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -12929,8 +12955,8 @@ OmniSci_get_license_claims_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_license_claims_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_license_claims_result');
+MapD_get_license_claims_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_license_claims_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -12946,7 +12972,7 @@ OmniSci_get_license_claims_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_device_parameters_args = function(args) {
+MapD_get_device_parameters_args = function(args) {
   this.session = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
@@ -12954,8 +12980,8 @@ OmniSci_get_device_parameters_args = function(args) {
     }
   }
 };
-OmniSci_get_device_parameters_args.prototype = {};
-OmniSci_get_device_parameters_args.prototype.read = function(input) {
+MapD_get_device_parameters_args.prototype = {};
+MapD_get_device_parameters_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -12987,8 +13013,8 @@ OmniSci_get_device_parameters_args.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_device_parameters_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_device_parameters_args');
+MapD_get_device_parameters_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_device_parameters_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -12999,10 +13025,10 @@ OmniSci_get_device_parameters_args.prototype.write = function(output) {
   return;
 };
 
-OmniSci_get_device_parameters_result = function(args) {
+MapD_get_device_parameters_result = function(args) {
   this.success = null;
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -13015,8 +13041,8 @@ OmniSci_get_device_parameters_result = function(args) {
     }
   }
 };
-OmniSci_get_device_parameters_result.prototype = {};
-OmniSci_get_device_parameters_result.prototype.read = function(input) {
+MapD_get_device_parameters_result.prototype = {};
+MapD_get_device_parameters_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -13060,7 +13086,7 @@ OmniSci_get_device_parameters_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -13075,8 +13101,8 @@ OmniSci_get_device_parameters_result.prototype.read = function(input) {
   return;
 };
 
-OmniSci_get_device_parameters_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_get_device_parameters_result');
+MapD_get_device_parameters_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_get_device_parameters_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.MAP, 0);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.success));
@@ -13102,7 +13128,7 @@ OmniSci_get_device_parameters_result.prototype.write = function(output) {
   return;
 };
 
-OmniSci_register_runtime_extension_functions_args = function(args) {
+MapD_register_runtime_extension_functions_args = function(args) {
   this.session = null;
   this.udfs = null;
   this.udtfs = null;
@@ -13122,8 +13148,8 @@ OmniSci_register_runtime_extension_functions_args = function(args) {
     }
   }
 };
-OmniSci_register_runtime_extension_functions_args.prototype = {};
-OmniSci_register_runtime_extension_functions_args.prototype.read = function(input) {
+MapD_register_runtime_extension_functions_args.prototype = {};
+MapD_register_runtime_extension_functions_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -13223,8 +13249,8 @@ OmniSci_register_runtime_extension_functions_args.prototype.read = function(inpu
   return;
 };
 
-OmniSci_register_runtime_extension_functions_args.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_register_runtime_extension_functions_args');
+MapD_register_runtime_extension_functions_args.prototype.write = function(output) {
+  output.writeStructBegin('MapD_register_runtime_extension_functions_args');
   if (this.session !== null && this.session !== undefined) {
     output.writeFieldBegin('session', Thrift.Type.STRING, 1);
     output.writeString(this.session);
@@ -13278,9 +13304,9 @@ OmniSci_register_runtime_extension_functions_args.prototype.write = function(out
   return;
 };
 
-OmniSci_register_runtime_extension_functions_result = function(args) {
+MapD_register_runtime_extension_functions_result = function(args) {
   this.e = null;
-  if (args instanceof TOmniSciException) {
+  if (args instanceof TMapDException) {
     this.e = args;
     return;
   }
@@ -13290,8 +13316,8 @@ OmniSci_register_runtime_extension_functions_result = function(args) {
     }
   }
 };
-OmniSci_register_runtime_extension_functions_result.prototype = {};
-OmniSci_register_runtime_extension_functions_result.prototype.read = function(input) {
+MapD_register_runtime_extension_functions_result.prototype = {};
+MapD_register_runtime_extension_functions_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -13306,7 +13332,7 @@ OmniSci_register_runtime_extension_functions_result.prototype.read = function(in
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new TOmniSciException();
+        this.e = new TMapDException();
         this.e.read(input);
       } else {
         input.skip(ftype);
@@ -13324,8 +13350,8 @@ OmniSci_register_runtime_extension_functions_result.prototype.read = function(in
   return;
 };
 
-OmniSci_register_runtime_extension_functions_result.prototype.write = function(output) {
-  output.writeStructBegin('OmniSci_register_runtime_extension_functions_result');
+MapD_register_runtime_extension_functions_result.prototype.write = function(output) {
+  output.writeStructBegin('MapD_register_runtime_extension_functions_result');
   if (this.e !== null && this.e !== undefined) {
     output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
     this.e.write(output);
@@ -13336,22 +13362,22 @@ OmniSci_register_runtime_extension_functions_result.prototype.write = function(o
   return;
 };
 
-OmniSciClient = function(input, output) {
+MapDClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
     this.seqid = 0;
 };
-OmniSciClient.prototype = {};
-OmniSciClient.prototype.connect = function(user, passwd, dbname, callback) {
+MapDClient.prototype = {};
+MapDClient.prototype.connect = function(user, passwd, dbname, callback) {
   this.send_connect(user, passwd, dbname, callback); 
   if (!callback) {
     return this.recv_connect();
   }
 };
 
-OmniSciClient.prototype.send_connect = function(user, passwd, dbname, callback) {
+MapDClient.prototype.send_connect = function(user, passwd, dbname, callback) {
   this.output.writeMessageBegin('connect', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_connect_args();
+  var args = new MapD_connect_args();
   args.user = user;
   args.passwd = passwd;
   args.dbname = dbname;
@@ -13373,7 +13399,7 @@ OmniSciClient.prototype.send_connect = function(user, passwd, dbname, callback) 
   }
 };
 
-OmniSciClient.prototype.recv_connect = function() {
+MapDClient.prototype.recv_connect = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13384,7 +13410,7 @@ OmniSciClient.prototype.recv_connect = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_connect_result();
+  var result = new MapD_connect_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13396,16 +13422,16 @@ OmniSciClient.prototype.recv_connect = function() {
   }
   throw 'connect failed: unknown result';
 };
-OmniSciClient.prototype.krb5_connect = function(inputToken, dbname, callback) {
+MapDClient.prototype.krb5_connect = function(inputToken, dbname, callback) {
   this.send_krb5_connect(inputToken, dbname, callback); 
   if (!callback) {
     return this.recv_krb5_connect();
   }
 };
 
-OmniSciClient.prototype.send_krb5_connect = function(inputToken, dbname, callback) {
+MapDClient.prototype.send_krb5_connect = function(inputToken, dbname, callback) {
   this.output.writeMessageBegin('krb5_connect', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_krb5_connect_args();
+  var args = new MapD_krb5_connect_args();
   args.inputToken = inputToken;
   args.dbname = dbname;
   args.write(this.output);
@@ -13426,7 +13452,7 @@ OmniSciClient.prototype.send_krb5_connect = function(inputToken, dbname, callbac
   }
 };
 
-OmniSciClient.prototype.recv_krb5_connect = function() {
+MapDClient.prototype.recv_krb5_connect = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13437,7 +13463,7 @@ OmniSciClient.prototype.recv_krb5_connect = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_krb5_connect_result();
+  var result = new MapD_krb5_connect_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13449,16 +13475,16 @@ OmniSciClient.prototype.recv_krb5_connect = function() {
   }
   throw 'krb5_connect failed: unknown result';
 };
-OmniSciClient.prototype.disconnect = function(session, callback) {
+MapDClient.prototype.disconnect = function(session, callback) {
   this.send_disconnect(session, callback); 
   if (!callback) {
   this.recv_disconnect();
   }
 };
 
-OmniSciClient.prototype.send_disconnect = function(session, callback) {
+MapDClient.prototype.send_disconnect = function(session, callback) {
   this.output.writeMessageBegin('disconnect', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_disconnect_args();
+  var args = new MapD_disconnect_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13478,7 +13504,7 @@ OmniSciClient.prototype.send_disconnect = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_disconnect = function() {
+MapDClient.prototype.recv_disconnect = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13489,7 +13515,7 @@ OmniSciClient.prototype.recv_disconnect = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_disconnect_result();
+  var result = new MapD_disconnect_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13498,16 +13524,16 @@ OmniSciClient.prototype.recv_disconnect = function() {
   }
   return;
 };
-OmniSciClient.prototype.switch_database = function(session, dbname, callback) {
+MapDClient.prototype.switch_database = function(session, dbname, callback) {
   this.send_switch_database(session, dbname, callback); 
   if (!callback) {
   this.recv_switch_database();
   }
 };
 
-OmniSciClient.prototype.send_switch_database = function(session, dbname, callback) {
+MapDClient.prototype.send_switch_database = function(session, dbname, callback) {
   this.output.writeMessageBegin('switch_database', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_switch_database_args();
+  var args = new MapD_switch_database_args();
   args.session = session;
   args.dbname = dbname;
   args.write(this.output);
@@ -13528,7 +13554,7 @@ OmniSciClient.prototype.send_switch_database = function(session, dbname, callbac
   }
 };
 
-OmniSciClient.prototype.recv_switch_database = function() {
+MapDClient.prototype.recv_switch_database = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13539,7 +13565,7 @@ OmniSciClient.prototype.recv_switch_database = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_switch_database_result();
+  var result = new MapD_switch_database_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13548,16 +13574,16 @@ OmniSciClient.prototype.recv_switch_database = function() {
   }
   return;
 };
-OmniSciClient.prototype.clone_session = function(session, callback) {
+MapDClient.prototype.clone_session = function(session, callback) {
   this.send_clone_session(session, callback); 
   if (!callback) {
     return this.recv_clone_session();
   }
 };
 
-OmniSciClient.prototype.send_clone_session = function(session, callback) {
+MapDClient.prototype.send_clone_session = function(session, callback) {
   this.output.writeMessageBegin('clone_session', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_clone_session_args();
+  var args = new MapD_clone_session_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13577,7 +13603,7 @@ OmniSciClient.prototype.send_clone_session = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_clone_session = function() {
+MapDClient.prototype.recv_clone_session = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13588,7 +13614,7 @@ OmniSciClient.prototype.recv_clone_session = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_clone_session_result();
+  var result = new MapD_clone_session_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13600,16 +13626,16 @@ OmniSciClient.prototype.recv_clone_session = function() {
   }
   throw 'clone_session failed: unknown result';
 };
-OmniSciClient.prototype.get_server_status = function(session, callback) {
+MapDClient.prototype.get_server_status = function(session, callback) {
   this.send_get_server_status(session, callback); 
   if (!callback) {
     return this.recv_get_server_status();
   }
 };
 
-OmniSciClient.prototype.send_get_server_status = function(session, callback) {
+MapDClient.prototype.send_get_server_status = function(session, callback) {
   this.output.writeMessageBegin('get_server_status', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_server_status_args();
+  var args = new MapD_get_server_status_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13629,7 +13655,7 @@ OmniSciClient.prototype.send_get_server_status = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_server_status = function() {
+MapDClient.prototype.recv_get_server_status = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13640,7 +13666,7 @@ OmniSciClient.prototype.recv_get_server_status = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_server_status_result();
+  var result = new MapD_get_server_status_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13652,16 +13678,16 @@ OmniSciClient.prototype.recv_get_server_status = function() {
   }
   throw 'get_server_status failed: unknown result';
 };
-OmniSciClient.prototype.get_status = function(session, callback) {
+MapDClient.prototype.get_status = function(session, callback) {
   this.send_get_status(session, callback); 
   if (!callback) {
     return this.recv_get_status();
   }
 };
 
-OmniSciClient.prototype.send_get_status = function(session, callback) {
+MapDClient.prototype.send_get_status = function(session, callback) {
   this.output.writeMessageBegin('get_status', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_status_args();
+  var args = new MapD_get_status_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13681,7 +13707,7 @@ OmniSciClient.prototype.send_get_status = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_status = function() {
+MapDClient.prototype.recv_get_status = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13692,7 +13718,7 @@ OmniSciClient.prototype.recv_get_status = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_status_result();
+  var result = new MapD_get_status_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13704,16 +13730,16 @@ OmniSciClient.prototype.recv_get_status = function() {
   }
   throw 'get_status failed: unknown result';
 };
-OmniSciClient.prototype.get_hardware_info = function(session, callback) {
+MapDClient.prototype.get_hardware_info = function(session, callback) {
   this.send_get_hardware_info(session, callback); 
   if (!callback) {
     return this.recv_get_hardware_info();
   }
 };
 
-OmniSciClient.prototype.send_get_hardware_info = function(session, callback) {
+MapDClient.prototype.send_get_hardware_info = function(session, callback) {
   this.output.writeMessageBegin('get_hardware_info', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_hardware_info_args();
+  var args = new MapD_get_hardware_info_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13733,7 +13759,7 @@ OmniSciClient.prototype.send_get_hardware_info = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_hardware_info = function() {
+MapDClient.prototype.recv_get_hardware_info = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13744,7 +13770,7 @@ OmniSciClient.prototype.recv_get_hardware_info = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_hardware_info_result();
+  var result = new MapD_get_hardware_info_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13756,16 +13782,16 @@ OmniSciClient.prototype.recv_get_hardware_info = function() {
   }
   throw 'get_hardware_info failed: unknown result';
 };
-OmniSciClient.prototype.get_tables = function(session, callback) {
+MapDClient.prototype.get_tables = function(session, callback) {
   this.send_get_tables(session, callback); 
   if (!callback) {
     return this.recv_get_tables();
   }
 };
 
-OmniSciClient.prototype.send_get_tables = function(session, callback) {
+MapDClient.prototype.send_get_tables = function(session, callback) {
   this.output.writeMessageBegin('get_tables', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_tables_args();
+  var args = new MapD_get_tables_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13785,7 +13811,7 @@ OmniSciClient.prototype.send_get_tables = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_tables = function() {
+MapDClient.prototype.recv_get_tables = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13796,7 +13822,7 @@ OmniSciClient.prototype.recv_get_tables = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_tables_result();
+  var result = new MapD_get_tables_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13808,16 +13834,16 @@ OmniSciClient.prototype.recv_get_tables = function() {
   }
   throw 'get_tables failed: unknown result';
 };
-OmniSciClient.prototype.get_physical_tables = function(session, callback) {
+MapDClient.prototype.get_physical_tables = function(session, callback) {
   this.send_get_physical_tables(session, callback); 
   if (!callback) {
     return this.recv_get_physical_tables();
   }
 };
 
-OmniSciClient.prototype.send_get_physical_tables = function(session, callback) {
+MapDClient.prototype.send_get_physical_tables = function(session, callback) {
   this.output.writeMessageBegin('get_physical_tables', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_physical_tables_args();
+  var args = new MapD_get_physical_tables_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13837,7 +13863,7 @@ OmniSciClient.prototype.send_get_physical_tables = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_physical_tables = function() {
+MapDClient.prototype.recv_get_physical_tables = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13848,7 +13874,7 @@ OmniSciClient.prototype.recv_get_physical_tables = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_physical_tables_result();
+  var result = new MapD_get_physical_tables_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13860,16 +13886,16 @@ OmniSciClient.prototype.recv_get_physical_tables = function() {
   }
   throw 'get_physical_tables failed: unknown result';
 };
-OmniSciClient.prototype.get_views = function(session, callback) {
+MapDClient.prototype.get_views = function(session, callback) {
   this.send_get_views(session, callback); 
   if (!callback) {
     return this.recv_get_views();
   }
 };
 
-OmniSciClient.prototype.send_get_views = function(session, callback) {
+MapDClient.prototype.send_get_views = function(session, callback) {
   this.output.writeMessageBegin('get_views', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_views_args();
+  var args = new MapD_get_views_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13889,7 +13915,7 @@ OmniSciClient.prototype.send_get_views = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_views = function() {
+MapDClient.prototype.recv_get_views = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13900,7 +13926,7 @@ OmniSciClient.prototype.recv_get_views = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_views_result();
+  var result = new MapD_get_views_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13912,16 +13938,16 @@ OmniSciClient.prototype.recv_get_views = function() {
   }
   throw 'get_views failed: unknown result';
 };
-OmniSciClient.prototype.get_tables_meta = function(session, callback) {
+MapDClient.prototype.get_tables_meta = function(session, callback) {
   this.send_get_tables_meta(session, callback); 
   if (!callback) {
     return this.recv_get_tables_meta();
   }
 };
 
-OmniSciClient.prototype.send_get_tables_meta = function(session, callback) {
+MapDClient.prototype.send_get_tables_meta = function(session, callback) {
   this.output.writeMessageBegin('get_tables_meta', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_tables_meta_args();
+  var args = new MapD_get_tables_meta_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -13941,7 +13967,7 @@ OmniSciClient.prototype.send_get_tables_meta = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_tables_meta = function() {
+MapDClient.prototype.recv_get_tables_meta = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -13952,7 +13978,7 @@ OmniSciClient.prototype.recv_get_tables_meta = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_tables_meta_result();
+  var result = new MapD_get_tables_meta_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -13964,16 +13990,16 @@ OmniSciClient.prototype.recv_get_tables_meta = function() {
   }
   throw 'get_tables_meta failed: unknown result';
 };
-OmniSciClient.prototype.get_table_details = function(session, table_name, callback) {
+MapDClient.prototype.get_table_details = function(session, table_name, callback) {
   this.send_get_table_details(session, table_name, callback); 
   if (!callback) {
     return this.recv_get_table_details();
   }
 };
 
-OmniSciClient.prototype.send_get_table_details = function(session, table_name, callback) {
+MapDClient.prototype.send_get_table_details = function(session, table_name, callback) {
   this.output.writeMessageBegin('get_table_details', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_table_details_args();
+  var args = new MapD_get_table_details_args();
   args.session = session;
   args.table_name = table_name;
   args.write(this.output);
@@ -13994,7 +14020,7 @@ OmniSciClient.prototype.send_get_table_details = function(session, table_name, c
   }
 };
 
-OmniSciClient.prototype.recv_get_table_details = function() {
+MapDClient.prototype.recv_get_table_details = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14005,7 +14031,7 @@ OmniSciClient.prototype.recv_get_table_details = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_table_details_result();
+  var result = new MapD_get_table_details_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14017,16 +14043,16 @@ OmniSciClient.prototype.recv_get_table_details = function() {
   }
   throw 'get_table_details failed: unknown result';
 };
-OmniSciClient.prototype.get_internal_table_details = function(session, table_name, callback) {
+MapDClient.prototype.get_internal_table_details = function(session, table_name, callback) {
   this.send_get_internal_table_details(session, table_name, callback); 
   if (!callback) {
     return this.recv_get_internal_table_details();
   }
 };
 
-OmniSciClient.prototype.send_get_internal_table_details = function(session, table_name, callback) {
+MapDClient.prototype.send_get_internal_table_details = function(session, table_name, callback) {
   this.output.writeMessageBegin('get_internal_table_details', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_internal_table_details_args();
+  var args = new MapD_get_internal_table_details_args();
   args.session = session;
   args.table_name = table_name;
   args.write(this.output);
@@ -14047,7 +14073,7 @@ OmniSciClient.prototype.send_get_internal_table_details = function(session, tabl
   }
 };
 
-OmniSciClient.prototype.recv_get_internal_table_details = function() {
+MapDClient.prototype.recv_get_internal_table_details = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14058,7 +14084,7 @@ OmniSciClient.prototype.recv_get_internal_table_details = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_internal_table_details_result();
+  var result = new MapD_get_internal_table_details_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14070,16 +14096,16 @@ OmniSciClient.prototype.recv_get_internal_table_details = function() {
   }
   throw 'get_internal_table_details failed: unknown result';
 };
-OmniSciClient.prototype.get_users = function(session, callback) {
+MapDClient.prototype.get_users = function(session, callback) {
   this.send_get_users(session, callback); 
   if (!callback) {
     return this.recv_get_users();
   }
 };
 
-OmniSciClient.prototype.send_get_users = function(session, callback) {
+MapDClient.prototype.send_get_users = function(session, callback) {
   this.output.writeMessageBegin('get_users', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_users_args();
+  var args = new MapD_get_users_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14099,7 +14125,7 @@ OmniSciClient.prototype.send_get_users = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_users = function() {
+MapDClient.prototype.recv_get_users = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14110,7 +14136,7 @@ OmniSciClient.prototype.recv_get_users = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_users_result();
+  var result = new MapD_get_users_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14122,16 +14148,16 @@ OmniSciClient.prototype.recv_get_users = function() {
   }
   throw 'get_users failed: unknown result';
 };
-OmniSciClient.prototype.get_databases = function(session, callback) {
+MapDClient.prototype.get_databases = function(session, callback) {
   this.send_get_databases(session, callback); 
   if (!callback) {
     return this.recv_get_databases();
   }
 };
 
-OmniSciClient.prototype.send_get_databases = function(session, callback) {
+MapDClient.prototype.send_get_databases = function(session, callback) {
   this.output.writeMessageBegin('get_databases', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_databases_args();
+  var args = new MapD_get_databases_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14151,7 +14177,7 @@ OmniSciClient.prototype.send_get_databases = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_databases = function() {
+MapDClient.prototype.recv_get_databases = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14162,7 +14188,7 @@ OmniSciClient.prototype.recv_get_databases = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_databases_result();
+  var result = new MapD_get_databases_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14174,16 +14200,16 @@ OmniSciClient.prototype.recv_get_databases = function() {
   }
   throw 'get_databases failed: unknown result';
 };
-OmniSciClient.prototype.get_version = function(callback) {
+MapDClient.prototype.get_version = function(callback) {
   this.send_get_version(callback); 
   if (!callback) {
     return this.recv_get_version();
   }
 };
 
-OmniSciClient.prototype.send_get_version = function(callback) {
+MapDClient.prototype.send_get_version = function(callback) {
   this.output.writeMessageBegin('get_version', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_version_args();
+  var args = new MapD_get_version_args();
   args.write(this.output);
   this.output.writeMessageEnd();
   if (callback) {
@@ -14202,7 +14228,7 @@ OmniSciClient.prototype.send_get_version = function(callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_version = function() {
+MapDClient.prototype.recv_get_version = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14213,7 +14239,7 @@ OmniSciClient.prototype.recv_get_version = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_version_result();
+  var result = new MapD_get_version_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14225,16 +14251,16 @@ OmniSciClient.prototype.recv_get_version = function() {
   }
   throw 'get_version failed: unknown result';
 };
-OmniSciClient.prototype.start_heap_profile = function(session, callback) {
+MapDClient.prototype.start_heap_profile = function(session, callback) {
   this.send_start_heap_profile(session, callback); 
   if (!callback) {
   this.recv_start_heap_profile();
   }
 };
 
-OmniSciClient.prototype.send_start_heap_profile = function(session, callback) {
+MapDClient.prototype.send_start_heap_profile = function(session, callback) {
   this.output.writeMessageBegin('start_heap_profile', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_start_heap_profile_args();
+  var args = new MapD_start_heap_profile_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14254,7 +14280,7 @@ OmniSciClient.prototype.send_start_heap_profile = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_start_heap_profile = function() {
+MapDClient.prototype.recv_start_heap_profile = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14265,7 +14291,7 @@ OmniSciClient.prototype.recv_start_heap_profile = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_start_heap_profile_result();
+  var result = new MapD_start_heap_profile_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14274,16 +14300,16 @@ OmniSciClient.prototype.recv_start_heap_profile = function() {
   }
   return;
 };
-OmniSciClient.prototype.stop_heap_profile = function(session, callback) {
+MapDClient.prototype.stop_heap_profile = function(session, callback) {
   this.send_stop_heap_profile(session, callback); 
   if (!callback) {
   this.recv_stop_heap_profile();
   }
 };
 
-OmniSciClient.prototype.send_stop_heap_profile = function(session, callback) {
+MapDClient.prototype.send_stop_heap_profile = function(session, callback) {
   this.output.writeMessageBegin('stop_heap_profile', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_stop_heap_profile_args();
+  var args = new MapD_stop_heap_profile_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14303,7 +14329,7 @@ OmniSciClient.prototype.send_stop_heap_profile = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_stop_heap_profile = function() {
+MapDClient.prototype.recv_stop_heap_profile = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14314,7 +14340,7 @@ OmniSciClient.prototype.recv_stop_heap_profile = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_stop_heap_profile_result();
+  var result = new MapD_stop_heap_profile_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14323,16 +14349,16 @@ OmniSciClient.prototype.recv_stop_heap_profile = function() {
   }
   return;
 };
-OmniSciClient.prototype.get_heap_profile = function(session, callback) {
+MapDClient.prototype.get_heap_profile = function(session, callback) {
   this.send_get_heap_profile(session, callback); 
   if (!callback) {
     return this.recv_get_heap_profile();
   }
 };
 
-OmniSciClient.prototype.send_get_heap_profile = function(session, callback) {
+MapDClient.prototype.send_get_heap_profile = function(session, callback) {
   this.output.writeMessageBegin('get_heap_profile', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_heap_profile_args();
+  var args = new MapD_get_heap_profile_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14352,7 +14378,7 @@ OmniSciClient.prototype.send_get_heap_profile = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_heap_profile = function() {
+MapDClient.prototype.recv_get_heap_profile = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14363,7 +14389,7 @@ OmniSciClient.prototype.recv_get_heap_profile = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_heap_profile_result();
+  var result = new MapD_get_heap_profile_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14375,16 +14401,16 @@ OmniSciClient.prototype.recv_get_heap_profile = function() {
   }
   throw 'get_heap_profile failed: unknown result';
 };
-OmniSciClient.prototype.get_memory = function(session, memory_level, callback) {
+MapDClient.prototype.get_memory = function(session, memory_level, callback) {
   this.send_get_memory(session, memory_level, callback); 
   if (!callback) {
     return this.recv_get_memory();
   }
 };
 
-OmniSciClient.prototype.send_get_memory = function(session, memory_level, callback) {
+MapDClient.prototype.send_get_memory = function(session, memory_level, callback) {
   this.output.writeMessageBegin('get_memory', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_memory_args();
+  var args = new MapD_get_memory_args();
   args.session = session;
   args.memory_level = memory_level;
   args.write(this.output);
@@ -14405,7 +14431,7 @@ OmniSciClient.prototype.send_get_memory = function(session, memory_level, callba
   }
 };
 
-OmniSciClient.prototype.recv_get_memory = function() {
+MapDClient.prototype.recv_get_memory = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14416,7 +14442,7 @@ OmniSciClient.prototype.recv_get_memory = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_memory_result();
+  var result = new MapD_get_memory_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14428,16 +14454,16 @@ OmniSciClient.prototype.recv_get_memory = function() {
   }
   throw 'get_memory failed: unknown result';
 };
-OmniSciClient.prototype.clear_cpu_memory = function(session, callback) {
+MapDClient.prototype.clear_cpu_memory = function(session, callback) {
   this.send_clear_cpu_memory(session, callback); 
   if (!callback) {
   this.recv_clear_cpu_memory();
   }
 };
 
-OmniSciClient.prototype.send_clear_cpu_memory = function(session, callback) {
+MapDClient.prototype.send_clear_cpu_memory = function(session, callback) {
   this.output.writeMessageBegin('clear_cpu_memory', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_clear_cpu_memory_args();
+  var args = new MapD_clear_cpu_memory_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14457,7 +14483,7 @@ OmniSciClient.prototype.send_clear_cpu_memory = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_clear_cpu_memory = function() {
+MapDClient.prototype.recv_clear_cpu_memory = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14468,7 +14494,7 @@ OmniSciClient.prototype.recv_clear_cpu_memory = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_clear_cpu_memory_result();
+  var result = new MapD_clear_cpu_memory_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14477,16 +14503,16 @@ OmniSciClient.prototype.recv_clear_cpu_memory = function() {
   }
   return;
 };
-OmniSciClient.prototype.clear_gpu_memory = function(session, callback) {
+MapDClient.prototype.clear_gpu_memory = function(session, callback) {
   this.send_clear_gpu_memory(session, callback); 
   if (!callback) {
   this.recv_clear_gpu_memory();
   }
 };
 
-OmniSciClient.prototype.send_clear_gpu_memory = function(session, callback) {
+MapDClient.prototype.send_clear_gpu_memory = function(session, callback) {
   this.output.writeMessageBegin('clear_gpu_memory', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_clear_gpu_memory_args();
+  var args = new MapD_clear_gpu_memory_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14506,7 +14532,7 @@ OmniSciClient.prototype.send_clear_gpu_memory = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_clear_gpu_memory = function() {
+MapDClient.prototype.recv_clear_gpu_memory = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14517,7 +14543,7 @@ OmniSciClient.prototype.recv_clear_gpu_memory = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_clear_gpu_memory_result();
+  var result = new MapD_clear_gpu_memory_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14526,16 +14552,16 @@ OmniSciClient.prototype.recv_clear_gpu_memory = function() {
   }
   return;
 };
-OmniSciClient.prototype.set_table_epoch = function(session, db_id, table_id, new_epoch, callback) {
+MapDClient.prototype.set_table_epoch = function(session, db_id, table_id, new_epoch, callback) {
   this.send_set_table_epoch(session, db_id, table_id, new_epoch, callback); 
   if (!callback) {
   this.recv_set_table_epoch();
   }
 };
 
-OmniSciClient.prototype.send_set_table_epoch = function(session, db_id, table_id, new_epoch, callback) {
+MapDClient.prototype.send_set_table_epoch = function(session, db_id, table_id, new_epoch, callback) {
   this.output.writeMessageBegin('set_table_epoch', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_set_table_epoch_args();
+  var args = new MapD_set_table_epoch_args();
   args.session = session;
   args.db_id = db_id;
   args.table_id = table_id;
@@ -14558,7 +14584,7 @@ OmniSciClient.prototype.send_set_table_epoch = function(session, db_id, table_id
   }
 };
 
-OmniSciClient.prototype.recv_set_table_epoch = function() {
+MapDClient.prototype.recv_set_table_epoch = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14569,7 +14595,7 @@ OmniSciClient.prototype.recv_set_table_epoch = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_set_table_epoch_result();
+  var result = new MapD_set_table_epoch_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14578,16 +14604,16 @@ OmniSciClient.prototype.recv_set_table_epoch = function() {
   }
   return;
 };
-OmniSciClient.prototype.set_table_epoch_by_name = function(session, table_name, new_epoch, callback) {
+MapDClient.prototype.set_table_epoch_by_name = function(session, table_name, new_epoch, callback) {
   this.send_set_table_epoch_by_name(session, table_name, new_epoch, callback); 
   if (!callback) {
   this.recv_set_table_epoch_by_name();
   }
 };
 
-OmniSciClient.prototype.send_set_table_epoch_by_name = function(session, table_name, new_epoch, callback) {
+MapDClient.prototype.send_set_table_epoch_by_name = function(session, table_name, new_epoch, callback) {
   this.output.writeMessageBegin('set_table_epoch_by_name', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_set_table_epoch_by_name_args();
+  var args = new MapD_set_table_epoch_by_name_args();
   args.session = session;
   args.table_name = table_name;
   args.new_epoch = new_epoch;
@@ -14609,7 +14635,7 @@ OmniSciClient.prototype.send_set_table_epoch_by_name = function(session, table_n
   }
 };
 
-OmniSciClient.prototype.recv_set_table_epoch_by_name = function() {
+MapDClient.prototype.recv_set_table_epoch_by_name = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14620,7 +14646,7 @@ OmniSciClient.prototype.recv_set_table_epoch_by_name = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_set_table_epoch_by_name_result();
+  var result = new MapD_set_table_epoch_by_name_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14629,16 +14655,16 @@ OmniSciClient.prototype.recv_set_table_epoch_by_name = function() {
   }
   return;
 };
-OmniSciClient.prototype.get_table_epoch = function(session, db_id, table_id, callback) {
+MapDClient.prototype.get_table_epoch = function(session, db_id, table_id, callback) {
   this.send_get_table_epoch(session, db_id, table_id, callback); 
   if (!callback) {
     return this.recv_get_table_epoch();
   }
 };
 
-OmniSciClient.prototype.send_get_table_epoch = function(session, db_id, table_id, callback) {
+MapDClient.prototype.send_get_table_epoch = function(session, db_id, table_id, callback) {
   this.output.writeMessageBegin('get_table_epoch', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_table_epoch_args();
+  var args = new MapD_get_table_epoch_args();
   args.session = session;
   args.db_id = db_id;
   args.table_id = table_id;
@@ -14660,7 +14686,7 @@ OmniSciClient.prototype.send_get_table_epoch = function(session, db_id, table_id
   }
 };
 
-OmniSciClient.prototype.recv_get_table_epoch = function() {
+MapDClient.prototype.recv_get_table_epoch = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14671,7 +14697,7 @@ OmniSciClient.prototype.recv_get_table_epoch = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_table_epoch_result();
+  var result = new MapD_get_table_epoch_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14680,16 +14706,16 @@ OmniSciClient.prototype.recv_get_table_epoch = function() {
   }
   throw 'get_table_epoch failed: unknown result';
 };
-OmniSciClient.prototype.get_table_epoch_by_name = function(session, table_name, callback) {
+MapDClient.prototype.get_table_epoch_by_name = function(session, table_name, callback) {
   this.send_get_table_epoch_by_name(session, table_name, callback); 
   if (!callback) {
     return this.recv_get_table_epoch_by_name();
   }
 };
 
-OmniSciClient.prototype.send_get_table_epoch_by_name = function(session, table_name, callback) {
+MapDClient.prototype.send_get_table_epoch_by_name = function(session, table_name, callback) {
   this.output.writeMessageBegin('get_table_epoch_by_name', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_table_epoch_by_name_args();
+  var args = new MapD_get_table_epoch_by_name_args();
   args.session = session;
   args.table_name = table_name;
   args.write(this.output);
@@ -14710,7 +14736,7 @@ OmniSciClient.prototype.send_get_table_epoch_by_name = function(session, table_n
   }
 };
 
-OmniSciClient.prototype.recv_get_table_epoch_by_name = function() {
+MapDClient.prototype.recv_get_table_epoch_by_name = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14721,7 +14747,7 @@ OmniSciClient.prototype.recv_get_table_epoch_by_name = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_table_epoch_by_name_result();
+  var result = new MapD_get_table_epoch_by_name_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14730,6 +14756,7 @@ OmniSciClient.prototype.recv_get_table_epoch_by_name = function() {
   }
   throw 'get_table_epoch_by_name failed: unknown result';
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.get_table_epochs = function(session, db_id, table_id, callback) {
   this.send_get_table_epochs(session, db_id, table_id, callback); 
   if (!callback) {
@@ -14830,15 +14857,18 @@ OmniSciClient.prototype.recv_set_table_epochs = function() {
   return;
 };
 OmniSciClient.prototype.get_session_info = function(session, callback) {
+=======
+MapDClient.prototype.get_session_info = function(session, callback) {
+>>>>>>> Update Thrift
   this.send_get_session_info(session, callback); 
   if (!callback) {
     return this.recv_get_session_info();
   }
 };
 
-OmniSciClient.prototype.send_get_session_info = function(session, callback) {
+MapDClient.prototype.send_get_session_info = function(session, callback) {
   this.output.writeMessageBegin('get_session_info', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_session_info_args();
+  var args = new MapD_get_session_info_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -14858,7 +14888,7 @@ OmniSciClient.prototype.send_get_session_info = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_session_info = function() {
+MapDClient.prototype.recv_get_session_info = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14869,7 +14899,7 @@ OmniSciClient.prototype.recv_get_session_info = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_session_info_result();
+  var result = new MapD_get_session_info_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14881,16 +14911,16 @@ OmniSciClient.prototype.recv_get_session_info = function() {
   }
   throw 'get_session_info failed: unknown result';
 };
-OmniSciClient.prototype.sql_execute = function(session, query, column_format, nonce, first_n, at_most_n, callback) {
+MapDClient.prototype.sql_execute = function(session, query, column_format, nonce, first_n, at_most_n, callback) {
   this.send_sql_execute(session, query, column_format, nonce, first_n, at_most_n, callback); 
   if (!callback) {
     return this.recv_sql_execute();
   }
 };
 
-OmniSciClient.prototype.send_sql_execute = function(session, query, column_format, nonce, first_n, at_most_n, callback) {
+MapDClient.prototype.send_sql_execute = function(session, query, column_format, nonce, first_n, at_most_n, callback) {
   this.output.writeMessageBegin('sql_execute', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_sql_execute_args();
+  var args = new MapD_sql_execute_args();
   args.session = session;
   args.query = query;
   args.column_format = column_format;
@@ -14915,7 +14945,7 @@ OmniSciClient.prototype.send_sql_execute = function(session, query, column_forma
   }
 };
 
-OmniSciClient.prototype.recv_sql_execute = function() {
+MapDClient.prototype.recv_sql_execute = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14926,7 +14956,7 @@ OmniSciClient.prototype.recv_sql_execute = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_sql_execute_result();
+  var result = new MapD_sql_execute_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14938,16 +14968,25 @@ OmniSciClient.prototype.recv_sql_execute = function() {
   }
   throw 'sql_execute failed: unknown result';
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.sql_execute_df = function(session, query, device_type, device_id, first_n, transport_method, callback) {
   this.send_sql_execute_df(session, query, device_type, device_id, first_n, transport_method, callback); 
+=======
+MapDClient.prototype.sql_execute_df = function(session, query, device_type, device_id, first_n, callback) {
+  this.send_sql_execute_df(session, query, device_type, device_id, first_n, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
     return this.recv_sql_execute_df();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_sql_execute_df = function(session, query, device_type, device_id, first_n, transport_method, callback) {
+=======
+MapDClient.prototype.send_sql_execute_df = function(session, query, device_type, device_id, first_n, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('sql_execute_df', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_sql_execute_df_args();
+  var args = new MapD_sql_execute_df_args();
   args.session = session;
   args.query = query;
   args.device_type = device_type;
@@ -14972,7 +15011,7 @@ OmniSciClient.prototype.send_sql_execute_df = function(session, query, device_ty
   }
 };
 
-OmniSciClient.prototype.recv_sql_execute_df = function() {
+MapDClient.prototype.recv_sql_execute_df = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -14983,7 +15022,7 @@ OmniSciClient.prototype.recv_sql_execute_df = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_sql_execute_df_result();
+  var result = new MapD_sql_execute_df_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -14995,16 +15034,16 @@ OmniSciClient.prototype.recv_sql_execute_df = function() {
   }
   throw 'sql_execute_df failed: unknown result';
 };
-OmniSciClient.prototype.sql_execute_gdf = function(session, query, device_id, first_n, callback) {
+MapDClient.prototype.sql_execute_gdf = function(session, query, device_id, first_n, callback) {
   this.send_sql_execute_gdf(session, query, device_id, first_n, callback); 
   if (!callback) {
     return this.recv_sql_execute_gdf();
   }
 };
 
-OmniSciClient.prototype.send_sql_execute_gdf = function(session, query, device_id, first_n, callback) {
+MapDClient.prototype.send_sql_execute_gdf = function(session, query, device_id, first_n, callback) {
   this.output.writeMessageBegin('sql_execute_gdf', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_sql_execute_gdf_args();
+  var args = new MapD_sql_execute_gdf_args();
   args.session = session;
   args.query = query;
   args.device_id = device_id;
@@ -15027,7 +15066,7 @@ OmniSciClient.prototype.send_sql_execute_gdf = function(session, query, device_i
   }
 };
 
-OmniSciClient.prototype.recv_sql_execute_gdf = function() {
+MapDClient.prototype.recv_sql_execute_gdf = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15038,7 +15077,7 @@ OmniSciClient.prototype.recv_sql_execute_gdf = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_sql_execute_gdf_result();
+  var result = new MapD_sql_execute_gdf_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15050,16 +15089,16 @@ OmniSciClient.prototype.recv_sql_execute_gdf = function() {
   }
   throw 'sql_execute_gdf failed: unknown result';
 };
-OmniSciClient.prototype.deallocate_df = function(session, df, device_type, device_id, callback) {
+MapDClient.prototype.deallocate_df = function(session, df, device_type, device_id, callback) {
   this.send_deallocate_df(session, df, device_type, device_id, callback); 
   if (!callback) {
   this.recv_deallocate_df();
   }
 };
 
-OmniSciClient.prototype.send_deallocate_df = function(session, df, device_type, device_id, callback) {
+MapDClient.prototype.send_deallocate_df = function(session, df, device_type, device_id, callback) {
   this.output.writeMessageBegin('deallocate_df', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_deallocate_df_args();
+  var args = new MapD_deallocate_df_args();
   args.session = session;
   args.df = df;
   args.device_type = device_type;
@@ -15082,7 +15121,7 @@ OmniSciClient.prototype.send_deallocate_df = function(session, df, device_type, 
   }
 };
 
-OmniSciClient.prototype.recv_deallocate_df = function() {
+MapDClient.prototype.recv_deallocate_df = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15093,7 +15132,7 @@ OmniSciClient.prototype.recv_deallocate_df = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_deallocate_df_result();
+  var result = new MapD_deallocate_df_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15102,16 +15141,16 @@ OmniSciClient.prototype.recv_deallocate_df = function() {
   }
   return;
 };
-OmniSciClient.prototype.interrupt = function(query_session, interrupt_session, callback) {
+MapDClient.prototype.interrupt = function(query_session, interrupt_session, callback) {
   this.send_interrupt(query_session, interrupt_session, callback); 
   if (!callback) {
   this.recv_interrupt();
   }
 };
 
-OmniSciClient.prototype.send_interrupt = function(query_session, interrupt_session, callback) {
+MapDClient.prototype.send_interrupt = function(query_session, interrupt_session, callback) {
   this.output.writeMessageBegin('interrupt', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_interrupt_args();
+  var args = new MapD_interrupt_args();
   args.query_session = query_session;
   args.interrupt_session = interrupt_session;
   args.write(this.output);
@@ -15132,7 +15171,7 @@ OmniSciClient.prototype.send_interrupt = function(query_session, interrupt_sessi
   }
 };
 
-OmniSciClient.prototype.recv_interrupt = function() {
+MapDClient.prototype.recv_interrupt = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15143,7 +15182,7 @@ OmniSciClient.prototype.recv_interrupt = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_interrupt_result();
+  var result = new MapD_interrupt_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15152,16 +15191,16 @@ OmniSciClient.prototype.recv_interrupt = function() {
   }
   return;
 };
-OmniSciClient.prototype.sql_validate = function(session, query, callback) {
+MapDClient.prototype.sql_validate = function(session, query, callback) {
   this.send_sql_validate(session, query, callback); 
   if (!callback) {
     return this.recv_sql_validate();
   }
 };
 
-OmniSciClient.prototype.send_sql_validate = function(session, query, callback) {
+MapDClient.prototype.send_sql_validate = function(session, query, callback) {
   this.output.writeMessageBegin('sql_validate', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_sql_validate_args();
+  var args = new MapD_sql_validate_args();
   args.session = session;
   args.query = query;
   args.write(this.output);
@@ -15182,7 +15221,7 @@ OmniSciClient.prototype.send_sql_validate = function(session, query, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_sql_validate = function() {
+MapDClient.prototype.recv_sql_validate = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15193,7 +15232,7 @@ OmniSciClient.prototype.recv_sql_validate = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_sql_validate_result();
+  var result = new MapD_sql_validate_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15205,16 +15244,16 @@ OmniSciClient.prototype.recv_sql_validate = function() {
   }
   throw 'sql_validate failed: unknown result';
 };
-OmniSciClient.prototype.get_completion_hints = function(session, sql, cursor, callback) {
+MapDClient.prototype.get_completion_hints = function(session, sql, cursor, callback) {
   this.send_get_completion_hints(session, sql, cursor, callback); 
   if (!callback) {
     return this.recv_get_completion_hints();
   }
 };
 
-OmniSciClient.prototype.send_get_completion_hints = function(session, sql, cursor, callback) {
+MapDClient.prototype.send_get_completion_hints = function(session, sql, cursor, callback) {
   this.output.writeMessageBegin('get_completion_hints', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_completion_hints_args();
+  var args = new MapD_get_completion_hints_args();
   args.session = session;
   args.sql = sql;
   args.cursor = cursor;
@@ -15236,7 +15275,7 @@ OmniSciClient.prototype.send_get_completion_hints = function(session, sql, curso
   }
 };
 
-OmniSciClient.prototype.recv_get_completion_hints = function() {
+MapDClient.prototype.recv_get_completion_hints = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15247,7 +15286,7 @@ OmniSciClient.prototype.recv_get_completion_hints = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_completion_hints_result();
+  var result = new MapD_get_completion_hints_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15259,16 +15298,16 @@ OmniSciClient.prototype.recv_get_completion_hints = function() {
   }
   throw 'get_completion_hints failed: unknown result';
 };
-OmniSciClient.prototype.set_execution_mode = function(session, mode, callback) {
+MapDClient.prototype.set_execution_mode = function(session, mode, callback) {
   this.send_set_execution_mode(session, mode, callback); 
   if (!callback) {
   this.recv_set_execution_mode();
   }
 };
 
-OmniSciClient.prototype.send_set_execution_mode = function(session, mode, callback) {
+MapDClient.prototype.send_set_execution_mode = function(session, mode, callback) {
   this.output.writeMessageBegin('set_execution_mode', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_set_execution_mode_args();
+  var args = new MapD_set_execution_mode_args();
   args.session = session;
   args.mode = mode;
   args.write(this.output);
@@ -15289,7 +15328,7 @@ OmniSciClient.prototype.send_set_execution_mode = function(session, mode, callba
   }
 };
 
-OmniSciClient.prototype.recv_set_execution_mode = function() {
+MapDClient.prototype.recv_set_execution_mode = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15300,7 +15339,7 @@ OmniSciClient.prototype.recv_set_execution_mode = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_set_execution_mode_result();
+  var result = new MapD_set_execution_mode_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15309,16 +15348,16 @@ OmniSciClient.prototype.recv_set_execution_mode = function() {
   }
   return;
 };
-OmniSciClient.prototype.render_vega = function(session, widget_id, vega_json, compression_level, nonce, callback) {
+MapDClient.prototype.render_vega = function(session, widget_id, vega_json, compression_level, nonce, callback) {
   this.send_render_vega(session, widget_id, vega_json, compression_level, nonce, callback); 
   if (!callback) {
     return this.recv_render_vega();
   }
 };
 
-OmniSciClient.prototype.send_render_vega = function(session, widget_id, vega_json, compression_level, nonce, callback) {
+MapDClient.prototype.send_render_vega = function(session, widget_id, vega_json, compression_level, nonce, callback) {
   this.output.writeMessageBegin('render_vega', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_render_vega_args();
+  var args = new MapD_render_vega_args();
   args.session = session;
   args.widget_id = widget_id;
   args.vega_json = vega_json;
@@ -15342,7 +15381,7 @@ OmniSciClient.prototype.send_render_vega = function(session, widget_id, vega_jso
   }
 };
 
-OmniSciClient.prototype.recv_render_vega = function() {
+MapDClient.prototype.recv_render_vega = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15353,7 +15392,7 @@ OmniSciClient.prototype.recv_render_vega = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_render_vega_result();
+  var result = new MapD_render_vega_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15365,16 +15404,16 @@ OmniSciClient.prototype.recv_render_vega = function() {
   }
   throw 'render_vega failed: unknown result';
 };
-OmniSciClient.prototype.get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
+MapDClient.prototype.get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
   this.send_get_result_row_for_pixel(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback); 
   if (!callback) {
     return this.recv_get_result_row_for_pixel();
   }
 };
 
-OmniSciClient.prototype.send_get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
+MapDClient.prototype.send_get_result_row_for_pixel = function(session, widget_id, pixel, table_col_names, column_format, pixelRadius, nonce, callback) {
   this.output.writeMessageBegin('get_result_row_for_pixel', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_result_row_for_pixel_args();
+  var args = new MapD_get_result_row_for_pixel_args();
   args.session = session;
   args.widget_id = widget_id;
   args.pixel = pixel;
@@ -15400,7 +15439,7 @@ OmniSciClient.prototype.send_get_result_row_for_pixel = function(session, widget
   }
 };
 
-OmniSciClient.prototype.recv_get_result_row_for_pixel = function() {
+MapDClient.prototype.recv_get_result_row_for_pixel = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15411,7 +15450,7 @@ OmniSciClient.prototype.recv_get_result_row_for_pixel = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_result_row_for_pixel_result();
+  var result = new MapD_get_result_row_for_pixel_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15423,16 +15462,16 @@ OmniSciClient.prototype.recv_get_result_row_for_pixel = function() {
   }
   throw 'get_result_row_for_pixel failed: unknown result';
 };
-OmniSciClient.prototype.get_dashboard = function(session, dashboard_id, callback) {
+MapDClient.prototype.get_dashboard = function(session, dashboard_id, callback) {
   this.send_get_dashboard(session, dashboard_id, callback); 
   if (!callback) {
     return this.recv_get_dashboard();
   }
 };
 
-OmniSciClient.prototype.send_get_dashboard = function(session, dashboard_id, callback) {
+MapDClient.prototype.send_get_dashboard = function(session, dashboard_id, callback) {
   this.output.writeMessageBegin('get_dashboard', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_dashboard_args();
+  var args = new MapD_get_dashboard_args();
   args.session = session;
   args.dashboard_id = dashboard_id;
   args.write(this.output);
@@ -15453,7 +15492,7 @@ OmniSciClient.prototype.send_get_dashboard = function(session, dashboard_id, cal
   }
 };
 
-OmniSciClient.prototype.recv_get_dashboard = function() {
+MapDClient.prototype.recv_get_dashboard = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15464,7 +15503,7 @@ OmniSciClient.prototype.recv_get_dashboard = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_dashboard_result();
+  var result = new MapD_get_dashboard_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15476,16 +15515,16 @@ OmniSciClient.prototype.recv_get_dashboard = function() {
   }
   throw 'get_dashboard failed: unknown result';
 };
-OmniSciClient.prototype.get_dashboards = function(session, callback) {
+MapDClient.prototype.get_dashboards = function(session, callback) {
   this.send_get_dashboards(session, callback); 
   if (!callback) {
     return this.recv_get_dashboards();
   }
 };
 
-OmniSciClient.prototype.send_get_dashboards = function(session, callback) {
+MapDClient.prototype.send_get_dashboards = function(session, callback) {
   this.output.writeMessageBegin('get_dashboards', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_dashboards_args();
+  var args = new MapD_get_dashboards_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -15505,7 +15544,7 @@ OmniSciClient.prototype.send_get_dashboards = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_dashboards = function() {
+MapDClient.prototype.recv_get_dashboards = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15516,7 +15555,7 @@ OmniSciClient.prototype.recv_get_dashboards = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_dashboards_result();
+  var result = new MapD_get_dashboards_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15528,16 +15567,16 @@ OmniSciClient.prototype.recv_get_dashboards = function() {
   }
   throw 'get_dashboards failed: unknown result';
 };
-OmniSciClient.prototype.create_dashboard = function(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback) {
+MapDClient.prototype.create_dashboard = function(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback) {
   this.send_create_dashboard(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback); 
   if (!callback) {
     return this.recv_create_dashboard();
   }
 };
 
-OmniSciClient.prototype.send_create_dashboard = function(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback) {
+MapDClient.prototype.send_create_dashboard = function(session, dashboard_name, dashboard_state, image_hash, dashboard_metadata, callback) {
   this.output.writeMessageBegin('create_dashboard', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_create_dashboard_args();
+  var args = new MapD_create_dashboard_args();
   args.session = session;
   args.dashboard_name = dashboard_name;
   args.dashboard_state = dashboard_state;
@@ -15561,7 +15600,7 @@ OmniSciClient.prototype.send_create_dashboard = function(session, dashboard_name
   }
 };
 
-OmniSciClient.prototype.recv_create_dashboard = function() {
+MapDClient.prototype.recv_create_dashboard = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15572,7 +15611,7 @@ OmniSciClient.prototype.recv_create_dashboard = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_create_dashboard_result();
+  var result = new MapD_create_dashboard_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15584,16 +15623,16 @@ OmniSciClient.prototype.recv_create_dashboard = function() {
   }
   throw 'create_dashboard failed: unknown result';
 };
-OmniSciClient.prototype.replace_dashboard = function(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback) {
+MapDClient.prototype.replace_dashboard = function(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback) {
   this.send_replace_dashboard(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback); 
   if (!callback) {
   this.recv_replace_dashboard();
   }
 };
 
-OmniSciClient.prototype.send_replace_dashboard = function(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback) {
+MapDClient.prototype.send_replace_dashboard = function(session, dashboard_id, dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata, callback) {
   this.output.writeMessageBegin('replace_dashboard', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_replace_dashboard_args();
+  var args = new MapD_replace_dashboard_args();
   args.session = session;
   args.dashboard_id = dashboard_id;
   args.dashboard_name = dashboard_name;
@@ -15619,7 +15658,7 @@ OmniSciClient.prototype.send_replace_dashboard = function(session, dashboard_id,
   }
 };
 
-OmniSciClient.prototype.recv_replace_dashboard = function() {
+MapDClient.prototype.recv_replace_dashboard = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15630,7 +15669,7 @@ OmniSciClient.prototype.recv_replace_dashboard = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_replace_dashboard_result();
+  var result = new MapD_replace_dashboard_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15639,16 +15678,16 @@ OmniSciClient.prototype.recv_replace_dashboard = function() {
   }
   return;
 };
-OmniSciClient.prototype.delete_dashboard = function(session, dashboard_id, callback) {
+MapDClient.prototype.delete_dashboard = function(session, dashboard_id, callback) {
   this.send_delete_dashboard(session, dashboard_id, callback); 
   if (!callback) {
   this.recv_delete_dashboard();
   }
 };
 
-OmniSciClient.prototype.send_delete_dashboard = function(session, dashboard_id, callback) {
+MapDClient.prototype.send_delete_dashboard = function(session, dashboard_id, callback) {
   this.output.writeMessageBegin('delete_dashboard', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_delete_dashboard_args();
+  var args = new MapD_delete_dashboard_args();
   args.session = session;
   args.dashboard_id = dashboard_id;
   args.write(this.output);
@@ -15669,7 +15708,7 @@ OmniSciClient.prototype.send_delete_dashboard = function(session, dashboard_id, 
   }
 };
 
-OmniSciClient.prototype.recv_delete_dashboard = function() {
+MapDClient.prototype.recv_delete_dashboard = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15680,7 +15719,7 @@ OmniSciClient.prototype.recv_delete_dashboard = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_delete_dashboard_result();
+  var result = new MapD_delete_dashboard_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15689,6 +15728,7 @@ OmniSciClient.prototype.recv_delete_dashboard = function() {
   }
   return;
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.share_dashboards = function(session, dashboard_ids, groups, permissions, callback) {
   this.send_share_dashboards(session, dashboard_ids, groups, permissions, callback); 
   if (!callback) {
@@ -15792,15 +15832,18 @@ OmniSciClient.prototype.recv_delete_dashboards = function() {
   return;
 };
 OmniSciClient.prototype.share_dashboard = function(session, dashboard_id, groups, objects, permissions, grant_role, callback) {
+=======
+MapDClient.prototype.share_dashboard = function(session, dashboard_id, groups, objects, permissions, grant_role, callback) {
+>>>>>>> Update Thrift
   this.send_share_dashboard(session, dashboard_id, groups, objects, permissions, grant_role, callback); 
   if (!callback) {
   this.recv_share_dashboard();
   }
 };
 
-OmniSciClient.prototype.send_share_dashboard = function(session, dashboard_id, groups, objects, permissions, grant_role, callback) {
+MapDClient.prototype.send_share_dashboard = function(session, dashboard_id, groups, objects, permissions, grant_role, callback) {
   this.output.writeMessageBegin('share_dashboard', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_share_dashboard_args();
+  var args = new MapD_share_dashboard_args();
   args.session = session;
   args.dashboard_id = dashboard_id;
   args.groups = groups;
@@ -15825,7 +15868,7 @@ OmniSciClient.prototype.send_share_dashboard = function(session, dashboard_id, g
   }
 };
 
-OmniSciClient.prototype.recv_share_dashboard = function() {
+MapDClient.prototype.recv_share_dashboard = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15836,7 +15879,7 @@ OmniSciClient.prototype.recv_share_dashboard = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_share_dashboard_result();
+  var result = new MapD_share_dashboard_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15845,16 +15888,16 @@ OmniSciClient.prototype.recv_share_dashboard = function() {
   }
   return;
 };
-OmniSciClient.prototype.unshare_dashboard = function(session, dashboard_id, groups, objects, permissions, callback) {
+MapDClient.prototype.unshare_dashboard = function(session, dashboard_id, groups, objects, permissions, callback) {
   this.send_unshare_dashboard(session, dashboard_id, groups, objects, permissions, callback); 
   if (!callback) {
   this.recv_unshare_dashboard();
   }
 };
 
-OmniSciClient.prototype.send_unshare_dashboard = function(session, dashboard_id, groups, objects, permissions, callback) {
+MapDClient.prototype.send_unshare_dashboard = function(session, dashboard_id, groups, objects, permissions, callback) {
   this.output.writeMessageBegin('unshare_dashboard', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_unshare_dashboard_args();
+  var args = new MapD_unshare_dashboard_args();
   args.session = session;
   args.dashboard_id = dashboard_id;
   args.groups = groups;
@@ -15878,7 +15921,7 @@ OmniSciClient.prototype.send_unshare_dashboard = function(session, dashboard_id,
   }
 };
 
-OmniSciClient.prototype.recv_unshare_dashboard = function() {
+MapDClient.prototype.recv_unshare_dashboard = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15889,7 +15932,7 @@ OmniSciClient.prototype.recv_unshare_dashboard = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_unshare_dashboard_result();
+  var result = new MapD_unshare_dashboard_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -15898,6 +15941,7 @@ OmniSciClient.prototype.recv_unshare_dashboard = function() {
   }
   return;
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.unshare_dashboards = function(session, dashboard_ids, groups, permissions, callback) {
   this.send_unshare_dashboards(session, dashboard_ids, groups, permissions, callback); 
   if (!callback) {
@@ -15951,15 +15995,18 @@ OmniSciClient.prototype.recv_unshare_dashboards = function() {
   return;
 };
 OmniSciClient.prototype.get_dashboard_grantees = function(session, dashboard_id, callback) {
+=======
+MapDClient.prototype.get_dashboard_grantees = function(session, dashboard_id, callback) {
+>>>>>>> Update Thrift
   this.send_get_dashboard_grantees(session, dashboard_id, callback); 
   if (!callback) {
     return this.recv_get_dashboard_grantees();
   }
 };
 
-OmniSciClient.prototype.send_get_dashboard_grantees = function(session, dashboard_id, callback) {
+MapDClient.prototype.send_get_dashboard_grantees = function(session, dashboard_id, callback) {
   this.output.writeMessageBegin('get_dashboard_grantees', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_dashboard_grantees_args();
+  var args = new MapD_get_dashboard_grantees_args();
   args.session = session;
   args.dashboard_id = dashboard_id;
   args.write(this.output);
@@ -15980,7 +16027,7 @@ OmniSciClient.prototype.send_get_dashboard_grantees = function(session, dashboar
   }
 };
 
-OmniSciClient.prototype.recv_get_dashboard_grantees = function() {
+MapDClient.prototype.recv_get_dashboard_grantees = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -15991,7 +16038,7 @@ OmniSciClient.prototype.recv_get_dashboard_grantees = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_dashboard_grantees_result();
+  var result = new MapD_get_dashboard_grantees_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16003,16 +16050,16 @@ OmniSciClient.prototype.recv_get_dashboard_grantees = function() {
   }
   throw 'get_dashboard_grantees failed: unknown result';
 };
-OmniSciClient.prototype.get_link_view = function(session, link, callback) {
+MapDClient.prototype.get_link_view = function(session, link, callback) {
   this.send_get_link_view(session, link, callback); 
   if (!callback) {
     return this.recv_get_link_view();
   }
 };
 
-OmniSciClient.prototype.send_get_link_view = function(session, link, callback) {
+MapDClient.prototype.send_get_link_view = function(session, link, callback) {
   this.output.writeMessageBegin('get_link_view', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_link_view_args();
+  var args = new MapD_get_link_view_args();
   args.session = session;
   args.link = link;
   args.write(this.output);
@@ -16033,7 +16080,7 @@ OmniSciClient.prototype.send_get_link_view = function(session, link, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_link_view = function() {
+MapDClient.prototype.recv_get_link_view = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16044,7 +16091,7 @@ OmniSciClient.prototype.recv_get_link_view = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_link_view_result();
+  var result = new MapD_get_link_view_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16056,16 +16103,16 @@ OmniSciClient.prototype.recv_get_link_view = function() {
   }
   throw 'get_link_view failed: unknown result';
 };
-OmniSciClient.prototype.create_link = function(session, view_state, view_metadata, callback) {
+MapDClient.prototype.create_link = function(session, view_state, view_metadata, callback) {
   this.send_create_link(session, view_state, view_metadata, callback); 
   if (!callback) {
     return this.recv_create_link();
   }
 };
 
-OmniSciClient.prototype.send_create_link = function(session, view_state, view_metadata, callback) {
+MapDClient.prototype.send_create_link = function(session, view_state, view_metadata, callback) {
   this.output.writeMessageBegin('create_link', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_create_link_args();
+  var args = new MapD_create_link_args();
   args.session = session;
   args.view_state = view_state;
   args.view_metadata = view_metadata;
@@ -16087,7 +16134,7 @@ OmniSciClient.prototype.send_create_link = function(session, view_state, view_me
   }
 };
 
-OmniSciClient.prototype.recv_create_link = function() {
+MapDClient.prototype.recv_create_link = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16098,7 +16145,7 @@ OmniSciClient.prototype.recv_create_link = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_create_link_result();
+  var result = new MapD_create_link_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16110,16 +16157,25 @@ OmniSciClient.prototype.recv_create_link = function() {
   }
   throw 'create_link failed: unknown result';
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.load_table_binary = function(session, table_name, rows, column_names, callback) {
   this.send_load_table_binary(session, table_name, rows, column_names, callback); 
+=======
+MapDClient.prototype.load_table_binary = function(session, table_name, rows, callback) {
+  this.send_load_table_binary(session, table_name, rows, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
   this.recv_load_table_binary();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_load_table_binary = function(session, table_name, rows, column_names, callback) {
+=======
+MapDClient.prototype.send_load_table_binary = function(session, table_name, rows, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('load_table_binary', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_load_table_binary_args();
+  var args = new MapD_load_table_binary_args();
   args.session = session;
   args.table_name = table_name;
   args.rows = rows;
@@ -16142,7 +16198,7 @@ OmniSciClient.prototype.send_load_table_binary = function(session, table_name, r
   }
 };
 
-OmniSciClient.prototype.recv_load_table_binary = function() {
+MapDClient.prototype.recv_load_table_binary = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16153,7 +16209,7 @@ OmniSciClient.prototype.recv_load_table_binary = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_load_table_binary_result();
+  var result = new MapD_load_table_binary_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16162,16 +16218,25 @@ OmniSciClient.prototype.recv_load_table_binary = function() {
   }
   return;
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.load_table_binary_columnar = function(session, table_name, cols, column_names, callback) {
   this.send_load_table_binary_columnar(session, table_name, cols, column_names, callback); 
+=======
+MapDClient.prototype.load_table_binary_columnar = function(session, table_name, cols, callback) {
+  this.send_load_table_binary_columnar(session, table_name, cols, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
   this.recv_load_table_binary_columnar();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_load_table_binary_columnar = function(session, table_name, cols, column_names, callback) {
+=======
+MapDClient.prototype.send_load_table_binary_columnar = function(session, table_name, cols, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('load_table_binary_columnar', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_load_table_binary_columnar_args();
+  var args = new MapD_load_table_binary_columnar_args();
   args.session = session;
   args.table_name = table_name;
   args.cols = cols;
@@ -16194,7 +16259,7 @@ OmniSciClient.prototype.send_load_table_binary_columnar = function(session, tabl
   }
 };
 
-OmniSciClient.prototype.recv_load_table_binary_columnar = function() {
+MapDClient.prototype.recv_load_table_binary_columnar = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16205,7 +16270,7 @@ OmniSciClient.prototype.recv_load_table_binary_columnar = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_load_table_binary_columnar_result();
+  var result = new MapD_load_table_binary_columnar_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16214,16 +16279,25 @@ OmniSciClient.prototype.recv_load_table_binary_columnar = function() {
   }
   return;
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.load_table_binary_arrow = function(session, table_name, arrow_stream, use_column_names, callback) {
   this.send_load_table_binary_arrow(session, table_name, arrow_stream, use_column_names, callback); 
+=======
+MapDClient.prototype.load_table_binary_arrow = function(session, table_name, arrow_stream, callback) {
+  this.send_load_table_binary_arrow(session, table_name, arrow_stream, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
   this.recv_load_table_binary_arrow();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_load_table_binary_arrow = function(session, table_name, arrow_stream, use_column_names, callback) {
+=======
+MapDClient.prototype.send_load_table_binary_arrow = function(session, table_name, arrow_stream, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('load_table_binary_arrow', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_load_table_binary_arrow_args();
+  var args = new MapD_load_table_binary_arrow_args();
   args.session = session;
   args.table_name = table_name;
   args.arrow_stream = arrow_stream;
@@ -16246,7 +16320,7 @@ OmniSciClient.prototype.send_load_table_binary_arrow = function(session, table_n
   }
 };
 
-OmniSciClient.prototype.recv_load_table_binary_arrow = function() {
+MapDClient.prototype.recv_load_table_binary_arrow = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16257,7 +16331,7 @@ OmniSciClient.prototype.recv_load_table_binary_arrow = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_load_table_binary_arrow_result();
+  var result = new MapD_load_table_binary_arrow_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16266,16 +16340,25 @@ OmniSciClient.prototype.recv_load_table_binary_arrow = function() {
   }
   return;
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.load_table = function(session, table_name, rows, column_names, callback) {
   this.send_load_table(session, table_name, rows, column_names, callback); 
+=======
+MapDClient.prototype.load_table = function(session, table_name, rows, callback) {
+  this.send_load_table(session, table_name, rows, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
   this.recv_load_table();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_load_table = function(session, table_name, rows, column_names, callback) {
+=======
+MapDClient.prototype.send_load_table = function(session, table_name, rows, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('load_table', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_load_table_args();
+  var args = new MapD_load_table_args();
   args.session = session;
   args.table_name = table_name;
   args.rows = rows;
@@ -16298,7 +16381,7 @@ OmniSciClient.prototype.send_load_table = function(session, table_name, rows, co
   }
 };
 
-OmniSciClient.prototype.recv_load_table = function() {
+MapDClient.prototype.recv_load_table = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16309,7 +16392,7 @@ OmniSciClient.prototype.recv_load_table = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_load_table_result();
+  var result = new MapD_load_table_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16318,16 +16401,16 @@ OmniSciClient.prototype.recv_load_table = function() {
   }
   return;
 };
-OmniSciClient.prototype.detect_column_types = function(session, file_name, copy_params, callback) {
+MapDClient.prototype.detect_column_types = function(session, file_name, copy_params, callback) {
   this.send_detect_column_types(session, file_name, copy_params, callback); 
   if (!callback) {
     return this.recv_detect_column_types();
   }
 };
 
-OmniSciClient.prototype.send_detect_column_types = function(session, file_name, copy_params, callback) {
+MapDClient.prototype.send_detect_column_types = function(session, file_name, copy_params, callback) {
   this.output.writeMessageBegin('detect_column_types', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_detect_column_types_args();
+  var args = new MapD_detect_column_types_args();
   args.session = session;
   args.file_name = file_name;
   args.copy_params = copy_params;
@@ -16349,7 +16432,7 @@ OmniSciClient.prototype.send_detect_column_types = function(session, file_name, 
   }
 };
 
-OmniSciClient.prototype.recv_detect_column_types = function() {
+MapDClient.prototype.recv_detect_column_types = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16360,7 +16443,7 @@ OmniSciClient.prototype.recv_detect_column_types = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_detect_column_types_result();
+  var result = new MapD_detect_column_types_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16372,16 +16455,16 @@ OmniSciClient.prototype.recv_detect_column_types = function() {
   }
   throw 'detect_column_types failed: unknown result';
 };
-OmniSciClient.prototype.create_table = function(session, table_name, row_desc, file_type, create_params, callback) {
+MapDClient.prototype.create_table = function(session, table_name, row_desc, file_type, create_params, callback) {
   this.send_create_table(session, table_name, row_desc, file_type, create_params, callback); 
   if (!callback) {
   this.recv_create_table();
   }
 };
 
-OmniSciClient.prototype.send_create_table = function(session, table_name, row_desc, file_type, create_params, callback) {
+MapDClient.prototype.send_create_table = function(session, table_name, row_desc, file_type, create_params, callback) {
   this.output.writeMessageBegin('create_table', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_create_table_args();
+  var args = new MapD_create_table_args();
   args.session = session;
   args.table_name = table_name;
   args.row_desc = row_desc;
@@ -16405,7 +16488,7 @@ OmniSciClient.prototype.send_create_table = function(session, table_name, row_de
   }
 };
 
-OmniSciClient.prototype.recv_create_table = function() {
+MapDClient.prototype.recv_create_table = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16416,7 +16499,7 @@ OmniSciClient.prototype.recv_create_table = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_create_table_result();
+  var result = new MapD_create_table_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16425,16 +16508,16 @@ OmniSciClient.prototype.recv_create_table = function() {
   }
   return;
 };
-OmniSciClient.prototype.import_table = function(session, table_name, file_name, copy_params, callback) {
+MapDClient.prototype.import_table = function(session, table_name, file_name, copy_params, callback) {
   this.send_import_table(session, table_name, file_name, copy_params, callback); 
   if (!callback) {
   this.recv_import_table();
   }
 };
 
-OmniSciClient.prototype.send_import_table = function(session, table_name, file_name, copy_params, callback) {
+MapDClient.prototype.send_import_table = function(session, table_name, file_name, copy_params, callback) {
   this.output.writeMessageBegin('import_table', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_import_table_args();
+  var args = new MapD_import_table_args();
   args.session = session;
   args.table_name = table_name;
   args.file_name = file_name;
@@ -16457,7 +16540,7 @@ OmniSciClient.prototype.send_import_table = function(session, table_name, file_n
   }
 };
 
-OmniSciClient.prototype.recv_import_table = function() {
+MapDClient.prototype.recv_import_table = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16468,7 +16551,7 @@ OmniSciClient.prototype.recv_import_table = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_import_table_result();
+  var result = new MapD_import_table_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16477,16 +16560,16 @@ OmniSciClient.prototype.recv_import_table = function() {
   }
   return;
 };
-OmniSciClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
+MapDClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
   this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, create_params, callback); 
   if (!callback) {
   this.recv_import_geo_table();
   }
 };
 
-OmniSciClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
+MapDClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
   this.output.writeMessageBegin('import_geo_table', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_import_geo_table_args();
+  var args = new MapD_import_geo_table_args();
   args.session = session;
   args.table_name = table_name;
   args.file_name = file_name;
@@ -16511,7 +16594,7 @@ OmniSciClient.prototype.send_import_geo_table = function(session, table_name, fi
   }
 };
 
-OmniSciClient.prototype.recv_import_geo_table = function() {
+MapDClient.prototype.recv_import_geo_table = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16522,7 +16605,7 @@ OmniSciClient.prototype.recv_import_geo_table = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_import_geo_table_result();
+  var result = new MapD_import_geo_table_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16531,16 +16614,16 @@ OmniSciClient.prototype.recv_import_geo_table = function() {
   }
   return;
 };
-OmniSciClient.prototype.import_table_status = function(session, import_id, callback) {
+MapDClient.prototype.import_table_status = function(session, import_id, callback) {
   this.send_import_table_status(session, import_id, callback); 
   if (!callback) {
     return this.recv_import_table_status();
   }
 };
 
-OmniSciClient.prototype.send_import_table_status = function(session, import_id, callback) {
+MapDClient.prototype.send_import_table_status = function(session, import_id, callback) {
   this.output.writeMessageBegin('import_table_status', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_import_table_status_args();
+  var args = new MapD_import_table_status_args();
   args.session = session;
   args.import_id = import_id;
   args.write(this.output);
@@ -16561,7 +16644,7 @@ OmniSciClient.prototype.send_import_table_status = function(session, import_id, 
   }
 };
 
-OmniSciClient.prototype.recv_import_table_status = function() {
+MapDClient.prototype.recv_import_table_status = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16572,7 +16655,7 @@ OmniSciClient.prototype.recv_import_table_status = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_import_table_status_result();
+  var result = new MapD_import_table_status_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16584,16 +16667,16 @@ OmniSciClient.prototype.recv_import_table_status = function() {
   }
   throw 'import_table_status failed: unknown result';
 };
-OmniSciClient.prototype.get_first_geo_file_in_archive = function(session, archive_path, copy_params, callback) {
+MapDClient.prototype.get_first_geo_file_in_archive = function(session, archive_path, copy_params, callback) {
   this.send_get_first_geo_file_in_archive(session, archive_path, copy_params, callback); 
   if (!callback) {
     return this.recv_get_first_geo_file_in_archive();
   }
 };
 
-OmniSciClient.prototype.send_get_first_geo_file_in_archive = function(session, archive_path, copy_params, callback) {
+MapDClient.prototype.send_get_first_geo_file_in_archive = function(session, archive_path, copy_params, callback) {
   this.output.writeMessageBegin('get_first_geo_file_in_archive', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_first_geo_file_in_archive_args();
+  var args = new MapD_get_first_geo_file_in_archive_args();
   args.session = session;
   args.archive_path = archive_path;
   args.copy_params = copy_params;
@@ -16615,7 +16698,7 @@ OmniSciClient.prototype.send_get_first_geo_file_in_archive = function(session, a
   }
 };
 
-OmniSciClient.prototype.recv_get_first_geo_file_in_archive = function() {
+MapDClient.prototype.recv_get_first_geo_file_in_archive = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16626,7 +16709,7 @@ OmniSciClient.prototype.recv_get_first_geo_file_in_archive = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_first_geo_file_in_archive_result();
+  var result = new MapD_get_first_geo_file_in_archive_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16638,16 +16721,16 @@ OmniSciClient.prototype.recv_get_first_geo_file_in_archive = function() {
   }
   throw 'get_first_geo_file_in_archive failed: unknown result';
 };
-OmniSciClient.prototype.get_all_files_in_archive = function(session, archive_path, copy_params, callback) {
+MapDClient.prototype.get_all_files_in_archive = function(session, archive_path, copy_params, callback) {
   this.send_get_all_files_in_archive(session, archive_path, copy_params, callback); 
   if (!callback) {
     return this.recv_get_all_files_in_archive();
   }
 };
 
-OmniSciClient.prototype.send_get_all_files_in_archive = function(session, archive_path, copy_params, callback) {
+MapDClient.prototype.send_get_all_files_in_archive = function(session, archive_path, copy_params, callback) {
   this.output.writeMessageBegin('get_all_files_in_archive', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_all_files_in_archive_args();
+  var args = new MapD_get_all_files_in_archive_args();
   args.session = session;
   args.archive_path = archive_path;
   args.copy_params = copy_params;
@@ -16669,7 +16752,7 @@ OmniSciClient.prototype.send_get_all_files_in_archive = function(session, archiv
   }
 };
 
-OmniSciClient.prototype.recv_get_all_files_in_archive = function() {
+MapDClient.prototype.recv_get_all_files_in_archive = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16680,7 +16763,7 @@ OmniSciClient.prototype.recv_get_all_files_in_archive = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_all_files_in_archive_result();
+  var result = new MapD_get_all_files_in_archive_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16692,16 +16775,16 @@ OmniSciClient.prototype.recv_get_all_files_in_archive = function() {
   }
   throw 'get_all_files_in_archive failed: unknown result';
 };
-OmniSciClient.prototype.get_layers_in_geo_file = function(session, file_name, copy_params, callback) {
+MapDClient.prototype.get_layers_in_geo_file = function(session, file_name, copy_params, callback) {
   this.send_get_layers_in_geo_file(session, file_name, copy_params, callback); 
   if (!callback) {
     return this.recv_get_layers_in_geo_file();
   }
 };
 
-OmniSciClient.prototype.send_get_layers_in_geo_file = function(session, file_name, copy_params, callback) {
+MapDClient.prototype.send_get_layers_in_geo_file = function(session, file_name, copy_params, callback) {
   this.output.writeMessageBegin('get_layers_in_geo_file', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_layers_in_geo_file_args();
+  var args = new MapD_get_layers_in_geo_file_args();
   args.session = session;
   args.file_name = file_name;
   args.copy_params = copy_params;
@@ -16723,7 +16806,7 @@ OmniSciClient.prototype.send_get_layers_in_geo_file = function(session, file_nam
   }
 };
 
-OmniSciClient.prototype.recv_get_layers_in_geo_file = function() {
+MapDClient.prototype.recv_get_layers_in_geo_file = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16734,7 +16817,7 @@ OmniSciClient.prototype.recv_get_layers_in_geo_file = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_layers_in_geo_file_result();
+  var result = new MapD_get_layers_in_geo_file_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16746,6 +16829,7 @@ OmniSciClient.prototype.recv_get_layers_in_geo_file = function() {
   }
   throw 'get_layers_in_geo_file failed: unknown result';
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.query_get_outer_fragment_count = function(session, query, callback) {
   this.send_query_get_outer_fragment_count(session, query, callback); 
   if (!callback) {
@@ -16800,15 +16884,18 @@ OmniSciClient.prototype.recv_query_get_outer_fragment_count = function() {
   throw 'query_get_outer_fragment_count failed: unknown result';
 };
 OmniSciClient.prototype.check_table_consistency = function(session, table_id, callback) {
+=======
+MapDClient.prototype.check_table_consistency = function(session, table_id, callback) {
+>>>>>>> Update Thrift
   this.send_check_table_consistency(session, table_id, callback); 
   if (!callback) {
     return this.recv_check_table_consistency();
   }
 };
 
-OmniSciClient.prototype.send_check_table_consistency = function(session, table_id, callback) {
+MapDClient.prototype.send_check_table_consistency = function(session, table_id, callback) {
   this.output.writeMessageBegin('check_table_consistency', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_check_table_consistency_args();
+  var args = new MapD_check_table_consistency_args();
   args.session = session;
   args.table_id = table_id;
   args.write(this.output);
@@ -16829,7 +16916,7 @@ OmniSciClient.prototype.send_check_table_consistency = function(session, table_i
   }
 };
 
-OmniSciClient.prototype.recv_check_table_consistency = function() {
+MapDClient.prototype.recv_check_table_consistency = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16840,7 +16927,7 @@ OmniSciClient.prototype.recv_check_table_consistency = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_check_table_consistency_result();
+  var result = new MapD_check_table_consistency_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16852,16 +16939,25 @@ OmniSciClient.prototype.recv_check_table_consistency = function() {
   }
   throw 'check_table_consistency failed: unknown result';
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.start_query = function(leaf_session, parent_session, query_ra, just_explain, outer_fragment_indices, callback) {
   this.send_start_query(leaf_session, parent_session, query_ra, just_explain, outer_fragment_indices, callback); 
+=======
+MapDClient.prototype.start_query = function(leaf_session, parent_session, query_ra, just_explain, callback) {
+  this.send_start_query(leaf_session, parent_session, query_ra, just_explain, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
     return this.recv_start_query();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_start_query = function(leaf_session, parent_session, query_ra, just_explain, outer_fragment_indices, callback) {
+=======
+MapDClient.prototype.send_start_query = function(leaf_session, parent_session, query_ra, just_explain, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('start_query', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_start_query_args();
+  var args = new MapD_start_query_args();
   args.leaf_session = leaf_session;
   args.parent_session = parent_session;
   args.query_ra = query_ra;
@@ -16885,7 +16981,7 @@ OmniSciClient.prototype.send_start_query = function(leaf_session, parent_session
   }
 };
 
-OmniSciClient.prototype.recv_start_query = function() {
+MapDClient.prototype.recv_start_query = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16896,7 +16992,7 @@ OmniSciClient.prototype.recv_start_query = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_start_query_result();
+  var result = new MapD_start_query_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16908,16 +17004,25 @@ OmniSciClient.prototype.recv_start_query = function() {
   }
   throw 'start_query failed: unknown result';
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.execute_query_step = function(pending_query, subquery_id, callback) {
   this.send_execute_query_step(pending_query, subquery_id, callback); 
+=======
+MapDClient.prototype.execute_query_step = function(pending_query, callback) {
+  this.send_execute_query_step(pending_query, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
     return this.recv_execute_query_step();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_execute_query_step = function(pending_query, subquery_id, callback) {
+=======
+MapDClient.prototype.send_execute_query_step = function(pending_query, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('execute_query_step', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_execute_query_step_args();
+  var args = new MapD_execute_query_step_args();
   args.pending_query = pending_query;
   args.subquery_id = subquery_id;
   args.write(this.output);
@@ -16938,7 +17043,7 @@ OmniSciClient.prototype.send_execute_query_step = function(pending_query, subque
   }
 };
 
-OmniSciClient.prototype.recv_execute_query_step = function() {
+MapDClient.prototype.recv_execute_query_step = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -16949,7 +17054,7 @@ OmniSciClient.prototype.recv_execute_query_step = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_execute_query_step_result();
+  var result = new MapD_execute_query_step_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -16961,16 +17066,25 @@ OmniSciClient.prototype.recv_execute_query_step = function() {
   }
   throw 'execute_query_step failed: unknown result';
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, subquery_id, is_final_subquery_result, callback) {
   this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id, subquery_id, is_final_subquery_result, callback); 
+=======
+MapDClient.prototype.broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
+  this.send_broadcast_serialized_rows(serialized_rows, row_desc, query_id, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
   this.recv_broadcast_serialized_rows();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, subquery_id, is_final_subquery_result, callback) {
+=======
+MapDClient.prototype.send_broadcast_serialized_rows = function(serialized_rows, row_desc, query_id, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('broadcast_serialized_rows', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_broadcast_serialized_rows_args();
+  var args = new MapD_broadcast_serialized_rows_args();
   args.serialized_rows = serialized_rows;
   args.row_desc = row_desc;
   args.query_id = query_id;
@@ -16994,7 +17108,7 @@ OmniSciClient.prototype.send_broadcast_serialized_rows = function(serialized_row
   }
 };
 
-OmniSciClient.prototype.recv_broadcast_serialized_rows = function() {
+MapDClient.prototype.recv_broadcast_serialized_rows = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17005,7 +17119,7 @@ OmniSciClient.prototype.recv_broadcast_serialized_rows = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_broadcast_serialized_rows_result();
+  var result = new MapD_broadcast_serialized_rows_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17014,16 +17128,16 @@ OmniSciClient.prototype.recv_broadcast_serialized_rows = function() {
   }
   return;
 };
-OmniSciClient.prototype.start_render_query = function(session, widget_id, node_idx, vega_json, callback) {
+MapDClient.prototype.start_render_query = function(session, widget_id, node_idx, vega_json, callback) {
   this.send_start_render_query(session, widget_id, node_idx, vega_json, callback); 
   if (!callback) {
     return this.recv_start_render_query();
   }
 };
 
-OmniSciClient.prototype.send_start_render_query = function(session, widget_id, node_idx, vega_json, callback) {
+MapDClient.prototype.send_start_render_query = function(session, widget_id, node_idx, vega_json, callback) {
   this.output.writeMessageBegin('start_render_query', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_start_render_query_args();
+  var args = new MapD_start_render_query_args();
   args.session = session;
   args.widget_id = widget_id;
   args.node_idx = node_idx;
@@ -17046,7 +17160,7 @@ OmniSciClient.prototype.send_start_render_query = function(session, widget_id, n
   }
 };
 
-OmniSciClient.prototype.recv_start_render_query = function() {
+MapDClient.prototype.recv_start_render_query = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17057,7 +17171,7 @@ OmniSciClient.prototype.recv_start_render_query = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_start_render_query_result();
+  var result = new MapD_start_render_query_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17069,16 +17183,16 @@ OmniSciClient.prototype.recv_start_render_query = function() {
   }
   throw 'start_render_query failed: unknown result';
 };
-OmniSciClient.prototype.execute_next_render_step = function(pending_render, merged_data, callback) {
+MapDClient.prototype.execute_next_render_step = function(pending_render, merged_data, callback) {
   this.send_execute_next_render_step(pending_render, merged_data, callback); 
   if (!callback) {
     return this.recv_execute_next_render_step();
   }
 };
 
-OmniSciClient.prototype.send_execute_next_render_step = function(pending_render, merged_data, callback) {
+MapDClient.prototype.send_execute_next_render_step = function(pending_render, merged_data, callback) {
   this.output.writeMessageBegin('execute_next_render_step', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_execute_next_render_step_args();
+  var args = new MapD_execute_next_render_step_args();
   args.pending_render = pending_render;
   args.merged_data = merged_data;
   args.write(this.output);
@@ -17099,7 +17213,7 @@ OmniSciClient.prototype.send_execute_next_render_step = function(pending_render,
   }
 };
 
-OmniSciClient.prototype.recv_execute_next_render_step = function() {
+MapDClient.prototype.recv_execute_next_render_step = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17110,7 +17224,7 @@ OmniSciClient.prototype.recv_execute_next_render_step = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_execute_next_render_step_result();
+  var result = new MapD_execute_next_render_step_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17122,16 +17236,16 @@ OmniSciClient.prototype.recv_execute_next_render_step = function() {
   }
   throw 'execute_next_render_step failed: unknown result';
 };
-OmniSciClient.prototype.insert_data = function(session, insert_data, callback) {
+MapDClient.prototype.insert_data = function(session, insert_data, callback) {
   this.send_insert_data(session, insert_data, callback); 
   if (!callback) {
   this.recv_insert_data();
   }
 };
 
-OmniSciClient.prototype.send_insert_data = function(session, insert_data, callback) {
+MapDClient.prototype.send_insert_data = function(session, insert_data, callback) {
   this.output.writeMessageBegin('insert_data', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_insert_data_args();
+  var args = new MapD_insert_data_args();
   args.session = session;
   args.insert_data = insert_data;
   args.write(this.output);
@@ -17152,7 +17266,7 @@ OmniSciClient.prototype.send_insert_data = function(session, insert_data, callba
   }
 };
 
-OmniSciClient.prototype.recv_insert_data = function() {
+MapDClient.prototype.recv_insert_data = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17163,7 +17277,7 @@ OmniSciClient.prototype.recv_insert_data = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_insert_data_result();
+  var result = new MapD_insert_data_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17172,16 +17286,25 @@ OmniSciClient.prototype.recv_insert_data = function() {
   }
   return;
 };
+<<<<<<< HEAD
 OmniSciClient.prototype.checkpoint = function(session, table_id, callback) {
   this.send_checkpoint(session, table_id, callback); 
+=======
+MapDClient.prototype.checkpoint = function(session, db_id, table_id, callback) {
+  this.send_checkpoint(session, db_id, table_id, callback); 
+>>>>>>> Update Thrift
   if (!callback) {
   this.recv_checkpoint();
   }
 };
 
+<<<<<<< HEAD
 OmniSciClient.prototype.send_checkpoint = function(session, table_id, callback) {
+=======
+MapDClient.prototype.send_checkpoint = function(session, db_id, table_id, callback) {
+>>>>>>> Update Thrift
   this.output.writeMessageBegin('checkpoint', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_checkpoint_args();
+  var args = new MapD_checkpoint_args();
   args.session = session;
   args.table_id = table_id;
   args.write(this.output);
@@ -17202,7 +17325,7 @@ OmniSciClient.prototype.send_checkpoint = function(session, table_id, callback) 
   }
 };
 
-OmniSciClient.prototype.recv_checkpoint = function() {
+MapDClient.prototype.recv_checkpoint = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17213,7 +17336,7 @@ OmniSciClient.prototype.recv_checkpoint = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_checkpoint_result();
+  var result = new MapD_checkpoint_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17222,16 +17345,16 @@ OmniSciClient.prototype.recv_checkpoint = function() {
   }
   return;
 };
-OmniSciClient.prototype.get_roles = function(session, callback) {
+MapDClient.prototype.get_roles = function(session, callback) {
   this.send_get_roles(session, callback); 
   if (!callback) {
     return this.recv_get_roles();
   }
 };
 
-OmniSciClient.prototype.send_get_roles = function(session, callback) {
+MapDClient.prototype.send_get_roles = function(session, callback) {
   this.output.writeMessageBegin('get_roles', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_roles_args();
+  var args = new MapD_get_roles_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -17251,7 +17374,7 @@ OmniSciClient.prototype.send_get_roles = function(session, callback) {
   }
 };
 
-OmniSciClient.prototype.recv_get_roles = function() {
+MapDClient.prototype.recv_get_roles = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17262,7 +17385,7 @@ OmniSciClient.prototype.recv_get_roles = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_roles_result();
+  var result = new MapD_get_roles_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17274,16 +17397,16 @@ OmniSciClient.prototype.recv_get_roles = function() {
   }
   throw 'get_roles failed: unknown result';
 };
-OmniSciClient.prototype.get_db_objects_for_grantee = function(session, roleName, callback) {
+MapDClient.prototype.get_db_objects_for_grantee = function(session, roleName, callback) {
   this.send_get_db_objects_for_grantee(session, roleName, callback); 
   if (!callback) {
     return this.recv_get_db_objects_for_grantee();
   }
 };
 
-OmniSciClient.prototype.send_get_db_objects_for_grantee = function(session, roleName, callback) {
+MapDClient.prototype.send_get_db_objects_for_grantee = function(session, roleName, callback) {
   this.output.writeMessageBegin('get_db_objects_for_grantee', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_db_objects_for_grantee_args();
+  var args = new MapD_get_db_objects_for_grantee_args();
   args.session = session;
   args.roleName = roleName;
   args.write(this.output);
@@ -17304,7 +17427,7 @@ OmniSciClient.prototype.send_get_db_objects_for_grantee = function(session, role
   }
 };
 
-OmniSciClient.prototype.recv_get_db_objects_for_grantee = function() {
+MapDClient.prototype.recv_get_db_objects_for_grantee = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17315,7 +17438,7 @@ OmniSciClient.prototype.recv_get_db_objects_for_grantee = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_db_objects_for_grantee_result();
+  var result = new MapD_get_db_objects_for_grantee_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17327,16 +17450,16 @@ OmniSciClient.prototype.recv_get_db_objects_for_grantee = function() {
   }
   throw 'get_db_objects_for_grantee failed: unknown result';
 };
-OmniSciClient.prototype.get_db_object_privs = function(session, objectName, type, callback) {
+MapDClient.prototype.get_db_object_privs = function(session, objectName, type, callback) {
   this.send_get_db_object_privs(session, objectName, type, callback); 
   if (!callback) {
     return this.recv_get_db_object_privs();
   }
 };
 
-OmniSciClient.prototype.send_get_db_object_privs = function(session, objectName, type, callback) {
+MapDClient.prototype.send_get_db_object_privs = function(session, objectName, type, callback) {
   this.output.writeMessageBegin('get_db_object_privs', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_db_object_privs_args();
+  var args = new MapD_get_db_object_privs_args();
   args.session = session;
   args.objectName = objectName;
   args.type = type;
@@ -17358,7 +17481,7 @@ OmniSciClient.prototype.send_get_db_object_privs = function(session, objectName,
   }
 };
 
-OmniSciClient.prototype.recv_get_db_object_privs = function() {
+MapDClient.prototype.recv_get_db_object_privs = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17369,7 +17492,7 @@ OmniSciClient.prototype.recv_get_db_object_privs = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_db_object_privs_result();
+  var result = new MapD_get_db_object_privs_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17381,16 +17504,16 @@ OmniSciClient.prototype.recv_get_db_object_privs = function() {
   }
   throw 'get_db_object_privs failed: unknown result';
 };
-OmniSciClient.prototype.get_all_roles_for_user = function(session, userName, callback) {
+MapDClient.prototype.get_all_roles_for_user = function(session, userName, callback) {
   this.send_get_all_roles_for_user(session, userName, callback); 
   if (!callback) {
     return this.recv_get_all_roles_for_user();
   }
 };
 
-OmniSciClient.prototype.send_get_all_roles_for_user = function(session, userName, callback) {
+MapDClient.prototype.send_get_all_roles_for_user = function(session, userName, callback) {
   this.output.writeMessageBegin('get_all_roles_for_user', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_all_roles_for_user_args();
+  var args = new MapD_get_all_roles_for_user_args();
   args.session = session;
   args.userName = userName;
   args.write(this.output);
@@ -17411,7 +17534,7 @@ OmniSciClient.prototype.send_get_all_roles_for_user = function(session, userName
   }
 };
 
-OmniSciClient.prototype.recv_get_all_roles_for_user = function() {
+MapDClient.prototype.recv_get_all_roles_for_user = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17422,7 +17545,7 @@ OmniSciClient.prototype.recv_get_all_roles_for_user = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_all_roles_for_user_result();
+  var result = new MapD_get_all_roles_for_user_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17434,16 +17557,16 @@ OmniSciClient.prototype.recv_get_all_roles_for_user = function() {
   }
   throw 'get_all_roles_for_user failed: unknown result';
 };
-OmniSciClient.prototype.has_role = function(session, granteeName, roleName, callback) {
+MapDClient.prototype.has_role = function(session, granteeName, roleName, callback) {
   this.send_has_role(session, granteeName, roleName, callback); 
   if (!callback) {
     return this.recv_has_role();
   }
 };
 
-OmniSciClient.prototype.send_has_role = function(session, granteeName, roleName, callback) {
+MapDClient.prototype.send_has_role = function(session, granteeName, roleName, callback) {
   this.output.writeMessageBegin('has_role', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_has_role_args();
+  var args = new MapD_has_role_args();
   args.session = session;
   args.granteeName = granteeName;
   args.roleName = roleName;
@@ -17465,7 +17588,7 @@ OmniSciClient.prototype.send_has_role = function(session, granteeName, roleName,
   }
 };
 
-OmniSciClient.prototype.recv_has_role = function() {
+MapDClient.prototype.recv_has_role = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17476,7 +17599,7 @@ OmniSciClient.prototype.recv_has_role = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_has_role_result();
+  var result = new MapD_has_role_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17488,16 +17611,16 @@ OmniSciClient.prototype.recv_has_role = function() {
   }
   throw 'has_role failed: unknown result';
 };
-OmniSciClient.prototype.has_object_privilege = function(session, granteeName, ObjectName, objectType, permissions, callback) {
+MapDClient.prototype.has_object_privilege = function(session, granteeName, ObjectName, objectType, permissions, callback) {
   this.send_has_object_privilege(session, granteeName, ObjectName, objectType, permissions, callback); 
   if (!callback) {
     return this.recv_has_object_privilege();
   }
 };
 
-OmniSciClient.prototype.send_has_object_privilege = function(session, granteeName, ObjectName, objectType, permissions, callback) {
+MapDClient.prototype.send_has_object_privilege = function(session, granteeName, ObjectName, objectType, permissions, callback) {
   this.output.writeMessageBegin('has_object_privilege', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_has_object_privilege_args();
+  var args = new MapD_has_object_privilege_args();
   args.session = session;
   args.granteeName = granteeName;
   args.ObjectName = ObjectName;
@@ -17521,7 +17644,7 @@ OmniSciClient.prototype.send_has_object_privilege = function(session, granteeNam
   }
 };
 
-OmniSciClient.prototype.recv_has_object_privilege = function() {
+MapDClient.prototype.recv_has_object_privilege = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17532,7 +17655,7 @@ OmniSciClient.prototype.recv_has_object_privilege = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_has_object_privilege_result();
+  var result = new MapD_has_object_privilege_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17544,16 +17667,16 @@ OmniSciClient.prototype.recv_has_object_privilege = function() {
   }
   throw 'has_object_privilege failed: unknown result';
 };
-OmniSciClient.prototype.set_license_key = function(session, key, nonce, callback) {
+MapDClient.prototype.set_license_key = function(session, key, nonce, callback) {
   this.send_set_license_key(session, key, nonce, callback); 
   if (!callback) {
     return this.recv_set_license_key();
   }
 };
 
-OmniSciClient.prototype.send_set_license_key = function(session, key, nonce, callback) {
+MapDClient.prototype.send_set_license_key = function(session, key, nonce, callback) {
   this.output.writeMessageBegin('set_license_key', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_set_license_key_args();
+  var args = new MapD_set_license_key_args();
   args.session = session;
   args.key = key;
   args.nonce = nonce;
@@ -17575,7 +17698,7 @@ OmniSciClient.prototype.send_set_license_key = function(session, key, nonce, cal
   }
 };
 
-OmniSciClient.prototype.recv_set_license_key = function() {
+MapDClient.prototype.recv_set_license_key = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17586,7 +17709,7 @@ OmniSciClient.prototype.recv_set_license_key = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_set_license_key_result();
+  var result = new MapD_set_license_key_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17598,16 +17721,16 @@ OmniSciClient.prototype.recv_set_license_key = function() {
   }
   throw 'set_license_key failed: unknown result';
 };
-OmniSciClient.prototype.get_license_claims = function(session, nonce, callback) {
+MapDClient.prototype.get_license_claims = function(session, nonce, callback) {
   this.send_get_license_claims(session, nonce, callback); 
   if (!callback) {
     return this.recv_get_license_claims();
   }
 };
 
-OmniSciClient.prototype.send_get_license_claims = function(session, nonce, callback) {
+MapDClient.prototype.send_get_license_claims = function(session, nonce, callback) {
   this.output.writeMessageBegin('get_license_claims', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_license_claims_args();
+  var args = new MapD_get_license_claims_args();
   args.session = session;
   args.nonce = nonce;
   args.write(this.output);
@@ -17628,7 +17751,7 @@ OmniSciClient.prototype.send_get_license_claims = function(session, nonce, callb
   }
 };
 
-OmniSciClient.prototype.recv_get_license_claims = function() {
+MapDClient.prototype.recv_get_license_claims = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17639,7 +17762,7 @@ OmniSciClient.prototype.recv_get_license_claims = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_license_claims_result();
+  var result = new MapD_get_license_claims_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17651,16 +17774,16 @@ OmniSciClient.prototype.recv_get_license_claims = function() {
   }
   throw 'get_license_claims failed: unknown result';
 };
-OmniSciClient.prototype.get_device_parameters = function(session, callback) {
+MapDClient.prototype.get_device_parameters = function(session, callback) {
   this.send_get_device_parameters(session, callback); 
   if (!callback) {
     return this.recv_get_device_parameters();
   }
 };
 
-OmniSciClient.prototype.send_get_device_parameters = function(session, callback) {
+MapDClient.prototype.send_get_device_parameters = function(session, callback) {
   this.output.writeMessageBegin('get_device_parameters', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_get_device_parameters_args();
+  var args = new MapD_get_device_parameters_args();
   args.session = session;
   args.write(this.output);
   this.output.writeMessageEnd();
@@ -17680,7 +17803,7 @@ OmniSciClient.prototype.send_get_device_parameters = function(session, callback)
   }
 };
 
-OmniSciClient.prototype.recv_get_device_parameters = function() {
+MapDClient.prototype.recv_get_device_parameters = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17691,7 +17814,7 @@ OmniSciClient.prototype.recv_get_device_parameters = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_get_device_parameters_result();
+  var result = new MapD_get_device_parameters_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
@@ -17703,16 +17826,16 @@ OmniSciClient.prototype.recv_get_device_parameters = function() {
   }
   throw 'get_device_parameters failed: unknown result';
 };
-OmniSciClient.prototype.register_runtime_extension_functions = function(session, udfs, udtfs, device_ir_map, callback) {
+MapDClient.prototype.register_runtime_extension_functions = function(session, udfs, udtfs, device_ir_map, callback) {
   this.send_register_runtime_extension_functions(session, udfs, udtfs, device_ir_map, callback); 
   if (!callback) {
   this.recv_register_runtime_extension_functions();
   }
 };
 
-OmniSciClient.prototype.send_register_runtime_extension_functions = function(session, udfs, udtfs, device_ir_map, callback) {
+MapDClient.prototype.send_register_runtime_extension_functions = function(session, udfs, udtfs, device_ir_map, callback) {
   this.output.writeMessageBegin('register_runtime_extension_functions', Thrift.MessageType.CALL, this.seqid);
-  var args = new OmniSci_register_runtime_extension_functions_args();
+  var args = new MapD_register_runtime_extension_functions_args();
   args.session = session;
   args.udfs = udfs;
   args.udtfs = udtfs;
@@ -17735,7 +17858,7 @@ OmniSciClient.prototype.send_register_runtime_extension_functions = function(ses
   }
 };
 
-OmniSciClient.prototype.recv_register_runtime_extension_functions = function() {
+MapDClient.prototype.recv_register_runtime_extension_functions = function() {
   var ret = this.input.readMessageBegin();
   var fname = ret.fname;
   var mtype = ret.mtype;
@@ -17746,7 +17869,7 @@ OmniSciClient.prototype.recv_register_runtime_extension_functions = function() {
     this.input.readMessageEnd();
     throw x;
   }
-  var result = new OmniSci_register_runtime_extension_functions_result();
+  var result = new MapD_register_runtime_extension_functions_result();
   result.read(this.input);
   this.input.readMessageEnd();
 
