@@ -1,4 +1,8 @@
 "use strict"
+const hostname = process.env.HOSTNAME || "metis.mapd.com"
+const protocol = process.env.PROTOCOL || "https"
+const port = process.env.PORT || "443"
+
 const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
 const convertToDataUrl = isNodeRuntime
@@ -18,9 +22,9 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   let connector
   beforeEach(() => {
     connector = new Connector()
-      .protocol("https")
-      .host("metis.mapd.com")
-      .port("443")
+      .protocol(protocol)
+      .host(hostname)
+      .port(port)
       .dbName("mapd")
       .user("mapd")
       .password("HyperInteractive")
@@ -92,12 +96,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       session
         .getTablesAsync()
         .then(data => {
-          expect(data).to.deep.equal([
-            { name: "flights_donotmodify", label: "obs" },
-            { name: "contributions_donotmodify", label: "obs" },
-            { name: "tweets_nov_feb", label: "obs" },
-            { name: "zipcodes", label: "obs" }
-          ])
+          expect(data).to.not.be.empty
           done()
         })
         .catch(getTablesAsyncError => {
@@ -107,9 +106,6 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
-  // Note that this test assumes the list of dashboards (and their metadata) on Metis aren't
-  // changed. If they do change, this test will fail. The only exception is each dash's
-  // `update_time`, which we filter out since that is too volatile to rely on.
   it(".getDashboardsAsync", done => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
@@ -121,53 +117,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
           const dataNoUpdateTime = data.map(d =>
             Object.assign({}, d, { update_time: null })
           )
-          expect(dataNoUpdateTime).to.deep.equal([
-            {
-              dashboard_name: "__E2E_LINE_CHART_BRUSH__DO_NOT_MODIFY__",
-              dashboard_state: "",
-              image_hash: "",
-              update_time: null,
-              dashboard_metadata:
-                '{"table":"flights_donotmodify","version":"v2"}',
-              dashboard_id: 452,
-              dashboard_owner: "mapd",
-              is_dash_shared: false
-            },
-            {
-              dashboard_name:
-                "__E2E_MULTI_BIN_DIM_HEATMAP_FILTER__DO_NOT_MODIFY__",
-              dashboard_state: "",
-              image_hash: "",
-              update_time: null,
-              dashboard_metadata:
-                '{"table":"flights_donotmodify","version":"v2"}',
-              dashboard_id: 451,
-              dashboard_owner: "mapd",
-              is_dash_shared: false
-            },
-            {
-              dashboard_name: "__E2E_NUMBER_CHART__DO_NOT_MODIFY__",
-              dashboard_state: "",
-              image_hash: "",
-              update_time: null,
-              dashboard_metadata:
-                '{"table":"flights_donotmodify","version":"v2"}',
-              dashboard_id: 450,
-              dashboard_owner: "mapd",
-              is_dash_shared: false
-            },
-            {
-              dashboard_name: "__E2E__ALL_CHARTS__DO_NOT_MODIFY__",
-              dashboard_state: "",
-              image_hash: "",
-              update_time: null,
-              dashboard_metadata:
-                '{"table":"contributions_donotmodify","version":"v2"}',
-              dashboard_id: 449,
-              dashboard_owner: "mapd",
-              is_dash_shared: false
-            }
-          ])
+          expect(dataNoUpdateTime).to.not.be.empty
           done()
         })
         // eslint-disable-next-line max-nested-callbacks

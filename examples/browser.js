@@ -1,5 +1,9 @@
 /* eslint-disable */
 
+const hostname = process.env.HOSTNAME || "metis.mapd.com"
+const protocol = process.env.PROTOCOL || "https"
+const port = process.env.PORT || "443"
+
 // The total number of tweets from Columbia
 const query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
 // try changing airtime to arrdelay in the query
@@ -9,9 +13,9 @@ const defaultQueryOptions = {}
 const connector = new window.MapdCon()
 
 connector
-  .protocol("https")
-  .host("metis.mapd.com")
-  .port("443")
+  .protocol(protocol)
+  .host(hostname)
+  .port(port)
   .dbName("mapd")
   .user("mapd")
   .password("HyperInteractive")
@@ -29,7 +33,7 @@ connector
   .then(values => {
     // handle result of getTablesAsync
     console.log(
-      "All tables available at metis.mapd.com:",
+      `All dashboards available at ${hostname}:\n`,
       values[0].map(x => x.name)
     )
 

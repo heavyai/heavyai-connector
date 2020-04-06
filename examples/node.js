@@ -2,6 +2,10 @@
 
 const Connector = require("../dist/node-connector.js")
 
+const hostname = process.env.HOSTNAME || "metis.mapd.com"
+const protocol = process.env.PROTOCOL || "https"
+const port = process.env.PORT || "443"
+
 // The total number of tweets from Columbia
 const query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
 const query2 =
@@ -10,11 +14,10 @@ const defaultQueryOptions = {}
 
 const connector = new Connector()
 
-
 connector
-  .protocol("https")
-  .host("metis.mapd.com")
-  .port("443")
+  .protocol(protocol)
+  .host(hostname)
+  .port(port)
   .dbName("mapd")
   .user("mapd")
   .password("HyperInteractive")
@@ -33,13 +36,13 @@ connector
   .then(values => {
     // handle result of getDashboardsAsync
     console.log(
-      "All dashboards available at metis.mapd.com:\n",
+      `All dashboards available at ${hostname}:\n`,
       values[0].map(dash => dash.dashboard_name)
     )
 
     // handle result of getTablesAsync
     console.log(
-      "\nAll tables available at metis.mapd.com:\n\n",
+      `\nAll tables available at ${hostname}:\n\n`,
       values[1].map(x => x.name)
     )
 
