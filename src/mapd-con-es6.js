@@ -2,10 +2,10 @@
 
 const { TDatumType, TEncodingType } =
   (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
-const { TPixel, TMapDException } =
-  (isNodeRuntime() && require("../build/thrift/node/mapd_types.js")) || window // eslint-disable-line global-require
+const { TPixel, TOmniSciException } =
+  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
-  isNodeRuntime() && require("../build/thrift/node/mapd.thrift.js") // eslint-disable-line global-require
+  isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
 let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
 const thriftWrapper = Thrift
 const parseUrl = isNodeRuntime() && require("url").parse // eslint-disable-line global-require
@@ -1936,7 +1936,7 @@ class MapdCon {
 
   isTimeoutError(result) {
     return (
-      result instanceof TMapDException &&
+      result instanceof TOmniSciException &&
       (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
         String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
     )

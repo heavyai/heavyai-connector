@@ -16,8 +16,8 @@ const filePathsBrowser = [
   "thrift/browser/completion_hints_types.js",
   "thrift/browser/common_types.js",
   "thrift/browser/serialized_result_set_types.js",
-  "thrift/browser/mapd_types.js",
-  "thrift/browser/mapd.thrift.js",
+  "thrift/browser/omnisci_types.js",
+  "thrift/browser/OmniSci.js",
   "thrift/browser/thrift.js"
 ]
 const filePathsNode = [
@@ -25,8 +25,8 @@ const filePathsNode = [
   "thrift/node/common_types.js",
   "thrift/node/extension_functions_types.js",
   "thrift/node/serialized_result_set_types.js",
-  "thrift/node/mapd_types.js",
-  "thrift/node/mapd.thrift.js"
+  "thrift/node/omnisci_types.js",
+  "thrift/node/OmniSci.js"
 ]
 filePathsBrowser.forEach(declareWith("window."))
 filePathsNode.forEach(declareWith("var "))

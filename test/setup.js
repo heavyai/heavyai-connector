@@ -4,8 +4,8 @@ import jsdom from "jsdom"
 const scripts = `
   <script>
     ${fs.readFileSync("./thrift/browser/thrift.js", "utf-8")}
-    ${fs.readFileSync("./thrift/browser/mapd.thrift.js", "utf-8")}
-    ${fs.readFileSync("./thrift/browser/mapd_types.js", "utf-8")}
+    ${fs.readFileSync("./thrift/browser/OmniSci.js", "utf-8")}
+    ${fs.readFileSync("./thrift/browser/omnisci_types.js", "utf-8")}
   </script>
 `
 const doc = jsdom.jsdom(`<!doctype html><html>${scripts}<body></body></html>`)

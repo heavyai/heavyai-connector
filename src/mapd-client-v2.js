@@ -1,6 +1,6 @@
 const MapDClient =
-  (typeof window !== "undefined" && window.MapDClient) ||
-  require("../build/thrift/node/mapd.thrift.js").Client // eslint-disable-line global-require
+  (typeof window !== "undefined" && window.OmniSciClient) ||
+  require("../build/thrift/node/OmniSci.js").Client // eslint-disable-line global-require
 
 import { wrapWithErrorHandling } from "./wrap-with-error-handling"
 

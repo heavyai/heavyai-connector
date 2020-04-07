@@ -6,8 +6,8 @@ module.exports = {
     "./build/thrift/node/common_types.js",
     "./build/thrift/node/extension_functions_types.js",
     "./build/thrift/node/serialized_result_set_types.js",
-    "./build/thrift/node/mapd_types.js",
-    "./build/thrift/node/mapd.thrift.js",
+    "./build/thrift/node/omnisci_types.js",
+    "./build/thrift/node/OmniSci.js",
     "./build/thrift/node/completion_hints_types.js",
     "./src/mapd-con-es6.js"
   ],
