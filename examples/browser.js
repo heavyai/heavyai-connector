@@ -3,6 +3,9 @@
 const hostname = process.env.HOSTNAME || "metis.mapd.com"
 const protocol = process.env.PROTOCOL || "https"
 const port = process.env.PORT || "443"
+const database = process.env.DATABASE || "mapd"
+const username = process.env.USERNAME || "mapd"
+const password = process.env.PASSWORD || "HyperInteractive"
 
 // The total number of tweets from Columbia
 const query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
@@ -16,9 +19,9 @@ connector
   .protocol(protocol)
   .host(hostname)
   .port(port)
-  .dbName("mapd")
-  .user("mapd")
-  .password("HyperInteractive")
+  .dbName(database)
+  .user(username)
+  .password(password)
   .connectAsync()
   .then(session =>
     // now that we have a session open we can make some db calls:

@@ -2,6 +2,9 @@
 const hostname = process.env.HOSTNAME || "metis.mapd.com"
 const protocol = process.env.PROTOCOL || "https"
 const port = process.env.PORT || "443"
+const database = process.env.DATABASE || "mapd"
+const username = process.env.USERNAME || "mapd"
+const password = process.env.PASSWORD || "HyperInteractive"
 
 const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
@@ -25,9 +28,9 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       .protocol(protocol)
       .host(hostname)
       .port(port)
-      .dbName("mapd")
-      .user("mapd")
-      .password("HyperInteractive")
+      .dbName(database)
+      .user(username)
+      .password(password)
   })
 
   const widgetId = 0
