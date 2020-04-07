@@ -3,16 +3,12 @@
 //
 // DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 //
-"use strict";
-
-var thrift = require('thrift');
-var Thrift = thrift.Thrift;
-var Q = thrift.Q;
-var Int64 = require('node-int64');
+if (typeof Int64 === 'undefined' && typeof require === 'function') {
+  var Int64 = require('node-int64');
+}
 
 
-var ttypes = module.exports = {};
-ttypes.TExtArgumentType = {
+TExtArgumentType = {
   'Int8' : 0,
   'Int16' : 1,
   'Int32' : 2,
@@ -41,12 +37,12 @@ ttypes.TExtArgumentType = {
   'GeoPolygon' : 25,
   'GeoMultiPolygon' : 26
 };
-ttypes.TOutputBufferSizeType = {
+TOutputBufferSizeType = {
   'kUserSpecifiedConstantParameter' : 0,
   'kUserSpecifiedRowMultiplier' : 1,
   'kConstant' : 2
 };
-var TUserDefinedFunction = module.exports.TUserDefinedFunction = function(args) {
+TUserDefinedFunction = function(args) {
   this.name = null;
   this.argTypes = null;
   this.retType = null;
@@ -75,7 +71,7 @@ TUserDefinedFunction.prototype.read = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString();
+        this.name = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -87,7 +83,7 @@ TUserDefinedFunction.prototype.read = function(input) {
         var _size0 = _rtmp31.size || 0;
         for (var _i2 = 0; _i2 < _size0; ++_i2) {
           var elem3 = null;
-          elem3 = input.readI32();
+          elem3 = input.readI32().value;
           this.argTypes.push(elem3);
         }
         input.readListEnd();
@@ -97,7 +93,7 @@ TUserDefinedFunction.prototype.read = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.retType = input.readI32();
+        this.retType = input.readI32().value;
       } else {
         input.skip(ftype);
       }
@@ -140,7 +136,7 @@ TUserDefinedFunction.prototype.write = function(output) {
   return;
 };
 
-var TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = function(args) {
+TUserDefinedTableFunction = function(args) {
   this.name = null;
   this.sizerType = null;
   this.sizerArgPos = null;
@@ -181,21 +177,21 @@ TUserDefinedTableFunction.prototype.read = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString();
+        this.name = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.sizerType = input.readI32();
+        this.sizerType = input.readI32().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.sizerArgPos = input.readI32();
+        this.sizerArgPos = input.readI32().value;
       } else {
         input.skip(ftype);
       }
@@ -207,7 +203,7 @@ TUserDefinedTableFunction.prototype.read = function(input) {
         var _size5 = _rtmp36.size || 0;
         for (var _i7 = 0; _i7 < _size5; ++_i7) {
           var elem8 = null;
-          elem8 = input.readI32();
+          elem8 = input.readI32().value;
           this.inputArgTypes.push(elem8);
         }
         input.readListEnd();
@@ -222,7 +218,7 @@ TUserDefinedTableFunction.prototype.read = function(input) {
         var _size9 = _rtmp310.size || 0;
         for (var _i11 = 0; _i11 < _size9; ++_i11) {
           var elem12 = null;
-          elem12 = input.readI32();
+          elem12 = input.readI32().value;
           this.outputArgTypes.push(elem12);
         }
         input.readListEnd();
@@ -237,7 +233,7 @@ TUserDefinedTableFunction.prototype.read = function(input) {
         var _size13 = _rtmp314.size || 0;
         for (var _i15 = 0; _i15 < _size13; ++_i15) {
           var elem16 = null;
-          elem16 = input.readI32();
+          elem16 = input.readI32().value;
           this.sqlArgTypes.push(elem16);
         }
         input.readListEnd();
