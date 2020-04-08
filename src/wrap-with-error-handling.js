@@ -1,9 +1,9 @@
 const MapDClient =
-  (typeof window !== "undefined" && window.MapDClient) ||
-  require("../build/thrift/node/mapd.thrift.js").Client // eslint-disable-line global-require
+  (typeof window !== "undefined" && window.OmniSciClient) ||
+  require("../build/thrift/node/OmniSci.js").Client // eslint-disable-line global-require
 const TMapDException =
-  (typeof window !== "undefined" && window.TMapDException) ||
-  require("../build/thrift/node/mapd_types.js").TMapDException // eslint-disable-line global-require
+  (typeof window !== "undefined" && window.TOmniSciException) ||
+  require("../build/thrift/node/omnisci_types.js").TOmniSciException // eslint-disable-line global-require
 const Thrift =
   (typeof window !== "undefined" && window.Thrift) || require("thrift").Thrift // eslint-disable-line global-require
 

@@ -1,8 +1,8 @@
 import { expect } from "chai"
 import {
   CREATE_LINK_ERROR_STRING,
-  isResultError,
-  isCreateLinkError
+  isCreateLinkError,
+  isResultError
 } from "../src/wrap-with-error-handling"
 
 describe("wrapWithErrorHandling", () => {
@@ -13,8 +13,8 @@ describe("wrapWithErrorHandling", () => {
     it("should return true when result is instance of a Thrift.TException", () => {
       expect(isResultError(new Thrift.TException())).to.equal(true)
     })
-    it("should return true when result is instance of a TMapDException", () => {
-      expect(isResultError(new TMapDException())).to.equal(true)
+    it("should return true when result is instance of a TOmniSciException", () => {
+      expect(isResultError(new TOmniSciException())).to.equal(true)
     })
     it("should return false when result is a string", () => {
       expect(isResultError("ERROR")).to.equal(false)
