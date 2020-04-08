@@ -31,7 +31,6 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, "dist"),
-    libraryTarget: 'umd',
     filename: "browser-connector.js"
   }
 }

@@ -1,14 +1,4 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("../src/noop.js"));
-	else if(typeof define === 'function' && define.amd)
-		define(["../src/noop.js"], factory);
-	else {
-		var a = typeof exports === 'object' ? factory(require("../src/noop.js")) : factory(root["../src/noop.js"]);
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
-})(this, function(__WEBPACK_EXTERNAL_MODULE_22__) {
-return /******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -2763,7 +2753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 22 */
 /***/ (function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_22__;
+	module.exports = ../src/noop.js;
 
 /***/ }),
 /* 23 */
@@ -3165,6 +3155,4 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ })
-/******/ ])
-});
-;
+/******/ ]);
