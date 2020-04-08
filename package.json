@@ -20,8 +20,6 @@
   },
   "main": "dist/node-connector.js",
   "browser": "dist/browser-connector.js",
-  "unpkg": "dist/browser-connector.js",
-  "jsdelivr": "dist/browser-connector.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/omnisci/mapd-connector"
