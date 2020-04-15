@@ -16,13 +16,6 @@ module.exports = {
       {test: /\.js$/, loader: "babel-loader", exclude: /node_modules/}
     ]
   },
-  externals: {
-    thrift: "../src/noop.js",
-    url: "../src/noop.js",
-    "../build/thrift/node/omnisci_types.js": "../src/noop.js",
-    "../build/thrift/node/common_types.js": "../src/noop.js",
-    "../build/thrift/node/OmniSci.js": "../src/noop.js",
-  },
   node: {
     child_process: "empty",
     fs: "empty",
@@ -31,7 +24,6 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, "dist"),
-    libraryTarget: 'umd',
     filename: "browser-connector.js"
   }
 }
