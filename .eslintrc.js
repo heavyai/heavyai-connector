@@ -1,5 +1,5 @@
 module.exports = {
-  "extends": ["prettier"],
+  "extends": ["prettier", "eslint:recommended"],
   "rules": { // And why they're best practice (alphabetized).
     "accessor-pairs": [2, {"getWithoutSet": true}], // omission is usually by mistake.
     "array-callback-return": 2, // omission is usually by mistake.
@@ -200,6 +200,5 @@ module.exports = {
       "experimentalObjectRestSpread": true
     },
     "sourceType": "module"
-  },
-  "extends": "eslint:recommended"
+  }
 }
