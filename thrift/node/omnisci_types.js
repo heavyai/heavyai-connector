@@ -59,10 +59,13 @@ ttypes.TQueryType = {
   'SCHEMA_READ' : 3,
   'SCHEMA_WRITE' : 4
 };
+<<<<<<< HEAD
 ttypes.TArrowTransport = {
   'SHARED_MEMORY' : 0,
   'WIRE' : 1
 };
+=======
+>>>>>>> Update Thrift
 ttypes.TExpressionRangeType = {
   'INVALID' : 0,
   'INTEGER' : 1,
