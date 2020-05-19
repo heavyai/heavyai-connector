@@ -3,9 +3,9 @@
 const { TDatumType, TEncodingType } =
   (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
 const { TPixel, TOmniSciException } =
-  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) || window // eslint-disable-line global-require
-const MapDThrift =
-  isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
+  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) ||
+  window // eslint-disable-line global-require
+const MapDThrift = isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
 let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
 const thriftWrapper = Thrift
 const parseUrl = isNodeRuntime() && require("url").parse // eslint-disable-line global-require
@@ -910,13 +910,43 @@ class MapdCon {
 
     const conId = 0
 
+    let currentQueryChartId = window.currentQueryChartId
+
+    if (!currentQueryChartId) {
+      const chartIdFromDcFlag = window.dcFlagMap && window.dcFlagMap[window.currentQueryDcFlag]
+      if (chartIdFromDcFlag) {
+        currentQueryChartId = chartIdFromDcFlag
+      }
+    }
+
+    if (!currentQueryChartId) {
+      console.groupCollapsed("No chart id")
+      console.log("stuff", { dcFlagMap: window.dcFlagMap, options, currentQueryChartId })
+      console.trace()
+      console.groupEnd()
+    }
+
+    window.dispatchEvent(
+      new CustomEvent("omni", {
+        detail: {
+          type: "query-sent",
+          chartId: currentQueryChartId,
+          query,
+          options,
+          queryId,
+          curNonce
+        }
+      })
+    )
+
     const processResultsOptions = {
       returnTiming,
       eliminateNullRows,
       query,
       queryId,
       conId,
-      estimatedQueryTime: lastQueryTime
+      estimatedQueryTime: lastQueryTime,
+      currentQueryChartId
     }
 
     try {
@@ -1491,12 +1521,29 @@ class MapdCon {
     const conId = 0
     this._lastRenderCon = conId
 
+    let currentQueryChartId = window.currentQueryChartId
+
+    if (!currentQueryChartId) {
+      const chartIdFromDcFlag = window.dcFlagMap && window.dcFlagMap[window.currentQueryDcFlag]
+      if (chartIdFromDcFlag) {
+        currentQueryChartId = chartIdFromDcFlag
+      }
+    }
+
+    if (!currentQueryChartId) {
+      console.groupCollapsed("No chart id - render")
+      console.log("stuff", { dcFlagMap: window.dcFlagMap, options })
+      console.trace()
+      console.groupEnd()
+    }
+
     const processResultsOptions = {
       isImage: true,
       query: "render: " + vega,
       queryId,
       conId,
-      estimatedQueryTime: lastQueryTime
+      estimatedQueryTime: lastQueryTime,
+      currentQueryChartId
     }
 
     if (!callback) {

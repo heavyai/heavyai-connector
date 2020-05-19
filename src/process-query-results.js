@@ -1,3 +1,4 @@
+import murmur from "murmurhash-js"
 import processColumnarResults from "./process-columnar-results"
 import processRowResults from "./process-row-results"
 /**
@@ -56,15 +57,51 @@ export default function processQueryResults(logging, updateQueryTimes) {
 
     // should use node_env
     if (logging && result.execution_time_ms) {
-      console.log(
-        query,
-        "on Server",
-        conId,
-        "- Execution Time:",
-        result.execution_time_ms,
-        " ms, Total Time:",
-        result.total_time_ms + "ms"
+      const chartId = options.currentQueryChartId
+
+      window.dispatchEvent(
+        new CustomEvent("omni", {
+          detail: {
+            type: "query-returned",
+            chartId,
+            query,
+            options,
+            queryId,
+            result
+          }
+        })
       )
+
+      if (chartId) {
+      const idStyleReset = "color: inherit; text-shadow: inherit;"
+
+        const idHue =
+          (murmur.murmur3(String(chartId), 1) % 2147483647) / 2147483647 * 360
+        const idColor = `hsl(${idHue}, 100%, 50%)`
+        const idStyle = `color: #fff; text-shadow: 0 0 0.2em ${idColor}, 0 0 0.8em ${idColor}, 0 0 1.6em ${idColor};`
+        console.log(
+          chartId ? `Chart ID: %c${chartId}%c,` : "",
+          idStyle,
+          idStyleReset,
+          query,
+          "on Server",
+          conId,
+          "- Execution Time:",
+          result.execution_time_ms,
+          " ms, Total Time:",
+          result.total_time_ms + "ms"
+        )
+      } else {
+        console.log(
+          query,
+          "on Server",
+          conId,
+          "- Execution Time:",
+          result.execution_time_ms,
+          " ms, Total Time:",
+          result.total_time_ms + "ms"
+        )
+      }
     }
 
     if (isImage && hasCallback) {
