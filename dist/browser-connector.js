@@ -521,7 +521,6 @@
 	              accum[value.col_name] = value;
 	              return accum;
 	            }, {});
-	            debugger;
 	            resolve(_this.convertFromThriftTypes(rowDict));
 	          }
 	        });
