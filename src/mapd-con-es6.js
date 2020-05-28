@@ -1050,7 +1050,7 @@ class MapdCon {
             if (error) {
               reject(error)
             } else {
-              const rowDict = fields.row_desc.reduce((accum, value) => {
+              const rowDict = fields.reduce((accum, value) => {
                 accum[value.col_name] = value
                 return accum
               }, {})
