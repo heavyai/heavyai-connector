@@ -1046,11 +1046,15 @@ class MapdCon {
         this._client[0].sql_validate(
           this._sessionId[0],
           query,
-          (error, res) => {
+          (error, fields) => {
             if (error) {
               reject(error)
             } else {
-              resolve(this.convertFromThriftTypes(res))
+              const rowDict = fields.reduce((accum, value) => {
+                accum[value.col_name] = value
+                return accum
+              }, {})
+              resolve(this.convertFromThriftTypes(rowDict))
             }
           }
         )

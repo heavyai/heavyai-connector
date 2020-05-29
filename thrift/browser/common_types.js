@@ -39,7 +39,8 @@ TEncodingType = {
   'DICT' : 4,
   'SPARSE' : 5,
   'GEOINT' : 6,
-  'DATE_IN_DAYS' : 7
+  'DATE_IN_DAYS' : 7,
+  'PACKED_PIXEL_COORD' : 8
 };
 TTypeInfo = function(args) {
   this.type = null;
