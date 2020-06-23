@@ -54,6 +54,35 @@ export default function processQueryResults(logging, updateQueryTimes) {
       )
     }
 
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("neon", {
+          detail: options.isImage
+            ? {
+                eventType: "render response",
+                vega: options.vega,
+                time: Date.now(),
+                ...{
+                  execution_time_ms: result.execution_time_ms,
+                  total_time_ms: result.total_time_ms,
+                  render_time_ms: result.render_time_ms
+                },
+                ...options.neon
+              }
+            : {
+                eventType: "query response",
+                query,
+                time: Date.now(),
+                ...{
+                  execution_time_ms: result.execution_time_ms,
+                  total_time_ms: result.total_time_ms
+                },
+                ...options.neon
+              }
+        })
+      )
+    }
+
     // should use node_env
     if (logging && result.execution_time_ms) {
       console.log(

@@ -209,10 +209,11 @@
 	    TEncodingType = _ref.TEncodingType; // eslint-disable-line global-require
 
 
-	var _ref2 = isNodeRuntime() && __webpack_require__(54) || window,
+	var _ref2 =
+	// eslint-disable-next-line global-require
+	isNodeRuntime() && __webpack_require__(54) || window,
 	    TPixel = _ref2.TPixel,
-	    TOmniSciException = _ref2.TOmniSciException; // eslint-disable-line global-require
-
+	    TOmniSciException = _ref2.TOmniSciException;
 
 	var MapDThrift = isNodeRuntime() && __webpack_require__(22); // eslint-disable-line global-require
 	var Thrift = isNodeRuntime() && __webpack_require__(23) || window.Thrift; // eslint-disable-line global-require
@@ -1204,6 +1205,18 @@
 	        limit = options.hasOwnProperty("limit") ? options.limit : limit;
 	      }
 
+	      var neon = options && options.neon;
+
+	      if (!isNodeRuntime()) {
+	        window.dispatchEvent(new CustomEvent("neon", {
+	          detail: _extends({
+	            eventType: "query request",
+	            query: _query,
+	            time: Date.now()
+	          }, neon)
+	        }));
+	      }
+
 	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
 
 	      var curNonce = (this._nonce++).toString();
@@ -1216,7 +1229,8 @@
 	        query: _query,
 	        queryId: queryId,
 	        conId: conId,
-	        estimatedQueryTime: lastQueryTime
+	        estimatedQueryTime: lastQueryTime,
+	        neon: neon
 	      };
 
 	      try {
@@ -1608,6 +1622,18 @@
 	        compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
 	      }
 
+	      var neon = options && options.neon;
+
+	      if (!isNodeRuntime()) {
+	        window.dispatchEvent(new CustomEvent("neon", {
+	          detail: _extends({
+	            eventType: "render request",
+	            vega: vega,
+	            time: Date.now()
+	          }, neon)
+	        }));
+	      }
+
 	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
 
 	      var curNonce = (this._nonce++).toString();
@@ -1618,9 +1644,11 @@
 	      var processResultsOptions = {
 	        isImage: true,
 	        query: "render: " + vega,
+	        vega: vega,
 	        queryId: queryId,
 	        conId: conId,
-	        estimatedQueryTime: lastQueryTime
+	        estimatedQueryTime: lastQueryTime,
+	        neon: neon
 	      };
 
 	      if (!callback) {
@@ -19004,6 +19032,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	exports.default = processQueryResults;
 
 	var _processColumnarResults = __webpack_require__(56);
@@ -19054,6 +19085,27 @@
 	    }
 	    if (result.execution_time_ms && conId !== null && estimatedQueryTime !== null) {
 	      updateQueryTimes(conId, queryId, estimatedQueryTime, result.execution_time_ms);
+	    }
+
+	    if (typeof window !== "undefined") {
+	      window.dispatchEvent(new CustomEvent("neon", {
+	        detail: options.isImage ? _extends({
+	          eventType: "render response",
+	          vega: options.vega,
+	          time: Date.now()
+	        }, {
+	          execution_time_ms: result.execution_time_ms,
+	          total_time_ms: result.total_time_ms,
+	          render_time_ms: result.render_time_ms
+	        }, options.neon) : _extends({
+	          eventType: "query response",
+	          query: query,
+	          time: Date.now()
+	        }, {
+	          execution_time_ms: result.execution_time_ms,
+	          total_time_ms: result.total_time_ms
+	        }, options.neon)
+	      }));
 	    }
 
 	    // should use node_env

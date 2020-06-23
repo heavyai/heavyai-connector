@@ -3,9 +3,10 @@
 const { TDatumType, TEncodingType } =
   (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
 const { TPixel, TOmniSciException } =
-  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) || window // eslint-disable-line global-require
-const MapDThrift =
-  isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
+  // eslint-disable-next-line global-require
+  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) ||
+  window
+const MapDThrift = isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
 let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
 const thriftWrapper = Thrift
 const parseUrl = isNodeRuntime() && require("url").parse // eslint-disable-line global-require
@@ -901,6 +902,21 @@ class MapdCon {
       limit = options.hasOwnProperty("limit") ? options.limit : limit
     }
 
+    const neon = options && options.neon
+
+    if (!isNodeRuntime()) {
+      window.dispatchEvent(
+        new CustomEvent("neon", {
+          detail: {
+            eventType: "query request",
+            query,
+            time: Date.now(),
+            ...neon
+          }
+        })
+      )
+    }
+
     const lastQueryTime =
       queryId in this.queryTimes
         ? this.queryTimes[queryId]
@@ -916,7 +932,8 @@ class MapdCon {
       query,
       queryId,
       conId,
-      estimatedQueryTime: lastQueryTime
+      estimatedQueryTime: lastQueryTime,
+      neon
     }
 
     try {
@@ -1485,6 +1502,21 @@ class MapdCon {
         : compressionLevel
     }
 
+    const neon = options && options.neon
+
+    if (!isNodeRuntime()) {
+      window.dispatchEvent(
+        new CustomEvent("neon", {
+          detail: {
+            eventType: "render request",
+            vega,
+            time: Date.now(),
+            ...neon
+          }
+        })
+      )
+    }
+
     const lastQueryTime =
       queryId in this.queryTimes
         ? this.queryTimes[queryId]
@@ -1498,9 +1530,11 @@ class MapdCon {
     const processResultsOptions = {
       isImage: true,
       query: "render: " + vega,
+      vega,
       queryId,
       conId,
-      estimatedQueryTime: lastQueryTime
+      estimatedQueryTime: lastQueryTime,
+      neon
     }
 
     if (!callback) {
