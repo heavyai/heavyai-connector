@@ -1021,6 +1021,20 @@ class MapdCon {
     }
   })
 
+  queryAsyncNoCache = this.handleErrors((query, options) => {
+
+    return new Promise((resolve, reject) => {
+      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute")
+      this.query(query, options, (error, result) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
+  })
+
   /**
    * Submit a query to validate that the backend can create a result set based on the SQL statement.
    * @param {String} query The query to perform.

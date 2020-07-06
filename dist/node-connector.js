@@ -20756,6 +20756,19 @@ module.exports =
 	        return _this.clonePromise(queryPromise);
 	      }
 	    });
+	    this.queryAsyncNoCache = this.handleErrors(function (query, options) {
+
+	      return new Promise(function (resolve, reject) {
+	        _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, "sql_execute");
+	        _this.query(query, options, function (error, result) {
+	          if (error) {
+	            reject(error);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 	    this.validateQuery = this.handleErrors(function (query) {
 	      return new Promise(function (resolve, reject) {
 	        _this._client[0].sql_validate(_this._sessionId[0], query, function (error, fields) {
