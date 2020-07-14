@@ -645,6 +645,19 @@ class MapdCon {
   )
 
   /**
+   * Delete multiple dashboards
+   * @param {Array} dashboardIds - An array of dashboard ids (numbers)
+   * @return {Promise} Returns empty if successful, rejects if any client failed.
+   *
+   * @example <caption>Delete dashboards from the server:</caption>
+   *
+   * con.deleteDashboardsAsync([123, 456]).then(res => console.log(res))
+   */
+  deleteDashboardsAsync = this.handleErrors(
+    this.wrapThrift("delete_dashboards", this.overAllClients, args => args)
+  )
+
+  /**
    * Share a dashboard (GRANT a certain set of permissions to a specified list of groups).
    * @param {Number} dashboardId - The ID of the dashboard.
    * @param {String[]} groups - The roles and users that can access the dashboard.
@@ -664,6 +677,29 @@ class MapdCon {
         dashboardId,
         groups,
         objects,
+        new TDashboardPermissions(permissions)
+      ]
+    )
+  )
+
+  /**
+   * Share multiple dashboards.
+   * @param {Array} dashboardIds - An array of dashboard ids (numbers)
+   * @param {String[]} groups - The roles and users that can access the dashboard.
+   * @param {String[]} permissions - Permissions granted to the groups.
+   * @return {Promise} Returns empty if successful.
+   *
+   * @example <caption>Share dashboards:</caption>
+   *
+   * con.shareDashboardsAsync([123, 456], ['group1', 'group2'], ['perm1', 'perm2']).then(res => console.log(res))
+   */
+  shareDashboardsAsync = this.handleErrors(
+    this.wrapThrift(
+      "share_dashboards",
+      this.overAllClients,
+      ([dashboardIds, groups, permissions]) => [
+        dashboardIds,
+        groups,
         new TDashboardPermissions(permissions)
       ]
     )
