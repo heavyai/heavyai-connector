@@ -205,6 +205,16 @@
               
                 
                 <li><a
+                  href='#unsharedashboardsasync'
+                  class="">
+                  unshareDashboardsAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#getdashboardgranteesasync'
                   class="">
                   getDashboardGranteesAsync
@@ -2210,6 +2220,100 @@ and whether backend rendering is enabled.</p>
       <p><p>Unshare a dashboard:</p>
 </p>
       <pre class='p1 overflow-auto round fill-light'>con.unshareDashboardAsync(<span class="hljs-number">123</span>, [<span class="hljs-string">'group1'</span>, <span class="hljs-string">'group2'</span>], [<span class="hljs-string">'object1'</span>, <span class="hljs-string">'object2'</span>], [<span class="hljs-string">'perm1'</span>, <span class="hljs-string">'perm2'</span>]).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='unsharedashboardsasync'>
+      unshareDashboardsAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Unshare multiple dashboards.</p>
+
+
+  <div class='pre p1 fill-light mt0'>unshareDashboardsAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>dashboardIds</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>>)</code>
+	    An array of dashboard ids
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>groups</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    The roles and users to unshare with.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>permissions</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>>)</code>
+	    The permissions to remove.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+        Returns empty if successful.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      <p><p>Unshare dashboards:</p>
+</p>
+      <pre class='p1 overflow-auto round fill-light'>con.unshareDashboardsAsync([<span class="hljs-number">123</span>, <span class="hljs-number">456</span>], [<span class="hljs-string">'group1'</span>, <span class="hljs-string">'group2'</span>], [<span class="hljs-string">'perm1'</span>, <span class="hljs-string">'perm2'</span>]).then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(res))</pre>
     
   
 
