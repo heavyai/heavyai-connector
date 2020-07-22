@@ -21475,17 +21475,17 @@ module.exports =
 	      var queryId = null;
 	      var returnTiming = false;
 	      var limit = -1;
+	      var curNonce = (this._nonce++).toString();
 	      if (options) {
 	        columnarResults = options.hasOwnProperty("columnarResults") ? options.columnarResults : columnarResults;
 	        eliminateNullRows = options.hasOwnProperty("eliminateNullRows") ? options.eliminateNullRows : eliminateNullRows;
 	        queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
 	        returnTiming = options.hasOwnProperty("returnTiming") ? options.returnTiming : returnTiming;
 	        limit = options.hasOwnProperty("limit") ? options.limit : limit;
+	        curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce;
 	      }
 
 	      var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
-
-	      var curNonce = (this._nonce++).toString();
 
 	      var conId = 0;
 
