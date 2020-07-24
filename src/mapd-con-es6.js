@@ -146,7 +146,11 @@ class MapdCon {
           headers: { Connection: "close" },
           https: protocol === "https:"
         })
-        connection.on("error", console.error) // eslint-disable-line no-console
+        connection.on("error", (err) => {
+          throw new Error(
+            `Thrift connection error - ${err.message}\n${JSON.stringify(err, null, 2)}`
+          )
+        })
         client = thriftWrapper.createClient(MapDThrift, connection)
         resetThriftClientOnArgumentErrorForMethods(this, client, [
           "connect",

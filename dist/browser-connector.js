@@ -750,7 +750,9 @@
 	            headers: { Connection: "close" },
 	            https: protocol === "https:"
 	          });
-	          connection.on("error", console.error); // eslint-disable-line no-console
+	          connection.on("error", function (err) {
+	            throw new Error("Thrift connection error - " + err.message + "\n" + JSON.stringify(err, null, 2));
+	          });
 	          client = thriftWrapper.createClient(MapDThrift, connection);
 	          resetThriftClientOnArgumentErrorForMethods(this, client, ["connect", "createTableAsync", "dbName", "detectColumnTypesAsync", "disconnect", "getCompletionHintsAsync", "getFields", "getDashboardAsync", "getDashboardsAsync", "getResultRowForPixel", "getStatusAsync", "getTablesAsync", "getTablesWithMetaAsync", "host", "importTableAsync", "importTableGeoAsync", "logging", "password", "port", "protocol", "query", "renderVega", "sessionId", "user", "validateQuery"]);
 	          clients.push(client);
