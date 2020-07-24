@@ -99,7 +99,15 @@ function buildClient(url) {
       },
       https: protocol === "https:"
     })
-    connection.on("error", console.error) // eslint-disable-line no-console
+    connection.on("error", (err) => {
+      throw new Error(
+        `Thrift connection error - ${err.message}\n${JSON.stringify(
+          err,
+          null,
+          2
+        )}`
+      )
+    })
     client = createClient(MapDThrift, connection)
   } else {
     const connection = new CustomXHRConnection(hostname, port, {
@@ -111,7 +119,15 @@ function buildClient(url) {
       },
       https: protocol === "https:"
     })
-    connection.on("error", console.error) // eslint-disable-line no-console
+    connection.on("error", (err) => {
+      throw new Error(
+        `Thrift connection error - ${err.message}\n${JSON.stringify(
+          err,
+          null,
+          2
+        )}`
+      )
+    })
     client = createXHRClient(MapDThrift, connection)
   }
   return client

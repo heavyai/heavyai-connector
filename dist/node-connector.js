@@ -13247,8 +13247,9 @@ function buildClient(url) {
       },
       https: protocol === "https:"
     });
-    connection.on("error", console.error); // eslint-disable-line no-console
-
+    connection.on("error", function (err) {
+      throw new Error("Thrift connection error - ".concat(err.message, "\n").concat(JSON.stringify(err, null, 2)));
+    });
     client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__, connection);
   } else {
     var _connection = new CustomXHRConnection(hostname, port, {
@@ -13261,8 +13262,9 @@ function buildClient(url) {
       https: protocol === "https:"
     });
 
-    _connection.on("error", console.error); // eslint-disable-line no-console
-
+    _connection.on("error", function (err) {
+      throw new Error("Thrift connection error - ".concat(err.message, "\n").concat(JSON.stringify(err, null, 2)));
+    });
 
     client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createXHRClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__, _connection);
   }
