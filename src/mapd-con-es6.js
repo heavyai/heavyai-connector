@@ -731,6 +731,29 @@ class MapdCon {
   )
 
   /**
+   * Unshare multiple dashboards.
+   * @param {Number[]} dashboardIds - An array of dashboard ids
+   * @param {String[]} groups - The roles and users to unshare with.
+   * @param {String[]} permissions - The permissions to remove.
+   * @return {Promise} Returns empty if successful.
+   *
+   * @example <caption>Unshare dashboards:</caption>
+   *
+   * con.unshareDashboardsAsync([123, 456], ['group1', 'group2'], ['perm1', 'perm2']).then(res => console.log(res))
+   */
+  unshareDashboardsAsync = this.handleErrors(
+    this.wrapThrift(
+      "unshare_dashboards",
+      this.overAllClients,
+      ([dashboardIds, groups, permissions]) => [
+        dashboardIds,
+        groups,
+        new TDashboardPermissions(permissions)
+      ]
+    )
+  )
+
+  /**
    * Get the list of users that a dashboard has been shared with; that is, those users who have been granted permissions to the dashboard.
    * @param {Number} dashboardId - The ID of the dashboard.
    * @return {Promise} Returns the list of users (array).

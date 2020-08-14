@@ -1,11 +1,11 @@
 /* eslint-disable */
 
-const hostname = process.env.HOSTNAME || "metis.mapd.com"
-const protocol = process.env.PROTOCOL || "https"
-const port = process.env.PORT || "443"
-const database = process.env.DATABASE || "mapd"
-const username = process.env.USERNAME || "mapd"
-const password = process.env.PASSWORD || "HyperInteractive"
+const hostname = "metis.mapd.com"
+const protocol = "https"
+const port = "443"
+const database = "mapd"
+const username = "mapd"
+const password = "HyperInteractive"
 
 // The total number of tweets from Columbia
 const query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
