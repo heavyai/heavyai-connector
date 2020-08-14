@@ -946,6 +946,7 @@ class MapdCon {
     let queryId = null
     let returnTiming = false
     let limit = -1
+    let curNonce = (this._nonce++).toString()
     if (options) {
       columnarResults = options.hasOwnProperty("columnarResults")
         ? options.columnarResults
@@ -958,6 +959,7 @@ class MapdCon {
         ? options.returnTiming
         : returnTiming
       limit = options.hasOwnProperty("limit") ? options.limit : limit
+      curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce
     }
 
     const lastQueryTime =
@@ -965,7 +967,6 @@ class MapdCon {
         ? this.queryTimes[queryId]
         : this.DEFAULT_QUERY_TIME
 
-    const curNonce = (this._nonce++).toString()
 
     const conId = 0
 
