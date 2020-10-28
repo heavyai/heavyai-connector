@@ -39,12 +39,19 @@ ttypes.TExtArgumentType = {
   'GeoLineString' : 23,
   'Cursor' : 24,
   'GeoPolygon' : 25,
-  'GeoMultiPolygon' : 26
+  'GeoMultiPolygon' : 26,
+  'ColumnInt8' : 27,
+  'ColumnInt16' : 28,
+  'ColumnInt32' : 29,
+  'ColumnInt64' : 30,
+  'ColumnFloat' : 31,
+  'ColumnDouble' : 32,
+  'ColumnBool' : 33
 };
 ttypes.TOutputBufferSizeType = {
-  'kUserSpecifiedConstantParameter' : 0,
-  'kUserSpecifiedRowMultiplier' : 1,
-  'kConstant' : 2
+  'kConstant' : 0,
+  'kUserSpecifiedConstantParameter' : 1,
+  'kUserSpecifiedRowMultiplier' : 2
 };
 var TUserDefinedFunction = module.exports.TUserDefinedFunction = function(args) {
   this.name = null;
