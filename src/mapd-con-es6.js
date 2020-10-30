@@ -1,28 +1,20 @@
-/* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
+import * as thrift from 'thrift';
 
-const { TDatumType, TEncodingType } =
-  (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
-const { TPixel, TOmniSciException } =
-  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) || window // eslint-disable-line global-require
-const MapDThrift =
-  isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
-let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
-const thriftWrapper = Thrift
-const parseUrl = isNodeRuntime() && require("url").parse // eslint-disable-line global-require
-if (isNodeRuntime()) {
-  // Because browser Thrift and Node Thrift are exposed slightly differently.
-  Thrift = Thrift.Thrift
-  Thrift.Transport = thriftWrapper.TBufferedTransport
-  Thrift.Protocol = thriftWrapper.TJSONProtocol
-}
-
-import * as helpers from "./helpers"
-
+import { TDatumType, TDeviceType, TEncodingType } from 'gen-thrift/common_types'
+import { TPixel, TOmniSciException, TArrowTransport } from 'gen-thrift/omnisci_types'
+import { Client as OmniSciClient } from 'gen-thrift/OmniSci';
+import { Table } from 'apache-arrow';
+import { parse as parseUrl } from 'url';
 import clone from "ramda.clone"
 import EventEmitter from "eventemitter3"
 
-import MapDClientV2 from "./mapd-client-v2"
+import * as helpers from "./helpers"
 import processQueryResults from "./process-query-results"
+
+let Thrift = thrift.Thrift
+
+Thrift.Transport = thrift.TBufferedTransport
+Thrift.Protocol = thrift.TJSONProtocol
 
 const COMPRESSION_LEVEL_DEFAULT = 3
 
@@ -31,10 +23,12 @@ function arrayify(maybeArray) {
 }
 
 function isNodeRuntime() {
+  // we're now using the thrift bindings generated for node js
+  // on the browser.
   return typeof window === "undefined"
 }
 
-class MapdCon {
+export class MapdCon {
   constructor() {
     this._host = null
     this._user = null
@@ -139,15 +133,14 @@ class MapdCon {
 
       if (isNodeRuntime()) {
         const { protocol, hostname, port } = parseUrl(transportUrls[h])
-        const connection = thriftWrapper.createHttpConnection(hostname, port, {
-          transport: thriftWrapper.TBufferedTransport,
-          protocol: thriftWrapper.TJSONProtocol,
+        const connection = thrift.createHttpConnection(hostname, port, {
+          transport: thrift.TBufferedTransport,
+          protocol: thrift.TJSONProtocol,
           path: "/",
-          headers: { Connection: "close" },
-          https: protocol === "https:"
+          https: false
         })
         connection.on("error", console.error) // eslint-disable-line no-console
-        client = thriftWrapper.createClient(MapDThrift, connection)
+        client = thrift.createClient(OmniSciClient, connection)
         resetThriftClientOnArgumentErrorForMethods(this, client, [
           "connect",
           "createTableAsync",
@@ -177,9 +170,16 @@ class MapdCon {
         ])
         clients.push(client)
       } else {
-        const thriftTransport = new Thrift.Transport(transportUrls[h])
-        const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        clients.push(new MapDClientV2(thriftProtocol))
+        const { protocol, hostname, port } = parseUrl(transportUrls[h])
+        const connection = thrift.createXHRConnection(hostname, port, {
+          transport: thrift.TBufferedTransport,
+          protocol: thrift.TJSONProtocol,
+          path: "/",
+          https: false
+        })
+        connection.on("error", console.error)
+        let client = thrift.createXHRClient(OmniSciClient, connection)
+        clients.push(client)
       }
     }
     this._client = clients
@@ -243,7 +243,6 @@ class MapdCon {
 
     for (let h = 0; h < clients.length; h++) {
       const client = clients[h]
-
       client.connect(
         this._user[h],
         this._password[h],
@@ -256,8 +255,7 @@ class MapdCon {
           this._client.push(client)
           this._sessionId.push(sessionId)
           callback(null, this)
-        }
-      )
+        })
     }
 
     return this
@@ -344,6 +342,8 @@ class MapdCon {
     this.queryTimes[queryId] = execution_time_ms
   }
 
+  // Note(jclay): I think the updates to the way we're using the
+  // thrift libs will allow for removing most of this below.
   events = new EventEmitter()
   EVENT_NAMES = {
     ERROR: "error",
@@ -923,6 +923,45 @@ class MapdCon {
       })
   )
 
+  queryDF(query, options, callback, debug_callback) {
+    let deviceId = 0
+    let limit = -1
+    const conId = 0
+    return this._client[conId].sql_execute_df(
+      this._sessionId[conId],
+      query,
+      TDeviceType.CPU,
+      deviceId,
+      limit,
+      TArrowTransport.WIRE)
+      .then((result) => {
+        var arrowTable = Table.from(result.df_buffer);
+        let debug_info = null
+
+        if (options && options.debug_info) {
+          debug_info = {
+            arrow_conversion_time_ms: result.arrow_conversion_time_ms.toNumber(),
+            buffer_size: result.df_buffer.length,
+            execution_time_ms: result.execution_time_ms.toNumber()
+          }
+          console.debug(debug_info)
+          if (debug_callback instanceof Function) {
+            debug_callback(debug_info)
+          }
+        }
+
+        if (callback instanceof Function) {
+          callback(null, arrowTable)
+          return
+        }
+        
+
+        return new Promise((resolve, reject) => { 
+          resolve(arrowTable);
+        });
+      })
+  }
+
   /**
    * Submit a query to the database and process the results.
    * @param {String} query The query to perform.
@@ -1053,6 +1092,33 @@ class MapdCon {
           reject(error)
         })
     })
+
+  queryDFAsync = this.handleErrors((query, options, debug_callback) => {
+    const cacheEntry = this.queryCache[query]
+
+    if (cacheEntry) {
+      return this.clonePromise(cacheEntry)
+    } else {
+      const queryPromise = new Promise((resolve, reject) => {
+        this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df")
+        this.queryDF(query, options, (error, result, debug_info) => {
+          if (this.queryCacheTransient) {
+            delete this.queryCache[query]
+          }
+
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        }, debug_callback)
+      })
+
+      this.queryCache[query] = queryPromise
+
+      return this.clonePromise(queryPromise)
+    }
+  })
 
   queryAsync = this.handleErrors((query, options) => {
     const cacheEntry = this.queryCache[query]
@@ -2032,10 +2098,9 @@ function resetThriftClientOnArgumentErrorForMethods(
 }
 
 // Set a global mapdcon function when mapdcon is brought in via script tag.
-if (typeof module === "object" && module.exports) {
-  if (!isNodeRuntime()) {
-    window.MapdCon = MapdCon
-  }
-}
-module.exports = MapdCon
-export default MapdCon
+// if (typeof module === "object" && module.exports) {
+//   if (!isNodeRuntime()) {
+//   }
+// }
+// window.MapdCon = MapdCon
+// export { MapdCon };

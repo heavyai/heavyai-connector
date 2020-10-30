@@ -77,6 +77,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "apache-arrow": "^0.17.0",
     "eventemitter3": "^3.1.2",
     "ramda.clone": "^0.26.1",
     "script-loader": "^0.7.0",
