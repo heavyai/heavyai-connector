@@ -1,25 +1,68 @@
-const path = require("path")
+const path = require('path');
+const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+
 module.exports = {
-  ecmaFeatures: {modules: true},
-  entry: [
-    "./node_modules/thrift/lib/nodejs/lib/thrift/index.js",
-    "./build/thrift/node/common_types.js",
-    "./build/thrift/node/extension_functions_types.js",
-    "./build/thrift/node/serialized_result_set_types.js",
-    "./build/thrift/node/omnisci_types.js",
-    "./build/thrift/node/OmniSci.js",
-    "./build/thrift/node/completion_hints_types.js",
-    "./src/mapd-con-es6.js"
+  mode: 'production',
+  devtool: 'eval-source-map',
+  entry: './src/mapd-con-es6.js',
+
+  output: {
+    path: path.resolve(__dirname, 'dist', 'node'),
+    filename: 'omniscidb-connector.js',
+    library: 'omnisci',
+    libraryTarget: 'umd'
+  },
+
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
   ],
+
+  resolve: {
+    alias: {
+      url: require.resolve("url/"),
+      util: require.resolve("util/"),
+      buffer: require.resolve("buffer/"),
+      'gen-thrift': path.resolve(__dirname, "thrift/node/")
+    }
+  },
+
   module: {
-    loaders: [
-      {test: /\.js$/, loader: "babel-loader", exclude: /node_modules/}
+    rules: [
+      {
+        test: /\.m?js$/,
+        include: /src/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            plugins: ['@babel/plugin-proposal-class-properties'],
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+      // The following two objs fix an issue with Apache-Arrow
+      // As the package includes both .mjs and .js outputs, webpack errors
+      // without this.
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto'
+      }
     ]
   },
-  output: {
-    path: path.join(__dirname, "dist"),
-    libraryTarget: "commonjs2",
-    filename: "node-connector.js"
+
+  optimization: {
+    minimizer: [new TerserPlugin()]
   },
-  target: "node"
+
+  target: 'node'
 }
