@@ -7,7 +7,8 @@
 
 var thrift = require('thrift');
 var Thrift = thrift.Thrift;
-var Q = thrift.Q;
+// Note(jclay): may need to make this a patch
+var Q = require('q');
 var Int64 = require('node-int64');
 
 var common_ttypes = require('./common_types');
@@ -14225,6 +14226,7 @@ OmniSciClient.prototype.sql_execute_df = function(session, query, device_type, d
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
+    console.log('defer', _defer)
     this._reqs[this.seqid()] = function(error, result) {
       if (error) {
         _defer.reject(error);
