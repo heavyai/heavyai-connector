@@ -43,8 +43,9 @@ $('#connect-form').submit(function (evt) {
   evt.preventDefault();
   var values = $(this).serializeArray();
   var useHTTPS = $("input[type='checkbox']#useHTTPS").prop('checked');
+  var protocol = useHTTPS ? 'https' : 'http'
   let connectionOpts = {
-    useHTTPS: useHTTPS
+    protocol: protocol
   }
   for (const val of values) {
     connectionOpts[val.name] = val.value

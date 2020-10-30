@@ -137,7 +137,7 @@ export class MapdCon {
           transport: thrift.TBufferedTransport,
           protocol: thrift.TJSONProtocol,
           path: "/",
-          https: false
+          https: protocol === "https:"
         })
         connection.on("error", console.error) // eslint-disable-line no-console
         client = thrift.createClient(OmniSciClient, connection)
@@ -175,7 +175,8 @@ export class MapdCon {
           transport: thrift.TBufferedTransport,
           protocol: thrift.TJSONProtocol,
           path: "/",
-          https: false
+          https: protocol === "https:",
+          useCORS: true
         })
         connection.on("error", console.error)
         let client = thrift.createXHRClient(OmniSciClient, connection)
