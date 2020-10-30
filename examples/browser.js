@@ -6,7 +6,7 @@ const sample_query =
   "SELECT name, ST_Area(omnisci_geo) as val FROM omnisci_counties;"
 const defaultQueryOptions = {}
 const defaultConnection = {
-  hostname: "192.168.10.110",
+  hostname: "localhost",
   useHTTPS: true,
   port: "6278",
   database: "omnisci",
