@@ -14226,7 +14226,6 @@ OmniSciClient.prototype.sql_execute_df = function(session, query, device_type, d
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
-    console.log('defer', _defer)
     this._reqs[this.seqid()] = function(error, result) {
       if (error) {
         _defer.reject(error);
