@@ -1,5 +1,5 @@
-// Karma configuration
-// Generated on Mon May 15 2017 18:01:29 GMT-0700 (PDT)
+const puppeteer = require('puppeteer');
+process.env.CHROME_BIN = puppeteer.executablePath();
 
 module.exports = function(config) {
   const cfg = {
@@ -12,10 +12,15 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      "../node_modules/babel-polyfill/dist/polyfill.js", // for Promise in PhantomJS
-      "../dist/browser-connector.js",
+      "../dist/omniscidb-connector.js",
       "integration.spec.js"
     ],
+
+    client: {
+      mocha: {
+        grep: '.queryDF'
+      }
+    },
 
     // list of files to exclude
     exclude: [],
@@ -40,7 +45,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ["PhantomJS"],
+    browsers: ['ChromeHeadless'],
     // browsers: ["Chrome"],
     // customLaunchers: {
     //   Chrome_travis_ci: {
@@ -59,21 +64,9 @@ module.exports = function(config) {
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      "*.js": ["webpack"]
-    },
-    webpack: {
-      module: {
-        loaders: [
-          {
-            test: /\.js$/,
-            loader: "babel-loader",
-            exclude: /node_modules/,
-            query: { presets: ["es2015"] }
-          }
-        ]
-      }
-    }
+    // preprocessors: {
+    //   '*.js': ['babel']
+    // }
   }
 
   // if (process.env.TRAVIS) {
