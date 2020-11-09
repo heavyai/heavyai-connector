@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
     target: 'web',
-    entry: './src/mapd-con-es6.js',
+    entry: './src/entry.browser.js',
 
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -41,15 +41,16 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.m?js$/,
+                // test: /\.m?js$/,
+                test: /\.js$/,
                 include: /src/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        plugins: ['@babel/plugin-proposal-class-properties'],
-                        presets: ['@babel/preset-env']
-                    }
-                }
+                // exclude: [
+                //     /\/node_modules\//,
+                //     /\bcore-js\b/,
+                //     /\bwebpack\/buildin\b/,
+                //     /@babel\/runtime-corejs3/
+                // ],
+                loader: 'babel-loader'
             },
             {
                 // The following is a fix for an issue with Apache-Arrow
