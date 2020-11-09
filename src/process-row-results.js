@@ -80,11 +80,10 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              const timeInMs = timestampToMs(
+              row[fieldName].push(timestampToMs(
                 elemDatum.val.int_val,
                 fieldPrecision
-              )
-              row[fieldName].push(timeInMs)
+              ))
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
@@ -117,11 +116,10 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            const timeInMs = timestampToMs(
+            row[fieldName] = new Date(timestampToMs(
               scalarDatum.val.int_val,
               fieldPrecision
-            )
-            row[fieldName] = new Date(timeInMs)
+            ))
             break
           case "POINT":
           case "LINESTRING":

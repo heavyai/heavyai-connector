@@ -89,11 +89,10 @@ export default function processColumnarResults(
             case "TIME":
             case "TIMESTAMP":
             case "DATE":
-              const timeInMs = timestampToMs(
+              row[fieldName].push(timestampToMs(
                 data.columns[c].data.int_col[r],
                 fieldPrecision
-              )
-              row[fieldName].push(timeInMs)
+              ))
               break
             default:
               throw new Error("Unrecognized array field type: " + fieldType)
@@ -122,11 +121,10 @@ export default function processColumnarResults(
           case "TIME":
           case "TIMESTAMP":
           case "DATE":
-            const timeInMs = timestampToMs(
+            row[fieldName] = new Date(timestampToMs(
               data.columns[c].data.int_col[r],
               fieldPrecision
-            )
-            row[fieldName] = new Date(timeInMs)
+            ))
             break
           case "POINT":
           case "LINESTRING":

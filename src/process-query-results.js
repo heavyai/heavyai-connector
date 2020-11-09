@@ -1,5 +1,6 @@
 import processColumnarResults from "./process-columnar-results"
 import processRowResults from "./process-row-results"
+import { encode as convertToDataUrl } from 'base64-arraybuffer'
 /**
  * Determines how to process raw results when they return from the server.
  *
@@ -68,8 +69,12 @@ export default function processQueryResults(logging, updateQueryTimes) {
     }
 
     if (isImage && hasCallback) {
+      // TODO(jclay): Temporary fix for the integration.spec test failing
+      // on call to renderVega
+      result.image = convertToDataUrl(result.image)
       callback(null, result)
     } else if (isImage && !hasCallback) {
+      console.log("isImage and !HasCallback")
       return result
     } else {
       let formattedResult = null

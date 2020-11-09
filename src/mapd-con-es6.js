@@ -1,17 +1,15 @@
+import * as helpers from "./helpers"
 import * as thrift from 'thrift';
 
+import { TArrowTransport, TDashboardPermissions, TDatabasePermissions, TDBObjectPermissions, TDBObjectType, TOmniSciException, TPixel, TCreateParams } from 'gen-thrift/omnisci_types'
 import { TDatumType, TDeviceType, TEncodingType } from 'gen-thrift/common_types'
-import { TPixel, TOmniSciException, TArrowTransport } from 'gen-thrift/omnisci_types'
-import { Client as OmniSciClient } from 'gen-thrift/OmniSci';
-import { Table } from 'apache-arrow';
-import { parse as parseUrl } from 'url';
 import clone from "ramda.clone"
-import EventEmitter from "eventemitter3"
-
-import * as helpers from "./helpers"
+import { Client as OmniSciClient } from 'gen-thrift/OmniSci'
+import { parse as parseUrl } from 'url'
 import processQueryResults from "./process-query-results"
+import { Table } from 'apache-arrow'
 
-let Thrift = thrift.Thrift
+const Thrift = thrift.Thrift
 
 Thrift.Transport = thrift.TBufferedTransport
 Thrift.Protocol = thrift.TJSONProtocol
@@ -62,7 +60,7 @@ export class MapdCon {
         if (this._logging && options.query) {
           console.error(options.query, "\n", error)
         }
-        callback(error)
+        return callback(error)
       } else {
         const processor = processQueryResults(
           this._logging,
@@ -129,8 +127,6 @@ export class MapdCon {
     const clients = []
 
     for (let h = 0; h < hostLength; h++) {
-      let client = null
-
       if (isNodeRuntime()) {
         const { protocol, hostname, port } = parseUrl(transportUrls[h])
         const connection = thrift.createHttpConnection(hostname, port, {
@@ -140,7 +136,7 @@ export class MapdCon {
           https: protocol === "https:"
         })
         connection.on("error", console.error) // eslint-disable-line no-console
-        client = thrift.createClient(OmniSciClient, connection)
+        const client = thrift.createClient(OmniSciClient, connection)
         resetThriftClientOnArgumentErrorForMethods(this, client, [
           "connect",
           "createTableAsync",
@@ -171,15 +167,19 @@ export class MapdCon {
         clients.push(client)
       } else {
         const { protocol, hostname, port } = parseUrl(transportUrls[h])
-        const connection = thrift.createXHRConnection(hostname, port, {
+        const connect_opts = {
           transport: thrift.TBufferedTransport,
           protocol: thrift.TJSONProtocol,
           path: "/",
           https: protocol === "https:",
-          useCORS: true
-        })
+          headers: {
+            'Accept': 'application/vnd.apache.thrift.json; charset=utf-8',
+            'Content-Type': 'application/vnd.apache.thrift.json; charset=utf-8'
+          }
+        }
+        const connection = thrift.createXHRConnection(hostname, port, connect_opts)
         connection.on("error", console.error)
-        let client = thrift.createXHRClient(OmniSciClient, connection)
+        const client = thrift.createXHRClient(OmniSciClient, connection)
         clients.push(client)
       }
     }
@@ -278,7 +278,7 @@ export class MapdCon {
     // silly to change this from map to array
     // - then later it turns back to map
     for (const key in fields) {
-      if (fields.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(fields, key)) {
         fieldsArray.push({
           name: key,
           type: this._datumEnum[fields[key].col_type.type],
@@ -343,14 +343,6 @@ export class MapdCon {
     this.queryTimes[queryId] = execution_time_ms
   }
 
-  // Note(jclay): I think the updates to the way we're using the
-  // thrift libs will allow for removing most of this below.
-  events = new EventEmitter()
-  EVENT_NAMES = {
-    ERROR: "error",
-    METHOD_CALLED: "method-called"
-  }
-
   // ** Method wrappers **
 
   handleErrors = method => (...args) =>
@@ -366,7 +358,7 @@ export class MapdCon {
       promise.then(success).catch(error => failure(error))
     })
 
-  promisifyThriftMethodNode = (client, sessionId, methodName, args) =>
+  promisifyThriftMethod = (client, sessionId, methodName, args) =>
     new Promise((resolve, reject) => {
       client[methodName].apply(
         client,
@@ -379,25 +371,6 @@ export class MapdCon {
         })
       )
     })
-
-  promisifyThriftMethodBrowser = (client, sessionId, methodName, args) =>
-    new Promise((resolve, reject) => {
-      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
-      client[methodName].apply(
-        client,
-        [sessionId].concat(args, result => {
-          if (result instanceof Error) {
-            reject(result)
-          } else {
-            resolve(result)
-          }
-        })
-      )
-    })
-
-  promisifyThriftMethod = isNodeRuntime()
-    ? this.promisifyThriftMethodNode
-    : this.promisifyThriftMethodBrowser
 
   overSingleClient = "SINGLE_CLIENT"
   overAllClients = "ALL_CLIENTS"
@@ -924,43 +897,83 @@ export class MapdCon {
       })
   )
 
-  queryDF(query, options, callback, debug_callback) {
-    let deviceId = 0
-    let limit = -1
+  queryDF(query, options, callback) {
+    const deviceId = 0
+    const limit = -1
     const conId = 0
-    return this._client[conId].sql_execute_df(
+
+
+    let args = [
       this._sessionId[conId],
       query,
       TDeviceType.CPU,
       deviceId,
       limit,
-      TArrowTransport.WIRE)
-      .then((result) => {
-        var arrowTable = Table.from(result.df_buffer);
-        let debug_info = null
+      TArrowTransport.WIRE]
 
-        if (options && options.debug_info) {
-          debug_info = {
-            arrow_conversion_time_ms: result.arrow_conversion_time_ms.toNumber(),
-            buffer_size: result.df_buffer.length,
-            execution_time_ms: result.execution_time_ms.toNumber()
-          }
-          console.debug(debug_info)
-          if (debug_callback instanceof Function) {
-            debug_callback(debug_info)
-          }
+    const debug_timing = (res) => {
+      if (process.env.NODE_ENV === 'development') {
+        let debug_info = {
+          arrow_conversion_time_ms: res.arrow_conversion_time_ms.toNumber(),
+          buffer_size: res.df_buffer.length,
+          execution_time_ms: res.execution_time_ms.toNumber()
         }
+        console.debug(debug_info)
+      }
+    }
 
-        if (callback instanceof Function) {
-          callback(null, arrowTable)
-          return
-        }
-        
+    if (typeof callback === 'function') {
+      const callback_wrapper = (err, res) => {
+        const arrowTable = Table.from(res.df_buffer);
+        debug_timing(res)
+        return callback(err, arrowTable)
+      }
+      args.push(callback_wrapper)
+      return this._client[conId].sql_execute_df(...args)
+    } else {
+      return this._client[conId]
+        .sql_execute_df(...args)
+        .then((res) => {
+          const arrowTable = Table.from(res.df_buffer);
+          debug_timing(res)
+          return new Promise((resolve) => {
+            resolve(arrowTable);
+          });
+        })
+    }
 
-        return new Promise((resolve, reject) => { 
-          resolve(arrowTable);
-        });
-      })
+    // return this._client[conId].sql_execute_df(
+    //   this._sessionId[conId],
+    //   query,
+    //   TDeviceType.CPU,
+    //   deviceId,
+    //   limit,
+    //   TArrowTransport.WIRE,
+    //   callback_wrapper)
+    // .then((result) => {
+    //   const arrowTable = Table.from(result.df_buffer);
+    //   let debug_info = null
+
+    //   if (options && options.debug_info) {
+    //     console.debug(debug_info)
+    //     if (debug_callback instanceof Function) {
+    //       debug_callback(debug_info)
+    //     }
+    //   }
+
+    //   if (callback instanceof Function) {
+    //     callback(null, arrowTable)
+    //   }
+
+
+    //   return new Promise((resolve, reject) => {
+    //     resolve(arrowTable);
+    //   });
+    // }, (err) => {
+    //   console.log("error detected")
+    //   console.log(err)
+    // }
+    // )
   }
 
   /**
@@ -988,18 +1001,18 @@ export class MapdCon {
     let limit = -1
     let curNonce = (this._nonce++).toString()
     if (options) {
-      columnarResults = options.hasOwnProperty("columnarResults")
+      columnarResults = Object.prototype.hasOwnProperty.call(options, "columnarResults")
         ? options.columnarResults
         : columnarResults
-      eliminateNullRows = options.hasOwnProperty("eliminateNullRows")
+      eliminateNullRows = Object.prototype.hasOwnProperty.call(options, "eliminateNullRows")
         ? options.eliminateNullRows
         : eliminateNullRows
-      queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId
-      returnTiming = options.hasOwnProperty("returnTiming")
+      queryId = Object.prototype.hasOwnProperty.call(options, "queryId") ? options.queryId : queryId
+      returnTiming = Object.prototype.hasOwnProperty.call(options, "returnTiming")
         ? options.returnTiming
         : returnTiming
-      limit = options.hasOwnProperty("limit") ? options.limit : limit
-      curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce
+      limit = Object.prototype.hasOwnProperty.call(options, "limit") ? options.limit : limit
+      curNonce = Object.prototype.hasOwnProperty.call(options, "logValues") ? JSON.stringify(options.logValues) : curNonce
     }
 
     const lastQueryTime =
@@ -1094,7 +1107,7 @@ export class MapdCon {
         })
     })
 
-  queryDFAsync = this.handleErrors((query, options, debug_callback) => {
+  queryDFAsync = this.handleErrors((query, options) => {
     const cacheEntry = this.queryCache[query]
 
     if (cacheEntry) {
@@ -1102,7 +1115,7 @@ export class MapdCon {
     } else {
       const queryPromise = new Promise((resolve, reject) => {
         this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df")
-        this.queryDF(query, options, (error, result, debug_info) => {
+        this.queryDF(query, options, (error, result) => {
           if (this.queryCacheTransient) {
             delete this.queryCache[query]
           }
@@ -1112,7 +1125,7 @@ export class MapdCon {
           } else {
             resolve(result)
           }
-        }, debug_callback)
+        })
       })
 
       this.queryCache[query] = queryPromise
@@ -1378,7 +1391,7 @@ export class MapdCon {
   invertDatumTypes() {
     const datumType = TDatumType // eslint-disable-line no-undef
     for (const key in datumType) {
-      if (datumType.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(datumType, key)) {
         this._datumEnum[datumType[key]] = key
       }
     }
@@ -1606,8 +1619,8 @@ export class MapdCon {
     let compressionLevel = COMPRESSION_LEVEL_DEFAULT
 
     if (options) {
-      queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId
-      compressionLevel = options.hasOwnProperty("compressionLevel")
+      queryId = Object.prototype.hasOwnProperty.call(options, "queryId") ? options.queryId : queryId
+      compressionLevel = Object.prototype.hasOwnProperty.call(options, "compressionLevel")
         ? options.compressionLevel
         : compressionLevel
     }
@@ -2032,7 +2045,7 @@ export class MapdCon {
         const url = `${protocol}://${host}:${port}`
         const thriftTransport = new Thrift.Transport(url)
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
+        client = new OmniSciClient(thriftProtocol)
         sessionId = ""
       }
       const result = client.set_license_key(sessionId, key, this._nonce++)
@@ -2053,7 +2066,7 @@ export class MapdCon {
         const url = `${protocol}://${host}:${port}`
         const thriftTransport = new Thrift.Transport(url)
         const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
+        client = new OmniSciClient(thriftProtocol)
         sessionId = ""
       }
       try {
