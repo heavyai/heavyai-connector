@@ -1,20 +1,22 @@
 {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "edge": "17",
-            "firefox": "60",
-            "chrome": "67",
-            "safari": "11.1",
-            "node": true,
-            "esmodules": true
-
-          },
-          "useBuiltIns": "usage",
-          "corejs": "3.6.5"
-        }
-      ]
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": [
+            "Chrome >= 52",
+            "FireFox >= 44",
+            "Safari >= 7",
+            "Explorer 11",
+            "last 4 Edge versions"
+          ],
+          "node": "current"
+        },
+        "useBuiltIns": "usage",
+        "corejs": "3"
+      }
     ]
+  ],
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }
