@@ -32,7 +32,8 @@ ttypes.TAggKind = {
   'SUM' : 3,
   'COUNT' : 4,
   'APPROX_COUNT_DISTINCT' : 5,
-  'SAMPLE' : 6
+  'SAMPLE' : 6,
+  'SINGLE_VALUE' : 7
 };
 var TSlotSize = module.exports.TSlotSize = function(args) {
   this.padded = null;

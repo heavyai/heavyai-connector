@@ -60,6 +60,10 @@ ttypes.TQueryType = {
   'SCHEMA_READ' : 3,
   'SCHEMA_WRITE' : 4
 };
+ttypes.TArrowTransport = {
+  'SHARED_MEMORY' : 0,
+  'WIRE' : 1
+};
 ttypes.TExpressionRangeType = {
   'INVALID' : 0,
   'INTEGER' : 1,
@@ -1323,6 +1327,7 @@ var TDataFrame = module.exports.TDataFrame = function(args) {
   this.df_size = null;
   this.execution_time_ms = null;
   this.arrow_conversion_time_ms = null;
+  this.df_buffer = null;
   if (args) {
     if (args.sm_handle !== undefined && args.sm_handle !== null) {
       this.sm_handle = args.sm_handle;
@@ -1341,6 +1346,9 @@ var TDataFrame = module.exports.TDataFrame = function(args) {
     }
     if (args.arrow_conversion_time_ms !== undefined && args.arrow_conversion_time_ms !== null) {
       this.arrow_conversion_time_ms = args.arrow_conversion_time_ms;
+    }
+    if (args.df_buffer !== undefined && args.df_buffer !== null) {
+      this.df_buffer = args.df_buffer;
     }
   }
 };
@@ -1397,6 +1405,13 @@ TDataFrame.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.df_buffer = input.readBinary();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1436,6 +1451,11 @@ TDataFrame.prototype.write = function(output) {
   if (this.arrow_conversion_time_ms !== null && this.arrow_conversion_time_ms !== undefined) {
     output.writeFieldBegin('arrow_conversion_time_ms', Thrift.Type.I64, 6);
     output.writeI64(this.arrow_conversion_time_ms);
+    output.writeFieldEnd();
+  }
+  if (this.df_buffer !== null && this.df_buffer !== undefined) {
+    output.writeFieldBegin('df_buffer', Thrift.Type.STRING, 7);
+    output.writeBinary(this.df_buffer);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6450,6 +6470,85 @@ TGeoFileLayerInfo.prototype.write = function(output) {
   if (this.contents !== null && this.contents !== undefined) {
     output.writeFieldBegin('contents', Thrift.Type.I32, 2);
     output.writeI32(this.contents);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var TTableEpochInfo = module.exports.TTableEpochInfo = function(args) {
+  this.table_id = null;
+  this.table_epoch = null;
+  this.leaf_index = null;
+  if (args) {
+    if (args.table_id !== undefined && args.table_id !== null) {
+      this.table_id = args.table_id;
+    }
+    if (args.table_epoch !== undefined && args.table_epoch !== null) {
+      this.table_epoch = args.table_epoch;
+    }
+    if (args.leaf_index !== undefined && args.leaf_index !== null) {
+      this.leaf_index = args.leaf_index;
+    }
+  }
+};
+TTableEpochInfo.prototype = {};
+TTableEpochInfo.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.table_id = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.table_epoch = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.leaf_index = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TTableEpochInfo.prototype.write = function(output) {
+  output.writeStructBegin('TTableEpochInfo');
+  if (this.table_id !== null && this.table_id !== undefined) {
+    output.writeFieldBegin('table_id', Thrift.Type.I32, 1);
+    output.writeI32(this.table_id);
+    output.writeFieldEnd();
+  }
+  if (this.table_epoch !== null && this.table_epoch !== undefined) {
+    output.writeFieldBegin('table_epoch', Thrift.Type.I32, 2);
+    output.writeI32(this.table_epoch);
+    output.writeFieldEnd();
+  }
+  if (this.leaf_index !== null && this.leaf_index !== undefined) {
+    output.writeFieldBegin('leaf_index', Thrift.Type.I32, 3);
+    output.writeI32(this.leaf_index);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
