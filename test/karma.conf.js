@@ -16,12 +16,6 @@ module.exports = function(config) {
       "integration.spec.js"
     ],
 
-    client: {
-      mocha: {
-        grep: '.queryDF'
-      }
-    },
-
     // list of files to exclude
     exclude: [],
 

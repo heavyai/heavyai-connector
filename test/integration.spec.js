@@ -590,7 +590,6 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       expect(connectError).to.not.be.an("error")
       session.renderVega(widgetId, vega, options, (renderVegaError, data) => {
         expect(renderVegaError).to.not.be.an("error")
-        console.log(data)
         const imageData = convertToDataUrl(data.image)
         expect(imageData, "should be a image data URL").to.match(imageRegex)
         expect(imageData, "shouldn't be an empty image").to.not.match(
