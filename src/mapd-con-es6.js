@@ -3,9 +3,9 @@
 const { TDatumType, TEncodingType, TDeviceType } =
   (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
 const { TArrowTransport, TPixel, TOmniSciException } =
-  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) || window // eslint-disable-line global-require
-const MapDThrift =
-  isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
+  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) ||
+  window // eslint-disable-line global-require
+const MapDThrift = isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
 let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
 const thriftWrapper = Thrift
 const parseUrl = isNodeRuntime() && require("url").parse // eslint-disable-line global-require
@@ -23,7 +23,7 @@ import EventEmitter from "eventemitter3"
 
 import MapDClientV2 from "./mapd-client-v2"
 import processQueryResults from "./process-query-results"
-import Table from 'apache-arrow'
+import Table from "apache-arrow"
 
 const COMPRESSION_LEVEL_DEFAULT = 3
 
@@ -1097,7 +1097,6 @@ export class MapdCon {
     const limit = -1
     const conId = 0
 
-
     const args = [
       this._sessionId[conId],
       query,
@@ -1105,8 +1104,8 @@ export class MapdCon {
       deviceId,
       limit,
       TArrowTransport.WIRE,
-      (err, data) => {          
-        const arrowTable = Table.from(data.df_buffer);
+      (err, data) => {
+        const arrowTable = Table.from(data.df_buffer)
         return callback(err, arrowTable)
       }
     ]
