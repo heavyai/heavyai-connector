@@ -35,7 +35,7 @@ function isNodeRuntime() {
   return typeof window === "undefined"
 }
 
-class MapdCon {
+export class MapdCon {
   constructor() {
     this._host = null
     this._user = null
@@ -308,7 +308,7 @@ class MapdCon {
   disconnect(callback) {
     if (this._sessionId !== null) {
       for (let c = 0; c < this._client.length; c++) {
-        this._client[c].disconnect(this._sessionId[c], error => {
+        this._client[c].disconnect(this._sessionId[c], (error) => {
           if (error && !this.isTimeoutError(error)) {
             return callback(error, this)
           }
@@ -354,17 +354,17 @@ class MapdCon {
 
   // ** Method wrappers **
 
-  handleErrors = method => (...args) =>
+  handleErrors = (method) => (...args) =>
     new Promise((resolve, reject) => {
-      const success = result => resolve(result)
-      const failure = error => {
+      const success = (result) => resolve(result)
+      const failure = (error) => {
         this.events.emit(this.EVENT_NAMES.ERROR, error)
         return reject(error)
       }
 
       const promise = method.apply(this, args)
 
-      promise.then(success).catch(error => failure(error))
+      promise.then(success).catch((error) => failure(error))
     })
 
   promisifyThriftMethodNode = (client, sessionId, methodName, args) =>
@@ -386,7 +386,7 @@ class MapdCon {
       this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
       client[methodName].apply(
         client,
-        [sessionId].concat(args, result => {
+        [sessionId].concat(args, (result) => {
           if (result instanceof Error) {
             reject(result)
           } else {
@@ -439,7 +439,7 @@ class MapdCon {
 
   // ** Client methods **
 
-  getStatus = callback => {
+  getStatus = (callback) => {
     this._client[0].get_status(this._sessionId[0], callback)
   }
 
@@ -473,7 +473,7 @@ class MapdCon {
       })
   )
 
-  getHardwareInfo = callback => {
+  getHardwareInfo = (callback) => {
     this._client[0].get_hardware_info(this._sessionId[0], callback)
   }
 
@@ -542,7 +542,7 @@ class MapdCon {
     this.wrapThrift(
       "get_first_geo_file_in_archive",
       this.overSingleClient,
-      args => args
+      (args) => args
     )
   )
 
@@ -555,11 +555,15 @@ class MapdCon {
    * con.getUsersAsync().then(res => console.log(res))
    */
   getUsersAsync = this.handleErrors(
-    this.wrapThrift("get_users", this.overSingleClient, args => args)
+    this.wrapThrift("get_users", this.overSingleClient, (args) => args)
   )
 
   importTableStatusAsync = this.handleErrors(
-    this.wrapThrift("import_table_status", this.overSingleClient, args => args)
+    this.wrapThrift(
+      "import_table_status",
+      this.overSingleClient,
+      (args) => args
+    )
   )
 
   /**
@@ -571,7 +575,7 @@ class MapdCon {
    * con.getRolesAsync().then(res => console.log(res))
    */
   getRolesAsync = this.handleErrors(
-    this.wrapThrift("get_roles", this.overSingleClient, args => args)
+    this.wrapThrift("get_roles", this.overSingleClient, (args) => args)
   )
 
   /**
@@ -583,7 +587,7 @@ class MapdCon {
    * con.getDashboardsAsync().then(res => console.log(res))
    */
   getDashboardsAsync = this.handleErrors(
-    this.wrapThrift("get_dashboards", this.overSingleClient, args => args)
+    this.wrapThrift("get_dashboards", this.overSingleClient, (args) => args)
   )
 
   /**
@@ -596,7 +600,7 @@ class MapdCon {
    * con.getDashboardAsync().then(res => console.log(res))
    */
   getDashboardAsync = this.handleErrors(
-    this.wrapThrift("get_dashboard", this.overSingleClient, args => args)
+    this.wrapThrift("get_dashboard", this.overSingleClient, (args) => args)
   )
 
   /**
@@ -612,7 +616,7 @@ class MapdCon {
    * con.createDashboardAsync('newSave', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
   createDashboardAsync = this.handleErrors(
-    this.wrapThrift("create_dashboard", this.overAllClients, args => args)
+    this.wrapThrift("create_dashboard", this.overAllClients, (args) => args)
   )
 
   /**
@@ -630,7 +634,7 @@ class MapdCon {
    * con.replaceDashboardAsync(123, 'replaceSave', 'owner', 'dashboardstateBase64', null, 'metaData').then(res => console.log(res))
    */
   replaceDashboardAsync = this.handleErrors(
-    this.wrapThrift("replace_dashboard", this.overAllClients, args => args)
+    this.wrapThrift("replace_dashboard", this.overAllClients, (args) => args)
   )
 
   /**
@@ -643,7 +647,7 @@ class MapdCon {
    * con.deleteDashboardAsync(123).then(res => console.log(res))
    */
   deleteDashboardAsync = this.handleErrors(
-    this.wrapThrift("delete_dashboard", this.overAllClients, args => args)
+    this.wrapThrift("delete_dashboard", this.overAllClients, (args) => args)
   )
 
   /**
@@ -656,7 +660,7 @@ class MapdCon {
    * con.deleteDashboardsAsync([123, 456]).then(res => console.log(res))
    */
   deleteDashboardsAsync = this.handleErrors(
-    this.wrapThrift("delete_dashboards", this.overAllClients, args => args)
+    this.wrapThrift("delete_dashboards", this.overAllClients, (args) => args)
   )
 
   /**
@@ -768,7 +772,7 @@ class MapdCon {
     this.wrapThrift(
       "get_dashboard_grantees",
       this.overSingleClient,
-      args => args
+      (args) => args
     )
   )
 
@@ -785,7 +789,7 @@ class MapdCon {
     this.wrapThrift(
       "get_db_objects_for_grantee",
       this.overSingleClient,
-      args => args
+      (args) => args
     )
   )
 
@@ -816,7 +820,7 @@ class MapdCon {
     this.wrapThrift(
       "get_all_roles_for_user",
       this.overSingleClient,
-      args => args
+      (args) => args
     )
   )
 
@@ -884,7 +888,7 @@ class MapdCon {
     )
 
   getSessionInfoAsync = this.handleErrors(
-    this.wrapThrift("get_session_info", this.overSingleClient, args => args)
+    this.wrapThrift("get_session_info", this.overSingleClient, (args) => args)
   )
 
   detectColumnTypes(fileName, copyParams, callback) {
@@ -914,7 +918,11 @@ class MapdCon {
   detectColumnTypesAsync = this.handleErrors(
     (fileName, copyParams) =>
       new Promise((resolve, reject) => {
-        this.detectColumnTypes.bind(this, fileName, copyParams)((err, res) => {
+        this.detectColumnTypes.bind(
+          this,
+          fileName,
+          copyParams
+        )((err, res) => {
           if (err) {
             reject(err)
           } else {
@@ -961,14 +969,15 @@ class MapdCon {
         ? options.returnTiming
         : returnTiming
       limit = options.hasOwnProperty("limit") ? options.limit : limit
-      curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce
+      curNonce = options.hasOwnProperty("logValues")
+        ? JSON.stringify(options.logValues)
+        : curNonce
     }
 
     const lastQueryTime =
       queryId in this.queryTimes
         ? this.queryTimes[queryId]
         : this.DEFAULT_QUERY_TIME
-
 
     const conId = 0
 
@@ -1035,7 +1044,7 @@ class MapdCon {
   // Whether or not the query cache should immediately evict entries once they return with results
   queryCacheTransient = true
 
-  setQueryCacheTransient = value => {
+  setQueryCacheTransient = (value) => {
     if (value) {
       // Reset and clear out any nontransient entries
       this.queryCache = {}
@@ -1045,13 +1054,13 @@ class MapdCon {
 
   // We need to clone the original cached promise, so that the object returned is cloned for each consumer.
   // This is because (unfortunately) Immerse still has a few locations that mutate the results object.
-  clonePromise = promise =>
+  clonePromise = (promise) =>
     new Promise((resolve, reject) => {
       promise
-        .then(result => {
+        .then((result) => {
           resolve(clone(result))
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error)
         })
     })
@@ -1152,7 +1161,7 @@ class MapdCon {
    *
    */
   validateQuery = this.handleErrors(
-    query =>
+    (query) =>
       new Promise((resolve, reject) => {
         this._client[0].sql_validate(
           this._sessionId[0],
@@ -1179,7 +1188,7 @@ class MapdCon {
       } else {
         callback(
           null,
-          tables.map(table => ({
+          tables.map((table) => ({
             name: table,
             label: "obs"
           }))
@@ -1222,11 +1231,11 @@ class MapdCon {
       } else {
         callback(
           null,
-          tables.map(table => ({
+          tables.map((table) => ({
             name: table.table_name,
             num_cols: Number(table.num_cols.toString()),
             col_datum_types: table.col_types.map(
-              type => this._datumEnum[type.type]
+              (type) => this._datumEnum[type.type]
             ),
             is_view: table.is_view,
             is_replicated: table.is_replicated,
@@ -1401,14 +1410,14 @@ class MapdCon {
             columns: this.convertFromThriftTypes(rowDict)
           })
         } else {
-          callback(new Error("Table (" + tableName + ") not found"))
+          callback(new Error(`Table (${tableName}) not found`))
         }
       }
     )
   }
 
   getFieldsAsync = this.handleErrors(
-    tableName =>
+    (tableName) =>
       new Promise((resolve, reject) => {
         this.getFields(tableName, (error, fields) => {
           if (error) {
@@ -1439,7 +1448,7 @@ class MapdCon {
         thriftRowDesc,
         tableType,
         createParams,
-        err => {
+        (err) => {
           if (err) {
             callback(err)
           } else {
@@ -1471,7 +1480,7 @@ class MapdCon {
           rowDescObj,
           tableType,
           createParams,
-          err => {
+          (err) => {
             if (err) {
               reject(err)
             } else {
@@ -1608,7 +1617,7 @@ class MapdCon {
 
     const processResultsOptions = {
       isImage: true,
-      query: "render: " + vega,
+      query: `render: ${vega}`,
       queryId,
       conId,
       estimatedQueryTime: lastQueryTime
@@ -1998,7 +2007,7 @@ class MapdCon {
    */
   getEndpoints() {
     return this._host.map(
-      (host, i) => this._protocol[i] + "://" + host + ":" + this._port[i]
+      (host, i) => `${this._protocol[i]}://${host}:${this._port[i]}`
     )
   }
 
@@ -2009,7 +2018,7 @@ class MapdCon {
    * @return {Promise.<Object>} Claims or Error.
    */
   setLicenseKey(key, { protocol, host, port }) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let client = Array.isArray(this._client) && this._client[0]
       let sessionId = this._sessionId && this._sessionId[0]
       if (!client) {
@@ -2063,7 +2072,7 @@ function resetThriftClientOnArgumentErrorForMethods(
   client,
   methodNames
 ) {
-  methodNames.forEach(methodName => {
+  methodNames.forEach((methodName) => {
     const oldFunc = connector[methodName]
     connector[methodName] = (...args) => {
       try {
@@ -2083,10 +2092,10 @@ function resetThriftClientOnArgumentErrorForMethods(
 }
 
 // Set a global mapdcon function when mapdcon is brought in via script tag.
-if (typeof module === "object" && module.exports) {
-  if (!isNodeRuntime()) {
-    window.MapdCon = MapdCon
-  }
-}
-module.exports = MapdCon
-export default MapdCon
+// if (typeof module === "object" && module.exports) {
+//   if (!isNodeRuntime()) {
+//     window.MapdCon = MapdCon
+//   }
+// }
+// module.exports = MapdCon
+// export default MapdCon

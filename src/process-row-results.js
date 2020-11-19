@@ -14,7 +14,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
   const numCols = data.row_desc.length
   const formattedResult = { fields: [], results: [] }
 
-  formattedResult.fields = data.row_desc.map(field => ({
+  formattedResult.fields = data.row_desc.map((field) => ({
     name: field.col_name,
     type: datumEnum[field.col_type.type],
     is_array: field.col_type.is_array
@@ -87,7 +87,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
               row[fieldName].push(timeInMs)
               break
             default:
-              throw new Error("Unrecognized array field type: " + fieldType)
+              throw new Error(`Unrecognized array field type: ${fieldType}`)
           }
         }
       } else {
@@ -130,7 +130,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             row[fieldName] = scalarDatum.val.str_val
             break
           default:
-            throw new Error("Unrecognized field type: " + fieldType)
+            throw new Error(`Unrecognized field type: ${fieldType}`)
         }
       }
     }

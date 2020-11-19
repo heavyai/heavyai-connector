@@ -27,7 +27,7 @@ export function wrapMethod(context, method, isError) {
     const arity = MapDClient.prototype[method].length
     if (args.length === arity) {
       const callback = args.pop()
-      MapDClient.prototype[method].call(context, ...args, result => {
+      MapDClient.prototype[method].call(context, ...args, (result) => {
         if (isError(result)) {
           callback(result)
         } else {
@@ -41,7 +41,7 @@ export function wrapMethod(context, method, isError) {
       }
       return result
     } else {
-      throw new Error("Insufficient arguments to run this method " + method)
+      throw new Error(`Insufficient arguments to run this method ${method}`)
     }
   }
 }

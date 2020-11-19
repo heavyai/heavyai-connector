@@ -1,4 +1,4 @@
-export const convertObjectToThriftCopyParams = obj => new TCopyParams(obj) // eslint-disable-line no-undef
+export const convertObjectToThriftCopyParams = (obj) => new TCopyParams(obj) // eslint-disable-line no-undef
 
 export const mutateThriftRowDesc = (rowDescArray, thriftRowDescArray) => {
   rowDescArray.forEach((obj, i) => {
