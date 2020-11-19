@@ -15,6 +15,7 @@ MapDClientV2.prototype = Object.create(MapDClient.prototype)
   [
     "connect",
     "sql_execute",
+    "sql_execute_df",
     "sql_validate",
     "render",
     "render_vega",

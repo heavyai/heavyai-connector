@@ -1,8 +1,8 @@
 /* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
 
-const { TDatumType, TEncodingType } =
+const { TDatumType, TEncodingType, TDeviceType } =
   (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
-const { TPixel, TOmniSciException } =
+const { TArrowTransport, TPixel, TOmniSciException } =
   (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) || window // eslint-disable-line global-require
 const MapDThrift =
   isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
@@ -23,6 +23,7 @@ import EventEmitter from "eventemitter3"
 
 import MapDClientV2 from "./mapd-client-v2"
 import processQueryResults from "./process-query-results"
+import Table from 'apache-arrow'
 
 const COMPRESSION_LEVEL_DEFAULT = 3
 
@@ -170,6 +171,7 @@ class MapdCon {
           "port",
           "protocol",
           "query",
+          "queryDF",
           "renderVega",
           "sessionId",
           "user",
@@ -1063,6 +1065,55 @@ class MapdCon {
       const queryPromise = new Promise((resolve, reject) => {
         this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute")
         this.query(query, options, (error, result) => {
+          if (this.queryCacheTransient) {
+            delete this.queryCache[query]
+          }
+
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        })
+      })
+
+      this.queryCache[query] = queryPromise
+
+      return this.clonePromise(queryPromise)
+    }
+  })
+
+  queryDF(query, options, callback) {
+    const deviceId = 0
+    const limit = -1
+    const conId = 0
+
+
+    const args = [
+      this._sessionId[conId],
+      query,
+      TDeviceType.CPU,
+      deviceId,
+      limit,
+      TArrowTransport.WIRE,
+      (err, data) => {          
+        const arrowTable = Table.from(data.df_buffer);
+        return callback(err, arrowTable)
+      }
+    ]
+
+    return this._client[conId].sql_execute_df(...args)
+  }
+
+  queryDFAsync = this.handleErrors((query, options) => {
+    const cacheEntry = this.queryCache[query]
+
+    if (cacheEntry) {
+      return this.clonePromise(cacheEntry)
+    } else {
+      const queryPromise = new Promise((resolve, reject) => {
+        this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df")
+        this.queryDF(query, options, (error, result) => {
           if (this.queryCacheTransient) {
             delete this.queryCache[query]
           }
