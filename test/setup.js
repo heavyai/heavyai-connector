@@ -9,8 +9,7 @@ const scripts = `
   </script>
 `
 const dom = new JSDOM(`<!doctype html><html>${scripts}<body></body></html>`, {
-  runScripts: "dangerously",
-  resources: "usable"
+  runScripts: "dangerously"
 })
 const win = dom.window
 const doc = dom.window.document
