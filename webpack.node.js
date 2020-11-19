@@ -1,6 +1,6 @@
 const path = require("path")
+
 module.exports = {
-  ecmaFeatures: {modules: true},
   entry: [
     "./node_modules/thrift/lib/nodejs/lib/thrift/index.js",
     "./build/thrift/node/common_types.js",
@@ -12,9 +12,30 @@ module.exports = {
     "./src/mapd-con-es6.js"
   ],
   module: {
-    loaders: [
-      {test: /\.js$/, loader: "babel-loader", exclude: /node_modules\/(?!(apache-arrow))/}
+    rules: [
+      {
+        test: /\.js$/,
+        use: "babel-loader",
+        include: /src/
+      },
+      // The following two objs fix an issue with Apache-Arrow
+      // As the package includes both .mjs and .js outputs, webpack errors
+      // without this.
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: "javascript/auto"
+      }
     ]
+  },
+  optimization: {
+    minimize: false
   },
   output: {
     path: path.join(__dirname, "dist"),

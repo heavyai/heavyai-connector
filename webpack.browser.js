@@ -1,26 +1,40 @@
 const path = require("path")
+const webpack = require("webpack")
 
 module.exports = {
-  ecmaFeatures: {modules: true},
   entry: [
-    "script!./build/thrift/browser/thrift.js",
-    "script!./build/thrift/browser/common_types.js",
-    "script!./build/thrift/browser/serialized_result_set_types.js",
-    "script!./build/thrift/browser/omnisci_types.js",
-    "script!./build/thrift/browser/OmniSci.js",
-    "script!./build/thrift/browser/completion_hints_types.js",
-    "./src/mapd-con-es6.js"
+    "script-loader!./build/thrift/browser/thrift.js",
+    "script-loader!./build/thrift/browser/common_types.js",
+    "script-loader!./build/thrift/browser/serialized_result_set_types.js",
+    "script-loader!./build/thrift/browser/omnisci_types.js",
+    "script-loader!./build/thrift/browser/OmniSci.js",
+    "script-loader!./build/thrift/browser/completion_hints_types.js",
+    "./src/mapd-con-es6.js",
+    "./src/entry.browser.js"
   ],
+  plugins: [new webpack.ProgressPlugin()],
   module: {
-    loaders: [
-      {test: /\.js$/, loader: "babel-loader", exclude: /node_modules\/(?!(apache-arrow))/}
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            plugins: ["babel-plugin-transform-inline-environment-variables"]
+          }
+        },
+        include: /src/
+      }
     ]
   },
-  node: {
-    child_process: "empty",
-    fs: "empty",
-    net: "empty",
-    tls: "empty"
+  resolve: {
+    fallback: {
+      util: require.resolve("util/"),
+      url: require.resolve("url/")
+    }
+  },
+  optimization: {
+    minimize: false
   },
   output: {
     path: path.join(__dirname, "dist"),
