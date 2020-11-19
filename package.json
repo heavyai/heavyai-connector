@@ -37,7 +37,7 @@
     "base64-arraybuffer": "^0.1.5",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
-    "codecov": "^2.2.0",
+    "codecov": "^3.7.1",
     "documentation": "^4.0.0-rc.0",
     "esdoc": "^0.4.8",
     "eslint": "^4.18.2",
