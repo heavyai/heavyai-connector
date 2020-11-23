@@ -12,7 +12,7 @@ const convertToDataUrl = isNodeRuntime
   ? require("base64-arraybuffer").encode
   : x => x
 const Connector = isNodeRuntime
-  ? require("../dist/node-connector.js")
+  ? require("../dist/node-connector.js").MapdCon
   : window.MapdCon
 
 const imageRegex = /^iVBOR/

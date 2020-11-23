@@ -1,5 +1,5 @@
 import fs from "fs"
-import jsdom from "jsdom"
+import { JSDOM } from "jsdom"
 
 const scripts = `
   <script>
@@ -8,8 +8,11 @@ const scripts = `
     ${fs.readFileSync("./thrift/browser/omnisci_types.js", "utf-8")}
   </script>
 `
-const doc = jsdom.jsdom(`<!doctype html><html>${scripts}<body></body></html>`)
-const win = doc.defaultView
+const dom = new JSDOM(`<!doctype html><html>${scripts}<body></body></html>`, {
+  runScripts: "dangerously"
+})
+const win = dom.window
+const doc = dom.window.document
 
 global.document = doc
 global.window = win
@@ -17,9 +20,15 @@ global.window = win
 propagateToGlobal(win)
 
 function propagateToGlobal(window) {
-  for (let key in window) {
-    if (!window.hasOwnProperty(key)) continue
-    if (key in global) continue
-    global[key] = window[key]
+  for (const key of Object.keys(window)) {
+    // only add objs with T prefix (TCopyParams, etc)
+    // to global.
+    if (key.match(/^T\w+/)) {
+      if (!window.hasOwnProperty(key)) continue
+      if (key in global) continue
+      global[key] = window[key]
+    }
   }
 }
+//   }
+// }

@@ -1,21 +1,17 @@
-// Karma configuration
-// Generated on Mon May 15 2017 18:01:29 GMT-0700 (PDT)
+const puppeteer = require("puppeteer")
+process.env.CHROME_BIN = puppeteer.executablePath()
 
-module.exports = function(config) {
+module.exports = function (config) {
   const cfg = {
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: "",
+    basePath: "../",
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ["mocha", "chai"],
 
     // list of files / patterns to load in the browser
-    files: [
-      "../node_modules/babel-polyfill/dist/polyfill.js", // for Promise in PhantomJS
-      "../dist/browser-connector.js",
-      "integration.spec.js"
-    ],
+    files: ["./dist/browser-connector.js", "test/integration.spec.js"],
 
     // list of files to exclude
     exclude: [],
@@ -24,6 +20,18 @@ module.exports = function(config) {
     // possible values: "dots", "progress"
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ["dots"],
+
+    preprocessors: {
+      "test/**/*.js": ["babel"]
+    },
+
+    babelPreprocessor: {
+      options: {
+        presets: ["@babel/preset-env"],
+        plugins: ["transform-inline-environment-variables"],
+        sourceMap: "inline"
+      }
+    },
 
     // web server port
     port: 9876,
@@ -40,14 +48,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ["PhantomJS"],
-    // browsers: ["Chrome"],
-    // customLaunchers: {
-    //   Chrome_travis_ci: {
-    //     base: "Chrome",
-    //     flags: ["--no-sandbox"]
-    //   }
-    // },
+    browsers: ["ChromeHeadless"],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -55,25 +56,7 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity,
-
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-      "*.js": ["webpack"]
-    },
-    webpack: {
-      module: {
-        loaders: [
-          {
-            test: /\.js$/,
-            loader: "babel-loader",
-            exclude: /node_modules/,
-            query: { presets: ["es2015"] }
-          }
-        ]
-      }
-    }
+    concurrency: Infinity
   }
 
   // if (process.env.TRAVIS) {

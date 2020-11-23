@@ -19,7 +19,7 @@ import processRowResults from "./process-row-results"
  *                  otherwise formatted results.
  */
 export default function processQueryResults(logging, updateQueryTimes) {
-  return function(options, _datumEnum, result, callback) {
+  return function (options, _datumEnum, result, callback) {
     let isImage = false
     let eliminateNullRows = false
     let query = null
@@ -63,7 +63,7 @@ export default function processQueryResults(logging, updateQueryTimes) {
         "- Execution Time:",
         result.execution_time_ms,
         " ms, Total Time:",
-        result.total_time_ms + "ms"
+        `${result.total_time_ms}ms`
       )
     }
 

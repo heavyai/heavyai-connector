@@ -1,4 +1,15 @@
 {
-	"parser": "flow",
-	"semi": false
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "semi": false,
+  "singleQuote": false,
+  "trailingComma": "none",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
 }

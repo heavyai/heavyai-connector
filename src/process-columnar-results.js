@@ -20,7 +20,7 @@ export default function processColumnarResults(
   const numRows =
     typeof data.columns[0] === "undefined" ? 0 : data.columns[0].nulls.length
 
-  formattedResult.fields = data.row_desc.map(field => ({
+  formattedResult.fields = data.row_desc.map((field) => ({
     name: field.col_name,
     type: dataEnum[field.col_type.type],
     is_array: field.col_type.is_array
@@ -96,7 +96,7 @@ export default function processColumnarResults(
               row[fieldName].push(timeInMs)
               break
             default:
-              throw new Error("Unrecognized array field type: " + fieldType)
+              throw new Error(`Unrecognized array field type: ${fieldType}`)
           }
         }
       } else {
@@ -135,7 +135,7 @@ export default function processColumnarResults(
             row[fieldName] = data.columns[c].data.str_col[r]
             break
           default:
-            throw new Error("Unrecognized field type: " + fieldType)
+            throw new Error(`Unrecognized field type: ${fieldType}`)
         }
       }
     }
