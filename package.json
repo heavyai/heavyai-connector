@@ -76,9 +76,9 @@
     ]
   },
   "dependencies": {
-    "eventemitter3": "^3.1.0",
     "apache-arrow": "^2.0.0",
-    "ramda.clone": "^0.26.1",
+    "eventemitter3": "^3.1.0",
+    "lodash.clonedeep": "~4.5.0",
     "script-loader": "^0.7.0",
     "thrift": "github:apache/thrift#v0.13.0"
   }

@@ -18,7 +18,7 @@ if (isNodeRuntime()) {
 
 import * as helpers from "./helpers"
 
-import clone from "ramda.clone"
+import clone from "lodash.clonedeep"
 import EventEmitter from "eventemitter3"
 
 import MapDClientV2 from "./mapd-client-v2"
