@@ -48517,10 +48517,6 @@ var MapdCon = /*#__PURE__*/function () {
 
       var curNonce = (this._nonce++).toString();
 
-      if (options) {
-        curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce;
-      }
-
       if (!callback) {
         return this.processPixelResults(undefined, // eslint-disable-line no-undefined
         this._client[this._lastRenderCon].get_result_row_for_pixel(this._sessionId[this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce));

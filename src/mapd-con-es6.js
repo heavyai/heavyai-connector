@@ -972,7 +972,7 @@ export class MapdCon {
       curNonce = options.hasOwnProperty("logValues")
         ? JSON.stringify(options.logValues)
         : curNonce
-      }
+    }
 
     const lastQueryTime =
       queryId in this.queryTimes
@@ -1689,12 +1689,7 @@ export class MapdCon {
     }
 
     const columnFormat = true // BOOL
-    let curNonce = (this._nonce++).toString()
-    if (options) {
-      curNonce = options.hasOwnProperty("logValues")
-        ? JSON.stringify(options.logValues)
-        : curNonce
-      }
+    const curNonce = (this._nonce++).toString()
 
     if (!callback) {
       return this.processPixelResults(
