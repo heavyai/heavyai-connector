@@ -1609,7 +1609,12 @@ export class MapdCon {
         ? this.queryTimes[queryId]
         : this.DEFAULT_QUERY_TIME
 
-    const curNonce = (this._nonce++).toString()
+    let curNonce = (this._nonce++).toString()
+    if (options) {
+      curNonce = options.hasOwnProperty("logValues")
+        ? JSON.stringify(options.logValues)
+        : curNonce
+    }
 
     const conId = 0
     this._lastRenderCon = conId

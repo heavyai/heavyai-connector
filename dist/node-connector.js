@@ -48310,6 +48310,11 @@ var MapdCon = /*#__PURE__*/function () {
 
       var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
       var curNonce = (this._nonce++).toString();
+
+      if (options) {
+        curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce;
+      }
+
       var conId = 0;
       this._lastRenderCon = conId;
       var processResultsOptions = {
