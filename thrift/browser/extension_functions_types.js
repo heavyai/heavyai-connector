@@ -39,7 +39,11 @@ TExtArgumentType = {
   'ColumnInt64' : 30,
   'ColumnFloat' : 31,
   'ColumnDouble' : 32,
-  'ColumnBool' : 33
+  'ColumnBool' : 33,
+  'TextEncodingNone' : 34,
+  'TextEncodingDict8' : 35,
+  'TextEncodingDict16' : 36,
+  'TextEncodingDict32' : 37
 };
 TOutputBufferSizeType = {
   'kConstant' : 0,

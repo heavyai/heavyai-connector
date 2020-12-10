@@ -75,7 +75,8 @@ ttypes.TDBObjectType = {
   'DatabaseDBObjectType' : 1,
   'TableDBObjectType' : 2,
   'DashboardDBObjectType' : 3,
-  'ViewDBObjectType' : 4
+  'ViewDBObjectType' : 4,
+  'ServerDBObjectType' : 5
 };
 var TDatumVal = module.exports.TDatumVal = function(args) {
   this.int_val = null;
@@ -2308,165 +2309,6 @@ TFrontendView.prototype.write = function(output) {
   if (this.view_metadata !== null && this.view_metadata !== undefined) {
     output.writeFieldBegin('view_metadata', Thrift.Type.STRING, 5);
     output.writeString(this.view_metadata);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var TDashboard = module.exports.TDashboard = function(args) {
-  this.dashboard_name = null;
-  this.dashboard_state = null;
-  this.image_hash = null;
-  this.update_time = null;
-  this.dashboard_metadata = null;
-  this.dashboard_id = null;
-  this.dashboard_owner = null;
-  this.is_dash_shared = null;
-  if (args) {
-    if (args.dashboard_name !== undefined && args.dashboard_name !== null) {
-      this.dashboard_name = args.dashboard_name;
-    }
-    if (args.dashboard_state !== undefined && args.dashboard_state !== null) {
-      this.dashboard_state = args.dashboard_state;
-    }
-    if (args.image_hash !== undefined && args.image_hash !== null) {
-      this.image_hash = args.image_hash;
-    }
-    if (args.update_time !== undefined && args.update_time !== null) {
-      this.update_time = args.update_time;
-    }
-    if (args.dashboard_metadata !== undefined && args.dashboard_metadata !== null) {
-      this.dashboard_metadata = args.dashboard_metadata;
-    }
-    if (args.dashboard_id !== undefined && args.dashboard_id !== null) {
-      this.dashboard_id = args.dashboard_id;
-    }
-    if (args.dashboard_owner !== undefined && args.dashboard_owner !== null) {
-      this.dashboard_owner = args.dashboard_owner;
-    }
-    if (args.is_dash_shared !== undefined && args.is_dash_shared !== null) {
-      this.is_dash_shared = args.is_dash_shared;
-    }
-  }
-};
-TDashboard.prototype = {};
-TDashboard.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.dashboard_name = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.dashboard_state = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRING) {
-        this.image_hash = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.STRING) {
-        this.update_time = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.STRING) {
-        this.dashboard_metadata = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.STRING) {
-        this.dashboard_owner = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 8:
-      if (ftype == Thrift.Type.BOOL) {
-        this.is_dash_shared = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TDashboard.prototype.write = function(output) {
-  output.writeStructBegin('TDashboard');
-  if (this.dashboard_name !== null && this.dashboard_name !== undefined) {
-    output.writeFieldBegin('dashboard_name', Thrift.Type.STRING, 1);
-    output.writeString(this.dashboard_name);
-    output.writeFieldEnd();
-  }
-  if (this.dashboard_state !== null && this.dashboard_state !== undefined) {
-    output.writeFieldBegin('dashboard_state', Thrift.Type.STRING, 2);
-    output.writeString(this.dashboard_state);
-    output.writeFieldEnd();
-  }
-  if (this.image_hash !== null && this.image_hash !== undefined) {
-    output.writeFieldBegin('image_hash', Thrift.Type.STRING, 3);
-    output.writeString(this.image_hash);
-    output.writeFieldEnd();
-  }
-  if (this.update_time !== null && this.update_time !== undefined) {
-    output.writeFieldBegin('update_time', Thrift.Type.STRING, 4);
-    output.writeString(this.update_time);
-    output.writeFieldEnd();
-  }
-  if (this.dashboard_metadata !== null && this.dashboard_metadata !== undefined) {
-    output.writeFieldBegin('dashboard_metadata', Thrift.Type.STRING, 5);
-    output.writeString(this.dashboard_metadata);
-    output.writeFieldEnd();
-  }
-  if (this.dashboard_id !== null && this.dashboard_id !== undefined) {
-    output.writeFieldBegin('dashboard_id', Thrift.Type.I32, 6);
-    output.writeI32(this.dashboard_id);
-    output.writeFieldEnd();
-  }
-  if (this.dashboard_owner !== null && this.dashboard_owner !== undefined) {
-    output.writeFieldBegin('dashboard_owner', Thrift.Type.STRING, 7);
-    output.writeString(this.dashboard_owner);
-    output.writeFieldEnd();
-  }
-  if (this.is_dash_shared !== null && this.is_dash_shared !== undefined) {
-    output.writeFieldBegin('is_dash_shared', Thrift.Type.BOOL, 8);
-    output.writeBool(this.is_dash_shared);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -5949,11 +5791,91 @@ TViewPermissions.prototype.write = function(output) {
   return;
 };
 
+var TServerPermissions = module.exports.TServerPermissions = function(args) {
+  this.create_ = null;
+  this.drop_ = null;
+  this.alter_ = null;
+  if (args) {
+    if (args.create_ !== undefined && args.create_ !== null) {
+      this.create_ = args.create_;
+    }
+    if (args.drop_ !== undefined && args.drop_ !== null) {
+      this.drop_ = args.drop_;
+    }
+    if (args.alter_ !== undefined && args.alter_ !== null) {
+      this.alter_ = args.alter_;
+    }
+  }
+};
+TServerPermissions.prototype = {};
+TServerPermissions.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.BOOL) {
+        this.create_ = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.BOOL) {
+        this.drop_ = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.alter_ = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TServerPermissions.prototype.write = function(output) {
+  output.writeStructBegin('TServerPermissions');
+  if (this.create_ !== null && this.create_ !== undefined) {
+    output.writeFieldBegin('create_', Thrift.Type.BOOL, 1);
+    output.writeBool(this.create_);
+    output.writeFieldEnd();
+  }
+  if (this.drop_ !== null && this.drop_ !== undefined) {
+    output.writeFieldBegin('drop_', Thrift.Type.BOOL, 2);
+    output.writeBool(this.drop_);
+    output.writeFieldEnd();
+  }
+  if (this.alter_ !== null && this.alter_ !== undefined) {
+    output.writeFieldBegin('alter_', Thrift.Type.BOOL, 3);
+    output.writeBool(this.alter_);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var TDBObjectPermissions = module.exports.TDBObjectPermissions = function(args) {
   this.database_permissions_ = null;
   this.table_permissions_ = null;
   this.dashboard_permissions_ = null;
   this.view_permissions_ = null;
+  this.server_permissions_ = null;
   if (args) {
     if (args.database_permissions_ !== undefined && args.database_permissions_ !== null) {
       this.database_permissions_ = new ttypes.TDatabasePermissions(args.database_permissions_);
@@ -5966,6 +5888,9 @@ var TDBObjectPermissions = module.exports.TDBObjectPermissions = function(args) 
     }
     if (args.view_permissions_ !== undefined && args.view_permissions_ !== null) {
       this.view_permissions_ = new ttypes.TViewPermissions(args.view_permissions_);
+    }
+    if (args.server_permissions_ !== undefined && args.server_permissions_ !== null) {
+      this.server_permissions_ = new ttypes.TServerPermissions(args.server_permissions_);
     }
   }
 };
@@ -6012,6 +5937,14 @@ TDBObjectPermissions.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.server_permissions_ = new ttypes.TServerPermissions();
+        this.server_permissions_.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -6041,6 +5974,11 @@ TDBObjectPermissions.prototype.write = function(output) {
   if (this.view_permissions_ !== null && this.view_permissions_ !== undefined) {
     output.writeFieldBegin('view_permissions_', Thrift.Type.STRUCT, 4);
     this.view_permissions_.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.server_permissions_ !== null && this.server_permissions_ !== undefined) {
+    output.writeFieldBegin('server_permissions_', Thrift.Type.STRUCT, 5);
+    this.server_permissions_.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -6247,6 +6185,182 @@ TDashboardGrantees.prototype.write = function(output) {
   if (this.permissions !== null && this.permissions !== undefined) {
     output.writeFieldBegin('permissions', Thrift.Type.STRUCT, 3);
     this.permissions.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var TDashboard = module.exports.TDashboard = function(args) {
+  this.dashboard_name = null;
+  this.dashboard_state = null;
+  this.image_hash = null;
+  this.update_time = null;
+  this.dashboard_metadata = null;
+  this.dashboard_id = null;
+  this.dashboard_owner = null;
+  this.is_dash_shared = null;
+  this.dashboard_permissions = null;
+  if (args) {
+    if (args.dashboard_name !== undefined && args.dashboard_name !== null) {
+      this.dashboard_name = args.dashboard_name;
+    }
+    if (args.dashboard_state !== undefined && args.dashboard_state !== null) {
+      this.dashboard_state = args.dashboard_state;
+    }
+    if (args.image_hash !== undefined && args.image_hash !== null) {
+      this.image_hash = args.image_hash;
+    }
+    if (args.update_time !== undefined && args.update_time !== null) {
+      this.update_time = args.update_time;
+    }
+    if (args.dashboard_metadata !== undefined && args.dashboard_metadata !== null) {
+      this.dashboard_metadata = args.dashboard_metadata;
+    }
+    if (args.dashboard_id !== undefined && args.dashboard_id !== null) {
+      this.dashboard_id = args.dashboard_id;
+    }
+    if (args.dashboard_owner !== undefined && args.dashboard_owner !== null) {
+      this.dashboard_owner = args.dashboard_owner;
+    }
+    if (args.is_dash_shared !== undefined && args.is_dash_shared !== null) {
+      this.is_dash_shared = args.is_dash_shared;
+    }
+    if (args.dashboard_permissions !== undefined && args.dashboard_permissions !== null) {
+      this.dashboard_permissions = new ttypes.TDashboardPermissions(args.dashboard_permissions);
+    }
+  }
+};
+TDashboard.prototype = {};
+TDashboard.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_name = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_state = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.image_hash = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.update_time = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_metadata = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.I32) {
+        this.dashboard_id = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRING) {
+        this.dashboard_owner = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_dash_shared = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 9:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.dashboard_permissions = new ttypes.TDashboardPermissions();
+        this.dashboard_permissions.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TDashboard.prototype.write = function(output) {
+  output.writeStructBegin('TDashboard');
+  if (this.dashboard_name !== null && this.dashboard_name !== undefined) {
+    output.writeFieldBegin('dashboard_name', Thrift.Type.STRING, 1);
+    output.writeString(this.dashboard_name);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_state !== null && this.dashboard_state !== undefined) {
+    output.writeFieldBegin('dashboard_state', Thrift.Type.STRING, 2);
+    output.writeString(this.dashboard_state);
+    output.writeFieldEnd();
+  }
+  if (this.image_hash !== null && this.image_hash !== undefined) {
+    output.writeFieldBegin('image_hash', Thrift.Type.STRING, 3);
+    output.writeString(this.image_hash);
+    output.writeFieldEnd();
+  }
+  if (this.update_time !== null && this.update_time !== undefined) {
+    output.writeFieldBegin('update_time', Thrift.Type.STRING, 4);
+    output.writeString(this.update_time);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_metadata !== null && this.dashboard_metadata !== undefined) {
+    output.writeFieldBegin('dashboard_metadata', Thrift.Type.STRING, 5);
+    output.writeString(this.dashboard_metadata);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_id !== null && this.dashboard_id !== undefined) {
+    output.writeFieldBegin('dashboard_id', Thrift.Type.I32, 6);
+    output.writeI32(this.dashboard_id);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_owner !== null && this.dashboard_owner !== undefined) {
+    output.writeFieldBegin('dashboard_owner', Thrift.Type.STRING, 7);
+    output.writeString(this.dashboard_owner);
+    output.writeFieldEnd();
+  }
+  if (this.is_dash_shared !== null && this.is_dash_shared !== undefined) {
+    output.writeFieldBegin('is_dash_shared', Thrift.Type.BOOL, 8);
+    output.writeBool(this.is_dash_shared);
+    output.writeFieldEnd();
+  }
+  if (this.dashboard_permissions !== null && this.dashboard_permissions !== undefined) {
+    output.writeFieldBegin('dashboard_permissions', Thrift.Type.STRUCT, 9);
+    this.dashboard_permissions.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
