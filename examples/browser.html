@@ -1,40 +1,162 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl">
   <title data-ice="title">Connector Example</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <style>
-  .axis {
-    font: 10px sans-serif;
-  }
+    #query  {
+      font-family: 'SF Mono', 'Monaco', 'Courier New', Courier, monospace;
+      font-weight: 500;
+    }
 
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-  rect {
-    opacity: 0.8;
-  }
-  rect:hover{
-    opacity: 1;
-  }
+    .data-view table {
+      font-family: 'SF Mono', 'Monaco', 'Courier New', Courier, monospace;
+    }
+
+    #debug-info {
+      padding: 20px;
+      font-family: 'SF Mono', 'Monaco', 'Courier New', Courier, monospace;
+      max-height: 200px;
+      overflow-y: scroll;
+      background: #ffffff;
+      border: 1px solid #eee;
+    }
   </style>
-
 </head>
-  <body>
-    <p><strong> Example 1: SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO' </strong></p>
-    <p id="result-async"></p>
 
-    <hr>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="pt-2 col-2 sidebar">
 
-    <p><strong> Example 2: SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 20 </strong></p>
-    <div id="chart"></div>
-    <script src="https://unpkg.com/babel-polyfill@6.26.0/dist/polyfill.js"></script>
-    <script src="../dist/browser-connector.js"></script>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="browser.js"></script>
-  </body>
+        <div class="card border-light">
+          <div class="card-header">
+            Tables
+          </div>
+          <ul id="tables" class="list-group list-group-flush">
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="data-view pt-2 col-10">
+
+        <div class="card border-light">
+          <div class="card-header">
+            Query Database
+          </div>
+          <div class="p-4">
+            <form id="queryForm">
+              <div class="input-group mt-3 mb-3">
+                <input type="text" id="query" class="form-control" spellcheck="false" placeholder="SQL Query">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-primary" type="submit" id="execute">Execute</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="">
+              <div class="alert alert-primary" role="alert">
+                Note that geo types are not yet supported for result set to arrow conversion.
+              </div>
+            </div>
+
+            <pre id="debug-info"> </pre>
+
+
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="table table-hover">
+            <thead id="thead">
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal fade" data-backdrop="static" id="connect-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Connect to OmniSciDB</h5>
+        </div>
+        <div class="modal-body">
+          <form id="connect-form">
+            <div class="form-group">
+              <label for="hostname">Hostname</label>
+              <input name="hostname" id="hostname" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="port">Port</label>
+              <input name="port" class="form-control" id="port">
+            </div>
+            <div class="form-group">
+              <label for="database">Database</label>
+              <input name="database" class="form-control" id="database">
+            </div>
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input name="username" class="form-control" id="username">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input name="password" type="password" class="form-control" id="password">
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="useHTTPS">
+              <label name="useHTTPS" class="form-check-label" for="useHTTPS">Use HTTPS</label>
+            </div>
+            <button type="submit" id="connect" class="btn btn-primary">Connect</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="table-info-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+        </div>
+        <div class="modal-body">
+          <table id="col-list" class="table table-borderless table-sm table-hover">
+            <thead id="thead">
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="/dist/browser-connector.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="browser.js"></script>
+</body>
+
 </html>
