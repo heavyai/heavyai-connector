@@ -40,6 +40,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "base64-arraybuffer": "^0.1.5",
+    "buffer": "^6.0.3",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
     "codecov": "^3.8.1",
