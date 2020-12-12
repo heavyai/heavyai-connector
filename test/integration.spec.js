@@ -567,7 +567,6 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       return session
         .queryDFAsync(sql, options)
         .then((data) => {
-          console.log(data)
           expect(Number(data.getColumn("n").toArray()[0])).to.equal(6400)
         })
         .catch((queryDFError) => {
