@@ -14,10 +14,7 @@ if (isNodeRuntime()) {
   Thrift = Thrift.Thrift
   Thrift.Transport = thriftWrapper.TBufferedTransport
   Thrift.Protocol = thriftWrapper.TJSONProtocol
-} else {
-  var Buffer = require('buffer/').Buffer
 }
-
 
 
 import * as helpers from "./helpers"
@@ -1109,7 +1106,7 @@ export class MapdCon {
       limit,
       TArrowTransport.WIRE,
       (err, data) => {
-        const buf = new Buffer(data.df_buffer, 'base64')
+        const buf = Buffer.from(data.df_buffer, "base64")
         const arrowTable = Table.from(buf)
         return callback(err, arrowTable)
       }

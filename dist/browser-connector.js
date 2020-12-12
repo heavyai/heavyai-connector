@@ -42387,6 +42387,7 @@ function distributeChildData(fields, batchLength, childData, columns, memo) {
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -47453,6 +47454,7 @@ function processQueryResults(logging, updateQueryTimes) {
 // EXTERNAL MODULE: ./node_modules/apache-arrow/Arrow.dom.js
 var Arrow_dom = __webpack_require__(2168);
 ;// CONCATENATED MODULE: ./src/mapd-con-es6.js
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -47505,8 +47507,6 @@ if (isNodeRuntime()) {
   mapd_con_es6_Thrift = mapd_con_es6_Thrift.Thrift;
   mapd_con_es6_Thrift.Transport = thriftWrapper.TBufferedTransport;
   mapd_con_es6_Thrift.Protocol = thriftWrapper.TJSONProtocol;
-} else {
-  var Buffer = __webpack_require__(8764)/* .Buffer */ .lW;
 }
 
 
@@ -48377,7 +48377,7 @@ var MapdCon = /*#__PURE__*/function () {
       var limit = -1;
       var conId = 0;
       var args = [this._sessionId[conId], query, TDeviceType.CPU, deviceId, limit, TArrowTransport.WIRE, function (err, data) {
-        var buf = new Buffer(data.df_buffer, 'base64');
+        var buf = Buffer.from(data.df_buffer, "base64");
         var arrowTable = Arrow_dom/* Table.from */.iA_.from(buf);
         return callback(err, arrowTable);
       }];
@@ -49340,7 +49340,6 @@ function fromByteArray (uint8) {
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-var __webpack_unused_export__;
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -49358,12 +49357,12 @@ const customInspectSymbol =
     ? Symbol['for']('nodejs.util.inspect.custom') // eslint-disable-line dot-notation
     : null
 
-exports.lW = Buffer
-__webpack_unused_export__ = SlowBuffer
-exports.h2 = 50
+exports.Buffer = Buffer
+exports.SlowBuffer = SlowBuffer
+exports.INSPECT_MAX_BYTES = 50
 
 const K_MAX_LENGTH = 0x7fffffff
-__webpack_unused_export__ = K_MAX_LENGTH
+exports.kMaxLength = K_MAX_LENGTH
 
 /**
  * If `Buffer.TYPED_ARRAY_SUPPORT`:
@@ -49959,7 +49958,7 @@ Buffer.prototype.equals = function equals (b) {
 
 Buffer.prototype.inspect = function inspect () {
   let str = ''
-  const max = exports.h2
+  const max = exports.INSPECT_MAX_BYTES
   str = this.toString('hex', 0, max).replace(/(.{2})/g, '$1 ').trim()
   if (this.length > max) str += ' ... '
   return '<Buffer ' + str + '>'
@@ -56054,8 +56053,9 @@ module.exports = cloneDeep;
 /***/ }),
 
 /***/ 135:
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 //     Int64.js
 //
 //     Copyright (c) 2012 Robert Kieffer
@@ -57445,6 +57445,7 @@ exports.writeDouble = function(buff, v) {
 /***/ 4711:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -57862,6 +57863,7 @@ exports.Int64 = __webpack_require__(135);
 /***/ 8869:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -58055,6 +58057,7 @@ TBufferedTransport.prototype.flush = function() {
 /***/ 9277:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -59038,6 +59041,7 @@ function createClient(ServiceClient, connection) {
 /***/ 7584:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -59230,6 +59234,7 @@ TFramedTransport.prototype.flush = function() {
 /***/ 5190:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -59613,6 +59618,7 @@ util.inherits(InputBufferUnderrunError, Error);
 /***/ 5197:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -60017,6 +60023,7 @@ var json_parse = module.exports = (function () {
 /***/ 5086:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -61449,6 +61456,7 @@ TWebSocketTransport.prototype.getSendBuffer = function() {
 /***/ 4050:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+/* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
