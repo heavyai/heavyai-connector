@@ -548,7 +548,35 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
-  it(".render", done => {
+  it(".queryDF", (done) => {
+    const sql = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
+    connector.connect((connectError, session) => {
+      expect(connectError).to.not.be.an("error")
+      session.queryDF(sql, options, (error, data) => {
+        expect(error).not.be.an("error")
+        expect(Number(data.getColumn("n").toArray()[0])).to.equal(6400)
+        done()
+      })
+    })
+  })
+
+  it(".queryDFAsync", () => {
+    const sql = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
+    connector.connect((connectError, session) => {
+      expect(connectError).to.not.be.an("error")
+      return session
+        .queryDFAsync(sql, options)
+        .then((data) => {
+          console.log(data)
+          expect(Number(data.getColumn("n").toArray()[0])).to.equal(6400)
+        })
+        .catch((queryDFError) => {
+          expect(getDashboardsAsyncError).to.not.be.an("error")
+        })
+    })
+  })
+
+  it(".render", (done) => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
       session.renderVega(widgetId, vega, options, (renderVegaError, data) => {
