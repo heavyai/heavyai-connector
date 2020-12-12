@@ -16,7 +16,6 @@ if (isNodeRuntime()) {
   Thrift.Protocol = thriftWrapper.TJSONProtocol
 }
 
-
 import * as helpers from "./helpers"
 
 import clone from "lodash.clonedeep"
