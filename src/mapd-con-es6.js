@@ -23,7 +23,7 @@ import EventEmitter from "eventemitter3"
 
 import MapDClientV2 from "./mapd-client-v2"
 import processQueryResults from "./process-query-results"
-import Table from "apache-arrow"
+import { Table } from "apache-arrow"
 
 const COMPRESSION_LEVEL_DEFAULT = 3
 
@@ -1105,7 +1105,8 @@ export class MapdCon {
       limit,
       TArrowTransport.WIRE,
       (err, data) => {
-        const arrowTable = Table.from(data.df_buffer)
+        const buf = Buffer.from(data.df_buffer, "base64")
+        const arrowTable = Table.from(buf)
         return callback(err, arrowTable)
       }
     ]

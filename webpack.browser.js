@@ -12,7 +12,12 @@ module.exports = {
     "./src/mapd-con-es6.js",
     "./src/entry.browser.js"
   ],
-  plugins: [new webpack.ProgressPlugin()],
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"]
+    })
+  ],
   module: {
     rules: [
       {
