@@ -32,6 +32,9 @@ module.exports = {
       }
     ]
   },
+  externals: {
+    'apache-arrow': 'var Arrow'
+  },
   resolve: {
     fallback: {
       util: require.resolve("util/"),

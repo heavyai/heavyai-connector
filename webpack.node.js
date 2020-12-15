@@ -34,6 +34,10 @@ module.exports = {
       }
     ]
   },
+  externalsPresets:{
+    node: true
+  },
+  externals: { 'apache-arrow': 'commonjs2 apache-arrow' },
   optimization: {
     minimize: false
   },
