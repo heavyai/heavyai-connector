@@ -2,6 +2,7 @@ import fs from "fs"
 import { JSDOM } from "jsdom"
 
 const scripts = `
+  <script src="https://cdn.jsdelivr.net/npm/apache-arrow@2/Arrow.es5.min.js"></script>
   <script>
     ${fs.readFileSync("./thrift/browser/thrift.js", "utf-8")}
     ${fs.readFileSync("./thrift/browser/OmniSci.js", "utf-8")}

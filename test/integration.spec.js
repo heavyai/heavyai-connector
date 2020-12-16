@@ -8,6 +8,7 @@ const password = process.env.PASSWORD || "HyperInteractive"
 
 const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
+const Arrow = isNodeRuntime ? require("apache-arrow") : window.Arrow
 const convertToDataUrl = isNodeRuntime
   ? require("base64-arraybuffer").encode
   : (x) => x
@@ -553,8 +554,9 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
       session.queryDF(sql, options, (error, data) => {
-        expect(error).not.be.an("error")
+        expect(data instanceof Arrow.Table).to.be.true
         expect(Number(data.getColumn("n").toArray()[0])).to.equal(6400)
+        expect(error).not.be.an("error")
         done()
       })
     })
@@ -567,6 +569,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       return session
         .queryDFAsync(sql, options)
         .then((data) => {
+          expect(data instanceof Arrow.Table).to.be.true
           expect(Number(data.getColumn("n").toArray()[0])).to.equal(6400)
         })
         .catch((queryDFError) => {
