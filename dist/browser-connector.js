@@ -1,4 +1,14 @@
-/******/ (() => { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("Arrow"));
+	else if(typeof define === 'function' && define.amd)
+		define(["Arrow"], factory);
+	else {
+		var a = typeof exports === 'object' ? factory(require("Arrow")) : factory(root["Arrow"]);
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(self, function(__WEBPACK_EXTERNAL_MODULE__3319__) {
+return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 6271:
@@ -30013,16 +30023,17 @@ module.exports = function availableTypedArrays() {
 /***/ }),
 
 /***/ 6536:
-/***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony import */ var _mapd_con_es6__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7365);
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mapd_con_es6__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8823);
 
 window.MapdCon = _mapd_con_es6__WEBPACK_IMPORTED_MODULE_0__/* .MapdCon */ .q;
 
 /***/ }),
 
-/***/ 7365:
+/***/ 8823:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -30566,8 +30577,8 @@ function processQueryResults(logging, updateQueryTimes) {
     }
   };
 }
-;// CONCATENATED MODULE: external "Arrow"
-const external_Arrow_namespaceObject = Arrow;
+// EXTERNAL MODULE: external "Arrow"
+var external_Arrow_ = __webpack_require__(3319);
 ;// CONCATENATED MODULE: ./src/mapd-con-es6.js
 /* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -31493,7 +31504,7 @@ var MapdCon = /*#__PURE__*/function () {
       var conId = 0;
       var args = [this._sessionId[conId], query, TDeviceType.CPU, deviceId, limit, TArrowTransport.WIRE, function (err, data) {
         var buf = Buffer.from(data.df_buffer, "base64");
-        var arrowTable = external_Arrow_namespaceObject.Table.from(buf);
+        var arrowTable = external_Arrow_.Table.from(buf);
         return callback(err, arrowTable);
       }];
       return (_this$_client$conId = this._client[conId]).sql_execute_df.apply(_this$_client$conId, args);
@@ -45385,6 +45396,14 @@ module.exports = function whichTypedArray(value) {
 };
 
 
+/***/ }),
+
+/***/ 3319:
+/***/ ((module) => {
+
+"use strict";
+module.exports = __WEBPACK_EXTERNAL_MODULE__3319__;
+
 /***/ })
 
 /******/ 	});
@@ -45457,6 +45476,17 @@ module.exports = function whichTypedArray(value) {
 /******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/node module decorator */
 /******/ 	(() => {
 /******/ 		__webpack_require__.nmd = (module) => {
@@ -45467,16 +45497,17 @@ module.exports = function whichTypedArray(value) {
 /******/ 	})();
 /******/ 	
 /************************************************************************/
+/******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
-/******/ 	// Load entry module
+/******/ 	// Load entry module and return exports
 /******/ 	__webpack_require__(9970);
 /******/ 	__webpack_require__(9653);
 /******/ 	__webpack_require__(6942);
 /******/ 	__webpack_require__(3906);
 /******/ 	__webpack_require__(8618);
 /******/ 	__webpack_require__(254);
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	__webpack_require__(7365);
-/******/ 	__webpack_require__(6536);
+/******/ 	__webpack_require__(8823);
+/******/ 	return __webpack_require__(6536);
 /******/ })()
 ;
+});

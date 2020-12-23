@@ -33,7 +33,7 @@ module.exports = {
     ]
   },
   externals: {
-    'apache-arrow': 'var Arrow'
+    'apache-arrow': 'umd Arrow'
   },
   resolve: {
     fallback: {
@@ -45,6 +45,7 @@ module.exports = {
     minimize: false
   },
   output: {
+    libraryTarget: 'umd',
     path: path.join(__dirname, "dist"),
     filename: "browser-connector.js"
   }
