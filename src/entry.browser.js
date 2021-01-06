@@ -31,4 +31,4 @@ Or - in observable:
     }
 
 */
-export { default as Connector } from "./mapd-con-es6"
+export { MapdCon as default } from "./mapd-con-es6";

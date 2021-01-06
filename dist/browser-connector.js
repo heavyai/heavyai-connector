@@ -46916,7 +46916,7 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "Connector": () => /* reexport */ mapd_con_es6
+  "default": () => /* reexport */ MapdCon
 });
 
 // EXTERNAL MODULE: ./node_modules/script-loader/index.js!./build/thrift/browser/thrift.js
@@ -49186,7 +49186,7 @@ function resetThriftClientOnArgumentErrorForMethods(connector, client, methodNam
   });
 }
 
-/* harmony default export */ const mapd_con_es6 = (MapdCon);
+/* harmony default export */ const mapd_con_es6 = ((/* unused pure expression or super */ null && (MapdCon)));
 ;// CONCATENATED MODULE: ./src/entry.browser.js
 
 
