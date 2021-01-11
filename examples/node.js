@@ -25,7 +25,7 @@ connector
   .user(username)
   .password(password)
   .connectAsync()
-  .then(session =>
+  .then((session) =>
     // now that we have a session open we can make some db calls:
     Promise.all([
       session.getDashboardsAsync(),
@@ -36,17 +36,17 @@ connector
     ])
   )
   // values is an array of results from all the promises above
-  .then(values => {
+  .then((values) => {
     // handle result of getDashboardsAsync
     console.log(
       `All dashboards available at ${hostname}:\n`,
-      values[0].map(dash => dash.dashboard_name)
+      values[0].map((dash) => dash.dashboard_name)
     )
 
     // handle result of getTablesAsync
     console.log(
       `\nAll tables available at ${hostname}:\n\n`,
-      values[1].map(x => x.name)
+      values[1].map((x) => x.name)
     )
 
     // handle result of getFieldsAsync
@@ -64,6 +64,6 @@ connector
       values[4].reduce((o, x) => Object.assign(o, { [x.key0]: x.val }), {})
     )
   })
-  .catch(error => {
+  .catch((error) => {
     console.error("Something bad happened: ", error)
   })

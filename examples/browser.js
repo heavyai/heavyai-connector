@@ -1,146 +1,172 @@
 /* eslint-disable */
 
-const hostname = "metis.mapd.com"
-const protocol = "https"
-const port = "443"
-const database = "mapd"
-const username = "mapd"
-const password = "HyperInteractive"
-
-// The total number of tweets from Columbia
-const query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
-// try changing airtime to arrdelay in the query
-const query2 =
-  "SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 100"
+window.connection = null
+const autologin = false
+const sample_query =
+  "SELECT name, ST_Area(omnisci_geo) as val FROM omnisci_counties;"
 const defaultQueryOptions = {}
-const connector = new window.MapdCon()
+const defaultConnection = {
+  hostname: "localhost",
+  useHTTPS: true,
+  port: "6278",
+  database: "omnisci",
+  username: "admin",
+  password: "HyperInteractive"
+}
 
-connector
-  .protocol(protocol)
-  .host(hostname)
-  .port(port)
-  .dbName(database)
-  .user(username)
-  .password(password)
-  .connectAsync()
-  .then(session =>
-    // now that we have a session open we can make some db calls:
-    Promise.all([
-      session.getTablesAsync(),
-      session.getFieldsAsync("flights_donotmodify"),
-      session.queryAsync(query, defaultQueryOptions),
-      session.queryAsync(query2, defaultQueryOptions)
-    ])
-  )
-  // values is an array of results from all the promises above
-  .then(values => {
-    // handle result of getTablesAsync
-    console.log(
-      `All dashboards available at ${hostname}:\n`,
-      values[0].map(x => x.name)
-    )
+/* 
+  Connect Modal 
+*/
+function hideConnectModal() {
+  $("#connect-modal").modal("hide")
+}
 
-    // handle result of getFieldsAsync
-    console.log(
-      "All fields for 'flights_donotmodify':",
-      values[1].columns.reduce((o, x) => Object.assign(o, { [x.name]: x }), {})
-    )
+// Show connect modal
+$(document).ready(function () {
+  $("#connect-modal").modal()
+  if (autologin)
+    setTimeout(() => {
+      $("#connect-form button").click()
+    }, 300)
+})
 
-    // handle result of first query
-    document.getElementById("result-async").innerHTML =
-      "There are " + values[2][0].n + " tweets from Columbia."
-    console.log("Query 1 results:", Number(values[2][0].n))
+// Populate form
+var connectFormInputs = document.querySelectorAll("#connect-form input")
+for (const ipt of connectFormInputs) {
+  if (ipt.id === "useHTTPS") if (defaultConnection.useHTTPS) ipt.checked = true
+  ipt.setAttribute("value", defaultConnection[ipt.id])
+}
 
-    // handle result of 2nd query
-    createRowChart(values[3])
-    console.log(
-      "Query 2 results:",
-      values[3].reduce((o, x) => Object.assign(o, { [x.key0]: x.val }), {})
-    )
+$("#connect-form").submit(function (evt) {
+  evt.preventDefault()
+  var values = $(this).serializeArray()
+  var useHTTPS = $("input[type='checkbox']#useHTTPS").prop("checked")
+  var protocol = useHTTPS ? "https" : "http"
+  let connectionOpts = {
+    protocol: protocol
+  }
+  for (const val of values) {
+    connectionOpts[val.name] = val.value
+  }
+  tryConnect(connectionOpts)
+})
+
+$("form#queryForm").submit(function (evt) {
+  evt.preventDefault()
+  var query = $("form input#query").val()
+  executeQuery(query)
+})
+
+function tryConnect(connectionOpts) {
+  const connector = new MapdCon()
+  connector
+    .protocol(connectionOpts.protocol)
+    .host(connectionOpts.hostname)
+    .port(connectionOpts.port)
+    .dbName(connectionOpts.database)
+    .user(connectionOpts.username)
+    .password(connectionOpts.password)
+    .connectAsync()
+    .then((res) => {
+      window.connection = res
+      hideConnectModal()
+      populateQuery(sample_query)
+      populateTables()
+    })
+    .catch((err) => alert(err.error_msg))
+}
+
+function executeQuery(query) {
+  connection
+    .queryDFAsync(query, { debug_info: true }, null, (debug_info) => {
+      console.log(debug_info)
+      $("pre#debug-info").append("\n")
+      $("pre#debug-info").append(query + "\n")
+      for (const [key, value] of Object.entries(debug_info)) {
+        $("pre#debug-info").append("  " + key + ": " + value + "\n")
+      }
+    })
+    .then((results) => {
+      console.log(results)
+      populateResultsTable(results)
+    })
+}
+
+function populateQuery(query_str) {
+  $("form input#query").val(query_str)
+}
+
+function queryFromTableName(table_name) {
+  let query = "SELECT * FROM " + table_name
+  populateQuery(query)
+  executeQuery(query)
+}
+
+function showTableDetails(evt) {
+  let table_name = $(evt.currentTarget).text()
+  $("#table-info-modal h5").text(table_name + " column details")
+  console.log(table_name)
+  Promise.all([connection.getFieldsAsync(table_name)]).then((values) => {
+    let colList = $("#table-info-modal #col-list tbody")
+    colList.empty()
+    console.log(values)
+    for (const col of values[0].columns) {
+      let colEl = $("<tr></tr>")
+      colEl.append("<td>" + col.name + "</td>")
+      colEl.append("<td>" + col.type + "</td>")
+      colList.append(colEl)
+    }
+    $("#table-info-modal").modal("show")
   })
-  .catch(error => {
-    console.error("Something bad happened: ", error)
+}
+
+function populateTables() {
+  Promise.all([connection.getTablesAsync()]).then((values) => {
+    let tableContainer = $("ul#tables")
+    tableContainer.empty()
+    let addRow = (table_name) => {
+      let new_item = $(
+        "<li class='list-group-item list-group-item-action'></li>"
+      ).text(table_name)
+      new_item.click(showTableDetails.bind())
+      tableContainer.append(new_item)
+    }
+    values[0].map((x) => addRow(x.name))
   })
+}
 
-// http://bl.ocks.org/d3noob/8952219
-function createRowChart(data) {
-  var margin = { top: 20, right: 20, bottom: 150, left: 40 },
-    width = 600
-  height = 300
+function addCell(tr, type, value) {
+  var td = document.createElement(type)
+  td.textContent = value
+  tr.appendChild(td)
+}
 
-  var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.05)
+function populateResultsTable(arrowTable) {
+  var thead = $(".data-view thead")[0]
+  var tbody = $(".data-view tbody")[0]
 
-  var y = d3.scale.linear().range([height, 0])
+  while (thead.hasChildNodes()) {
+    thead.removeChild(thead.lastChild)
+  }
 
-  var xAxis = d3.svg
-    .axis()
-    .scale(x)
-    .orient("bottom")
-    .tickFormat(function(d, i) {
-      return d
-    })
+  while (tbody.hasChildNodes()) {
+    tbody.removeChild(tbody.lastChild)
+  }
 
-  var yAxis = d3.svg
-    .axis()
-    .scale(y)
-    .orient("left")
-    .ticks(10)
+  var header_row = document.createElement("tr")
+  for (let field of arrowTable.schema.fields) {
+    addCell(header_row, "th", `${field}`)
+  }
 
-  var svg = d3
-    .select("#chart")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  thead.appendChild(header_row)
 
-  x.domain(
-    data.map(function(d) {
-      return d.key0
-    })
-  )
-  y.domain([
-    0,
-    d3.max(data, function(d) {
-      return d.val
-    })
-  ])
-
-  svg
-    .append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis)
-    .selectAll("text")
-    .style("text-anchor", "end")
-    .attr("dx", "-.8em")
-    .attr("dy", "-.55em")
-    .attr("transform", "rotate(-90)")
-
-  svg
-    .append("g")
-    .attr("class", "y axis")
-    .call(yAxis)
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 6)
-    .attr("dy", ".71em")
-    .style("text-anchor", "end")
-
-  svg
-    .selectAll("bar")
-    .data(data)
-    .enter()
-    .append("rect")
-    .style("fill", "steelblue")
-    .attr("x", function(d) {
-      return x(d.key0)
-    })
-    .attr("width", x.rangeBand())
-    .attr("y", function(d) {
-      return y(d.val)
-    })
-    .attr("height", function(d) {
-      return height - y(d.val)
-    })
+  for (let row of arrowTable) {
+    var tr = document.createElement("tr")
+    for (let cell of row) {
+      let val = "null"
+      if (cell.length > 1) val = cell[1]
+      addCell(tr, "td", val)
+    }
+    tbody.appendChild(tr)
+  }
 }
