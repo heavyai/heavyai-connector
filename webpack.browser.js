@@ -9,8 +9,7 @@ module.exports = {
     "script-loader!./build/thrift/browser/omnisci_types.js",
     "script-loader!./build/thrift/browser/OmniSci.js",
     "script-loader!./build/thrift/browser/completion_hints_types.js",
-    "./src/mapd-con-es6.js",
-    "./src/entry.browser.js"
+    "./src/mapd-con-es6.js"
   ],
   plugins: [
     new webpack.ProgressPlugin(),
@@ -33,7 +32,12 @@ module.exports = {
     ]
   },
   externals: {
-    'apache-arrow': 'umd Arrow'
+    "apache-arrow": {
+      commonjs: "apache-arrow",
+      commonjs2: "apache-arrow",
+      amd: "apache-arrow",
+      root: "Arrow"
+    }
   },
   resolve: {
     fallback: {
@@ -45,7 +49,13 @@ module.exports = {
     minimize: false
   },
   output: {
-    libraryTarget: 'umd',
+    library: {
+      commonjs: "@mapd/connector",
+      amd: "@mapd/connector",
+      root: "MapdCon"
+    },
+    libraryTarget: "umd",
+    libraryExport: "default",
     path: path.join(__dirname, "dist"),
     filename: "browser-connector.js"
   }
