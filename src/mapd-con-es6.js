@@ -1106,8 +1106,16 @@ export class MapdCon {
       TArrowTransport.WIRE,
       (err, data) => {
         const buf = Buffer.from(data.df_buffer, "base64")
-        const arrowTable = Table.from(buf)
-        return callback(err, arrowTable)
+        let results = Table.from(buf)
+        if (options && Boolean(options.returnTiming)) {
+          results = {
+            results,
+            timing: {
+              execution_time_ms: data.execution_time_ms
+            }
+          }
+        }
+        return callback(err, results)
       }
     ]
 

@@ -1,7 +1,7 @@
 {
   "name": "@mapd/connector",
   "description": "Connector to omniscidb",
-  "version": "5.5.1",
+  "version": "5.5.2",
   "license": "Apache-2.0",
   "scripts": {
     "build": "bash scripts/build.sh",
@@ -37,6 +37,7 @@
     "@babel/register": "^7.12.1",
     "@babel/runtime-corejs3": "^7.12.5",
     "@types/thrift": "^0.10.7",
+    "apache-arrow": "^2.0.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "base64-arraybuffer": "^0.1.5",
@@ -77,10 +78,12 @@
     ]
   },
   "dependencies": {
-    "apache-arrow": "^2.0.0",
     "eventemitter3": "^3.1.0",
     "lodash.clonedeep": "~4.5.0",
     "script-loader": "^0.7.0",
     "thrift": "github:apache/thrift#v0.13.0"
+  },
+  "peerDependencies": {
+    "apache-arrow": "^2.0.0"
   }
 }
