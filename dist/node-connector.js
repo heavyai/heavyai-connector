@@ -31498,8 +31498,18 @@ var MapdCon = /*#__PURE__*/function () {
       var conId = 0;
       var args = [this._sessionId[conId], query, TDeviceType.CPU, deviceId, limit, TArrowTransport.WIRE, function (err, data) {
         var buf = Buffer.from(data.df_buffer, "base64");
-        var arrowTable = external_apache_arrow_namespaceObject.Table.from(buf);
-        return callback(err, arrowTable);
+        var results = external_apache_arrow_namespaceObject.Table.from(buf);
+
+        if (options && Boolean(options.returnTiming)) {
+          results = {
+            results: results,
+            timing: {
+              execution_time_ms: data.execution_time_ms
+            }
+          };
+        }
+
+        return callback(err, results);
       }];
       return (_this$_client$conId = this._client[conId]).sql_execute_df.apply(_this$_client$conId, args);
     }
