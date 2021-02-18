@@ -970,7 +970,9 @@ export class MapdCon {
         : returnTiming
       limit = options.hasOwnProperty("limit") ? options.limit : limit
       curNonce = options.hasOwnProperty("logValues")
-        ? JSON.stringify(options.logValues)
+        ? typeof options.logValues === "object"
+          ? JSON.stringify(options.logValues)
+          : options.logValues
         : curNonce
     }
 
