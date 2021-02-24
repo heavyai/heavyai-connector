@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-const Connector = require("../dist/node-connector.js")
+const { MapdCon } = require("../dist/node-connector.js")
 
 const hostname = process.env.HOSTNAME || "metis.mapd.com"
 const protocol = process.env.PROTOCOL || "https"
@@ -15,7 +15,7 @@ const query2 =
   "SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 100"
 const defaultQueryOptions = {}
 
-const connector = new Connector()
+const connector = new MapdCon()
 
 connector
   .protocol(protocol)
