@@ -970,7 +970,9 @@ export class MapdCon {
         : returnTiming
       limit = options.hasOwnProperty("limit") ? options.limit : limit
       curNonce = options.hasOwnProperty("logValues")
-        ? JSON.stringify(options.logValues)
+        ? typeof options.logValues === "object"
+          ? JSON.stringify(options.logValues)
+          : options.logValues
         : curNonce
     }
 
@@ -1032,64 +1034,19 @@ export class MapdCon {
     }
   }
 
-  // This is a *Promise* cache, not a result cache. If queryAsync is called for the same query twice
-  // while the first is still in flight, it will return the Promise from the first call, saving
-  // an unnecessary duplicate trip and sharing the results to both callers once they come back.
-  //
-  // This only survives while requests are in flight in the default 'transient' mode, but if transient
-  // is off then it will act as a long-term cache, returning the resolved Promise with immediate results.
-
-  queryCache = {}
-
-  // Whether or not the query cache should immediately evict entries once they return with results
-  queryCacheTransient = true
-
-  setQueryCacheTransient = (value) => {
-    if (value) {
-      // Reset and clear out any nontransient entries
-      this.queryCache = {}
-    }
-    this.queryCacheTransient = value
-  }
-
-  // We need to clone the original cached promise, so that the object returned is cloned for each consumer.
-  // This is because (unfortunately) Immerse still has a few locations that mutate the results object.
-  clonePromise = (promise) =>
-    new Promise((resolve, reject) => {
-      promise
-        .then((result) => {
-          resolve(clone(result))
-        })
-        .catch((error) => {
+  queryAsync = this.handleErrors((query, options) => {
+    const queryPromise = new Promise((resolve, reject) => {
+      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute")
+      this.query(query, options, (error, result) => {
+        if (error) {
           reject(error)
-        })
+        } else {
+          resolve(result)
+        }
+      })
     })
 
-  queryAsync = this.handleErrors((query, options) => {
-    const cacheEntry = this.queryCache[query]
-
-    if (cacheEntry) {
-      return this.clonePromise(cacheEntry)
-    } else {
-      const queryPromise = new Promise((resolve, reject) => {
-        this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute")
-        this.query(query, options, (error, result) => {
-          if (this.queryCacheTransient) {
-            delete this.queryCache[query]
-          }
-
-          if (error) {
-            reject(error)
-          } else {
-            resolve(result)
-          }
-        })
-      })
-
-      this.queryCache[query] = queryPromise
-
-      return this.clonePromise(queryPromise)
-    }
+    return queryPromise
   })
 
   queryDF(query, options, callback) {
@@ -1123,30 +1080,18 @@ export class MapdCon {
   }
 
   queryDFAsync = this.handleErrors((query, options) => {
-    const cacheEntry = this.queryCache[query]
-
-    if (cacheEntry) {
-      return this.clonePromise(cacheEntry)
-    } else {
-      const queryPromise = new Promise((resolve, reject) => {
-        this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df")
-        this.queryDF(query, options, (error, result) => {
-          if (this.queryCacheTransient) {
-            delete this.queryCache[query]
-          }
-
-          if (error) {
-            reject(error)
-          } else {
-            resolve(result)
-          }
-        })
+    const queryPromise = new Promise((resolve, reject) => {
+      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df")
+      this.queryDF(query, options, (error, result) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
       })
+    })
 
-      this.queryCache[query] = queryPromise
-
-      return this.clonePromise(queryPromise)
-    }
+    return queryPromise
   })
 
   /**
@@ -1621,7 +1566,9 @@ export class MapdCon {
     let curNonce = (this._nonce++).toString()
     if (options) {
       curNonce = options.hasOwnProperty("logValues")
-        ? JSON.stringify(options.logValues)
+        ? typeof options.logValues === "object"
+          ? JSON.stringify(options.logValues)
+          : options.logValues
         : curNonce
     }
 

@@ -30069,7 +30069,6 @@ function timestampToMs(timestamp, precision) {
 }
 // EXTERNAL MODULE: ./node_modules/lodash.clonedeep/index.js
 var lodash_clonedeep = __webpack_require__(3465);
-var lodash_clonedeep_default = /*#__PURE__*/__webpack_require__.n(lodash_clonedeep);
 // EXTERNAL MODULE: ./node_modules/eventemitter3/index.js
 var eventemitter3 = __webpack_require__(6729);
 var eventemitter3_default = /*#__PURE__*/__webpack_require__.n(eventemitter3);
@@ -30574,6 +30573,8 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -30911,79 +30912,34 @@ var MapdCon = /*#__PURE__*/function () {
       });
     }));
 
-    _defineProperty(this, "queryCache", {});
+    _defineProperty(this, "queryAsync", this.handleErrors(function (query, options) {
+      var queryPromise = new Promise(function (resolve, reject) {
+        _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, "sql_execute");
 
-    _defineProperty(this, "queryCacheTransient", true);
-
-    _defineProperty(this, "setQueryCacheTransient", function (value) {
-      if (value) {
-        // Reset and clear out any nontransient entries
-        _this.queryCache = {};
-      }
-
-      _this.queryCacheTransient = value;
-    });
-
-    _defineProperty(this, "clonePromise", function (promise) {
-      return new Promise(function (resolve, reject) {
-        promise.then(function (result) {
-          resolve(lodash_clonedeep_default()(result));
-        })["catch"](function (error) {
-          reject(error);
+        _this.query(query, options, function (error, result) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
         });
       });
-    });
-
-    _defineProperty(this, "queryAsync", this.handleErrors(function (query, options) {
-      var cacheEntry = _this.queryCache[query];
-
-      if (cacheEntry) {
-        return _this.clonePromise(cacheEntry);
-      } else {
-        var queryPromise = new Promise(function (resolve, reject) {
-          _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, "sql_execute");
-
-          _this.query(query, options, function (error, result) {
-            if (_this.queryCacheTransient) {
-              delete _this.queryCache[query];
-            }
-
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
-          });
-        });
-        _this.queryCache[query] = queryPromise;
-        return _this.clonePromise(queryPromise);
-      }
+      return queryPromise;
     }));
 
     _defineProperty(this, "queryDFAsync", this.handleErrors(function (query, options) {
-      var cacheEntry = _this.queryCache[query];
+      var queryPromise = new Promise(function (resolve, reject) {
+        _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df");
 
-      if (cacheEntry) {
-        return _this.clonePromise(cacheEntry);
-      } else {
-        var queryPromise = new Promise(function (resolve, reject) {
-          _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df");
-
-          _this.queryDF(query, options, function (error, result) {
-            if (_this.queryCacheTransient) {
-              delete _this.queryCache[query];
-            }
-
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
-          });
+        _this.queryDF(query, options, function (error, result) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
         });
-        _this.queryCache[query] = queryPromise;
-        return _this.clonePromise(queryPromise);
-      }
+      });
+      return queryPromise;
     }));
 
     _defineProperty(this, "validateQuery", this.handleErrors(function (query) {
@@ -31432,7 +31388,7 @@ var MapdCon = /*#__PURE__*/function () {
         queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
         returnTiming = options.hasOwnProperty("returnTiming") ? options.returnTiming : returnTiming;
         limit = options.hasOwnProperty("limit") ? options.limit : limit;
-        curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce;
+        curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
 
       var lastQueryTime = queryId in this.queryTimes ? this.queryTimes[queryId] : this.DEFAULT_QUERY_TIME;
@@ -31476,13 +31432,7 @@ var MapdCon = /*#__PURE__*/function () {
           throw err;
         }
       }
-    } // This is a *Promise* cache, not a result cache. If queryAsync is called for the same query twice
-    // while the first is still in flight, it will return the Promise from the first call, saving
-    // an unnecessary duplicate trip and sharing the results to both callers once they come back.
-    //
-    // This only survives while requests are in flight in the default 'transient' mode, but if transient
-    // is off then it will act as a long-term cache, returning the resolved Promise with immediate results.
-
+    }
   }, {
     key: "queryDF",
     value: function queryDF(query, options, callback) {
@@ -31826,7 +31776,7 @@ var MapdCon = /*#__PURE__*/function () {
       var curNonce = (this._nonce++).toString();
 
       if (options) {
-        curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce;
+        curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
 
       var conId = 0;
