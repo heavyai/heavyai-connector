@@ -31776,7 +31776,7 @@ var MapdCon = /*#__PURE__*/function () {
       var curNonce = (this._nonce++).toString();
 
       if (options) {
-        curNonce = options.hasOwnProperty("logValues") ? JSON.stringify(options.logValues) : curNonce;
+        curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
 
       var conId = 0;

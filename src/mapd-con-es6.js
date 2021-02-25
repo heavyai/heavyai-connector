@@ -1566,7 +1566,9 @@ export class MapdCon {
     let curNonce = (this._nonce++).toString()
     if (options) {
       curNonce = options.hasOwnProperty("logValues")
-        ? JSON.stringify(options.logValues)
+        ? typeof options.logValues === "object"
+          ? JSON.stringify(options.logValues)
+          : options.logValues
         : curNonce
     }
 
