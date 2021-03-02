@@ -1978,7 +1978,7 @@ export class MapdCon {
    * @return {Promise.<Object>} Claims or Error.
    */
   setLicenseKey(key, { protocol, host, port }) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       let client = Array.isArray(this._client) && this._client[0]
       let sessionId = this._sessionId && this._sessionId[0]
       if (!client) {
@@ -1988,8 +1988,13 @@ export class MapdCon {
         client = new MapDClientV2(thriftProtocol)
         sessionId = ""
       }
-      const result = client.set_license_key(sessionId, key, this._nonce++)
-      resolve(result)
+      client.set_license_key(sessionId, key, this._nonce++, (error, result) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
     })
   }
 

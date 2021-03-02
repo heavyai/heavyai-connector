@@ -32167,7 +32167,7 @@ var MapdCon = /*#__PURE__*/function () {
       var protocol = _ref15.protocol,
           host = _ref15.host,
           port = _ref15.port;
-      return new Promise(function (resolve) {
+      return new Promise(function (resolve, reject) {
         var client = Array.isArray(_this10._client) && _this10._client[0];
 
         var sessionId = _this10._sessionId && _this10._sessionId[0];
@@ -32180,8 +32180,13 @@ var MapdCon = /*#__PURE__*/function () {
           sessionId = "";
         }
 
-        var result = client.set_license_key(sessionId, key, _this10._nonce++);
-        resolve(result);
+        client.set_license_key(sessionId, key, _this10._nonce++, function (error, result) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
       });
     }
     /**
