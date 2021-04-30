@@ -384,6 +384,22 @@
 	        });
 	      });
 	    });
+
+	    this.getServerStatus = function (callback) {
+	      _this._client[0].get_server_status(_this._sessionId[0], callback);
+	    };
+
+	    this.getServerStatusAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getServerStatus(function (err, result) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 	    this.getFirstGeoFileInArchiveAsync = this.handleErrors(this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
 	      return args;
 	    }));
@@ -6151,8 +6167,7 @@
 	    ? validLen - 4
 	    : validLen
 
-	  var i
-	  for (i = 0; i < len; i += 4) {
+	  for (var i = 0; i < len; i += 4) {
 	    tmp =
 	      (revLookup[b64.charCodeAt(i)] << 18) |
 	      (revLookup[b64.charCodeAt(i + 1)] << 12) |
