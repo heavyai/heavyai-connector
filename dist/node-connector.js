@@ -67242,6 +67242,22 @@ module.exports = require("child_process");;
 	        });
 	      });
 	    });
+
+	    this.getServerStatus = function (callback) {
+	      _this._client[0].get_server_status(_this._sessionId[0], callback);
+	    };
+
+	    this.getServerStatusAsync = this.handleErrors(function () {
+	      return new Promise(function (resolve, reject) {
+	        _this.getServerStatus(function (err, result) {
+	          if (err) {
+	            reject(err);
+	          } else {
+	            resolve(result);
+	          }
+	        });
+	      });
+	    });
 	    this.getFirstGeoFileInArchiveAsync = this.handleErrors(this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
 	      return args;
 	    }));

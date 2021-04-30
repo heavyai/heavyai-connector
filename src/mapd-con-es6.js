@@ -543,6 +543,23 @@ export class MapdCon {
       })
   )
 
+  getServerStatus = (callback) => {
+    this._client[0].get_server_status(this._sessionId[0], callback)
+  }
+
+  getServerStatusAsync = this.handleErrors(
+    () =>
+      new Promise((resolve, reject) => {
+        this.getServerStatus((err, result) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(result)
+          }
+        })
+      })
+  )
+
   /**
    * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
    * @param {String} archivePath - The base filename of the archive.
