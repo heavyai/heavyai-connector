@@ -30904,6 +30904,22 @@ var MapdCon = /*#__PURE__*/function () {
       return args;
     })));
 
+    _defineProperty(this, "createCustomExpressionAsync", this.handleErrors(this.wrapThrift("create_custom_expression", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "getCustomExpressionAsync", this.handleErrors(this.wrapThrift("get_custom_expressions", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "updateCustomExpressionAsync", this.handleErrors(this.wrapThrift("update_custom_expression", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "deleteCustomExpressionsAsync", this.handleErrors(this.wrapThrift("delete_custom_expressions", this.overSingleClient, function (args) {
+      return args;
+    })));
+
     _defineProperty(this, "detectColumnTypesAsync", this.handleErrors(function (fileName, copyParams) {
       return new Promise(function (resolve, reject) {
         _this.detectColumnTypes.bind(_this, fileName, copyParams)(function (err, res) {

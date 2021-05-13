@@ -891,6 +891,38 @@ export class MapdCon {
     this.wrapThrift("get_session_info", this.overSingleClient, (args) => args)
   )
 
+  createCustomExpressionAsync = this.handleErrors(
+    this.wrapThrift(
+      "create_custom_expression",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  getCustomExpressionAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_custom_expressions",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  updateCustomExpressionAsync = this.handleErrors(
+    this.wrapThrift(
+      "update_custom_expression",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  deleteCustomExpressionsAsync = this.handleErrors(
+    this.wrapThrift(
+      "delete_custom_expressions",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
   detectColumnTypes(fileName, copyParams, callback) {
     const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
     this._client[0].detect_column_types(
