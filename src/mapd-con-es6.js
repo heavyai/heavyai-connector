@@ -899,7 +899,7 @@ export class MapdCon {
     )
   )
 
-  getCustomExpressionAsync = this.handleErrors(
+  getCustomExpressionsAsync = this.handleErrors(
     this.wrapThrift(
       "get_custom_expressions",
       this.overSingleClient,
