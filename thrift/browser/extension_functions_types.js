@@ -43,7 +43,14 @@ TExtArgumentType = {
   'TextEncodingNone' : 34,
   'TextEncodingDict8' : 35,
   'TextEncodingDict16' : 36,
-  'TextEncodingDict32' : 37
+  'TextEncodingDict32' : 37,
+  'ColumnListInt8' : 38,
+  'ColumnListInt16' : 39,
+  'ColumnListInt32' : 40,
+  'ColumnListInt64' : 41,
+  'ColumnListFloat' : 42,
+  'ColumnListDouble' : 43,
+  'ColumnListBool' : 44
 };
 TOutputBufferSizeType = {
   'kConstant' : 0,
