@@ -31447,6 +31447,10 @@ var MapdCon = /*#__PURE__*/function () {
       var limit = -1;
       var conId = 0;
       var args = [this._sessionId[conId], query, TDeviceType.CPU, deviceId, limit, TArrowTransport.WIRE, function (err, data) {
+        if (err) {
+          return callback(err, null);
+        }
+
         var buf = Buffer.from(data.df_buffer, "base64");
         var results = external_apache_arrow_namespaceObject.Table.from(buf);
 

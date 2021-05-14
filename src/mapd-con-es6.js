@@ -1062,6 +1062,10 @@ export class MapdCon {
       limit,
       TArrowTransport.WIRE,
       (err, data) => {
+        if (err) {
+          return callback(err, null)
+        }
+
         const buf = Buffer.from(data.df_buffer, "base64")
         let results = Table.from(buf)
         if (options && Boolean(options.returnTiming)) {
