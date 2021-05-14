@@ -11,7 +11,7 @@ module.exports = function (config) {
     frameworks: ["mocha", "chai"],
 
     // list of files / patterns to load in the browser
-    files: ["./dist/browser-connector.js", "test/integration.spec.js"],
+    files: ["https://cdn.jsdelivr.net/npm/apache-arrow@2/Arrow.es5.min.js","./dist/browser-connector.js", "test/integration.spec.js"],
 
     // list of files to exclude
     exclude: [],
