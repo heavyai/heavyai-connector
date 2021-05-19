@@ -1,16 +1,7 @@
 const path = require("path")
 
 module.exports = {
-  entry: [
-    "./node_modules/thrift/lib/nodejs/lib/thrift/index.js",
-    "./build/thrift/node/common_types.js",
-    "./build/thrift/node/extension_functions_types.js",
-    "./build/thrift/node/serialized_result_set_types.js",
-    "./build/thrift/node/omnisci_types.js",
-    "./build/thrift/node/OmniSci.js",
-    "./build/thrift/node/completion_hints_types.js",
-    "./src/mapd-con-es6.js"
-  ],
+  entry: ["./src/mapd-con-es6.js"],
   module: {
     rules: [
       {
@@ -34,10 +25,10 @@ module.exports = {
       }
     ]
   },
-  externalsPresets:{
+  externalsPresets: {
     node: true
   },
-  externals: { 'apache-arrow': 'commonjs2 apache-arrow' },
+  externals: { "apache-arrow": "commonjs2 apache-arrow" },
   optimization: {
     minimize: false
   },
