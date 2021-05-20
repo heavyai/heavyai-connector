@@ -104,34 +104,6 @@ function buildClient(url) {
     })
     connection.on("error", console.error) // eslint-disable-line no-console
     client = createClient(MapDThrift, connection)
-    resetThriftClientOnArgumentErrorForMethods(this, client, [
-      "connect",
-      "createTableAsync",
-      "dbName",
-      "detectColumnTypesAsync",
-      "disconnect",
-      "getCompletionHintsAsync",
-      "getFields",
-      "getDashboardAsync",
-      "getDashboardsAsync",
-      "getResultRowForPixel",
-      "getStatusAsync",
-      "getTablesAsync",
-      "getTablesWithMetaAsync",
-      "host",
-      "importTableAsync",
-      "importTableGeoAsync",
-      "logging",
-      "password",
-      "port",
-      "protocol",
-      "query",
-      "queryDF",
-      "renderVega",
-      "sessionId",
-      "user",
-      "validateQuery"
-    ])
   } else {
     const connection = new CustomXHRConnection(hostname, port, {
       transport: TBufferedTransport,
@@ -239,8 +211,7 @@ export class MapdCon {
     })
 
   // for backward compatibility
-  callbackify = (method) => (...args) => {
-    const arity = this[method].length
+  callbackify = (method, arity) => (...args) => {
     let callback = null
     if (args.length === arity + 1) {
       callback = args.pop()
@@ -408,7 +379,7 @@ export class MapdCon {
     ).then(() => this)
   }
 
-  connect = this.callbackify("connectAsync")
+  connect = this.callbackify("connectAsync", 0)
 
   convertFromThriftTypes(fields) {
     const fieldsArray = []
@@ -458,7 +429,7 @@ export class MapdCon {
     })
   })
 
-  disconnect = this.callbackify("disconnectAsync")
+  disconnect = this.callbackify("disconnectAsync", 0)
 
   // ** Client methods **
 
@@ -482,7 +453,7 @@ export class MapdCon {
     this.wrapThrift("get_status", this.overSingleClient, (args) => args)
   )
 
-  getStatus = this.callbackify("getStatusAsync")
+  getStatus = this.callbackify("getStatusAsync", 0)
 
   /**
    * Get information about the server hardware:
@@ -525,7 +496,7 @@ export class MapdCon {
     this.wrapThrift("get_hardware_info", this.overSingleClient, (args) => args)
   )
 
-  getHardwareInfo = this.callbackify("getHardwareInfoAsync")
+  getHardwareInfo = this.callbackify("getHardwareInfoAsync", 0)
 
   /**
    * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
@@ -994,7 +965,7 @@ export class MapdCon {
     return this.processResults(processResultsOptions, runQuery())
   })
 
-  query = this.callbackify("queryAsync")
+  query = this.callbackify("queryAsync", 2)
 
   queryDFAsync = this.handleErrors((query, options) => {
     const deviceId = 0
@@ -1021,7 +992,7 @@ export class MapdCon {
     })
   })
 
-  queryDF = this.callbackify("queryDFAsync")
+  queryDF = this.callbackify("queryDFAsync", 2)
 
   /**
    * Submit a query to validate that the backend can create a result set based on the SQL statement.
@@ -1085,7 +1056,7 @@ export class MapdCon {
     )
   })
 
-  getTables = this.callbackify("getTablesAsync")
+  getTables = this.callbackify("getTablesAsync", 0)
 
   /**
    * Get names and catalog metadata for tables that exist on the current session's connection.
@@ -1129,7 +1100,7 @@ export class MapdCon {
     )
   })
 
-  getTablesWithMeta = this.callbackify("getTablesWithMetaAsync")
+  getTablesWithMeta = this.callbackify("getTablesWithMetaAsync", 0)
 
   /**
    * Get names and catalog metadata for tables that exist on the current session's connection.
@@ -1155,7 +1126,7 @@ export class MapdCon {
     this.wrapThrift("get_tables_meta", this.overSingleClient, (args) => args)
   )
 
-  getTablesMeta = this.callbackify("getTablesMetaAsync")
+  getTablesMeta = this.callbackify("getTablesMetaAsync", 0)
 
   /**
    * Submits an SQL string to the backend and returns a completion hints object.
@@ -1187,7 +1158,7 @@ export class MapdCon {
     )
   )
 
-  getCompletionHints = this.callbackify("getCompletionHintsAsync")
+  getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
   /**
    * Create an array-like object from {@link TDatumType} by
@@ -1242,7 +1213,7 @@ export class MapdCon {
     })
   })
 
-  getFields = this.callbackify("getFieldsAsync")
+  getFields = this.callbackify("getFieldsAsync", 1)
 
   /**
    * Create a table and persist it to the backend.
@@ -1270,7 +1241,7 @@ export class MapdCon {
     )
   )
 
-  createTable = this.callbackify("createTableAsync")
+  createTable = this.callbackify("createTableAsync", 4)
 
   /**
    * Import a delimited table from a file.
@@ -1327,10 +1298,10 @@ export class MapdCon {
     callback
   ) {
     if (isShapeFile) {
-      const func = this.callbackify("importTableGeoAsync")
+      const func = this.callbackify("importTableGeoAsync", 4)
       return func(tableName, fileName, copyParams, rowDescObj, callback)
     } else {
-      const func = this.callbackify("importTableAsync")
+      const func = this.callbackify("importTableAsync", 3)
       return func(tableName, fileName, copyParams, callback)
     }
   }
@@ -1396,7 +1367,7 @@ export class MapdCon {
     )
   })
 
-  renderVega = this.callbackify("renderVegaAsync")
+  renderVega = this.callbackify("renderVegaAsync", 3)
 
   /**
    * Used primarily for backend-rendered maps; fetches the row
@@ -1457,7 +1428,7 @@ export class MapdCon {
     }
   )
 
-  getResultRowForPixel = this.callbackify("getResultRowForPixelAsync")
+  getResultRowForPixel = this.callbackify("getResultRowForPixelAsync", 4)
 
   // ** Configuration methods **
 
@@ -1731,30 +1702,6 @@ export class MapdCon {
         String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
     )
   }
-}
-
-function resetThriftClientOnArgumentErrorForMethods(
-  connector,
-  client,
-  methodNames
-) {
-  methodNames.forEach((methodName) => {
-    const oldFunc = connector[methodName]
-    connector[methodName] = (...args) => {
-      try {
-        // eslint-disable-line no-restricted-syntax
-        return oldFunc.apply(connector, args) // TODO should reject rather than throw for Promises.
-      } catch (e) {
-        // `this.output` is the Thrift transport instance
-        client.output.outCount = 0
-        client.output.outBuffers = []
-        client.output._seqid = null
-        // dereference the callback
-        client._reqs[client._seqid] = null
-        throw e // re-throw the error to Rx
-      }
-    }
-  })
 }
 
 export default MapdCon

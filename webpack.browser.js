@@ -49,11 +49,14 @@ module.exports = {
   },
   output: {
     library: {
-      commonjs: "@mapd/connector",
-      amd: "@mapd/connector",
-      root: "MapdCon"
+      name: {
+        // commonjs: "@mapd/connector",
+        amd: "@mapd/connector"
+        // root: "MapdCon"
+      },
+      type: "umd"
     },
-    libraryTarget: "umd",
+    globalObject: "this",
     path: path.join(__dirname, "dist"),
     filename: "browser-connector.js"
   }

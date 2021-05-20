@@ -15,7 +15,7 @@
     "format:lint": "npm run format && npm run lint",
     "lint": "eslint --fix src/",
     "test": "npm run lint; nyc npm run test:unit -- && npm run test:integration",
-    "test:integration": "mocha test/integration.spec.js && karma start test/karma.conf.js",
+    "test:integration": "mocha -t 5000 test/integration.spec.js && karma start test/karma.conf.js",
     "test:unit": "mocha ./test/*.unit.spec.js --require ./test/config.js --require ./test/setup.js"
   },
   "main": "dist/node-connector.js",
@@ -39,6 +39,7 @@
     "@types/thrift": "^0.10.10",
     "apache-arrow": "^2.0.0",
     "babel-loader": "^8.1.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "base64-arraybuffer": "^0.1.5",
     "buffer": "^6.0.3",
     "chai": "^3.5.0",

@@ -3,11 +3,11 @@
 		module.exports = factory(require("apache-arrow"));
 	else if(typeof define === 'function' && define.amd)
 		define(["apache-arrow"], factory);
-	else if(typeof exports === 'object')
-		exports["@mapd/connector"] = factory(require("apache-arrow"));
-	else
-		root["MapdCon"] = factory(root["Arrow"]);
-})(self, function(__WEBPACK_EXTERNAL_MODULE__2003__) {
+	else {
+		var a = typeof exports === 'object' ? factory(require("apache-arrow")) : factory(root["Arrow"]);
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(this, function(__WEBPACK_EXTERNAL_MODULE__2003__) {
 return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -81,8 +81,11 @@ module.exports = function availableTypedArrays() {
 /* harmony export */   "HP": () => /* binding */ mutateThriftRowDesc,
 /* harmony export */   "RK": () => /* binding */ timestampToMs
 /* harmony export */ });
+/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__);
+
 var convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
-  return new TCopyParams(obj);
+  return new _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__.TCopyParams(obj);
 }; // eslint-disable-line no-undef
 
 var mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
@@ -327,9 +330,8 @@ var MapdCon = /*#__PURE__*/function () {
       };
     });
 
-    _defineProperty(this, "callbackify", function (method) {
+    _defineProperty(this, "callbackify", function (method, arity) {
       return function () {
-        var arity = _this[method].length;
         var callback = null;
 
         for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
@@ -384,7 +386,7 @@ var MapdCon = /*#__PURE__*/function () {
       };
     });
 
-    _defineProperty(this, "connect", this.callbackify("connectAsync"));
+    _defineProperty(this, "connect", this.callbackify("connectAsync", 0));
 
     _defineProperty(this, "disconnectAsync", this.handleErrors(function () {
       return Promise.all(_this._client.map(function (client, c) {
@@ -403,19 +405,19 @@ var MapdCon = /*#__PURE__*/function () {
       });
     }));
 
-    _defineProperty(this, "disconnect", this.callbackify("disconnectAsync"));
+    _defineProperty(this, "disconnect", this.callbackify("disconnectAsync", 0));
 
     _defineProperty(this, "getStatusAsync", this.handleErrors(this.wrapThrift("get_status", this.overSingleClient, function (args) {
       return args;
     })));
 
-    _defineProperty(this, "getStatus", this.callbackify("getStatusAsync"));
+    _defineProperty(this, "getStatus", this.callbackify("getStatusAsync", 0));
 
     _defineProperty(this, "getHardwareInfoAsync", this.handleErrors(this.wrapThrift("get_hardware_info", this.overSingleClient, function (args) {
       return args;
     })));
 
-    _defineProperty(this, "getHardwareInfo", this.callbackify("getHardwareInfoAsync"));
+    _defineProperty(this, "getHardwareInfo", this.callbackify("getHardwareInfoAsync", 0));
 
     _defineProperty(this, "getFirstGeoFileInArchiveAsync", this.handleErrors(this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
       return args;
@@ -593,7 +595,7 @@ var MapdCon = /*#__PURE__*/function () {
       return _this.processResults(processResultsOptions, runQuery());
     }));
 
-    _defineProperty(this, "query", this.callbackify("queryAsync"));
+    _defineProperty(this, "query", this.callbackify("queryAsync", 2));
 
     _defineProperty(this, "queryDFAsync", this.handleErrors(function (query, options) {
       var deviceId = 0;
@@ -620,7 +622,7 @@ var MapdCon = /*#__PURE__*/function () {
       });
     }));
 
-    _defineProperty(this, "queryDF", this.callbackify("queryDFAsync"));
+    _defineProperty(this, "queryDF", this.callbackify("queryDFAsync", 2));
 
     _defineProperty(this, "validateQuery", this.handleErrors(function (query) {
       var sqlValidate = _this.wrapThrift("sql_validate", _this.overSingleClient, function (args) {
@@ -651,7 +653,7 @@ var MapdCon = /*#__PURE__*/function () {
       });
     }));
 
-    _defineProperty(this, "getTables", this.callbackify("getTablesAsync"));
+    _defineProperty(this, "getTables", this.callbackify("getTablesAsync", 0));
 
     _defineProperty(this, "getTablesWithMetaAsync", this.handleErrors(function () {
       var getTablesMeta = _this.wrapThrift("get_tables_meta", _this.overSingleClient, function (args) {
@@ -675,13 +677,13 @@ var MapdCon = /*#__PURE__*/function () {
       });
     }));
 
-    _defineProperty(this, "getTablesWithMeta", this.callbackify("getTablesWithMetaAsync"));
+    _defineProperty(this, "getTablesWithMeta", this.callbackify("getTablesWithMetaAsync", 0));
 
     _defineProperty(this, "getTablesMetaAsync", this.handleErrors(this.wrapThrift("get_tables_meta", this.overSingleClient, function (args) {
       return args;
     })));
 
-    _defineProperty(this, "getTablesMeta", this.callbackify("getTablesMetaAsync"));
+    _defineProperty(this, "getTablesMeta", this.callbackify("getTablesMetaAsync", 0));
 
     _defineProperty(this, "getCompletionHintsAsync", this.handleErrors(this.wrapThrift("get_completion_hints", this.overSingleClient, function (_ref11) {
       var _ref12 = _slicedToArray(_ref11, 2),
@@ -691,7 +693,7 @@ var MapdCon = /*#__PURE__*/function () {
       return [queryString, cursor];
     })));
 
-    _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync"));
+    _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync", 2));
 
     _defineProperty(this, "getFieldsAsync", this.handleErrors(function (tableName) {
       var getTableDetails = _this.wrapThrift("get_table_details", _this.overSingleClient, function (args) {
@@ -713,7 +715,7 @@ var MapdCon = /*#__PURE__*/function () {
       });
     }));
 
-    _defineProperty(this, "getFields", this.callbackify("getFieldsAsync"));
+    _defineProperty(this, "getFields", this.callbackify("getFieldsAsync", 1));
 
     _defineProperty(this, "createTableAsync", this.handleErrors(this.wrapThrift("create_table", this.overAllClients, function (_ref13) {
       var _ref14 = _slicedToArray(_ref13, 4),
@@ -725,7 +727,7 @@ var MapdCon = /*#__PURE__*/function () {
       return [tableName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this.importerRowDesc), tableType, createParams];
     })));
 
-    _defineProperty(this, "createTable", this.callbackify("createTableAsync"));
+    _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
 
     _defineProperty(this, "importTableAsync", this.handleErrors(this.wrapThrift("import_table", this.overAllClients, function (_ref15) {
       var _ref16 = _slicedToArray(_ref15, 3),
@@ -779,7 +781,7 @@ var MapdCon = /*#__PURE__*/function () {
       return _this.processResults(processResultsOptions, renderVega(widgetid, vega, compressionLevel, curNonce));
     }));
 
-    _defineProperty(this, "renderVega", this.callbackify("renderVegaAsync"));
+    _defineProperty(this, "renderVega", this.callbackify("renderVegaAsync", 3));
 
     _defineProperty(this, "getResultRowForPixelAsync", this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
       var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
@@ -810,7 +812,7 @@ var MapdCon = /*#__PURE__*/function () {
       });
     }));
 
-    _defineProperty(this, "getResultRowForPixel", this.callbackify("getResultRowForPixelAsync"));
+    _defineProperty(this, "getResultRowForPixel", this.callbackify("getResultRowForPixelAsync", 4));
 
     this._host = null;
     this._user = null;
@@ -1073,10 +1075,10 @@ var MapdCon = /*#__PURE__*/function () {
     key: "importTable",
     value: function importTable(tableName, fileName, copyParams, rowDescObj, isShapeFile, callback) {
       if (isShapeFile) {
-        var func = this.callbackify("importTableGeoAsync");
+        var func = this.callbackify("importTableGeoAsync", 4);
         return func(tableName, fileName, copyParams, rowDescObj, callback);
       } else {
-        var _func = this.callbackify("importTableAsync");
+        var _func = this.callbackify("importTableAsync", 3);
 
         return _func(tableName, fileName, copyParams, callback);
       }
@@ -1423,32 +1425,6 @@ var MapdCon = /*#__PURE__*/function () {
 
   return MapdCon;
 }();
-
-function resetThriftClientOnArgumentErrorForMethods(connector, client, methodNames) {
-  methodNames.forEach(function (methodName) {
-    var oldFunc = connector[methodName];
-
-    connector[methodName] = function () {
-      try {
-        for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-          args[_key6] = arguments[_key6];
-        }
-
-        // eslint-disable-line no-restricted-syntax
-        return oldFunc.apply(connector, args); // TODO should reject rather than throw for Promises.
-      } catch (e) {
-        // `this.output` is the Thrift transport instance
-        client.output.outCount = 0;
-        client.output.outBuffers = [];
-        client.output._seqid = null; // dereference the callback
-
-        client._reqs[client._seqid] = null;
-        throw e; // re-throw the error to Rx
-      }
-    };
-  });
-}
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MapdCon);
 
 
