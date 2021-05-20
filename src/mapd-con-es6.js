@@ -50,19 +50,10 @@ CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   return obj
 }
 
-// Custom version of TJSONProtocol - thrift 0.13.0 would accept anything to
-// writeString and coerce it to a string - 0.14.0 throws an exception on
-// anything other than a Buffer or string... and, of course, we're relying on
-// the old behavior...
-//
-// Additionally, at some point (0.14.0 I think) they fixed readI64 to return an
-// Int64 (from the node-int64 package) because javascript doesn't have enough
-// precision for a 64-bit number. But that means a lot of places we're
-// expecting a number now returns an object. So, if the number fits in a js
-// number, return that instead of the Int64 object.
-//
-// And, if that wasn't fun enough, binary types used to return a string - now
-// they return a Buffer. So, let's make that a string again...
+// Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
+// anything other than a string or Buffer is passed to writeString. For
+// example: we use a number for a nonce that is defined as a string type. So,
+// let's just coerce things to a string.
 function CustomTJSONProtocol(...args) {
   TJSONProtocol.apply(this, args)
 }
@@ -76,16 +67,26 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
   return TJSONProtocol.prototype.writeString.call(this, arg)
 }
 
-CustomTJSONProtocol.prototype.readI64 = function () {
-  const n = TJSONProtocol.prototype.readI64.call(this)
-  if (isFinite(n)) {
-    return n.valueOf()
+// Additionally, the browser version of connector relied on thrift's old
+// behavior of returning a Number for a 64-bit int. Technically, javascript
+// does not have 64-bits of precision in a Number, so this can end up giving
+// incorrect results. This custom version will return a Number if the int64
+// fits.
+//
+// Lastly, the browser version relied on thrift returning a string from a
+// binary type.
+if (process.env.BROWSER) {
+  CustomTJSONProtocol.prototype.readI64 = function () {
+    const n = TJSONProtocol.prototype.readI64.call(this)
+    if (isFinite(n)) {
+      return n.valueOf()
+    }
+    return n
   }
-  return n
-}
 
-CustomTJSONProtocol.prototype.readBinary = function () {
-  return TJSONProtocol.prototype.readString.call(this)
+  CustomTJSONProtocol.prototype.readBinary = function () {
+    return TJSONProtocol.prototype.readString.call(this)
+  }
 }
 
 function buildClient(url) {
@@ -317,8 +318,7 @@ export class MapdCon {
 
   /**
    * Create a connection to the MapD server, generating a client and session ID.
-   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-   * @return {MapdCon} Object.
+   * @return {Promise.MapdCon} Object.
    *
    * @example <caption>Connect to a MapD server:</caption>
    * var con = new MapdCon()
@@ -327,7 +327,8 @@ export class MapdCon {
    *   .dbName('myDatabase')
    *   .user('foo')
    *   .password('bar')
-   *   .connect((err, con) => console.log(con.sessionId()));
+   *   .connect()
+   *   .then((con) => console.log(con.sessionId()));
    *
    *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
    */
@@ -379,6 +380,22 @@ export class MapdCon {
     ).then(() => this)
   }
 
+  /**
+   * Create a connection to the MapD server, generating a client and session ID.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+   * @return {Promise.MapdCon} Object.
+   *
+   * @example <caption>Connect to a MapD server:</caption>
+   * var con = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect((err, con) => console.log(con.sessionId()));
+   *
+   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+   */
   connect = this.callbackify("connectAsync", 0)
 
   convertFromThriftTypes(fields) {
@@ -401,14 +418,11 @@ export class MapdCon {
 
   /**
    * Disconnect from the server and then clear the client and session values.
-   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-   * @return {MapdCon} Object.
+   * @return {Promise.MapdCon} Object.
    *
    * @example <caption>Disconnect from the server:</caption>
    *
-   * con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
-   * con.disconnect((err, con) => console.log(err, con))
-   * con.sessionId() === null;
+   * con.disconnect()
    */
   disconnectAsync = this.handleErrors(() => {
     return Promise.all(
@@ -429,6 +443,17 @@ export class MapdCon {
     })
   })
 
+  /**
+   * Disconnect from the server and then clear the client and session values.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+   * @return {Promise.MapdCon} Object.
+   *
+   * @example <caption>Disconnect from the server:</caption>
+   *
+   * con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+   * con.disconnect((err, con) => console.log(err, con))
+   * con.sessionId() === null;
+   */
   disconnect = this.callbackify("disconnectAsync", 0)
 
   // ** Client methods **
@@ -453,6 +478,23 @@ export class MapdCon {
     this.wrapThrift("get_status", this.overSingleClient, (args) => args)
   )
 
+  /**
+   * Get the status of the server as a {@link TServerStatus} object.
+   * This includes the server version number, whether the server is read-only,
+   * and whether backend rendering is enabled.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns an object that contains information about the server status.
+   * @return {Promise.<Object>} An object that contains information about the server status.
+   *
+   * @example <caption>Get the server status:</caption>
+   *
+   * con.getStatus((err, result) => console.log(result))
+   * // [{
+   * //   "read_only": false,
+   * //   "version": "3.0.0dev-20170503-40e2de3",
+   * //   "rendering_enabled": true,
+   * //   "start_time": 1493840131
+   * // }]
+   */
   getStatus = this.callbackify("getStatusAsync", 0)
 
   /**
@@ -496,6 +538,44 @@ export class MapdCon {
     this.wrapThrift("get_hardware_info", this.overSingleClient, (args) => args)
   )
 
+  /**
+   * Get information about the server hardware:
+   * - Number of GPUs.
+   * - Number of GPUs allocated to MapD.
+   * - Start GPU.
+   * - Number of SMs, SMXs, or CUs (streaming multiprocessors).
+   * - Clock frequency of each GPU.
+   * - Physical memory of each GPU.
+   * - Compute capability of each GPU.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns an object that contains hardware information.
+   * @return {Promise.<Object>} An object that contains hardware information.
+   *
+   * @example <caption>Get server hardware information:</caption>
+   *
+   * con.getHardwareInfo((err, result) => console.log(result))
+   * {
+   *   "hardware_info": [{
+   *    "num_gpu_hw": 2,
+   *      "num_cpu_hw": 12,
+   *      "num_gpu_allocated": 2,
+   *      "start_gpu": 0,
+   *      "host_name": "",
+   *      "gpu_info": [{
+   *          "num_sm": 28,
+   *          "clock_frequency_kHz": 1531000,
+   *          "memory": 12781682688,
+   *          "compute_capability_major": 6,
+   *          "compute_capability_minor": 1
+   *      }, {
+   *          "num_sm": 28,
+   *          "clock_frequency_kHz": 1531000,
+   *          "memory": 12782075904,
+   *          "compute_capability_major": 6,
+   *          "compute_capability_minor": 1
+   *      }]
+   *   }]
+   * }
+   */
   getHardwareInfo = this.callbackify("getHardwareInfoAsync", 0)
 
   /**
@@ -886,18 +966,14 @@ export class MapdCon {
    * Submit a query to the database and process the results.
    * @param {String} query The query to perform.
    * @param {Object} options Options for the query.
-   * @param {Function} callback A callback function with the signature <code>(err, result) => result</code>.
-   * @returns {Object} The result of the query.
+   * @returns {Promise.Object} The result of the query.
    *
    * @example <caption>Create a query:</caption>
    *
    * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
    * var options = {};
    *
-   * con.query(query, options, function(err, result) {
-   *        console.log(result)
-   *      });
-   *
+   * con.query(query, options).then((result) => console.log(result));
    */
   queryAsync = this.handleErrors((query, options) => {
     let columnarResults = true
@@ -965,6 +1041,22 @@ export class MapdCon {
     return this.processResults(processResultsOptions, runQuery())
   })
 
+  /**
+   * Submit a query to the database and process the results.
+   * @param {String} query The query to perform.
+   * @param {Object} options Options for the query.
+   * @param {Function} callback An optional callback function with the signature <code>(err, result) => result</code>.
+   * @returns {Promise.Object} The result of the query.
+   *
+   * @example <caption>Create a query:</caption>
+   *
+   * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
+   * var options = {};
+   *
+   * con.query(query, options, function(err, result) {
+   *        console.log(result)
+   *      });
+   */
   query = this.callbackify("queryAsync", 2)
 
   queryDFAsync = this.handleErrors((query, options) => {
@@ -1056,6 +1148,21 @@ export class MapdCon {
     )
   })
 
+  /**
+   * Get the names of the databases that exist in the current session connection.
+   * @param {Function} callback An optional callback function with the signature <code>(err, result) => result</code>.
+   * @return {Promise.<Object[]>} List of table objects containing the label and table names.
+   *
+   * @example <caption>Get the list of tables from a connection:</caption>
+   *
+   *  con.getTablesAsync((err, res) => console.log(res))
+   *
+   *  //  [{
+   *  //    label: 'obs', // deprecated property
+   *  //    name: 'myTableName'
+   *  //   },
+   *  //  ...]
+   */
   getTables = this.callbackify("getTablesAsync", 0)
 
   /**
@@ -1132,8 +1239,7 @@ export class MapdCon {
    * Submits an SQL string to the backend and returns a completion hints object.
    * @param {String} queryString A fragment of SQL input.
    * @param {Object} options An options object continaing the current cursor position, 1-indexed from the start of `queryString`.
-   * @param {Function} callback A callback function with the signature `(err, result) => result`.
-   * @returns {Array} An array of completion hints objects that contains the completion hints.
+   * @returns {Promise.Array} An array of completion hints objects that contains the completion hints.
    *
    * @example
    * const queryString = "f";
@@ -1158,6 +1264,28 @@ export class MapdCon {
     )
   )
 
+  /**
+   * Submits an SQL string to the backend and returns a completion hints object.
+   * @param {String} queryString A fragment of SQL input.
+   * @param {Object} options An options object continaing the current cursor position, 1-indexed from the start of `queryString`.
+   * @param {Function} callback An optional callback function with the signature `(err, result) => result`.
+   * @returns {Promise.Array} An array of completion hints objects that contains the completion hints.
+   *
+   * @example
+   * const queryString = "f";
+   * const cursor = 1;
+   *
+   * con.getCompletionHints(queryString, cursor, function(error, result) {
+   *        console.log(result)
+   *      });
+   *
+   *  [{
+   *    hints: ["FROM"],
+   *    replaced: "f",
+   *    type: 7
+   *   }]
+   *
+   */
   getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
   /**
@@ -1178,8 +1306,7 @@ export class MapdCon {
   /**
    * Get a list of field objects for a specified table.
    * @param {String} tableName Name of table containing field names.
-   * @param {Function} callback A callback that takes (`err, results`).
-   * @return {Array<Object>} The formatted list of field objects.
+   * @return {Promise.Array<Object>} The formatted list of field objects.
    *
    * @example <caption>Get the list of fields from a specific table:</caption>
    *
@@ -1213,6 +1340,22 @@ export class MapdCon {
     })
   })
 
+  /**
+   * Get a list of field objects for a specified table.
+   * @param {String} tableName Name of table containing field names.
+   * @param {Function} callback An optional callback that takes (`err, results`).
+   * @return {Promise.Array<Object>} The formatted list of field objects.
+   *
+   * @example <caption>Get the list of fields from a specific table:</caption>
+   *
+   * con.getFields('flights', (err, res) => console.log(res))
+   * // [{
+   *   name: 'fieldName',
+   *   type: 'BIGINT',
+   *   is_array: false,
+   *   is_dict: false
+   * }, ...]
+   */
   getFields = this.callbackify("getFieldsAsync", 1)
 
   /**
@@ -1307,8 +1450,9 @@ export class MapdCon {
   }
 
   /**
-   * Use for backend rendering. This method fetches a PNG image
-   * that is a render of the Vega JSON object.
+   * Use for backend rendering. This method fetches a PNG image that is a
+   * render of the Vega JSON object. The Image will be a string if using
+   * browser-connector.js, or a Buffer otherwise.
    *
    * @param {Number} widgetid The widget ID of the calling widget.
    * @param {String} vega The Vega JSON.
@@ -1316,9 +1460,7 @@ export class MapdCon {
    * @param {Number} options.compressionLevel The PNG compression level.
    *                  Range: 1 (low compression, faster) to 10 (high compression, slower).
    *                  Default: 3.
-   * @param {Function} callback Takes `(err, success)` as its signature.  Returns con singleton if successful.
-   *
-   * @returns {Image} Base64 image.
+   * @returns {Promise.Image} Base64 image.
    */
   renderVegaAsync = this.handleErrors((widgetid, vega, options) => {
     let queryId = null
@@ -1367,6 +1509,20 @@ export class MapdCon {
     )
   })
 
+  /**
+   * Use for backend rendering. This method fetches a PNG image that is a
+   * render of the Vega JSON object. The Image will be a string if using
+   * browser-connector.js, or a Buffer otherwise.
+   *
+   * @param {Number} widgetid The widget ID of the calling widget.
+   * @param {String} vega The Vega JSON.
+   * @param {Object} options The options for the render query.
+   * @param {Number} options.compressionLevel The PNG compression level.
+   *                  Range: 1 (low compression, faster) to 10 (high compression, slower).
+   *                  Default: 3.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.
+   * @returns {Promise.Image} Base64 image.
+   */
   renderVega = this.callbackify("renderVegaAsync", 3)
 
   /**
@@ -1377,8 +1533,6 @@ export class MapdCon {
    * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
    * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
    * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
-   * @param {Function} callback A callback function with the signature `(err, result) => result`.
-   *
    * @returns {String} Current result nonce
    */
   getResultRowForPixelAsync = this.handleErrors(
@@ -1428,6 +1582,17 @@ export class MapdCon {
     }
   )
 
+  /**
+   * Used primarily for backend-rendered maps; fetches the row
+   * for a specific table that was last rendered at a pixel.
+   *
+   * @param {Number} widgetId The widget ID of the caller.
+   * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
+   * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
+   * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
+   * @param {Function} callback An optional callback function with the signature `(err, result) => result`.
+   * @returns {String} Current result nonce
+   */
   getResultRowForPixel = this.callbackify("getResultRowForPixelAsync", 4)
 
   // ** Configuration methods **

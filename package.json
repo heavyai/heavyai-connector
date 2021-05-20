@@ -9,7 +9,7 @@
     "clean:docs": "rm -rf docs/",
     "coverage": "nyc report --reporter=text-lcov",
     "docs": "npm run docs:build && open docs/index.html",
-    "docs:build": "./node_modules/documentation/bin/documentation.js src/** -f html -o docs",
+    "docs:build": "./node_modules/documentation/bin/documentation.js build -f html -o docs src/**",
     "format": "prettier --write '{src,test}/**/*.js'",
     "format:check": "prettier --debug-check --list-different '{src,test}/**/*.js'",
     "format:lint": "npm run format && npm run lint",

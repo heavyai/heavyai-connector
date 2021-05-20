@@ -229,19 +229,10 @@ CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   var obj = thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection.prototype.getXmlHttpRequestObject.call(this);
   obj.withCredentials = CustomXHRConnection.withCredentials;
   return obj;
-}; // Custom version of TJSONProtocol - thrift 0.13.0 would accept anything to
-// writeString and coerce it to a string - 0.14.0 throws an exception on
-// anything other than a Buffer or string... and, of course, we're relying on
-// the old behavior...
-//
-// Additionally, at some point (0.14.0 I think) they fixed readI64 to return an
-// Int64 (from the node-int64 package) because javascript doesn't have enough
-// precision for a 64-bit number. But that means a lot of places we're
-// expecting a number now returns an object. So, if the number fits in a js
-// number, return that instead of the Int64 object.
-//
-// And, if that wasn't fun enough, binary types used to return a string - now
-// they return a Buffer. So, let's make that a string again...
+}; // Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
+// anything other than a string or Buffer is passed to writeString. For
+// example: we use a number for a nonce that is defined as a string type. So,
+// let's just coerce things to a string.
 
 
 function CustomTJSONProtocol() {
@@ -260,21 +251,31 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
   }
 
   return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.writeString.call(this, arg);
-};
+}; // Additionally, the browser version of connector relied on thrift's old
+// behavior of returning a Number for a 64-bit int. Technically, javascript
+// does not have 64-bits of precision in a Number, so this can end up giving
+// incorrect results. This custom version will return a Number if the int64
+// fits.
+//
+// Lastly, the browser version relied on thrift returning a string from a
+// binary type.
 
-CustomTJSONProtocol.prototype.readI64 = function () {
-  var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readI64.call(this);
 
-  if (isFinite(n)) {
-    return n.valueOf();
-  }
+if (process.env.BROWSER) {
+  CustomTJSONProtocol.prototype.readI64 = function () {
+    var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readI64.call(this);
 
-  return n;
-};
+    if (isFinite(n)) {
+      return n.valueOf();
+    }
 
-CustomTJSONProtocol.prototype.readBinary = function () {
-  return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readString.call(this);
-};
+    return n;
+  };
+
+  CustomTJSONProtocol.prototype.readBinary = function () {
+    return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readString.call(this);
+  };
+}
 
 function buildClient(url) {
   var _parseUrl = (0,url__WEBPACK_IMPORTED_MODULE_2__.parse)(url),
@@ -957,8 +958,7 @@ var MapdCon = /*#__PURE__*/function () {
     }
     /**
      * Create a connection to the MapD server, generating a client and session ID.
-     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-     * @return {MapdCon} Object.
+     * @return {Promise.MapdCon} Object.
      *
      * @example <caption>Connect to a MapD server:</caption>
      * var con = new MapdCon()
@@ -967,7 +967,8 @@ var MapdCon = /*#__PURE__*/function () {
      *   .dbName('myDatabase')
      *   .user('foo')
      *   .password('bar')
-     *   .connect((err, con) => console.log(con.sessionId()));
+     *   .connect()
+     *   .then((con) => console.log(con.sessionId()));
      *
      *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
      */
@@ -1017,6 +1018,23 @@ var MapdCon = /*#__PURE__*/function () {
         return _this2;
       });
     }
+    /**
+     * Create a connection to the MapD server, generating a client and session ID.
+     * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+     * @return {Promise.MapdCon} Object.
+     *
+     * @example <caption>Connect to a MapD server:</caption>
+     * var con = new MapdCon()
+     *   .host('localhost')
+     *   .port('8080')
+     *   .dbName('myDatabase')
+     *   .user('foo')
+     *   .password('bar')
+     *   .connect((err, con) => console.log(con.sessionId()));
+     *
+     *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+     */
+
   }, {
     key: "convertFromThriftTypes",
     value: function convertFromThriftTypes(fields) {
@@ -1040,14 +1058,11 @@ var MapdCon = /*#__PURE__*/function () {
     }
     /**
      * Disconnect from the server and then clear the client and session values.
-     * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-     * @return {MapdCon} Object.
+     * @return {Promise.MapdCon} Object.
      *
      * @example <caption>Disconnect from the server:</caption>
      *
-     * con.sessionId() // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
-     * con.disconnect((err, con) => console.log(err, con))
-     * con.sessionId() === null;
+     * con.disconnect()
      */
 
   }, {
@@ -1071,8 +1086,7 @@ var MapdCon = /*#__PURE__*/function () {
     /**
      * Get a list of field objects for a specified table.
      * @param {String} tableName Name of table containing field names.
-     * @param {Function} callback A callback that takes (`err, results`).
-     * @return {Array<Object>} The formatted list of field objects.
+     * @return {Promise.Array<Object>} The formatted list of field objects.
      *
      * @example <caption>Get the list of fields from a specific table:</caption>
      *
@@ -1103,8 +1117,9 @@ var MapdCon = /*#__PURE__*/function () {
       }
     }
     /**
-     * Use for backend rendering. This method fetches a PNG image
-     * that is a render of the Vega JSON object.
+     * Use for backend rendering. This method fetches a PNG image that is a
+     * render of the Vega JSON object. The Image will be a string if using
+     * browser-connector.js, or a Buffer otherwise.
      *
      * @param {Number} widgetid The widget ID of the calling widget.
      * @param {String} vega The Vega JSON.
@@ -1112,9 +1127,7 @@ var MapdCon = /*#__PURE__*/function () {
      * @param {Number} options.compressionLevel The PNG compression level.
      *                  Range: 1 (low compression, faster) to 10 (high compression, slower).
      *                  Default: 3.
-     * @param {Function} callback Takes `(err, success)` as its signature.  Returns con singleton if successful.
-     *
-     * @returns {Image} Base64 image.
+     * @returns {Promise.Image} Base64 image.
      */
 
   }, {
