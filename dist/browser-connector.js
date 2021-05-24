@@ -34263,6 +34263,10 @@ var MapdCon = /*#__PURE__*/function () {
       var limit = -1;
       var conId = 0;
       var args = [this._sessionId[conId], query, TDeviceType.CPU, deviceId, limit, TArrowTransport.WIRE, function (err, data) {
+        if (err) {
+          return callback(err, null);
+        }
+
         var buf = Buffer.from(data.df_buffer, "base64");
         var results = external_commonjs_apache_arrow_commonjs2_apache_arrow_amd_apache_arrow_root_Arrow_.Table.from(buf);
 
