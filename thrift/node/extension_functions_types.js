@@ -62,7 +62,8 @@ ttypes.TExtArgumentType = {
 ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
-  'kUserSpecifiedRowMultiplier' : 2
+  'kUserSpecifiedRowMultiplier' : 2,
+  'kTableFunctionSpecifiedParameter' : 3
 };
 var TUserDefinedFunction = module.exports.TUserDefinedFunction = function(args) {
   this.name = null;

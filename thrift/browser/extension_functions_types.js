@@ -58,7 +58,8 @@ TExtArgumentType = {
 TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
-  'kUserSpecifiedRowMultiplier' : 2
+  'kUserSpecifiedRowMultiplier' : 2,
+  'kTableFunctionSpecifiedParameter' : 3
 };
 TUserDefinedFunction = function(args) {
   this.name = null;
