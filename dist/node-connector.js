@@ -24393,7 +24393,8 @@ ttypes.TExtArgumentType = {
 ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
-  'kUserSpecifiedRowMultiplier' : 2
+  'kUserSpecifiedRowMultiplier' : 2,
+  'kTableFunctionSpecifiedParameter' : 3
 };
 var TUserDefinedFunction = module.exports.TUserDefinedFunction = function(args) {
   this.name = null;
@@ -26281,6 +26282,7 @@ var TCopyParams = module.exports.TCopyParams = function(args) {
   this.geo_assign_render_groups = true;
   this.geo_explode_collections = false;
   this.source_srid = 0;
+  this.s3_session_token = null;
   if (args) {
     if (args.delimiter !== undefined && args.delimiter !== null) {
       this.delimiter = args.delimiter;
@@ -26356,6 +26358,9 @@ var TCopyParams = module.exports.TCopyParams = function(args) {
     }
     if (args.source_srid !== undefined && args.source_srid !== null) {
       this.source_srid = args.source_srid;
+    }
+    if (args.s3_session_token !== undefined && args.s3_session_token !== null) {
+      this.s3_session_token = args.s3_session_token;
     }
   }
 };
@@ -26545,6 +26550,13 @@ TCopyParams.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 26:
+      if (ftype == Thrift.Type.STRING) {
+        this.s3_session_token = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -26679,6 +26691,11 @@ TCopyParams.prototype.write = function(output) {
   if (this.source_srid !== null && this.source_srid !== undefined) {
     output.writeFieldBegin('source_srid', Thrift.Type.I32, 25);
     output.writeI32(this.source_srid);
+    output.writeFieldEnd();
+  }
+  if (this.s3_session_token !== null && this.s3_session_token !== undefined) {
+    output.writeFieldBegin('s3_session_token', Thrift.Type.STRING, 26);
+    output.writeString(this.s3_session_token);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -27016,7 +27033,7 @@ var TServerStatus = module.exports.TServerStatus = function(args) {
   this.host_name = null;
   this.poly_rendering_enabled = null;
   this.role = null;
-  this.renderer_driver_type = null;
+  this.renderer_status_json = null;
   if (args) {
     if (args.read_only !== undefined && args.read_only !== null) {
       this.read_only = args.read_only;
@@ -27042,8 +27059,8 @@ var TServerStatus = module.exports.TServerStatus = function(args) {
     if (args.role !== undefined && args.role !== null) {
       this.role = args.role;
     }
-    if (args.renderer_driver_type !== undefined && args.renderer_driver_type !== null) {
-      this.renderer_driver_type = args.renderer_driver_type;
+    if (args.renderer_status_json !== undefined && args.renderer_status_json !== null) {
+      this.renderer_status_json = args.renderer_status_json;
     }
   }
 };
@@ -27116,7 +27133,7 @@ TServerStatus.prototype.read = function(input) {
       break;
       case 9:
       if (ftype == Thrift.Type.STRING) {
-        this.renderer_driver_type = input.readString();
+        this.renderer_status_json = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -27172,9 +27189,9 @@ TServerStatus.prototype.write = function(output) {
     output.writeI32(this.role);
     output.writeFieldEnd();
   }
-  if (this.renderer_driver_type !== null && this.renderer_driver_type !== undefined) {
-    output.writeFieldBegin('renderer_driver_type', Thrift.Type.STRING, 9);
-    output.writeString(this.renderer_driver_type);
+  if (this.renderer_status_json !== null && this.renderer_status_json !== undefined) {
+    output.writeFieldBegin('renderer_status_json', Thrift.Type.STRING, 9);
+    output.writeString(this.renderer_status_json);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
