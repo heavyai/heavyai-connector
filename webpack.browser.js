@@ -2,19 +2,16 @@ const path = require("path")
 const webpack = require("webpack")
 
 module.exports = {
-  entry: [
-    "script-loader!./build/thrift/browser/thrift.js",
-    "script-loader!./build/thrift/browser/common_types.js",
-    "script-loader!./build/thrift/browser/serialized_result_set_types.js",
-    "script-loader!./build/thrift/browser/omnisci_types.js",
-    "script-loader!./build/thrift/browser/OmniSci.js",
-    "script-loader!./build/thrift/browser/completion_hints_types.js",
-    "./src/mapd-con-es6.js"
-  ],
+  entry: ["./src/mapd-con-es6.js"],
   plugins: [
     new webpack.ProgressPlugin(),
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"]
+    }),
+    new webpack.DefinePlugin({
+      "process.env": {
+        BROWSER: JSON.stringify(true)
+      }
     })
   ],
   module: {
@@ -22,12 +19,14 @@ module.exports = {
       {
         test: /\.js$/,
         use: {
-          loader: "babel-loader",
-          options: {
-            plugins: ["babel-plugin-transform-inline-environment-variables"]
-          }
+          loader: "babel-loader"
         },
         include: /src/
+      },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: "javascript/auto"
       }
     ]
   },
@@ -50,12 +49,14 @@ module.exports = {
   },
   output: {
     library: {
-      commonjs: "@mapd/connector",
-      amd: "@mapd/connector",
-      root: "MapdCon"
+      name: {
+        // commonjs: "@mapd/connector",
+        amd: "@mapd/connector"
+        // root: "MapdCon"
+      },
+      type: "umd"
     },
-    libraryTarget: "umd",
-    libraryExport: "default",
+    globalObject: "this",
     path: path.join(__dirname, "dist"),
     filename: "browser-connector.js"
   }
