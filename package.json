@@ -1,21 +1,21 @@
 {
   "name": "@mapd/connector",
   "description": "Connector to omniscidb",
-  "version": "5.5.2",
+  "version": "6.0.0",
   "license": "Apache-2.0",
   "scripts": {
     "build": "bash scripts/build.sh",
-    "clean": "rm -rf node_modules/ dist/ build/ docs/",
+    "clean": "rm -rf node_modules/ dist/ docs/",
     "clean:docs": "rm -rf docs/",
     "coverage": "nyc report --reporter=text-lcov",
     "docs": "npm run docs:build && open docs/index.html",
-    "docs:build": "./node_modules/documentation/bin/documentation.js build src/** -f html -o docs",
+    "docs:build": "./node_modules/documentation/bin/documentation.js build -f html -o docs src/**",
     "format": "prettier --write '{src,test}/**/*.js'",
     "format:check": "prettier --debug-check --list-different '{src,test}/**/*.js'",
     "format:lint": "npm run format && npm run lint",
     "lint": "eslint --fix src/",
     "test": "npm run lint; nyc npm run test:unit -- && npm run test:integration",
-    "test:integration": "mocha test/integration.spec.js && karma start test/karma.conf.js",
+    "test:integration": "mocha -t 5000 test/integration.spec.js && karma start test/karma.conf.js",
     "test:unit": "mocha ./test/*.unit.spec.js --require ./test/config.js --require ./test/setup.js"
   },
   "main": "dist/node-connector.js",
@@ -36,7 +36,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/register": "^7.12.1",
     "@babel/runtime-corejs3": "^7.12.5",
-    "@types/thrift": "^0.10.7",
+    "@types/thrift": "^0.10.10",
     "apache-arrow": "^2.0.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
@@ -79,9 +79,7 @@
   },
   "dependencies": {
     "eventemitter3": "^3.1.0",
-    "lodash.clonedeep": "~4.5.0",
-    "script-loader": "^0.7.0",
-    "thrift": "github:apache/thrift#v0.13.0"
+    "thrift": "~0.14.1"
   },
   "peerDependencies": {
     "apache-arrow": "^2.0.0"

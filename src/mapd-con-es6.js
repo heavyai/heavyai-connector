@@ -1,29 +1,35 @@
-/* global TCreateParams: false, TDashboardPermissions: false, TDBObjectType: false, TDBObjectPermissions: false, TDatabasePermissions: false */
-
-const { TDatumType, TEncodingType, TDeviceType } =
-  (isNodeRuntime() && require("../build/thrift/node/common_types.js")) || window // eslint-disable-line global-require
-const { TArrowTransport, TPixel, TOmniSciException } =
-  (isNodeRuntime() && require("../build/thrift/node/omnisci_types.js")) ||
-  window // eslint-disable-line global-require
-const MapDThrift = isNodeRuntime() && require("../build/thrift/node/OmniSci.js") // eslint-disable-line global-require
-let Thrift = (isNodeRuntime() && require("thrift")) || window.Thrift // eslint-disable-line global-require
-const thriftWrapper = Thrift
-const parseUrl = isNodeRuntime() && require("url").parse // eslint-disable-line global-require
-if (isNodeRuntime()) {
-  // Because browser Thrift and Node Thrift are exposed slightly differently.
-  Thrift = Thrift.Thrift
-  Thrift.Transport = thriftWrapper.TBufferedTransport
-  Thrift.Protocol = thriftWrapper.TJSONProtocol
-}
-
-import * as helpers from "./helpers"
-
-import clone from "lodash.clonedeep"
 import EventEmitter from "eventemitter3"
-
-import MapDClientV2 from "./mapd-client-v2"
-import processQueryResults from "./process-query-results"
 import { Table } from "apache-arrow"
+import { parse as parseUrl } from "url"
+import util from "util"
+
+import {
+  TDatumType,
+  TEncodingType,
+  TDeviceType
+} from "../thrift/common_types.js"
+import {
+  TArrowTransport,
+  TCreateParams,
+  TDashboardPermissions,
+  TDatabasePermissions,
+  TDBObjectPermissions,
+  TDBObjectType,
+  TPixel,
+  TOmniSciException
+} from "../thrift/omnisci_types.js"
+import MapDThrift from "../thrift/OmniSci.js"
+import {
+  TBufferedTransport,
+  TJSONProtocol,
+  XHRConnection,
+  createClient,
+  createHttpConnection,
+  createXHRClient
+} from "thrift"
+
+import processQueryResults from "./process-query-results"
+import * as helpers from "./helpers"
 
 const COMPRESSION_LEVEL_DEFAULT = 3
 
@@ -31,8 +37,88 @@ function arrayify(maybeArray) {
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray]
 }
 
-function isNodeRuntime() {
-  return typeof window === "undefined"
+// custom version of XHRConnection which can set `withCredentials` for CORS
+function CustomXHRConnection(...args) {
+  XHRConnection.apply(this, args)
+}
+
+util.inherits(CustomXHRConnection, XHRConnection)
+
+CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
+  const obj = XHRConnection.prototype.getXmlHttpRequestObject.call(this)
+  obj.withCredentials = CustomXHRConnection.withCredentials
+  return obj
+}
+
+// Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
+// anything other than a string or Buffer is passed to writeString. For
+// example: we use a number for a nonce that is defined as a string type. So,
+// let's just coerce things to a string.
+function CustomTJSONProtocol(...args) {
+  TJSONProtocol.apply(this, args)
+}
+
+util.inherits(CustomTJSONProtocol, TJSONProtocol)
+
+CustomTJSONProtocol.prototype.writeString = function (arg) {
+  if (!(arg instanceof Buffer)) {
+    arg = String(arg)
+  }
+  return TJSONProtocol.prototype.writeString.call(this, arg)
+}
+
+// Additionally, the browser version of connector relied on thrift's old
+// behavior of returning a Number for a 64-bit int. Technically, javascript
+// does not have 64-bits of precision in a Number, so this can end up giving
+// incorrect results. This custom version will return a Number if the int64
+// fits.
+//
+// Lastly, the browser version relied on thrift returning a string from a
+// binary type.
+if (process.env.BROWSER) {
+  CustomTJSONProtocol.prototype.readI64 = function () {
+    const n = TJSONProtocol.prototype.readI64.call(this)
+    if (isFinite(n)) {
+      return n.valueOf()
+    }
+    return n
+  }
+
+  CustomTJSONProtocol.prototype.readBinary = function () {
+    return TJSONProtocol.prototype.readString.call(this)
+  }
+}
+
+function buildClient(url) {
+  const { protocol, hostname, port } = parseUrl(url)
+  let client = null
+  if (!process.env.BROWSER) {
+    const connection = createHttpConnection(hostname, port, {
+      transport: TBufferedTransport,
+      protocol: CustomTJSONProtocol,
+      path: "/",
+      headers: {
+        Connection: "close",
+        "Content-Type": "application/vnd.apache.thrift.json"
+      },
+      https: protocol === "https:"
+    })
+    connection.on("error", console.error) // eslint-disable-line no-console
+    client = createClient(MapDThrift, connection)
+  } else {
+    const connection = new CustomXHRConnection(hostname, port, {
+      transport: TBufferedTransport,
+      protocol: CustomTJSONProtocol,
+      path: "/",
+      headers: {
+        "Content-Type": "application/vnd.apache.thrift.json"
+      },
+      https: protocol === "https:"
+    })
+    connection.on("error", console.error) // eslint-disable-line no-console
+    client = createXHRClient(MapDThrift, connection)
+  }
+  return client
 }
 
 export class MapdCon {
@@ -64,33 +150,119 @@ export class MapdCon {
     // invoke initialization methods
     this.invertDatumTypes()
 
-    this.processResults = (options = {}, result, error, callback) => {
-      if (error) {
-        if (this._logging && options.query) {
-          console.error(options.query, "\n", error)
-        }
-        callback(error)
-      } else {
-        const processor = processQueryResults(
-          this._logging,
-          this.updateQueryTimes
-        )
-        const processResultsObject = processor(
-          options,
-          this._datumEnum,
-          result,
-          callback
-        )
-        return processResultsObject
-      }
-    }
+    this.processResults = (options = {}, promise) =>
+      promise
+        .catch((error) => {
+          if (this._logging && options.query) {
+            // eslint-disable-next-line no-console
+            console.error(options.query, "\n", error)
+          }
+          throw error
+        })
+        .then((result) => {
+          const processor = processQueryResults(
+            this._logging,
+            this.updateQueryTimes
+          )
+          const processResultsObject = processor(
+            options,
+            this._datumEnum,
+            result
+          )
+          return processResultsObject
+        })
 
     // return this to allow chaining off of instantiation
     return this
   }
 
+  removeConnection(conId) {
+    if (conId < 0 || conId >= this.numConnections) {
+      const err = {
+        msg: "Remove connection id invalid"
+      }
+      throw err
+    }
+    this._client.splice(conId, 1)
+    this._sessionId.splice(conId, 1)
+    this._numConnections--
+  }
+
+  updateQueryTimes = (
+    conId,
+    queryId,
+    estimatedQueryTime,
+    execution_time_ms
+  ) => {
+    this.queryTimes[queryId] = execution_time_ms
+  }
+
+  events = new EventEmitter()
+  EVENT_NAMES = {
+    ERROR: "error",
+    METHOD_CALLED: "method-called"
+  }
+
+  // ** Method wrappers **
+
+  handleErrors = (method) => (...args) =>
+    method.apply(this, args).catch((error) => {
+      this.events.emit(this.EVENT_NAMES.ERROR, error)
+      throw error
+    })
+
+  // for backward compatibility
+  callbackify = (method, arity) => (...args) => {
+    let callback = null
+    if (args.length === arity + 1) {
+      callback = args.pop()
+    }
+
+    const promise = this[method].apply(this, args)
+    if (callback) {
+      promise.catch((err) => callback(err)).then((res) => callback(null, res))
+    }
+    return promise
+  }
+
+  overSingleClient = "SINGLE_CLIENT"
+  overAllClients = "ALL_CLIENTS"
+
+  // Wrap a Thrift method to perform session check and mapping over
+  // all clients (for mutating methods)
+  wrapThrift = (methodName, overClients, processArgs) => (...args) => {
+    if (this._sessionId) {
+      const processedArgs = processArgs(args)
+      if (process.env.BROWSER) {
+        this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
+      }
+
+      if (overClients === this.overSingleClient) {
+        return this._client[0][methodName].apply(
+          this._client[0],
+          [this._sessionId[0]].concat(processedArgs)
+        )
+      } else {
+        return Promise.all(
+          this._client.map((client, index) =>
+            client[methodName].apply(
+              client,
+              [this._sessionId[index]].concat(processedArgs)
+            )
+          )
+        )
+      }
+    } else {
+      return Promise.reject(
+        new Error(
+          "You are not connected to a server. Try running the connect method first."
+        )
+      )
+    }
+  }
+
   xhrWithCredentials(enabled) {
-    Thrift.xhrWithCredentials = enabled
+    CustomXHRConnection.withCredentials = Boolean(enabled)
   }
 
   /**
@@ -136,53 +308,8 @@ export class MapdCon {
     const clients = []
 
     for (let h = 0; h < hostLength; h++) {
-      let client = null
-
-      if (isNodeRuntime()) {
-        const { protocol, hostname, port } = parseUrl(transportUrls[h])
-        const connection = thriftWrapper.createHttpConnection(hostname, port, {
-          transport: thriftWrapper.TBufferedTransport,
-          protocol: thriftWrapper.TJSONProtocol,
-          path: "/",
-          headers: { Connection: "close" },
-          https: protocol === "https:"
-        })
-        connection.on("error", console.error) // eslint-disable-line no-console
-        client = thriftWrapper.createClient(MapDThrift, connection)
-        resetThriftClientOnArgumentErrorForMethods(this, client, [
-          "connect",
-          "createTableAsync",
-          "dbName",
-          "detectColumnTypesAsync",
-          "disconnect",
-          "getCompletionHintsAsync",
-          "getFields",
-          "getDashboardAsync",
-          "getDashboardsAsync",
-          "getResultRowForPixel",
-          "getStatusAsync",
-          "getTablesAsync",
-          "getTablesWithMetaAsync",
-          "host",
-          "importTableAsync",
-          "importTableGeoAsync",
-          "logging",
-          "password",
-          "port",
-          "protocol",
-          "query",
-          "queryDF",
-          "renderVega",
-          "sessionId",
-          "user",
-          "validateQuery"
-        ])
-        clients.push(client)
-      } else {
-        const thriftTransport = new Thrift.Transport(transportUrls[h])
-        const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        clients.push(new MapDClientV2(thriftProtocol))
-      }
+      const client = buildClient(transportUrls[h])
+      clients.push(client)
     }
     this._client = clients
     this._numConnections = this._client.length
@@ -191,8 +318,72 @@ export class MapdCon {
 
   /**
    * Create a connection to the MapD server, generating a client and session ID.
-   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-   * @return {MapdCon} Object.
+   * @return {Promise.MapdCon} Object.
+   *
+   * @example <caption>Connect to a MapD server:</caption>
+   * var con = new MapdCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connect()
+   *   .then((con) => console.log(con.sessionId()));
+   *
+   *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
+   */
+  connectAsync() {
+    if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
+      return Promise.reject("Username and password must be arrays.")
+    }
+
+    if (!this._dbName[0]) {
+      return Promise.reject("Please enter a database.")
+    } else if (!this._user[0]) {
+      return Promise.reject("Please enter a username.")
+    } else if (!this._password[0]) {
+      return Promise.reject("Please enter a password.")
+    }
+
+    // now check to see if length of all arrays are the same and > 0
+    const hostLength = this._host.length
+    if (hostLength < 1) {
+      return Promise.reject("Must have at least one server to connect to.")
+    }
+    if (
+      hostLength !== this._port.length ||
+      hostLength !== this._user.length ||
+      hostLength !== this._password.length ||
+      hostLength !== this._dbName.length
+    ) {
+      return Promise.reject(
+        "Array connection parameters must be of equal length."
+      )
+    }
+
+    let clients = []
+    this.initClients()
+    clients = this._client
+
+    // Reset the client property, so we can add only the ones that we can connect to below
+    this._client = []
+    return Promise.all(
+      clients.map((client, h) =>
+        client
+          .connect(this._user[h], this._password[h], this._dbName[h])
+          .then((sessionId) => {
+            this._client.push(client)
+            this._sessionId.push(sessionId)
+            return null
+          })
+      )
+    ).then(() => this)
+  }
+
+  /**
+   * Create a connection to the MapD server, generating a client and session ID.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+   * @return {Promise.MapdCon} Object.
    *
    * @example <caption>Connect to a MapD server:</caption>
    * var con = new MapdCon()
@@ -205,76 +396,7 @@ export class MapdCon {
    *
    *   // ["om9E9Ujgbhl6wIzWgLENncjWsaXRDYLy"]
    */
-  connect(callback) {
-    if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
-      return callback("Username and password must be arrays.")
-    }
-
-    if (!this._dbName[0]) {
-      throw new Error("Please enter a database.")
-    } else if (!this._user[0]) {
-      return callback("Please enter a username.")
-    } else if (!this._password[0]) {
-      return callback("Please enter a password.")
-    }
-
-    // now check to see if length of all arrays are the same and > 0
-    const hostLength = this._host.length
-    if (hostLength < 1) {
-      return callback("Must have at least one server to connect to.")
-    }
-    if (
-      hostLength !== this._port.length ||
-      hostLength !== this._user.length ||
-      hostLength !== this._password.length ||
-      hostLength !== this._dbName.length
-    ) {
-      return callback("Array connection parameters must be of equal length.")
-    }
-
-    let clients = []
-    // eslint-disable-next-line no-restricted-syntax
-    try {
-      this.initClients()
-      clients = this._client
-      // Reset the client property, so we can add only the ones that we can connect to below
-      this._client = []
-    } catch (e) {
-      return callback(e.message)
-    }
-
-    for (let h = 0; h < clients.length; h++) {
-      const client = clients[h]
-
-      client.connect(
-        this._user[h],
-        this._password[h],
-        this._dbName[h],
-        (error, sessionId) => {
-          if (error) {
-            callback(error)
-            return
-          }
-          this._client.push(client)
-          this._sessionId.push(sessionId)
-          callback(null, this)
-        }
-      )
-    }
-
-    return this
-  }
-
-  connectAsync = () =>
-    new Promise((resolve, reject) => {
-      this.connect((error, con) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(con)
-        }
-      })
-    })
+  connect = this.callbackify("connectAsync", 0)
 
   convertFromThriftTypes(fields) {
     const fieldsArray = []
@@ -296,8 +418,35 @@ export class MapdCon {
 
   /**
    * Disconnect from the server and then clear the client and session values.
-   * @param {Function} callback A callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-   * @return {MapdCon} Object.
+   * @return {Promise.MapdCon} Object.
+   *
+   * @example <caption>Disconnect from the server:</caption>
+   *
+   * con.disconnect()
+   */
+  disconnectAsync = this.handleErrors(() => {
+    return Promise.all(
+      this._client.map((client, c) =>
+        client.disconnect(this._sessionId[c]).catch((error) => {
+          // ignore timeout errors
+          if (error && !this.isTimeoutError(error)) {
+            throw error
+          }
+        })
+      )
+    ).then(() => {
+      this._sessionId = null
+      this._client = null
+      this._numConnections = 0
+      this.serverPingTimes = null
+      return this
+    })
+  })
+
+  /**
+   * Disconnect from the server and then clear the client and session values.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
+   * @return {Promise.MapdCon} Object.
    *
    * @example <caption>Disconnect from the server:</caption>
    *
@@ -305,143 +454,9 @@ export class MapdCon {
    * con.disconnect((err, con) => console.log(err, con))
    * con.sessionId() === null;
    */
-  disconnect(callback) {
-    if (this._sessionId !== null) {
-      for (let c = 0; c < this._client.length; c++) {
-        this._client[c].disconnect(this._sessionId[c], (error) => {
-          if (error && !this.isTimeoutError(error)) {
-            return callback(error, this)
-          }
-
-          this._sessionId = null
-          this._client = null
-          this._numConnections = 0
-          this.serverPingTimes = null
-
-          return callback(null, this)
-        })
-      }
-    }
-    return this
-  }
-
-  removeConnection(conId) {
-    if (conId < 0 || conId >= this.numConnections) {
-      const err = {
-        msg: "Remove connection id invalid"
-      }
-      throw err
-    }
-    this._client.splice(conId, 1)
-    this._sessionId.splice(conId, 1)
-    this._numConnections--
-  }
-
-  updateQueryTimes = (
-    conId,
-    queryId,
-    estimatedQueryTime,
-    execution_time_ms
-  ) => {
-    this.queryTimes[queryId] = execution_time_ms
-  }
-
-  events = new EventEmitter()
-  EVENT_NAMES = {
-    ERROR: "error",
-    METHOD_CALLED: "method-called"
-  }
-
-  // ** Method wrappers **
-
-  handleErrors = (method) => (...args) =>
-    new Promise((resolve, reject) => {
-      const success = (result) => resolve(result)
-      const failure = (error) => {
-        this.events.emit(this.EVENT_NAMES.ERROR, error)
-        return reject(error)
-      }
-
-      const promise = method.apply(this, args)
-
-      promise.then(success).catch((error) => failure(error))
-    })
-
-  promisifyThriftMethodNode = (client, sessionId, methodName, args) =>
-    new Promise((resolve, reject) => {
-      client[methodName].apply(
-        client,
-        [sessionId].concat(args, (err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
-        })
-      )
-    })
-
-  promisifyThriftMethodBrowser = (client, sessionId, methodName, args) =>
-    new Promise((resolve, reject) => {
-      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
-      client[methodName].apply(
-        client,
-        [sessionId].concat(args, (result) => {
-          if (result instanceof Error) {
-            reject(result)
-          } else {
-            resolve(result)
-          }
-        })
-      )
-    })
-
-  promisifyThriftMethod = isNodeRuntime()
-    ? this.promisifyThriftMethodNode
-    : this.promisifyThriftMethodBrowser
-
-  overSingleClient = "SINGLE_CLIENT"
-  overAllClients = "ALL_CLIENTS"
-
-  // Wrap a Thrift method to perform session check and mapping over
-  // all clients (for mutating methods)
-  wrapThrift = (methodName, overClients, processArgs) => (...args) => {
-    if (this._sessionId) {
-      const processedArgs = processArgs(args)
-
-      if (overClients === this.overSingleClient) {
-        return this.promisifyThriftMethod(
-          this._client[0],
-          this._sessionId[0],
-          methodName,
-          processedArgs
-        )
-      } else {
-        return Promise.all(
-          this._client.map((client, index) =>
-            this.promisifyThriftMethod(
-              client,
-              this._sessionId[index],
-              methodName,
-              processedArgs
-            )
-          )
-        )
-      }
-    } else {
-      return Promise.reject(
-        new Error(
-          "You are not connected to a server. Try running the connect method first."
-        )
-      )
-    }
-  }
+  disconnect = this.callbackify("disconnectAsync", 0)
 
   // ** Client methods **
-
-  getStatus = (callback) => {
-    this._client[0].get_status(this._sessionId[0], callback)
-  }
 
   /**
    * Get the status of the server as a {@link TServerStatus} object.
@@ -459,23 +474,28 @@ export class MapdCon {
    * //   "start_time": 1493840131
    * // }]
    */
-
   getStatusAsync = this.handleErrors(
-    () =>
-      new Promise((resolve, reject) => {
-        this.getStatus((err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
-        })
-      })
+    this.wrapThrift("get_status", this.overSingleClient, (args) => args)
   )
 
-  getHardwareInfo = (callback) => {
-    this._client[0].get_hardware_info(this._sessionId[0], callback)
-  }
+  /**
+   * Get the status of the server as a {@link TServerStatus} object.
+   * This includes the server version number, whether the server is read-only,
+   * and whether backend rendering is enabled.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns an object that contains information about the server status.
+   * @return {Promise.<Object>} An object that contains information about the server status.
+   *
+   * @example <caption>Get the server status:</caption>
+   *
+   * con.getStatus((err, result) => console.log(result))
+   * // [{
+   * //   "read_only": false,
+   * //   "version": "3.0.0dev-20170503-40e2de3",
+   * //   "rendering_enabled": true,
+   * //   "start_time": 1493840131
+   * // }]
+   */
+  getStatus = this.callbackify("getStatusAsync", 0)
 
   /**
    * Get information about the server hardware:
@@ -514,19 +534,49 @@ export class MapdCon {
    *   }]
    * }
    */
-
   getHardwareInfoAsync = this.handleErrors(
-    () =>
-      new Promise((resolve, reject) => {
-        this.getHardwareInfo((err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
-        })
-      })
+    this.wrapThrift("get_hardware_info", this.overSingleClient, (args) => args)
   )
+
+  /**
+   * Get information about the server hardware:
+   * - Number of GPUs.
+   * - Number of GPUs allocated to MapD.
+   * - Start GPU.
+   * - Number of SMs, SMXs, or CUs (streaming multiprocessors).
+   * - Clock frequency of each GPU.
+   * - Physical memory of each GPU.
+   * - Compute capability of each GPU.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns an object that contains hardware information.
+   * @return {Promise.<Object>} An object that contains hardware information.
+   *
+   * @example <caption>Get server hardware information:</caption>
+   *
+   * con.getHardwareInfo((err, result) => console.log(result))
+   * {
+   *   "hardware_info": [{
+   *    "num_gpu_hw": 2,
+   *      "num_cpu_hw": 12,
+   *      "num_gpu_allocated": 2,
+   *      "start_gpu": 0,
+   *      "host_name": "",
+   *      "gpu_info": [{
+   *          "num_sm": 28,
+   *          "clock_frequency_kHz": 1531000,
+   *          "memory": 12781682688,
+   *          "compute_capability_major": 6,
+   *          "compute_capability_minor": 1
+   *      }, {
+   *          "num_sm": 28,
+   *          "clock_frequency_kHz": 1531000,
+   *          "memory": 12782075904,
+   *          "compute_capability_major": 6,
+   *          "compute_capability_minor": 1
+   *      }]
+   *   }]
+   * }
+   */
+  getHardwareInfo = this.callbackify("getHardwareInfoAsync", 0)
 
   /**
    * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
@@ -853,12 +903,7 @@ export class MapdCon {
     this.wrapThrift(
       "has_object_privilege",
       this.overSingleClient,
-      ([granteeName, objectName, objectType, permissions]) => [
-        granteeName,
-        objectName,
-        objectType,
-        permissions
-      ]
+      (args) => args
     )
   )
 
@@ -891,16 +936,6 @@ export class MapdCon {
     this.wrapThrift("get_session_info", this.overSingleClient, (args) => args)
   )
 
-  detectColumnTypes(fileName, copyParams, callback) {
-    const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
-    this._client[0].detect_column_types(
-      this._sessionId[0],
-      fileName,
-      thriftCopyParams,
-      callback
-    )
-  }
-
   /**
    * Asynchronously get data from an importable file,
    * such as a CSV or plaintext file with a header.
@@ -915,42 +950,32 @@ export class MapdCon {
    * // TDetectResult {row_set: TRowSet, copy_params: TCopyParams}
    *
    */
-  detectColumnTypesAsync = this.handleErrors(
-    (fileName, copyParams) =>
-      new Promise((resolve, reject) => {
-        this.detectColumnTypes.bind(
-          this,
-          fileName,
-          copyParams
-        )((err, res) => {
-          if (err) {
-            reject(err)
-          } else {
-            this.importerRowDesc = res.row_set.row_desc
-            resolve(res)
-          }
-        })
-      })
-  )
+  detectColumnTypesAsync = this.handleErrors((filename, copyParams) => {
+    const detectColumnTypes = this.wrapThrift(
+      "detect_column_types",
+      this.overSingleClient,
+      () => [filename, helpers.convertObjectToThriftCopyParams(copyParams)]
+    )
+    return detectColumnTypes().then((res) => {
+      this.importerRowDesc = res.row_set.row_desc
+      return res
+    })
+  })
 
   /**
    * Submit a query to the database and process the results.
    * @param {String} query The query to perform.
    * @param {Object} options Options for the query.
-   * @param {Function} callback A callback function with the signature <code>(err, result) => result</code>.
-   * @returns {Object} The result of the query.
+   * @returns {Promise.Object} The result of the query.
    *
    * @example <caption>Create a query:</caption>
    *
    * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
    * var options = {};
    *
-   * con.query(query, options, function(err, result) {
-   *        console.log(result)
-   *      });
-   *
+   * con.query(query, options).then((result) => console.log(result));
    */
-  query(query, options, callback) {
+  queryAsync = this.handleErrors((query, options) => {
     let columnarResults = true
     let eliminateNullRows = false
     let queryId = null
@@ -992,111 +1017,74 @@ export class MapdCon {
       estimatedQueryTime: lastQueryTime
     }
 
-    try {
-      const AT_MOST_N = -1
-      if (callback) {
-        this._client[conId].sql_execute(
-          this._sessionId[conId],
-          query,
-          columnarResults,
-          curNonce,
-          limit,
-          AT_MOST_N,
-          (error, result) => {
-            this.processResults(processResultsOptions, result, error, callback)
+    const AT_MOST_N = -1
+    const sqlExecute = this.wrapThrift(
+      "sql_execute",
+      this.overSingleClient,
+      (args) => args
+    )
+    const runQuery = () =>
+      sqlExecute(query, columnarResults, curNonce, limit, AT_MOST_N).catch(
+        (err) => {
+          if (err.name === "NetworkError") {
+            this.removeConnection(0)
+            if (this._numConnections === 0) {
+              err.msg = "No remaining database connections"
+              throw err
+            }
+            return runQuery()
           }
-        )
-        return curNonce
-      } else if (!callback) {
-        const SQLExecuteResult = this._client[conId].sql_execute(
-          this._sessionId[conId],
-          query,
-          columnarResults,
-          curNonce,
-          limit,
-          AT_MOST_N
-        )
-        return this.processResults(processResultsOptions, SQLExecuteResult)
-      }
-    } catch (err) {
-      if (err.name === "NetworkError") {
-        this.removeConnection(conId)
-        if (this._numConnections === 0) {
-          err.msg = "No remaining database connections"
           throw err
         }
-        this.query(query, options, callback)
-      } else if (callback) {
-        callback(err)
-      } else {
-        throw err
-      }
-    }
-  }
+      )
 
-  queryAsync = this.handleErrors((query, options) => {
-    const queryPromise = new Promise((resolve, reject) => {
-      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute")
-      this.query(query, options, (error, result) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result)
-        }
-      })
-    })
-
-    return queryPromise
+    return this.processResults(processResultsOptions, runQuery())
   })
 
-  queryDF(query, options, callback) {
-    const deviceId = 0
-    const limit = -1
-    const conId = 0
-
-    const args = [
-      this._sessionId[conId],
-      query,
-      TDeviceType.CPU,
-      deviceId,
-      limit,
-      TArrowTransport.WIRE,
-      (err, data) => {
-        if (err) {
-          return callback(err, null)
-        }
-
-        const buf = Buffer.from(data.df_buffer, "base64")
-        let results = Table.from(buf)
-        if (options && Boolean(options.returnTiming)) {
-          results = {
-            results,
-            timing: {
-              execution_time_ms: data.execution_time_ms
-            }
-          }
-        }
-        return callback(err, results)
-      }
-    ]
-
-    return this._client[conId].sql_execute_df(...args)
-  }
+  /**
+   * Submit a query to the database and process the results.
+   * @param {String} query The query to perform.
+   * @param {Object} options Options for the query.
+   * @param {Function} callback An optional callback function with the signature <code>(err, result) => result</code>.
+   * @returns {Promise.Object} The result of the query.
+   *
+   * @example <caption>Create a query:</caption>
+   *
+   * var query = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'";
+   * var options = {};
+   *
+   * con.query(query, options, function(err, result) {
+   *        console.log(result)
+   *      });
+   */
+  query = this.callbackify("queryAsync", 2)
 
   queryDFAsync = this.handleErrors((query, options) => {
-    const queryPromise = new Promise((resolve, reject) => {
-      this.events.emit(this.EVENT_NAMES.METHOD_CALLED, "sql_execute_df")
-      this.queryDF(query, options, (error, result) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result)
-        }
-      })
-    })
+    const deviceId = 0
+    const limit = -1
 
-    return queryPromise
+    const sqlExecuteDF = this.wrapThrift(
+      "sql_execute_df",
+      this.overSingleClient,
+      () => [query, TDeviceType.CPU, deviceId, limit, TArrowTransport.WIRE]
+    )
+
+    return sqlExecuteDF().then((data) => {
+      const buf = Buffer.from(data.df_buffer, "base64")
+      let results = Table.from(buf)
+      if (options && Boolean(options.returnTiming)) {
+        results = {
+          results,
+          timing: {
+            execution_time_ms: data.execution_time_ms
+          }
+        }
+      }
+      return results
+    })
   })
+
+  queryDF = this.callbackify("queryDFAsync", 2)
 
   /**
    * Submit a query to validate that the backend can create a result set based on the SQL statement.
@@ -1117,42 +1105,20 @@ export class MapdCon {
    * //  }]
    *
    */
-  validateQuery = this.handleErrors(
-    (query) =>
-      new Promise((resolve, reject) => {
-        this._client[0].sql_validate(
-          this._sessionId[0],
-          query,
-          (error, fields) => {
-            if (error) {
-              reject(error)
-            } else {
-              const rowDict = fields.reduce((accum, value) => {
-                accum[value.col_name] = value
-                return accum
-              }, {})
-              resolve(this.convertFromThriftTypes(rowDict))
-            }
-          }
-        )
-      })
-  )
-
-  getTables(callback) {
-    this._client[0].get_tables(this._sessionId[0], (error, tables) => {
-      if (error) {
-        callback(error)
-      } else {
-        callback(
-          null,
-          tables.map((table) => ({
-            name: table,
-            label: "obs"
-          }))
-        )
-      }
+  validateQuery = this.handleErrors((query) => {
+    const sqlValidate = this.wrapThrift(
+      "sql_validate",
+      this.overSingleClient,
+      (args) => args
+    )
+    return sqlValidate(query).then((fields) => {
+      const rowDict = fields.reduce((accum, value) => {
+        accum[value.col_name] = value
+        return accum
+      }, {})
+      return this.convertFromThriftTypes(rowDict)
     })
-  }
+  })
 
   /**
    * Get the names of the databases that exist in the current session connection.
@@ -1168,43 +1134,36 @@ export class MapdCon {
    *  //   },
    *  //  ...]
    */
-  getTablesAsync = this.handleErrors(
-    () =>
-      new Promise((resolve, reject) => {
-        this.getTables.bind(this)((error, tables) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(tables)
-          }
-        })
-      })
-  )
+  getTablesAsync = this.handleErrors(() => {
+    const getTables = this.wrapThrift(
+      "get_tables",
+      this.overSingleClient,
+      (args) => args
+    )
+    return getTables().then((tables) =>
+      tables.map((table) => ({
+        name: table,
+        label: "obs"
+      }))
+    )
+  })
 
-  getTablesWithMeta(callback) {
-    this._client[0].get_tables_meta(this._sessionId[0], (error, tables) => {
-      if (error) {
-        callback(error)
-      } else {
-        callback(
-          null,
-          tables.map((table) => ({
-            name: table.table_name,
-            num_cols: Number(table.num_cols.toString()),
-            col_datum_types: table.col_types.map(
-              (type) => this._datumEnum[type.type]
-            ),
-            is_view: table.is_view,
-            is_replicated: table.is_replicated,
-            shard_count: Number(table.shard_count.toString()),
-            max_rows: isFinite(table.max_rows)
-              ? Number(table.max_rows.toString())
-              : -1
-          }))
-        )
-      }
-    })
-  }
+  /**
+   * Get the names of the databases that exist in the current session connection.
+   * @param {Function} callback An optional callback function with the signature <code>(err, result) => result</code>.
+   * @return {Promise.<Object[]>} List of table objects containing the label and table names.
+   *
+   * @example <caption>Get the list of tables from a connection:</caption>
+   *
+   *  con.getTablesAsync((err, res) => console.log(res))
+   *
+   *  //  [{
+   *  //    label: 'obs', // deprecated property
+   *  //    name: 'myTableName'
+   *  //   },
+   *  //  ...]
+   */
+  getTables = this.callbackify("getTablesAsync", 0)
 
   /**
    * Get names and catalog metadata for tables that exist on the current session's connection.
@@ -1225,28 +1184,30 @@ export class MapdCon {
    *   },
    *  ...]
    */
-  getTablesWithMetaAsync = this.handleErrors(
-    () =>
-      new Promise((resolve, reject) => {
-        this.getTablesWithMeta.bind(this)((error, tables) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(tables)
-          }
-        })
-      })
-  )
+  getTablesWithMetaAsync = this.handleErrors(() => {
+    const getTablesMeta = this.wrapThrift(
+      "get_tables_meta",
+      this.overSingleClient,
+      (args) => args
+    )
+    return getTablesMeta().then((tables) =>
+      tables.map((table) => ({
+        name: table.table_name,
+        num_cols: Number(table.num_cols.toString()),
+        col_datum_types: table.col_types.map(
+          (type) => this._datumEnum[type.type]
+        ),
+        is_view: table.is_view,
+        is_replicated: table.is_replicated,
+        shard_count: Number(table.shard_count.toString()),
+        max_rows: isFinite(table.max_rows)
+          ? Number(table.max_rows.toString())
+          : -1
+      }))
+    )
+  })
 
-  getTablesMeta(callback) {
-    this._client[0].get_tables_meta(this._sessionId[0], (error, tables) => {
-      if (error) {
-        callback(error)
-      } else {
-        callback(null, tables)
-      }
-    })
-  }
+  getTablesWithMeta = this.callbackify("getTablesWithMetaAsync", 0)
 
   /**
    * Get names and catalog metadata for tables that exist on the current session's connection.
@@ -1269,24 +1230,16 @@ export class MapdCon {
    *  ...]
    */
   getTablesMetaAsync = this.handleErrors(
-    () =>
-      new Promise((resolve, reject) => {
-        this.getTablesMeta.bind(this)((error, tables) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(tables)
-          }
-        })
-      })
+    this.wrapThrift("get_tables_meta", this.overSingleClient, (args) => args)
   )
+
+  getTablesMeta = this.callbackify("getTablesMetaAsync", 0)
 
   /**
    * Submits an SQL string to the backend and returns a completion hints object.
    * @param {String} queryString A fragment of SQL input.
    * @param {Object} options An options object continaing the current cursor position, 1-indexed from the start of `queryString`.
-   * @param {Function} callback A callback function with the signature `(err, result) => result`.
-   * @returns {Array} An array of completion hints objects that contains the completion hints.
+   * @returns {Promise.Array} An array of completion hints objects that contains the completion hints.
    *
    * @example
    * const queryString = "f";
@@ -1303,21 +1256,37 @@ export class MapdCon {
    *   }]
    *
    */
-  getCompletionHints(queryString, options, callback) {
-    const cursor = options.cursor
-    this._client[0].get_completion_hints(
-      this._sessionId[0],
-      queryString,
-      cursor,
-      (error, result) => {
-        if (error) {
-          callback(error)
-        } else {
-          callback(null, result)
-        }
-      }
+  getCompletionHintsAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_completion_hints",
+      this.overSingleClient,
+      ([queryString, { cursor }]) => [queryString, cursor]
     )
-  }
+  )
+
+  /**
+   * Submits an SQL string to the backend and returns a completion hints object.
+   * @param {String} queryString A fragment of SQL input.
+   * @param {Object} options An options object continaing the current cursor position, 1-indexed from the start of `queryString`.
+   * @param {Function} callback An optional callback function with the signature `(err, result) => result`.
+   * @returns {Promise.Array} An array of completion hints objects that contains the completion hints.
+   *
+   * @example
+   * const queryString = "f";
+   * const cursor = 1;
+   *
+   * con.getCompletionHints(queryString, cursor, function(error, result) {
+   *        console.log(result)
+   *      });
+   *
+   *  [{
+   *    hints: ["FROM"],
+   *    replaced: "f",
+   *    type: 7
+   *   }]
+   *
+   */
+  getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
   /**
    * Create an array-like object from {@link TDatumType} by
@@ -1337,8 +1306,7 @@ export class MapdCon {
   /**
    * Get a list of field objects for a specified table.
    * @param {String} tableName Name of table containing field names.
-   * @param {Function} callback A callback that takes (`err, results`).
-   * @return {Array<Object>} The formatted list of field objects.
+   * @return {Promise.Array<Object>} The formatted list of field objects.
    *
    * @example <caption>Get the list of fields from a specific table:</caption>
    *
@@ -1350,71 +1318,45 @@ export class MapdCon {
    *   is_dict: false
    * }, ...]
    */
-  getFields(tableName, callback) {
-    this._client[0].get_table_details(
-      this._sessionId[0],
-      tableName,
-      (error, fields) => {
-        if (error) {
-          callback(error)
-        } else if (fields) {
-          const rowDict = fields.row_desc.reduce((accum, value) => {
-            accum[value.col_name] = value
-            return accum
-          }, {})
-          callback(null, {
-            ...fields,
-            columns: this.convertFromThriftTypes(rowDict)
-          })
-        } else {
-          callback(new Error(`Table (${tableName}) not found`))
+  getFieldsAsync = this.handleErrors((tableName) => {
+    const getTableDetails = this.wrapThrift(
+      "get_table_details",
+      this.overSingleClient,
+      (args) => args
+    )
+    return getTableDetails(tableName).then((fields) => {
+      if (fields) {
+        const rowDict = fields.row_desc.reduce((accum, value) => {
+          accum[value.col_name] = value
+          return accum
+        }, {})
+        return {
+          ...fields,
+          columns: this.convertFromThriftTypes(rowDict)
         }
+      } else {
+        throw new Error(`Table (${tableName}) not found`)
       }
-    )
-  }
+    })
+  })
 
-  getFieldsAsync = this.handleErrors(
-    (tableName) =>
-      new Promise((resolve, reject) => {
-        this.getFields(tableName, (error, fields) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(fields)
-          }
-        })
-      })
-  )
-
-  createTable(tableName, rowDescObj, tableType, createParams, callback) {
-    if (!this._sessionId) {
-      throw new Error(
-        "You are not connected to a server. Try running the connect method first."
-      )
-    }
-
-    const thriftRowDesc = helpers.mutateThriftRowDesc(
-      rowDescObj,
-      this.importerRowDesc
-    )
-
-    for (let c = 0; c < this._numConnections; c++) {
-      this._client[c].create_table(
-        this._sessionId[c],
-        tableName,
-        thriftRowDesc,
-        tableType,
-        createParams,
-        (err) => {
-          if (err) {
-            callback(err)
-          } else {
-            callback()
-          }
-        }
-      )
-    }
-  }
+  /**
+   * Get a list of field objects for a specified table.
+   * @param {String} tableName Name of table containing field names.
+   * @param {Function} callback An optional callback that takes (`err, results`).
+   * @return {Promise.Array<Object>} The formatted list of field objects.
+   *
+   * @example <caption>Get the list of fields from a specific table:</caption>
+   *
+   * con.getFields('flights', (err, res) => console.log(res))
+   * // [{
+   *   name: 'fieldName',
+   *   type: 'BIGINT',
+   *   is_array: false,
+   *   is_dict: false
+   * }, ...]
+   */
+  getFields = this.callbackify("getFieldsAsync", 1)
 
   /**
    * Create a table and persist it to the backend.
@@ -1430,23 +1372,65 @@ export class MapdCon {
    *  // undefined
    */
   createTableAsync = this.handleErrors(
-    (tableName, rowDescObj, tableType, createParams) =>
-      new Promise((resolve, reject) => {
-        this.createTable(
-          tableName,
-          rowDescObj,
-          tableType,
-          createParams,
-          (err) => {
-            if (err) {
-              reject(err)
-            } else {
-              resolve()
-            }
-          }
-        )
-      })
+    this.wrapThrift(
+      "create_table",
+      this.overAllClients,
+      ([tableName, rowDescObj, tableType, createParams]) => [
+        tableName,
+        helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
+        tableType,
+        createParams
+      ]
+    )
   )
+
+  createTable = this.callbackify("createTableAsync", 4)
+
+  /**
+   * Import a delimited table from a file.
+   * @param {String} tableName The name of the new table.
+   * @param {String} fileName The name of the file containing the table.
+   * @param {TCopyParams} copyParams See {@link TCopyParams}
+   * @param {TColumnType[]} headers A collection of metadata related to the table headers.
+   */
+  importTableAsync = this.handleErrors(
+    this.wrapThrift(
+      "import_table",
+      this.overAllClients,
+      ([tableName, fileName, copyParams]) => [
+        tableName,
+        fileName,
+        helpers.convertObjectToThriftCopyParams(copyParams)
+      ]
+    )
+  )
+
+  /**
+   * Import a geo table from a file.
+   * @param {String} tableName The name of the new geo table.
+   * @param {String} fileName The name of the file containing the table.
+   * @param {TCopyParams} copyParams See {@link TCopyParams}
+   * @param {TColumnType[]} headers A colleciton of metadata related to the table headers.
+   */
+  importTableGeoAsync = this.handleErrors(
+    this.wrapThrift(
+      "import_geo_table",
+      this.overAllClients,
+      ([tableName, fileName, copyParams, rowDescObj]) => [
+        tableName,
+        fileName,
+        helpers.convertObjectToThriftCopyParams(copyParams),
+        helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
+        new TCreateParams()
+      ]
+    )
+  )
+
+  importTableAsyncWrapper(isShapeFile) {
+    return isShapeFile
+      ? this.importTableGeoAsync.bind(this)
+      : this.importTableAsync.bind(this)
+  }
 
   importTable(
     tableName,
@@ -1456,90 +1440,19 @@ export class MapdCon {
     isShapeFile,
     callback
   ) {
-    if (!this._sessionId) {
-      throw new Error(
-        "You are not connected to a server. Try running the connect method first."
-      )
-    }
-
-    const thriftCopyParams = helpers.convertObjectToThriftCopyParams(copyParams)
-    const thriftRowDesc = helpers.mutateThriftRowDesc(
-      rowDescObj,
-      this.importerRowDesc
-    )
-
-    const thriftCallBack = (err, res) => {
-      if (err) {
-        callback(err)
-      } else {
-        callback(null, res)
-      }
-    }
-
-    for (let c = 0; c < this._numConnections; c++) {
-      if (isShapeFile) {
-        this._client[c].import_geo_table(
-          this._sessionId[c],
-          tableName,
-          fileName,
-          thriftCopyParams,
-          thriftRowDesc,
-          new TCreateParams(),
-          thriftCallBack
-        )
-      } else {
-        this._client[c].import_table(
-          this._sessionId[c],
-          tableName,
-          fileName,
-          thriftCopyParams,
-          thriftCallBack
-        )
-      }
+    if (isShapeFile) {
+      const func = this.callbackify("importTableGeoAsync", 4)
+      return func(tableName, fileName, copyParams, rowDescObj, callback)
+    } else {
+      const func = this.callbackify("importTableAsync", 3)
+      return func(tableName, fileName, copyParams, callback)
     }
   }
 
-  importTableAsyncWrapper(isShapeFile) {
-    return (tableName, fileName, copyParams, headers) =>
-      new Promise((resolve, reject) => {
-        this.importTable(
-          tableName,
-          fileName,
-          copyParams,
-          headers,
-          isShapeFile,
-          (err, link) => {
-            if (err) {
-              reject(err)
-            } else {
-              resolve(link)
-            }
-          }
-        )
-      })
-  }
-
   /**
-   * Import a delimited table from a file.
-   * @param {String} tableName The name of the new table.
-   * @param {String} fileName The name of the file containing the table.
-   * @param {TCopyParams} copyParams See {@link TCopyParams}
-   * @param {TColumnType[]} headers A collection of metadata related to the table headers.
-   */
-  importTableAsync = this.handleErrors(this.importTableAsyncWrapper(false))
-
-  /**
-   * Import a geo table from a file.
-   * @param {String} tableName The name of the new geo table.
-   * @param {String} fileName The name of the file containing the table.
-   * @param {TCopyParams} copyParams See {@link TCopyParams}
-   * @param {TColumnType[]} headers A colleciton of metadata related to the table headers.
-   */
-  importTableGeoAsync = this.handleErrors(this.importTableAsyncWrapper(true))
-
-  /**
-   * Use for backend rendering. This method fetches a PNG image
-   * that is a render of the Vega JSON object.
+   * Use for backend rendering. This method fetches a PNG image that is a
+   * render of the Vega JSON object. The Image will be a string if using
+   * browser-connector.js, or a Buffer otherwise.
    *
    * @param {Number} widgetid The widget ID of the calling widget.
    * @param {String} vega The Vega JSON.
@@ -1547,11 +1460,9 @@ export class MapdCon {
    * @param {Number} options.compressionLevel The PNG compression level.
    *                  Range: 1 (low compression, faster) to 10 (high compression, slower).
    *                  Default: 3.
-   * @param {Function} callback Takes `(err, success)` as its signature.  Returns con singleton if successful.
-   *
-   * @returns {Image} Base64 image.
+   * @returns {Promise.Image} Base64 image.
    */
-  renderVega(widgetid, vega, options, callback) /* istanbul ignore next */ {
+  renderVegaAsync = this.handleErrors((widgetid, vega, options) => {
     let queryId = null
     let compressionLevel = COMPRESSION_LEVEL_DEFAULT
 
@@ -1587,42 +1498,88 @@ export class MapdCon {
       estimatedQueryTime: lastQueryTime
     }
 
-    if (!callback) {
-      const renderResult = this._client[conId].render_vega(
-        this._sessionId[conId],
-        widgetid,
-        vega,
-        compressionLevel,
-        curNonce
-      )
-      return this.processResults(processResultsOptions, renderResult)
-    }
-
-    this._client[conId].render_vega(
-      this._sessionId[conId],
-      widgetid,
-      vega,
-      compressionLevel,
-      curNonce,
-      (error, result) => {
-        this.processResults(processResultsOptions, result, error, callback)
-      }
+    const renderVega = this.wrapThrift(
+      "render_vega",
+      this.overSingleClient,
+      (args) => args
     )
+    return this.processResults(
+      processResultsOptions,
+      renderVega(widgetid, vega, compressionLevel, curNonce)
+    )
+  })
 
-    return curNonce
-  }
+  /**
+   * Use for backend rendering. This method fetches a PNG image that is a
+   * render of the Vega JSON object. The Image will be a string if using
+   * browser-connector.js, or a Buffer otherwise.
+   *
+   * @param {Number} widgetid The widget ID of the calling widget.
+   * @param {String} vega The Vega JSON.
+   * @param {Object} options The options for the render query.
+   * @param {Number} options.compressionLevel The PNG compression level.
+   *                  Range: 1 (low compression, faster) to 10 (high compression, slower).
+   *                  Default: 3.
+   * @param {Function} callback An optional callback that takes `(err, success)` as its signature.
+   * @returns {Promise.Image} Base64 image.
+   */
+  renderVega = this.callbackify("renderVegaAsync", 3)
 
-  renderVegaAsync = this.handleErrors(
-    (widgetid, vega, options) =>
-      new Promise((resolve, reject) => {
-        this.renderVega(widgetid, vega, options, (error, result) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(result)
+  /**
+   * Used primarily for backend-rendered maps; fetches the row
+   * for a specific table that was last rendered at a pixel.
+   *
+   * @param {Number} widgetId The widget ID of the caller.
+   * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
+   * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
+   * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
+   * @returns {String} Current result nonce
+   */
+  getResultRowForPixelAsync = this.handleErrors(
+    (widgetId, pixel, tableColNamesMap, pixelRadius = 2) => {
+      if (!(pixel instanceof TPixel)) {
+        pixel = new TPixel(pixel)
+      }
+
+      const columnFormat = true // BOOL
+      const curNonce = (this._nonce++).toString()
+
+      return this._client[this._lastRenderCon]
+        .get_result_row_for_pixel(
+          this._sessionId[this._lastRenderCon],
+          widgetId,
+          pixel,
+          tableColNamesMap,
+          columnFormat,
+          pixelRadius,
+          curNonce
+        )
+        .then((results) => {
+          results = Array.isArray(results) ? results.pixel_rows : [results]
+
+          const processResultsOptions = {
+            isImage: false,
+            eliminateNullRows: false,
+            query: "pixel request",
+            queryId: -2
           }
+          const processor = processQueryResults(
+            this._logging,
+            this.updateQueryTimes
+          )
+
+          const numPixels = results.length
+          for (let p = 0; p < numPixels; p++) {
+            results[p].row_set = processor(
+              processResultsOptions,
+              this._datumEnum,
+              results[p]
+            )
+          }
+
+          return results
         })
-      })
+    }
   )
 
   /**
@@ -1633,115 +1590,10 @@ export class MapdCon {
    * @param {TPixel} pixel The pixel. The lower-left corner is pixel (0,0).
    * @param {Object} tableColNamesMap Map of the object of `tableName` to the array of column names.
    * @param {Number} [pixelRadius=2] The radius around the primary pixel to search within.
-   * @param {Function} callback A callback function with the signature `(err, result) => result`.
-   *
+   * @param {Function} callback An optional callback function with the signature `(err, result) => result`.
    * @returns {String} Current result nonce
    */
-  getResultRowForPixel(
-    widgetId,
-    pixel,
-    tableColNamesMap,
-    pixelRadius = 2,
-    callback = null
-  ) /* istanbul ignore next */ {
-    if (!(pixel instanceof TPixel)) {
-      pixel = new TPixel(pixel)
-    }
-
-    const columnFormat = true // BOOL
-    const curNonce = (this._nonce++).toString()
-
-    if (!callback) {
-      return this.processPixelResults(
-        undefined, // eslint-disable-line no-undefined
-        this._client[this._lastRenderCon].get_result_row_for_pixel(
-          this._sessionId[this._lastRenderCon],
-          widgetId,
-          pixel,
-          tableColNamesMap,
-          columnFormat,
-          pixelRadius,
-          curNonce
-        )
-      )
-    }
-
-    this._client[this._lastRenderCon].get_result_row_for_pixel(
-      this._sessionId[this._lastRenderCon],
-      widgetId,
-      pixel,
-      tableColNamesMap,
-      columnFormat,
-      pixelRadius,
-      curNonce,
-      this.processPixelResults.bind(this, callback)
-    )
-
-    return curNonce
-  }
-
-  getResultRowForPixelAsync = this.handleErrors(
-    (widgetId, pixel, tableColNamesMap, pixelRadius = 2) =>
-      new Promise((resolve, reject) => {
-        this.getResultRowForPixel(
-          widgetId,
-          pixel,
-          tableColNamesMap,
-          pixelRadius,
-          (error, result) => {
-            if (error) {
-              reject(error)
-            } else {
-              resolve(result)
-            }
-          }
-        )
-      })
-  )
-
-  /**
-   * Formats the pixel results into the same pattern as textual results.
-   *
-   * @param {Function} callback A callback function with the signature `(err, result) => result`.
-   * @param {Object} error An error if thrown; otherwise null.
-   * @param {Array|Object} results Unformatted results of pixel `rowId` information.
-   *
-   * @returns {Object} An object with the pixel results formatted for display.
-   */
-  processPixelResults(callback, error, results) {
-    results = Array.isArray(results) ? results.pixel_rows : [results]
-
-    if (error) {
-      if (callback) {
-        return callback(error, results)
-      } else {
-        throw new Error(
-          `Unable to process result row for pixel results: ${error}`
-        )
-      }
-    }
-
-    const processResultsOptions = {
-      isImage: false,
-      eliminateNullRows: false,
-      query: "pixel request",
-      queryId: -2
-    }
-
-    const numPixels = results.length
-    for (let p = 0; p < numPixels; p++) {
-      results[p].row_set = this.processResults(
-        processResultsOptions,
-        results[p]
-      )
-    }
-
-    if (callback) {
-      return callback(error, results)
-    } else {
-      return results
-    }
-  }
+  getResultRowForPixel = this.callbackify("getResultRowForPixelAsync", 4)
 
   // ** Configuration methods **
 
@@ -1982,24 +1834,14 @@ export class MapdCon {
    * @return {Promise.<Object>} Claims or Error.
    */
   setLicenseKey(key, { protocol, host, port }) {
-    return new Promise((resolve, reject) => {
-      let client = Array.isArray(this._client) && this._client[0]
-      let sessionId = this._sessionId && this._sessionId[0]
-      if (!client) {
-        const url = `${protocol}://${host}:${port}`
-        const thriftTransport = new Thrift.Transport(url)
-        const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
-        sessionId = ""
-      }
-      client.set_license_key(sessionId, key, this._nonce++, (error, result) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result)
-        }
-      })
-    })
+    let client = Array.isArray(this._client) && this._client[0]
+    let sessionId = this._sessionId && this._sessionId[0]
+    if (!client) {
+      const url = `${protocol}://${host}:${port}`
+      client = buildClient(url)
+      sessionId = ""
+    }
+    return client.set_license_key(sessionId, key, this._nonce++)
   }
 
   /**
@@ -2008,23 +1850,14 @@ export class MapdCon {
    * @return {Promise.<Object>} Claims or Error.
    */
   getLicenseClaims({ protocol, host, port }) {
-    return new Promise((resolve, reject) => {
-      let client = Array.isArray(this._client) && this._client[0]
-      let sessionId = this._sessionId && this._sessionId[0]
-      if (!client) {
-        const url = `${protocol}://${host}:${port}`
-        const thriftTransport = new Thrift.Transport(url)
-        const thriftProtocol = new Thrift.Protocol(thriftTransport)
-        client = new MapDClientV2(thriftProtocol)
-        sessionId = ""
-      }
-      try {
-        const result = client.get_license_claims(sessionId, this._nonce++)
-        resolve(result)
-      } catch (e) {
-        reject(e)
-      }
-    })
+    let client = Array.isArray(this._client) && this._client[0]
+    let sessionId = this._sessionId && this._sessionId[0]
+    if (!client) {
+      const url = `${protocol}://${host}:${port}`
+      client = buildClient(url)
+      sessionId = ""
+    }
+    return client.get_license_claims(sessionId, this._nonce++)
   }
 
   isTimeoutError(result) {
@@ -2036,28 +1869,11 @@ export class MapdCon {
   }
 }
 
-function resetThriftClientOnArgumentErrorForMethods(
-  connector,
-  client,
-  methodNames
-) {
-  methodNames.forEach((methodName) => {
-    const oldFunc = connector[methodName]
-    connector[methodName] = (...args) => {
-      try {
-        // eslint-disable-line no-restricted-syntax
-        return oldFunc.apply(connector, args) // TODO should reject rather than throw for Promises.
-      } catch (e) {
-        // `this.output` is the Thrift transport instance
-        client.output.outCount = 0
-        client.output.outBuffers = []
-        client.output._seqid = null
-        // dereference the callback
-        client._reqs[client._seqid] = null
-        throw e // re-throw the error to Rx
-      }
-    }
-  })
-}
-
 export default MapdCon
+
+export * from "../thrift/OmniSci"
+export * from "../thrift/common_types"
+export * from "../thrift/completion_hints_types"
+export * from "../thrift/extension_functions_types"
+export * from "../thrift/omnisci_types"
+export * from "../thrift/serialized_result_set_types"

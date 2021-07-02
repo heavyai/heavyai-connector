@@ -10,7 +10,7 @@ const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
 const convertToDataUrl = isNodeRuntime
   ? require("base64-arraybuffer").encode
-  : x => x
+  : (x) => x
 const Connector = isNodeRuntime
   ? require("../dist/node-connector.js").MapdCon
   : window.MapdCon
@@ -74,7 +74,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     ]
   })
 
-  it(".connect", done => {
+  it(".connect", (done) => {
     connector.connect((connectError, session) => {
       expect(connectError).not.be.an("error")
       expect(session).to.respondTo("query")
@@ -82,56 +82,55 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
-  it(".disconnect", done => {
+  it(".disconnect", (done) => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
-      session.disconnect(disconnectError => {
+      session.disconnect((disconnectError) => {
         expect(disconnectError).not.be.an("error")
-        expect(session.getStatus).to.throw() // example use of disconnected client should fail
         done()
       })
     })
   })
 
-  it(".getTablesAsync", done => {
+  it(".getTablesAsync", (done) => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
       session
         .getTablesAsync()
-        .then(data => {
+        .then((data) => {
           expect(data).to.not.be.empty
           done()
         })
-        .catch(getTablesAsyncError => {
+        .catch((getTablesAsyncError) => {
           expect(getTablesAsyncError).to.not.be.an("error")
           done()
         })
     })
   })
 
-  it(".getDashboardsAsync", done => {
+  it(".getDashboardsAsync", (done) => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
       session
         .getDashboardsAsync()
         // eslint-disable-next-line max-nested-callbacks
-        .then(data => {
+        .then((data) => {
           // The `update_time` field is too volatile to rely on for unit tests, so strip it out
-          const dataNoUpdateTime = data.map(d =>
+          const dataNoUpdateTime = data.map((d) =>
             Object.assign({}, d, { update_time: null })
           )
           expect(dataNoUpdateTime).to.not.be.empty
           done()
         })
         // eslint-disable-next-line max-nested-callbacks
-        .catch(getDashboardsAsyncError => {
+        .catch((getDashboardsAsyncError) => {
           expect(getDashboardsAsyncError).to.not.be.an("error")
           done()
         })
     })
   })
 
-  it(".getFields", done => {
+  it(".getFields", (done) => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
       session.getFields("flights_donotmodify", (getFieldsError, data) => {
@@ -536,7 +535,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
-  it(".query", done => {
+  it(".query", (done) => {
     const sql = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
@@ -548,7 +547,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
-  it(".render", done => {
+  it(".render", (done) => {
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
       session.renderVega(widgetId, vega, options, (renderVegaError, data) => {
@@ -563,12 +562,12 @@ describe(isNodeRuntime ? "node" : "browser", () => {
     })
   })
 
-  it(".getResultRowForPixel", done => {
+  it(".getResultRowForPixel", (done) => {
     const pixel = { x: 70, y: 275 }
     const tableColNamesMap = { points: ["dest_lon"] } // {vegaDataLayerName: [columnFromDataLayerTable]}
     connector.connect((connectError, session) => {
       expect(connectError).to.not.be.an("error")
-      session.renderVega(widgetId, vega, options, renderVegaError => {
+      session.renderVega(widgetId, vega, options, (renderVegaError) => {
         expect(renderVegaError).to.not.be.an("error")
         session.getResultRowForPixel(
           widgetId,
@@ -585,26 +584,4 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       })
     })
   })
-
-  if (isNodeRuntime) {
-    // bug only applies to node; in browser thriftTransportInstance is undefined.
-    it("on bad arguments: passes error, flushes internal buffer so next RPC doesn't fail, dereferences callback to avoid memory leak", done => {
-      const BAD_ARG = {}
-      const callback = () => {
-        /* noop */
-      }
-      connector.connect((_, session) => {
-        expect(() => session.getFields(BAD_ARG, callback)).to.throw(
-          "writeString called without a string/Buffer argument: [object Object]"
-        )
-        const thriftClient = connector._client[0]
-        const thriftTransportInstance = thriftClient.output
-        expect(thriftTransportInstance.outCount).to.equal(0)
-        expect(thriftTransportInstance.outBuffers).to.deep.equal([])
-        expect(thriftTransportInstance._seqid).to.equal(null)
-        expect(thriftClient._reqs[thriftClient._seqid]).to.equal(null)
-        done()
-      })
-    })
-  }
 })
