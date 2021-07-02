@@ -8,6 +8,9 @@ const password = process.env.PASSWORD || "HyperInteractive"
 
 const isNodeRuntime = typeof window === "undefined"
 const expect = isNodeRuntime ? require("chai").expect : window.expect
+const convertToDataUrl = isNodeRuntime
+  ? require("base64-arraybuffer").encode
+  : (x) => x
 const Connector = isNodeRuntime
   ? require("../dist/node-connector.js").MapdCon
   : window.MapdCon
@@ -549,7 +552,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       expect(connectError).to.not.be.an("error")
       session.renderVega(widgetId, vega, options, (renderVegaError, data) => {
         expect(renderVegaError).to.not.be.an("error")
-        const imageData = data.image
+        const imageData = convertToDataUrl(data.image)
         expect(imageData, "should be a image data URL").to.match(imageRegex)
         expect(imageData, "shouldn't be an empty image").to.not.match(
           emptyImageRegex
