@@ -1070,6 +1070,18 @@ export class MapdCon {
     )
 
     return sqlExecuteDF().then((data) => {
+      if (this._logging) {
+        // eslint-disable-next-line no-console
+        console.log(
+          query,
+          "on Server",
+          0,
+          "- Execution Time:",
+          data.execution_time_ms,
+          "ms"
+        )
+      }
+
       const buf = Buffer.from(data.df_buffer, "base64")
       let results = Table.from(buf)
       if (options && Boolean(options.returnTiming)) {
