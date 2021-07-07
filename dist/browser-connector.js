@@ -607,6 +607,11 @@ var MapdCon = /*#__PURE__*/function () {
       });
 
       return sqlExecuteDF().then(function (data) {
+        if (_this._logging) {
+          // eslint-disable-next-line no-console
+          console.log(query, "on Server", 0, "- Execution Time:", data.execution_time_ms, "ms");
+        }
+
         var buf = Buffer.from(data.df_buffer, "base64");
         var results = apache_arrow__WEBPACK_IMPORTED_MODULE_1__.Table.from(buf);
 
