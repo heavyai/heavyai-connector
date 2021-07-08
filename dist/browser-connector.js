@@ -249,8 +249,7 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
 }; // Additionally, the browser version of connector relied on thrift's old
 // behavior of returning a Number for a 64-bit int. Technically, javascript
 // does not have 64-bits of precision in a Number, so this can end up giving
-// incorrect results. This custom version will return a Number if the int64
-// fits.
+// incorrect results.
 //
 // Lastly, the browser version relied on thrift returning a string from a
 // binary type.
@@ -259,12 +258,7 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
 if (true) {
   CustomTJSONProtocol.prototype.readI64 = function () {
     var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readI64.call(this);
-
-    if (isFinite(n)) {
-      return n.valueOf();
-    }
-
-    return n;
+    return n.toNumber(true);
   };
 
   CustomTJSONProtocol.prototype.readBinary = function () {
