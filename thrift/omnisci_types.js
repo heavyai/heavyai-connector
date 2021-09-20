@@ -333,6 +333,7 @@ const TColumnType = module.exports.TColumnType = class {
     this.is_system = null;
     this.is_physical = null;
     this.col_id = null;
+    this.default_value = null;
     if (args) {
       if (args.col_name !== undefined && args.col_name !== null) {
         this.col_name = args.col_name;
@@ -354,6 +355,9 @@ const TColumnType = module.exports.TColumnType = class {
       }
       if (args.col_id !== undefined && args.col_id !== null) {
         this.col_id = args.col_id;
+      }
+      if (args.default_value !== undefined && args.default_value !== null) {
+        this.default_value = args.default_value;
       }
     }
   }
@@ -418,6 +422,13 @@ const TColumnType = module.exports.TColumnType = class {
           input.skip(ftype);
         }
         break;
+        case 8:
+        if (ftype == Thrift.Type.STRING) {
+          this.default_value = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -462,6 +473,11 @@ const TColumnType = module.exports.TColumnType = class {
     if (this.col_id !== null && this.col_id !== undefined) {
       output.writeFieldBegin('col_id', Thrift.Type.I64, 7);
       output.writeI64(this.col_id);
+      output.writeFieldEnd();
+    }
+    if (this.default_value !== null && this.default_value !== undefined) {
+      output.writeFieldBegin('default_value', Thrift.Type.STRING, 8);
+      output.writeString(this.default_value);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -1638,6 +1654,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.geo_assign_render_groups = true;
     this.geo_explode_collections = false;
     this.source_srid = 0;
+    this.s3_session_token = null;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -1713,6 +1730,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.source_srid !== undefined && args.source_srid !== null) {
         this.source_srid = args.source_srid;
+      }
+      if (args.s3_session_token !== undefined && args.s3_session_token !== null) {
+        this.s3_session_token = args.s3_session_token;
       }
     }
   }
@@ -1902,6 +1922,13 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 26:
+        if (ftype == Thrift.Type.STRING) {
+          this.s3_session_token = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -2036,6 +2063,11 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.source_srid !== null && this.source_srid !== undefined) {
       output.writeFieldBegin('source_srid', Thrift.Type.I32, 25);
       output.writeI32(this.source_srid);
+      output.writeFieldEnd();
+    }
+    if (this.s3_session_token !== null && this.s3_session_token !== undefined) {
+      output.writeFieldBegin('s3_session_token', Thrift.Type.STRING, 26);
+      output.writeString(this.s3_session_token);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -2383,6 +2415,7 @@ const TServerStatus = module.exports.TServerStatus = class {
     this.host_name = null;
     this.poly_rendering_enabled = null;
     this.role = null;
+    this.renderer_status_json = null;
     if (args) {
       if (args.read_only !== undefined && args.read_only !== null) {
         this.read_only = args.read_only;
@@ -2407,6 +2440,9 @@ const TServerStatus = module.exports.TServerStatus = class {
       }
       if (args.role !== undefined && args.role !== null) {
         this.role = args.role;
+      }
+      if (args.renderer_status_json !== undefined && args.renderer_status_json !== null) {
+        this.renderer_status_json = args.renderer_status_json;
       }
     }
   }
@@ -2477,6 +2513,13 @@ const TServerStatus = module.exports.TServerStatus = class {
           input.skip(ftype);
         }
         break;
+        case 9:
+        if (ftype == Thrift.Type.STRING) {
+          this.renderer_status_json = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -2526,6 +2569,11 @@ const TServerStatus = module.exports.TServerStatus = class {
     if (this.role !== null && this.role !== undefined) {
       output.writeFieldBegin('role', Thrift.Type.I32, 8);
       output.writeI32(this.role);
+      output.writeFieldEnd();
+    }
+    if (this.renderer_status_json !== null && this.renderer_status_json !== undefined) {
+      output.writeFieldBegin('renderer_status_json', Thrift.Type.STRING, 9);
+      output.writeString(this.renderer_status_json);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -6872,6 +6920,7 @@ const TCustomExpression = module.exports.TCustomExpression = class {
     this.data_source_type = null;
     this.data_source_id = null;
     this.is_deleted = null;
+    this.data_source_name = null;
     if (args) {
       if (args.id !== undefined && args.id !== null) {
         this.id = args.id;
@@ -6890,6 +6939,9 @@ const TCustomExpression = module.exports.TCustomExpression = class {
       }
       if (args.is_deleted !== undefined && args.is_deleted !== null) {
         this.is_deleted = args.is_deleted;
+      }
+      if (args.data_source_name !== undefined && args.data_source_name !== null) {
+        this.data_source_name = args.data_source_name;
       }
     }
   }
@@ -6946,6 +6998,13 @@ const TCustomExpression = module.exports.TCustomExpression = class {
           input.skip(ftype);
         }
         break;
+        case 8:
+        if (ftype == Thrift.Type.STRING) {
+          this.data_source_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -6985,6 +7044,11 @@ const TCustomExpression = module.exports.TCustomExpression = class {
     if (this.is_deleted !== null && this.is_deleted !== undefined) {
       output.writeFieldBegin('is_deleted', Thrift.Type.BOOL, 7);
       output.writeBool(this.is_deleted);
+      output.writeFieldEnd();
+    }
+    if (this.data_source_name !== null && this.data_source_name !== undefined) {
+      output.writeFieldBegin('data_source_name', Thrift.Type.STRING, 8);
+      output.writeString(this.data_source_name);
       output.writeFieldEnd();
     }
     output.writeFieldStop();

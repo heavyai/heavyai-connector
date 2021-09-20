@@ -3404,6 +3404,7 @@ const OmniSci_set_cur_session_args = class {
     this.leaf_session = null;
     this.start_time_str = null;
     this.label = null;
+    this.for_running_query_kernel = null;
     if (args) {
       if (args.parent_session !== undefined && args.parent_session !== null) {
         this.parent_session = args.parent_session;
@@ -3416,6 +3417,9 @@ const OmniSci_set_cur_session_args = class {
       }
       if (args.label !== undefined && args.label !== null) {
         this.label = args.label;
+      }
+      if (args.for_running_query_kernel !== undefined && args.for_running_query_kernel !== null) {
+        this.for_running_query_kernel = args.for_running_query_kernel;
       }
     }
   }
@@ -3458,6 +3462,13 @@ const OmniSci_set_cur_session_args = class {
           input.skip(ftype);
         }
         break;
+        case 5:
+        if (ftype == Thrift.Type.BOOL) {
+          this.for_running_query_kernel = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -3487,6 +3498,11 @@ const OmniSci_set_cur_session_args = class {
     if (this.label !== null && this.label !== undefined) {
       output.writeFieldBegin('label', Thrift.Type.STRING, 4);
       output.writeString(this.label);
+      output.writeFieldEnd();
+    }
+    if (this.for_running_query_kernel !== null && this.for_running_query_kernel !== undefined) {
+      output.writeFieldBegin('for_running_query_kernel', Thrift.Type.BOOL, 5);
+      output.writeBool(this.for_running_query_kernel);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -3558,6 +3574,7 @@ const OmniSci_invalidate_cur_session_args = class {
     this.leaf_session = null;
     this.start_time_str = null;
     this.label = null;
+    this.for_running_query_kernel = null;
     if (args) {
       if (args.parent_session !== undefined && args.parent_session !== null) {
         this.parent_session = args.parent_session;
@@ -3570,6 +3587,9 @@ const OmniSci_invalidate_cur_session_args = class {
       }
       if (args.label !== undefined && args.label !== null) {
         this.label = args.label;
+      }
+      if (args.for_running_query_kernel !== undefined && args.for_running_query_kernel !== null) {
+        this.for_running_query_kernel = args.for_running_query_kernel;
       }
     }
   }
@@ -3612,6 +3632,13 @@ const OmniSci_invalidate_cur_session_args = class {
           input.skip(ftype);
         }
         break;
+        case 5:
+        if (ftype == Thrift.Type.BOOL) {
+          this.for_running_query_kernel = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -3641,6 +3668,11 @@ const OmniSci_invalidate_cur_session_args = class {
     if (this.label !== null && this.label !== undefined) {
       output.writeFieldBegin('label', Thrift.Type.STRING, 4);
       output.writeString(this.label);
+      output.writeFieldEnd();
+    }
+    if (this.for_running_query_kernel !== null && this.for_running_query_kernel !== undefined) {
+      output.writeFieldBegin('for_running_query_kernel', Thrift.Type.BOOL, 5);
+      output.writeBool(this.for_running_query_kernel);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -15745,24 +15777,25 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     callback(null);
   }
 
-  set_cur_session (parent_session, leaf_session, start_time_str, label) {
+  set_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     this._seqid = this.new_seqid();
     const self = this;
     return new Promise((resolve, reject) => {
       self._reqs[self.seqid()] = (error, result) => {
         return error ? reject(error) : resolve(result);
       };
-      self.send_set_cur_session(parent_session, leaf_session, start_time_str, label);
+      self.send_set_cur_session(parent_session, leaf_session, start_time_str, label, for_running_query_kernel);
     });
   }
 
-  send_set_cur_session (parent_session, leaf_session, start_time_str, label) {
+  send_set_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     const output = new this.pClass(this.output);
     const params = {
       parent_session: parent_session,
       leaf_session: leaf_session,
       start_time_str: start_time_str,
-      label: label
+      label: label,
+      for_running_query_kernel: for_running_query_kernel
     };
     const args = new OmniSci_set_cur_session_args(params);
     try {
@@ -15799,24 +15832,25 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     callback(null);
   }
 
-  invalidate_cur_session (parent_session, leaf_session, start_time_str, label) {
+  invalidate_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     this._seqid = this.new_seqid();
     const self = this;
     return new Promise((resolve, reject) => {
       self._reqs[self.seqid()] = (error, result) => {
         return error ? reject(error) : resolve(result);
       };
-      self.send_invalidate_cur_session(parent_session, leaf_session, start_time_str, label);
+      self.send_invalidate_cur_session(parent_session, leaf_session, start_time_str, label, for_running_query_kernel);
     });
   }
 
-  send_invalidate_cur_session (parent_session, leaf_session, start_time_str, label) {
+  send_invalidate_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     const output = new this.pClass(this.output);
     const params = {
       parent_session: parent_session,
       leaf_session: leaf_session,
       start_time_str: start_time_str,
-      label: label
+      label: label,
+      for_running_query_kernel: for_running_query_kernel
     };
     const args = new OmniSci_invalidate_cur_session_args(params);
     try {
@@ -20601,12 +20635,13 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     const args = new OmniSci_set_cur_session_args();
     args.read(input);
     input.readMessageEnd();
-    if (this._handler.set_cur_session.length === 4) {
+    if (this._handler.set_cur_session.length === 5) {
       Promise.resolve(this._handler.set_cur_session.bind(this._handler)(
         args.parent_session,
         args.leaf_session,
         args.start_time_str,
-        args.label
+        args.label,
+        args.for_running_query_kernel
       )).then(result => {
         const result_obj = new OmniSci_set_cur_session_result({success: result});
         output.writeMessageBegin("set_cur_session", Thrift.MessageType.REPLY, seqid);
@@ -20627,7 +20662,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       });
     } else {
-      this._handler.set_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, (err, result) => {
+      this._handler.set_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
           result_obj = new OmniSci_set_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
@@ -20646,12 +20681,13 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     const args = new OmniSci_invalidate_cur_session_args();
     args.read(input);
     input.readMessageEnd();
-    if (this._handler.invalidate_cur_session.length === 4) {
+    if (this._handler.invalidate_cur_session.length === 5) {
       Promise.resolve(this._handler.invalidate_cur_session.bind(this._handler)(
         args.parent_session,
         args.leaf_session,
         args.start_time_str,
-        args.label
+        args.label,
+        args.for_running_query_kernel
       )).then(result => {
         const result_obj = new OmniSci_invalidate_cur_session_result({success: result});
         output.writeMessageBegin("invalidate_cur_session", Thrift.MessageType.REPLY, seqid);
@@ -20672,7 +20708,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       });
     } else {
-      this._handler.invalidate_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, (err, result) => {
+      this._handler.invalidate_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
           result_obj = new OmniSci_invalidate_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});

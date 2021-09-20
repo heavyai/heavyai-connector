@@ -17530,6 +17530,7 @@ const OmniSci_set_cur_session_args = class {
     this.leaf_session = null;
     this.start_time_str = null;
     this.label = null;
+    this.for_running_query_kernel = null;
     if (args) {
       if (args.parent_session !== undefined && args.parent_session !== null) {
         this.parent_session = args.parent_session;
@@ -17542,6 +17543,9 @@ const OmniSci_set_cur_session_args = class {
       }
       if (args.label !== undefined && args.label !== null) {
         this.label = args.label;
+      }
+      if (args.for_running_query_kernel !== undefined && args.for_running_query_kernel !== null) {
+        this.for_running_query_kernel = args.for_running_query_kernel;
       }
     }
   }
@@ -17584,6 +17588,13 @@ const OmniSci_set_cur_session_args = class {
           input.skip(ftype);
         }
         break;
+        case 5:
+        if (ftype == Thrift.Type.BOOL) {
+          this.for_running_query_kernel = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -17613,6 +17624,11 @@ const OmniSci_set_cur_session_args = class {
     if (this.label !== null && this.label !== undefined) {
       output.writeFieldBegin('label', Thrift.Type.STRING, 4);
       output.writeString(this.label);
+      output.writeFieldEnd();
+    }
+    if (this.for_running_query_kernel !== null && this.for_running_query_kernel !== undefined) {
+      output.writeFieldBegin('for_running_query_kernel', Thrift.Type.BOOL, 5);
+      output.writeBool(this.for_running_query_kernel);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -17684,6 +17700,7 @@ const OmniSci_invalidate_cur_session_args = class {
     this.leaf_session = null;
     this.start_time_str = null;
     this.label = null;
+    this.for_running_query_kernel = null;
     if (args) {
       if (args.parent_session !== undefined && args.parent_session !== null) {
         this.parent_session = args.parent_session;
@@ -17696,6 +17713,9 @@ const OmniSci_invalidate_cur_session_args = class {
       }
       if (args.label !== undefined && args.label !== null) {
         this.label = args.label;
+      }
+      if (args.for_running_query_kernel !== undefined && args.for_running_query_kernel !== null) {
+        this.for_running_query_kernel = args.for_running_query_kernel;
       }
     }
   }
@@ -17738,6 +17758,13 @@ const OmniSci_invalidate_cur_session_args = class {
           input.skip(ftype);
         }
         break;
+        case 5:
+        if (ftype == Thrift.Type.BOOL) {
+          this.for_running_query_kernel = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -17767,6 +17794,11 @@ const OmniSci_invalidate_cur_session_args = class {
     if (this.label !== null && this.label !== undefined) {
       output.writeFieldBegin('label', Thrift.Type.STRING, 4);
       output.writeString(this.label);
+      output.writeFieldEnd();
+    }
+    if (this.for_running_query_kernel !== null && this.for_running_query_kernel !== undefined) {
+      output.writeFieldBegin('for_running_query_kernel', Thrift.Type.BOOL, 5);
+      output.writeBool(this.for_running_query_kernel);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -29871,24 +29903,25 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     callback(null);
   }
 
-  set_cur_session (parent_session, leaf_session, start_time_str, label) {
+  set_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     this._seqid = this.new_seqid();
     const self = this;
     return new Promise((resolve, reject) => {
       self._reqs[self.seqid()] = (error, result) => {
         return error ? reject(error) : resolve(result);
       };
-      self.send_set_cur_session(parent_session, leaf_session, start_time_str, label);
+      self.send_set_cur_session(parent_session, leaf_session, start_time_str, label, for_running_query_kernel);
     });
   }
 
-  send_set_cur_session (parent_session, leaf_session, start_time_str, label) {
+  send_set_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     const output = new this.pClass(this.output);
     const params = {
       parent_session: parent_session,
       leaf_session: leaf_session,
       start_time_str: start_time_str,
-      label: label
+      label: label,
+      for_running_query_kernel: for_running_query_kernel
     };
     const args = new OmniSci_set_cur_session_args(params);
     try {
@@ -29925,24 +29958,25 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     callback(null);
   }
 
-  invalidate_cur_session (parent_session, leaf_session, start_time_str, label) {
+  invalidate_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     this._seqid = this.new_seqid();
     const self = this;
     return new Promise((resolve, reject) => {
       self._reqs[self.seqid()] = (error, result) => {
         return error ? reject(error) : resolve(result);
       };
-      self.send_invalidate_cur_session(parent_session, leaf_session, start_time_str, label);
+      self.send_invalidate_cur_session(parent_session, leaf_session, start_time_str, label, for_running_query_kernel);
     });
   }
 
-  send_invalidate_cur_session (parent_session, leaf_session, start_time_str, label) {
+  send_invalidate_cur_session (parent_session, leaf_session, start_time_str, label, for_running_query_kernel) {
     const output = new this.pClass(this.output);
     const params = {
       parent_session: parent_session,
       leaf_session: leaf_session,
       start_time_str: start_time_str,
-      label: label
+      label: label,
+      for_running_query_kernel: for_running_query_kernel
     };
     const args = new OmniSci_invalidate_cur_session_args(params);
     try {
@@ -34727,12 +34761,13 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     const args = new OmniSci_set_cur_session_args();
     args.read(input);
     input.readMessageEnd();
-    if (this._handler.set_cur_session.length === 4) {
+    if (this._handler.set_cur_session.length === 5) {
       Promise.resolve(this._handler.set_cur_session.bind(this._handler)(
         args.parent_session,
         args.leaf_session,
         args.start_time_str,
-        args.label
+        args.label,
+        args.for_running_query_kernel
       )).then(result => {
         const result_obj = new OmniSci_set_cur_session_result({success: result});
         output.writeMessageBegin("set_cur_session", Thrift.MessageType.REPLY, seqid);
@@ -34753,7 +34788,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       });
     } else {
-      this._handler.set_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, (err, result) => {
+      this._handler.set_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
           result_obj = new OmniSci_set_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
@@ -34772,12 +34807,13 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     const args = new OmniSci_invalidate_cur_session_args();
     args.read(input);
     input.readMessageEnd();
-    if (this._handler.invalidate_cur_session.length === 4) {
+    if (this._handler.invalidate_cur_session.length === 5) {
       Promise.resolve(this._handler.invalidate_cur_session.bind(this._handler)(
         args.parent_session,
         args.leaf_session,
         args.start_time_str,
-        args.label
+        args.label,
+        args.for_running_query_kernel
       )).then(result => {
         const result_obj = new OmniSci_invalidate_cur_session_result({success: result});
         output.writeMessageBegin("invalidate_cur_session", Thrift.MessageType.REPLY, seqid);
@@ -34798,7 +34834,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       });
     } else {
-      this._handler.invalidate_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, (err, result) => {
+      this._handler.invalidate_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
           result_obj = new OmniSci_invalidate_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
@@ -38120,21 +38156,22 @@ ttypes.TExtArgumentType = {
   'ColumnDouble' : 32,
   'ColumnBool' : 33,
   'TextEncodingNone' : 34,
-  'TextEncodingDict8' : 35,
-  'TextEncodingDict16' : 36,
-  'TextEncodingDict32' : 37,
-  'ColumnListInt8' : 38,
-  'ColumnListInt16' : 39,
-  'ColumnListInt32' : 40,
-  'ColumnListInt64' : 41,
-  'ColumnListFloat' : 42,
-  'ColumnListDouble' : 43,
-  'ColumnListBool' : 44
+  'TextEncodingDict' : 35,
+  'ColumnListInt8' : 36,
+  'ColumnListInt16' : 37,
+  'ColumnListInt32' : 38,
+  'ColumnListInt64' : 39,
+  'ColumnListFloat' : 40,
+  'ColumnListDouble' : 41,
+  'ColumnListBool' : 42,
+  'ColumnTextEncodingDict' : 43,
+  'ColumnListTextEncodingDict' : 44
 };
 ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
-  'kUserSpecifiedRowMultiplier' : 2
+  'kUserSpecifiedRowMultiplier' : 2,
+  'kTableFunctionSpecifiedParameter' : 3
 };
 const TUserDefinedFunction = module.exports.TUserDefinedFunction = class {
   constructor(args) {
@@ -38240,6 +38277,7 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     this.inputArgTypes = null;
     this.outputArgTypes = null;
     this.sqlArgTypes = null;
+    this.annotations = null;
     if (args) {
       if (args.name !== undefined && args.name !== null) {
         this.name = args.name;
@@ -38258,6 +38296,9 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
       }
       if (args.sqlArgTypes !== undefined && args.sqlArgTypes !== null) {
         this.sqlArgTypes = Thrift.copyList(args.sqlArgTypes, [null]);
+      }
+      if (args.annotations !== undefined && args.annotations !== null) {
+        this.annotations = Thrift.copyList(args.annotations, [Thrift.copyMap, null]);
       }
     }
   }
@@ -38338,6 +38379,31 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
           input.skip(ftype);
         }
         break;
+        case 7:
+        if (ftype == Thrift.Type.LIST) {
+          this.annotations = [];
+          const _rtmp318 = input.readListBegin();
+          const _size17 = _rtmp318.size || 0;
+          for (let _i19 = 0; _i19 < _size17; ++_i19) {
+            let elem20 = null;
+            elem20 = {};
+            const _rtmp322 = input.readMapBegin();
+            const _size21 = _rtmp322.size || 0;
+            for (let _i23 = 0; _i23 < _size21; ++_i23) {
+              let key24 = null;
+              let val25 = null;
+              key24 = input.readString();
+              val25 = input.readString();
+              elem20[key24] = val25;
+            }
+            input.readMapEnd();
+            this.annotations.push(elem20);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -38367,10 +38433,10 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     if (this.inputArgTypes !== null && this.inputArgTypes !== undefined) {
       output.writeFieldBegin('inputArgTypes', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.I32, this.inputArgTypes.length);
-      for (let iter17 in this.inputArgTypes) {
-        if (this.inputArgTypes.hasOwnProperty(iter17)) {
-          iter17 = this.inputArgTypes[iter17];
-          output.writeI32(iter17);
+      for (let iter26 in this.inputArgTypes) {
+        if (this.inputArgTypes.hasOwnProperty(iter26)) {
+          iter26 = this.inputArgTypes[iter26];
+          output.writeI32(iter26);
         }
       }
       output.writeListEnd();
@@ -38379,10 +38445,10 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     if (this.outputArgTypes !== null && this.outputArgTypes !== undefined) {
       output.writeFieldBegin('outputArgTypes', Thrift.Type.LIST, 5);
       output.writeListBegin(Thrift.Type.I32, this.outputArgTypes.length);
-      for (let iter18 in this.outputArgTypes) {
-        if (this.outputArgTypes.hasOwnProperty(iter18)) {
-          iter18 = this.outputArgTypes[iter18];
-          output.writeI32(iter18);
+      for (let iter27 in this.outputArgTypes) {
+        if (this.outputArgTypes.hasOwnProperty(iter27)) {
+          iter27 = this.outputArgTypes[iter27];
+          output.writeI32(iter27);
         }
       }
       output.writeListEnd();
@@ -38391,10 +38457,30 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     if (this.sqlArgTypes !== null && this.sqlArgTypes !== undefined) {
       output.writeFieldBegin('sqlArgTypes', Thrift.Type.LIST, 6);
       output.writeListBegin(Thrift.Type.I32, this.sqlArgTypes.length);
-      for (let iter19 in this.sqlArgTypes) {
-        if (this.sqlArgTypes.hasOwnProperty(iter19)) {
-          iter19 = this.sqlArgTypes[iter19];
-          output.writeI32(iter19);
+      for (let iter28 in this.sqlArgTypes) {
+        if (this.sqlArgTypes.hasOwnProperty(iter28)) {
+          iter28 = this.sqlArgTypes[iter28];
+          output.writeI32(iter28);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.annotations !== null && this.annotations !== undefined) {
+      output.writeFieldBegin('annotations', Thrift.Type.LIST, 7);
+      output.writeListBegin(Thrift.Type.MAP, this.annotations.length);
+      for (let iter29 in this.annotations) {
+        if (this.annotations.hasOwnProperty(iter29)) {
+          iter29 = this.annotations[iter29];
+          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(iter29));
+          for (let kiter30 in iter29) {
+            if (iter29.hasOwnProperty(kiter30)) {
+              let viter31 = iter29[kiter30];
+              output.writeString(kiter30);
+              output.writeString(viter31);
+            }
+          }
+          output.writeMapEnd();
         }
       }
       output.writeListEnd();
@@ -38749,6 +38835,7 @@ const TColumnType = module.exports.TColumnType = class {
     this.is_system = null;
     this.is_physical = null;
     this.col_id = null;
+    this.default_value = null;
     if (args) {
       if (args.col_name !== undefined && args.col_name !== null) {
         this.col_name = args.col_name;
@@ -38770,6 +38857,9 @@ const TColumnType = module.exports.TColumnType = class {
       }
       if (args.col_id !== undefined && args.col_id !== null) {
         this.col_id = args.col_id;
+      }
+      if (args.default_value !== undefined && args.default_value !== null) {
+        this.default_value = args.default_value;
       }
     }
   }
@@ -38834,6 +38924,13 @@ const TColumnType = module.exports.TColumnType = class {
           input.skip(ftype);
         }
         break;
+        case 8:
+        if (ftype == Thrift.Type.STRING) {
+          this.default_value = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -38878,6 +38975,11 @@ const TColumnType = module.exports.TColumnType = class {
     if (this.col_id !== null && this.col_id !== undefined) {
       output.writeFieldBegin('col_id', Thrift.Type.I64, 7);
       output.writeI64(this.col_id);
+      output.writeFieldEnd();
+    }
+    if (this.default_value !== null && this.default_value !== undefined) {
+      output.writeFieldBegin('default_value', Thrift.Type.STRING, 8);
+      output.writeString(this.default_value);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -40054,6 +40156,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.geo_assign_render_groups = true;
     this.geo_explode_collections = false;
     this.source_srid = 0;
+    this.s3_session_token = null;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -40129,6 +40232,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.source_srid !== undefined && args.source_srid !== null) {
         this.source_srid = args.source_srid;
+      }
+      if (args.s3_session_token !== undefined && args.s3_session_token !== null) {
+        this.s3_session_token = args.s3_session_token;
       }
     }
   }
@@ -40318,6 +40424,13 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 26:
+        if (ftype == Thrift.Type.STRING) {
+          this.s3_session_token = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -40452,6 +40565,11 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.source_srid !== null && this.source_srid !== undefined) {
       output.writeFieldBegin('source_srid', Thrift.Type.I32, 25);
       output.writeI32(this.source_srid);
+      output.writeFieldEnd();
+    }
+    if (this.s3_session_token !== null && this.s3_session_token !== undefined) {
+      output.writeFieldBegin('s3_session_token', Thrift.Type.STRING, 26);
+      output.writeString(this.s3_session_token);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -40799,6 +40917,7 @@ const TServerStatus = module.exports.TServerStatus = class {
     this.host_name = null;
     this.poly_rendering_enabled = null;
     this.role = null;
+    this.renderer_status_json = null;
     if (args) {
       if (args.read_only !== undefined && args.read_only !== null) {
         this.read_only = args.read_only;
@@ -40823,6 +40942,9 @@ const TServerStatus = module.exports.TServerStatus = class {
       }
       if (args.role !== undefined && args.role !== null) {
         this.role = args.role;
+      }
+      if (args.renderer_status_json !== undefined && args.renderer_status_json !== null) {
+        this.renderer_status_json = args.renderer_status_json;
       }
     }
   }
@@ -40893,6 +41015,13 @@ const TServerStatus = module.exports.TServerStatus = class {
           input.skip(ftype);
         }
         break;
+        case 9:
+        if (ftype == Thrift.Type.STRING) {
+          this.renderer_status_json = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -40942,6 +41071,11 @@ const TServerStatus = module.exports.TServerStatus = class {
     if (this.role !== null && this.role !== undefined) {
       output.writeFieldBegin('role', Thrift.Type.I32, 8);
       output.writeI32(this.role);
+      output.writeFieldEnd();
+    }
+    if (this.renderer_status_json !== null && this.renderer_status_json !== undefined) {
+      output.writeFieldBegin('renderer_status_json', Thrift.Type.STRING, 9);
+      output.writeString(this.renderer_status_json);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -45288,6 +45422,7 @@ const TCustomExpression = module.exports.TCustomExpression = class {
     this.data_source_type = null;
     this.data_source_id = null;
     this.is_deleted = null;
+    this.data_source_name = null;
     if (args) {
       if (args.id !== undefined && args.id !== null) {
         this.id = args.id;
@@ -45306,6 +45441,9 @@ const TCustomExpression = module.exports.TCustomExpression = class {
       }
       if (args.is_deleted !== undefined && args.is_deleted !== null) {
         this.is_deleted = args.is_deleted;
+      }
+      if (args.data_source_name !== undefined && args.data_source_name !== null) {
+        this.data_source_name = args.data_source_name;
       }
     }
   }
@@ -45362,6 +45500,13 @@ const TCustomExpression = module.exports.TCustomExpression = class {
           input.skip(ftype);
         }
         break;
+        case 8:
+        if (ftype == Thrift.Type.STRING) {
+          this.data_source_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -45401,6 +45546,11 @@ const TCustomExpression = module.exports.TCustomExpression = class {
     if (this.is_deleted !== null && this.is_deleted !== undefined) {
       output.writeFieldBegin('is_deleted', Thrift.Type.BOOL, 7);
       output.writeBool(this.is_deleted);
+      output.writeFieldEnd();
+    }
+    if (this.data_source_name !== null && this.data_source_name !== undefined) {
+      output.writeFieldBegin('data_source_name', Thrift.Type.STRING, 8);
+      output.writeString(this.data_source_name);
       output.writeFieldEnd();
     }
     output.writeFieldStop();

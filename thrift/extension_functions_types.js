@@ -47,21 +47,22 @@ ttypes.TExtArgumentType = {
   'ColumnDouble' : 32,
   'ColumnBool' : 33,
   'TextEncodingNone' : 34,
-  'TextEncodingDict8' : 35,
-  'TextEncodingDict16' : 36,
-  'TextEncodingDict32' : 37,
-  'ColumnListInt8' : 38,
-  'ColumnListInt16' : 39,
-  'ColumnListInt32' : 40,
-  'ColumnListInt64' : 41,
-  'ColumnListFloat' : 42,
-  'ColumnListDouble' : 43,
-  'ColumnListBool' : 44
+  'TextEncodingDict' : 35,
+  'ColumnListInt8' : 36,
+  'ColumnListInt16' : 37,
+  'ColumnListInt32' : 38,
+  'ColumnListInt64' : 39,
+  'ColumnListFloat' : 40,
+  'ColumnListDouble' : 41,
+  'ColumnListBool' : 42,
+  'ColumnTextEncodingDict' : 43,
+  'ColumnListTextEncodingDict' : 44
 };
 ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
-  'kUserSpecifiedRowMultiplier' : 2
+  'kUserSpecifiedRowMultiplier' : 2,
+  'kTableFunctionSpecifiedParameter' : 3
 };
 const TUserDefinedFunction = module.exports.TUserDefinedFunction = class {
   constructor(args) {
@@ -167,6 +168,7 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     this.inputArgTypes = null;
     this.outputArgTypes = null;
     this.sqlArgTypes = null;
+    this.annotations = null;
     if (args) {
       if (args.name !== undefined && args.name !== null) {
         this.name = args.name;
@@ -185,6 +187,9 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
       }
       if (args.sqlArgTypes !== undefined && args.sqlArgTypes !== null) {
         this.sqlArgTypes = Thrift.copyList(args.sqlArgTypes, [null]);
+      }
+      if (args.annotations !== undefined && args.annotations !== null) {
+        this.annotations = Thrift.copyList(args.annotations, [Thrift.copyMap, null]);
       }
     }
   }
@@ -265,6 +270,31 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
           input.skip(ftype);
         }
         break;
+        case 7:
+        if (ftype == Thrift.Type.LIST) {
+          this.annotations = [];
+          const _rtmp318 = input.readListBegin();
+          const _size17 = _rtmp318.size || 0;
+          for (let _i19 = 0; _i19 < _size17; ++_i19) {
+            let elem20 = null;
+            elem20 = {};
+            const _rtmp322 = input.readMapBegin();
+            const _size21 = _rtmp322.size || 0;
+            for (let _i23 = 0; _i23 < _size21; ++_i23) {
+              let key24 = null;
+              let val25 = null;
+              key24 = input.readString();
+              val25 = input.readString();
+              elem20[key24] = val25;
+            }
+            input.readMapEnd();
+            this.annotations.push(elem20);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -294,10 +324,10 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     if (this.inputArgTypes !== null && this.inputArgTypes !== undefined) {
       output.writeFieldBegin('inputArgTypes', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.I32, this.inputArgTypes.length);
-      for (let iter17 in this.inputArgTypes) {
-        if (this.inputArgTypes.hasOwnProperty(iter17)) {
-          iter17 = this.inputArgTypes[iter17];
-          output.writeI32(iter17);
+      for (let iter26 in this.inputArgTypes) {
+        if (this.inputArgTypes.hasOwnProperty(iter26)) {
+          iter26 = this.inputArgTypes[iter26];
+          output.writeI32(iter26);
         }
       }
       output.writeListEnd();
@@ -306,10 +336,10 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     if (this.outputArgTypes !== null && this.outputArgTypes !== undefined) {
       output.writeFieldBegin('outputArgTypes', Thrift.Type.LIST, 5);
       output.writeListBegin(Thrift.Type.I32, this.outputArgTypes.length);
-      for (let iter18 in this.outputArgTypes) {
-        if (this.outputArgTypes.hasOwnProperty(iter18)) {
-          iter18 = this.outputArgTypes[iter18];
-          output.writeI32(iter18);
+      for (let iter27 in this.outputArgTypes) {
+        if (this.outputArgTypes.hasOwnProperty(iter27)) {
+          iter27 = this.outputArgTypes[iter27];
+          output.writeI32(iter27);
         }
       }
       output.writeListEnd();
@@ -318,10 +348,30 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
     if (this.sqlArgTypes !== null && this.sqlArgTypes !== undefined) {
       output.writeFieldBegin('sqlArgTypes', Thrift.Type.LIST, 6);
       output.writeListBegin(Thrift.Type.I32, this.sqlArgTypes.length);
-      for (let iter19 in this.sqlArgTypes) {
-        if (this.sqlArgTypes.hasOwnProperty(iter19)) {
-          iter19 = this.sqlArgTypes[iter19];
-          output.writeI32(iter19);
+      for (let iter28 in this.sqlArgTypes) {
+        if (this.sqlArgTypes.hasOwnProperty(iter28)) {
+          iter28 = this.sqlArgTypes[iter28];
+          output.writeI32(iter28);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.annotations !== null && this.annotations !== undefined) {
+      output.writeFieldBegin('annotations', Thrift.Type.LIST, 7);
+      output.writeListBegin(Thrift.Type.MAP, this.annotations.length);
+      for (let iter29 in this.annotations) {
+        if (this.annotations.hasOwnProperty(iter29)) {
+          iter29 = this.annotations[iter29];
+          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(iter29));
+          for (let kiter30 in iter29) {
+            if (iter29.hasOwnProperty(kiter30)) {
+              let viter31 = iter29[kiter30];
+              output.writeString(kiter30);
+              output.writeString(viter31);
+            }
+          }
+          output.writeMapEnd();
         }
       }
       output.writeListEnd();
