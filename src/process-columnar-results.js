@@ -1,4 +1,4 @@
-import { timestampToMs } from "./helpers"
+import { timestampToMs, bufferToBoolean } from "./helpers"
 
 /**
  * Process the column-based results from the query in a row-based format.
@@ -63,7 +63,9 @@ export default function processColumnarResults(
           switch (fieldType) {
             case "BOOL":
               row[fieldName].push(
-                Boolean(data.columns[c].data.arr_col[r].data.int_col[e])
+                bufferToBoolean(
+                  data.columns[c].data.arr_col[r].data.int_col[e].buffer
+                )
               )
               break
             case "SMALLINT":
@@ -103,7 +105,9 @@ export default function processColumnarResults(
         // Not an array
         switch (fieldType) {
           case "BOOL":
-            row[fieldName] = Boolean(data.columns[c].data.int_col[r])
+            row[fieldName] = bufferToBoolean(
+              data.columns[c].data.int_col[r].buffer
+            )
             break
           case "SMALLINT":
           case "INT":

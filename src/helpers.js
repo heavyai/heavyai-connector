@@ -31,3 +31,14 @@ export function timestampToMs(timestamp, precision) {
 
   return timeInMs
 }
+
+/**
+ * Converts a buffer into a Uint8Array and then takes the last bit
+ * and converts it to a boolean value
+ * the returned value is a boolean
+ * @param {Buffer} buffer - The raw binary buffer <Buffer 00 00 00 00 00 00 00 00> or <Buffer 00 00 00 00 00 00 00 01>
+ * @returns {Number} The equivalent boolean value representing the buffer
+ */
+export function bufferToBoolean(buffer) {
+  return Boolean(buffer[7])
+}

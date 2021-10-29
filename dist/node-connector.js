@@ -84,7 +84,8 @@ module.exports = Queue;
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Dq": () => /* binding */ convertObjectToThriftCopyParams,
 /* harmony export */   "HP": () => /* binding */ mutateThriftRowDesc,
-/* harmony export */   "RK": () => /* binding */ timestampToMs
+/* harmony export */   "RK": () => /* binding */ timestampToMs,
+/* harmony export */   "g7": () => /* binding */ bufferToBoolean
 /* harmony export */ });
 /* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
 /* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__);
@@ -120,6 +121,17 @@ function timestampToMs(timestamp, precision) {
   var divisor = Math.pow(10, precision - 3);
   var timeInMs = timestamp / divisor;
   return timeInMs;
+}
+/**
+ * Converts a buffer into a Uint8Array and then takes the last bit
+ * and converts it to a boolean value
+ * the returned value is a boolean
+ * @param {Buffer} buffer - The raw binary buffer <Buffer 00 00 00 00 00 00 00 00> or <Buffer 00 00 00 00 00 00 00 01>
+ * @returns {Number} The equivalent boolean value representing the buffer
+ */
+
+function bufferToBoolean(buffer) {
+  return Boolean(buffer[7]);
 }
 
 /***/ }),
@@ -1565,7 +1577,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
 
           switch (fieldType) {
             case "BOOL":
-              row[fieldName].push(Boolean(data.columns[_c].data.arr_col[r].data.int_col[e]));
+              row[fieldName].push((0,helpers/* bufferToBoolean */.g7)(data.columns[_c].data.arr_col[r].data.int_col[e].buffer));
               break;
 
             case "SMALLINT":
@@ -1600,7 +1612,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
         // Not an array
         switch (fieldType) {
           case "BOOL":
-            row[fieldName] = Boolean(data.columns[_c].data.int_col[r]);
+            row[fieldName] = (0,helpers/* bufferToBoolean */.g7)(data.columns[_c].data.int_col[r].buffer);
             break;
 
           case "SMALLINT":
