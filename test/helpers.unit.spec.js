@@ -105,15 +105,4 @@ describe("helpers", () => {
       ])
     })
   })
-  describe("bufferToBoolean", () => {
-    it('Should convert a Buffer with bits set to all zeros to false', () => {
-      const buffer = Buffer.alloc(8)
-      expect(helpers.bufferToBoolean(buffer)).to.equal(false)
-    })
-    it('Should convert a Buffer with last bit set to 1 to true', () => {
-      const buffer = Buffer.alloc(8)
-      buffer[7] = 1
-      expect(helpers.bufferToBoolean(buffer)).to.equal(true)
-    })
-  })
 })

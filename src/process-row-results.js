@@ -1,4 +1,4 @@
-import { timestampToMs } from "./helpers"
+import { timestampToMs, valueToBoolean } from "./helpers"
 
 /**
  * Query for row-based results from the server. In general, is inefficient and should be
@@ -61,7 +61,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
           }
           switch (fieldType) {
             case "BOOL":
-              row[fieldName].push(Boolean(elemDatum.val.int_val))
+              row[fieldName].push(valueToBoolean(elemDatum.val.int_val))
               break
             case "SMALLINT":
             case "INT":
@@ -98,7 +98,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
         }
         switch (fieldType) {
           case "BOOL":
-            row[fieldName] = Boolean(scalarDatum.val.int_val)
+            row[fieldName] = valueToBoolean(scalarDatum.val.int_val)
             break
           case "SMALLINT":
           case "INT":

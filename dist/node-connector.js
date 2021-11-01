@@ -85,7 +85,7 @@ module.exports = Queue;
 /* harmony export */   "Dq": () => /* binding */ convertObjectToThriftCopyParams,
 /* harmony export */   "HP": () => /* binding */ mutateThriftRowDesc,
 /* harmony export */   "RK": () => /* binding */ timestampToMs,
-/* harmony export */   "g7": () => /* binding */ bufferToBoolean
+/* harmony export */   "kS": () => /* binding */ valueToBoolean
 /* harmony export */ });
 /* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
 /* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__);
@@ -123,15 +123,17 @@ function timestampToMs(timestamp, precision) {
   return timeInMs;
 }
 /**
- * Converts a buffer into a Uint8Array and then takes the last bit
- * and converts it to a boolean value
- * the returned value is a boolean
- * @param {Buffer} buffer - The raw binary buffer <Buffer 00 00 00 00 00 00 00 00> or <Buffer 00 00 00 00 00 00 00 01>
- * @returns {Number} The equivalent boolean value representing the buffer
+ * Converts a Number/BigInt value to a Boolean
+ * @param {BigInt} value - A BigInt value
+ * @returns {Boolean} The equivalent boolean value representing the buffer
  */
 
-function bufferToBoolean(buffer) {
-  return Boolean(buffer[7]);
+function valueToBoolean(value) {
+  if (value.toNumber) {
+    return Boolean(value.toNumber(true));
+  }
+
+  return Boolean(value);
 }
 
 /***/ }),
@@ -1577,7 +1579,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
 
           switch (fieldType) {
             case "BOOL":
-              row[fieldName].push((0,helpers/* bufferToBoolean */.g7)(data.columns[_c].data.arr_col[r].data.int_col[e].buffer));
+              row[fieldName].push((0,helpers/* valueToBoolean */.kS)(data.columns[_c].data.arr_col[r].data.int_col[e]));
               break;
 
             case "SMALLINT":
@@ -1612,7 +1614,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
         // Not an array
         switch (fieldType) {
           case "BOOL":
-            row[fieldName] = (0,helpers/* bufferToBoolean */.g7)(data.columns[_c].data.int_col[r].buffer);
+            row[fieldName] = (0,helpers/* valueToBoolean */.kS)(data.columns[_c].data.int_col[r]);
             break;
 
           case "SMALLINT":
@@ -1734,7 +1736,7 @@ function processRowResults(data, eliminateNullRows, datumEnum) {
 
           switch (fieldType) {
             case "BOOL":
-              row[fieldName].push(Boolean(elemDatum.val.int_val));
+              row[fieldName].push((0,helpers/* valueToBoolean */.kS)(elemDatum.val.int_val));
               break;
 
             case "SMALLINT":
@@ -1775,7 +1777,7 @@ function processRowResults(data, eliminateNullRows, datumEnum) {
 
         switch (fieldType) {
           case "BOOL":
-            row[fieldName] = Boolean(scalarDatum.val.int_val);
+            row[fieldName] = (0,helpers/* valueToBoolean */.kS)(scalarDatum.val.int_val);
             break;
 
           case "SMALLINT":
