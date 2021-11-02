@@ -526,6 +526,10 @@ var MapdCon = /*#__PURE__*/function () {
       return args;
     })));
 
+    _defineProperty(this, "getAllEffectiveRolesForUserAsync", this.handleErrors(this.wrapThrift("get_all_effective_roles_for_user", this.overSingleClient, function (args) {
+      return args;
+    })));
+
     _defineProperty(this, "hasObjectPrivilegesAsync", this.handleErrors(this.wrapThrift("has_object_privilege", this.overSingleClient, function (args) {
       return args;
     })));
@@ -28943,6 +28947,156 @@ const OmniSci_get_all_roles_for_user_result = class {
   }
 
 };
+const OmniSci_get_all_effective_roles_for_user_args = class {
+  constructor(args) {
+    this.session = null;
+    this.userName = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+      if (args.userName !== undefined && args.userName !== null) {
+        this.userName = args.userName;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.STRING) {
+          this.userName = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_all_effective_roles_for_user_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    if (this.userName !== null && this.userName !== undefined) {
+      output.writeFieldBegin('userName', Thrift.Type.STRING, 2);
+      output.writeString(this.userName);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_all_effective_roles_for_user_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TOmniSciException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [null]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3456 = input.readListBegin();
+          const _size455 = _rtmp3456.size || 0;
+          for (let _i457 = 0; _i457 < _size455; ++_i457) {
+            let elem458 = null;
+            elem458 = input.readString();
+            this.success.push(elem458);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TOmniSciException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_all_effective_roles_for_user_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRING, this.success.length);
+      for (let iter459 in this.success) {
+        if (this.success.hasOwnProperty(iter459)) {
+          iter459 = this.success[iter459];
+          output.writeString(iter459);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
 const OmniSci_has_role_args = class {
   constructor(args) {
     this.session = null;
@@ -29649,14 +29803,14 @@ const OmniSci_get_device_parameters_result = class {
         case 0:
         if (ftype == Thrift.Type.MAP) {
           this.success = {};
-          const _rtmp3456 = input.readMapBegin();
-          const _size455 = _rtmp3456.size || 0;
-          for (let _i457 = 0; _i457 < _size455; ++_i457) {
-            let key458 = null;
-            let val459 = null;
-            key458 = input.readString();
-            val459 = input.readString();
-            this.success[key458] = val459;
+          const _rtmp3461 = input.readMapBegin();
+          const _size460 = _rtmp3461.size || 0;
+          for (let _i462 = 0; _i462 < _size460; ++_i462) {
+            let key463 = null;
+            let val464 = null;
+            key463 = input.readString();
+            val464 = input.readString();
+            this.success[key463] = val464;
           }
           input.readMapEnd();
         } else {
@@ -29685,11 +29839,11 @@ const OmniSci_get_device_parameters_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.MAP, 0);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.success));
-      for (let kiter460 in this.success) {
-        if (this.success.hasOwnProperty(kiter460)) {
-          let viter461 = this.success[kiter460];
-          output.writeString(kiter460);
-          output.writeString(viter461);
+      for (let kiter465 in this.success) {
+        if (this.success.hasOwnProperty(kiter465)) {
+          let viter466 = this.success[kiter465];
+          output.writeString(kiter465);
+          output.writeString(viter466);
         }
       }
       output.writeMapEnd();
@@ -29748,13 +29902,13 @@ const OmniSci_register_runtime_extension_functions_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.udfs = [];
-          const _rtmp3463 = input.readListBegin();
-          const _size462 = _rtmp3463.size || 0;
-          for (let _i464 = 0; _i464 < _size462; ++_i464) {
-            let elem465 = null;
-            elem465 = new extension_functions_ttypes.TUserDefinedFunction();
-            elem465.read(input);
-            this.udfs.push(elem465);
+          const _rtmp3468 = input.readListBegin();
+          const _size467 = _rtmp3468.size || 0;
+          for (let _i469 = 0; _i469 < _size467; ++_i469) {
+            let elem470 = null;
+            elem470 = new extension_functions_ttypes.TUserDefinedFunction();
+            elem470.read(input);
+            this.udfs.push(elem470);
           }
           input.readListEnd();
         } else {
@@ -29764,13 +29918,13 @@ const OmniSci_register_runtime_extension_functions_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.udtfs = [];
-          const _rtmp3467 = input.readListBegin();
-          const _size466 = _rtmp3467.size || 0;
-          for (let _i468 = 0; _i468 < _size466; ++_i468) {
-            let elem469 = null;
-            elem469 = new extension_functions_ttypes.TUserDefinedTableFunction();
-            elem469.read(input);
-            this.udtfs.push(elem469);
+          const _rtmp3472 = input.readListBegin();
+          const _size471 = _rtmp3472.size || 0;
+          for (let _i473 = 0; _i473 < _size471; ++_i473) {
+            let elem474 = null;
+            elem474 = new extension_functions_ttypes.TUserDefinedTableFunction();
+            elem474.read(input);
+            this.udtfs.push(elem474);
           }
           input.readListEnd();
         } else {
@@ -29780,14 +29934,14 @@ const OmniSci_register_runtime_extension_functions_args = class {
         case 4:
         if (ftype == Thrift.Type.MAP) {
           this.device_ir_map = {};
-          const _rtmp3471 = input.readMapBegin();
-          const _size470 = _rtmp3471.size || 0;
-          for (let _i472 = 0; _i472 < _size470; ++_i472) {
-            let key473 = null;
-            let val474 = null;
-            key473 = input.readString();
-            val474 = input.readString();
-            this.device_ir_map[key473] = val474;
+          const _rtmp3476 = input.readMapBegin();
+          const _size475 = _rtmp3476.size || 0;
+          for (let _i477 = 0; _i477 < _size475; ++_i477) {
+            let key478 = null;
+            let val479 = null;
+            key478 = input.readString();
+            val479 = input.readString();
+            this.device_ir_map[key478] = val479;
           }
           input.readMapEnd();
         } else {
@@ -29813,10 +29967,10 @@ const OmniSci_register_runtime_extension_functions_args = class {
     if (this.udfs !== null && this.udfs !== undefined) {
       output.writeFieldBegin('udfs', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.STRUCT, this.udfs.length);
-      for (let iter475 in this.udfs) {
-        if (this.udfs.hasOwnProperty(iter475)) {
-          iter475 = this.udfs[iter475];
-          iter475.write(output);
+      for (let iter480 in this.udfs) {
+        if (this.udfs.hasOwnProperty(iter480)) {
+          iter480 = this.udfs[iter480];
+          iter480.write(output);
         }
       }
       output.writeListEnd();
@@ -29825,10 +29979,10 @@ const OmniSci_register_runtime_extension_functions_args = class {
     if (this.udtfs !== null && this.udtfs !== undefined) {
       output.writeFieldBegin('udtfs', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.udtfs.length);
-      for (let iter476 in this.udtfs) {
-        if (this.udtfs.hasOwnProperty(iter476)) {
-          iter476 = this.udtfs[iter476];
-          iter476.write(output);
+      for (let iter481 in this.udtfs) {
+        if (this.udtfs.hasOwnProperty(iter481)) {
+          iter481 = this.udtfs[iter481];
+          iter481.write(output);
         }
       }
       output.writeListEnd();
@@ -29837,11 +29991,11 @@ const OmniSci_register_runtime_extension_functions_args = class {
     if (this.device_ir_map !== null && this.device_ir_map !== undefined) {
       output.writeFieldBegin('device_ir_map', Thrift.Type.MAP, 4);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.device_ir_map));
-      for (let kiter477 in this.device_ir_map) {
-        if (this.device_ir_map.hasOwnProperty(kiter477)) {
-          let viter478 = this.device_ir_map[kiter477];
-          output.writeString(kiter477);
-          output.writeString(viter478);
+      for (let kiter482 in this.device_ir_map) {
+        if (this.device_ir_map.hasOwnProperty(kiter482)) {
+          let viter483 = this.device_ir_map[kiter482];
+          output.writeString(kiter482);
+          output.writeString(viter483);
         }
       }
       output.writeMapEnd();
@@ -34715,6 +34869,61 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     return callback('get_all_roles_for_user failed: unknown result');
   }
 
+  get_all_effective_roles_for_user (session, userName) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_all_effective_roles_for_user(session, userName);
+    });
+  }
+
+  send_get_all_effective_roles_for_user (session, userName) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session,
+      userName: userName
+    };
+    const args = new OmniSci_get_all_effective_roles_for_user_args(params);
+    try {
+      output.writeMessageBegin('get_all_effective_roles_for_user', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_all_effective_roles_for_user (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new OmniSci_get_all_effective_roles_for_user_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_all_effective_roles_for_user failed: unknown result');
+  }
+
   has_role (session, granteeName, roleName) {
     this._seqid = this.new_seqid();
     const self = this;
@@ -38894,6 +39103,49 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
           output.writeMessageBegin("get_all_roles_for_user", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_all_effective_roles_for_user (seqid, input, output) {
+    const args = new OmniSci_get_all_effective_roles_for_user_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_all_effective_roles_for_user.length === 2) {
+      Promise.resolve(this._handler.get_all_effective_roles_for_user.bind(this._handler)(
+        args.session,
+        args.userName
+      )).then(result => {
+        const result_obj = new OmniSci_get_all_effective_roles_for_user_result({success: result});
+        output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TOmniSciException) {
+          result = new OmniSci_get_all_effective_roles_for_user_result(err);
+          output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_all_effective_roles_for_user(args.session, args.userName, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+          result_obj = new OmniSci_get_all_effective_roles_for_user_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.EXCEPTION, seqid);
         }
         result_obj.write(output);
         output.writeMessageEnd();

@@ -858,13 +858,27 @@ export class MapdCon {
   )
 
   /**
-   * Get all the roles assigned to a given username.
+   * Get all the roles assigned directly to a given username.
    * @param {String} username - The username whose roles you wish to get.
    * @return {Promise} A list of all roles assigned to the username.
    */
   getAllRolesForUserAsync = this.handleErrors(
     this.wrapThrift(
       "get_all_roles_for_user",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  /**
+   * Get all the roles assigned to a given username recursively (ie, roles
+   * assigned to the user, and roles assigned to those roles, and so on).
+   * @param {String} username - The username whose roles you wish to get.
+   * @return {Promise} A list of all roles assigned to the username.
+   */
+  getAllEffectiveRolesForUserAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_all_effective_roles_for_user",
       this.overSingleClient,
       (args) => args
     )
