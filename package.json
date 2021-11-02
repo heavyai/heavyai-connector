@@ -37,7 +37,7 @@
     "@babel/register": "^7.12.1",
     "@babel/runtime-corejs3": "^7.12.5",
     "@types/thrift": "^0.10.10",
-    "apache-arrow": "^2.0.0",
+    "apache-arrow": "^6.0.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "base64-arraybuffer": "^0.1.5",
@@ -82,6 +82,6 @@
     "thrift": "~0.14.1"
   },
   "peerDependencies": {
-    "apache-arrow": "^2.0.0"
+    "apache-arrow": "^6.0.0"
   }
 }
