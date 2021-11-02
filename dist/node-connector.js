@@ -84,7 +84,8 @@ module.exports = Queue;
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Dq": () => /* binding */ convertObjectToThriftCopyParams,
 /* harmony export */   "HP": () => /* binding */ mutateThriftRowDesc,
-/* harmony export */   "RK": () => /* binding */ timestampToMs
+/* harmony export */   "RK": () => /* binding */ timestampToMs,
+/* harmony export */   "kS": () => /* binding */ valueToBoolean
 /* harmony export */ });
 /* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
 /* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__);
@@ -120,6 +121,19 @@ function timestampToMs(timestamp, precision) {
   var divisor = Math.pow(10, precision - 3);
   var timeInMs = timestamp / divisor;
   return timeInMs;
+}
+/**
+ * Converts a Number/BigInt value to a Boolean
+ * @param {BigInt} value - A BigInt value
+ * @returns {Boolean} The equivalent boolean value representing the buffer
+ */
+
+function valueToBoolean(value) {
+  if (value.toNumber) {
+    return Boolean(value.toNumber(true));
+  }
+
+  return Boolean(value);
 }
 
 /***/ }),
@@ -1565,7 +1579,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
 
           switch (fieldType) {
             case "BOOL":
-              row[fieldName].push(Boolean(data.columns[_c].data.arr_col[r].data.int_col[e]));
+              row[fieldName].push((0,helpers/* valueToBoolean */.kS)(data.columns[_c].data.arr_col[r].data.int_col[e]));
               break;
 
             case "SMALLINT":
@@ -1600,7 +1614,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
         // Not an array
         switch (fieldType) {
           case "BOOL":
-            row[fieldName] = Boolean(data.columns[_c].data.int_col[r]);
+            row[fieldName] = (0,helpers/* valueToBoolean */.kS)(data.columns[_c].data.int_col[r]);
             break;
 
           case "SMALLINT":
@@ -1722,7 +1736,7 @@ function processRowResults(data, eliminateNullRows, datumEnum) {
 
           switch (fieldType) {
             case "BOOL":
-              row[fieldName].push(Boolean(elemDatum.val.int_val));
+              row[fieldName].push((0,helpers/* valueToBoolean */.kS)(elemDatum.val.int_val));
               break;
 
             case "SMALLINT":
@@ -1763,7 +1777,7 @@ function processRowResults(data, eliminateNullRows, datumEnum) {
 
         switch (fieldType) {
           case "BOOL":
-            row[fieldName] = Boolean(scalarDatum.val.int_val);
+            row[fieldName] = (0,helpers/* valueToBoolean */.kS)(scalarDatum.val.int_val);
             break;
 
           case "SMALLINT":

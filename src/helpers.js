@@ -31,3 +31,15 @@ export function timestampToMs(timestamp, precision) {
 
   return timeInMs
 }
+
+/**
+ * Converts a Number/BigInt value to a Boolean
+ * @param {BigInt} value - A BigInt value
+ * @returns {Boolean} The equivalent boolean value representing the buffer
+ */
+export function valueToBoolean(value) {
+  if (value.toNumber) {
+    return Boolean(value.toNumber(true))
+  }
+  return Boolean(value)
+}
