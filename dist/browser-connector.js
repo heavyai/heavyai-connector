@@ -14377,6 +14377,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var COMPRESSION_LEVEL_DEFAULT = 3;
 
+function isNodeRuntime() {
+  var _process, _process$versions;
+
+  // from https://stackoverflow.com/a/31456668
+  return typeof process !== "undefined" && ((_process = process) === null || _process === void 0 ? void 0 : (_process$versions = _process.versions) === null || _process$versions === void 0 ? void 0 : _process$versions.node);
+}
+
 function arrayify(maybeArray) {
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray];
 } // custom version of XHRConnection which can set `withCredentials` for CORS
@@ -14427,7 +14434,7 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
 // binary type.
 
 
-if (true) {
+if (!isNodeRuntime()) {
   CustomTJSONProtocol.prototype.readI64 = function () {
     var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readI64.call(this);
     return n.toNumber(true);
@@ -14446,7 +14453,22 @@ function buildClient(url) {
 
   var client = null;
 
-  if (false) { var connection; } else {
+  if (isNodeRuntime()) {
+    var connection = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createHttpConnection)(hostname, port, {
+      transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
+      protocol: CustomTJSONProtocol,
+      path: "/",
+      headers: {
+        Connection: "close",
+        "Content-Type": "application/vnd.apache.thrift.json"
+      },
+      https: protocol === "https:"
+    });
+    connection.on("error", function (err) {
+      return console.error(err);
+    });
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__, connection);
+  } else {
     var _connection = new CustomXHRConnection(hostname, port, {
       transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
       protocol: CustomTJSONProtocol,
@@ -14537,7 +14559,7 @@ var MapdCon = /*#__PURE__*/function () {
 
           var processedArgs = processArgs(args);
 
-          if (true) {
+          if (!isNodeRuntime()) {
             _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, methodName);
           }
 

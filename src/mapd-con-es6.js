@@ -33,6 +33,11 @@ import * as helpers from "./helpers"
 
 const COMPRESSION_LEVEL_DEFAULT = 3
 
+function isNodeRuntime() {
+  // from https://stackoverflow.com/a/31456668
+  return typeof process !== "undefined" && process?.versions?.node
+}
+
 function arrayify(maybeArray) {
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray]
 }
@@ -74,7 +79,7 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
 //
 // Lastly, the browser version relied on thrift returning a string from a
 // binary type.
-if (process.env.BROWSER) {
+if (!isNodeRuntime()) {
   CustomTJSONProtocol.prototype.readI64 = function () {
     const n = TJSONProtocol.prototype.readI64.call(this)
     return n.toNumber(true)
@@ -88,7 +93,7 @@ if (process.env.BROWSER) {
 function buildClient(url) {
   const { protocol, hostname, port } = parseUrl(url)
   let client = null
-  if (!process.env.BROWSER) {
+  if (isNodeRuntime()) {
     const connection = createHttpConnection(hostname, port, {
       transport: TBufferedTransport,
       protocol: CustomTJSONProtocol,
@@ -99,15 +104,7 @@ function buildClient(url) {
       },
       https: protocol === "https:"
     })
-    connection.on("error", (err) => {
-      throw new Error(
-        `Thrift connection error - ${err.message}\n${JSON.stringify(
-          err,
-          null,
-          2
-        )}`
-      )
-    })
+    connection.on("error", (err) => console.error(err))
     client = createClient(MapDThrift, connection)
   } else {
     const connection = new CustomXHRConnection(hostname, port, {
@@ -245,7 +242,7 @@ export class MapdCon {
   wrapThrift = (methodName, overClients, processArgs) => (...args) => {
     if (this._sessionId) {
       const processedArgs = processArgs(args)
-      if (process.env.BROWSER) {
+      if (!isNodeRuntime()) {
         this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
       }
 
