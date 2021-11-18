@@ -15006,29 +15006,17 @@ var MapdCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getResultRowForPixel", this.callbackify("getResultRowForPixelAsync", 4));
 
-    _defineProperty(this, "clearCpuMemoryAsync", this.handleErrors(function () {
-      return new Promise(function (resolve, reject) {
-        _this.clearCpuMemory(function (err, result) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
-      });
-    }));
+    _defineProperty(this, "clearCpuMemoryAsync", this.handleErrors(this.wrapThrift("clear_cpu_memory", this.overSingleClient, function (args) {
+      return args;
+    })));
 
-    _defineProperty(this, "clearGpuMemoryAsync", this.handleErrors(function () {
-      return new Promise(function (resolve, reject) {
-        _this.clearGpuMemory(function (err, result) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
-      });
-    }));
+    _defineProperty(this, "clearCpuMemory", this.callbackify("clearCpuMemoryAsync", 0));
+
+    _defineProperty(this, "clearGpuMemoryAsync", this.handleErrors(this.wrapThrift("clear_gpu_memory", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "clearGpuMemory", this.callbackify("clearGpuMemoryAsync", 0));
 
     this._host = null;
     this._user = null;
@@ -15644,40 +15632,6 @@ var MapdCon = /*#__PURE__*/function () {
 
       return client.get_license_claims(sessionId, this._nonce++);
     }
-    /**
-     * Clears cpu memory server-side.
-     * @param {Function} callback A callback that takes (`err, results`). When successful,
-     *                   err is null and results is undefined as the method returns nothing.
-     * @returns {undefined} This method returns nothing and instead relies on the callback
-     */
-
-  }, {
-    key: "clearCpuMemory",
-    value: function clearCpuMemory(callback) {
-      this._client[0].clear_cpu_memory(this._sessionId[0], callback);
-    }
-    /**
-     * Clears cpu memory server side.
-     * @returns {Promise.<undefined>} Undefined (when successful) or Error.
-     */
-
-  }, {
-    key: "clearGpuMemory",
-
-    /**
-     * Clears gpu memory server-side.
-     * @param {Function} callback A callback that takes (`err, results`). When successful,
-     *                   err is null and results is undefined as the method returns nothing.
-     * @returns {undefined} This method returns nothing and instead relies on the callback
-     */
-    value: function clearGpuMemory(callback) {
-      this._client[0].clear_gpu_memory(this._sessionId[0], callback);
-    }
-    /**
-     * Clears gpu memory server side.
-     * @returns {Promise.<undefined>} Undefined (when successful) or Error.
-     */
-
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
