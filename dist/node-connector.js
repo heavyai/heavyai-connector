@@ -13399,6 +13399,12 @@ var MapdCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getHardwareInfo", this.callbackify("getHardwareInfoAsync", 0));
 
+    _defineProperty(this, "getServerStatusAsync", this.handleErrors(this.wrapThrift("get_server_status", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "getServerStatus", this.callbackify("getServerStatusAsync", 0));
+
     _defineProperty(this, "getFirstGeoFileInArchiveAsync", this.handleErrors(this.wrapThrift("get_first_geo_file_in_archive", this.overSingleClient, function (args) {
       return args;
     })));

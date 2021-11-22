@@ -587,6 +587,12 @@ export class MapdCon {
    */
   getHardwareInfo = this.callbackify("getHardwareInfoAsync", 0)
 
+  getServerStatusAsync = this.handleErrors(
+    this.wrapThrift("get_server_status", this.overSingleClient, (args) => args)
+  )
+
+  getServerStatus = this.callbackify("getServerStatusAsync", 0)
+
   /**
    * Get the first geo file in an archive, if present, to determine if the archive should be treated as geo.
    * @param {String} archivePath - The base filename of the archive.
