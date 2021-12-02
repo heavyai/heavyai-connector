@@ -1,6 +1,5 @@
 import EventEmitter from "eventemitter3"
 import { Table } from "apache-arrow"
-import { parse as parseUrl } from "url"
 import util from "util"
 
 import {
@@ -20,6 +19,7 @@ import {
 } from "../thrift/omnisci_types.js"
 import MapDThrift from "../thrift/OmniSci.js"
 import {
+  TBinaryProtocol,
   TBufferedTransport,
   TJSONProtocol,
   XHRConnection,
@@ -38,8 +38,36 @@ function arrayify(maybeArray) {
 }
 
 // custom version of XHRConnection which can set `withCredentials` for CORS
-function CustomXHRConnection(...args) {
-  XHRConnection.apply(this, args)
+function CustomXHRConnection(host, port, opts) {
+  XHRConnection.call(this, host, port, opts)
+  if (opts.headers["Content-Type"] === "application/vnd.apache.thrift.binary") {
+    // this is copy/paste from thrift with the noted changes below
+    this.flush = () => {
+      if (this.url === undefined || this.url === "") {
+        return this.send_buf
+      }
+
+      const xreq = this.getXmlHttpRequestObject()
+
+      // removed overrideMimeType since we're expecting binary data
+      // added responseType
+      xreq.responseType = "arraybuffer"
+      xreq.onreadystatechange = () => {
+        if (xreq.readyState === 4 && xreq.status === 200) {
+          // changed responseText -> response
+          this.setRecvBuffer(xreq.response)
+        }
+      }
+
+      xreq.open("POST", this.url, true)
+
+      Object.keys(this.headers).forEach((headerKey) => {
+        xreq.setRequestHeader(headerKey, this.headers[headerKey])
+      })
+
+      xreq.send(this.send_buf)
+    }
+  }
 }
 
 util.inherits(CustomXHRConnection, XHRConnection)
@@ -81,21 +109,49 @@ if (process.env.BROWSER) {
   }
 
   CustomTJSONProtocol.prototype.readBinary = function () {
-    return TJSONProtocol.prototype.readString.call(this)
+    return TJSONProtocol.prototype.readBinary.call(this).toString()
   }
 }
 
-function buildClient(url) {
-  const { protocol, hostname, port } = parseUrl(url)
+// Custom version of the binary protocol to override writeString, readI64, and
+// readBinary as above.
+function CustomBinaryProtocol(...args) {
+  TBinaryProtocol.apply(this, args)
+}
+
+util.inherits(CustomBinaryProtocol, TBinaryProtocol)
+
+CustomBinaryProtocol.prototype.writeString = function (arg) {
+  if (!(arg instanceof Buffer)) {
+    arg = String(arg)
+  }
+  return TBinaryProtocol.prototype.writeString.call(this, arg)
+}
+
+if (process.env.BROWSER) {
+  CustomBinaryProtocol.prototype.readI64 = function () {
+    const n = TBinaryProtocol.prototype.readI64.call(this)
+    return n.toNumber(true)
+  }
+
+  CustomBinaryProtocol.prototype.readBinary = function () {
+    return TBinaryProtocol.prototype.readBinary.call(this).toString()
+  }
+}
+
+function buildClient(url, useBinaryProtocol) {
+  const { protocol, hostname, port } = new URL(url)
   let client = null
   if (!process.env.BROWSER) {
     const connection = createHttpConnection(hostname, port, {
       transport: TBufferedTransport,
-      protocol: CustomTJSONProtocol,
+      protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
         Connection: "close",
-        "Content-Type": "application/vnd.apache.thrift.json"
+        "Content-Type": `application/vnd.apache.thrift.${
+          useBinaryProtocol ? "binary" : "json"
+        }`
       },
       https: protocol === "https:"
     })
@@ -104,10 +160,12 @@ function buildClient(url) {
   } else {
     const connection = new CustomXHRConnection(hostname, port, {
       transport: TBufferedTransport,
-      protocol: CustomTJSONProtocol,
+      protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
-        "Content-Type": "application/vnd.apache.thrift.json"
+        "Content-Type": `application/vnd.apache.thrift.${
+          useBinaryProtocol ? "binary" : "json"
+        }`
       },
       https: protocol === "https:"
     })
@@ -119,6 +177,7 @@ function buildClient(url) {
 
 export class MapdCon {
   constructor() {
+    this._useBinaryProtocol = false
     this._host = null
     this._user = null
     this._password = null
@@ -304,7 +363,7 @@ export class MapdCon {
     const clients = []
 
     for (let h = 0; h < hostLength; h++) {
-      const client = buildClient(transportUrls[h])
+      const client = buildClient(transportUrls[h], this._useBinaryProtocol)
       clients.push(client)
     }
     this._client = clients
@@ -1056,7 +1115,8 @@ export class MapdCon {
       query,
       queryId,
       conId,
-      estimatedQueryTime: lastQueryTime
+      estimatedQueryTime: lastQueryTime,
+      startTime: Date.now()
     }
 
     const AT_MOST_N = -1
@@ -1684,6 +1744,14 @@ export class MapdCon {
     return this
   }
 
+  useBinaryProtocol(use) {
+    if (!arguments.length) {
+      return this._useBinaryProtocol
+    }
+    this._useBinaryProtocol = Boolean(use)
+    return this
+  }
+
   /**
    * Get or set the connection server hostname.
    * This is is typically the first method called after instantiating a new MapdCon.
@@ -1902,7 +1970,7 @@ export class MapdCon {
     let sessionId = this._sessionId && this._sessionId[0]
     if (!client) {
       const url = `${protocol}://${host}:${port}`
-      client = buildClient(url)
+      client = buildClient(url, this._useBinaryProtocol)
       sessionId = ""
     }
     return client.set_license_key(sessionId, key, this._nonce++)
@@ -1918,7 +1986,7 @@ export class MapdCon {
     let sessionId = this._sessionId && this._sessionId[0]
     if (!client) {
       const url = `${protocol}://${host}:${port}`
-      client = buildClient(url)
+      client = buildClient(url, this._useBinaryProtocol)
       sessionId = ""
     }
     return client.get_license_claims(sessionId, this._nonce++)

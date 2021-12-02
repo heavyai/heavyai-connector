@@ -146,45 +146,43 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MapdCon": () => /* binding */ MapdCon,
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__,
-/* harmony export */   "Client": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__.Client,
-/* harmony export */   "Processor": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__.Processor
+/* harmony export */   "Client": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__.Client,
+/* harmony export */   "Processor": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__.Processor
 /* harmony export */ });
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6729);
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(eventemitter3__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var apache_arrow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3521);
 /* harmony import */ var apache_arrow__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(apache_arrow__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8835);
-/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(url__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1669);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2818);
-/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(356);
-/* harmony import */ var _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1035);
-/* harmony import */ var thrift__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7392);
-/* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5141);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(2033);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1669);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2818);
+/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(356);
+/* harmony import */ var _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1035);
+/* harmony import */ var thrift__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7392);
+/* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5141);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2033);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4494);
-/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4494);
+/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(1396);
-/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1396);
+/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3962);
-/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3962);
+/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -221,7 +219,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-
 var COMPRESSION_LEVEL_DEFAULT = 3;
 
 function arrayify(maybeArray) {
@@ -229,18 +226,44 @@ function arrayify(maybeArray) {
 } // custom version of XHRConnection which can set `withCredentials` for CORS
 
 
-function CustomXHRConnection() {
-  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
+function CustomXHRConnection(host, port, opts) {
+  var _this = this;
 
-  thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection.apply(this, args);
+  thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection.call(this, host, port, opts);
+
+  if (opts.headers["Content-Type"] === "application/vnd.apache.thrift.binary") {
+    // this is copy/paste from thrift with the noted changes below
+    this.flush = function () {
+      if (_this.url === undefined || _this.url === "") {
+        return _this.send_buf;
+      }
+
+      var xreq = _this.getXmlHttpRequestObject(); // removed overrideMimeType since we're expecting binary data
+      // added responseType
+
+
+      xreq.responseType = "arraybuffer";
+
+      xreq.onreadystatechange = function () {
+        if (xreq.readyState === 4 && xreq.status === 200) {
+          // changed responseText -> response
+          _this.setRecvBuffer(xreq.response);
+        }
+      };
+
+      xreq.open("POST", _this.url, true);
+      Object.keys(_this.headers).forEach(function (headerKey) {
+        xreq.setRequestHeader(headerKey, _this.headers[headerKey]);
+      });
+      xreq.send(_this.send_buf);
+    };
+  }
 }
 
-util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomXHRConnection, thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection);
+util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomXHRConnection, thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection);
 
 CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
-  var obj = thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection.prototype.getXmlHttpRequestObject.call(this);
+  var obj = thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection.prototype.getXmlHttpRequestObject.call(this);
   obj.withCredentials = CustomXHRConnection.withCredentials;
   return obj;
 }; // Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
@@ -250,21 +273,21 @@ CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
 
 
 function CustomTJSONProtocol() {
-  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    args[_key2] = arguments[_key2];
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
   }
 
-  thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.apply(this, args);
+  thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.apply(this, args);
 }
 
-util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomTJSONProtocol, thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol);
+util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomTJSONProtocol, thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol);
 
 CustomTJSONProtocol.prototype.writeString = function (arg) {
   if (!(arg instanceof Buffer)) {
     arg = String(arg);
   }
 
-  return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.writeString.call(this, arg);
+  return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.writeString.call(this, arg);
 }; // Additionally, the browser version of connector relied on thrift's old
 // behavior of returning a Number for a 64-bit int. Technically, javascript
 // does not have 64-bits of precision in a Number, so this can end up giving
@@ -276,44 +299,75 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
 
 if (process.env.BROWSER) {
   CustomTJSONProtocol.prototype.readI64 = function () {
-    var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readI64.call(this);
+    var n = thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readI64.call(this);
     return n.toNumber(true);
   };
 
   CustomTJSONProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readString.call(this);
+    return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readBinary.call(this).toString();
+  };
+} // Custom version of the binary protocol to override writeString, readI64, and
+// readBinary as above.
+
+
+function CustomBinaryProtocol() {
+  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    args[_key2] = arguments[_key2];
+  }
+
+  thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.apply(this, args);
+}
+
+util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomBinaryProtocol, thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol);
+
+CustomBinaryProtocol.prototype.writeString = function (arg) {
+  if (!(arg instanceof Buffer)) {
+    arg = String(arg);
+  }
+
+  return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.writeString.call(this, arg);
+};
+
+if (process.env.BROWSER) {
+  CustomBinaryProtocol.prototype.readI64 = function () {
+    var n = thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readI64.call(this);
+    return n.toNumber(true);
+  };
+
+  CustomBinaryProtocol.prototype.readBinary = function () {
+    return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readBinary.call(this).toString();
   };
 }
 
-function buildClient(url) {
-  var _parseUrl = (0,url__WEBPACK_IMPORTED_MODULE_2__.parse)(url),
-      protocol = _parseUrl.protocol,
-      hostname = _parseUrl.hostname,
-      port = _parseUrl.port;
+function buildClient(url, useBinaryProtocol) {
+  var _URL = new URL(url),
+      protocol = _URL.protocol,
+      hostname = _URL.hostname,
+      port = _URL.port;
 
   var client = null;
 
   if (!process.env.BROWSER) {
-    var connection = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createHttpConnection)(hostname, port, {
-      transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
-      protocol: CustomTJSONProtocol,
+    var connection = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createHttpConnection)(hostname, port, {
+      transport: thrift__WEBPACK_IMPORTED_MODULE_6__.TBufferedTransport,
+      protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
         Connection: "close",
-        "Content-Type": "application/vnd.apache.thrift.json"
+        "Content-Type": "application/vnd.apache.thrift.".concat(useBinaryProtocol ? "binary" : "json")
       },
       https: protocol === "https:"
     });
     connection.on("error", console.error); // eslint-disable-line no-console
 
-    client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__, connection);
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__, connection);
   } else {
     var _connection = new CustomXHRConnection(hostname, port, {
-      transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
-      protocol: CustomTJSONProtocol,
+      transport: thrift__WEBPACK_IMPORTED_MODULE_6__.TBufferedTransport,
+      protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
-        "Content-Type": "application/vnd.apache.thrift.json"
+        "Content-Type": "application/vnd.apache.thrift.".concat(useBinaryProtocol ? "binary" : "json")
       },
       https: protocol === "https:"
     });
@@ -321,7 +375,7 @@ function buildClient(url) {
     _connection.on("error", console.error); // eslint-disable-line no-console
 
 
-    client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createXHRClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_6__, _connection);
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createXHRClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__, _connection);
   }
 
   return client;
@@ -329,12 +383,12 @@ function buildClient(url) {
 
 var MapdCon = /*#__PURE__*/function () {
   function MapdCon() {
-    var _this = this;
+    var _this2 = this;
 
     _classCallCheck(this, MapdCon);
 
     _defineProperty(this, "updateQueryTimes", function (conId, queryId, estimatedQueryTime, execution_time_ms) {
-      _this.queryTimes[queryId] = execution_time_ms;
+      _this2.queryTimes[queryId] = execution_time_ms;
     });
 
     _defineProperty(this, "events", new (eventemitter3__WEBPACK_IMPORTED_MODULE_0___default())());
@@ -350,8 +404,8 @@ var MapdCon = /*#__PURE__*/function () {
           args[_key3] = arguments[_key3];
         }
 
-        return method.apply(_this, args)["catch"](function (error) {
-          _this.events.emit(_this.EVENT_NAMES.ERROR, error);
+        return method.apply(_this2, args)["catch"](function (error) {
+          _this2.events.emit(_this2.EVENT_NAMES.ERROR, error);
 
           throw error;
         });
@@ -370,7 +424,7 @@ var MapdCon = /*#__PURE__*/function () {
           callback = args.pop();
         }
 
-        var promise = _this[method].apply(_this, args);
+        var promise = _this2[method].apply(_this2, args);
 
         if (callback) {
           promise["catch"](function (err) {
@@ -390,7 +444,7 @@ var MapdCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "wrapThrift", function (methodName, overClients, processArgs) {
       return function () {
-        if (_this._sessionId) {
+        if (_this2._sessionId) {
           for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
             args[_key5] = arguments[_key5];
           }
@@ -398,14 +452,14 @@ var MapdCon = /*#__PURE__*/function () {
           var processedArgs = processArgs(args);
 
           if (process.env.BROWSER) {
-            _this.events.emit(_this.EVENT_NAMES.METHOD_CALLED, methodName);
+            _this2.events.emit(_this2.EVENT_NAMES.METHOD_CALLED, methodName);
           }
 
-          if (overClients === _this.overSingleClient) {
-            return _this._client[0][methodName].apply(_this._client[0], [_this._sessionId[0]].concat(processedArgs));
+          if (overClients === _this2.overSingleClient) {
+            return _this2._client[0][methodName].apply(_this2._client[0], [_this2._sessionId[0]].concat(processedArgs));
           } else {
-            return Promise.all(_this._client.map(function (client, index) {
-              return client[methodName].apply(client, [_this._sessionId[index]].concat(processedArgs));
+            return Promise.all(_this2._client.map(function (client, index) {
+              return client[methodName].apply(client, [_this2._sessionId[index]].concat(processedArgs));
             }));
           }
         } else {
@@ -417,19 +471,19 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "connect", this.callbackify("connectAsync", 0));
 
     _defineProperty(this, "disconnectAsync", this.handleErrors(function () {
-      return Promise.all(_this._client.map(function (client, c) {
-        return client.disconnect(_this._sessionId[c])["catch"](function (error) {
+      return Promise.all(_this2._client.map(function (client, c) {
+        return client.disconnect(_this2._sessionId[c])["catch"](function (error) {
           // ignore timeout errors
-          if (error && !_this.isTimeoutError(error)) {
+          if (error && !_this2.isTimeoutError(error)) {
             throw error;
           }
         });
       })).then(function () {
-        _this._sessionId = null;
-        _this._client = null;
-        _this._numConnections = 0;
-        _this.serverPingTimes = null;
-        return _this;
+        _this2._sessionId = null;
+        _this2._client = null;
+        _this2._numConnections = 0;
+        _this2.serverPingTimes = null;
+        return _this2;
       });
     }));
 
@@ -494,7 +548,7 @@ var MapdCon = /*#__PURE__*/function () {
           objects = _ref2[2],
           permissions = _ref2[3];
 
-      return [dashboardId, groups, objects, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "shareDashboardsAsync", this.handleErrors(this.wrapThrift("share_dashboards", this.overAllClients, function (_ref3) {
@@ -503,7 +557,7 @@ var MapdCon = /*#__PURE__*/function () {
           groups = _ref4[1],
           permissions = _ref4[2];
 
-      return [dashboardIds, groups, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "unshareDashboardAsync", this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref5) {
@@ -513,7 +567,7 @@ var MapdCon = /*#__PURE__*/function () {
           objects = _ref6[2],
           permissions = _ref6[3];
 
-      return [dashboardId, groups, objects, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "unshareDashboardsAsync", this.handleErrors(this.wrapThrift("unshare_dashboards", this.overAllClients, function (_ref7) {
@@ -522,7 +576,7 @@ var MapdCon = /*#__PURE__*/function () {
           groups = _ref8[1],
           permissions = _ref8[2];
 
-      return [dashboardIds, groups, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "getDashboardGranteesAsync", this.handleErrors(this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
@@ -538,7 +592,7 @@ var MapdCon = /*#__PURE__*/function () {
           objectName = _ref10[0],
           type = _ref10[1];
 
-      return [objectName, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectType[type]];
+      return [objectName, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType[type]];
     })));
 
     _defineProperty(this, "getAllRolesForUserAsync", this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
@@ -554,8 +608,8 @@ var MapdCon = /*#__PURE__*/function () {
     })));
 
     _defineProperty(this, "hasDbPrivilegesAsync", function (granteeName, dbName, dbPrivs) {
-      return _this.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectType.DatabaseDBObjectType, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectPermissions({
-        database_permissions_: new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TDatabasePermissions(dbPrivs)
+      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType.DatabaseDBObjectType, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectPermissions({
+        database_permissions_: new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatabasePermissions(dbPrivs)
       }));
     });
 
@@ -580,12 +634,12 @@ var MapdCon = /*#__PURE__*/function () {
     })));
 
     _defineProperty(this, "detectColumnTypesAsync", this.handleErrors(function (filename, copyParams) {
-      var detectColumnTypes = _this.wrapThrift("detect_column_types", _this.overSingleClient, function () {
-        return [filename, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
+      var detectColumnTypes = _this2.wrapThrift("detect_column_types", _this2.overSingleClient, function () {
+        return [filename, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
       });
 
       return detectColumnTypes().then(function (res) {
-        _this.importerRowDesc = res.row_set.row_desc;
+        _this2.importerRowDesc = res.row_set.row_desc;
         return res;
       });
     }));
@@ -596,7 +650,7 @@ var MapdCon = /*#__PURE__*/function () {
       var queryId = null;
       var returnTiming = false;
       var limit = -1;
-      var curNonce = (_this._nonce++).toString();
+      var curNonce = (_this2._nonce++).toString();
 
       if (options) {
         columnarResults = options.hasOwnProperty("columnarResults") ? options.columnarResults : columnarResults;
@@ -607,7 +661,7 @@ var MapdCon = /*#__PURE__*/function () {
         curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
 
-      var lastQueryTime = queryId in _this.queryTimes ? _this.queryTimes[queryId] : _this.DEFAULT_QUERY_TIME;
+      var lastQueryTime = queryId in _this2.queryTimes ? _this2.queryTimes[queryId] : _this2.DEFAULT_QUERY_TIME;
       var conId = 0;
       var processResultsOptions = {
         returnTiming: returnTiming,
@@ -615,20 +669,21 @@ var MapdCon = /*#__PURE__*/function () {
         query: query,
         queryId: queryId,
         conId: conId,
-        estimatedQueryTime: lastQueryTime
+        estimatedQueryTime: lastQueryTime,
+        startTime: Date.now()
       };
       var AT_MOST_N = -1;
 
-      var sqlExecute = _this.wrapThrift("sql_execute", _this.overSingleClient, function (args) {
+      var sqlExecute = _this2.wrapThrift("sql_execute", _this2.overSingleClient, function (args) {
         return args;
       });
 
       var runQuery = function runQuery() {
         return sqlExecute(query, columnarResults, curNonce, limit, AT_MOST_N)["catch"](function (err) {
           if (err.name === "NetworkError") {
-            _this.removeConnection(0);
+            _this2.removeConnection(0);
 
-            if (_this._numConnections === 0) {
+            if (_this2._numConnections === 0) {
               err.msg = "No remaining database connections";
               throw err;
             }
@@ -640,7 +695,7 @@ var MapdCon = /*#__PURE__*/function () {
         });
       };
 
-      return _this.processResults(processResultsOptions, runQuery());
+      return _this2.processResults(processResultsOptions, runQuery());
     }));
 
     _defineProperty(this, "query", this.callbackify("queryAsync", 2));
@@ -649,12 +704,12 @@ var MapdCon = /*#__PURE__*/function () {
       var deviceId = 0;
       var limit = -1;
 
-      var sqlExecuteDF = _this.wrapThrift("sql_execute_df", _this.overSingleClient, function () {
-        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TDeviceType.CPU, deviceId, limit, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TArrowTransport.WIRE];
+      var sqlExecuteDF = _this2.wrapThrift("sql_execute_df", _this2.overSingleClient, function () {
+        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDeviceType.CPU, deviceId, limit, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TArrowTransport.WIRE];
       });
 
       return sqlExecuteDF().then(function (data) {
-        if (_this._logging) {
+        if (_this2._logging) {
           // eslint-disable-next-line no-console
           console.log(query, "on Server", 0, "- Execution Time:", data.execution_time_ms, "ms");
         }
@@ -678,7 +733,7 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "queryDF", this.callbackify("queryDFAsync", 2));
 
     _defineProperty(this, "validateQuery", this.handleErrors(function (query) {
-      var sqlValidate = _this.wrapThrift("sql_validate", _this.overSingleClient, function (args) {
+      var sqlValidate = _this2.wrapThrift("sql_validate", _this2.overSingleClient, function (args) {
         return args;
       });
 
@@ -687,12 +742,12 @@ var MapdCon = /*#__PURE__*/function () {
           accum[value.col_name] = value;
           return accum;
         }, {});
-        return _this.convertFromThriftTypes(rowDict);
+        return _this2.convertFromThriftTypes(rowDict);
       });
     }));
 
     _defineProperty(this, "getTablesAsync", this.handleErrors(function () {
-      var getTables = _this.wrapThrift("get_tables", _this.overSingleClient, function (args) {
+      var getTables = _this2.wrapThrift("get_tables", _this2.overSingleClient, function (args) {
         return args;
       });
 
@@ -709,7 +764,7 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "getTables", this.callbackify("getTablesAsync", 0));
 
     _defineProperty(this, "getTablesWithMetaAsync", this.handleErrors(function () {
-      var getTablesMeta = _this.wrapThrift("get_tables_meta", _this.overSingleClient, function (args) {
+      var getTablesMeta = _this2.wrapThrift("get_tables_meta", _this2.overSingleClient, function (args) {
         return args;
       });
 
@@ -719,7 +774,7 @@ var MapdCon = /*#__PURE__*/function () {
             name: table.table_name,
             num_cols: Number(table.num_cols.toString()),
             col_datum_types: table.col_types.map(function (type) {
-              return _this._datumEnum[type.type];
+              return _this2._datumEnum[type.type];
             }),
             is_view: table.is_view,
             is_replicated: table.is_replicated,
@@ -755,7 +810,7 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync", 2));
 
     _defineProperty(this, "getFieldsAsync", this.handleErrors(function (tableName) {
-      var getTableDetails = _this.wrapThrift("get_table_details", _this.overSingleClient, function (args) {
+      var getTableDetails = _this2.wrapThrift("get_table_details", _this2.overSingleClient, function (args) {
         return args;
       });
 
@@ -766,7 +821,7 @@ var MapdCon = /*#__PURE__*/function () {
             return accum;
           }, {});
           return _objectSpread(_objectSpread({}, fields), {}, {
-            columns: _this.convertFromThriftTypes(rowDict)
+            columns: _this2.convertFromThriftTypes(rowDict)
           });
         } else {
           throw new Error("Table (".concat(tableName, ") not found"));
@@ -783,7 +838,7 @@ var MapdCon = /*#__PURE__*/function () {
           tableType = _ref14[2],
           createParams = _ref14[3];
 
-      return [tableName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this.importerRowDesc), tableType, createParams];
+      return [tableName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), tableType, createParams];
     })));
 
     _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
@@ -794,7 +849,7 @@ var MapdCon = /*#__PURE__*/function () {
           fileName = _ref16[1],
           copyParams = _ref16[2];
 
-      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
+      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
     })));
 
     _defineProperty(this, "importTableGeoAsync", this.handleErrors(this.wrapThrift("import_geo_table", this.overAllClients, function (_ref17) {
@@ -804,7 +859,7 @@ var MapdCon = /*#__PURE__*/function () {
           copyParams = _ref18[2],
           rowDescObj = _ref18[3];
 
-      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_9__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this.importerRowDesc), new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TCreateParams()];
+      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TCreateParams()];
     })));
 
     _defineProperty(this, "renderVegaAsync", this.handleErrors(function (widgetid, vega, options) {
@@ -816,15 +871,15 @@ var MapdCon = /*#__PURE__*/function () {
         compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
       }
 
-      var lastQueryTime = queryId in _this.queryTimes ? _this.queryTimes[queryId] : _this.DEFAULT_QUERY_TIME;
-      var curNonce = (_this._nonce++).toString();
+      var lastQueryTime = queryId in _this2.queryTimes ? _this2.queryTimes[queryId] : _this2.DEFAULT_QUERY_TIME;
+      var curNonce = (_this2._nonce++).toString();
 
       if (options) {
         curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
 
       var conId = 0;
-      _this._lastRenderCon = conId;
+      _this2._lastRenderCon = conId;
       var processResultsOptions = {
         isImage: true,
         query: "render: ".concat(vega),
@@ -833,11 +888,11 @@ var MapdCon = /*#__PURE__*/function () {
         estimatedQueryTime: lastQueryTime
       };
 
-      var renderVega = _this.wrapThrift("render_vega", _this.overSingleClient, function (args) {
+      var renderVega = _this2.wrapThrift("render_vega", _this2.overSingleClient, function (args) {
         return args;
       });
 
-      return _this.processResults(processResultsOptions, renderVega(widgetid, vega, compressionLevel, curNonce));
+      return _this2.processResults(processResultsOptions, renderVega(widgetid, vega, compressionLevel, curNonce));
     }));
 
     _defineProperty(this, "renderVega", this.callbackify("renderVegaAsync", 3));
@@ -845,14 +900,14 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "getResultRowForPixelAsync", this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
       var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
 
-      if (!(pixel instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TPixel)) {
-        pixel = new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TPixel(pixel);
+      if (!(pixel instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel)) {
+        pixel = new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel(pixel);
       }
 
       var columnFormat = true; // BOOL
 
-      var curNonce = (_this._nonce++).toString();
-      return _this._client[_this._lastRenderCon].get_result_row_for_pixel(_this._sessionId[_this._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
+      var curNonce = (_this2._nonce++).toString();
+      return _this2._client[_this2._lastRenderCon].get_result_row_for_pixel(_this2._sessionId[_this2._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
         results = Array.isArray(results) ? results.pixel_rows : [results];
         var processResultsOptions = {
           isImage: false,
@@ -860,11 +915,11 @@ var MapdCon = /*#__PURE__*/function () {
           query: "pixel request",
           queryId: -2
         };
-        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(_this._logging, _this.updateQueryTimes);
+        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_7__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
         var numPixels = results.length;
 
         for (var p = 0; p < numPixels; p++) {
-          results[p].row_set = processor(processResultsOptions, _this._datumEnum, results[p]);
+          results[p].row_set = processor(processResultsOptions, _this2._datumEnum, results[p]);
         }
 
         return results;
@@ -873,6 +928,7 @@ var MapdCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getResultRowForPixel", this.callbackify("getResultRowForPixelAsync", 4));
 
+    this._useBinaryProtocol = false;
     this._host = null;
     this._user = null;
     this._password = null;
@@ -903,15 +959,15 @@ var MapdCon = /*#__PURE__*/function () {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var promise = arguments.length > 1 ? arguments[1] : undefined;
       return promise["catch"](function (error) {
-        if (_this._logging && options.query) {
+        if (_this2._logging && options.query) {
           // eslint-disable-next-line no-console
           console.error(options.query, "\n", error);
         }
 
         throw error;
       }).then(function (result) {
-        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(_this._logging, _this.updateQueryTimes);
-        var processResultsObject = processor(options, _this._datumEnum, result);
+        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_7__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
+        var processResultsObject = processor(options, _this2._datumEnum, result);
         return processResultsObject;
       });
     }; // return this to allow chaining off of instantiation
@@ -987,7 +1043,7 @@ var MapdCon = /*#__PURE__*/function () {
       var clients = [];
 
       for (var h = 0; h < hostLength; h++) {
-        var client = buildClient(transportUrls[h]);
+        var client = buildClient(transportUrls[h], this._useBinaryProtocol);
         clients.push(client);
       }
 
@@ -1015,7 +1071,7 @@ var MapdCon = /*#__PURE__*/function () {
   }, {
     key: "connectAsync",
     value: function connectAsync() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
         return Promise.reject("Username and password must be arrays.");
@@ -1046,15 +1102,15 @@ var MapdCon = /*#__PURE__*/function () {
 
       this._client = [];
       return Promise.all(clients.map(function (client, h) {
-        return client.connect(_this2._user[h], _this2._password[h], _this2._dbName[h]).then(function (sessionId) {
-          _this2._client.push(client);
+        return client.connect(_this3._user[h], _this3._password[h], _this3._dbName[h]).then(function (sessionId) {
+          _this3._client.push(client);
 
-          _this2._sessionId.push(sessionId);
+          _this3._sessionId.push(sessionId);
 
           return null;
         });
       })).then(function () {
-        return _this2;
+        return _this3;
       });
     }
     /**
@@ -1087,7 +1143,7 @@ var MapdCon = /*#__PURE__*/function () {
             type: this._datumEnum[fields[key].col_type.type],
             precision: fields[key].col_type.precision,
             is_array: fields[key].col_type.is_array,
-            is_dict: fields[key].col_type.encoding === _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType.DICT // eslint-disable-line no-undef
+            is_dict: fields[key].col_type.encoding === _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType.DICT // eslint-disable-line no-undef
 
           });
         }
@@ -1114,7 +1170,7 @@ var MapdCon = /*#__PURE__*/function () {
      * @returns {Undefined} This function does not return anything.
      */
     value: function invertDatumTypes() {
-      var datumType = _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatumType; // eslint-disable-line no-undef
+      var datumType = _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDatumType; // eslint-disable-line no-undef
 
       for (var key in datumType) {
         if (datumType.hasOwnProperty(key)) {
@@ -1194,6 +1250,16 @@ var MapdCon = /*#__PURE__*/function () {
       }
 
       this._sessionId = arrayify(_sessionId);
+      return this;
+    }
+  }, {
+    key: "useBinaryProtocol",
+    value: function useBinaryProtocol(use) {
+      if (!arguments.length) {
+        return this._useBinaryProtocol;
+      }
+
+      this._useBinaryProtocol = Boolean(use);
       return this;
     }
     /**
@@ -1430,10 +1496,10 @@ var MapdCon = /*#__PURE__*/function () {
   }, {
     key: "getEndpoints",
     value: function getEndpoints() {
-      var _this3 = this;
+      var _this4 = this;
 
       return this._host.map(function (host, i) {
-        return "".concat(_this3._protocol[i], "://").concat(host, ":").concat(_this3._port[i]);
+        return "".concat(_this4._protocol[i], "://").concat(host, ":").concat(_this4._port[i]);
       });
     }
     /**
@@ -1456,7 +1522,7 @@ var MapdCon = /*#__PURE__*/function () {
 
       if (!client) {
         var url = "".concat(protocol, "://").concat(host, ":").concat(port);
-        client = buildClient(url);
+        client = buildClient(url, this._useBinaryProtocol);
         sessionId = "";
       }
 
@@ -1481,7 +1547,7 @@ var MapdCon = /*#__PURE__*/function () {
 
       if (!client) {
         var url = "".concat(protocol, "://").concat(host, ":").concat(port);
-        client = buildClient(url);
+        client = buildClient(url, this._useBinaryProtocol);
         sessionId = "";
       }
 
@@ -1490,7 +1556,7 @@ var MapdCon = /*#__PURE__*/function () {
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
-      return result instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_5__.TOmniSciException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+      return result instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TOmniSciException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
     }
   }]);
 
@@ -1878,7 +1944,7 @@ function processQueryResults(logging, updateQueryTimes) {
 
     if (logging && result.execution_time_ms) {
       // eslint-disable-next-line no-console
-      console.log(query, "on Server", conId, "- Execution Time:", result.execution_time_ms, "ms, Total Time:", result.total_time_ms, "ms");
+      console.log(query, "on Server", conId, "- Execution Time:", result.execution_time_ms, "ms, Total Time:", result.total_time_ms, "ms, Real Time:", options.startTime ? Date.now() - options.startTime : undefined, "ms");
     }
 
     if (isImage) {
@@ -13200,7 +13266,7 @@ class WebSocketServer extends EventEmitter {
     var protocol = req.headers['sec-websocket-protocol'];
 
     if (protocol) {
-      protocol = protocol.trim().split(/ *, */);
+      protocol = protocol.split(',').map(trim);
 
       //
       // Optionally call external protocol selection handler.
@@ -13303,6 +13369,18 @@ function abortHandshake (socket, code, message, headers) {
 
   socket.removeListener('error', socketOnError);
   socket.destroy();
+}
+
+/**
+ * Remove whitespace characters from both ends of a string.
+ *
+ * @param {String} str The string
+ * @return {String} A new string representing `str` stripped of whitespace
+ *     characters from both its beginning and end
+ * @private
+ */
+function trim(str) {
+  return str.trim();
 }
 
 

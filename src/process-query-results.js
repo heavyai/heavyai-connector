@@ -62,6 +62,8 @@ export default function processQueryResults(logging, updateQueryTimes) {
         result.execution_time_ms,
         "ms, Total Time:",
         result.total_time_ms,
+        "ms, Real Time:",
+        options.startTime ? Date.now() - options.startTime : undefined,
         "ms"
       )
     }
