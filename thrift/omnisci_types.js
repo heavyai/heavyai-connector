@@ -22,8 +22,9 @@ ttypes.TExecuteMode = {
 };
 ttypes.TFileType = {
   'DELIMITED' : 0,
-  'POLYGON' : 1,
-  'PARQUET' : 2
+  'GEO' : 1,
+  'PARQUET' : 2,
+  'RASTER' : 3
 };
 ttypes.TPartitionDetail = {
   'DEFAULT' : 0,
@@ -51,6 +52,21 @@ ttypes.TRole = {
 ttypes.TMergeType = {
   'UNION' : 0,
   'REDUCE' : 1
+};
+ttypes.TRasterPointType = {
+  'NONE' : 0,
+  'AUTO' : 1,
+  'SMALLINT' : 2,
+  'INT' : 3,
+  'FLOAT' : 4,
+  'DOUBLE' : 5,
+  'POINT' : 6
+};
+ttypes.TRasterPointTransform = {
+  'NONE' : 0,
+  'AUTO' : 1,
+  'FILE' : 2,
+  'WORLD' : 3
 };
 ttypes.TQueryType = {
   'UNKNOWN' : 0,
@@ -1655,6 +1671,12 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.geo_explode_collections = false;
     this.source_srid = 0;
     this.s3_session_token = null;
+    this.raster_point_type = 1;
+    this.raster_import_bands = null;
+    this.raster_scanlines_per_thread = null;
+    this.raster_point_transform = 1;
+    this.raster_point_compute_angle = false;
+    this.raster_import_dimensions = null;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -1733,6 +1755,24 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.s3_session_token !== undefined && args.s3_session_token !== null) {
         this.s3_session_token = args.s3_session_token;
+      }
+      if (args.raster_point_type !== undefined && args.raster_point_type !== null) {
+        this.raster_point_type = args.raster_point_type;
+      }
+      if (args.raster_import_bands !== undefined && args.raster_import_bands !== null) {
+        this.raster_import_bands = args.raster_import_bands;
+      }
+      if (args.raster_scanlines_per_thread !== undefined && args.raster_scanlines_per_thread !== null) {
+        this.raster_scanlines_per_thread = args.raster_scanlines_per_thread;
+      }
+      if (args.raster_point_transform !== undefined && args.raster_point_transform !== null) {
+        this.raster_point_transform = args.raster_point_transform;
+      }
+      if (args.raster_point_compute_angle !== undefined && args.raster_point_compute_angle !== null) {
+        this.raster_point_compute_angle = args.raster_point_compute_angle;
+      }
+      if (args.raster_import_dimensions !== undefined && args.raster_import_dimensions !== null) {
+        this.raster_import_dimensions = args.raster_import_dimensions;
       }
     }
   }
@@ -1929,6 +1969,48 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 27:
+        if (ftype == Thrift.Type.I32) {
+          this.raster_point_type = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 28:
+        if (ftype == Thrift.Type.STRING) {
+          this.raster_import_bands = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 29:
+        if (ftype == Thrift.Type.I32) {
+          this.raster_scanlines_per_thread = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 30:
+        if (ftype == Thrift.Type.I32) {
+          this.raster_point_transform = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 31:
+        if (ftype == Thrift.Type.BOOL) {
+          this.raster_point_compute_angle = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 32:
+        if (ftype == Thrift.Type.STRING) {
+          this.raster_import_dimensions = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -2068,6 +2150,36 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.s3_session_token !== null && this.s3_session_token !== undefined) {
       output.writeFieldBegin('s3_session_token', Thrift.Type.STRING, 26);
       output.writeString(this.s3_session_token);
+      output.writeFieldEnd();
+    }
+    if (this.raster_point_type !== null && this.raster_point_type !== undefined) {
+      output.writeFieldBegin('raster_point_type', Thrift.Type.I32, 27);
+      output.writeI32(this.raster_point_type);
+      output.writeFieldEnd();
+    }
+    if (this.raster_import_bands !== null && this.raster_import_bands !== undefined) {
+      output.writeFieldBegin('raster_import_bands', Thrift.Type.STRING, 28);
+      output.writeString(this.raster_import_bands);
+      output.writeFieldEnd();
+    }
+    if (this.raster_scanlines_per_thread !== null && this.raster_scanlines_per_thread !== undefined) {
+      output.writeFieldBegin('raster_scanlines_per_thread', Thrift.Type.I32, 29);
+      output.writeI32(this.raster_scanlines_per_thread);
+      output.writeFieldEnd();
+    }
+    if (this.raster_point_transform !== null && this.raster_point_transform !== undefined) {
+      output.writeFieldBegin('raster_point_transform', Thrift.Type.I32, 30);
+      output.writeI32(this.raster_point_transform);
+      output.writeFieldEnd();
+    }
+    if (this.raster_point_compute_angle !== null && this.raster_point_compute_angle !== undefined) {
+      output.writeFieldBegin('raster_point_compute_angle', Thrift.Type.BOOL, 31);
+      output.writeBool(this.raster_point_compute_angle);
+      output.writeFieldEnd();
+    }
+    if (this.raster_import_dimensions !== null && this.raster_import_dimensions !== undefined) {
+      output.writeFieldBegin('raster_import_dimensions', Thrift.Type.STRING, 32);
+      output.writeString(this.raster_import_dimensions);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -7049,6 +7161,199 @@ const TCustomExpression = module.exports.TCustomExpression = class {
     if (this.data_source_name !== null && this.data_source_name !== undefined) {
       output.writeFieldBegin('data_source_name', Thrift.Type.STRING, 8);
       output.writeString(this.data_source_name);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const TQueryInfo = module.exports.TQueryInfo = class {
+  constructor(args) {
+    this.query_session_id = null;
+    this.query_public_session_id = null;
+    this.current_status = null;
+    this.executor_id = null;
+    this.submitted = null;
+    this.query_str = null;
+    this.login_name = null;
+    this.client_address = null;
+    this.db_name = null;
+    this.exec_device_type = null;
+    if (args) {
+      if (args.query_session_id !== undefined && args.query_session_id !== null) {
+        this.query_session_id = args.query_session_id;
+      }
+      if (args.query_public_session_id !== undefined && args.query_public_session_id !== null) {
+        this.query_public_session_id = args.query_public_session_id;
+      }
+      if (args.current_status !== undefined && args.current_status !== null) {
+        this.current_status = args.current_status;
+      }
+      if (args.executor_id !== undefined && args.executor_id !== null) {
+        this.executor_id = args.executor_id;
+      }
+      if (args.submitted !== undefined && args.submitted !== null) {
+        this.submitted = args.submitted;
+      }
+      if (args.query_str !== undefined && args.query_str !== null) {
+        this.query_str = args.query_str;
+      }
+      if (args.login_name !== undefined && args.login_name !== null) {
+        this.login_name = args.login_name;
+      }
+      if (args.client_address !== undefined && args.client_address !== null) {
+        this.client_address = args.client_address;
+      }
+      if (args.db_name !== undefined && args.db_name !== null) {
+        this.db_name = args.db_name;
+      }
+      if (args.exec_device_type !== undefined && args.exec_device_type !== null) {
+        this.exec_device_type = args.exec_device_type;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.query_session_id = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.STRING) {
+          this.query_public_session_id = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 3:
+        if (ftype == Thrift.Type.STRING) {
+          this.current_status = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 4:
+        if (ftype == Thrift.Type.I32) {
+          this.executor_id = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 5:
+        if (ftype == Thrift.Type.STRING) {
+          this.submitted = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 6:
+        if (ftype == Thrift.Type.STRING) {
+          this.query_str = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 7:
+        if (ftype == Thrift.Type.STRING) {
+          this.login_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 8:
+        if (ftype == Thrift.Type.STRING) {
+          this.client_address = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 9:
+        if (ftype == Thrift.Type.STRING) {
+          this.db_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 10:
+        if (ftype == Thrift.Type.STRING) {
+          this.exec_device_type = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TQueryInfo');
+    if (this.query_session_id !== null && this.query_session_id !== undefined) {
+      output.writeFieldBegin('query_session_id', Thrift.Type.STRING, 1);
+      output.writeString(this.query_session_id);
+      output.writeFieldEnd();
+    }
+    if (this.query_public_session_id !== null && this.query_public_session_id !== undefined) {
+      output.writeFieldBegin('query_public_session_id', Thrift.Type.STRING, 2);
+      output.writeString(this.query_public_session_id);
+      output.writeFieldEnd();
+    }
+    if (this.current_status !== null && this.current_status !== undefined) {
+      output.writeFieldBegin('current_status', Thrift.Type.STRING, 3);
+      output.writeString(this.current_status);
+      output.writeFieldEnd();
+    }
+    if (this.executor_id !== null && this.executor_id !== undefined) {
+      output.writeFieldBegin('executor_id', Thrift.Type.I32, 4);
+      output.writeI32(this.executor_id);
+      output.writeFieldEnd();
+    }
+    if (this.submitted !== null && this.submitted !== undefined) {
+      output.writeFieldBegin('submitted', Thrift.Type.STRING, 5);
+      output.writeString(this.submitted);
+      output.writeFieldEnd();
+    }
+    if (this.query_str !== null && this.query_str !== undefined) {
+      output.writeFieldBegin('query_str', Thrift.Type.STRING, 6);
+      output.writeString(this.query_str);
+      output.writeFieldEnd();
+    }
+    if (this.login_name !== null && this.login_name !== undefined) {
+      output.writeFieldBegin('login_name', Thrift.Type.STRING, 7);
+      output.writeString(this.login_name);
+      output.writeFieldEnd();
+    }
+    if (this.client_address !== null && this.client_address !== undefined) {
+      output.writeFieldBegin('client_address', Thrift.Type.STRING, 8);
+      output.writeString(this.client_address);
+      output.writeFieldEnd();
+    }
+    if (this.db_name !== null && this.db_name !== undefined) {
+      output.writeFieldBegin('db_name', Thrift.Type.STRING, 9);
+      output.writeString(this.db_name);
+      output.writeFieldEnd();
+    }
+    if (this.exec_device_type !== null && this.exec_device_type !== undefined) {
+      output.writeFieldBegin('exec_device_type', Thrift.Type.STRING, 10);
+      output.writeString(this.exec_device_type);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
