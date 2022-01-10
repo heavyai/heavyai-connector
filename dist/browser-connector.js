@@ -336,10 +336,14 @@ if (true) {
 }
 
 function buildClient(url, useBinaryProtocol) {
-  var _URL = new URL(url),
-      protocol = _URL.protocol,
-      hostname = _URL.hostname,
-      port = _URL.port;
+  var urlObj = new URL(url);
+  var protocol = urlObj.protocol;
+  var hostname = urlObj.hostname;
+  var port = urlObj.port;
+
+  if (port === "") {
+    port = protocol === "https:" ? "443" : "80";
+  }
 
   var client = null;
 

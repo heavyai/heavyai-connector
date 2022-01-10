@@ -140,7 +140,14 @@ if (process.env.BROWSER) {
 }
 
 function buildClient(url, useBinaryProtocol) {
-  const { protocol, hostname, port } = new URL(url)
+  const urlObj = new URL(url)
+  const protocol = urlObj.protocol
+  const hostname = urlObj.hostname
+  let port = urlObj.port
+  if (port === "") {
+    port = protocol === "https:" ? "443" : "80"
+  }
+
   let client = null
   if (!process.env.BROWSER) {
     const connection = createHttpConnection(hostname, port, {
