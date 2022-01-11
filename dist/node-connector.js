@@ -304,7 +304,7 @@ if (process.env.BROWSER) {
   };
 
   CustomTJSONProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readBinary.call(this).toString();
+    return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readString.call(this);
   };
 } // Custom version of the binary protocol to override writeString, readI64, and
 // readBinary as above.
@@ -335,7 +335,7 @@ if (process.env.BROWSER) {
   };
 
   CustomBinaryProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readBinary.call(this).toString();
+    return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readString.call(this);
   };
 }
 

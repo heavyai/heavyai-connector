@@ -109,7 +109,7 @@ if (process.env.BROWSER) {
   }
 
   CustomTJSONProtocol.prototype.readBinary = function () {
-    return TJSONProtocol.prototype.readBinary.call(this).toString()
+    return TJSONProtocol.prototype.readString.call(this)
   }
 }
 
@@ -135,7 +135,7 @@ if (process.env.BROWSER) {
   }
 
   CustomBinaryProtocol.prototype.readBinary = function () {
-    return TBinaryProtocol.prototype.readBinary.call(this).toString()
+    return TBinaryProtocol.prototype.readString.call(this)
   }
 }
 
