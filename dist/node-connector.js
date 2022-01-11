@@ -738,6 +738,12 @@ var MapdCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getTablesMeta", this.callbackify("getTablesMetaAsync", 0));
 
+    _defineProperty(this, "getTableEpochByNameAsync", this.handleErrors(this.wrapThrift("get_table_epoch_by_name", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "getTableEpochByName", this.callbackify("getTableEpochByNameAsync", 0));
+
     _defineProperty(this, "getCompletionHintsAsync", this.handleErrors(this.wrapThrift("get_completion_hints", this.overSingleClient, function (_ref11) {
       var _ref12 = _slicedToArray(_ref11, 2),
           queryString = _ref12[0],

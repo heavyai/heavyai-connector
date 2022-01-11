@@ -1289,6 +1289,16 @@ export class MapdCon {
 
   getTablesMeta = this.callbackify("getTablesMetaAsync", 0)
 
+  getTableEpochByNameAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_table_epoch_by_name",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  getTableEpochByName = this.callbackify("getTableEpochByNameAsync", 0)
+
   /**
    * Submits an SQL string to the backend and returns a completion hints object.
    * @param {String} queryString A fragment of SQL input.
