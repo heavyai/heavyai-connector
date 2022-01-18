@@ -135,7 +135,7 @@ if (process.env.BROWSER) {
   }
 
   CustomBinaryProtocol.prototype.readBinary = function () {
-    return TBinaryProtocol.prototype.readString.call(this)
+    return TBinaryProtocol.prototype.readBinary.call(this).toString("base64")
   }
 }
 

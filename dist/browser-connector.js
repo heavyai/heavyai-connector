@@ -331,7 +331,7 @@ if (true) {
   };
 
   CustomBinaryProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readString.call(this);
+    return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readBinary.call(this).toString("base64");
   };
 }
 
