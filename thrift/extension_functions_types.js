@@ -62,7 +62,8 @@ ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
   'kUserSpecifiedRowMultiplier' : 2,
-  'kTableFunctionSpecifiedParameter' : 3
+  'kTableFunctionSpecifiedParameter' : 3,
+  'kPreFlightParameter' : 4
 };
 const TUserDefinedFunction = module.exports.TUserDefinedFunction = class {
   constructor(args) {
