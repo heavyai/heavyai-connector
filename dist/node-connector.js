@@ -18820,6 +18820,144 @@ const OmniSci_get_session_info_result = class {
   }
 
 };
+const OmniSci_get_queries_info_args = class {
+  constructor(args) {
+    this.session = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_queries_info_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_queries_info_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TOmniSciException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [ttypes.TQueryInfo]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3246 = input.readListBegin();
+          const _size245 = _rtmp3246.size || 0;
+          for (let _i247 = 0; _i247 < _size245; ++_i247) {
+            let elem248 = null;
+            elem248 = new ttypes.TQueryInfo();
+            elem248.read(input);
+            this.success.push(elem248);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TOmniSciException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_queries_info_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+      for (let iter249 in this.success) {
+        if (this.success.hasOwnProperty(iter249)) {
+          iter249 = this.success[iter249];
+          iter249.write(output);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
 const OmniSci_sql_execute_args = class {
   constructor(args) {
     this.session = null;
@@ -19761,13 +19899,13 @@ const OmniSci_sql_validate_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3246 = input.readListBegin();
-          const _size245 = _rtmp3246.size || 0;
-          for (let _i247 = 0; _i247 < _size245; ++_i247) {
-            let elem248 = null;
-            elem248 = new ttypes.TColumnType();
-            elem248.read(input);
-            this.success.push(elem248);
+          const _rtmp3251 = input.readListBegin();
+          const _size250 = _rtmp3251.size || 0;
+          for (let _i252 = 0; _i252 < _size250; ++_i252) {
+            let elem253 = null;
+            elem253 = new ttypes.TColumnType();
+            elem253.read(input);
+            this.success.push(elem253);
           }
           input.readListEnd();
         } else {
@@ -19796,10 +19934,10 @@ const OmniSci_sql_validate_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter249 in this.success) {
-        if (this.success.hasOwnProperty(iter249)) {
-          iter249 = this.success[iter249];
-          iter249.write(output);
+      for (let iter254 in this.success) {
+        if (this.success.hasOwnProperty(iter254)) {
+          iter254 = this.success[iter254];
+          iter254.write(output);
         }
       }
       output.writeListEnd();
@@ -19928,13 +20066,13 @@ const OmniSci_get_completion_hints_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3251 = input.readListBegin();
-          const _size250 = _rtmp3251.size || 0;
-          for (let _i252 = 0; _i252 < _size250; ++_i252) {
-            let elem253 = null;
-            elem253 = new completion_hints_ttypes.TCompletionHint();
-            elem253.read(input);
-            this.success.push(elem253);
+          const _rtmp3256 = input.readListBegin();
+          const _size255 = _rtmp3256.size || 0;
+          for (let _i257 = 0; _i257 < _size255; ++_i257) {
+            let elem258 = null;
+            elem258 = new completion_hints_ttypes.TCompletionHint();
+            elem258.read(input);
+            this.success.push(elem258);
           }
           input.readListEnd();
         } else {
@@ -19963,10 +20101,10 @@ const OmniSci_get_completion_hints_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter254 in this.success) {
-        if (this.success.hasOwnProperty(iter254)) {
-          iter254 = this.success[iter254];
-          iter254.write(output);
+      for (let iter259 in this.success) {
+        if (this.success.hasOwnProperty(iter259)) {
+          iter259 = this.success[iter259];
+          iter259.write(output);
         }
       }
       output.writeListEnd();
@@ -20358,22 +20496,22 @@ const OmniSci_get_result_row_for_pixel_args = class {
         case 4:
         if (ftype == Thrift.Type.MAP) {
           this.table_col_names = {};
-          const _rtmp3256 = input.readMapBegin();
-          const _size255 = _rtmp3256.size || 0;
-          for (let _i257 = 0; _i257 < _size255; ++_i257) {
-            let key258 = null;
-            let val259 = null;
-            key258 = input.readString();
-            val259 = [];
-            const _rtmp3261 = input.readListBegin();
-            const _size260 = _rtmp3261.size || 0;
-            for (let _i262 = 0; _i262 < _size260; ++_i262) {
-              let elem263 = null;
-              elem263 = input.readString();
-              val259.push(elem263);
+          const _rtmp3261 = input.readMapBegin();
+          const _size260 = _rtmp3261.size || 0;
+          for (let _i262 = 0; _i262 < _size260; ++_i262) {
+            let key263 = null;
+            let val264 = null;
+            key263 = input.readString();
+            val264 = [];
+            const _rtmp3266 = input.readListBegin();
+            const _size265 = _rtmp3266.size || 0;
+            for (let _i267 = 0; _i267 < _size265; ++_i267) {
+              let elem268 = null;
+              elem268 = input.readString();
+              val264.push(elem268);
             }
             input.readListEnd();
-            this.table_col_names[key258] = val259;
+            this.table_col_names[key263] = val264;
           }
           input.readMapEnd();
         } else {
@@ -20430,15 +20568,15 @@ const OmniSci_get_result_row_for_pixel_args = class {
     if (this.table_col_names !== null && this.table_col_names !== undefined) {
       output.writeFieldBegin('table_col_names', Thrift.Type.MAP, 4);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(this.table_col_names));
-      for (let kiter264 in this.table_col_names) {
-        if (this.table_col_names.hasOwnProperty(kiter264)) {
-          let viter265 = this.table_col_names[kiter264];
-          output.writeString(kiter264);
-          output.writeListBegin(Thrift.Type.STRING, viter265.length);
-          for (let iter266 in viter265) {
-            if (viter265.hasOwnProperty(iter266)) {
-              iter266 = viter265[iter266];
-              output.writeString(iter266);
+      for (let kiter269 in this.table_col_names) {
+        if (this.table_col_names.hasOwnProperty(kiter269)) {
+          let viter270 = this.table_col_names[kiter269];
+          output.writeString(kiter269);
+          output.writeListBegin(Thrift.Type.STRING, viter270.length);
+          for (let iter271 in viter270) {
+            if (viter270.hasOwnProperty(iter271)) {
+              iter271 = viter270[iter271];
+              output.writeString(iter271);
             }
           }
           output.writeListEnd();
@@ -20758,13 +20896,13 @@ const OmniSci_get_custom_expressions_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3268 = input.readListBegin();
-          const _size267 = _rtmp3268.size || 0;
-          for (let _i269 = 0; _i269 < _size267; ++_i269) {
-            let elem270 = null;
-            elem270 = new ttypes.TCustomExpression();
-            elem270.read(input);
-            this.success.push(elem270);
+          const _rtmp3273 = input.readListBegin();
+          const _size272 = _rtmp3273.size || 0;
+          for (let _i274 = 0; _i274 < _size272; ++_i274) {
+            let elem275 = null;
+            elem275 = new ttypes.TCustomExpression();
+            elem275.read(input);
+            this.success.push(elem275);
           }
           input.readListEnd();
         } else {
@@ -20793,10 +20931,10 @@ const OmniSci_get_custom_expressions_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter271 in this.success) {
-        if (this.success.hasOwnProperty(iter271)) {
-          iter271 = this.success[iter271];
-          iter271.write(output);
+      for (let iter276 in this.success) {
+        if (this.success.hasOwnProperty(iter276)) {
+          iter276 = this.success[iter276];
+          iter276.write(output);
         }
       }
       output.writeListEnd();
@@ -20989,12 +21127,12 @@ const OmniSci_delete_custom_expressions_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.custom_expression_ids = [];
-          const _rtmp3273 = input.readListBegin();
-          const _size272 = _rtmp3273.size || 0;
-          for (let _i274 = 0; _i274 < _size272; ++_i274) {
-            let elem275 = null;
-            elem275 = input.readI32();
-            this.custom_expression_ids.push(elem275);
+          const _rtmp3278 = input.readListBegin();
+          const _size277 = _rtmp3278.size || 0;
+          for (let _i279 = 0; _i279 < _size277; ++_i279) {
+            let elem280 = null;
+            elem280 = input.readI32();
+            this.custom_expression_ids.push(elem280);
           }
           input.readListEnd();
         } else {
@@ -21027,10 +21165,10 @@ const OmniSci_delete_custom_expressions_args = class {
     if (this.custom_expression_ids !== null && this.custom_expression_ids !== undefined) {
       output.writeFieldBegin('custom_expression_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.custom_expression_ids.length);
-      for (let iter276 in this.custom_expression_ids) {
-        if (this.custom_expression_ids.hasOwnProperty(iter276)) {
-          iter276 = this.custom_expression_ids[iter276];
-          output.writeI32(iter276);
+      for (let iter281 in this.custom_expression_ids) {
+        if (this.custom_expression_ids.hasOwnProperty(iter281)) {
+          iter281 = this.custom_expression_ids[iter281];
+          output.writeI32(iter281);
         }
       }
       output.writeListEnd();
@@ -21323,13 +21461,13 @@ const OmniSci_get_dashboards_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3278 = input.readListBegin();
-          const _size277 = _rtmp3278.size || 0;
-          for (let _i279 = 0; _i279 < _size277; ++_i279) {
-            let elem280 = null;
-            elem280 = new ttypes.TDashboard();
-            elem280.read(input);
-            this.success.push(elem280);
+          const _rtmp3283 = input.readListBegin();
+          const _size282 = _rtmp3283.size || 0;
+          for (let _i284 = 0; _i284 < _size282; ++_i284) {
+            let elem285 = null;
+            elem285 = new ttypes.TDashboard();
+            elem285.read(input);
+            this.success.push(elem285);
           }
           input.readListEnd();
         } else {
@@ -21358,10 +21496,10 @@ const OmniSci_get_dashboards_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter281 in this.success) {
-        if (this.success.hasOwnProperty(iter281)) {
-          iter281 = this.success[iter281];
-          iter281.write(output);
+      for (let iter286 in this.success) {
+        if (this.success.hasOwnProperty(iter286)) {
+          iter286 = this.success[iter286];
+          iter286.write(output);
         }
       }
       output.writeListEnd();
@@ -21927,12 +22065,12 @@ const OmniSci_share_dashboards_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.dashboard_ids = [];
-          const _rtmp3283 = input.readListBegin();
-          const _size282 = _rtmp3283.size || 0;
-          for (let _i284 = 0; _i284 < _size282; ++_i284) {
-            let elem285 = null;
-            elem285 = input.readI32();
-            this.dashboard_ids.push(elem285);
+          const _rtmp3288 = input.readListBegin();
+          const _size287 = _rtmp3288.size || 0;
+          for (let _i289 = 0; _i289 < _size287; ++_i289) {
+            let elem290 = null;
+            elem290 = input.readI32();
+            this.dashboard_ids.push(elem290);
           }
           input.readListEnd();
         } else {
@@ -21942,12 +22080,12 @@ const OmniSci_share_dashboards_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3287 = input.readListBegin();
-          const _size286 = _rtmp3287.size || 0;
-          for (let _i288 = 0; _i288 < _size286; ++_i288) {
-            let elem289 = null;
-            elem289 = input.readString();
-            this.groups.push(elem289);
+          const _rtmp3292 = input.readListBegin();
+          const _size291 = _rtmp3292.size || 0;
+          for (let _i293 = 0; _i293 < _size291; ++_i293) {
+            let elem294 = null;
+            elem294 = input.readString();
+            this.groups.push(elem294);
           }
           input.readListEnd();
         } else {
@@ -21981,10 +22119,10 @@ const OmniSci_share_dashboards_args = class {
     if (this.dashboard_ids !== null && this.dashboard_ids !== undefined) {
       output.writeFieldBegin('dashboard_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.dashboard_ids.length);
-      for (let iter290 in this.dashboard_ids) {
-        if (this.dashboard_ids.hasOwnProperty(iter290)) {
-          iter290 = this.dashboard_ids[iter290];
-          output.writeI32(iter290);
+      for (let iter295 in this.dashboard_ids) {
+        if (this.dashboard_ids.hasOwnProperty(iter295)) {
+          iter295 = this.dashboard_ids[iter295];
+          output.writeI32(iter295);
         }
       }
       output.writeListEnd();
@@ -21993,10 +22131,10 @@ const OmniSci_share_dashboards_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter291 in this.groups) {
-        if (this.groups.hasOwnProperty(iter291)) {
-          iter291 = this.groups[iter291];
-          output.writeString(iter291);
+      for (let iter296 in this.groups) {
+        if (this.groups.hasOwnProperty(iter296)) {
+          iter296 = this.groups[iter296];
+          output.writeString(iter296);
         }
       }
       output.writeListEnd();
@@ -22104,12 +22242,12 @@ const OmniSci_delete_dashboards_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.dashboard_ids = [];
-          const _rtmp3293 = input.readListBegin();
-          const _size292 = _rtmp3293.size || 0;
-          for (let _i294 = 0; _i294 < _size292; ++_i294) {
-            let elem295 = null;
-            elem295 = input.readI32();
-            this.dashboard_ids.push(elem295);
+          const _rtmp3298 = input.readListBegin();
+          const _size297 = _rtmp3298.size || 0;
+          for (let _i299 = 0; _i299 < _size297; ++_i299) {
+            let elem300 = null;
+            elem300 = input.readI32();
+            this.dashboard_ids.push(elem300);
           }
           input.readListEnd();
         } else {
@@ -22135,10 +22273,10 @@ const OmniSci_delete_dashboards_args = class {
     if (this.dashboard_ids !== null && this.dashboard_ids !== undefined) {
       output.writeFieldBegin('dashboard_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.dashboard_ids.length);
-      for (let iter296 in this.dashboard_ids) {
-        if (this.dashboard_ids.hasOwnProperty(iter296)) {
-          iter296 = this.dashboard_ids[iter296];
-          output.writeI32(iter296);
+      for (let iter301 in this.dashboard_ids) {
+        if (this.dashboard_ids.hasOwnProperty(iter301)) {
+          iter301 = this.dashboard_ids[iter301];
+          output.writeI32(iter301);
         }
       }
       output.writeListEnd();
@@ -22264,12 +22402,12 @@ const OmniSci_share_dashboard_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3298 = input.readListBegin();
-          const _size297 = _rtmp3298.size || 0;
-          for (let _i299 = 0; _i299 < _size297; ++_i299) {
-            let elem300 = null;
-            elem300 = input.readString();
-            this.groups.push(elem300);
+          const _rtmp3303 = input.readListBegin();
+          const _size302 = _rtmp3303.size || 0;
+          for (let _i304 = 0; _i304 < _size302; ++_i304) {
+            let elem305 = null;
+            elem305 = input.readString();
+            this.groups.push(elem305);
           }
           input.readListEnd();
         } else {
@@ -22279,12 +22417,12 @@ const OmniSci_share_dashboard_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.objects = [];
-          const _rtmp3302 = input.readListBegin();
-          const _size301 = _rtmp3302.size || 0;
-          for (let _i303 = 0; _i303 < _size301; ++_i303) {
-            let elem304 = null;
-            elem304 = input.readString();
-            this.objects.push(elem304);
+          const _rtmp3307 = input.readListBegin();
+          const _size306 = _rtmp3307.size || 0;
+          for (let _i308 = 0; _i308 < _size306; ++_i308) {
+            let elem309 = null;
+            elem309 = input.readString();
+            this.objects.push(elem309);
           }
           input.readListEnd();
         } else {
@@ -22330,10 +22468,10 @@ const OmniSci_share_dashboard_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter305 in this.groups) {
-        if (this.groups.hasOwnProperty(iter305)) {
-          iter305 = this.groups[iter305];
-          output.writeString(iter305);
+      for (let iter310 in this.groups) {
+        if (this.groups.hasOwnProperty(iter310)) {
+          iter310 = this.groups[iter310];
+          output.writeString(iter310);
         }
       }
       output.writeListEnd();
@@ -22342,10 +22480,10 @@ const OmniSci_share_dashboard_args = class {
     if (this.objects !== null && this.objects !== undefined) {
       output.writeFieldBegin('objects', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.objects.length);
-      for (let iter306 in this.objects) {
-        if (this.objects.hasOwnProperty(iter306)) {
-          iter306 = this.objects[iter306];
-          output.writeString(iter306);
+      for (let iter311 in this.objects) {
+        if (this.objects.hasOwnProperty(iter311)) {
+          iter311 = this.objects[iter311];
+          output.writeString(iter311);
         }
       }
       output.writeListEnd();
@@ -22477,12 +22615,12 @@ const OmniSci_unshare_dashboard_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3308 = input.readListBegin();
-          const _size307 = _rtmp3308.size || 0;
-          for (let _i309 = 0; _i309 < _size307; ++_i309) {
-            let elem310 = null;
-            elem310 = input.readString();
-            this.groups.push(elem310);
+          const _rtmp3313 = input.readListBegin();
+          const _size312 = _rtmp3313.size || 0;
+          for (let _i314 = 0; _i314 < _size312; ++_i314) {
+            let elem315 = null;
+            elem315 = input.readString();
+            this.groups.push(elem315);
           }
           input.readListEnd();
         } else {
@@ -22492,12 +22630,12 @@ const OmniSci_unshare_dashboard_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.objects = [];
-          const _rtmp3312 = input.readListBegin();
-          const _size311 = _rtmp3312.size || 0;
-          for (let _i313 = 0; _i313 < _size311; ++_i313) {
-            let elem314 = null;
-            elem314 = input.readString();
-            this.objects.push(elem314);
+          const _rtmp3317 = input.readListBegin();
+          const _size316 = _rtmp3317.size || 0;
+          for (let _i318 = 0; _i318 < _size316; ++_i318) {
+            let elem319 = null;
+            elem319 = input.readString();
+            this.objects.push(elem319);
           }
           input.readListEnd();
         } else {
@@ -22536,10 +22674,10 @@ const OmniSci_unshare_dashboard_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter315 in this.groups) {
-        if (this.groups.hasOwnProperty(iter315)) {
-          iter315 = this.groups[iter315];
-          output.writeString(iter315);
+      for (let iter320 in this.groups) {
+        if (this.groups.hasOwnProperty(iter320)) {
+          iter320 = this.groups[iter320];
+          output.writeString(iter320);
         }
       }
       output.writeListEnd();
@@ -22548,10 +22686,10 @@ const OmniSci_unshare_dashboard_args = class {
     if (this.objects !== null && this.objects !== undefined) {
       output.writeFieldBegin('objects', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.objects.length);
-      for (let iter316 in this.objects) {
-        if (this.objects.hasOwnProperty(iter316)) {
-          iter316 = this.objects[iter316];
-          output.writeString(iter316);
+      for (let iter321 in this.objects) {
+        if (this.objects.hasOwnProperty(iter321)) {
+          iter321 = this.objects[iter321];
+          output.writeString(iter321);
         }
       }
       output.writeListEnd();
@@ -22667,12 +22805,12 @@ const OmniSci_unshare_dashboards_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.dashboard_ids = [];
-          const _rtmp3318 = input.readListBegin();
-          const _size317 = _rtmp3318.size || 0;
-          for (let _i319 = 0; _i319 < _size317; ++_i319) {
-            let elem320 = null;
-            elem320 = input.readI32();
-            this.dashboard_ids.push(elem320);
+          const _rtmp3323 = input.readListBegin();
+          const _size322 = _rtmp3323.size || 0;
+          for (let _i324 = 0; _i324 < _size322; ++_i324) {
+            let elem325 = null;
+            elem325 = input.readI32();
+            this.dashboard_ids.push(elem325);
           }
           input.readListEnd();
         } else {
@@ -22682,12 +22820,12 @@ const OmniSci_unshare_dashboards_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3322 = input.readListBegin();
-          const _size321 = _rtmp3322.size || 0;
-          for (let _i323 = 0; _i323 < _size321; ++_i323) {
-            let elem324 = null;
-            elem324 = input.readString();
-            this.groups.push(elem324);
+          const _rtmp3327 = input.readListBegin();
+          const _size326 = _rtmp3327.size || 0;
+          for (let _i328 = 0; _i328 < _size326; ++_i328) {
+            let elem329 = null;
+            elem329 = input.readString();
+            this.groups.push(elem329);
           }
           input.readListEnd();
         } else {
@@ -22721,10 +22859,10 @@ const OmniSci_unshare_dashboards_args = class {
     if (this.dashboard_ids !== null && this.dashboard_ids !== undefined) {
       output.writeFieldBegin('dashboard_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.dashboard_ids.length);
-      for (let iter325 in this.dashboard_ids) {
-        if (this.dashboard_ids.hasOwnProperty(iter325)) {
-          iter325 = this.dashboard_ids[iter325];
-          output.writeI32(iter325);
+      for (let iter330 in this.dashboard_ids) {
+        if (this.dashboard_ids.hasOwnProperty(iter330)) {
+          iter330 = this.dashboard_ids[iter330];
+          output.writeI32(iter330);
         }
       }
       output.writeListEnd();
@@ -22733,10 +22871,10 @@ const OmniSci_unshare_dashboards_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter326 in this.groups) {
-        if (this.groups.hasOwnProperty(iter326)) {
-          iter326 = this.groups[iter326];
-          output.writeString(iter326);
+      for (let iter331 in this.groups) {
+        if (this.groups.hasOwnProperty(iter331)) {
+          iter331 = this.groups[iter331];
+          output.writeString(iter331);
         }
       }
       output.writeListEnd();
@@ -22906,13 +23044,13 @@ const OmniSci_get_dashboard_grantees_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3328 = input.readListBegin();
-          const _size327 = _rtmp3328.size || 0;
-          for (let _i329 = 0; _i329 < _size327; ++_i329) {
-            let elem330 = null;
-            elem330 = new ttypes.TDashboardGrantees();
-            elem330.read(input);
-            this.success.push(elem330);
+          const _rtmp3333 = input.readListBegin();
+          const _size332 = _rtmp3333.size || 0;
+          for (let _i334 = 0; _i334 < _size332; ++_i334) {
+            let elem335 = null;
+            elem335 = new ttypes.TDashboardGrantees();
+            elem335.read(input);
+            this.success.push(elem335);
           }
           input.readListEnd();
         } else {
@@ -22941,10 +23079,10 @@ const OmniSci_get_dashboard_grantees_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter331 in this.success) {
-        if (this.success.hasOwnProperty(iter331)) {
-          iter331 = this.success[iter331];
-          iter331.write(output);
+      for (let iter336 in this.success) {
+        if (this.success.hasOwnProperty(iter336)) {
+          iter336 = this.success[iter336];
+          iter336.write(output);
         }
       }
       output.writeListEnd();
@@ -23297,13 +23435,13 @@ const OmniSci_load_table_binary_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.rows = [];
-          const _rtmp3333 = input.readListBegin();
-          const _size332 = _rtmp3333.size || 0;
-          for (let _i334 = 0; _i334 < _size332; ++_i334) {
-            let elem335 = null;
-            elem335 = new ttypes.TRow();
-            elem335.read(input);
-            this.rows.push(elem335);
+          const _rtmp3338 = input.readListBegin();
+          const _size337 = _rtmp3338.size || 0;
+          for (let _i339 = 0; _i339 < _size337; ++_i339) {
+            let elem340 = null;
+            elem340 = new ttypes.TRow();
+            elem340.read(input);
+            this.rows.push(elem340);
           }
           input.readListEnd();
         } else {
@@ -23313,12 +23451,12 @@ const OmniSci_load_table_binary_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.column_names = [];
-          const _rtmp3337 = input.readListBegin();
-          const _size336 = _rtmp3337.size || 0;
-          for (let _i338 = 0; _i338 < _size336; ++_i338) {
-            let elem339 = null;
-            elem339 = input.readString();
-            this.column_names.push(elem339);
+          const _rtmp3342 = input.readListBegin();
+          const _size341 = _rtmp3342.size || 0;
+          for (let _i343 = 0; _i343 < _size341; ++_i343) {
+            let elem344 = null;
+            elem344 = input.readString();
+            this.column_names.push(elem344);
           }
           input.readListEnd();
         } else {
@@ -23349,10 +23487,10 @@ const OmniSci_load_table_binary_args = class {
     if (this.rows !== null && this.rows !== undefined) {
       output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-      for (let iter340 in this.rows) {
-        if (this.rows.hasOwnProperty(iter340)) {
-          iter340 = this.rows[iter340];
-          iter340.write(output);
+      for (let iter345 in this.rows) {
+        if (this.rows.hasOwnProperty(iter345)) {
+          iter345 = this.rows[iter345];
+          iter345.write(output);
         }
       }
       output.writeListEnd();
@@ -23361,10 +23499,10 @@ const OmniSci_load_table_binary_args = class {
     if (this.column_names !== null && this.column_names !== undefined) {
       output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter341 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter341)) {
-          iter341 = this.column_names[iter341];
-          output.writeString(iter341);
+      for (let iter346 in this.column_names) {
+        if (this.column_names.hasOwnProperty(iter346)) {
+          iter346 = this.column_names[iter346];
+          output.writeString(iter346);
         }
       }
       output.writeListEnd();
@@ -23482,13 +23620,13 @@ const OmniSci_load_table_binary_columnar_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.cols = [];
-          const _rtmp3343 = input.readListBegin();
-          const _size342 = _rtmp3343.size || 0;
-          for (let _i344 = 0; _i344 < _size342; ++_i344) {
-            let elem345 = null;
-            elem345 = new ttypes.TColumn();
-            elem345.read(input);
-            this.cols.push(elem345);
+          const _rtmp3348 = input.readListBegin();
+          const _size347 = _rtmp3348.size || 0;
+          for (let _i349 = 0; _i349 < _size347; ++_i349) {
+            let elem350 = null;
+            elem350 = new ttypes.TColumn();
+            elem350.read(input);
+            this.cols.push(elem350);
           }
           input.readListEnd();
         } else {
@@ -23498,12 +23636,12 @@ const OmniSci_load_table_binary_columnar_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.column_names = [];
-          const _rtmp3347 = input.readListBegin();
-          const _size346 = _rtmp3347.size || 0;
-          for (let _i348 = 0; _i348 < _size346; ++_i348) {
-            let elem349 = null;
-            elem349 = input.readString();
-            this.column_names.push(elem349);
+          const _rtmp3352 = input.readListBegin();
+          const _size351 = _rtmp3352.size || 0;
+          for (let _i353 = 0; _i353 < _size351; ++_i353) {
+            let elem354 = null;
+            elem354 = input.readString();
+            this.column_names.push(elem354);
           }
           input.readListEnd();
         } else {
@@ -23534,10 +23672,10 @@ const OmniSci_load_table_binary_columnar_args = class {
     if (this.cols !== null && this.cols !== undefined) {
       output.writeFieldBegin('cols', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-      for (let iter350 in this.cols) {
-        if (this.cols.hasOwnProperty(iter350)) {
-          iter350 = this.cols[iter350];
-          iter350.write(output);
+      for (let iter355 in this.cols) {
+        if (this.cols.hasOwnProperty(iter355)) {
+          iter355 = this.cols[iter355];
+          iter355.write(output);
         }
       }
       output.writeListEnd();
@@ -23546,10 +23684,10 @@ const OmniSci_load_table_binary_columnar_args = class {
     if (this.column_names !== null && this.column_names !== undefined) {
       output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter351 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter351)) {
-          iter351 = this.column_names[iter351];
-          output.writeString(iter351);
+      for (let iter356 in this.column_names) {
+        if (this.column_names.hasOwnProperty(iter356)) {
+          iter356 = this.column_names[iter356];
+          output.writeString(iter356);
         }
       }
       output.writeListEnd();
@@ -23671,13 +23809,13 @@ const OmniSci_load_table_binary_columnar_polys_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.cols = [];
-          const _rtmp3353 = input.readListBegin();
-          const _size352 = _rtmp3353.size || 0;
-          for (let _i354 = 0; _i354 < _size352; ++_i354) {
-            let elem355 = null;
-            elem355 = new ttypes.TColumn();
-            elem355.read(input);
-            this.cols.push(elem355);
+          const _rtmp3358 = input.readListBegin();
+          const _size357 = _rtmp3358.size || 0;
+          for (let _i359 = 0; _i359 < _size357; ++_i359) {
+            let elem360 = null;
+            elem360 = new ttypes.TColumn();
+            elem360.read(input);
+            this.cols.push(elem360);
           }
           input.readListEnd();
         } else {
@@ -23687,12 +23825,12 @@ const OmniSci_load_table_binary_columnar_polys_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.column_names = [];
-          const _rtmp3357 = input.readListBegin();
-          const _size356 = _rtmp3357.size || 0;
-          for (let _i358 = 0; _i358 < _size356; ++_i358) {
-            let elem359 = null;
-            elem359 = input.readString();
-            this.column_names.push(elem359);
+          const _rtmp3362 = input.readListBegin();
+          const _size361 = _rtmp3362.size || 0;
+          for (let _i363 = 0; _i363 < _size361; ++_i363) {
+            let elem364 = null;
+            elem364 = input.readString();
+            this.column_names.push(elem364);
           }
           input.readListEnd();
         } else {
@@ -23730,10 +23868,10 @@ const OmniSci_load_table_binary_columnar_polys_args = class {
     if (this.cols !== null && this.cols !== undefined) {
       output.writeFieldBegin('cols', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-      for (let iter360 in this.cols) {
-        if (this.cols.hasOwnProperty(iter360)) {
-          iter360 = this.cols[iter360];
-          iter360.write(output);
+      for (let iter365 in this.cols) {
+        if (this.cols.hasOwnProperty(iter365)) {
+          iter365 = this.cols[iter365];
+          iter365.write(output);
         }
       }
       output.writeListEnd();
@@ -23742,10 +23880,10 @@ const OmniSci_load_table_binary_columnar_polys_args = class {
     if (this.column_names !== null && this.column_names !== undefined) {
       output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter361 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter361)) {
-          iter361 = this.column_names[iter361];
-          output.writeString(iter361);
+      for (let iter366 in this.column_names) {
+        if (this.column_names.hasOwnProperty(iter366)) {
+          iter366 = this.column_names[iter366];
+          output.writeString(iter366);
         }
       }
       output.writeListEnd();
@@ -24022,13 +24160,13 @@ const OmniSci_load_table_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.rows = [];
-          const _rtmp3363 = input.readListBegin();
-          const _size362 = _rtmp3363.size || 0;
-          for (let _i364 = 0; _i364 < _size362; ++_i364) {
-            let elem365 = null;
-            elem365 = new ttypes.TStringRow();
-            elem365.read(input);
-            this.rows.push(elem365);
+          const _rtmp3368 = input.readListBegin();
+          const _size367 = _rtmp3368.size || 0;
+          for (let _i369 = 0; _i369 < _size367; ++_i369) {
+            let elem370 = null;
+            elem370 = new ttypes.TStringRow();
+            elem370.read(input);
+            this.rows.push(elem370);
           }
           input.readListEnd();
         } else {
@@ -24038,12 +24176,12 @@ const OmniSci_load_table_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.column_names = [];
-          const _rtmp3367 = input.readListBegin();
-          const _size366 = _rtmp3367.size || 0;
-          for (let _i368 = 0; _i368 < _size366; ++_i368) {
-            let elem369 = null;
-            elem369 = input.readString();
-            this.column_names.push(elem369);
+          const _rtmp3372 = input.readListBegin();
+          const _size371 = _rtmp3372.size || 0;
+          for (let _i373 = 0; _i373 < _size371; ++_i373) {
+            let elem374 = null;
+            elem374 = input.readString();
+            this.column_names.push(elem374);
           }
           input.readListEnd();
         } else {
@@ -24074,10 +24212,10 @@ const OmniSci_load_table_args = class {
     if (this.rows !== null && this.rows !== undefined) {
       output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-      for (let iter370 in this.rows) {
-        if (this.rows.hasOwnProperty(iter370)) {
-          iter370 = this.rows[iter370];
-          iter370.write(output);
+      for (let iter375 in this.rows) {
+        if (this.rows.hasOwnProperty(iter375)) {
+          iter375 = this.rows[iter375];
+          iter375.write(output);
         }
       }
       output.writeListEnd();
@@ -24086,10 +24224,10 @@ const OmniSci_load_table_args = class {
     if (this.column_names !== null && this.column_names !== undefined) {
       output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter371 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter371)) {
-          iter371 = this.column_names[iter371];
-          output.writeString(iter371);
+      for (let iter376 in this.column_names) {
+        if (this.column_names.hasOwnProperty(iter376)) {
+          iter376 = this.column_names[iter376];
+          output.writeString(iter376);
         }
       }
       output.writeListEnd();
@@ -24364,13 +24502,13 @@ const OmniSci_create_table_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.row_desc = [];
-          const _rtmp3373 = input.readListBegin();
-          const _size372 = _rtmp3373.size || 0;
-          for (let _i374 = 0; _i374 < _size372; ++_i374) {
-            let elem375 = null;
-            elem375 = new ttypes.TColumnType();
-            elem375.read(input);
-            this.row_desc.push(elem375);
+          const _rtmp3378 = input.readListBegin();
+          const _size377 = _rtmp3378.size || 0;
+          for (let _i379 = 0; _i379 < _size377; ++_i379) {
+            let elem380 = null;
+            elem380 = new ttypes.TColumnType();
+            elem380.read(input);
+            this.row_desc.push(elem380);
           }
           input.readListEnd();
         } else {
@@ -24416,10 +24554,10 @@ const OmniSci_create_table_args = class {
     if (this.row_desc !== null && this.row_desc !== undefined) {
       output.writeFieldBegin('row_desc', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-      for (let iter376 in this.row_desc) {
-        if (this.row_desc.hasOwnProperty(iter376)) {
-          iter376 = this.row_desc[iter376];
-          iter376.write(output);
+      for (let iter381 in this.row_desc) {
+        if (this.row_desc.hasOwnProperty(iter381)) {
+          iter381 = this.row_desc[iter381];
+          iter381.write(output);
         }
       }
       output.writeListEnd();
@@ -24725,13 +24863,13 @@ const OmniSci_import_geo_table_args = class {
         case 5:
         if (ftype == Thrift.Type.LIST) {
           this.row_desc = [];
-          const _rtmp3378 = input.readListBegin();
-          const _size377 = _rtmp3378.size || 0;
-          for (let _i379 = 0; _i379 < _size377; ++_i379) {
-            let elem380 = null;
-            elem380 = new ttypes.TColumnType();
-            elem380.read(input);
-            this.row_desc.push(elem380);
+          const _rtmp3383 = input.readListBegin();
+          const _size382 = _rtmp3383.size || 0;
+          for (let _i384 = 0; _i384 < _size382; ++_i384) {
+            let elem385 = null;
+            elem385 = new ttypes.TColumnType();
+            elem385.read(input);
+            this.row_desc.push(elem385);
           }
           input.readListEnd();
         } else {
@@ -24780,10 +24918,10 @@ const OmniSci_import_geo_table_args = class {
     if (this.row_desc !== null && this.row_desc !== undefined) {
       output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
       output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-      for (let iter381 in this.row_desc) {
-        if (this.row_desc.hasOwnProperty(iter381)) {
-          iter381 = this.row_desc[iter381];
-          iter381.write(output);
+      for (let iter386 in this.row_desc) {
+        if (this.row_desc.hasOwnProperty(iter386)) {
+          iter386 = this.row_desc[iter386];
+          iter386.write(output);
         }
       }
       output.writeListEnd();
@@ -25258,12 +25396,12 @@ const OmniSci_get_all_files_in_archive_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3383 = input.readListBegin();
-          const _size382 = _rtmp3383.size || 0;
-          for (let _i384 = 0; _i384 < _size382; ++_i384) {
-            let elem385 = null;
-            elem385 = input.readString();
-            this.success.push(elem385);
+          const _rtmp3388 = input.readListBegin();
+          const _size387 = _rtmp3388.size || 0;
+          for (let _i389 = 0; _i389 < _size387; ++_i389) {
+            let elem390 = null;
+            elem390 = input.readString();
+            this.success.push(elem390);
           }
           input.readListEnd();
         } else {
@@ -25292,10 +25430,10 @@ const OmniSci_get_all_files_in_archive_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter386 in this.success) {
-        if (this.success.hasOwnProperty(iter386)) {
-          iter386 = this.success[iter386];
-          output.writeString(iter386);
+      for (let iter391 in this.success) {
+        if (this.success.hasOwnProperty(iter391)) {
+          iter391 = this.success[iter391];
+          output.writeString(iter391);
         }
       }
       output.writeListEnd();
@@ -25425,13 +25563,13 @@ const OmniSci_get_layers_in_geo_file_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3388 = input.readListBegin();
-          const _size387 = _rtmp3388.size || 0;
-          for (let _i389 = 0; _i389 < _size387; ++_i389) {
-            let elem390 = null;
-            elem390 = new ttypes.TGeoFileLayerInfo();
-            elem390.read(input);
-            this.success.push(elem390);
+          const _rtmp3393 = input.readListBegin();
+          const _size392 = _rtmp3393.size || 0;
+          for (let _i394 = 0; _i394 < _size392; ++_i394) {
+            let elem395 = null;
+            elem395 = new ttypes.TGeoFileLayerInfo();
+            elem395.read(input);
+            this.success.push(elem395);
           }
           input.readListEnd();
         } else {
@@ -25460,10 +25598,10 @@ const OmniSci_get_layers_in_geo_file_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter391 in this.success) {
-        if (this.success.hasOwnProperty(iter391)) {
-          iter391 = this.success[iter391];
-          iter391.write(output);
+      for (let iter396 in this.success) {
+        if (this.success.hasOwnProperty(iter396)) {
+          iter396 = this.success[iter396];
+          iter396.write(output);
         }
       }
       output.writeListEnd();
@@ -25829,12 +25967,12 @@ const OmniSci_start_query_args = class {
         case 6:
         if (ftype == Thrift.Type.LIST) {
           this.outer_fragment_indices = [];
-          const _rtmp3393 = input.readListBegin();
-          const _size392 = _rtmp3393.size || 0;
-          for (let _i394 = 0; _i394 < _size392; ++_i394) {
-            let elem395 = null;
-            elem395 = input.readI64();
-            this.outer_fragment_indices.push(elem395);
+          const _rtmp3398 = input.readListBegin();
+          const _size397 = _rtmp3398.size || 0;
+          for (let _i399 = 0; _i399 < _size397; ++_i399) {
+            let elem400 = null;
+            elem400 = input.readI64();
+            this.outer_fragment_indices.push(elem400);
           }
           input.readListEnd();
         } else {
@@ -25880,10 +26018,10 @@ const OmniSci_start_query_args = class {
     if (this.outer_fragment_indices !== null && this.outer_fragment_indices !== undefined) {
       output.writeFieldBegin('outer_fragment_indices', Thrift.Type.LIST, 6);
       output.writeListBegin(Thrift.Type.I64, this.outer_fragment_indices.length);
-      for (let iter396 in this.outer_fragment_indices) {
-        if (this.outer_fragment_indices.hasOwnProperty(iter396)) {
-          iter396 = this.outer_fragment_indices[iter396];
-          output.writeI64(iter396);
+      for (let iter401 in this.outer_fragment_indices) {
+        if (this.outer_fragment_indices.hasOwnProperty(iter401)) {
+          iter401 = this.outer_fragment_indices[iter401];
+          output.writeI64(iter401);
         }
       }
       output.writeListEnd();
@@ -26166,13 +26304,13 @@ const OmniSci_broadcast_serialized_rows_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.row_desc = [];
-          const _rtmp3398 = input.readListBegin();
-          const _size397 = _rtmp3398.size || 0;
-          for (let _i399 = 0; _i399 < _size397; ++_i399) {
-            let elem400 = null;
-            elem400 = new ttypes.TColumnType();
-            elem400.read(input);
-            this.row_desc.push(elem400);
+          const _rtmp3403 = input.readListBegin();
+          const _size402 = _rtmp3403.size || 0;
+          for (let _i404 = 0; _i404 < _size402; ++_i404) {
+            let elem405 = null;
+            elem405 = new ttypes.TColumnType();
+            elem405.read(input);
+            this.row_desc.push(elem405);
           }
           input.readListEnd();
         } else {
@@ -26219,10 +26357,10 @@ const OmniSci_broadcast_serialized_rows_args = class {
     if (this.row_desc !== null && this.row_desc !== undefined) {
       output.writeFieldBegin('row_desc', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-      for (let iter401 in this.row_desc) {
-        if (this.row_desc.hasOwnProperty(iter401)) {
-          iter401 = this.row_desc[iter401];
-          iter401.write(output);
+      for (let iter406 in this.row_desc) {
+        if (this.row_desc.hasOwnProperty(iter406)) {
+          iter406 = this.row_desc[iter406];
+          iter406.write(output);
         }
       }
       output.writeListEnd();
@@ -26509,53 +26647,53 @@ const OmniSci_execute_next_render_step_args = class {
         case 2:
         if (ftype == Thrift.Type.MAP) {
           this.merged_data = {};
-          const _rtmp3403 = input.readMapBegin();
-          const _size402 = _rtmp3403.size || 0;
-          for (let _i404 = 0; _i404 < _size402; ++_i404) {
-            let key405 = null;
-            let val406 = null;
-            key405 = input.readString();
-            val406 = {};
-            const _rtmp3408 = input.readMapBegin();
-            const _size407 = _rtmp3408.size || 0;
-            for (let _i409 = 0; _i409 < _size407; ++_i409) {
-              let key410 = null;
-              let val411 = null;
-              key410 = input.readString();
-              val411 = {};
-              const _rtmp3413 = input.readMapBegin();
-              const _size412 = _rtmp3413.size || 0;
-              for (let _i414 = 0; _i414 < _size412; ++_i414) {
-                let key415 = null;
-                let val416 = null;
-                key415 = input.readString();
-                val416 = {};
-                const _rtmp3418 = input.readMapBegin();
-                const _size417 = _rtmp3418.size || 0;
-                for (let _i419 = 0; _i419 < _size417; ++_i419) {
-                  let key420 = null;
-                  let val421 = null;
-                  key420 = input.readString();
-                  val421 = [];
-                  const _rtmp3423 = input.readListBegin();
-                  const _size422 = _rtmp3423.size || 0;
-                  for (let _i424 = 0; _i424 < _size422; ++_i424) {
-                    let elem425 = null;
-                    elem425 = new ttypes.TRenderDatum();
-                    elem425.read(input);
-                    val421.push(elem425);
+          const _rtmp3408 = input.readMapBegin();
+          const _size407 = _rtmp3408.size || 0;
+          for (let _i409 = 0; _i409 < _size407; ++_i409) {
+            let key410 = null;
+            let val411 = null;
+            key410 = input.readString();
+            val411 = {};
+            const _rtmp3413 = input.readMapBegin();
+            const _size412 = _rtmp3413.size || 0;
+            for (let _i414 = 0; _i414 < _size412; ++_i414) {
+              let key415 = null;
+              let val416 = null;
+              key415 = input.readString();
+              val416 = {};
+              const _rtmp3418 = input.readMapBegin();
+              const _size417 = _rtmp3418.size || 0;
+              for (let _i419 = 0; _i419 < _size417; ++_i419) {
+                let key420 = null;
+                let val421 = null;
+                key420 = input.readString();
+                val421 = {};
+                const _rtmp3423 = input.readMapBegin();
+                const _size422 = _rtmp3423.size || 0;
+                for (let _i424 = 0; _i424 < _size422; ++_i424) {
+                  let key425 = null;
+                  let val426 = null;
+                  key425 = input.readString();
+                  val426 = [];
+                  const _rtmp3428 = input.readListBegin();
+                  const _size427 = _rtmp3428.size || 0;
+                  for (let _i429 = 0; _i429 < _size427; ++_i429) {
+                    let elem430 = null;
+                    elem430 = new ttypes.TRenderDatum();
+                    elem430.read(input);
+                    val426.push(elem430);
                   }
                   input.readListEnd();
-                  val416[key420] = val421;
+                  val421[key425] = val426;
                 }
                 input.readMapEnd();
-                val411[key415] = val416;
+                val416[key420] = val421;
               }
               input.readMapEnd();
-              val406[key410] = val411;
+              val411[key415] = val416;
             }
             input.readMapEnd();
-            this.merged_data[key405] = val406;
+            this.merged_data[key410] = val411;
           }
           input.readMapEnd();
         } else {
@@ -26581,30 +26719,30 @@ const OmniSci_execute_next_render_step_args = class {
     if (this.merged_data !== null && this.merged_data !== undefined) {
       output.writeFieldBegin('merged_data', Thrift.Type.MAP, 2);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.merged_data));
-      for (let kiter426 in this.merged_data) {
-        if (this.merged_data.hasOwnProperty(kiter426)) {
-          let viter427 = this.merged_data[kiter426];
-          output.writeString(kiter426);
-          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter427));
-          for (let kiter428 in viter427) {
-            if (viter427.hasOwnProperty(kiter428)) {
-              let viter429 = viter427[kiter428];
-              output.writeString(kiter428);
-              output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter429));
-              for (let kiter430 in viter429) {
-                if (viter429.hasOwnProperty(kiter430)) {
-                  let viter431 = viter429[kiter430];
-                  output.writeString(kiter430);
-                  output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter431));
-                  for (let kiter432 in viter431) {
-                    if (viter431.hasOwnProperty(kiter432)) {
-                      let viter433 = viter431[kiter432];
-                      output.writeString(kiter432);
-                      output.writeListBegin(Thrift.Type.STRUCT, viter433.length);
-                      for (let iter434 in viter433) {
-                        if (viter433.hasOwnProperty(iter434)) {
-                          iter434 = viter433[iter434];
-                          iter434.write(output);
+      for (let kiter431 in this.merged_data) {
+        if (this.merged_data.hasOwnProperty(kiter431)) {
+          let viter432 = this.merged_data[kiter431];
+          output.writeString(kiter431);
+          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter432));
+          for (let kiter433 in viter432) {
+            if (viter432.hasOwnProperty(kiter433)) {
+              let viter434 = viter432[kiter433];
+              output.writeString(kiter433);
+              output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter434));
+              for (let kiter435 in viter434) {
+                if (viter434.hasOwnProperty(kiter435)) {
+                  let viter436 = viter434[kiter435];
+                  output.writeString(kiter435);
+                  output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter436));
+                  for (let kiter437 in viter436) {
+                    if (viter436.hasOwnProperty(kiter437)) {
+                      let viter438 = viter436[kiter437];
+                      output.writeString(kiter437);
+                      output.writeListBegin(Thrift.Type.STRUCT, viter438.length);
+                      for (let iter439 in viter438) {
+                        if (viter438.hasOwnProperty(iter439)) {
+                          iter439 = viter438[iter439];
+                          iter439.write(output);
                         }
                       }
                       output.writeListEnd();
@@ -27027,12 +27165,12 @@ const OmniSci_get_roles_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3436 = input.readListBegin();
-          const _size435 = _rtmp3436.size || 0;
-          for (let _i437 = 0; _i437 < _size435; ++_i437) {
-            let elem438 = null;
-            elem438 = input.readString();
-            this.success.push(elem438);
+          const _rtmp3441 = input.readListBegin();
+          const _size440 = _rtmp3441.size || 0;
+          for (let _i442 = 0; _i442 < _size440; ++_i442) {
+            let elem443 = null;
+            elem443 = input.readString();
+            this.success.push(elem443);
           }
           input.readListEnd();
         } else {
@@ -27061,10 +27199,10 @@ const OmniSci_get_roles_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter439 in this.success) {
-        if (this.success.hasOwnProperty(iter439)) {
-          iter439 = this.success[iter439];
-          output.writeString(iter439);
+      for (let iter444 in this.success) {
+        if (this.success.hasOwnProperty(iter444)) {
+          iter444 = this.success[iter444];
+          output.writeString(iter444);
         }
       }
       output.writeListEnd();
@@ -27177,13 +27315,13 @@ const OmniSci_get_db_objects_for_grantee_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3441 = input.readListBegin();
-          const _size440 = _rtmp3441.size || 0;
-          for (let _i442 = 0; _i442 < _size440; ++_i442) {
-            let elem443 = null;
-            elem443 = new ttypes.TDBObject();
-            elem443.read(input);
-            this.success.push(elem443);
+          const _rtmp3446 = input.readListBegin();
+          const _size445 = _rtmp3446.size || 0;
+          for (let _i447 = 0; _i447 < _size445; ++_i447) {
+            let elem448 = null;
+            elem448 = new ttypes.TDBObject();
+            elem448.read(input);
+            this.success.push(elem448);
           }
           input.readListEnd();
         } else {
@@ -27212,10 +27350,10 @@ const OmniSci_get_db_objects_for_grantee_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter444 in this.success) {
-        if (this.success.hasOwnProperty(iter444)) {
-          iter444 = this.success[iter444];
-          iter444.write(output);
+      for (let iter449 in this.success) {
+        if (this.success.hasOwnProperty(iter449)) {
+          iter449 = this.success[iter449];
+          iter449.write(output);
         }
       }
       output.writeListEnd();
@@ -27344,13 +27482,13 @@ const OmniSci_get_db_object_privs_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3446 = input.readListBegin();
-          const _size445 = _rtmp3446.size || 0;
-          for (let _i447 = 0; _i447 < _size445; ++_i447) {
-            let elem448 = null;
-            elem448 = new ttypes.TDBObject();
-            elem448.read(input);
-            this.success.push(elem448);
+          const _rtmp3451 = input.readListBegin();
+          const _size450 = _rtmp3451.size || 0;
+          for (let _i452 = 0; _i452 < _size450; ++_i452) {
+            let elem453 = null;
+            elem453 = new ttypes.TDBObject();
+            elem453.read(input);
+            this.success.push(elem453);
           }
           input.readListEnd();
         } else {
@@ -27379,10 +27517,10 @@ const OmniSci_get_db_object_privs_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter449 in this.success) {
-        if (this.success.hasOwnProperty(iter449)) {
-          iter449 = this.success[iter449];
-          iter449.write(output);
+      for (let iter454 in this.success) {
+        if (this.success.hasOwnProperty(iter454)) {
+          iter454 = this.success[iter454];
+          iter454.write(output);
         }
       }
       output.writeListEnd();
@@ -27495,12 +27633,12 @@ const OmniSci_get_all_roles_for_user_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3451 = input.readListBegin();
-          const _size450 = _rtmp3451.size || 0;
-          for (let _i452 = 0; _i452 < _size450; ++_i452) {
-            let elem453 = null;
-            elem453 = input.readString();
-            this.success.push(elem453);
+          const _rtmp3456 = input.readListBegin();
+          const _size455 = _rtmp3456.size || 0;
+          for (let _i457 = 0; _i457 < _size455; ++_i457) {
+            let elem458 = null;
+            elem458 = input.readString();
+            this.success.push(elem458);
           }
           input.readListEnd();
         } else {
@@ -27529,10 +27667,10 @@ const OmniSci_get_all_roles_for_user_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter454 in this.success) {
-        if (this.success.hasOwnProperty(iter454)) {
-          iter454 = this.success[iter454];
-          output.writeString(iter454);
+      for (let iter459 in this.success) {
+        if (this.success.hasOwnProperty(iter459)) {
+          iter459 = this.success[iter459];
+          output.writeString(iter459);
         }
       }
       output.writeListEnd();
@@ -27645,12 +27783,12 @@ const OmniSci_get_all_effective_roles_for_user_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3456 = input.readListBegin();
-          const _size455 = _rtmp3456.size || 0;
-          for (let _i457 = 0; _i457 < _size455; ++_i457) {
-            let elem458 = null;
-            elem458 = input.readString();
-            this.success.push(elem458);
+          const _rtmp3461 = input.readListBegin();
+          const _size460 = _rtmp3461.size || 0;
+          for (let _i462 = 0; _i462 < _size460; ++_i462) {
+            let elem463 = null;
+            elem463 = input.readString();
+            this.success.push(elem463);
           }
           input.readListEnd();
         } else {
@@ -27679,10 +27817,10 @@ const OmniSci_get_all_effective_roles_for_user_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter459 in this.success) {
-        if (this.success.hasOwnProperty(iter459)) {
-          iter459 = this.success[iter459];
-          output.writeString(iter459);
+      for (let iter464 in this.success) {
+        if (this.success.hasOwnProperty(iter464)) {
+          iter464 = this.success[iter464];
+          output.writeString(iter464);
         }
       }
       output.writeListEnd();
@@ -28405,14 +28543,14 @@ const OmniSci_get_device_parameters_result = class {
         case 0:
         if (ftype == Thrift.Type.MAP) {
           this.success = {};
-          const _rtmp3461 = input.readMapBegin();
-          const _size460 = _rtmp3461.size || 0;
-          for (let _i462 = 0; _i462 < _size460; ++_i462) {
-            let key463 = null;
-            let val464 = null;
-            key463 = input.readString();
-            val464 = input.readString();
-            this.success[key463] = val464;
+          const _rtmp3466 = input.readMapBegin();
+          const _size465 = _rtmp3466.size || 0;
+          for (let _i467 = 0; _i467 < _size465; ++_i467) {
+            let key468 = null;
+            let val469 = null;
+            key468 = input.readString();
+            val469 = input.readString();
+            this.success[key468] = val469;
           }
           input.readMapEnd();
         } else {
@@ -28441,11 +28579,11 @@ const OmniSci_get_device_parameters_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.MAP, 0);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.success));
-      for (let kiter465 in this.success) {
-        if (this.success.hasOwnProperty(kiter465)) {
-          let viter466 = this.success[kiter465];
-          output.writeString(kiter465);
-          output.writeString(viter466);
+      for (let kiter470 in this.success) {
+        if (this.success.hasOwnProperty(kiter470)) {
+          let viter471 = this.success[kiter470];
+          output.writeString(kiter470);
+          output.writeString(viter471);
         }
       }
       output.writeMapEnd();
@@ -28504,13 +28642,13 @@ const OmniSci_register_runtime_extension_functions_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.udfs = [];
-          const _rtmp3468 = input.readListBegin();
-          const _size467 = _rtmp3468.size || 0;
-          for (let _i469 = 0; _i469 < _size467; ++_i469) {
-            let elem470 = null;
-            elem470 = new extension_functions_ttypes.TUserDefinedFunction();
-            elem470.read(input);
-            this.udfs.push(elem470);
+          const _rtmp3473 = input.readListBegin();
+          const _size472 = _rtmp3473.size || 0;
+          for (let _i474 = 0; _i474 < _size472; ++_i474) {
+            let elem475 = null;
+            elem475 = new extension_functions_ttypes.TUserDefinedFunction();
+            elem475.read(input);
+            this.udfs.push(elem475);
           }
           input.readListEnd();
         } else {
@@ -28520,13 +28658,13 @@ const OmniSci_register_runtime_extension_functions_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.udtfs = [];
-          const _rtmp3472 = input.readListBegin();
-          const _size471 = _rtmp3472.size || 0;
-          for (let _i473 = 0; _i473 < _size471; ++_i473) {
-            let elem474 = null;
-            elem474 = new extension_functions_ttypes.TUserDefinedTableFunction();
-            elem474.read(input);
-            this.udtfs.push(elem474);
+          const _rtmp3477 = input.readListBegin();
+          const _size476 = _rtmp3477.size || 0;
+          for (let _i478 = 0; _i478 < _size476; ++_i478) {
+            let elem479 = null;
+            elem479 = new extension_functions_ttypes.TUserDefinedTableFunction();
+            elem479.read(input);
+            this.udtfs.push(elem479);
           }
           input.readListEnd();
         } else {
@@ -28536,14 +28674,14 @@ const OmniSci_register_runtime_extension_functions_args = class {
         case 4:
         if (ftype == Thrift.Type.MAP) {
           this.device_ir_map = {};
-          const _rtmp3476 = input.readMapBegin();
-          const _size475 = _rtmp3476.size || 0;
-          for (let _i477 = 0; _i477 < _size475; ++_i477) {
-            let key478 = null;
-            let val479 = null;
-            key478 = input.readString();
-            val479 = input.readString();
-            this.device_ir_map[key478] = val479;
+          const _rtmp3481 = input.readMapBegin();
+          const _size480 = _rtmp3481.size || 0;
+          for (let _i482 = 0; _i482 < _size480; ++_i482) {
+            let key483 = null;
+            let val484 = null;
+            key483 = input.readString();
+            val484 = input.readString();
+            this.device_ir_map[key483] = val484;
           }
           input.readMapEnd();
         } else {
@@ -28569,10 +28707,10 @@ const OmniSci_register_runtime_extension_functions_args = class {
     if (this.udfs !== null && this.udfs !== undefined) {
       output.writeFieldBegin('udfs', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.STRUCT, this.udfs.length);
-      for (let iter480 in this.udfs) {
-        if (this.udfs.hasOwnProperty(iter480)) {
-          iter480 = this.udfs[iter480];
-          iter480.write(output);
+      for (let iter485 in this.udfs) {
+        if (this.udfs.hasOwnProperty(iter485)) {
+          iter485 = this.udfs[iter485];
+          iter485.write(output);
         }
       }
       output.writeListEnd();
@@ -28581,10 +28719,10 @@ const OmniSci_register_runtime_extension_functions_args = class {
     if (this.udtfs !== null && this.udtfs !== undefined) {
       output.writeFieldBegin('udtfs', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.udtfs.length);
-      for (let iter481 in this.udtfs) {
-        if (this.udtfs.hasOwnProperty(iter481)) {
-          iter481 = this.udtfs[iter481];
-          iter481.write(output);
+      for (let iter486 in this.udtfs) {
+        if (this.udtfs.hasOwnProperty(iter486)) {
+          iter486 = this.udtfs[iter486];
+          iter486.write(output);
         }
       }
       output.writeListEnd();
@@ -28593,11 +28731,11 @@ const OmniSci_register_runtime_extension_functions_args = class {
     if (this.device_ir_map !== null && this.device_ir_map !== undefined) {
       output.writeFieldBegin('device_ir_map', Thrift.Type.MAP, 4);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.device_ir_map));
-      for (let kiter482 in this.device_ir_map) {
-        if (this.device_ir_map.hasOwnProperty(kiter482)) {
-          let viter483 = this.device_ir_map[kiter482];
-          output.writeString(kiter482);
-          output.writeString(viter483);
+      for (let kiter487 in this.device_ir_map) {
+        if (this.device_ir_map.hasOwnProperty(kiter487)) {
+          let viter488 = this.device_ir_map[kiter487];
+          output.writeString(kiter487);
+          output.writeString(viter488);
         }
       }
       output.writeMapEnd();
@@ -30548,6 +30686,60 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       return callback(null, result.success);
     }
     return callback('get_session_info failed: unknown result');
+  }
+
+  get_queries_info (session) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_queries_info(session);
+    });
+  }
+
+  send_get_queries_info (session) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session
+    };
+    const args = new OmniSci_get_queries_info_args(params);
+    try {
+      output.writeMessageBegin('get_queries_info', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_queries_info (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new OmniSci_get_queries_info_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_queries_info failed: unknown result');
   }
 
   sql_execute (session, query, column_format, nonce, first_n, at_most_n) {
@@ -35358,6 +35550,48 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       });
     }
   }
+  process_get_queries_info (seqid, input, output) {
+    const args = new OmniSci_get_queries_info_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_queries_info.length === 1) {
+      Promise.resolve(this._handler.get_queries_info.bind(this._handler)(
+        args.session
+      )).then(result => {
+        const result_obj = new OmniSci_get_queries_info_result({success: result});
+        output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TOmniSciException) {
+          result = new OmniSci_get_queries_info_result(err);
+          output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_queries_info", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_queries_info(args.session, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+          result_obj = new OmniSci_get_queries_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_queries_info", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
   process_sql_execute (seqid, input, output) {
     const args = new OmniSci_sql_execute_args();
     args.read(input);
@@ -38437,7 +38671,8 @@ ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
   'kUserSpecifiedRowMultiplier' : 2,
-  'kTableFunctionSpecifiedParameter' : 3
+  'kTableFunctionSpecifiedParameter' : 3,
+  'kPreFlightParameter' : 4
 };
 const TUserDefinedFunction = module.exports.TUserDefinedFunction = class {
   constructor(args) {
@@ -38790,8 +39025,9 @@ ttypes.TExecuteMode = {
 };
 ttypes.TFileType = {
   'DELIMITED' : 0,
-  'POLYGON' : 1,
-  'PARQUET' : 2
+  'GEO' : 1,
+  'PARQUET' : 2,
+  'RASTER' : 3
 };
 ttypes.TPartitionDetail = {
   'DEFAULT' : 0,
@@ -38819,6 +39055,21 @@ ttypes.TRole = {
 ttypes.TMergeType = {
   'UNION' : 0,
   'REDUCE' : 1
+};
+ttypes.TRasterPointType = {
+  'NONE' : 0,
+  'AUTO' : 1,
+  'SMALLINT' : 2,
+  'INT' : 3,
+  'FLOAT' : 4,
+  'DOUBLE' : 5,
+  'POINT' : 6
+};
+ttypes.TRasterPointTransform = {
+  'NONE' : 0,
+  'AUTO' : 1,
+  'FILE' : 2,
+  'WORLD' : 3
 };
 ttypes.TQueryType = {
   'UNKNOWN' : 0,
@@ -40423,6 +40674,12 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.geo_explode_collections = false;
     this.source_srid = 0;
     this.s3_session_token = null;
+    this.raster_point_type = 1;
+    this.raster_import_bands = null;
+    this.raster_scanlines_per_thread = null;
+    this.raster_point_transform = 1;
+    this.raster_point_compute_angle = false;
+    this.raster_import_dimensions = null;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -40501,6 +40758,24 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.s3_session_token !== undefined && args.s3_session_token !== null) {
         this.s3_session_token = args.s3_session_token;
+      }
+      if (args.raster_point_type !== undefined && args.raster_point_type !== null) {
+        this.raster_point_type = args.raster_point_type;
+      }
+      if (args.raster_import_bands !== undefined && args.raster_import_bands !== null) {
+        this.raster_import_bands = args.raster_import_bands;
+      }
+      if (args.raster_scanlines_per_thread !== undefined && args.raster_scanlines_per_thread !== null) {
+        this.raster_scanlines_per_thread = args.raster_scanlines_per_thread;
+      }
+      if (args.raster_point_transform !== undefined && args.raster_point_transform !== null) {
+        this.raster_point_transform = args.raster_point_transform;
+      }
+      if (args.raster_point_compute_angle !== undefined && args.raster_point_compute_angle !== null) {
+        this.raster_point_compute_angle = args.raster_point_compute_angle;
+      }
+      if (args.raster_import_dimensions !== undefined && args.raster_import_dimensions !== null) {
+        this.raster_import_dimensions = args.raster_import_dimensions;
       }
     }
   }
@@ -40697,6 +40972,48 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 27:
+        if (ftype == Thrift.Type.I32) {
+          this.raster_point_type = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 28:
+        if (ftype == Thrift.Type.STRING) {
+          this.raster_import_bands = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 29:
+        if (ftype == Thrift.Type.I32) {
+          this.raster_scanlines_per_thread = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 30:
+        if (ftype == Thrift.Type.I32) {
+          this.raster_point_transform = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 31:
+        if (ftype == Thrift.Type.BOOL) {
+          this.raster_point_compute_angle = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 32:
+        if (ftype == Thrift.Type.STRING) {
+          this.raster_import_dimensions = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -40836,6 +41153,36 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.s3_session_token !== null && this.s3_session_token !== undefined) {
       output.writeFieldBegin('s3_session_token', Thrift.Type.STRING, 26);
       output.writeString(this.s3_session_token);
+      output.writeFieldEnd();
+    }
+    if (this.raster_point_type !== null && this.raster_point_type !== undefined) {
+      output.writeFieldBegin('raster_point_type', Thrift.Type.I32, 27);
+      output.writeI32(this.raster_point_type);
+      output.writeFieldEnd();
+    }
+    if (this.raster_import_bands !== null && this.raster_import_bands !== undefined) {
+      output.writeFieldBegin('raster_import_bands', Thrift.Type.STRING, 28);
+      output.writeString(this.raster_import_bands);
+      output.writeFieldEnd();
+    }
+    if (this.raster_scanlines_per_thread !== null && this.raster_scanlines_per_thread !== undefined) {
+      output.writeFieldBegin('raster_scanlines_per_thread', Thrift.Type.I32, 29);
+      output.writeI32(this.raster_scanlines_per_thread);
+      output.writeFieldEnd();
+    }
+    if (this.raster_point_transform !== null && this.raster_point_transform !== undefined) {
+      output.writeFieldBegin('raster_point_transform', Thrift.Type.I32, 30);
+      output.writeI32(this.raster_point_transform);
+      output.writeFieldEnd();
+    }
+    if (this.raster_point_compute_angle !== null && this.raster_point_compute_angle !== undefined) {
+      output.writeFieldBegin('raster_point_compute_angle', Thrift.Type.BOOL, 31);
+      output.writeBool(this.raster_point_compute_angle);
+      output.writeFieldEnd();
+    }
+    if (this.raster_import_dimensions !== null && this.raster_import_dimensions !== undefined) {
+      output.writeFieldBegin('raster_import_dimensions', Thrift.Type.STRING, 32);
+      output.writeString(this.raster_import_dimensions);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -45817,6 +46164,199 @@ const TCustomExpression = module.exports.TCustomExpression = class {
     if (this.data_source_name !== null && this.data_source_name !== undefined) {
       output.writeFieldBegin('data_source_name', Thrift.Type.STRING, 8);
       output.writeString(this.data_source_name);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const TQueryInfo = module.exports.TQueryInfo = class {
+  constructor(args) {
+    this.query_session_id = null;
+    this.query_public_session_id = null;
+    this.current_status = null;
+    this.executor_id = null;
+    this.submitted = null;
+    this.query_str = null;
+    this.login_name = null;
+    this.client_address = null;
+    this.db_name = null;
+    this.exec_device_type = null;
+    if (args) {
+      if (args.query_session_id !== undefined && args.query_session_id !== null) {
+        this.query_session_id = args.query_session_id;
+      }
+      if (args.query_public_session_id !== undefined && args.query_public_session_id !== null) {
+        this.query_public_session_id = args.query_public_session_id;
+      }
+      if (args.current_status !== undefined && args.current_status !== null) {
+        this.current_status = args.current_status;
+      }
+      if (args.executor_id !== undefined && args.executor_id !== null) {
+        this.executor_id = args.executor_id;
+      }
+      if (args.submitted !== undefined && args.submitted !== null) {
+        this.submitted = args.submitted;
+      }
+      if (args.query_str !== undefined && args.query_str !== null) {
+        this.query_str = args.query_str;
+      }
+      if (args.login_name !== undefined && args.login_name !== null) {
+        this.login_name = args.login_name;
+      }
+      if (args.client_address !== undefined && args.client_address !== null) {
+        this.client_address = args.client_address;
+      }
+      if (args.db_name !== undefined && args.db_name !== null) {
+        this.db_name = args.db_name;
+      }
+      if (args.exec_device_type !== undefined && args.exec_device_type !== null) {
+        this.exec_device_type = args.exec_device_type;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.query_session_id = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.STRING) {
+          this.query_public_session_id = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 3:
+        if (ftype == Thrift.Type.STRING) {
+          this.current_status = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 4:
+        if (ftype == Thrift.Type.I32) {
+          this.executor_id = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 5:
+        if (ftype == Thrift.Type.STRING) {
+          this.submitted = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 6:
+        if (ftype == Thrift.Type.STRING) {
+          this.query_str = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 7:
+        if (ftype == Thrift.Type.STRING) {
+          this.login_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 8:
+        if (ftype == Thrift.Type.STRING) {
+          this.client_address = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 9:
+        if (ftype == Thrift.Type.STRING) {
+          this.db_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 10:
+        if (ftype == Thrift.Type.STRING) {
+          this.exec_device_type = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TQueryInfo');
+    if (this.query_session_id !== null && this.query_session_id !== undefined) {
+      output.writeFieldBegin('query_session_id', Thrift.Type.STRING, 1);
+      output.writeString(this.query_session_id);
+      output.writeFieldEnd();
+    }
+    if (this.query_public_session_id !== null && this.query_public_session_id !== undefined) {
+      output.writeFieldBegin('query_public_session_id', Thrift.Type.STRING, 2);
+      output.writeString(this.query_public_session_id);
+      output.writeFieldEnd();
+    }
+    if (this.current_status !== null && this.current_status !== undefined) {
+      output.writeFieldBegin('current_status', Thrift.Type.STRING, 3);
+      output.writeString(this.current_status);
+      output.writeFieldEnd();
+    }
+    if (this.executor_id !== null && this.executor_id !== undefined) {
+      output.writeFieldBegin('executor_id', Thrift.Type.I32, 4);
+      output.writeI32(this.executor_id);
+      output.writeFieldEnd();
+    }
+    if (this.submitted !== null && this.submitted !== undefined) {
+      output.writeFieldBegin('submitted', Thrift.Type.STRING, 5);
+      output.writeString(this.submitted);
+      output.writeFieldEnd();
+    }
+    if (this.query_str !== null && this.query_str !== undefined) {
+      output.writeFieldBegin('query_str', Thrift.Type.STRING, 6);
+      output.writeString(this.query_str);
+      output.writeFieldEnd();
+    }
+    if (this.login_name !== null && this.login_name !== undefined) {
+      output.writeFieldBegin('login_name', Thrift.Type.STRING, 7);
+      output.writeString(this.login_name);
+      output.writeFieldEnd();
+    }
+    if (this.client_address !== null && this.client_address !== undefined) {
+      output.writeFieldBegin('client_address', Thrift.Type.STRING, 8);
+      output.writeString(this.client_address);
+      output.writeFieldEnd();
+    }
+    if (this.db_name !== null && this.db_name !== undefined) {
+      output.writeFieldBegin('db_name', Thrift.Type.STRING, 9);
+      output.writeString(this.db_name);
+      output.writeFieldEnd();
+    }
+    if (this.exec_device_type !== null && this.exec_device_type !== undefined) {
+      output.writeFieldBegin('exec_device_type', Thrift.Type.STRING, 10);
+      output.writeString(this.exec_device_type);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
