@@ -219,6 +219,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var COMPRESSION_LEVEL_DEFAULT = 3;
 
 function arrayify(maybeArray) {
@@ -813,12 +814,62 @@ var MapdCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync", 2));
 
+    _defineProperty(this, "buildTFileTypeMap", function () {
+      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType) {
+        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType.hasOwnProperty(key)) {
+          _this2.TFileTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType[key]] = key;
+        }
+      }
+    });
+
+    _defineProperty(this, "buildTImportHeaderRowMap", function () {
+      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow) {
+        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow.hasOwnProperty(key)) {
+          _this2.TImportHeaderRowMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow[key]] = key;
+        }
+      }
+    });
+
+    _defineProperty(this, "buildTEncodingTypeMap", function () {
+      for (var encoding in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType) {
+        if (_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType.hasOwnProperty(encoding)) {
+          _this2.TEncodingTypeMap[_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType[encoding]] = encoding;
+        }
+      }
+    });
+
+    _defineProperty(this, "buildTRasterPointTypeMap", function () {
+      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType) {
+        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType.hasOwnProperty(key)) {
+          _this2.TRasterPointTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType[key]] = key;
+        }
+      }
+    });
+
+    _defineProperty(this, "buildTRasterPointTransformMap", function () {
+      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform) {
+        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform.hasOwnProperty(key)) {
+          _this2.TRasterPointTransformMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform[key]] = key;
+        }
+      }
+    });
+
+    _defineProperty(this, "buildTSourceTypeMap", function () {
+      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType) {
+        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType.hasOwnProperty(key)) {
+          _this2.TSourceTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform[key]] = key;
+        }
+      }
+    });
+
     _defineProperty(this, "getFieldsAsync", this.handleErrors(function (tableName) {
       var getTableDetails = _this2.wrapThrift("get_table_details", _this2.overSingleClient, function (args) {
         return args;
       });
 
       return getTableDetails(tableName).then(function (fields) {
+        console.log("fields => ", fields);
+
         if (fields) {
           var rowDict = fields.row_desc.reduce(function (accum, value) {
             accum[value.col_name] = value;
@@ -943,6 +994,12 @@ var MapdCon = /*#__PURE__*/function () {
     this._protocol = null;
     this._disableAutoReconnect = false;
     this._datumEnum = {};
+    this.TFileTypeMap = {};
+    this.TEncodingTypeMap = {};
+    this.TImportHeaderRowMap = {};
+    this.TRasterPointTypeMap = {};
+    this.TRasterPointTransformMap = {};
+    this.TSourceTypeMap = {};
     this._logging = false;
     this._platform = "mapd";
     this._nonce = 0;
@@ -958,6 +1015,12 @@ var MapdCon = /*#__PURE__*/function () {
     this.importerRowDesc = null; // invoke initialization methods
 
     this.invertDatumTypes();
+    this.buildTFileTypeMap();
+    this.buildTEncodingTypeMap();
+    this.buildTImportHeaderRowMap();
+    this.buildTRasterPointTypeMap();
+    this.buildTRasterPointTransformMap();
+    this.buildTSourceTypeMap();
 
     this.processResults = function () {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
