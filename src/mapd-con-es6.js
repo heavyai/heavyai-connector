@@ -14,8 +14,13 @@ import {
   TDBObjectPermissions,
   TDBObjectType,
   TPixel,
-  TOmniSciException, TImportHeaderRow, TFileType, TRasterPointType, TSourceType, TRasterPointTransform
-} from "../thrift/omnisci_types.js";
+  TOmniSciException,
+  TImportHeaderRow,
+  TFileType,
+  TRasterPointType,
+  TSourceType,
+  TRasterPointTransform
+} from "../thrift/omnisci_types.js"
 import MapDThrift from "../thrift/OmniSci.js"
 import {
   TBinaryProtocol,
@@ -1430,7 +1435,7 @@ export class MapdCon {
   getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
   buildTFileTypeMap = () => {
-    for(const key in TFileType) {
+    for (const key in TFileType) {
       if (TFileType.hasOwnProperty(key)) {
         this.TFileTypeMap[TFileType[key]] = key
       }
@@ -1438,7 +1443,7 @@ export class MapdCon {
   }
 
   buildTImportHeaderRowMap = () => {
-    for(const key in TImportHeaderRow) {
+    for (const key in TImportHeaderRow) {
       if (TImportHeaderRow.hasOwnProperty(key)) {
         this.TImportHeaderRowMap[TImportHeaderRow[key]] = key
       }
@@ -1446,7 +1451,7 @@ export class MapdCon {
   }
 
   buildTEncodingTypeMap = () => {
-    for(const encoding in TEncodingType) {
+    for (const encoding in TEncodingType) {
       if (TEncodingType.hasOwnProperty(encoding)) {
         this.TEncodingTypeMap[TEncodingType[encoding]] = encoding
       }
@@ -1454,7 +1459,7 @@ export class MapdCon {
   }
 
   buildTRasterPointTypeMap = () => {
-    for(const key in TRasterPointType) {
+    for (const key in TRasterPointType) {
       if (TRasterPointType.hasOwnProperty(key)) {
         this.TRasterPointTypeMap[TRasterPointType[key]] = key
       }
@@ -1462,7 +1467,7 @@ export class MapdCon {
   }
 
   buildTRasterPointTransformMap = () => {
-    for(const key in TRasterPointTransform) {
+    for (const key in TRasterPointTransform) {
       if (TRasterPointTransform.hasOwnProperty(key)) {
         this.TRasterPointTransformMap[TRasterPointTransform[key]] = key
       }
@@ -1470,7 +1475,7 @@ export class MapdCon {
   }
 
   buildTSourceTypeMap = () => {
-    for(const key in TSourceType) {
+    for (const key in TSourceType) {
       if (TSourceType.hasOwnProperty(key)) {
         this.TSourceTypeMap[TRasterPointTransform[key]] = key
       }

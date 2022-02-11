@@ -215,7 +215,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-
 var COMPRESSION_LEVEL_DEFAULT = 3;
 
 function arrayify(maybeArray) {
@@ -850,8 +849,6 @@ var MapdCon = /*#__PURE__*/function () {
       });
 
       return getTableDetails(tableName).then(function (fields) {
-        console.log("fields => ", fields);
-
         if (fields) {
           var rowDict = fields.row_desc.reduce(function (accum, value) {
             accum[value.col_name] = value;
