@@ -1,7 +1,6 @@
 import EventEmitter from "eventemitter3"
 import { Table } from "apache-arrow"
 import util from "util"
-
 import {
   TDatumType,
   TEncodingType,
@@ -15,7 +14,12 @@ import {
   TDBObjectPermissions,
   TDBObjectType,
   TPixel,
-  TOmniSciException
+  TOmniSciException,
+  TImportHeaderRow,
+  TFileType,
+  TRasterPointType,
+  TSourceType,
+  TRasterPointTransform
 } from "../thrift/omnisci_types.js"
 import MapDThrift from "../thrift/OmniSci.js"
 import {
@@ -27,7 +31,6 @@ import {
   createHttpConnection,
   createXHRClient
 } from "thrift"
-
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
 
@@ -195,6 +198,12 @@ export class MapdCon {
     this._protocol = null
     this._disableAutoReconnect = false
     this._datumEnum = {}
+    this.TFileTypeMap = {}
+    this.TEncodingTypeMap = {}
+    this.TImportHeaderRowMap = {}
+    this.TRasterPointTypeMap = {}
+    this.TRasterPointTransformMap = {}
+    this.TSourceTypeMap = {}
     this._logging = false
     this._platform = "mapd"
     this._nonce = 0
@@ -211,6 +220,12 @@ export class MapdCon {
 
     // invoke initialization methods
     this.invertDatumTypes()
+    this.buildTFileTypeMap()
+    this.buildTEncodingTypeMap()
+    this.buildTImportHeaderRowMap()
+    this.buildTRasterPointTypeMap()
+    this.buildTRasterPointTransformMap()
+    this.buildTSourceTypeMap()
 
     this.processResults = (options = {}, promise) =>
       promise
@@ -1418,6 +1433,54 @@ export class MapdCon {
    *
    */
   getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
+
+  buildTFileTypeMap = () => {
+    for (const key in TFileType) {
+      if (TFileType.hasOwnProperty(key)) {
+        this.TFileTypeMap[TFileType[key]] = key
+      }
+    }
+  }
+
+  buildTImportHeaderRowMap = () => {
+    for (const key in TImportHeaderRow) {
+      if (TImportHeaderRow.hasOwnProperty(key)) {
+        this.TImportHeaderRowMap[TImportHeaderRow[key]] = key
+      }
+    }
+  }
+
+  buildTEncodingTypeMap = () => {
+    for (const encoding in TEncodingType) {
+      if (TEncodingType.hasOwnProperty(encoding)) {
+        this.TEncodingTypeMap[TEncodingType[encoding]] = encoding
+      }
+    }
+  }
+
+  buildTRasterPointTypeMap = () => {
+    for (const key in TRasterPointType) {
+      if (TRasterPointType.hasOwnProperty(key)) {
+        this.TRasterPointTypeMap[TRasterPointType[key]] = key
+      }
+    }
+  }
+
+  buildTRasterPointTransformMap = () => {
+    for (const key in TRasterPointTransform) {
+      if (TRasterPointTransform.hasOwnProperty(key)) {
+        this.TRasterPointTransformMap[TRasterPointTransform[key]] = key
+      }
+    }
+  }
+
+  buildTSourceTypeMap = () => {
+    for (const key in TSourceType) {
+      if (TSourceType.hasOwnProperty(key)) {
+        this.TSourceTypeMap[TRasterPointTransform[key]] = key
+      }
+    }
+  }
 
   /**
    * Create an array-like object from {@link TDatumType} by

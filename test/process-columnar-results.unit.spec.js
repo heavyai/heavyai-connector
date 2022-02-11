@@ -2,17 +2,17 @@ import { expect } from "chai"
 import processColumnarResults from "../src/process-columnar-results"
 
 const dataEnum = {
-  "0": "SMALLINT",
-  "1": "INT",
-  "2": "BIGINT",
-  "3": "FLOAT",
-  "4": "DECIMAL",
-  "5": "DOUBLE",
-  "6": "STR",
-  "7": "TIME",
-  "8": "TIMESTAMP",
-  "9": "DATE",
-  "10": "BOOL"
+  0: "SMALLINT",
+  1: "INT",
+  2: "BIGINT",
+  3: "FLOAT",
+  4: "DECIMAL",
+  5: "DOUBLE",
+  6: "STR",
+  7: "TIME",
+  8: "TIMESTAMP",
+  9: "DATE",
+  10: "BOOL"
 }
 
 describe("processColumnarResults", () => {
