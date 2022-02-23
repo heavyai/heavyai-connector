@@ -866,13 +866,12 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "getFields", this.callbackify("getFieldsAsync", 1));
 
     _defineProperty(this, "createTableAsync", this.handleErrors(this.wrapThrift("create_table", this.overAllClients, function (_ref13) {
-      var _ref14 = _slicedToArray(_ref13, 4),
+      var _ref14 = _slicedToArray(_ref13, 3),
           tableName = _ref14[0],
           rowDescObj = _ref14[1],
-          tableType = _ref14[2],
-          createParams = _ref14[3];
+          createParams = _ref14[2];
 
-      return [tableName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), tableType, createParams];
+      return [tableName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), createParams];
     })));
 
     _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
