@@ -72,74 +72,13 @@ module.exports = function availableTypedArrays() {
 
 /***/ }),
 
-/***/ 2033:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Dq": () => /* binding */ convertObjectToThriftCopyParams,
-/* harmony export */   "HP": () => /* binding */ mutateThriftRowDesc,
-/* harmony export */   "RK": () => /* binding */ timestampToMs,
-/* harmony export */   "kS": () => /* binding */ valueToBoolean
-/* harmony export */ });
-/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
-/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__);
-
-var convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
-  return new _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__.TCopyParams(obj);
-}; // eslint-disable-line no-undef
-
-var mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
-  rowDescArray.forEach(function (obj, i) {
-    thriftRowDescArray[i].col_name = obj.clean_col_name;
-    thriftRowDescArray[i].col_type.encoding = obj.col_type.encoding;
-    thriftRowDescArray[i].col_type.precision = obj.col_type.precision;
-    thriftRowDescArray[i].col_type.comp_param = obj.col_type.comp_param;
-    thriftRowDescArray[i].col_type.scale = obj.col_type.scale;
-    thriftRowDescArray[i].col_type.type = obj.col_type.type;
-  });
-  return thriftRowDescArray;
-};
-/**
- * Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
- * represent seconds, ms, us, or ns depending on the precision of the column. This value is
- * truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
- * for passing to the JS Date object constructor.
- * @param {Number} timestamp - The raw integer timestamp in the database.
- * @param {Number} precision - The precision of the timestamp column in the database.
- * @returns {Number} The equivalent timestamp in milliseconds.
- */
-
-function timestampToMs(timestamp, precision) {
-  // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
-  // eslint-disable-next-line no-magic-numbers
-  var divisor = Math.pow(10, precision - 3);
-  var timeInMs = timestamp / divisor;
-  return timeInMs;
-}
-/**
- * Converts a Number/BigInt value to a Boolean
- * @param {BigInt} value - A BigInt value
- * @returns {Boolean} The equivalent boolean value representing the buffer
- */
-
-function valueToBoolean(value) {
-  if (value.toNumber) {
-    return Boolean(value.toNumber(true));
-  }
-
-  return Boolean(value);
-}
-
-/***/ }),
-
-/***/ 3330:
+/***/ 7123:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MapdCon": () => /* binding */ MapdCon,
+/* harmony export */   "DbCon": () => /* binding */ DbCon,
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__,
 /* harmony export */   "Client": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__.Client,
 /* harmony export */   "Processor": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__.Processor
@@ -159,25 +98,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5141);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2033);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4494);
 /* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1396);
 /* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3962);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* provided dependency */ var Buffer = __webpack_require__(8764)["Buffer"];
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -367,11 +306,11 @@ function buildClient(url, useBinaryProtocol) {
   return client;
 }
 
-var MapdCon = /*#__PURE__*/function () {
-  function MapdCon() {
+var DbCon = /*#__PURE__*/function () {
+  function DbCon() {
     var _this2 = this;
 
-    _classCallCheck(this, MapdCon);
+    _classCallCheck(this, DbCon);
 
     _defineProperty(this, "updateQueryTimes", function (conId, queryId, estimatedQueryTime, execution_time_ms) {
       _this2.queryTimes[queryId] = execution_time_ms;
@@ -980,7 +919,7 @@ var MapdCon = /*#__PURE__*/function () {
     this.TRasterPointTransformMap = {};
     this.TSourceTypeMap = {};
     this._logging = false;
-    this._platform = "mapd";
+    this._platform = "heavydb";
     this._nonce = 0;
     this._balanceStrategy = "adaptive";
     this._numConnections = 0;
@@ -1022,7 +961,7 @@ var MapdCon = /*#__PURE__*/function () {
     return this;
   }
 
-  _createClass(MapdCon, [{
+  _createClass(DbCon, [{
     key: "removeConnection",
     value: function removeConnection(conId) {
       if (conId < 0 || conId >= this.numConnections) {
@@ -1047,7 +986,7 @@ var MapdCon = /*#__PURE__*/function () {
      * Initializes the connector for use. This is similar to `connect()`, but stops short of
      * actually connecting to the server.
      *
-     * @return {MapdCon} Object.
+     * @return {DbCon} Object.
      */
 
   }, {
@@ -1099,10 +1038,10 @@ var MapdCon = /*#__PURE__*/function () {
     }
     /**
      * Create a connection to the MapD server, generating a client and session ID.
-     * @return {Promise.MapdCon} Object.
+     * @return {Promise.DbCon} Object.
      *
      * @example <caption>Connect to a MapD server:</caption>
-     * var con = new MapdCon()
+     * var con = new DbCon()
      *   .host('localhost')
      *   .port('8080')
      *   .dbName('myDatabase')
@@ -1162,10 +1101,10 @@ var MapdCon = /*#__PURE__*/function () {
     /**
      * Create a connection to the MapD server, generating a client and session ID.
      * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-     * @return {Promise.MapdCon} Object.
+     * @return {Promise.DbCon} Object.
      *
      * @example <caption>Connect to a MapD server:</caption>
-     * var con = new MapdCon()
+     * var con = new DbCon()
      *   .host('localhost')
      *   .port('8080')
      *   .dbName('myDatabase')
@@ -1199,7 +1138,7 @@ var MapdCon = /*#__PURE__*/function () {
     }
     /**
      * Disconnect from the server and then clear the client and session values.
-     * @return {Promise.MapdCon} Object.
+     * @return {Promise.DbCon} Object.
      *
      * @example <caption>Disconnect from the server:</caption>
      *
@@ -1279,7 +1218,7 @@ var MapdCon = /*#__PURE__*/function () {
      * Get or set the session ID used by the server to serve the correct data.
      * This is typically set by {@link connect} and should not be set manually.
      * @param {Number} sessionId The session ID of the current connection.
-     * @return {Number|MapdCon} - The session ID or MapD connector itself.
+     * @return {Number|DbCon} - The session ID or MapD connector itself.
      *
      * @example <caption>Get the session ID:</caption>
      *
@@ -1287,7 +1226,7 @@ var MapdCon = /*#__PURE__*/function () {
      * // sessionID === 3145846410
      *
      * @example <caption>Set the session ID:</caption>
-     * var con = new MapdCon().connect().sessionId(3415846410);
+     * var con = new DbCon().connect().sessionId(3415846410);
      * // NOTE: It is generally unsafe to set the session ID manually.
      */
     value: function sessionId(_sessionId) {
@@ -1310,12 +1249,12 @@ var MapdCon = /*#__PURE__*/function () {
     }
     /**
      * Get or set the connection server hostname.
-     * This is is typically the first method called after instantiating a new MapdCon.
+     * This is is typically the first method called after instantiating a new DbCon.
      * @param {String} host The hostname address.
-     * @return {String|MapdCon} The hostname or MapD connector itself.
+     * @return {String|DbCon} The hostname or MapD connector itself.
      *
      * @example <caption>Set the hostname:</caption>
-     * var con = new MapdCon().host('localhost');
+     * var con = new DbCon().host('localhost');
      *
      * @example <caption>Get the hostname:</caption>
      * var host = con.host();
@@ -1335,10 +1274,10 @@ var MapdCon = /*#__PURE__*/function () {
     /**
      * Get or set the connection port.
      * @param {String} port - The port to connect on.
-     * @return {String|MapdCon} - The port or MapD connector itself.
+     * @return {String|DbCon} - The port or MapD connector itself.
      *
      * @example <caption>Set the port:</caption>
-     * var con = new MapdCon().port('8080');
+     * var con = new DbCon().port('8080');
      *
      * @example <caption>Get the port:</caption>
      * var port = con.port();
@@ -1358,10 +1297,10 @@ var MapdCon = /*#__PURE__*/function () {
     /**
      * Get or set the username with which to authenticate.
      * @param {String} user - The username with which to authenticate.
-     * @return {String|MapdCon} - The username or MapD connector itself.
+     * @return {String|DbCon} - The username or MapD connector itself.
      *
      * @example <caption>Set the username:</caption>
-     * var con = new MapdCon().user('foo');
+     * var con = new DbCon().user('foo');
      *
      * @example <caption>Get the username:</caption>
      * var username = con.user();
@@ -1381,10 +1320,10 @@ var MapdCon = /*#__PURE__*/function () {
     /**
      * Get or set the user password for authentication.
      * @param {String} password The password with which to authenticate.
-     * @return {String|MapdCon} The password or MapD connector itself.
+     * @return {String|DbCon} The password or MapD connector itself.
      *
      * @example <caption>Set the password:</caption>
-     * var con = new MapdCon().password('bar');
+     * var con = new DbCon().password('bar');
      *
      * @example <caption>Get the username:</caption>
      * var password = con.password();
@@ -1404,10 +1343,10 @@ var MapdCon = /*#__PURE__*/function () {
     /**
      * Get or set the name of the database to connect to.
      * @param {String} dbName - The database to connect to.
-     * @return {String|MapdCon} - The name of the database or the MapD connector itself.
+     * @return {String|DbCon} - The name of the database or the MapD connector itself.
      *
      * @example <caption>Set the database name:</caption>
-     * var con = new MapdCon().dbName('myDatabase');
+     * var con = new DbCon().dbName('myDatabase');
      *
      * @example <caption>Get the database name:</caption>
      * var dbName = con.dbName();
@@ -1428,10 +1367,10 @@ var MapdCon = /*#__PURE__*/function () {
      * Configure whether raw query strings are logged to the console.
      * Used primarily for debugging; `false` by default.
      * @param {Boolean} logging Set to true to enable logging.
-     * @return {Boolean|MapdCon} The current logging flag or MapD connector itself.
+     * @return {Boolean|DbCon} The current logging flag or MapD connector itself.
      *
      * @example <caption>Set logging to true:</caption>
-     * var con = new MapdCon().logging(true);
+     * var con = new DbCon().logging(true);
      *
      * @example <caption>Get the logging flag:</caption>
      * var isLogging = con.logging();
@@ -1453,11 +1392,11 @@ var MapdCon = /*#__PURE__*/function () {
     }
     /**
      * The name of the platform.
-     * @param {String} platform The platform; "mapd" by default.
-     * @return {String|MapdCon} - The platform or MapD connector itself.
+     * @param {String} platform The platform; "heavydb" by default.
+     * @return {String|DbCon} - The platform or MapD connector itself.
      *
      * @example <caption>Set the platform name:</caption>
-     * var con = new MapdCon().platform('myPlatform');
+     * var con = new DbCon().platform('myPlatform');
      *
      * @example <caption>Get the platform name:</caption>
      * var platform = con.platform();
@@ -1492,10 +1431,10 @@ var MapdCon = /*#__PURE__*/function () {
     /**
      * The protocol to use for requests.
      * @param {String} protocol <code>http</code> or <code>https</code>.
-     * @return {String|MapdCon} The protocol or MapdCon itself.
+     * @return {String|DbCon} The protocol or DbCon itself.
      *
      * @example <caption>Set the protocol:</caption>
-     * var con = new MapdCon().protocol('http');
+     * var con = new DbCon().protocol('http');
      *
      * @example <caption>Get the protocol:</caption>
      * var protocol = con.protocol();
@@ -1516,7 +1455,7 @@ var MapdCon = /*#__PURE__*/function () {
      * Disables logic that automatically tries to reconnect to the server if there's an error
      *
      * @param {Boolean?} disable - If true, disables auto-reconnect
-     * @return {Boolean|MapdCon} The status of auto-reconnect, or MapdCon itself.
+     * @return {Boolean|DbCon} The status of auto-reconnect, or DbCon itself.
      */
 
   }, {
@@ -1534,7 +1473,7 @@ var MapdCon = /*#__PURE__*/function () {
      * @return {Array<String>} List of endpoints.
      *
      * @example <caption>Get the endpoints:</caption>
-     * var con = new MapdCon().protocol('http').host('localhost').port('8000');
+     * var con = new DbCon().protocol('http').host('localhost').port('8000');
      * var endpoints = con.getEndpoints();
      * // endpoints === [ 'http://localhost:8000' ]
      */
@@ -1606,15 +1545,76 @@ var MapdCon = /*#__PURE__*/function () {
     }
   }]);
 
-  return MapdCon;
+  return DbCon;
 }();
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MapdCon);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DbCon);
 
 
 
 
 
 
+
+/***/ }),
+
+/***/ 2033:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Dq": () => /* binding */ convertObjectToThriftCopyParams,
+/* harmony export */   "HP": () => /* binding */ mutateThriftRowDesc,
+/* harmony export */   "RK": () => /* binding */ timestampToMs,
+/* harmony export */   "kS": () => /* binding */ valueToBoolean
+/* harmony export */ });
+/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
+/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__);
+
+var convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
+  return new _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__.TCopyParams(obj);
+}; // eslint-disable-line no-undef
+
+var mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
+  rowDescArray.forEach(function (obj, i) {
+    thriftRowDescArray[i].col_name = obj.clean_col_name;
+    thriftRowDescArray[i].col_type.encoding = obj.col_type.encoding;
+    thriftRowDescArray[i].col_type.precision = obj.col_type.precision;
+    thriftRowDescArray[i].col_type.comp_param = obj.col_type.comp_param;
+    thriftRowDescArray[i].col_type.scale = obj.col_type.scale;
+    thriftRowDescArray[i].col_type.type = obj.col_type.type;
+  });
+  return thriftRowDescArray;
+};
+/**
+ * Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
+ * represent seconds, ms, us, or ns depending on the precision of the column. This value is
+ * truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
+ * for passing to the JS Date object constructor.
+ * @param {Number} timestamp - The raw integer timestamp in the database.
+ * @param {Number} precision - The precision of the timestamp column in the database.
+ * @returns {Number} The equivalent timestamp in milliseconds.
+ */
+
+function timestampToMs(timestamp, precision) {
+  // A precision of 0 = sec, 3 = ms. Thus, this line finds the value to divide the DB val
+  // eslint-disable-next-line no-magic-numbers
+  var divisor = Math.pow(10, precision - 3);
+  var timeInMs = timestamp / divisor;
+  return timeInMs;
+}
+/**
+ * Converts a Number/BigInt value to a Boolean
+ * @param {BigInt} value - A BigInt value
+ * @returns {Boolean} The equivalent boolean value representing the buffer
+ */
+
+function valueToBoolean(value) {
+  if (value.toNumber) {
+    return Boolean(value.toNumber(true));
+  }
+
+  return Boolean(value);
+}
 
 /***/ }),
 
@@ -48766,7 +48766,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__2003__;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(3330);
+/******/ 	return __webpack_require__(7123);
 /******/ })()
 ;
 });

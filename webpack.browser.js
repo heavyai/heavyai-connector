@@ -2,7 +2,7 @@ const path = require("path")
 const webpack = require("webpack")
 
 module.exports = {
-  entry: ["./src/mapd-con-es6.js"],
+  entry: ["./src/heavy-con-es6.js"],
   plugins: [
     new webpack.ProgressPlugin(),
     new webpack.ProvidePlugin({
@@ -50,9 +50,9 @@ module.exports = {
   output: {
     library: {
       name: {
-        // commonjs: "@mapd/connector",
-        amd: "@mapd/connector"
-        // root: "MapdCon"
+        // commonjs: "@heavyai/connector",
+        amd: "@heavyai/connector"
+        // root: "DbCon"
       },
       type: "umd"
     },

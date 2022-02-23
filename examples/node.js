@@ -1,12 +1,12 @@
 /* eslint-disable */
 
-const { MapdCon } = require("../dist/node-connector.js")
+const { DbCon } = require("../dist/node-connector.js")
 
-const hostname = process.env.HOSTNAME || "metis.mapd.com"
+const hostname = process.env.HOSTNAME || "metis.heavy.ai"
 const protocol = process.env.PROTOCOL || "https"
 const port = process.env.PORT || "443"
-const database = process.env.DATABASE || "mapd"
-const username = process.env.USERNAME || "mapd"
+const database = process.env.DATABASE || "heavydb"
+const username = process.env.USERNAME || "heavy"
 const password = process.env.PASSWORD || "HyperInteractive"
 
 // The total number of tweets from Columbia
@@ -15,7 +15,7 @@ const query2 =
   "SELECT carrier_name as key0, AVG(airtime) AS val FROM flights_donotmodify WHERE airtime IS NOT NULL GROUP BY key0 ORDER BY val DESC LIMIT 100"
 const defaultQueryOptions = {}
 
-const connector = new MapdCon()
+const connector = new DbCon()
 
 connector
   .protocol(protocol)

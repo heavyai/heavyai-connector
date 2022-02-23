@@ -1,7 +1,7 @@
 {
-  "name": "@mapd/connector",
-  "description": "Connector to omniscidb",
-  "version": "6.0.0",
+  "name": "@heavyai/connector",
+  "description": "Connector to heavydb",
+  "version": "7.0.0",
   "license": "Apache-2.0",
   "scripts": {
     "build": "bash scripts/build.sh",
@@ -24,7 +24,7 @@
   "jsdelivr": "dist/browser-connector.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/omnisci/mapd-connector"
+    "url": "http://github.com/heavyai/heavyai-connector"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
