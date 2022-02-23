@@ -20,17 +20,11 @@ ttypes.TExecuteMode = {
   'GPU' : 1,
   'CPU' : 2
 };
-ttypes.TFileType = {
-  'DELIMITED' : 0,
-  'GEO' : 1,
-  'PARQUET' : 2,
-  'RASTER' : 3
-};
 ttypes.TSourceType = {
-  'DELIMITED' : 0,
-  'GEO' : 1,
-  'PARQUET' : 2,
-  'RASTER' : 3,
+  'DELIMITED_FILE' : 0,
+  'GEO_FILE' : 1,
+  'PARQUET_FILE' : 2,
+  'RASTER_FILE' : 3,
   'ODBC' : 4
 };
 ttypes.TPartitionDetail = {
@@ -1682,7 +1676,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.array_begin = null;
     this.array_end = null;
     this.threads = null;
-    this.file_type = 0;
+    this.source_type = 0;
     this.s3_access_key = null;
     this.s3_secret_key = null;
     this.s3_region = null;
@@ -1703,8 +1697,6 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.raster_point_transform = 1;
     this.raster_point_compute_angle = false;
     this.raster_import_dimensions = null;
-    this.use_source_type = false;
-    this.source_type = 0;
     this.odbc_dsn = null;
     this.odbc_connection_string = null;
     this.odbc_sql_select = null;
@@ -1746,8 +1738,8 @@ const TCopyParams = module.exports.TCopyParams = class {
       if (args.threads !== undefined && args.threads !== null) {
         this.threads = args.threads;
       }
-      if (args.file_type !== undefined && args.file_type !== null) {
-        this.file_type = args.file_type;
+      if (args.source_type !== undefined && args.source_type !== null) {
+        this.source_type = args.source_type;
       }
       if (args.s3_access_key !== undefined && args.s3_access_key !== null) {
         this.s3_access_key = args.s3_access_key;
@@ -1808,12 +1800,6 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.raster_import_dimensions !== undefined && args.raster_import_dimensions !== null) {
         this.raster_import_dimensions = args.raster_import_dimensions;
-      }
-      if (args.use_source_type !== undefined && args.use_source_type !== null) {
-        this.use_source_type = args.use_source_type;
-      }
-      if (args.source_type !== undefined && args.source_type !== null) {
-        this.source_type = args.source_type;
       }
       if (args.odbc_dsn !== undefined && args.odbc_dsn !== null) {
         this.odbc_dsn = args.odbc_dsn;
@@ -1928,7 +1914,7 @@ const TCopyParams = module.exports.TCopyParams = class {
         break;
         case 12:
         if (ftype == Thrift.Type.I32) {
-          this.file_type = input.readI32();
+          this.source_type = input.readI32();
         } else {
           input.skip(ftype);
         }
@@ -2074,62 +2060,48 @@ const TCopyParams = module.exports.TCopyParams = class {
         }
         break;
         case 33:
-        if (ftype == Thrift.Type.BOOL) {
-          this.use_source_type = input.readBool();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 34:
-        if (ftype == Thrift.Type.I32) {
-          this.source_type = input.readI32();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 35:
         if (ftype == Thrift.Type.STRING) {
           this.odbc_dsn = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
-        case 36:
+        case 34:
         if (ftype == Thrift.Type.STRING) {
           this.odbc_connection_string = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
-        case 37:
+        case 35:
         if (ftype == Thrift.Type.STRING) {
           this.odbc_sql_select = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
-        case 38:
+        case 36:
         if (ftype == Thrift.Type.STRING) {
           this.odbc_username = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
-        case 39:
+        case 37:
         if (ftype == Thrift.Type.STRING) {
           this.odbc_password = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
-        case 40:
+        case 38:
         if (ftype == Thrift.Type.STRING) {
           this.odbc_credential_string = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
-        case 41:
+        case 39:
         if (ftype == Thrift.Type.STRING) {
           this.add_metadata_columns = input.readString();
         } else {
@@ -2202,9 +2174,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       output.writeI32(this.threads);
       output.writeFieldEnd();
     }
-    if (this.file_type !== null && this.file_type !== undefined) {
-      output.writeFieldBegin('file_type', Thrift.Type.I32, 12);
-      output.writeI32(this.file_type);
+    if (this.source_type !== null && this.source_type !== undefined) {
+      output.writeFieldBegin('source_type', Thrift.Type.I32, 12);
+      output.writeI32(this.source_type);
       output.writeFieldEnd();
     }
     if (this.s3_access_key !== null && this.s3_access_key !== undefined) {
@@ -2307,48 +2279,38 @@ const TCopyParams = module.exports.TCopyParams = class {
       output.writeString(this.raster_import_dimensions);
       output.writeFieldEnd();
     }
-    if (this.use_source_type !== null && this.use_source_type !== undefined) {
-      output.writeFieldBegin('use_source_type', Thrift.Type.BOOL, 33);
-      output.writeBool(this.use_source_type);
-      output.writeFieldEnd();
-    }
-    if (this.source_type !== null && this.source_type !== undefined) {
-      output.writeFieldBegin('source_type', Thrift.Type.I32, 34);
-      output.writeI32(this.source_type);
-      output.writeFieldEnd();
-    }
     if (this.odbc_dsn !== null && this.odbc_dsn !== undefined) {
-      output.writeFieldBegin('odbc_dsn', Thrift.Type.STRING, 35);
+      output.writeFieldBegin('odbc_dsn', Thrift.Type.STRING, 33);
       output.writeString(this.odbc_dsn);
       output.writeFieldEnd();
     }
     if (this.odbc_connection_string !== null && this.odbc_connection_string !== undefined) {
-      output.writeFieldBegin('odbc_connection_string', Thrift.Type.STRING, 36);
+      output.writeFieldBegin('odbc_connection_string', Thrift.Type.STRING, 34);
       output.writeString(this.odbc_connection_string);
       output.writeFieldEnd();
     }
     if (this.odbc_sql_select !== null && this.odbc_sql_select !== undefined) {
-      output.writeFieldBegin('odbc_sql_select', Thrift.Type.STRING, 37);
+      output.writeFieldBegin('odbc_sql_select', Thrift.Type.STRING, 35);
       output.writeString(this.odbc_sql_select);
       output.writeFieldEnd();
     }
     if (this.odbc_username !== null && this.odbc_username !== undefined) {
-      output.writeFieldBegin('odbc_username', Thrift.Type.STRING, 38);
+      output.writeFieldBegin('odbc_username', Thrift.Type.STRING, 36);
       output.writeString(this.odbc_username);
       output.writeFieldEnd();
     }
     if (this.odbc_password !== null && this.odbc_password !== undefined) {
-      output.writeFieldBegin('odbc_password', Thrift.Type.STRING, 39);
+      output.writeFieldBegin('odbc_password', Thrift.Type.STRING, 37);
       output.writeString(this.odbc_password);
       output.writeFieldEnd();
     }
     if (this.odbc_credential_string !== null && this.odbc_credential_string !== undefined) {
-      output.writeFieldBegin('odbc_credential_string', Thrift.Type.STRING, 40);
+      output.writeFieldBegin('odbc_credential_string', Thrift.Type.STRING, 38);
       output.writeString(this.odbc_credential_string);
       output.writeFieldEnd();
     }
     if (this.add_metadata_columns !== null && this.add_metadata_columns !== undefined) {
-      output.writeFieldBegin('add_metadata_columns', Thrift.Type.STRING, 41);
+      output.writeFieldBegin('add_metadata_columns', Thrift.Type.STRING, 39);
       output.writeString(this.add_metadata_columns);
       output.writeFieldEnd();
     }
@@ -5250,6 +5212,215 @@ const TInsertData = module.exports.TInsertData = class {
   }
 
 };
+const TChunkData = module.exports.TChunkData = class {
+  constructor(args) {
+    this.data_buffer = null;
+    this.index_buffer = null;
+    if (args) {
+      if (args.data_buffer !== undefined && args.data_buffer !== null) {
+        this.data_buffer = args.data_buffer;
+      }
+      if (args.index_buffer !== undefined && args.index_buffer !== null) {
+        this.index_buffer = args.index_buffer;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.data_buffer = input.readBinary();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.STRING) {
+          this.index_buffer = input.readBinary();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TChunkData');
+    if (this.data_buffer !== null && this.data_buffer !== undefined) {
+      output.writeFieldBegin('data_buffer', Thrift.Type.STRING, 1);
+      output.writeBinary(this.data_buffer);
+      output.writeFieldEnd();
+    }
+    if (this.index_buffer !== null && this.index_buffer !== undefined) {
+      output.writeFieldBegin('index_buffer', Thrift.Type.STRING, 2);
+      output.writeBinary(this.index_buffer);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const TInsertChunks = module.exports.TInsertChunks = class {
+  constructor(args) {
+    this.db_id = null;
+    this.table_id = null;
+    this.data = null;
+    this.valid_indices = null;
+    this.num_rows = null;
+    if (args) {
+      if (args.db_id !== undefined && args.db_id !== null) {
+        this.db_id = args.db_id;
+      }
+      if (args.table_id !== undefined && args.table_id !== null) {
+        this.table_id = args.table_id;
+      }
+      if (args.data !== undefined && args.data !== null) {
+        this.data = Thrift.copyList(args.data, [ttypes.TChunkData]);
+      }
+      if (args.valid_indices !== undefined && args.valid_indices !== null) {
+        this.valid_indices = Thrift.copyList(args.valid_indices, [null]);
+      }
+      if (args.num_rows !== undefined && args.num_rows !== null) {
+        this.num_rows = args.num_rows;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.I32) {
+          this.db_id = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.I32) {
+          this.table_id = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 3:
+        if (ftype == Thrift.Type.LIST) {
+          this.data = [];
+          const _rtmp3141 = input.readListBegin();
+          const _size140 = _rtmp3141.size || 0;
+          for (let _i142 = 0; _i142 < _size140; ++_i142) {
+            let elem143 = null;
+            elem143 = new ttypes.TChunkData();
+            elem143.read(input);
+            this.data.push(elem143);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 4:
+        if (ftype == Thrift.Type.LIST) {
+          this.valid_indices = [];
+          const _rtmp3145 = input.readListBegin();
+          const _size144 = _rtmp3145.size || 0;
+          for (let _i146 = 0; _i146 < _size144; ++_i146) {
+            let elem147 = null;
+            elem147 = input.readI64();
+            this.valid_indices.push(elem147);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 5:
+        if (ftype == Thrift.Type.I64) {
+          this.num_rows = input.readI64();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TInsertChunks');
+    if (this.db_id !== null && this.db_id !== undefined) {
+      output.writeFieldBegin('db_id', Thrift.Type.I32, 1);
+      output.writeI32(this.db_id);
+      output.writeFieldEnd();
+    }
+    if (this.table_id !== null && this.table_id !== undefined) {
+      output.writeFieldBegin('table_id', Thrift.Type.I32, 2);
+      output.writeI32(this.table_id);
+      output.writeFieldEnd();
+    }
+    if (this.data !== null && this.data !== undefined) {
+      output.writeFieldBegin('data', Thrift.Type.LIST, 3);
+      output.writeListBegin(Thrift.Type.STRUCT, this.data.length);
+      for (let iter148 in this.data) {
+        if (this.data.hasOwnProperty(iter148)) {
+          iter148 = this.data[iter148];
+          iter148.write(output);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.valid_indices !== null && this.valid_indices !== undefined) {
+      output.writeFieldBegin('valid_indices', Thrift.Type.LIST, 4);
+      output.writeListBegin(Thrift.Type.I64, this.valid_indices.length);
+      for (let iter149 in this.valid_indices) {
+        if (this.valid_indices.hasOwnProperty(iter149)) {
+          iter149 = this.valid_indices[iter149];
+          output.writeI64(iter149);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.num_rows !== null && this.num_rows !== undefined) {
+      output.writeFieldBegin('num_rows', Thrift.Type.I64, 5);
+      output.writeI64(this.num_rows);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
 const TPendingRenderQuery = module.exports.TPendingRenderQuery = class {
   constructor(args) {
     this.id = null;
@@ -5621,15 +5792,15 @@ const TRawPixelData = module.exports.TRawPixelData = class {
         case 3:
         if (ftype == Thrift.Type.MAP) {
           this.render_pass_map = {};
-          const _rtmp3141 = input.readMapBegin();
-          const _size140 = _rtmp3141.size || 0;
-          for (let _i142 = 0; _i142 < _size140; ++_i142) {
-            let key143 = null;
-            let val144 = null;
-            key143 = input.readI32();
-            val144 = new ttypes.TRawRenderPassDataResult();
-            val144.read(input);
-            this.render_pass_map[key143] = val144;
+          const _rtmp3151 = input.readMapBegin();
+          const _size150 = _rtmp3151.size || 0;
+          for (let _i152 = 0; _i152 < _size150; ++_i152) {
+            let key153 = null;
+            let val154 = null;
+            key153 = input.readI32();
+            val154 = new ttypes.TRawRenderPassDataResult();
+            val154.read(input);
+            this.render_pass_map[key153] = val154;
           }
           input.readMapEnd();
         } else {
@@ -5660,11 +5831,11 @@ const TRawPixelData = module.exports.TRawPixelData = class {
     if (this.render_pass_map !== null && this.render_pass_map !== undefined) {
       output.writeFieldBegin('render_pass_map', Thrift.Type.MAP, 3);
       output.writeMapBegin(Thrift.Type.I32, Thrift.Type.STRUCT, Thrift.objectLength(this.render_pass_map));
-      for (let kiter145 in this.render_pass_map) {
-        if (this.render_pass_map.hasOwnProperty(kiter145)) {
-          let viter146 = this.render_pass_map[kiter145];
-          output.writeI32(kiter145);
-          viter146.write(output);
+      for (let kiter155 in this.render_pass_map) {
+        if (this.render_pass_map.hasOwnProperty(kiter155)) {
+          let viter156 = this.render_pass_map[kiter155];
+          output.writeI32(kiter155);
+          viter156.write(output);
         }
       }
       output.writeMapEnd();
@@ -5796,53 +5967,53 @@ const TRenderStepResult = module.exports.TRenderStepResult = class {
         case 1:
         if (ftype == Thrift.Type.MAP) {
           this.merge_data = {};
-          const _rtmp3148 = input.readMapBegin();
-          const _size147 = _rtmp3148.size || 0;
-          for (let _i149 = 0; _i149 < _size147; ++_i149) {
-            let key150 = null;
-            let val151 = null;
-            key150 = input.readString();
-            val151 = {};
-            const _rtmp3153 = input.readMapBegin();
-            const _size152 = _rtmp3153.size || 0;
-            for (let _i154 = 0; _i154 < _size152; ++_i154) {
-              let key155 = null;
-              let val156 = null;
-              key155 = input.readString();
-              val156 = {};
-              const _rtmp3158 = input.readMapBegin();
-              const _size157 = _rtmp3158.size || 0;
-              for (let _i159 = 0; _i159 < _size157; ++_i159) {
-                let key160 = null;
-                let val161 = null;
-                key160 = input.readString();
-                val161 = {};
-                const _rtmp3163 = input.readMapBegin();
-                const _size162 = _rtmp3163.size || 0;
-                for (let _i164 = 0; _i164 < _size162; ++_i164) {
-                  let key165 = null;
-                  let val166 = null;
-                  key165 = input.readString();
-                  val166 = [];
-                  const _rtmp3168 = input.readListBegin();
-                  const _size167 = _rtmp3168.size || 0;
-                  for (let _i169 = 0; _i169 < _size167; ++_i169) {
-                    let elem170 = null;
-                    elem170 = new ttypes.TRenderDatum();
-                    elem170.read(input);
-                    val166.push(elem170);
+          const _rtmp3158 = input.readMapBegin();
+          const _size157 = _rtmp3158.size || 0;
+          for (let _i159 = 0; _i159 < _size157; ++_i159) {
+            let key160 = null;
+            let val161 = null;
+            key160 = input.readString();
+            val161 = {};
+            const _rtmp3163 = input.readMapBegin();
+            const _size162 = _rtmp3163.size || 0;
+            for (let _i164 = 0; _i164 < _size162; ++_i164) {
+              let key165 = null;
+              let val166 = null;
+              key165 = input.readString();
+              val166 = {};
+              const _rtmp3168 = input.readMapBegin();
+              const _size167 = _rtmp3168.size || 0;
+              for (let _i169 = 0; _i169 < _size167; ++_i169) {
+                let key170 = null;
+                let val171 = null;
+                key170 = input.readString();
+                val171 = {};
+                const _rtmp3173 = input.readMapBegin();
+                const _size172 = _rtmp3173.size || 0;
+                for (let _i174 = 0; _i174 < _size172; ++_i174) {
+                  let key175 = null;
+                  let val176 = null;
+                  key175 = input.readString();
+                  val176 = [];
+                  const _rtmp3178 = input.readListBegin();
+                  const _size177 = _rtmp3178.size || 0;
+                  for (let _i179 = 0; _i179 < _size177; ++_i179) {
+                    let elem180 = null;
+                    elem180 = new ttypes.TRenderDatum();
+                    elem180.read(input);
+                    val176.push(elem180);
                   }
                   input.readListEnd();
-                  val161[key165] = val166;
+                  val171[key175] = val176;
                 }
                 input.readMapEnd();
-                val156[key160] = val161;
+                val166[key170] = val171;
               }
               input.readMapEnd();
-              val151[key155] = val156;
+              val161[key165] = val166;
             }
             input.readMapEnd();
-            this.merge_data[key150] = val151;
+            this.merge_data[key160] = val161;
           }
           input.readMapEnd();
         } else {
@@ -5892,30 +6063,30 @@ const TRenderStepResult = module.exports.TRenderStepResult = class {
     if (this.merge_data !== null && this.merge_data !== undefined) {
       output.writeFieldBegin('merge_data', Thrift.Type.MAP, 1);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.merge_data));
-      for (let kiter171 in this.merge_data) {
-        if (this.merge_data.hasOwnProperty(kiter171)) {
-          let viter172 = this.merge_data[kiter171];
-          output.writeString(kiter171);
-          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter172));
-          for (let kiter173 in viter172) {
-            if (viter172.hasOwnProperty(kiter173)) {
-              let viter174 = viter172[kiter173];
-              output.writeString(kiter173);
-              output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter174));
-              for (let kiter175 in viter174) {
-                if (viter174.hasOwnProperty(kiter175)) {
-                  let viter176 = viter174[kiter175];
-                  output.writeString(kiter175);
-                  output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter176));
-                  for (let kiter177 in viter176) {
-                    if (viter176.hasOwnProperty(kiter177)) {
-                      let viter178 = viter176[kiter177];
-                      output.writeString(kiter177);
-                      output.writeListBegin(Thrift.Type.STRUCT, viter178.length);
-                      for (let iter179 in viter178) {
-                        if (viter178.hasOwnProperty(iter179)) {
-                          iter179 = viter178[iter179];
-                          iter179.write(output);
+      for (let kiter181 in this.merge_data) {
+        if (this.merge_data.hasOwnProperty(kiter181)) {
+          let viter182 = this.merge_data[kiter181];
+          output.writeString(kiter181);
+          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter182));
+          for (let kiter183 in viter182) {
+            if (viter182.hasOwnProperty(kiter183)) {
+              let viter184 = viter182[kiter183];
+              output.writeString(kiter183);
+              output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter184));
+              for (let kiter185 in viter184) {
+                if (viter184.hasOwnProperty(kiter185)) {
+                  let viter186 = viter184[kiter185];
+                  output.writeString(kiter185);
+                  output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter186));
+                  for (let kiter187 in viter186) {
+                    if (viter186.hasOwnProperty(kiter187)) {
+                      let viter188 = viter186[kiter187];
+                      output.writeString(kiter187);
+                      output.writeListBegin(Thrift.Type.STRUCT, viter188.length);
+                      for (let iter189 in viter188) {
+                        if (viter188.hasOwnProperty(iter189)) {
+                          iter189 = viter188[iter189];
+                          iter189.write(output);
                         }
                       }
                       output.writeListEnd();
@@ -6715,12 +6886,12 @@ const TDBObject = module.exports.TDBObject = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.privs = [];
-          const _rtmp3181 = input.readListBegin();
-          const _size180 = _rtmp3181.size || 0;
-          for (let _i182 = 0; _i182 < _size180; ++_i182) {
-            let elem183 = null;
-            elem183 = input.readBool();
-            this.privs.push(elem183);
+          const _rtmp3191 = input.readListBegin();
+          const _size190 = _rtmp3191.size || 0;
+          for (let _i192 = 0; _i192 < _size190; ++_i192) {
+            let elem193 = null;
+            elem193 = input.readBool();
+            this.privs.push(elem193);
           }
           input.readListEnd();
         } else {
@@ -6772,10 +6943,10 @@ const TDBObject = module.exports.TDBObject = class {
     if (this.privs !== null && this.privs !== undefined) {
       output.writeFieldBegin('privs', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.BOOL, this.privs.length);
-      for (let iter184 in this.privs) {
-        if (this.privs.hasOwnProperty(iter184)) {
-          iter184 = this.privs[iter184];
-          output.writeBool(iter184);
+      for (let iter194 in this.privs) {
+        if (this.privs.hasOwnProperty(iter194)) {
+          iter194 = this.privs[iter194];
+          output.writeBool(iter194);
         }
       }
       output.writeListEnd();
@@ -7085,12 +7256,12 @@ const TLicenseInfo = module.exports.TLicenseInfo = class {
         case 1:
         if (ftype == Thrift.Type.LIST) {
           this.claims = [];
-          const _rtmp3186 = input.readListBegin();
-          const _size185 = _rtmp3186.size || 0;
-          for (let _i187 = 0; _i187 < _size185; ++_i187) {
-            let elem188 = null;
-            elem188 = input.readString();
-            this.claims.push(elem188);
+          const _rtmp3196 = input.readListBegin();
+          const _size195 = _rtmp3196.size || 0;
+          for (let _i197 = 0; _i197 < _size195; ++_i197) {
+            let elem198 = null;
+            elem198 = input.readString();
+            this.claims.push(elem198);
           }
           input.readListEnd();
         } else {
@@ -7114,10 +7285,10 @@ const TLicenseInfo = module.exports.TLicenseInfo = class {
     if (this.claims !== null && this.claims !== undefined) {
       output.writeFieldBegin('claims', Thrift.Type.LIST, 1);
       output.writeListBegin(Thrift.Type.STRING, this.claims.length);
-      for (let iter189 in this.claims) {
-        if (this.claims.hasOwnProperty(iter189)) {
-          iter189 = this.claims[iter189];
-          output.writeString(iter189);
+      for (let iter199 in this.claims) {
+        if (this.claims.hasOwnProperty(iter199)) {
+          iter199 = this.claims[iter199];
+          output.writeString(iter199);
         }
       }
       output.writeListEnd();
@@ -7702,6 +7873,71 @@ const TQueryInfo = module.exports.TQueryInfo = class {
     if (this.exec_device_type !== null && this.exec_device_type !== undefined) {
       output.writeFieldBegin('exec_device_type', Thrift.Type.STRING, 10);
       output.writeString(this.exec_device_type);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const TLeafInfo = module.exports.TLeafInfo = class {
+  constructor(args) {
+    this.leaf_id = null;
+    this.num_leaves = null;
+    if (args) {
+      if (args.leaf_id !== undefined && args.leaf_id !== null) {
+        this.leaf_id = args.leaf_id;
+      }
+      if (args.num_leaves !== undefined && args.num_leaves !== null) {
+        this.num_leaves = args.num_leaves;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.I32) {
+          this.leaf_id = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.I32) {
+          this.num_leaves = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TLeafInfo');
+    if (this.leaf_id !== null && this.leaf_id !== undefined) {
+      output.writeFieldBegin('leaf_id', Thrift.Type.I32, 1);
+      output.writeI32(this.leaf_id);
+      output.writeFieldEnd();
+    }
+    if (this.num_leaves !== null && this.num_leaves !== undefined) {
+      output.writeFieldBegin('num_leaves', Thrift.Type.I32, 2);
+      output.writeI32(this.num_leaves);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
