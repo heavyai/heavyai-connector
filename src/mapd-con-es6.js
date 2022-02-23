@@ -1556,7 +1556,6 @@ export class MapdCon {
    * Create a table and persist it to the backend.
    * @param {String} tableName The name of the new table.
    * @param {Array<TColumnType>} rowDescObj Fields in the new table.
-   * @param {Number<TTableType>} tableType The types of tables a user can import into the database.
    * @param {TCreateParams} createParams Properties to apply to the new table (e.g. replicated)
    * @return {Promise.<undefined>} Generates an error if unsuccessful, or returns undefined if successful.
    *
@@ -1569,10 +1568,9 @@ export class MapdCon {
     this.wrapThrift(
       "create_table",
       this.overAllClients,
-      ([tableName, rowDescObj, tableType, createParams]) => [
+      ([tableName, rowDescObj, createParams]) => [
         tableName,
         helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
-        tableType,
         createParams
       ]
     )
