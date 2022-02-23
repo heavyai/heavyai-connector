@@ -22,7 +22,7 @@ ttypes.TResultSetLayout = {
 ttypes.TCountDistinctImplType = {
   'Invalid' : 0,
   'Bitmap' : 1,
-  'StdSet' : 2
+  'UnorderedSet' : 2
 };
 ttypes.TAggKind = {
   'AVG' : 0,
