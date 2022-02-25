@@ -1,7 +1,7 @@
 const path = require("path")
 
 module.exports = {
-  entry: ["./src/mapd-con-es6.js"],
+  entry: ["./src/heavy-con-es6.js"],
   module: {
     rules: [
       {

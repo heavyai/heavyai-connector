@@ -12,8 +12,8 @@ const convertToDataUrl = isNodeRuntime
   ? require("base64-arraybuffer").encode
   : (x) => x
 const Connector = isNodeRuntime
-  ? require("../dist/node-connector.js").MapdCon
-  : window.MapdCon
+  ? require("../dist/node-connector.js").DbCon
+  : window.DbCon
 
 const imageRegex = /^iVBOR/
 // An empty image data url will have about 80 header chars, then repeat 12 chars till it ends with a roughly 35 char footer.

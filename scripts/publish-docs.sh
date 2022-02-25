@@ -1,10 +1,10 @@
 # !/bin/bash
 if [ "$TRAVIS_BRANCH" = "master" ]
   then
-  REPO_PATH=git@github.com:mapd/mapd-connector.git
+  REPO_PATH=git@github.com:heavyai/heavyai-connector.git
   DOWNLOAD_PATH=build_docs
-  COMMIT_USER="mapd-bot"
-  COMMIT_EMAIL="machines@mapd.com"
+  COMMIT_USER="heavyai-bot"
+  COMMIT_EMAIL="machines@heavy.ai"
 
   git config --global user.name "${COMMIT_USER}"
   git config --global user.email "${COMMIT_EMAIL}"

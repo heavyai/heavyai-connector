@@ -1,4 +1,4 @@
-# https://hub.docker.com/repository/docker/omnisci/node-chrome
+# https://hub.docker.com/repository/docker/heavyai/node-chrome
 FROM node:12.16.1-slim
 
 # Install git

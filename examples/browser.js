@@ -3,13 +3,13 @@
 window.connection = null
 const autologin = false
 const sample_query =
-  "SELECT name, ST_Area(omnisci_geo) as val FROM omnisci_counties;"
+  "SELECT name, ST_Area(geom) as val FROM heavyai_counties;"
 const defaultQueryOptions = {}
 const defaultConnection = {
   hostname: "localhost",
   useHTTPS: true,
   port: "6278",
-  database: "omnisci",
+  database: "heavyai",
   username: "admin",
   password: "HyperInteractive"
 }
@@ -58,7 +58,7 @@ $("form#queryForm").submit(function (evt) {
 })
 
 function tryConnect(connectionOpts) {
-  const connector = new MapdCon()
+  const connector = new DbCon()
   connector
     .protocol(connectionOpts.protocol)
     .host(connectionOpts.hostname)
