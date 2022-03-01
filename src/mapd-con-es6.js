@@ -674,6 +674,24 @@ export class MapdCon {
   )
 
   /**
+   * Gets a list of filenames found within an archive.
+   * @param {String} archivePath - The base filename of the archive.
+   * @param {TCopyParams} copyParams See {@link TCopyParams}
+   * @returns {Promise.<Array>} A list of filenames (strings)
+   *
+   * @example <caption>Get the filenames found within an archive:</caption>
+   *
+   * con.getFilesInArchiveAsync('archive.zip', {}).then(res => console.log(res))
+   */
+  getFilesInArchiveAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_all_files_in_archive",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  /**
    * Get a list of all users on the database for this connection.
    * @returns {Promise.<Array>} A list of all users (strings).
    *
