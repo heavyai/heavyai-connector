@@ -1625,7 +1625,7 @@ var MapdCon = /*#__PURE__*/function () {
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
-      return result instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TOmniSciException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+      return result instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
     }
   }]);
 
@@ -14400,7 +14400,7 @@ const OmniSci_connect_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -14433,7 +14433,7 @@ const OmniSci_connect_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -14535,7 +14535,7 @@ const OmniSci_krb5_connect_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -14569,7 +14569,7 @@ const OmniSci_krb5_connect_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -14657,7 +14657,7 @@ const OmniSci_disconnect_args = class {
 const OmniSci_disconnect_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -14680,7 +14680,7 @@ const OmniSci_disconnect_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -14779,7 +14779,7 @@ const OmniSci_switch_database_args = class {
 const OmniSci_switch_database_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -14802,7 +14802,7 @@ const OmniSci_switch_database_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -14889,7 +14889,7 @@ const OmniSci_clone_session_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -14922,7 +14922,7 @@ const OmniSci_clone_session_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15011,7 +15011,7 @@ const OmniSci_get_server_status_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15045,7 +15045,7 @@ const OmniSci_get_server_status_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15134,7 +15134,7 @@ const OmniSci_get_status_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15176,7 +15176,7 @@ const OmniSci_get_status_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15272,7 +15272,7 @@ const OmniSci_get_hardware_info_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15306,7 +15306,7 @@ const OmniSci_get_hardware_info_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15395,7 +15395,7 @@ const OmniSci_get_tables_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15436,7 +15436,7 @@ const OmniSci_get_tables_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15545,7 +15545,7 @@ const OmniSci_get_tables_for_database_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15586,7 +15586,7 @@ const OmniSci_get_tables_for_database_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15682,7 +15682,7 @@ const OmniSci_get_physical_tables_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15723,7 +15723,7 @@ const OmniSci_get_physical_tables_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15819,7 +15819,7 @@ const OmniSci_get_views_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15860,7 +15860,7 @@ const OmniSci_get_views_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -15956,7 +15956,7 @@ const OmniSci_get_tables_meta_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -15998,7 +15998,7 @@ const OmniSci_get_tables_meta_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -16107,7 +16107,7 @@ const OmniSci_get_table_details_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -16141,7 +16141,7 @@ const OmniSci_get_table_details_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -16259,7 +16259,7 @@ const OmniSci_get_table_details_for_database_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -16293,7 +16293,7 @@ const OmniSci_get_table_details_for_database_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -16411,7 +16411,7 @@ const OmniSci_get_internal_table_details_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -16445,7 +16445,7 @@ const OmniSci_get_internal_table_details_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -16563,7 +16563,7 @@ const OmniSci_get_internal_table_details_for_database_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -16597,7 +16597,7 @@ const OmniSci_get_internal_table_details_for_database_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -16686,7 +16686,7 @@ const OmniSci_get_users_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -16727,7 +16727,7 @@ const OmniSci_get_users_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -16823,7 +16823,7 @@ const OmniSci_get_databases_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -16865,7 +16865,7 @@ const OmniSci_get_databases_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -16936,7 +16936,7 @@ const OmniSci_get_version_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -16969,7 +16969,7 @@ const OmniSci_get_version_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17057,7 +17057,7 @@ const OmniSci_start_heap_profile_args = class {
 const OmniSci_start_heap_profile_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -17080,7 +17080,7 @@ const OmniSci_start_heap_profile_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17166,7 +17166,7 @@ const OmniSci_stop_heap_profile_args = class {
 const OmniSci_stop_heap_profile_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -17189,7 +17189,7 @@ const OmniSci_stop_heap_profile_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17276,7 +17276,7 @@ const OmniSci_get_heap_profile_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -17309,7 +17309,7 @@ const OmniSci_get_heap_profile_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17411,7 +17411,7 @@ const OmniSci_get_memory_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -17453,7 +17453,7 @@ const OmniSci_get_memory_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17548,7 +17548,7 @@ const OmniSci_clear_cpu_memory_args = class {
 const OmniSci_clear_cpu_memory_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -17571,7 +17571,7 @@ const OmniSci_clear_cpu_memory_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17657,7 +17657,7 @@ const OmniSci_clear_gpu_memory_args = class {
 const OmniSci_clear_gpu_memory_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -17680,7 +17680,7 @@ const OmniSci_clear_gpu_memory_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17827,7 +17827,7 @@ const OmniSci_set_cur_session_args = class {
 const OmniSci_set_cur_session_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -17850,7 +17850,7 @@ const OmniSci_set_cur_session_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -17997,7 +17997,7 @@ const OmniSci_invalidate_cur_session_args = class {
 const OmniSci_invalidate_cur_session_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -18020,7 +18020,7 @@ const OmniSci_invalidate_cur_session_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -18151,7 +18151,7 @@ const OmniSci_set_table_epoch_args = class {
 const OmniSci_set_table_epoch_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -18174,7 +18174,7 @@ const OmniSci_set_table_epoch_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -18289,7 +18289,7 @@ const OmniSci_set_table_epoch_by_name_args = class {
 const OmniSci_set_table_epoch_by_name_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -18312,7 +18312,7 @@ const OmniSci_set_table_epoch_by_name_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -18922,7 +18922,7 @@ const OmniSci_get_session_info_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -18956,7 +18956,7 @@ const OmniSci_get_session_info_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -19045,7 +19045,7 @@ const OmniSci_get_queries_info_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -19087,7 +19087,7 @@ const OmniSci_get_queries_info_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -19196,7 +19196,7 @@ const OmniSci_set_leaf_info_args = class {
 const OmniSci_set_leaf_info_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -19219,7 +19219,7 @@ const OmniSci_set_leaf_info_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -19383,7 +19383,7 @@ const OmniSci_sql_execute_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -19417,7 +19417,7 @@ const OmniSci_sql_execute_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -19583,7 +19583,7 @@ const OmniSci_sql_execute_df_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -19617,7 +19617,7 @@ const OmniSci_sql_execute_df_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -19751,7 +19751,7 @@ const OmniSci_sql_execute_gdf_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -19785,7 +19785,7 @@ const OmniSci_sql_execute_gdf_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -19919,7 +19919,7 @@ const OmniSci_deallocate_df_args = class {
 const OmniSci_deallocate_df_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -19942,7 +19942,7 @@ const OmniSci_deallocate_df_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -20041,7 +20041,7 @@ const OmniSci_interrupt_args = class {
 const OmniSci_interrupt_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -20064,7 +20064,7 @@ const OmniSci_interrupt_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -20164,7 +20164,7 @@ const OmniSci_sql_validate_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -20206,7 +20206,7 @@ const OmniSci_sql_validate_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -20331,7 +20331,7 @@ const OmniSci_get_completion_hints_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -20373,7 +20373,7 @@ const OmniSci_get_completion_hints_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -20481,7 +20481,7 @@ const OmniSci_set_execution_mode_args = class {
 const OmniSci_set_execution_mode_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -20504,7 +20504,7 @@ const OmniSci_set_execution_mode_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -20652,7 +20652,7 @@ const OmniSci_render_vega_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -20686,7 +20686,7 @@ const OmniSci_render_vega_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -20902,7 +20902,7 @@ const OmniSci_get_result_row_for_pixel_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -20936,7 +20936,7 @@ const OmniSci_get_result_row_for_pixel_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -21039,7 +21039,7 @@ const OmniSci_create_custom_expression_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -21072,7 +21072,7 @@ const OmniSci_create_custom_expression_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -21161,7 +21161,7 @@ const OmniSci_get_custom_expressions_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -21203,7 +21203,7 @@ const OmniSci_get_custom_expressions_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -21327,7 +21327,7 @@ const OmniSci_update_custom_expression_args = class {
 const OmniSci_update_custom_expression_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -21350,7 +21350,7 @@ const OmniSci_update_custom_expression_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -21480,7 +21480,7 @@ const OmniSci_delete_custom_expressions_args = class {
 const OmniSci_delete_custom_expressions_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -21503,7 +21503,7 @@ const OmniSci_delete_custom_expressions_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -21603,7 +21603,7 @@ const OmniSci_get_dashboard_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -21637,7 +21637,7 @@ const OmniSci_get_dashboard_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -21726,7 +21726,7 @@ const OmniSci_get_dashboards_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -21768,7 +21768,7 @@ const OmniSci_get_dashboards_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -21925,7 +21925,7 @@ const OmniSci_create_dashboard_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -21958,7 +21958,7 @@ const OmniSci_create_dashboard_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -22139,7 +22139,7 @@ const OmniSci_replace_dashboard_args = class {
 const OmniSci_replace_dashboard_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -22162,7 +22162,7 @@ const OmniSci_replace_dashboard_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -22261,7 +22261,7 @@ const OmniSci_delete_dashboard_args = class {
 const OmniSci_delete_dashboard_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -22284,7 +22284,7 @@ const OmniSci_delete_dashboard_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -22446,7 +22446,7 @@ const OmniSci_share_dashboards_args = class {
 const OmniSci_share_dashboards_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -22469,7 +22469,7 @@ const OmniSci_share_dashboards_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -22583,7 +22583,7 @@ const OmniSci_delete_dashboards_args = class {
 const OmniSci_delete_dashboards_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -22606,7 +22606,7 @@ const OmniSci_delete_dashboards_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -22800,7 +22800,7 @@ const OmniSci_share_dashboard_args = class {
 const OmniSci_share_dashboard_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -22823,7 +22823,7 @@ const OmniSci_share_dashboard_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -23001,7 +23001,7 @@ const OmniSci_unshare_dashboard_args = class {
 const OmniSci_unshare_dashboard_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -23024,7 +23024,7 @@ const OmniSci_unshare_dashboard_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -23186,7 +23186,7 @@ const OmniSci_unshare_dashboards_args = class {
 const OmniSci_unshare_dashboards_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -23209,7 +23209,7 @@ const OmniSci_unshare_dashboards_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -23309,7 +23309,7 @@ const OmniSci_get_dashboard_grantees_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -23351,7 +23351,7 @@ const OmniSci_get_dashboard_grantees_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -23460,7 +23460,7 @@ const OmniSci_get_link_view_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -23494,7 +23494,7 @@ const OmniSci_get_link_view_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -23612,7 +23612,7 @@ const OmniSci_create_link_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -23645,7 +23645,7 @@ const OmniSci_create_link_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -23809,7 +23809,7 @@ const OmniSci_load_table_binary_args = class {
 const OmniSci_load_table_binary_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -23832,7 +23832,7 @@ const OmniSci_load_table_binary_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -23994,7 +23994,7 @@ const OmniSci_load_table_binary_columnar_args = class {
 const OmniSci_load_table_binary_columnar_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -24017,7 +24017,7 @@ const OmniSci_load_table_binary_columnar_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -24195,7 +24195,7 @@ const OmniSci_load_table_binary_columnar_polys_args = class {
 const OmniSci_load_table_binary_columnar_polys_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -24218,7 +24218,7 @@ const OmniSci_load_table_binary_columnar_polys_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -24349,7 +24349,7 @@ const OmniSci_load_table_binary_arrow_args = class {
 const OmniSci_load_table_binary_arrow_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -24372,7 +24372,7 @@ const OmniSci_load_table_binary_arrow_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -24534,7 +24534,7 @@ const OmniSci_load_table_args = class {
 const OmniSci_load_table_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -24557,7 +24557,7 @@ const OmniSci_load_table_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -24674,7 +24674,7 @@ const OmniSci_detect_column_types_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -24708,7 +24708,7 @@ const OmniSci_detect_column_types_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -24858,7 +24858,7 @@ const OmniSci_create_table_args = class {
 const OmniSci_create_table_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -24881,7 +24881,7 @@ const OmniSci_create_table_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -25013,7 +25013,7 @@ const OmniSci_import_table_args = class {
 const OmniSci_import_table_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -25036,7 +25036,7 @@ const OmniSci_import_table_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -25217,7 +25217,7 @@ const OmniSci_import_geo_table_args = class {
 const OmniSci_import_geo_table_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -25240,7 +25240,7 @@ const OmniSci_import_geo_table_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -25340,7 +25340,7 @@ const OmniSci_import_table_status_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -25374,7 +25374,7 @@ const OmniSci_import_table_status_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -25493,7 +25493,7 @@ const OmniSci_get_first_geo_file_in_archive_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -25526,7 +25526,7 @@ const OmniSci_get_first_geo_file_in_archive_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -25645,7 +25645,7 @@ const OmniSci_get_all_files_in_archive_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -25686,7 +25686,7 @@ const OmniSci_get_all_files_in_archive_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -25812,7 +25812,7 @@ const OmniSci_get_layers_in_geo_file_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -25854,7 +25854,7 @@ const OmniSci_get_layers_in_geo_file_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -25963,7 +25963,7 @@ const OmniSci_query_get_outer_fragment_count_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -25996,7 +25996,7 @@ const OmniSci_query_get_outer_fragment_count_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -26098,7 +26098,7 @@ const OmniSci_check_table_consistency_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -26132,7 +26132,7 @@ const OmniSci_check_table_consistency_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -26313,7 +26313,7 @@ const OmniSci_start_query_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -26347,7 +26347,7 @@ const OmniSci_start_query_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -26466,7 +26466,7 @@ const OmniSci_execute_query_step_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -26500,7 +26500,7 @@ const OmniSci_execute_query_step_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -26666,7 +26666,7 @@ const OmniSci_broadcast_serialized_rows_args = class {
 const OmniSci_broadcast_serialized_rows_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -26689,7 +26689,7 @@ const OmniSci_broadcast_serialized_rows_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -26821,7 +26821,7 @@ const OmniSci_start_render_query_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -26855,7 +26855,7 @@ const OmniSci_start_render_query_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -27046,7 +27046,7 @@ const OmniSci_execute_next_render_step_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -27080,7 +27080,7 @@ const OmniSci_execute_next_render_step_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -27182,7 +27182,7 @@ const OmniSci_insert_data_args = class {
 const OmniSci_insert_data_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -27205,7 +27205,7 @@ const OmniSci_insert_data_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -27305,7 +27305,7 @@ const OmniSci_insert_chunks_args = class {
 const OmniSci_insert_chunks_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -27328,7 +27328,7 @@ const OmniSci_insert_chunks_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -27427,7 +27427,7 @@ const OmniSci_checkpoint_args = class {
 const OmniSci_checkpoint_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -27450,7 +27450,7 @@ const OmniSci_checkpoint_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -27537,7 +27537,7 @@ const OmniSci_get_roles_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -27578,7 +27578,7 @@ const OmniSci_get_roles_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -27687,7 +27687,7 @@ const OmniSci_get_db_objects_for_grantee_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -27729,7 +27729,7 @@ const OmniSci_get_db_objects_for_grantee_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -27854,7 +27854,7 @@ const OmniSci_get_db_object_privs_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -27896,7 +27896,7 @@ const OmniSci_get_db_object_privs_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -28005,7 +28005,7 @@ const OmniSci_get_all_roles_for_user_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -28046,7 +28046,7 @@ const OmniSci_get_all_roles_for_user_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -28155,7 +28155,7 @@ const OmniSci_get_all_effective_roles_for_user_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -28196,7 +28196,7 @@ const OmniSci_get_all_effective_roles_for_user_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -28321,7 +28321,7 @@ const OmniSci_has_role_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -28354,7 +28354,7 @@ const OmniSci_has_role_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -28505,7 +28505,7 @@ const OmniSci_has_object_privilege_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -28538,7 +28538,7 @@ const OmniSci_has_object_privilege_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -28656,7 +28656,7 @@ const OmniSci_set_license_key_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -28690,7 +28690,7 @@ const OmniSci_set_license_key_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -28792,7 +28792,7 @@ const OmniSci_get_license_claims_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -28826,7 +28826,7 @@ const OmniSci_get_license_claims_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -28915,7 +28915,7 @@ const OmniSci_get_device_parameters_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -28958,7 +28958,7 @@ const OmniSci_get_device_parameters_result = class {
         break;
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -29149,7 +29149,7 @@ const OmniSci_register_runtime_extension_functions_args = class {
 const OmniSci_register_runtime_extension_functions_result = class {
   constructor(args) {
     this.e = null;
-    if (args instanceof ttypes.TOmniSciException) {
+    if (args instanceof ttypes.TDBException) {
         this.e = args;
         return;
     }
@@ -29172,7 +29172,7 @@ const OmniSci_register_runtime_extension_functions_result = class {
       switch (fid) {
         case 1:
         if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TOmniSciException();
+          this.e = new ttypes.TDBException();
           this.e.read(input);
         } else {
           input.skip(ftype);
@@ -29192,6 +29192,446 @@ const OmniSci_register_runtime_extension_functions_result = class {
 
   write (output) {
     output.writeStructBegin('OmniSci_register_runtime_extension_functions_result');
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_table_function_names_args = class {
+  constructor(args) {
+    this.session = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_table_function_names_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_table_function_names_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [null]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3500 = input.readListBegin();
+          const _size499 = _rtmp3500.size || 0;
+          for (let _i501 = 0; _i501 < _size499; ++_i501) {
+            let elem502 = null;
+            elem502 = input.readString();
+            this.success.push(elem502);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_table_function_names_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRING, this.success.length);
+      for (let iter503 in this.success) {
+        if (this.success.hasOwnProperty(iter503)) {
+          iter503 = this.success[iter503];
+          output.writeString(iter503);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_runtime_table_function_names_args = class {
+  constructor(args) {
+    this.session = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_runtime_table_function_names_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_runtime_table_function_names_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [null]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3505 = input.readListBegin();
+          const _size504 = _rtmp3505.size || 0;
+          for (let _i506 = 0; _i506 < _size504; ++_i506) {
+            let elem507 = null;
+            elem507 = input.readString();
+            this.success.push(elem507);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_runtime_table_function_names_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRING, this.success.length);
+      for (let iter508 in this.success) {
+        if (this.success.hasOwnProperty(iter508)) {
+          iter508 = this.success[iter508];
+          output.writeString(iter508);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_table_function_details_args = class {
+  constructor(args) {
+    this.session = null;
+    this.udtf_names = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+      if (args.udtf_names !== undefined && args.udtf_names !== null) {
+        this.udtf_names = Thrift.copyList(args.udtf_names, [null]);
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.LIST) {
+          this.udtf_names = [];
+          const _rtmp3510 = input.readListBegin();
+          const _size509 = _rtmp3510.size || 0;
+          for (let _i511 = 0; _i511 < _size509; ++_i511) {
+            let elem512 = null;
+            elem512 = input.readString();
+            this.udtf_names.push(elem512);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_table_function_details_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    if (this.udtf_names !== null && this.udtf_names !== undefined) {
+      output.writeFieldBegin('udtf_names', Thrift.Type.LIST, 2);
+      output.writeListBegin(Thrift.Type.STRING, this.udtf_names.length);
+      for (let iter513 in this.udtf_names) {
+        if (this.udtf_names.hasOwnProperty(iter513)) {
+          iter513 = this.udtf_names[iter513];
+          output.writeString(iter513);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const OmniSci_get_table_function_details_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [extension_functions_ttypes.TUserDefinedTableFunction]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3515 = input.readListBegin();
+          const _size514 = _rtmp3515.size || 0;
+          for (let _i516 = 0; _i516 < _size514; ++_i516) {
+            let elem517 = null;
+            elem517 = new extension_functions_ttypes.TUserDefinedTableFunction();
+            elem517.read(input);
+            this.success.push(elem517);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('OmniSci_get_table_function_details_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+      for (let iter518 in this.success) {
+        if (this.success.hasOwnProperty(iter518)) {
+          iter518 = this.success[iter518];
+          iter518.write(output);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -34553,6 +34993,169 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     }
     callback(null);
   }
+
+  get_table_function_names (session) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_table_function_names(session);
+    });
+  }
+
+  send_get_table_function_names (session) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session
+    };
+    const args = new OmniSci_get_table_function_names_args(params);
+    try {
+      output.writeMessageBegin('get_table_function_names', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_table_function_names (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new OmniSci_get_table_function_names_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_table_function_names failed: unknown result');
+  }
+
+  get_runtime_table_function_names (session) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_runtime_table_function_names(session);
+    });
+  }
+
+  send_get_runtime_table_function_names (session) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session
+    };
+    const args = new OmniSci_get_runtime_table_function_names_args(params);
+    try {
+      output.writeMessageBegin('get_runtime_table_function_names', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_runtime_table_function_names (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new OmniSci_get_runtime_table_function_names_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_runtime_table_function_names failed: unknown result');
+  }
+
+  get_table_function_details (session, udtf_names) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_table_function_details(session, udtf_names);
+    });
+  }
+
+  send_get_table_function_details (session, udtf_names) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session,
+      udtf_names: udtf_names
+    };
+    const args = new OmniSci_get_table_function_details_args(params);
+    try {
+      output.writeMessageBegin('get_table_function_details', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_table_function_details (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new OmniSci_get_table_function_details_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_table_function_details failed: unknown result');
+  }
 };
 const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
   constructor(handler) {
@@ -34589,7 +35192,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_connect_result(err);
           output.writeMessageBegin("connect", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34603,7 +35206,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.connect(args.user, args.passwd, args.dbname, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_connect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("connect", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34632,7 +35235,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_krb5_connect_result(err);
           output.writeMessageBegin("krb5_connect", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34646,7 +35249,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.krb5_connect(args.inputToken, args.dbname, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_krb5_connect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("krb5_connect", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34674,7 +35277,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_disconnect_result(err);
           output.writeMessageBegin("disconnect", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34688,7 +35291,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.disconnect(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_disconnect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("disconnect", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34717,7 +35320,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_switch_database_result(err);
           output.writeMessageBegin("switch_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34731,7 +35334,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.switch_database(args.session, args.dbname, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_switch_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("switch_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34759,7 +35362,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_clone_session_result(err);
           output.writeMessageBegin("clone_session", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34773,7 +35376,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.clone_session(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_clone_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("clone_session", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34801,7 +35404,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_server_status_result(err);
           output.writeMessageBegin("get_server_status", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34815,7 +35418,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_server_status(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_server_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_server_status", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34843,7 +35446,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_status_result(err);
           output.writeMessageBegin("get_status", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34857,7 +35460,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_status(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_status", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34885,7 +35488,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_hardware_info_result(err);
           output.writeMessageBegin("get_hardware_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34899,7 +35502,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_hardware_info(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_hardware_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_hardware_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34927,7 +35530,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_tables_result(err);
           output.writeMessageBegin("get_tables", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34941,7 +35544,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_tables(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_tables_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_tables", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34970,7 +35573,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_tables_for_database_result(err);
           output.writeMessageBegin("get_tables_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -34984,7 +35587,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_tables_for_database(args.session, args.database_name, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_tables_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_tables_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35012,7 +35615,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_physical_tables_result(err);
           output.writeMessageBegin("get_physical_tables", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35026,7 +35629,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_physical_tables(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_physical_tables_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_physical_tables", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35054,7 +35657,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_views_result(err);
           output.writeMessageBegin("get_views", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35068,7 +35671,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_views(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_views_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_views", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35096,7 +35699,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_tables_meta_result(err);
           output.writeMessageBegin("get_tables_meta", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35110,7 +35713,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_tables_meta(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_tables_meta_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_tables_meta", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35139,7 +35742,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_table_details_result(err);
           output.writeMessageBegin("get_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35153,7 +35756,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_table_details(args.session, args.table_name, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_table_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35183,7 +35786,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_table_details_for_database_result(err);
           output.writeMessageBegin("get_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35197,7 +35800,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_table_details_for_database(args.session, args.table_name, args.database_name, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_table_details_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35227,7 +35830,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_internal_table_details_result(err);
           output.writeMessageBegin("get_internal_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35241,7 +35844,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_internal_table_details(args.session, args.table_name, args.include_system_columns, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_internal_table_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_internal_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35271,7 +35874,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_internal_table_details_for_database_result(err);
           output.writeMessageBegin("get_internal_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35285,7 +35888,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_internal_table_details_for_database(args.session, args.table_name, args.database_name, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_internal_table_details_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_internal_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35313,7 +35916,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_users_result(err);
           output.writeMessageBegin("get_users", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35327,7 +35930,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_users(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_users_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_users", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35355,7 +35958,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_databases_result(err);
           output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35369,7 +35972,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_databases(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_databases_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35396,7 +35999,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_version_result(err);
           output.writeMessageBegin("get_version", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35410,7 +36013,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_version((err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_version_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_version", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35438,7 +36041,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_start_heap_profile_result(err);
           output.writeMessageBegin("start_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35452,7 +36055,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.start_heap_profile(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_start_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("start_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35480,7 +36083,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_stop_heap_profile_result(err);
           output.writeMessageBegin("stop_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35494,7 +36097,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.stop_heap_profile(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_stop_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("stop_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35522,7 +36125,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_heap_profile_result(err);
           output.writeMessageBegin("get_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35536,7 +36139,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_heap_profile(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35565,7 +36168,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_memory_result(err);
           output.writeMessageBegin("get_memory", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35579,7 +36182,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_memory(args.session, args.memory_level, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_memory", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35607,7 +36210,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_clear_cpu_memory_result(err);
           output.writeMessageBegin("clear_cpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35621,7 +36224,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.clear_cpu_memory(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_clear_cpu_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("clear_cpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35649,7 +36252,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_clear_gpu_memory_result(err);
           output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35663,7 +36266,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.clear_gpu_memory(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_clear_gpu_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35695,7 +36298,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_set_cur_session_result(err);
           output.writeMessageBegin("set_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35709,7 +36312,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.set_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_set_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35741,7 +36344,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_invalidate_cur_session_result(err);
           output.writeMessageBegin("invalidate_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35755,7 +36358,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.invalidate_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_invalidate_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("invalidate_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35786,7 +36389,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_set_table_epoch_result(err);
           output.writeMessageBegin("set_table_epoch", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35800,7 +36403,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.set_table_epoch(args.session, args.db_id, args.table_id, args.new_epoch, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_set_table_epoch_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_table_epoch", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35830,7 +36433,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_set_table_epoch_by_name_result(err);
           output.writeMessageBegin("set_table_epoch_by_name", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -35844,7 +36447,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.set_table_epoch_by_name(args.session, args.table_name, args.new_epoch, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_set_table_epoch_by_name_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_table_epoch_by_name", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36027,7 +36630,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_session_info_result(err);
           output.writeMessageBegin("get_session_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36041,7 +36644,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_session_info(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_session_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_session_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36069,7 +36672,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_queries_info_result(err);
           output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36083,7 +36686,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_queries_info(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_queries_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36112,7 +36715,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_set_leaf_info_result(err);
           output.writeMessageBegin("set_leaf_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36126,7 +36729,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.set_leaf_info(args.session, args.leaf_info, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_set_leaf_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_leaf_info", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36159,7 +36762,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_sql_execute_result(err);
           output.writeMessageBegin("sql_execute", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36173,7 +36776,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.sql_execute(args.session, args.query, args.column_format, args.nonce, args.first_n, args.at_most_n, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_sql_execute_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_execute", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36206,7 +36809,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_sql_execute_df_result(err);
           output.writeMessageBegin("sql_execute_df", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36220,7 +36823,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.sql_execute_df(args.session, args.query, args.device_type, args.device_id, args.first_n, args.transport_method, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_sql_execute_df_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_execute_df", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36251,7 +36854,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_sql_execute_gdf_result(err);
           output.writeMessageBegin("sql_execute_gdf", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36265,7 +36868,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.sql_execute_gdf(args.session, args.query, args.device_id, args.first_n, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_sql_execute_gdf_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_execute_gdf", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36296,7 +36899,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_deallocate_df_result(err);
           output.writeMessageBegin("deallocate_df", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36310,7 +36913,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.deallocate_df(args.session, args.df, args.device_type, args.device_id, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_deallocate_df_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("deallocate_df", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36339,7 +36942,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_interrupt_result(err);
           output.writeMessageBegin("interrupt", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36353,7 +36956,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.interrupt(args.query_session, args.interrupt_session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_interrupt_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("interrupt", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36382,7 +36985,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_sql_validate_result(err);
           output.writeMessageBegin("sql_validate", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36396,7 +36999,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.sql_validate(args.session, args.query, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_sql_validate_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_validate", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36426,7 +37029,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_completion_hints_result(err);
           output.writeMessageBegin("get_completion_hints", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36440,7 +37043,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_completion_hints(args.session, args.sql, args.cursor, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_completion_hints_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_completion_hints", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36469,7 +37072,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_set_execution_mode_result(err);
           output.writeMessageBegin("set_execution_mode", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36483,7 +37086,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.set_execution_mode(args.session, args.mode, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_set_execution_mode_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_execution_mode", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36515,7 +37118,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_render_vega_result(err);
           output.writeMessageBegin("render_vega", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36529,7 +37132,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.render_vega(args.session, args.widget_id, args.vega_json, args.compression_level, args.nonce, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_render_vega_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("render_vega", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36563,7 +37166,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_result_row_for_pixel_result(err);
           output.writeMessageBegin("get_result_row_for_pixel", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36577,7 +37180,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_result_row_for_pixel(args.session, args.widget_id, args.pixel, args.table_col_names, args.column_format, args.pixelRadius, args.nonce, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_result_row_for_pixel_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_result_row_for_pixel", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36606,7 +37209,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_create_custom_expression_result(err);
           output.writeMessageBegin("create_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36620,7 +37223,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.create_custom_expression(args.session, args.custom_expression, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_create_custom_expression_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36648,7 +37251,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_custom_expressions_result(err);
           output.writeMessageBegin("get_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36662,7 +37265,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_custom_expressions(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_custom_expressions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36692,7 +37295,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_update_custom_expression_result(err);
           output.writeMessageBegin("update_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36706,7 +37309,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.update_custom_expression(args.session, args.id, args.expression_json, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_update_custom_expression_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("update_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36736,7 +37339,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_delete_custom_expressions_result(err);
           output.writeMessageBegin("delete_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36750,7 +37353,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.delete_custom_expressions(args.session, args.custom_expression_ids, args.do_soft_delete, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_delete_custom_expressions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("delete_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36779,7 +37382,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_dashboard_result(err);
           output.writeMessageBegin("get_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36793,7 +37396,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_dashboard(args.session, args.dashboard_id, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36821,7 +37424,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_dashboards_result(err);
           output.writeMessageBegin("get_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36835,7 +37438,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_dashboards(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36867,7 +37470,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_create_dashboard_result(err);
           output.writeMessageBegin("create_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36881,7 +37484,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.create_dashboard(args.session, args.dashboard_name, args.dashboard_state, args.image_hash, args.dashboard_metadata, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_create_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36915,7 +37518,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_replace_dashboard_result(err);
           output.writeMessageBegin("replace_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36929,7 +37532,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.replace_dashboard(args.session, args.dashboard_id, args.dashboard_name, args.dashboard_owner, args.dashboard_state, args.image_hash, args.dashboard_metadata, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_replace_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("replace_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36958,7 +37561,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_delete_dashboard_result(err);
           output.writeMessageBegin("delete_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -36972,7 +37575,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.delete_dashboard(args.session, args.dashboard_id, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_delete_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("delete_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37003,7 +37606,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_share_dashboards_result(err);
           output.writeMessageBegin("share_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37017,7 +37620,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.share_dashboards(args.session, args.dashboard_ids, args.groups, args.permissions, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_share_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("share_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37046,7 +37649,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_delete_dashboards_result(err);
           output.writeMessageBegin("delete_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37060,7 +37663,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.delete_dashboards(args.session, args.dashboard_ids, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_delete_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("delete_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37093,7 +37696,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_share_dashboard_result(err);
           output.writeMessageBegin("share_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37107,7 +37710,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.share_dashboard(args.session, args.dashboard_id, args.groups, args.objects, args.permissions, args.grant_role, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_share_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("share_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37139,7 +37742,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_unshare_dashboard_result(err);
           output.writeMessageBegin("unshare_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37153,7 +37756,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.unshare_dashboard(args.session, args.dashboard_id, args.groups, args.objects, args.permissions, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_unshare_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("unshare_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37184,7 +37787,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_unshare_dashboards_result(err);
           output.writeMessageBegin("unshare_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37198,7 +37801,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.unshare_dashboards(args.session, args.dashboard_ids, args.groups, args.permissions, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_unshare_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("unshare_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37227,7 +37830,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_dashboard_grantees_result(err);
           output.writeMessageBegin("get_dashboard_grantees", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37241,7 +37844,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_dashboard_grantees(args.session, args.dashboard_id, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_dashboard_grantees_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_dashboard_grantees", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37270,7 +37873,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_link_view_result(err);
           output.writeMessageBegin("get_link_view", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37284,7 +37887,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_link_view(args.session, args.link, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_link_view_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_link_view", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37314,7 +37917,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_create_link_result(err);
           output.writeMessageBegin("create_link", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37328,7 +37931,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.create_link(args.session, args.view_state, args.view_metadata, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_create_link_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_link", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37359,7 +37962,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_load_table_binary_result(err);
           output.writeMessageBegin("load_table_binary", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37373,7 +37976,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.load_table_binary(args.session, args.table_name, args.rows, args.column_names, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_load_table_binary_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37404,7 +38007,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_load_table_binary_columnar_result(err);
           output.writeMessageBegin("load_table_binary_columnar", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37418,7 +38021,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.load_table_binary_columnar(args.session, args.table_name, args.cols, args.column_names, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_load_table_binary_columnar_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary_columnar", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37450,7 +38053,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_load_table_binary_columnar_polys_result(err);
           output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37464,7 +38067,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.load_table_binary_columnar_polys(args.session, args.table_name, args.cols, args.column_names, args.assign_render_groups, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_load_table_binary_columnar_polys_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37495,7 +38098,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_load_table_binary_arrow_result(err);
           output.writeMessageBegin("load_table_binary_arrow", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37509,7 +38112,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.load_table_binary_arrow(args.session, args.table_name, args.arrow_stream, args.use_column_names, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_load_table_binary_arrow_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary_arrow", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37540,7 +38143,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_load_table_result(err);
           output.writeMessageBegin("load_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37554,7 +38157,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.load_table(args.session, args.table_name, args.rows, args.column_names, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_load_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37584,7 +38187,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_detect_column_types_result(err);
           output.writeMessageBegin("detect_column_types", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37598,7 +38201,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.detect_column_types(args.session, args.file_name, args.copy_params, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_detect_column_types_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("detect_column_types", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37629,7 +38232,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_create_table_result(err);
           output.writeMessageBegin("create_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37643,7 +38246,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.create_table(args.session, args.table_name, args.row_desc, args.create_params, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_create_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37674,7 +38277,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_import_table_result(err);
           output.writeMessageBegin("import_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37688,7 +38291,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.import_table(args.session, args.table_name, args.file_name, args.copy_params, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_import_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("import_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37721,7 +38324,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_import_geo_table_result(err);
           output.writeMessageBegin("import_geo_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37735,7 +38338,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.import_geo_table(args.session, args.table_name, args.file_name, args.copy_params, args.row_desc, args.create_params, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_import_geo_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("import_geo_table", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37764,7 +38367,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_import_table_status_result(err);
           output.writeMessageBegin("import_table_status", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37778,7 +38381,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.import_table_status(args.session, args.import_id, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_import_table_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("import_table_status", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37808,7 +38411,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_first_geo_file_in_archive_result(err);
           output.writeMessageBegin("get_first_geo_file_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37822,7 +38425,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_first_geo_file_in_archive(args.session, args.archive_path, args.copy_params, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_first_geo_file_in_archive_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_first_geo_file_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37852,7 +38455,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_all_files_in_archive_result(err);
           output.writeMessageBegin("get_all_files_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37866,7 +38469,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_all_files_in_archive(args.session, args.archive_path, args.copy_params, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_all_files_in_archive_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_all_files_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37896,7 +38499,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_layers_in_geo_file_result(err);
           output.writeMessageBegin("get_layers_in_geo_file", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37910,7 +38513,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_layers_in_geo_file(args.session, args.file_name, args.copy_params, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_layers_in_geo_file_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_layers_in_geo_file", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37939,7 +38542,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_query_get_outer_fragment_count_result(err);
           output.writeMessageBegin("query_get_outer_fragment_count", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37953,7 +38556,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.query_get_outer_fragment_count(args.session, args.query, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_query_get_outer_fragment_count_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("query_get_outer_fragment_count", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37982,7 +38585,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_check_table_consistency_result(err);
           output.writeMessageBegin("check_table_consistency", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -37996,7 +38599,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.check_table_consistency(args.session, args.table_id, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_check_table_consistency_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("check_table_consistency", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38029,7 +38632,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_start_query_result(err);
           output.writeMessageBegin("start_query", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38043,7 +38646,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.start_query(args.leaf_session, args.parent_session, args.query_ra, args.start_time_str, args.just_explain, args.outer_fragment_indices, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_start_query_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("start_query", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38073,7 +38676,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_execute_query_step_result(err);
           output.writeMessageBegin("execute_query_step", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38087,7 +38690,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.execute_query_step(args.pending_query, args.subquery_id, args.start_time_str, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_execute_query_step_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("execute_query_step", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38119,7 +38722,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_broadcast_serialized_rows_result(err);
           output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38133,7 +38736,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.broadcast_serialized_rows(args.serialized_rows, args.row_desc, args.query_id, args.subquery_id, args.is_final_subquery_result, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_broadcast_serialized_rows_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38164,7 +38767,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_start_render_query_result(err);
           output.writeMessageBegin("start_render_query", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38178,7 +38781,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.start_render_query(args.session, args.widget_id, args.node_idx, args.vega_json, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_start_render_query_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("start_render_query", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38207,7 +38810,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_execute_next_render_step_result(err);
           output.writeMessageBegin("execute_next_render_step", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38221,7 +38824,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.execute_next_render_step(args.pending_render, args.merged_data, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_execute_next_render_step_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("execute_next_render_step", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38250,7 +38853,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_insert_data_result(err);
           output.writeMessageBegin("insert_data", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38264,7 +38867,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.insert_data(args.session, args.insert_data, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_insert_data_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("insert_data", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38293,7 +38896,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_insert_chunks_result(err);
           output.writeMessageBegin("insert_chunks", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38307,7 +38910,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.insert_chunks(args.session, args.insert_chunks, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_insert_chunks_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("insert_chunks", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38336,7 +38939,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_checkpoint_result(err);
           output.writeMessageBegin("checkpoint", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38350,7 +38953,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.checkpoint(args.session, args.table_id, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_checkpoint_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("checkpoint", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38378,7 +38981,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_roles_result(err);
           output.writeMessageBegin("get_roles", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38392,7 +38995,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_roles(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_roles_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_roles", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38421,7 +39024,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_db_objects_for_grantee_result(err);
           output.writeMessageBegin("get_db_objects_for_grantee", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38435,7 +39038,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_db_objects_for_grantee(args.session, args.roleName, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_db_objects_for_grantee_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_db_objects_for_grantee", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38465,7 +39068,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_db_object_privs_result(err);
           output.writeMessageBegin("get_db_object_privs", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38479,7 +39082,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_db_object_privs(args.session, args.objectName, args.type, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_db_object_privs_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_db_object_privs", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38508,7 +39111,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_all_roles_for_user_result(err);
           output.writeMessageBegin("get_all_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38522,7 +39125,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_all_roles_for_user(args.session, args.userName, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_all_roles_for_user_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_all_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38551,7 +39154,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_all_effective_roles_for_user_result(err);
           output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38565,7 +39168,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_all_effective_roles_for_user(args.session, args.userName, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_all_effective_roles_for_user_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38595,7 +39198,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_has_role_result(err);
           output.writeMessageBegin("has_role", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38609,7 +39212,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.has_role(args.session, args.granteeName, args.roleName, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_has_role_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("has_role", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38641,7 +39244,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_has_object_privilege_result(err);
           output.writeMessageBegin("has_object_privilege", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38655,7 +39258,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.has_object_privilege(args.session, args.granteeName, args.ObjectName, args.objectType, args.permissions, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_has_object_privilege_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("has_object_privilege", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38685,7 +39288,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_set_license_key_result(err);
           output.writeMessageBegin("set_license_key", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38699,7 +39302,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.set_license_key(args.session, args.key, args.nonce, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_set_license_key_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_license_key", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38728,7 +39331,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_license_claims_result(err);
           output.writeMessageBegin("get_license_claims", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38742,7 +39345,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_license_claims(args.session, args.nonce, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_license_claims_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_license_claims", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38770,7 +39373,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_get_device_parameters_result(err);
           output.writeMessageBegin("get_device_parameters", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38784,7 +39387,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.get_device_parameters(args.session, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_get_device_parameters_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_device_parameters", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38815,7 +39418,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         output.flush();
       }).catch(err => {
         let result;
-        if (err instanceof ttypes.TOmniSciException) {
+        if (err instanceof ttypes.TDBException) {
           result = new OmniSci_register_runtime_extension_functions_result(err);
           output.writeMessageBegin("register_runtime_extension_functions", Thrift.MessageType.REPLY, seqid);
         } else {
@@ -38829,12 +39432,139 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     } else {
       this._handler.register_runtime_extension_functions(args.session, args.udfs, args.udtfs, args.device_ir_map, (err, result) => {
         let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TOmniSciException) {
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
           result_obj = new OmniSci_register_runtime_extension_functions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("register_runtime_extension_functions", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
           output.writeMessageBegin("register_runtime_extension_functions", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_table_function_names (seqid, input, output) {
+    const args = new OmniSci_get_table_function_names_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_table_function_names.length === 1) {
+      Promise.resolve(this._handler.get_table_function_names.bind(this._handler)(
+        args.session
+      )).then(result => {
+        const result_obj = new OmniSci_get_table_function_names_result({success: result});
+        output.writeMessageBegin("get_table_function_names", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new OmniSci_get_table_function_names_result(err);
+          output.writeMessageBegin("get_table_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_table_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_table_function_names(args.session, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new OmniSci_get_table_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_table_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_table_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_runtime_table_function_names (seqid, input, output) {
+    const args = new OmniSci_get_runtime_table_function_names_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_runtime_table_function_names.length === 1) {
+      Promise.resolve(this._handler.get_runtime_table_function_names.bind(this._handler)(
+        args.session
+      )).then(result => {
+        const result_obj = new OmniSci_get_runtime_table_function_names_result({success: result});
+        output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new OmniSci_get_runtime_table_function_names_result(err);
+          output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_runtime_table_function_names(args.session, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new OmniSci_get_runtime_table_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_table_function_details (seqid, input, output) {
+    const args = new OmniSci_get_table_function_details_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_table_function_details.length === 2) {
+      Promise.resolve(this._handler.get_table_function_details.bind(this._handler)(
+        args.session,
+        args.udtf_names
+      )).then(result => {
+        const result_obj = new OmniSci_get_table_function_details_result({success: result});
+        output.writeMessageBegin("get_table_function_details", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new OmniSci_get_table_function_details_result(err);
+          output.writeMessageBegin("get_table_function_details", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_table_function_details", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_table_function_details(args.session, args.udtf_names, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new OmniSci_get_table_function_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_table_function_details", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_table_function_details", Thrift.MessageType.EXCEPTION, seqid);
         }
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39254,7 +39984,9 @@ ttypes.TExtArgumentType = {
   'ColumnListDouble' : 41,
   'ColumnListBool' : 42,
   'ColumnTextEncodingDict' : 43,
-  'ColumnListTextEncodingDict' : 44
+  'ColumnListTextEncodingDict' : 44,
+  'ColumnTimestamp' : 45,
+  'Timestamp' : 46
 };
 ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
@@ -41201,10 +41933,10 @@ const TDBInfo = module.exports.TDBInfo = class {
   }
 
 };
-const TOmniSciException = module.exports.TOmniSciException = class extends Thrift.TException {
+const TDBException = module.exports.TDBException = class extends Thrift.TException {
   constructor(args) {
     super(args);
-    this.name = "TOmniSciException";
+    this.name = "TDBException";
     this.error_msg = null;
     if (args) {
       if (args.error_msg !== undefined && args.error_msg !== null) {
@@ -41243,7 +41975,7 @@ const TOmniSciException = module.exports.TOmniSciException = class extends Thrif
   }
 
   write (output) {
-    output.writeStructBegin('TOmniSciException');
+    output.writeStructBegin('TDBException');
     if (this.error_msg !== null && this.error_msg !== undefined) {
       output.writeFieldBegin('error_msg', Thrift.Type.STRING, 1);
       output.writeString(this.error_msg);

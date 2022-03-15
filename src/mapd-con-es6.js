@@ -14,7 +14,7 @@ import {
   TDBObjectPermissions,
   TDBObjectType,
   TPixel,
-  TOmniSciException,
+  TDBException,
   TImportHeaderRow,
   TFileType,
   TRasterPointType,
@@ -227,7 +227,10 @@ export class MapdCon {
     this.buildTRasterPointTransformMap()
     this.buildTSourceTypeMap()
 
-    console.log(`this.TRasterPointTransformMap => `, this.TRasterPointTransformMap)
+    console.log(
+      `this.TRasterPointTransformMap => `,
+      this.TRasterPointTransformMap
+    )
     console.log(`this.TSourceTypeMap => `, this.TSourceTypeMap)
 
     this.processResults = (options = {}, promise) =>
@@ -2084,7 +2087,7 @@ export class MapdCon {
 
   isTimeoutError(result) {
     return (
-      result instanceof TOmniSciException &&
+      result instanceof TDBException &&
       (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
         String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
     )
