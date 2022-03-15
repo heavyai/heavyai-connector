@@ -1609,10 +1609,10 @@ const TDBInfo = module.exports.TDBInfo = class {
   }
 
 };
-const TOmniSciException = module.exports.TOmniSciException = class extends Thrift.TException {
+const TDBException = module.exports.TDBException = class extends Thrift.TException {
   constructor(args) {
     super(args);
-    this.name = "TOmniSciException";
+    this.name = "TDBException";
     this.error_msg = null;
     if (args) {
       if (args.error_msg !== undefined && args.error_msg !== null) {
@@ -1651,7 +1651,7 @@ const TOmniSciException = module.exports.TOmniSciException = class extends Thrif
   }
 
   write (output) {
-    output.writeStructBegin('TOmniSciException');
+    output.writeStructBegin('TDBException');
     if (this.error_msg !== null && this.error_msg !== undefined) {
       output.writeFieldBegin('error_msg', Thrift.Type.STRING, 1);
       output.writeString(this.error_msg);
