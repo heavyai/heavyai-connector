@@ -227,12 +227,6 @@ export class MapdCon {
     this.buildTRasterPointTransformMap()
     this.buildTSourceTypeMap()
 
-    console.log(
-      `this.TRasterPointTransformMap => `,
-      this.TRasterPointTransformMap
-    )
-    console.log(`this.TSourceTypeMap => `, this.TSourceTypeMap)
-
     this.processResults = (options = {}, promise) =>
       promise
         .catch((error) => {

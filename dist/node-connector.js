@@ -1021,8 +1021,6 @@ var MapdCon = /*#__PURE__*/function () {
     this.buildTRasterPointTypeMap();
     this.buildTRasterPointTransformMap();
     this.buildTSourceTypeMap();
-    console.log("this.TRasterPointTransformMap => ", this.TRasterPointTransformMap);
-    console.log("this.TSourceTypeMap => ", this.TSourceTypeMap);
 
     this.processResults = function () {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
