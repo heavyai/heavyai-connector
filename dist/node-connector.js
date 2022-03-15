@@ -860,7 +860,7 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "buildTSourceTypeMap", function () {
       for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType) {
         if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType.hasOwnProperty(key)) {
-          _this2.TSourceTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform[key]] = key;
+          _this2.TSourceTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType[key]] = key;
         }
       }
     });
@@ -1021,6 +1021,8 @@ var MapdCon = /*#__PURE__*/function () {
     this.buildTRasterPointTypeMap();
     this.buildTRasterPointTransformMap();
     this.buildTSourceTypeMap();
+    console.log("this.TRasterPointTransformMap => ", this.TRasterPointTransformMap);
+    console.log("this.TSourceTypeMap => ", this.TSourceTypeMap);
 
     this.processResults = function () {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
