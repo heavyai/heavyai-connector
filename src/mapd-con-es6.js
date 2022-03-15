@@ -227,6 +227,9 @@ export class MapdCon {
     this.buildTRasterPointTransformMap()
     this.buildTSourceTypeMap()
 
+    console.log(`this.TRasterPointTransformMap => `, this.TRasterPointTransformMap)
+    console.log(`this.TSourceTypeMap => `, this.TSourceTypeMap)
+
     this.processResults = (options = {}, promise) =>
       promise
         .catch((error) => {
@@ -1452,6 +1455,7 @@ export class MapdCon {
    */
   getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
+  // TODO: replace all these build* methods w/ a singular method that will map each type object
   buildTFileTypeMap = () => {
     for (const key in TFileType) {
       if (TFileType.hasOwnProperty(key)) {
@@ -1495,7 +1499,7 @@ export class MapdCon {
   buildTSourceTypeMap = () => {
     for (const key in TSourceType) {
       if (TSourceType.hasOwnProperty(key)) {
-        this.TSourceTypeMap[TRasterPointTransform[key]] = key
+        this.TSourceTypeMap[TSourceType[key]] = key
       }
     }
   }
