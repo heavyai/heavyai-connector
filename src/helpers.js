@@ -1,4 +1,4 @@
-import { TCopyParams } from "../thrift/omnisci_types"
+import { TCopyParams } from "../thrift/heavy_types"
 
 export const convertObjectToThriftCopyParams = (obj) => new TCopyParams(obj) // eslint-disable-line no-undef
 
