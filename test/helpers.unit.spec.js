@@ -1,6 +1,6 @@
 import { expect } from "chai"
 import * as helpers from "../src/helpers"
-import { TCopyParams } from "../thrift/omnisci_types"
+import { TCopyParams } from "../thrift/heavy_types"
 
 describe("helpers", () => {
   describe("convertObjectToThriftCopyParams", () => {
