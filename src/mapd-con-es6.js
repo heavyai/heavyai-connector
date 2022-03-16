@@ -20,8 +20,8 @@ import {
   TRasterPointType,
   TSourceType,
   TRasterPointTransform
-} from "../thrift/omnisci_types.js"
-import MapDThrift from "../thrift/OmniSci.js"
+} from "../thrift/heavy_types.js"
+import MapDThrift from "../thrift/Heavy.js"
 import {
   TBinaryProtocol,
   TBufferedTransport,
@@ -2090,9 +2090,9 @@ export class MapdCon {
 
 export default MapdCon
 
-export * from "../thrift/OmniSci"
+export * from "../thrift/Heavy"
 export * from "../thrift/common_types"
 export * from "../thrift/completion_hints_types"
 export * from "../thrift/extension_functions_types"
-export * from "../thrift/omnisci_types"
+export * from "../thrift/heavy_types"
 export * from "../thrift/serialized_result_set_types"

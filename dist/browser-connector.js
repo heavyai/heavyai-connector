@@ -82,11 +82,11 @@ module.exports = function availableTypedArrays() {
 /* harmony export */   "RK": () => /* binding */ timestampToMs,
 /* harmony export */   "kS": () => /* binding */ valueToBoolean
 /* harmony export */ });
-/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(356);
-/* harmony import */ var _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _thrift_heavy_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2607);
+/* harmony import */ var _thrift_heavy_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_heavy_types__WEBPACK_IMPORTED_MODULE_0__);
 
 var convertObjectToThriftCopyParams = function convertObjectToThriftCopyParams(obj) {
-  return new _thrift_omnisci_types__WEBPACK_IMPORTED_MODULE_0__.TCopyParams(obj);
+  return new _thrift_heavy_types__WEBPACK_IMPORTED_MODULE_0__.TCopyParams(obj);
 }; // eslint-disable-line no-undef
 
 var mutateThriftRowDesc = function mutateThriftRowDesc(rowDescArray, thriftRowDescArray) {
@@ -141,8 +141,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MapdCon": () => /* binding */ MapdCon,
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__,
-/* harmony export */   "Client": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__.Client,
-/* harmony export */   "Processor": () => /* reexport safe */ _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__.Processor
+/* harmony export */   "Client": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__.Client,
+/* harmony export */   "Processor": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__.Processor
 /* harmony export */ });
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6729);
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(eventemitter3__WEBPACK_IMPORTED_MODULE_0__);
@@ -152,9 +152,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2818);
 /* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(356);
-/* harmony import */ var _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1035);
+/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2607);
+/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4221);
 /* harmony import */ var thrift__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9262);
 /* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5141);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2033);
@@ -172,7 +172,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","MapdCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3962);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__);
@@ -361,7 +361,7 @@ function buildClient(url, useBinaryProtocol) {
     _connection.on("error", console.error); // eslint-disable-line no-console
 
 
-    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createXHRClient)(_thrift_OmniSci_js__WEBPACK_IMPORTED_MODULE_5__, _connection);
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createXHRClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__, _connection);
   }
 
   return client;
@@ -538,7 +538,7 @@ var MapdCon = /*#__PURE__*/function () {
           objects = _ref2[2],
           permissions = _ref2[3];
 
-      return [dashboardId, groups, objects, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "shareDashboardsAsync", this.handleErrors(this.wrapThrift("share_dashboards", this.overAllClients, function (_ref3) {
@@ -547,7 +547,7 @@ var MapdCon = /*#__PURE__*/function () {
           groups = _ref4[1],
           permissions = _ref4[2];
 
-      return [dashboardIds, groups, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "unshareDashboardAsync", this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref5) {
@@ -557,7 +557,7 @@ var MapdCon = /*#__PURE__*/function () {
           objects = _ref6[2],
           permissions = _ref6[3];
 
-      return [dashboardId, groups, objects, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "unshareDashboardsAsync", this.handleErrors(this.wrapThrift("unshare_dashboards", this.overAllClients, function (_ref7) {
@@ -566,7 +566,7 @@ var MapdCon = /*#__PURE__*/function () {
           groups = _ref8[1],
           permissions = _ref8[2];
 
-      return [dashboardIds, groups, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "getDashboardGranteesAsync", this.handleErrors(this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
@@ -582,7 +582,7 @@ var MapdCon = /*#__PURE__*/function () {
           objectName = _ref10[0],
           type = _ref10[1];
 
-      return [objectName, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType[type]];
+      return [objectName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType[type]];
     })));
 
     _defineProperty(this, "getAllRolesForUserAsync", this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
@@ -598,8 +598,8 @@ var MapdCon = /*#__PURE__*/function () {
     })));
 
     _defineProperty(this, "hasDbPrivilegesAsync", function (granteeName, dbName, dbPrivs) {
-      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType.DatabaseDBObjectType, new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectPermissions({
-        database_permissions_: new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatabasePermissions(dbPrivs)
+      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType.DatabaseDBObjectType, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectPermissions({
+        database_permissions_: new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatabasePermissions(dbPrivs)
       }));
     });
 
@@ -695,7 +695,7 @@ var MapdCon = /*#__PURE__*/function () {
       var limit = -1;
 
       var sqlExecuteDF = _this2.wrapThrift("sql_execute_df", _this2.overSingleClient, function () {
-        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDeviceType.CPU, deviceId, limit, _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TArrowTransport.WIRE];
+        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDeviceType.CPU, deviceId, limit, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TArrowTransport.WIRE];
       });
 
       return sqlExecuteDF().then(function (data) {
@@ -800,17 +800,17 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync", 2));
 
     _defineProperty(this, "buildTFileTypeMap", function () {
-      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType) {
-        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType.hasOwnProperty(key)) {
-          _this2.TFileTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType.hasOwnProperty(key)) {
+          _this2.TFileTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTImportHeaderRowMap", function () {
-      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow) {
-        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow.hasOwnProperty(key)) {
-          _this2.TImportHeaderRowMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow.hasOwnProperty(key)) {
+          _this2.TImportHeaderRowMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow[key]] = key;
         }
       }
     });
@@ -824,25 +824,25 @@ var MapdCon = /*#__PURE__*/function () {
     });
 
     _defineProperty(this, "buildTRasterPointTypeMap", function () {
-      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType) {
-        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType.hasOwnProperty(key)) {
-          _this2.TRasterPointTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType.hasOwnProperty(key)) {
+          _this2.TRasterPointTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTRasterPointTransformMap", function () {
-      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform) {
-        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform.hasOwnProperty(key)) {
-          _this2.TRasterPointTransformMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform.hasOwnProperty(key)) {
+          _this2.TRasterPointTransformMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTSourceTypeMap", function () {
-      for (var key in _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType) {
-        if (_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType.hasOwnProperty(key)) {
-          _this2.TSourceTypeMap[_thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType.hasOwnProperty(key)) {
+          _this2.TSourceTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType[key]] = key;
         }
       }
     });
@@ -896,7 +896,7 @@ var MapdCon = /*#__PURE__*/function () {
           copyParams = _ref18[2],
           rowDescObj = _ref18[3];
 
-      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TCreateParams()];
+      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TCreateParams()];
     })));
 
     _defineProperty(this, "renderVegaAsync", this.handleErrors(function (widgetid, vega, options) {
@@ -937,8 +937,8 @@ var MapdCon = /*#__PURE__*/function () {
     _defineProperty(this, "getResultRowForPixelAsync", this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
       var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
 
-      if (!(pixel instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel)) {
-        pixel = new _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel(pixel);
+      if (!(pixel instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel)) {
+        pixel = new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel(pixel);
       }
 
       var columnFormat = true; // BOOL
@@ -1605,7 +1605,7 @@ var MapdCon = /*#__PURE__*/function () {
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
-      return result instanceof _thrift_omnisci_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
     }
   }]);
 
@@ -14212,7 +14212,7 @@ module.exports = function whichTypedArray(value) {
 
 /***/ }),
 
-/***/ 1035:
+/***/ 4221:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -14233,10 +14233,10 @@ const serialized_result_set_ttypes = __webpack_require__(3962);
 const extension_functions_ttypes = __webpack_require__(1396);
 
 
-const ttypes = __webpack_require__(356);
+const ttypes = __webpack_require__(2607);
 //HELPER FUNCTIONS AND STRUCTURES
 
-const OmniSci_connect_args = class {
+const Heavy_connect_args = class {
   constructor(args) {
     this.user = null;
     this.passwd = null;
@@ -14295,7 +14295,7 @@ const OmniSci_connect_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_connect_args');
+    output.writeStructBegin('Heavy_connect_args');
     if (this.user !== null && this.user !== undefined) {
       output.writeFieldBegin('user', Thrift.Type.STRING, 1);
       output.writeString(this.user);
@@ -14317,7 +14317,7 @@ const OmniSci_connect_args = class {
   }
 
 };
-const OmniSci_connect_result = class {
+const Heavy_connect_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -14370,7 +14370,7 @@ const OmniSci_connect_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_connect_result');
+    output.writeStructBegin('Heavy_connect_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRING, 0);
       output.writeString(this.success);
@@ -14387,7 +14387,7 @@ const OmniSci_connect_result = class {
   }
 
 };
-const OmniSci_krb5_connect_args = class {
+const Heavy_krb5_connect_args = class {
   constructor(args) {
     this.inputToken = null;
     this.dbname = null;
@@ -14435,7 +14435,7 @@ const OmniSci_krb5_connect_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_krb5_connect_args');
+    output.writeStructBegin('Heavy_krb5_connect_args');
     if (this.inputToken !== null && this.inputToken !== undefined) {
       output.writeFieldBegin('inputToken', Thrift.Type.STRING, 1);
       output.writeString(this.inputToken);
@@ -14452,7 +14452,7 @@ const OmniSci_krb5_connect_args = class {
   }
 
 };
-const OmniSci_krb5_connect_result = class {
+const Heavy_krb5_connect_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -14506,7 +14506,7 @@ const OmniSci_krb5_connect_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_krb5_connect_result');
+    output.writeStructBegin('Heavy_krb5_connect_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -14523,7 +14523,7 @@ const OmniSci_krb5_connect_result = class {
   }
 
 };
-const OmniSci_disconnect_args = class {
+const Heavy_disconnect_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -14563,7 +14563,7 @@ const OmniSci_disconnect_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_disconnect_args');
+    output.writeStructBegin('Heavy_disconnect_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -14575,7 +14575,7 @@ const OmniSci_disconnect_args = class {
   }
 
 };
-const OmniSci_disconnect_result = class {
+const Heavy_disconnect_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -14620,7 +14620,7 @@ const OmniSci_disconnect_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_disconnect_result');
+    output.writeStructBegin('Heavy_disconnect_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -14632,7 +14632,7 @@ const OmniSci_disconnect_result = class {
   }
 
 };
-const OmniSci_switch_database_args = class {
+const Heavy_switch_database_args = class {
   constructor(args) {
     this.session = null;
     this.dbname = null;
@@ -14680,7 +14680,7 @@ const OmniSci_switch_database_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_switch_database_args');
+    output.writeStructBegin('Heavy_switch_database_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -14697,7 +14697,7 @@ const OmniSci_switch_database_args = class {
   }
 
 };
-const OmniSci_switch_database_result = class {
+const Heavy_switch_database_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -14742,7 +14742,7 @@ const OmniSci_switch_database_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_switch_database_result');
+    output.writeStructBegin('Heavy_switch_database_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -14754,7 +14754,7 @@ const OmniSci_switch_database_result = class {
   }
 
 };
-const OmniSci_clone_session_args = class {
+const Heavy_clone_session_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -14794,7 +14794,7 @@ const OmniSci_clone_session_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_clone_session_args');
+    output.writeStructBegin('Heavy_clone_session_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -14806,7 +14806,7 @@ const OmniSci_clone_session_args = class {
   }
 
 };
-const OmniSci_clone_session_result = class {
+const Heavy_clone_session_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -14859,7 +14859,7 @@ const OmniSci_clone_session_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_clone_session_result');
+    output.writeStructBegin('Heavy_clone_session_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRING, 0);
       output.writeString(this.success);
@@ -14876,7 +14876,7 @@ const OmniSci_clone_session_result = class {
   }
 
 };
-const OmniSci_get_server_status_args = class {
+const Heavy_get_server_status_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -14916,7 +14916,7 @@ const OmniSci_get_server_status_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_server_status_args');
+    output.writeStructBegin('Heavy_get_server_status_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -14928,7 +14928,7 @@ const OmniSci_get_server_status_args = class {
   }
 
 };
-const OmniSci_get_server_status_result = class {
+const Heavy_get_server_status_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -14982,7 +14982,7 @@ const OmniSci_get_server_status_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_server_status_result');
+    output.writeStructBegin('Heavy_get_server_status_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -14999,7 +14999,7 @@ const OmniSci_get_server_status_result = class {
   }
 
 };
-const OmniSci_get_status_args = class {
+const Heavy_get_status_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -15039,7 +15039,7 @@ const OmniSci_get_status_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_status_args');
+    output.writeStructBegin('Heavy_get_status_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -15051,7 +15051,7 @@ const OmniSci_get_status_args = class {
   }
 
 };
-const OmniSci_get_status_result = class {
+const Heavy_get_status_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -15113,7 +15113,7 @@ const OmniSci_get_status_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_status_result');
+    output.writeStructBegin('Heavy_get_status_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -15137,7 +15137,7 @@ const OmniSci_get_status_result = class {
   }
 
 };
-const OmniSci_get_hardware_info_args = class {
+const Heavy_get_hardware_info_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -15177,7 +15177,7 @@ const OmniSci_get_hardware_info_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_hardware_info_args');
+    output.writeStructBegin('Heavy_get_hardware_info_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -15189,7 +15189,7 @@ const OmniSci_get_hardware_info_args = class {
   }
 
 };
-const OmniSci_get_hardware_info_result = class {
+const Heavy_get_hardware_info_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -15243,7 +15243,7 @@ const OmniSci_get_hardware_info_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_hardware_info_result');
+    output.writeStructBegin('Heavy_get_hardware_info_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -15260,7 +15260,7 @@ const OmniSci_get_hardware_info_result = class {
   }
 
 };
-const OmniSci_get_tables_args = class {
+const Heavy_get_tables_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -15300,7 +15300,7 @@ const OmniSci_get_tables_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_tables_args');
+    output.writeStructBegin('Heavy_get_tables_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -15312,7 +15312,7 @@ const OmniSci_get_tables_args = class {
   }
 
 };
-const OmniSci_get_tables_result = class {
+const Heavy_get_tables_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -15373,7 +15373,7 @@ const OmniSci_get_tables_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_tables_result');
+    output.writeStructBegin('Heavy_get_tables_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -15397,7 +15397,7 @@ const OmniSci_get_tables_result = class {
   }
 
 };
-const OmniSci_get_tables_for_database_args = class {
+const Heavy_get_tables_for_database_args = class {
   constructor(args) {
     this.session = null;
     this.database_name = null;
@@ -15445,7 +15445,7 @@ const OmniSci_get_tables_for_database_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_tables_for_database_args');
+    output.writeStructBegin('Heavy_get_tables_for_database_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -15462,7 +15462,7 @@ const OmniSci_get_tables_for_database_args = class {
   }
 
 };
-const OmniSci_get_tables_for_database_result = class {
+const Heavy_get_tables_for_database_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -15523,7 +15523,7 @@ const OmniSci_get_tables_for_database_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_tables_for_database_result');
+    output.writeStructBegin('Heavy_get_tables_for_database_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -15547,7 +15547,7 @@ const OmniSci_get_tables_for_database_result = class {
   }
 
 };
-const OmniSci_get_physical_tables_args = class {
+const Heavy_get_physical_tables_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -15587,7 +15587,7 @@ const OmniSci_get_physical_tables_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_physical_tables_args');
+    output.writeStructBegin('Heavy_get_physical_tables_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -15599,7 +15599,7 @@ const OmniSci_get_physical_tables_args = class {
   }
 
 };
-const OmniSci_get_physical_tables_result = class {
+const Heavy_get_physical_tables_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -15660,7 +15660,7 @@ const OmniSci_get_physical_tables_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_physical_tables_result');
+    output.writeStructBegin('Heavy_get_physical_tables_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -15684,7 +15684,7 @@ const OmniSci_get_physical_tables_result = class {
   }
 
 };
-const OmniSci_get_views_args = class {
+const Heavy_get_views_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -15724,7 +15724,7 @@ const OmniSci_get_views_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_views_args');
+    output.writeStructBegin('Heavy_get_views_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -15736,7 +15736,7 @@ const OmniSci_get_views_args = class {
   }
 
 };
-const OmniSci_get_views_result = class {
+const Heavy_get_views_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -15797,7 +15797,7 @@ const OmniSci_get_views_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_views_result');
+    output.writeStructBegin('Heavy_get_views_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -15821,7 +15821,7 @@ const OmniSci_get_views_result = class {
   }
 
 };
-const OmniSci_get_tables_meta_args = class {
+const Heavy_get_tables_meta_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -15861,7 +15861,7 @@ const OmniSci_get_tables_meta_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_tables_meta_args');
+    output.writeStructBegin('Heavy_get_tables_meta_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -15873,7 +15873,7 @@ const OmniSci_get_tables_meta_args = class {
   }
 
 };
-const OmniSci_get_tables_meta_result = class {
+const Heavy_get_tables_meta_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -15935,7 +15935,7 @@ const OmniSci_get_tables_meta_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_tables_meta_result');
+    output.writeStructBegin('Heavy_get_tables_meta_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -15959,7 +15959,7 @@ const OmniSci_get_tables_meta_result = class {
   }
 
 };
-const OmniSci_get_table_details_args = class {
+const Heavy_get_table_details_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -16007,7 +16007,7 @@ const OmniSci_get_table_details_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_details_args');
+    output.writeStructBegin('Heavy_get_table_details_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -16024,7 +16024,7 @@ const OmniSci_get_table_details_args = class {
   }
 
 };
-const OmniSci_get_table_details_result = class {
+const Heavy_get_table_details_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -16078,7 +16078,7 @@ const OmniSci_get_table_details_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_details_result');
+    output.writeStructBegin('Heavy_get_table_details_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -16095,7 +16095,7 @@ const OmniSci_get_table_details_result = class {
   }
 
 };
-const OmniSci_get_table_details_for_database_args = class {
+const Heavy_get_table_details_for_database_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -16154,7 +16154,7 @@ const OmniSci_get_table_details_for_database_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_details_for_database_args');
+    output.writeStructBegin('Heavy_get_table_details_for_database_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -16176,7 +16176,7 @@ const OmniSci_get_table_details_for_database_args = class {
   }
 
 };
-const OmniSci_get_table_details_for_database_result = class {
+const Heavy_get_table_details_for_database_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -16230,7 +16230,7 @@ const OmniSci_get_table_details_for_database_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_details_for_database_result');
+    output.writeStructBegin('Heavy_get_table_details_for_database_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -16247,7 +16247,7 @@ const OmniSci_get_table_details_for_database_result = class {
   }
 
 };
-const OmniSci_get_internal_table_details_args = class {
+const Heavy_get_internal_table_details_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -16306,7 +16306,7 @@ const OmniSci_get_internal_table_details_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_internal_table_details_args');
+    output.writeStructBegin('Heavy_get_internal_table_details_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -16328,7 +16328,7 @@ const OmniSci_get_internal_table_details_args = class {
   }
 
 };
-const OmniSci_get_internal_table_details_result = class {
+const Heavy_get_internal_table_details_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -16382,7 +16382,7 @@ const OmniSci_get_internal_table_details_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_internal_table_details_result');
+    output.writeStructBegin('Heavy_get_internal_table_details_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -16399,7 +16399,7 @@ const OmniSci_get_internal_table_details_result = class {
   }
 
 };
-const OmniSci_get_internal_table_details_for_database_args = class {
+const Heavy_get_internal_table_details_for_database_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -16458,7 +16458,7 @@ const OmniSci_get_internal_table_details_for_database_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_internal_table_details_for_database_args');
+    output.writeStructBegin('Heavy_get_internal_table_details_for_database_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -16480,7 +16480,7 @@ const OmniSci_get_internal_table_details_for_database_args = class {
   }
 
 };
-const OmniSci_get_internal_table_details_for_database_result = class {
+const Heavy_get_internal_table_details_for_database_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -16534,7 +16534,7 @@ const OmniSci_get_internal_table_details_for_database_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_internal_table_details_for_database_result');
+    output.writeStructBegin('Heavy_get_internal_table_details_for_database_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -16551,7 +16551,7 @@ const OmniSci_get_internal_table_details_for_database_result = class {
   }
 
 };
-const OmniSci_get_users_args = class {
+const Heavy_get_users_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -16591,7 +16591,7 @@ const OmniSci_get_users_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_users_args');
+    output.writeStructBegin('Heavy_get_users_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -16603,7 +16603,7 @@ const OmniSci_get_users_args = class {
   }
 
 };
-const OmniSci_get_users_result = class {
+const Heavy_get_users_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -16664,7 +16664,7 @@ const OmniSci_get_users_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_users_result');
+    output.writeStructBegin('Heavy_get_users_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -16688,7 +16688,7 @@ const OmniSci_get_users_result = class {
   }
 
 };
-const OmniSci_get_databases_args = class {
+const Heavy_get_databases_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -16728,7 +16728,7 @@ const OmniSci_get_databases_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_databases_args');
+    output.writeStructBegin('Heavy_get_databases_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -16740,7 +16740,7 @@ const OmniSci_get_databases_args = class {
   }
 
 };
-const OmniSci_get_databases_result = class {
+const Heavy_get_databases_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -16802,7 +16802,7 @@ const OmniSci_get_databases_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_databases_result');
+    output.writeStructBegin('Heavy_get_databases_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -16826,7 +16826,7 @@ const OmniSci_get_databases_result = class {
   }
 
 };
-const OmniSci_get_version_args = class {
+const Heavy_get_version_args = class {
   constructor(args) {
   }
 
@@ -16846,14 +16846,14 @@ const OmniSci_get_version_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_version_args');
+    output.writeStructBegin('Heavy_get_version_args');
     output.writeFieldStop();
     output.writeStructEnd();
     return;
   }
 
 };
-const OmniSci_get_version_result = class {
+const Heavy_get_version_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -16906,7 +16906,7 @@ const OmniSci_get_version_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_version_result');
+    output.writeStructBegin('Heavy_get_version_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRING, 0);
       output.writeString(this.success);
@@ -16923,7 +16923,7 @@ const OmniSci_get_version_result = class {
   }
 
 };
-const OmniSci_start_heap_profile_args = class {
+const Heavy_start_heap_profile_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -16963,7 +16963,7 @@ const OmniSci_start_heap_profile_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_start_heap_profile_args');
+    output.writeStructBegin('Heavy_start_heap_profile_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -16975,7 +16975,7 @@ const OmniSci_start_heap_profile_args = class {
   }
 
 };
-const OmniSci_start_heap_profile_result = class {
+const Heavy_start_heap_profile_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -17020,7 +17020,7 @@ const OmniSci_start_heap_profile_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_start_heap_profile_result');
+    output.writeStructBegin('Heavy_start_heap_profile_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -17032,7 +17032,7 @@ const OmniSci_start_heap_profile_result = class {
   }
 
 };
-const OmniSci_stop_heap_profile_args = class {
+const Heavy_stop_heap_profile_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -17072,7 +17072,7 @@ const OmniSci_stop_heap_profile_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_stop_heap_profile_args');
+    output.writeStructBegin('Heavy_stop_heap_profile_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -17084,7 +17084,7 @@ const OmniSci_stop_heap_profile_args = class {
   }
 
 };
-const OmniSci_stop_heap_profile_result = class {
+const Heavy_stop_heap_profile_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -17129,7 +17129,7 @@ const OmniSci_stop_heap_profile_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_stop_heap_profile_result');
+    output.writeStructBegin('Heavy_stop_heap_profile_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -17141,7 +17141,7 @@ const OmniSci_stop_heap_profile_result = class {
   }
 
 };
-const OmniSci_get_heap_profile_args = class {
+const Heavy_get_heap_profile_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -17181,7 +17181,7 @@ const OmniSci_get_heap_profile_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_heap_profile_args');
+    output.writeStructBegin('Heavy_get_heap_profile_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -17193,7 +17193,7 @@ const OmniSci_get_heap_profile_args = class {
   }
 
 };
-const OmniSci_get_heap_profile_result = class {
+const Heavy_get_heap_profile_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -17246,7 +17246,7 @@ const OmniSci_get_heap_profile_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_heap_profile_result');
+    output.writeStructBegin('Heavy_get_heap_profile_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRING, 0);
       output.writeString(this.success);
@@ -17263,7 +17263,7 @@ const OmniSci_get_heap_profile_result = class {
   }
 
 };
-const OmniSci_get_memory_args = class {
+const Heavy_get_memory_args = class {
   constructor(args) {
     this.session = null;
     this.memory_level = null;
@@ -17311,7 +17311,7 @@ const OmniSci_get_memory_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_memory_args');
+    output.writeStructBegin('Heavy_get_memory_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -17328,7 +17328,7 @@ const OmniSci_get_memory_args = class {
   }
 
 };
-const OmniSci_get_memory_result = class {
+const Heavy_get_memory_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -17390,7 +17390,7 @@ const OmniSci_get_memory_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_memory_result');
+    output.writeStructBegin('Heavy_get_memory_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -17414,7 +17414,7 @@ const OmniSci_get_memory_result = class {
   }
 
 };
-const OmniSci_clear_cpu_memory_args = class {
+const Heavy_clear_cpu_memory_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -17454,7 +17454,7 @@ const OmniSci_clear_cpu_memory_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_clear_cpu_memory_args');
+    output.writeStructBegin('Heavy_clear_cpu_memory_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -17466,7 +17466,7 @@ const OmniSci_clear_cpu_memory_args = class {
   }
 
 };
-const OmniSci_clear_cpu_memory_result = class {
+const Heavy_clear_cpu_memory_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -17511,7 +17511,7 @@ const OmniSci_clear_cpu_memory_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_clear_cpu_memory_result');
+    output.writeStructBegin('Heavy_clear_cpu_memory_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -17523,7 +17523,7 @@ const OmniSci_clear_cpu_memory_result = class {
   }
 
 };
-const OmniSci_clear_gpu_memory_args = class {
+const Heavy_clear_gpu_memory_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -17563,7 +17563,7 @@ const OmniSci_clear_gpu_memory_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_clear_gpu_memory_args');
+    output.writeStructBegin('Heavy_clear_gpu_memory_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -17575,7 +17575,7 @@ const OmniSci_clear_gpu_memory_args = class {
   }
 
 };
-const OmniSci_clear_gpu_memory_result = class {
+const Heavy_clear_gpu_memory_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -17620,7 +17620,7 @@ const OmniSci_clear_gpu_memory_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_clear_gpu_memory_result');
+    output.writeStructBegin('Heavy_clear_gpu_memory_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -17632,7 +17632,7 @@ const OmniSci_clear_gpu_memory_result = class {
   }
 
 };
-const OmniSci_set_cur_session_args = class {
+const Heavy_set_cur_session_args = class {
   constructor(args) {
     this.parent_session = null;
     this.leaf_session = null;
@@ -17713,7 +17713,7 @@ const OmniSci_set_cur_session_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_cur_session_args');
+    output.writeStructBegin('Heavy_set_cur_session_args');
     if (this.parent_session !== null && this.parent_session !== undefined) {
       output.writeFieldBegin('parent_session', Thrift.Type.STRING, 1);
       output.writeString(this.parent_session);
@@ -17745,7 +17745,7 @@ const OmniSci_set_cur_session_args = class {
   }
 
 };
-const OmniSci_set_cur_session_result = class {
+const Heavy_set_cur_session_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -17790,7 +17790,7 @@ const OmniSci_set_cur_session_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_cur_session_result');
+    output.writeStructBegin('Heavy_set_cur_session_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -17802,7 +17802,7 @@ const OmniSci_set_cur_session_result = class {
   }
 
 };
-const OmniSci_invalidate_cur_session_args = class {
+const Heavy_invalidate_cur_session_args = class {
   constructor(args) {
     this.parent_session = null;
     this.leaf_session = null;
@@ -17883,7 +17883,7 @@ const OmniSci_invalidate_cur_session_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_invalidate_cur_session_args');
+    output.writeStructBegin('Heavy_invalidate_cur_session_args');
     if (this.parent_session !== null && this.parent_session !== undefined) {
       output.writeFieldBegin('parent_session', Thrift.Type.STRING, 1);
       output.writeString(this.parent_session);
@@ -17915,7 +17915,7 @@ const OmniSci_invalidate_cur_session_args = class {
   }
 
 };
-const OmniSci_invalidate_cur_session_result = class {
+const Heavy_invalidate_cur_session_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -17960,7 +17960,7 @@ const OmniSci_invalidate_cur_session_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_invalidate_cur_session_result');
+    output.writeStructBegin('Heavy_invalidate_cur_session_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -17972,7 +17972,7 @@ const OmniSci_invalidate_cur_session_result = class {
   }
 
 };
-const OmniSci_set_table_epoch_args = class {
+const Heavy_set_table_epoch_args = class {
   constructor(args) {
     this.session = null;
     this.db_id = null;
@@ -18042,7 +18042,7 @@ const OmniSci_set_table_epoch_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_table_epoch_args');
+    output.writeStructBegin('Heavy_set_table_epoch_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18069,7 +18069,7 @@ const OmniSci_set_table_epoch_args = class {
   }
 
 };
-const OmniSci_set_table_epoch_result = class {
+const Heavy_set_table_epoch_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -18114,7 +18114,7 @@ const OmniSci_set_table_epoch_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_table_epoch_result');
+    output.writeStructBegin('Heavy_set_table_epoch_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -18126,7 +18126,7 @@ const OmniSci_set_table_epoch_result = class {
   }
 
 };
-const OmniSci_set_table_epoch_by_name_args = class {
+const Heavy_set_table_epoch_by_name_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -18185,7 +18185,7 @@ const OmniSci_set_table_epoch_by_name_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_table_epoch_by_name_args');
+    output.writeStructBegin('Heavy_set_table_epoch_by_name_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18207,7 +18207,7 @@ const OmniSci_set_table_epoch_by_name_args = class {
   }
 
 };
-const OmniSci_set_table_epoch_by_name_result = class {
+const Heavy_set_table_epoch_by_name_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -18252,7 +18252,7 @@ const OmniSci_set_table_epoch_by_name_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_table_epoch_by_name_result');
+    output.writeStructBegin('Heavy_set_table_epoch_by_name_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -18264,7 +18264,7 @@ const OmniSci_set_table_epoch_by_name_result = class {
   }
 
 };
-const OmniSci_get_table_epoch_args = class {
+const Heavy_get_table_epoch_args = class {
   constructor(args) {
     this.session = null;
     this.db_id = null;
@@ -18323,7 +18323,7 @@ const OmniSci_get_table_epoch_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_epoch_args');
+    output.writeStructBegin('Heavy_get_table_epoch_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18345,7 +18345,7 @@ const OmniSci_get_table_epoch_args = class {
   }
 
 };
-const OmniSci_get_table_epoch_result = class {
+const Heavy_get_table_epoch_result = class {
   constructor(args) {
     this.success = null;
     if (args) {
@@ -18385,7 +18385,7 @@ const OmniSci_get_table_epoch_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_epoch_result');
+    output.writeStructBegin('Heavy_get_table_epoch_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.I32, 0);
       output.writeI32(this.success);
@@ -18397,7 +18397,7 @@ const OmniSci_get_table_epoch_result = class {
   }
 
 };
-const OmniSci_get_table_epoch_by_name_args = class {
+const Heavy_get_table_epoch_by_name_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -18445,7 +18445,7 @@ const OmniSci_get_table_epoch_by_name_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_epoch_by_name_args');
+    output.writeStructBegin('Heavy_get_table_epoch_by_name_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18462,7 +18462,7 @@ const OmniSci_get_table_epoch_by_name_args = class {
   }
 
 };
-const OmniSci_get_table_epoch_by_name_result = class {
+const Heavy_get_table_epoch_by_name_result = class {
   constructor(args) {
     this.success = null;
     if (args) {
@@ -18502,7 +18502,7 @@ const OmniSci_get_table_epoch_by_name_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_epoch_by_name_result');
+    output.writeStructBegin('Heavy_get_table_epoch_by_name_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.I32, 0);
       output.writeI32(this.success);
@@ -18514,7 +18514,7 @@ const OmniSci_get_table_epoch_by_name_result = class {
   }
 
 };
-const OmniSci_get_table_epochs_args = class {
+const Heavy_get_table_epochs_args = class {
   constructor(args) {
     this.session = null;
     this.db_id = null;
@@ -18573,7 +18573,7 @@ const OmniSci_get_table_epochs_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_epochs_args');
+    output.writeStructBegin('Heavy_get_table_epochs_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18595,7 +18595,7 @@ const OmniSci_get_table_epochs_args = class {
   }
 
 };
-const OmniSci_get_table_epochs_result = class {
+const Heavy_get_table_epochs_result = class {
   constructor(args) {
     this.success = null;
     if (args) {
@@ -18644,7 +18644,7 @@ const OmniSci_get_table_epochs_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_epochs_result');
+    output.writeStructBegin('Heavy_get_table_epochs_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -18663,7 +18663,7 @@ const OmniSci_get_table_epochs_result = class {
   }
 
 };
-const OmniSci_set_table_epochs_args = class {
+const Heavy_set_table_epochs_args = class {
   constructor(args) {
     this.session = null;
     this.db_id = null;
@@ -18731,7 +18731,7 @@ const OmniSci_set_table_epochs_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_table_epochs_args');
+    output.writeStructBegin('Heavy_set_table_epochs_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18760,7 +18760,7 @@ const OmniSci_set_table_epochs_args = class {
   }
 
 };
-const OmniSci_set_table_epochs_result = class {
+const Heavy_set_table_epochs_result = class {
   constructor(args) {
   }
 
@@ -18780,14 +18780,14 @@ const OmniSci_set_table_epochs_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_table_epochs_result');
+    output.writeStructBegin('Heavy_set_table_epochs_result');
     output.writeFieldStop();
     output.writeStructEnd();
     return;
   }
 
 };
-const OmniSci_get_session_info_args = class {
+const Heavy_get_session_info_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -18827,7 +18827,7 @@ const OmniSci_get_session_info_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_session_info_args');
+    output.writeStructBegin('Heavy_get_session_info_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18839,7 +18839,7 @@ const OmniSci_get_session_info_args = class {
   }
 
 };
-const OmniSci_get_session_info_result = class {
+const Heavy_get_session_info_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -18893,7 +18893,7 @@ const OmniSci_get_session_info_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_session_info_result');
+    output.writeStructBegin('Heavy_get_session_info_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -18910,7 +18910,7 @@ const OmniSci_get_session_info_result = class {
   }
 
 };
-const OmniSci_get_queries_info_args = class {
+const Heavy_get_queries_info_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -18950,7 +18950,7 @@ const OmniSci_get_queries_info_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_queries_info_args');
+    output.writeStructBegin('Heavy_get_queries_info_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -18962,7 +18962,7 @@ const OmniSci_get_queries_info_args = class {
   }
 
 };
-const OmniSci_get_queries_info_result = class {
+const Heavy_get_queries_info_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -19024,7 +19024,7 @@ const OmniSci_get_queries_info_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_queries_info_result');
+    output.writeStructBegin('Heavy_get_queries_info_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -19048,7 +19048,7 @@ const OmniSci_get_queries_info_result = class {
   }
 
 };
-const OmniSci_set_leaf_info_args = class {
+const Heavy_set_leaf_info_args = class {
   constructor(args) {
     this.session = null;
     this.leaf_info = null;
@@ -19097,7 +19097,7 @@ const OmniSci_set_leaf_info_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_leaf_info_args');
+    output.writeStructBegin('Heavy_set_leaf_info_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -19114,7 +19114,7 @@ const OmniSci_set_leaf_info_args = class {
   }
 
 };
-const OmniSci_set_leaf_info_result = class {
+const Heavy_set_leaf_info_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -19159,7 +19159,7 @@ const OmniSci_set_leaf_info_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_leaf_info_result');
+    output.writeStructBegin('Heavy_set_leaf_info_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -19171,7 +19171,7 @@ const OmniSci_set_leaf_info_result = class {
   }
 
 };
-const OmniSci_sql_execute_args = class {
+const Heavy_sql_execute_args = class {
   constructor(args) {
     this.session = null;
     this.query = null;
@@ -19263,7 +19263,7 @@ const OmniSci_sql_execute_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_execute_args');
+    output.writeStructBegin('Heavy_sql_execute_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -19300,7 +19300,7 @@ const OmniSci_sql_execute_args = class {
   }
 
 };
-const OmniSci_sql_execute_result = class {
+const Heavy_sql_execute_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -19354,7 +19354,7 @@ const OmniSci_sql_execute_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_execute_result');
+    output.writeStructBegin('Heavy_sql_execute_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -19371,7 +19371,7 @@ const OmniSci_sql_execute_result = class {
   }
 
 };
-const OmniSci_sql_execute_df_args = class {
+const Heavy_sql_execute_df_args = class {
   constructor(args) {
     this.session = null;
     this.query = null;
@@ -19463,7 +19463,7 @@ const OmniSci_sql_execute_df_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_execute_df_args');
+    output.writeStructBegin('Heavy_sql_execute_df_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -19500,7 +19500,7 @@ const OmniSci_sql_execute_df_args = class {
   }
 
 };
-const OmniSci_sql_execute_df_result = class {
+const Heavy_sql_execute_df_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -19554,7 +19554,7 @@ const OmniSci_sql_execute_df_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_execute_df_result');
+    output.writeStructBegin('Heavy_sql_execute_df_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -19571,7 +19571,7 @@ const OmniSci_sql_execute_df_result = class {
   }
 
 };
-const OmniSci_sql_execute_gdf_args = class {
+const Heavy_sql_execute_gdf_args = class {
   constructor(args) {
     this.session = null;
     this.query = null;
@@ -19641,7 +19641,7 @@ const OmniSci_sql_execute_gdf_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_execute_gdf_args');
+    output.writeStructBegin('Heavy_sql_execute_gdf_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -19668,7 +19668,7 @@ const OmniSci_sql_execute_gdf_args = class {
   }
 
 };
-const OmniSci_sql_execute_gdf_result = class {
+const Heavy_sql_execute_gdf_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -19722,7 +19722,7 @@ const OmniSci_sql_execute_gdf_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_execute_gdf_result');
+    output.writeStructBegin('Heavy_sql_execute_gdf_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -19739,7 +19739,7 @@ const OmniSci_sql_execute_gdf_result = class {
   }
 
 };
-const OmniSci_deallocate_df_args = class {
+const Heavy_deallocate_df_args = class {
   constructor(args) {
     this.session = null;
     this.df = null;
@@ -19810,7 +19810,7 @@ const OmniSci_deallocate_df_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_deallocate_df_args');
+    output.writeStructBegin('Heavy_deallocate_df_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -19837,7 +19837,7 @@ const OmniSci_deallocate_df_args = class {
   }
 
 };
-const OmniSci_deallocate_df_result = class {
+const Heavy_deallocate_df_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -19882,7 +19882,7 @@ const OmniSci_deallocate_df_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_deallocate_df_result');
+    output.writeStructBegin('Heavy_deallocate_df_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -19894,7 +19894,7 @@ const OmniSci_deallocate_df_result = class {
   }
 
 };
-const OmniSci_interrupt_args = class {
+const Heavy_interrupt_args = class {
   constructor(args) {
     this.query_session = null;
     this.interrupt_session = null;
@@ -19942,7 +19942,7 @@ const OmniSci_interrupt_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_interrupt_args');
+    output.writeStructBegin('Heavy_interrupt_args');
     if (this.query_session !== null && this.query_session !== undefined) {
       output.writeFieldBegin('query_session', Thrift.Type.STRING, 1);
       output.writeString(this.query_session);
@@ -19959,7 +19959,7 @@ const OmniSci_interrupt_args = class {
   }
 
 };
-const OmniSci_interrupt_result = class {
+const Heavy_interrupt_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -20004,7 +20004,7 @@ const OmniSci_interrupt_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_interrupt_result');
+    output.writeStructBegin('Heavy_interrupt_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -20016,7 +20016,7 @@ const OmniSci_interrupt_result = class {
   }
 
 };
-const OmniSci_sql_validate_args = class {
+const Heavy_sql_validate_args = class {
   constructor(args) {
     this.session = null;
     this.query = null;
@@ -20064,7 +20064,7 @@ const OmniSci_sql_validate_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_validate_args');
+    output.writeStructBegin('Heavy_sql_validate_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -20081,7 +20081,7 @@ const OmniSci_sql_validate_args = class {
   }
 
 };
-const OmniSci_sql_validate_result = class {
+const Heavy_sql_validate_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -20143,7 +20143,7 @@ const OmniSci_sql_validate_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_sql_validate_result');
+    output.writeStructBegin('Heavy_sql_validate_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -20167,7 +20167,7 @@ const OmniSci_sql_validate_result = class {
   }
 
 };
-const OmniSci_get_completion_hints_args = class {
+const Heavy_get_completion_hints_args = class {
   constructor(args) {
     this.session = null;
     this.sql = null;
@@ -20226,7 +20226,7 @@ const OmniSci_get_completion_hints_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_completion_hints_args');
+    output.writeStructBegin('Heavy_get_completion_hints_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -20248,7 +20248,7 @@ const OmniSci_get_completion_hints_args = class {
   }
 
 };
-const OmniSci_get_completion_hints_result = class {
+const Heavy_get_completion_hints_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -20310,7 +20310,7 @@ const OmniSci_get_completion_hints_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_completion_hints_result');
+    output.writeStructBegin('Heavy_get_completion_hints_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -20334,7 +20334,7 @@ const OmniSci_get_completion_hints_result = class {
   }
 
 };
-const OmniSci_set_execution_mode_args = class {
+const Heavy_set_execution_mode_args = class {
   constructor(args) {
     this.session = null;
     this.mode = null;
@@ -20382,7 +20382,7 @@ const OmniSci_set_execution_mode_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_execution_mode_args');
+    output.writeStructBegin('Heavy_set_execution_mode_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -20399,7 +20399,7 @@ const OmniSci_set_execution_mode_args = class {
   }
 
 };
-const OmniSci_set_execution_mode_result = class {
+const Heavy_set_execution_mode_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -20444,7 +20444,7 @@ const OmniSci_set_execution_mode_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_execution_mode_result');
+    output.writeStructBegin('Heavy_set_execution_mode_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -20456,7 +20456,7 @@ const OmniSci_set_execution_mode_result = class {
   }
 
 };
-const OmniSci_render_vega_args = class {
+const Heavy_render_vega_args = class {
   constructor(args) {
     this.session = null;
     this.widget_id = null;
@@ -20537,7 +20537,7 @@ const OmniSci_render_vega_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_render_vega_args');
+    output.writeStructBegin('Heavy_render_vega_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -20569,7 +20569,7 @@ const OmniSci_render_vega_args = class {
   }
 
 };
-const OmniSci_render_vega_result = class {
+const Heavy_render_vega_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -20623,7 +20623,7 @@ const OmniSci_render_vega_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_render_vega_result');
+    output.writeStructBegin('Heavy_render_vega_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -20640,7 +20640,7 @@ const OmniSci_render_vega_result = class {
   }
 
 };
-const OmniSci_get_result_row_for_pixel_args = class {
+const Heavy_get_result_row_for_pixel_args = class {
   constructor(args) {
     this.session = null;
     this.widget_id = null;
@@ -20762,7 +20762,7 @@ const OmniSci_get_result_row_for_pixel_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_result_row_for_pixel_args');
+    output.writeStructBegin('Heavy_get_result_row_for_pixel_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -20819,7 +20819,7 @@ const OmniSci_get_result_row_for_pixel_args = class {
   }
 
 };
-const OmniSci_get_result_row_for_pixel_result = class {
+const Heavy_get_result_row_for_pixel_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -20873,7 +20873,7 @@ const OmniSci_get_result_row_for_pixel_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_result_row_for_pixel_result');
+    output.writeStructBegin('Heavy_get_result_row_for_pixel_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -20890,7 +20890,7 @@ const OmniSci_get_result_row_for_pixel_result = class {
   }
 
 };
-const OmniSci_create_custom_expression_args = class {
+const Heavy_create_custom_expression_args = class {
   constructor(args) {
     this.session = null;
     this.custom_expression = null;
@@ -20939,7 +20939,7 @@ const OmniSci_create_custom_expression_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_custom_expression_args');
+    output.writeStructBegin('Heavy_create_custom_expression_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -20956,7 +20956,7 @@ const OmniSci_create_custom_expression_args = class {
   }
 
 };
-const OmniSci_create_custom_expression_result = class {
+const Heavy_create_custom_expression_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -21009,7 +21009,7 @@ const OmniSci_create_custom_expression_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_custom_expression_result');
+    output.writeStructBegin('Heavy_create_custom_expression_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.I32, 0);
       output.writeI32(this.success);
@@ -21026,7 +21026,7 @@ const OmniSci_create_custom_expression_result = class {
   }
 
 };
-const OmniSci_get_custom_expressions_args = class {
+const Heavy_get_custom_expressions_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -21066,7 +21066,7 @@ const OmniSci_get_custom_expressions_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_custom_expressions_args');
+    output.writeStructBegin('Heavy_get_custom_expressions_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -21078,7 +21078,7 @@ const OmniSci_get_custom_expressions_args = class {
   }
 
 };
-const OmniSci_get_custom_expressions_result = class {
+const Heavy_get_custom_expressions_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -21140,7 +21140,7 @@ const OmniSci_get_custom_expressions_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_custom_expressions_result');
+    output.writeStructBegin('Heavy_get_custom_expressions_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -21164,7 +21164,7 @@ const OmniSci_get_custom_expressions_result = class {
   }
 
 };
-const OmniSci_update_custom_expression_args = class {
+const Heavy_update_custom_expression_args = class {
   constructor(args) {
     this.session = null;
     this.id = null;
@@ -21223,7 +21223,7 @@ const OmniSci_update_custom_expression_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_update_custom_expression_args');
+    output.writeStructBegin('Heavy_update_custom_expression_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -21245,7 +21245,7 @@ const OmniSci_update_custom_expression_args = class {
   }
 
 };
-const OmniSci_update_custom_expression_result = class {
+const Heavy_update_custom_expression_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -21290,7 +21290,7 @@ const OmniSci_update_custom_expression_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_update_custom_expression_result');
+    output.writeStructBegin('Heavy_update_custom_expression_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -21302,7 +21302,7 @@ const OmniSci_update_custom_expression_result = class {
   }
 
 };
-const OmniSci_delete_custom_expressions_args = class {
+const Heavy_delete_custom_expressions_args = class {
   constructor(args) {
     this.session = null;
     this.custom_expression_ids = null;
@@ -21369,7 +21369,7 @@ const OmniSci_delete_custom_expressions_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_delete_custom_expressions_args');
+    output.writeStructBegin('Heavy_delete_custom_expressions_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -21398,7 +21398,7 @@ const OmniSci_delete_custom_expressions_args = class {
   }
 
 };
-const OmniSci_delete_custom_expressions_result = class {
+const Heavy_delete_custom_expressions_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -21443,7 +21443,7 @@ const OmniSci_delete_custom_expressions_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_delete_custom_expressions_result');
+    output.writeStructBegin('Heavy_delete_custom_expressions_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -21455,7 +21455,7 @@ const OmniSci_delete_custom_expressions_result = class {
   }
 
 };
-const OmniSci_get_dashboard_args = class {
+const Heavy_get_dashboard_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_id = null;
@@ -21503,7 +21503,7 @@ const OmniSci_get_dashboard_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_dashboard_args');
+    output.writeStructBegin('Heavy_get_dashboard_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -21520,7 +21520,7 @@ const OmniSci_get_dashboard_args = class {
   }
 
 };
-const OmniSci_get_dashboard_result = class {
+const Heavy_get_dashboard_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -21574,7 +21574,7 @@ const OmniSci_get_dashboard_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_dashboard_result');
+    output.writeStructBegin('Heavy_get_dashboard_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -21591,7 +21591,7 @@ const OmniSci_get_dashboard_result = class {
   }
 
 };
-const OmniSci_get_dashboards_args = class {
+const Heavy_get_dashboards_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -21631,7 +21631,7 @@ const OmniSci_get_dashboards_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_dashboards_args');
+    output.writeStructBegin('Heavy_get_dashboards_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -21643,7 +21643,7 @@ const OmniSci_get_dashboards_args = class {
   }
 
 };
-const OmniSci_get_dashboards_result = class {
+const Heavy_get_dashboards_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -21705,7 +21705,7 @@ const OmniSci_get_dashboards_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_dashboards_result');
+    output.writeStructBegin('Heavy_get_dashboards_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -21729,7 +21729,7 @@ const OmniSci_get_dashboards_result = class {
   }
 
 };
-const OmniSci_create_dashboard_args = class {
+const Heavy_create_dashboard_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_name = null;
@@ -21810,7 +21810,7 @@ const OmniSci_create_dashboard_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_dashboard_args');
+    output.writeStructBegin('Heavy_create_dashboard_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -21842,7 +21842,7 @@ const OmniSci_create_dashboard_args = class {
   }
 
 };
-const OmniSci_create_dashboard_result = class {
+const Heavy_create_dashboard_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -21895,7 +21895,7 @@ const OmniSci_create_dashboard_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_dashboard_result');
+    output.writeStructBegin('Heavy_create_dashboard_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.I32, 0);
       output.writeI32(this.success);
@@ -21912,7 +21912,7 @@ const OmniSci_create_dashboard_result = class {
   }
 
 };
-const OmniSci_replace_dashboard_args = class {
+const Heavy_replace_dashboard_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_id = null;
@@ -22015,7 +22015,7 @@ const OmniSci_replace_dashboard_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_replace_dashboard_args');
+    output.writeStructBegin('Heavy_replace_dashboard_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -22057,7 +22057,7 @@ const OmniSci_replace_dashboard_args = class {
   }
 
 };
-const OmniSci_replace_dashboard_result = class {
+const Heavy_replace_dashboard_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -22102,7 +22102,7 @@ const OmniSci_replace_dashboard_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_replace_dashboard_result');
+    output.writeStructBegin('Heavy_replace_dashboard_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -22114,7 +22114,7 @@ const OmniSci_replace_dashboard_result = class {
   }
 
 };
-const OmniSci_delete_dashboard_args = class {
+const Heavy_delete_dashboard_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_id = null;
@@ -22162,7 +22162,7 @@ const OmniSci_delete_dashboard_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_delete_dashboard_args');
+    output.writeStructBegin('Heavy_delete_dashboard_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -22179,7 +22179,7 @@ const OmniSci_delete_dashboard_args = class {
   }
 
 };
-const OmniSci_delete_dashboard_result = class {
+const Heavy_delete_dashboard_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -22224,7 +22224,7 @@ const OmniSci_delete_dashboard_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_delete_dashboard_result');
+    output.writeStructBegin('Heavy_delete_dashboard_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -22236,7 +22236,7 @@ const OmniSci_delete_dashboard_result = class {
   }
 
 };
-const OmniSci_share_dashboards_args = class {
+const Heavy_share_dashboards_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_ids = null;
@@ -22323,7 +22323,7 @@ const OmniSci_share_dashboards_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_share_dashboards_args');
+    output.writeStructBegin('Heavy_share_dashboards_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -22364,7 +22364,7 @@ const OmniSci_share_dashboards_args = class {
   }
 
 };
-const OmniSci_share_dashboards_result = class {
+const Heavy_share_dashboards_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -22409,7 +22409,7 @@ const OmniSci_share_dashboards_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_share_dashboards_result');
+    output.writeStructBegin('Heavy_share_dashboards_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -22421,7 +22421,7 @@ const OmniSci_share_dashboards_result = class {
   }
 
 };
-const OmniSci_delete_dashboards_args = class {
+const Heavy_delete_dashboards_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_ids = null;
@@ -22477,7 +22477,7 @@ const OmniSci_delete_dashboards_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_delete_dashboards_args');
+    output.writeStructBegin('Heavy_delete_dashboards_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -22501,7 +22501,7 @@ const OmniSci_delete_dashboards_args = class {
   }
 
 };
-const OmniSci_delete_dashboards_result = class {
+const Heavy_delete_dashboards_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -22546,7 +22546,7 @@ const OmniSci_delete_dashboards_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_delete_dashboards_result');
+    output.writeStructBegin('Heavy_delete_dashboards_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -22558,7 +22558,7 @@ const OmniSci_delete_dashboards_result = class {
   }
 
 };
-const OmniSci_share_dashboard_args = class {
+const Heavy_share_dashboard_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_id = null;
@@ -22667,7 +22667,7 @@ const OmniSci_share_dashboard_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_share_dashboard_args');
+    output.writeStructBegin('Heavy_share_dashboard_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -22718,7 +22718,7 @@ const OmniSci_share_dashboard_args = class {
   }
 
 };
-const OmniSci_share_dashboard_result = class {
+const Heavy_share_dashboard_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -22763,7 +22763,7 @@ const OmniSci_share_dashboard_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_share_dashboard_result');
+    output.writeStructBegin('Heavy_share_dashboard_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -22775,7 +22775,7 @@ const OmniSci_share_dashboard_result = class {
   }
 
 };
-const OmniSci_unshare_dashboard_args = class {
+const Heavy_unshare_dashboard_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_id = null;
@@ -22873,7 +22873,7 @@ const OmniSci_unshare_dashboard_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_unshare_dashboard_args');
+    output.writeStructBegin('Heavy_unshare_dashboard_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -22919,7 +22919,7 @@ const OmniSci_unshare_dashboard_args = class {
   }
 
 };
-const OmniSci_unshare_dashboard_result = class {
+const Heavy_unshare_dashboard_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -22964,7 +22964,7 @@ const OmniSci_unshare_dashboard_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_unshare_dashboard_result');
+    output.writeStructBegin('Heavy_unshare_dashboard_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -22976,7 +22976,7 @@ const OmniSci_unshare_dashboard_result = class {
   }
 
 };
-const OmniSci_unshare_dashboards_args = class {
+const Heavy_unshare_dashboards_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_ids = null;
@@ -23063,7 +23063,7 @@ const OmniSci_unshare_dashboards_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_unshare_dashboards_args');
+    output.writeStructBegin('Heavy_unshare_dashboards_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -23104,7 +23104,7 @@ const OmniSci_unshare_dashboards_args = class {
   }
 
 };
-const OmniSci_unshare_dashboards_result = class {
+const Heavy_unshare_dashboards_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -23149,7 +23149,7 @@ const OmniSci_unshare_dashboards_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_unshare_dashboards_result');
+    output.writeStructBegin('Heavy_unshare_dashboards_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -23161,7 +23161,7 @@ const OmniSci_unshare_dashboards_result = class {
   }
 
 };
-const OmniSci_get_dashboard_grantees_args = class {
+const Heavy_get_dashboard_grantees_args = class {
   constructor(args) {
     this.session = null;
     this.dashboard_id = null;
@@ -23209,7 +23209,7 @@ const OmniSci_get_dashboard_grantees_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_dashboard_grantees_args');
+    output.writeStructBegin('Heavy_get_dashboard_grantees_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -23226,7 +23226,7 @@ const OmniSci_get_dashboard_grantees_args = class {
   }
 
 };
-const OmniSci_get_dashboard_grantees_result = class {
+const Heavy_get_dashboard_grantees_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -23288,7 +23288,7 @@ const OmniSci_get_dashboard_grantees_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_dashboard_grantees_result');
+    output.writeStructBegin('Heavy_get_dashboard_grantees_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -23312,7 +23312,7 @@ const OmniSci_get_dashboard_grantees_result = class {
   }
 
 };
-const OmniSci_get_link_view_args = class {
+const Heavy_get_link_view_args = class {
   constructor(args) {
     this.session = null;
     this.link = null;
@@ -23360,7 +23360,7 @@ const OmniSci_get_link_view_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_link_view_args');
+    output.writeStructBegin('Heavy_get_link_view_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -23377,7 +23377,7 @@ const OmniSci_get_link_view_args = class {
   }
 
 };
-const OmniSci_get_link_view_result = class {
+const Heavy_get_link_view_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -23431,7 +23431,7 @@ const OmniSci_get_link_view_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_link_view_result');
+    output.writeStructBegin('Heavy_get_link_view_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -23448,7 +23448,7 @@ const OmniSci_get_link_view_result = class {
   }
 
 };
-const OmniSci_create_link_args = class {
+const Heavy_create_link_args = class {
   constructor(args) {
     this.session = null;
     this.view_state = null;
@@ -23507,7 +23507,7 @@ const OmniSci_create_link_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_link_args');
+    output.writeStructBegin('Heavy_create_link_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -23529,7 +23529,7 @@ const OmniSci_create_link_args = class {
   }
 
 };
-const OmniSci_create_link_result = class {
+const Heavy_create_link_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -23582,7 +23582,7 @@ const OmniSci_create_link_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_link_result');
+    output.writeStructBegin('Heavy_create_link_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRING, 0);
       output.writeString(this.success);
@@ -23599,7 +23599,7 @@ const OmniSci_create_link_result = class {
   }
 
 };
-const OmniSci_load_table_binary_args = class {
+const Heavy_load_table_binary_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -23686,7 +23686,7 @@ const OmniSci_load_table_binary_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_args');
+    output.writeStructBegin('Heavy_load_table_binary_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -23727,7 +23727,7 @@ const OmniSci_load_table_binary_args = class {
   }
 
 };
-const OmniSci_load_table_binary_result = class {
+const Heavy_load_table_binary_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -23772,7 +23772,7 @@ const OmniSci_load_table_binary_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_result');
+    output.writeStructBegin('Heavy_load_table_binary_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -23784,7 +23784,7 @@ const OmniSci_load_table_binary_result = class {
   }
 
 };
-const OmniSci_load_table_binary_columnar_args = class {
+const Heavy_load_table_binary_columnar_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -23871,7 +23871,7 @@ const OmniSci_load_table_binary_columnar_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_columnar_args');
+    output.writeStructBegin('Heavy_load_table_binary_columnar_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -23912,7 +23912,7 @@ const OmniSci_load_table_binary_columnar_args = class {
   }
 
 };
-const OmniSci_load_table_binary_columnar_result = class {
+const Heavy_load_table_binary_columnar_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -23957,7 +23957,7 @@ const OmniSci_load_table_binary_columnar_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_columnar_result');
+    output.writeStructBegin('Heavy_load_table_binary_columnar_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -23969,7 +23969,7 @@ const OmniSci_load_table_binary_columnar_result = class {
   }
 
 };
-const OmniSci_load_table_binary_columnar_polys_args = class {
+const Heavy_load_table_binary_columnar_polys_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -24067,7 +24067,7 @@ const OmniSci_load_table_binary_columnar_polys_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_columnar_polys_args');
+    output.writeStructBegin('Heavy_load_table_binary_columnar_polys_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -24113,7 +24113,7 @@ const OmniSci_load_table_binary_columnar_polys_args = class {
   }
 
 };
-const OmniSci_load_table_binary_columnar_polys_result = class {
+const Heavy_load_table_binary_columnar_polys_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -24158,7 +24158,7 @@ const OmniSci_load_table_binary_columnar_polys_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_columnar_polys_result');
+    output.writeStructBegin('Heavy_load_table_binary_columnar_polys_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -24170,7 +24170,7 @@ const OmniSci_load_table_binary_columnar_polys_result = class {
   }
 
 };
-const OmniSci_load_table_binary_arrow_args = class {
+const Heavy_load_table_binary_arrow_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -24240,7 +24240,7 @@ const OmniSci_load_table_binary_arrow_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_arrow_args');
+    output.writeStructBegin('Heavy_load_table_binary_arrow_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -24267,7 +24267,7 @@ const OmniSci_load_table_binary_arrow_args = class {
   }
 
 };
-const OmniSci_load_table_binary_arrow_result = class {
+const Heavy_load_table_binary_arrow_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -24312,7 +24312,7 @@ const OmniSci_load_table_binary_arrow_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_binary_arrow_result');
+    output.writeStructBegin('Heavy_load_table_binary_arrow_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -24324,7 +24324,7 @@ const OmniSci_load_table_binary_arrow_result = class {
   }
 
 };
-const OmniSci_load_table_args = class {
+const Heavy_load_table_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -24411,7 +24411,7 @@ const OmniSci_load_table_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_args');
+    output.writeStructBegin('Heavy_load_table_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -24452,7 +24452,7 @@ const OmniSci_load_table_args = class {
   }
 
 };
-const OmniSci_load_table_result = class {
+const Heavy_load_table_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -24497,7 +24497,7 @@ const OmniSci_load_table_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_load_table_result');
+    output.writeStructBegin('Heavy_load_table_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -24509,7 +24509,7 @@ const OmniSci_load_table_result = class {
   }
 
 };
-const OmniSci_detect_column_types_args = class {
+const Heavy_detect_column_types_args = class {
   constructor(args) {
     this.session = null;
     this.file_name = null;
@@ -24569,7 +24569,7 @@ const OmniSci_detect_column_types_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_detect_column_types_args');
+    output.writeStructBegin('Heavy_detect_column_types_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -24591,7 +24591,7 @@ const OmniSci_detect_column_types_args = class {
   }
 
 };
-const OmniSci_detect_column_types_result = class {
+const Heavy_detect_column_types_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -24645,7 +24645,7 @@ const OmniSci_detect_column_types_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_detect_column_types_result');
+    output.writeStructBegin('Heavy_detect_column_types_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -24662,7 +24662,7 @@ const OmniSci_detect_column_types_result = class {
   }
 
 };
-const OmniSci_create_table_args = class {
+const Heavy_create_table_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -24742,7 +24742,7 @@ const OmniSci_create_table_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_table_args');
+    output.writeStructBegin('Heavy_create_table_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -24776,7 +24776,7 @@ const OmniSci_create_table_args = class {
   }
 
 };
-const OmniSci_create_table_result = class {
+const Heavy_create_table_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -24821,7 +24821,7 @@ const OmniSci_create_table_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_create_table_result');
+    output.writeStructBegin('Heavy_create_table_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -24833,7 +24833,7 @@ const OmniSci_create_table_result = class {
   }
 
 };
-const OmniSci_import_table_args = class {
+const Heavy_import_table_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -24904,7 +24904,7 @@ const OmniSci_import_table_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_import_table_args');
+    output.writeStructBegin('Heavy_import_table_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -24931,7 +24931,7 @@ const OmniSci_import_table_args = class {
   }
 
 };
-const OmniSci_import_table_result = class {
+const Heavy_import_table_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -24976,7 +24976,7 @@ const OmniSci_import_table_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_import_table_result');
+    output.writeStructBegin('Heavy_import_table_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -24988,7 +24988,7 @@ const OmniSci_import_table_result = class {
   }
 
 };
-const OmniSci_import_geo_table_args = class {
+const Heavy_import_geo_table_args = class {
   constructor(args) {
     this.session = null;
     this.table_name = null;
@@ -25091,7 +25091,7 @@ const OmniSci_import_geo_table_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_import_geo_table_args');
+    output.writeStructBegin('Heavy_import_geo_table_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -25135,7 +25135,7 @@ const OmniSci_import_geo_table_args = class {
   }
 
 };
-const OmniSci_import_geo_table_result = class {
+const Heavy_import_geo_table_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -25180,7 +25180,7 @@ const OmniSci_import_geo_table_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_import_geo_table_result');
+    output.writeStructBegin('Heavy_import_geo_table_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -25192,7 +25192,7 @@ const OmniSci_import_geo_table_result = class {
   }
 
 };
-const OmniSci_import_table_status_args = class {
+const Heavy_import_table_status_args = class {
   constructor(args) {
     this.session = null;
     this.import_id = null;
@@ -25240,7 +25240,7 @@ const OmniSci_import_table_status_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_import_table_status_args');
+    output.writeStructBegin('Heavy_import_table_status_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -25257,7 +25257,7 @@ const OmniSci_import_table_status_args = class {
   }
 
 };
-const OmniSci_import_table_status_result = class {
+const Heavy_import_table_status_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -25311,7 +25311,7 @@ const OmniSci_import_table_status_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_import_table_status_result');
+    output.writeStructBegin('Heavy_import_table_status_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -25328,7 +25328,7 @@ const OmniSci_import_table_status_result = class {
   }
 
 };
-const OmniSci_get_first_geo_file_in_archive_args = class {
+const Heavy_get_first_geo_file_in_archive_args = class {
   constructor(args) {
     this.session = null;
     this.archive_path = null;
@@ -25388,7 +25388,7 @@ const OmniSci_get_first_geo_file_in_archive_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_first_geo_file_in_archive_args');
+    output.writeStructBegin('Heavy_get_first_geo_file_in_archive_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -25410,7 +25410,7 @@ const OmniSci_get_first_geo_file_in_archive_args = class {
   }
 
 };
-const OmniSci_get_first_geo_file_in_archive_result = class {
+const Heavy_get_first_geo_file_in_archive_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -25463,7 +25463,7 @@ const OmniSci_get_first_geo_file_in_archive_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_first_geo_file_in_archive_result');
+    output.writeStructBegin('Heavy_get_first_geo_file_in_archive_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRING, 0);
       output.writeString(this.success);
@@ -25480,7 +25480,7 @@ const OmniSci_get_first_geo_file_in_archive_result = class {
   }
 
 };
-const OmniSci_get_all_files_in_archive_args = class {
+const Heavy_get_all_files_in_archive_args = class {
   constructor(args) {
     this.session = null;
     this.archive_path = null;
@@ -25540,7 +25540,7 @@ const OmniSci_get_all_files_in_archive_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_all_files_in_archive_args');
+    output.writeStructBegin('Heavy_get_all_files_in_archive_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -25562,7 +25562,7 @@ const OmniSci_get_all_files_in_archive_args = class {
   }
 
 };
-const OmniSci_get_all_files_in_archive_result = class {
+const Heavy_get_all_files_in_archive_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -25623,7 +25623,7 @@ const OmniSci_get_all_files_in_archive_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_all_files_in_archive_result');
+    output.writeStructBegin('Heavy_get_all_files_in_archive_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -25647,7 +25647,7 @@ const OmniSci_get_all_files_in_archive_result = class {
   }
 
 };
-const OmniSci_get_layers_in_geo_file_args = class {
+const Heavy_get_layers_in_geo_file_args = class {
   constructor(args) {
     this.session = null;
     this.file_name = null;
@@ -25707,7 +25707,7 @@ const OmniSci_get_layers_in_geo_file_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_layers_in_geo_file_args');
+    output.writeStructBegin('Heavy_get_layers_in_geo_file_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -25729,7 +25729,7 @@ const OmniSci_get_layers_in_geo_file_args = class {
   }
 
 };
-const OmniSci_get_layers_in_geo_file_result = class {
+const Heavy_get_layers_in_geo_file_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -25791,7 +25791,7 @@ const OmniSci_get_layers_in_geo_file_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_layers_in_geo_file_result');
+    output.writeStructBegin('Heavy_get_layers_in_geo_file_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -25815,7 +25815,7 @@ const OmniSci_get_layers_in_geo_file_result = class {
   }
 
 };
-const OmniSci_query_get_outer_fragment_count_args = class {
+const Heavy_query_get_outer_fragment_count_args = class {
   constructor(args) {
     this.session = null;
     this.query = null;
@@ -25863,7 +25863,7 @@ const OmniSci_query_get_outer_fragment_count_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_query_get_outer_fragment_count_args');
+    output.writeStructBegin('Heavy_query_get_outer_fragment_count_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -25880,7 +25880,7 @@ const OmniSci_query_get_outer_fragment_count_args = class {
   }
 
 };
-const OmniSci_query_get_outer_fragment_count_result = class {
+const Heavy_query_get_outer_fragment_count_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -25933,7 +25933,7 @@ const OmniSci_query_get_outer_fragment_count_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_query_get_outer_fragment_count_result');
+    output.writeStructBegin('Heavy_query_get_outer_fragment_count_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.I64, 0);
       output.writeI64(this.success);
@@ -25950,7 +25950,7 @@ const OmniSci_query_get_outer_fragment_count_result = class {
   }
 
 };
-const OmniSci_check_table_consistency_args = class {
+const Heavy_check_table_consistency_args = class {
   constructor(args) {
     this.session = null;
     this.table_id = null;
@@ -25998,7 +25998,7 @@ const OmniSci_check_table_consistency_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_check_table_consistency_args');
+    output.writeStructBegin('Heavy_check_table_consistency_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -26015,7 +26015,7 @@ const OmniSci_check_table_consistency_args = class {
   }
 
 };
-const OmniSci_check_table_consistency_result = class {
+const Heavy_check_table_consistency_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -26069,7 +26069,7 @@ const OmniSci_check_table_consistency_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_check_table_consistency_result');
+    output.writeStructBegin('Heavy_check_table_consistency_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -26086,7 +26086,7 @@ const OmniSci_check_table_consistency_result = class {
   }
 
 };
-const OmniSci_start_query_args = class {
+const Heavy_start_query_args = class {
   constructor(args) {
     this.leaf_session = null;
     this.parent_session = null;
@@ -26186,7 +26186,7 @@ const OmniSci_start_query_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_start_query_args');
+    output.writeStructBegin('Heavy_start_query_args');
     if (this.leaf_session !== null && this.leaf_session !== undefined) {
       output.writeFieldBegin('leaf_session', Thrift.Type.STRING, 1);
       output.writeString(this.leaf_session);
@@ -26230,7 +26230,7 @@ const OmniSci_start_query_args = class {
   }
 
 };
-const OmniSci_start_query_result = class {
+const Heavy_start_query_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -26284,7 +26284,7 @@ const OmniSci_start_query_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_start_query_result');
+    output.writeStructBegin('Heavy_start_query_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -26301,7 +26301,7 @@ const OmniSci_start_query_result = class {
   }
 
 };
-const OmniSci_execute_query_step_args = class {
+const Heavy_execute_query_step_args = class {
   constructor(args) {
     this.pending_query = null;
     this.subquery_id = null;
@@ -26361,7 +26361,7 @@ const OmniSci_execute_query_step_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_execute_query_step_args');
+    output.writeStructBegin('Heavy_execute_query_step_args');
     if (this.pending_query !== null && this.pending_query !== undefined) {
       output.writeFieldBegin('pending_query', Thrift.Type.STRUCT, 1);
       this.pending_query.write(output);
@@ -26383,7 +26383,7 @@ const OmniSci_execute_query_step_args = class {
   }
 
 };
-const OmniSci_execute_query_step_result = class {
+const Heavy_execute_query_step_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -26437,7 +26437,7 @@ const OmniSci_execute_query_step_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_execute_query_step_result');
+    output.writeStructBegin('Heavy_execute_query_step_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -26454,7 +26454,7 @@ const OmniSci_execute_query_step_result = class {
   }
 
 };
-const OmniSci_broadcast_serialized_rows_args = class {
+const Heavy_broadcast_serialized_rows_args = class {
   constructor(args) {
     this.serialized_rows = null;
     this.row_desc = null;
@@ -26545,7 +26545,7 @@ const OmniSci_broadcast_serialized_rows_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_broadcast_serialized_rows_args');
+    output.writeStructBegin('Heavy_broadcast_serialized_rows_args');
     if (this.serialized_rows !== null && this.serialized_rows !== undefined) {
       output.writeFieldBegin('serialized_rows', Thrift.Type.STRUCT, 1);
       this.serialized_rows.write(output);
@@ -26584,7 +26584,7 @@ const OmniSci_broadcast_serialized_rows_args = class {
   }
 
 };
-const OmniSci_broadcast_serialized_rows_result = class {
+const Heavy_broadcast_serialized_rows_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -26629,7 +26629,7 @@ const OmniSci_broadcast_serialized_rows_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_broadcast_serialized_rows_result');
+    output.writeStructBegin('Heavy_broadcast_serialized_rows_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -26641,7 +26641,7 @@ const OmniSci_broadcast_serialized_rows_result = class {
   }
 
 };
-const OmniSci_start_render_query_args = class {
+const Heavy_start_render_query_args = class {
   constructor(args) {
     this.session = null;
     this.widget_id = null;
@@ -26711,7 +26711,7 @@ const OmniSci_start_render_query_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_start_render_query_args');
+    output.writeStructBegin('Heavy_start_render_query_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -26738,7 +26738,7 @@ const OmniSci_start_render_query_args = class {
   }
 
 };
-const OmniSci_start_render_query_result = class {
+const Heavy_start_render_query_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -26792,7 +26792,7 @@ const OmniSci_start_render_query_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_start_render_query_result');
+    output.writeStructBegin('Heavy_start_render_query_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -26809,7 +26809,7 @@ const OmniSci_start_render_query_result = class {
   }
 
 };
-const OmniSci_execute_next_render_step_args = class {
+const Heavy_execute_next_render_step_args = class {
   constructor(args) {
     this.pending_render = null;
     this.merged_data = null;
@@ -26907,7 +26907,7 @@ const OmniSci_execute_next_render_step_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_execute_next_render_step_args');
+    output.writeStructBegin('Heavy_execute_next_render_step_args');
     if (this.pending_render !== null && this.pending_render !== undefined) {
       output.writeFieldBegin('pending_render', Thrift.Type.STRUCT, 1);
       this.pending_render.write(output);
@@ -26963,7 +26963,7 @@ const OmniSci_execute_next_render_step_args = class {
   }
 
 };
-const OmniSci_execute_next_render_step_result = class {
+const Heavy_execute_next_render_step_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -27017,7 +27017,7 @@ const OmniSci_execute_next_render_step_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_execute_next_render_step_result');
+    output.writeStructBegin('Heavy_execute_next_render_step_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -27034,7 +27034,7 @@ const OmniSci_execute_next_render_step_result = class {
   }
 
 };
-const OmniSci_insert_data_args = class {
+const Heavy_insert_data_args = class {
   constructor(args) {
     this.session = null;
     this.insert_data = null;
@@ -27083,7 +27083,7 @@ const OmniSci_insert_data_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_insert_data_args');
+    output.writeStructBegin('Heavy_insert_data_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -27100,7 +27100,7 @@ const OmniSci_insert_data_args = class {
   }
 
 };
-const OmniSci_insert_data_result = class {
+const Heavy_insert_data_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -27145,7 +27145,7 @@ const OmniSci_insert_data_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_insert_data_result');
+    output.writeStructBegin('Heavy_insert_data_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -27157,7 +27157,7 @@ const OmniSci_insert_data_result = class {
   }
 
 };
-const OmniSci_insert_chunks_args = class {
+const Heavy_insert_chunks_args = class {
   constructor(args) {
     this.session = null;
     this.insert_chunks = null;
@@ -27206,7 +27206,7 @@ const OmniSci_insert_chunks_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_insert_chunks_args');
+    output.writeStructBegin('Heavy_insert_chunks_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -27223,7 +27223,7 @@ const OmniSci_insert_chunks_args = class {
   }
 
 };
-const OmniSci_insert_chunks_result = class {
+const Heavy_insert_chunks_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -27268,7 +27268,7 @@ const OmniSci_insert_chunks_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_insert_chunks_result');
+    output.writeStructBegin('Heavy_insert_chunks_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -27280,7 +27280,7 @@ const OmniSci_insert_chunks_result = class {
   }
 
 };
-const OmniSci_checkpoint_args = class {
+const Heavy_checkpoint_args = class {
   constructor(args) {
     this.session = null;
     this.table_id = null;
@@ -27328,7 +27328,7 @@ const OmniSci_checkpoint_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_checkpoint_args');
+    output.writeStructBegin('Heavy_checkpoint_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -27345,7 +27345,7 @@ const OmniSci_checkpoint_args = class {
   }
 
 };
-const OmniSci_checkpoint_result = class {
+const Heavy_checkpoint_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -27390,7 +27390,7 @@ const OmniSci_checkpoint_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_checkpoint_result');
+    output.writeStructBegin('Heavy_checkpoint_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -27402,7 +27402,7 @@ const OmniSci_checkpoint_result = class {
   }
 
 };
-const OmniSci_get_roles_args = class {
+const Heavy_get_roles_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -27442,7 +27442,7 @@ const OmniSci_get_roles_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_roles_args');
+    output.writeStructBegin('Heavy_get_roles_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -27454,7 +27454,7 @@ const OmniSci_get_roles_args = class {
   }
 
 };
-const OmniSci_get_roles_result = class {
+const Heavy_get_roles_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -27515,7 +27515,7 @@ const OmniSci_get_roles_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_roles_result');
+    output.writeStructBegin('Heavy_get_roles_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -27539,7 +27539,7 @@ const OmniSci_get_roles_result = class {
   }
 
 };
-const OmniSci_get_db_objects_for_grantee_args = class {
+const Heavy_get_db_objects_for_grantee_args = class {
   constructor(args) {
     this.session = null;
     this.roleName = null;
@@ -27587,7 +27587,7 @@ const OmniSci_get_db_objects_for_grantee_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_db_objects_for_grantee_args');
+    output.writeStructBegin('Heavy_get_db_objects_for_grantee_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -27604,7 +27604,7 @@ const OmniSci_get_db_objects_for_grantee_args = class {
   }
 
 };
-const OmniSci_get_db_objects_for_grantee_result = class {
+const Heavy_get_db_objects_for_grantee_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -27666,7 +27666,7 @@ const OmniSci_get_db_objects_for_grantee_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_db_objects_for_grantee_result');
+    output.writeStructBegin('Heavy_get_db_objects_for_grantee_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -27690,7 +27690,7 @@ const OmniSci_get_db_objects_for_grantee_result = class {
   }
 
 };
-const OmniSci_get_db_object_privs_args = class {
+const Heavy_get_db_object_privs_args = class {
   constructor(args) {
     this.session = null;
     this.objectName = null;
@@ -27749,7 +27749,7 @@ const OmniSci_get_db_object_privs_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_db_object_privs_args');
+    output.writeStructBegin('Heavy_get_db_object_privs_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -27771,7 +27771,7 @@ const OmniSci_get_db_object_privs_args = class {
   }
 
 };
-const OmniSci_get_db_object_privs_result = class {
+const Heavy_get_db_object_privs_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -27833,7 +27833,7 @@ const OmniSci_get_db_object_privs_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_db_object_privs_result');
+    output.writeStructBegin('Heavy_get_db_object_privs_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -27857,7 +27857,7 @@ const OmniSci_get_db_object_privs_result = class {
   }
 
 };
-const OmniSci_get_all_roles_for_user_args = class {
+const Heavy_get_all_roles_for_user_args = class {
   constructor(args) {
     this.session = null;
     this.userName = null;
@@ -27905,7 +27905,7 @@ const OmniSci_get_all_roles_for_user_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_all_roles_for_user_args');
+    output.writeStructBegin('Heavy_get_all_roles_for_user_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -27922,7 +27922,7 @@ const OmniSci_get_all_roles_for_user_args = class {
   }
 
 };
-const OmniSci_get_all_roles_for_user_result = class {
+const Heavy_get_all_roles_for_user_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -27983,7 +27983,7 @@ const OmniSci_get_all_roles_for_user_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_all_roles_for_user_result');
+    output.writeStructBegin('Heavy_get_all_roles_for_user_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -28007,7 +28007,7 @@ const OmniSci_get_all_roles_for_user_result = class {
   }
 
 };
-const OmniSci_get_all_effective_roles_for_user_args = class {
+const Heavy_get_all_effective_roles_for_user_args = class {
   constructor(args) {
     this.session = null;
     this.userName = null;
@@ -28055,7 +28055,7 @@ const OmniSci_get_all_effective_roles_for_user_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_all_effective_roles_for_user_args');
+    output.writeStructBegin('Heavy_get_all_effective_roles_for_user_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -28072,7 +28072,7 @@ const OmniSci_get_all_effective_roles_for_user_args = class {
   }
 
 };
-const OmniSci_get_all_effective_roles_for_user_result = class {
+const Heavy_get_all_effective_roles_for_user_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -28133,7 +28133,7 @@ const OmniSci_get_all_effective_roles_for_user_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_all_effective_roles_for_user_result');
+    output.writeStructBegin('Heavy_get_all_effective_roles_for_user_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -28157,7 +28157,7 @@ const OmniSci_get_all_effective_roles_for_user_result = class {
   }
 
 };
-const OmniSci_has_role_args = class {
+const Heavy_has_role_args = class {
   constructor(args) {
     this.session = null;
     this.granteeName = null;
@@ -28216,7 +28216,7 @@ const OmniSci_has_role_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_has_role_args');
+    output.writeStructBegin('Heavy_has_role_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -28238,7 +28238,7 @@ const OmniSci_has_role_args = class {
   }
 
 };
-const OmniSci_has_role_result = class {
+const Heavy_has_role_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -28291,7 +28291,7 @@ const OmniSci_has_role_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_has_role_result');
+    output.writeStructBegin('Heavy_has_role_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.BOOL, 0);
       output.writeBool(this.success);
@@ -28308,7 +28308,7 @@ const OmniSci_has_role_result = class {
   }
 
 };
-const OmniSci_has_object_privilege_args = class {
+const Heavy_has_object_privilege_args = class {
   constructor(args) {
     this.session = null;
     this.granteeName = null;
@@ -28390,7 +28390,7 @@ const OmniSci_has_object_privilege_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_has_object_privilege_args');
+    output.writeStructBegin('Heavy_has_object_privilege_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -28422,7 +28422,7 @@ const OmniSci_has_object_privilege_args = class {
   }
 
 };
-const OmniSci_has_object_privilege_result = class {
+const Heavy_has_object_privilege_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -28475,7 +28475,7 @@ const OmniSci_has_object_privilege_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_has_object_privilege_result');
+    output.writeStructBegin('Heavy_has_object_privilege_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.BOOL, 0);
       output.writeBool(this.success);
@@ -28492,7 +28492,7 @@ const OmniSci_has_object_privilege_result = class {
   }
 
 };
-const OmniSci_set_license_key_args = class {
+const Heavy_set_license_key_args = class {
   constructor(args) {
     this.session = null;
     this.key = null;
@@ -28551,7 +28551,7 @@ const OmniSci_set_license_key_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_license_key_args');
+    output.writeStructBegin('Heavy_set_license_key_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -28573,7 +28573,7 @@ const OmniSci_set_license_key_args = class {
   }
 
 };
-const OmniSci_set_license_key_result = class {
+const Heavy_set_license_key_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -28627,7 +28627,7 @@ const OmniSci_set_license_key_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_set_license_key_result');
+    output.writeStructBegin('Heavy_set_license_key_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -28644,7 +28644,7 @@ const OmniSci_set_license_key_result = class {
   }
 
 };
-const OmniSci_get_license_claims_args = class {
+const Heavy_get_license_claims_args = class {
   constructor(args) {
     this.session = null;
     this.nonce = '';
@@ -28692,7 +28692,7 @@ const OmniSci_get_license_claims_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_license_claims_args');
+    output.writeStructBegin('Heavy_get_license_claims_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -28709,7 +28709,7 @@ const OmniSci_get_license_claims_args = class {
   }
 
 };
-const OmniSci_get_license_claims_result = class {
+const Heavy_get_license_claims_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -28763,7 +28763,7 @@ const OmniSci_get_license_claims_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_license_claims_result');
+    output.writeStructBegin('Heavy_get_license_claims_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
       this.success.write(output);
@@ -28780,7 +28780,7 @@ const OmniSci_get_license_claims_result = class {
   }
 
 };
-const OmniSci_get_device_parameters_args = class {
+const Heavy_get_device_parameters_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -28820,7 +28820,7 @@ const OmniSci_get_device_parameters_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_device_parameters_args');
+    output.writeStructBegin('Heavy_get_device_parameters_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -28832,7 +28832,7 @@ const OmniSci_get_device_parameters_args = class {
   }
 
 };
-const OmniSci_get_device_parameters_result = class {
+const Heavy_get_device_parameters_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -28895,7 +28895,7 @@ const OmniSci_get_device_parameters_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_device_parameters_result');
+    output.writeStructBegin('Heavy_get_device_parameters_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.MAP, 0);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.success));
@@ -28920,7 +28920,7 @@ const OmniSci_get_device_parameters_result = class {
   }
 
 };
-const OmniSci_register_runtime_extension_functions_args = class {
+const Heavy_register_runtime_extension_functions_args = class {
   constructor(args) {
     this.session = null;
     this.udfs = null;
@@ -29018,7 +29018,7 @@ const OmniSci_register_runtime_extension_functions_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_register_runtime_extension_functions_args');
+    output.writeStructBegin('Heavy_register_runtime_extension_functions_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -29067,7 +29067,7 @@ const OmniSci_register_runtime_extension_functions_args = class {
   }
 
 };
-const OmniSci_register_runtime_extension_functions_result = class {
+const Heavy_register_runtime_extension_functions_result = class {
   constructor(args) {
     this.e = null;
     if (args instanceof ttypes.TDBException) {
@@ -29112,7 +29112,7 @@ const OmniSci_register_runtime_extension_functions_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_register_runtime_extension_functions_result');
+    output.writeStructBegin('Heavy_register_runtime_extension_functions_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -29124,7 +29124,7 @@ const OmniSci_register_runtime_extension_functions_result = class {
   }
 
 };
-const OmniSci_get_table_function_names_args = class {
+const Heavy_get_table_function_names_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -29164,7 +29164,7 @@ const OmniSci_get_table_function_names_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_function_names_args');
+    output.writeStructBegin('Heavy_get_table_function_names_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -29176,7 +29176,7 @@ const OmniSci_get_table_function_names_args = class {
   }
 
 };
-const OmniSci_get_table_function_names_result = class {
+const Heavy_get_table_function_names_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -29237,7 +29237,7 @@ const OmniSci_get_table_function_names_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_function_names_result');
+    output.writeStructBegin('Heavy_get_table_function_names_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -29261,7 +29261,7 @@ const OmniSci_get_table_function_names_result = class {
   }
 
 };
-const OmniSci_get_runtime_table_function_names_args = class {
+const Heavy_get_runtime_table_function_names_args = class {
   constructor(args) {
     this.session = null;
     if (args) {
@@ -29301,7 +29301,7 @@ const OmniSci_get_runtime_table_function_names_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_runtime_table_function_names_args');
+    output.writeStructBegin('Heavy_get_runtime_table_function_names_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -29313,7 +29313,7 @@ const OmniSci_get_runtime_table_function_names_args = class {
   }
 
 };
-const OmniSci_get_runtime_table_function_names_result = class {
+const Heavy_get_runtime_table_function_names_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -29374,7 +29374,7 @@ const OmniSci_get_runtime_table_function_names_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_runtime_table_function_names_result');
+    output.writeStructBegin('Heavy_get_runtime_table_function_names_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
@@ -29398,7 +29398,7 @@ const OmniSci_get_runtime_table_function_names_result = class {
   }
 
 };
-const OmniSci_get_table_function_details_args = class {
+const Heavy_get_table_function_details_args = class {
   constructor(args) {
     this.session = null;
     this.udtf_names = null;
@@ -29454,7 +29454,7 @@ const OmniSci_get_table_function_details_args = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_function_details_args');
+    output.writeStructBegin('Heavy_get_table_function_details_args');
     if (this.session !== null && this.session !== undefined) {
       output.writeFieldBegin('session', Thrift.Type.STRING, 1);
       output.writeString(this.session);
@@ -29478,7 +29478,7 @@ const OmniSci_get_table_function_details_args = class {
   }
 
 };
-const OmniSci_get_table_function_details_result = class {
+const Heavy_get_table_function_details_result = class {
   constructor(args) {
     this.success = null;
     this.e = null;
@@ -29540,7 +29540,7 @@ const OmniSci_get_table_function_details_result = class {
   }
 
   write (output) {
-    output.writeStructBegin('OmniSci_get_table_function_details_result');
+    output.writeStructBegin('Heavy_get_table_function_details_result');
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
@@ -29564,7 +29564,7 @@ const OmniSci_get_table_function_details_result = class {
   }
 
 };
-const OmniSciClient = exports.Client = class OmniSciClient {
+const HeavyClient = exports.Client = class HeavyClient {
   constructor(output, pClass) {
     this.output = output;
     this.pClass = pClass;
@@ -29592,7 +29592,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       passwd: passwd,
       dbname: dbname
     };
-    const args = new OmniSci_connect_args(params);
+    const args = new Heavy_connect_args(params);
     try {
       output.writeMessageBegin('connect', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29617,7 +29617,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_connect_result();
+    const result = new Heavy_connect_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -29647,7 +29647,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       inputToken: inputToken,
       dbname: dbname
     };
-    const args = new OmniSci_krb5_connect_args(params);
+    const args = new Heavy_krb5_connect_args(params);
     try {
       output.writeMessageBegin('krb5_connect', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29672,7 +29672,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_krb5_connect_result();
+    const result = new Heavy_krb5_connect_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -29701,7 +29701,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_disconnect_args(params);
+    const args = new Heavy_disconnect_args(params);
     try {
       output.writeMessageBegin('disconnect', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29726,7 +29726,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_disconnect_result();
+    const result = new Heavy_disconnect_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -29753,7 +29753,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       dbname: dbname
     };
-    const args = new OmniSci_switch_database_args(params);
+    const args = new Heavy_switch_database_args(params);
     try {
       output.writeMessageBegin('switch_database', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29778,7 +29778,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_switch_database_result();
+    const result = new Heavy_switch_database_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -29804,7 +29804,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_clone_session_args(params);
+    const args = new Heavy_clone_session_args(params);
     try {
       output.writeMessageBegin('clone_session', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29829,7 +29829,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_clone_session_result();
+    const result = new Heavy_clone_session_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -29858,7 +29858,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_server_status_args(params);
+    const args = new Heavy_get_server_status_args(params);
     try {
       output.writeMessageBegin('get_server_status', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29883,7 +29883,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_server_status_result();
+    const result = new Heavy_get_server_status_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -29912,7 +29912,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_status_args(params);
+    const args = new Heavy_get_status_args(params);
     try {
       output.writeMessageBegin('get_status', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29937,7 +29937,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_status_result();
+    const result = new Heavy_get_status_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -29966,7 +29966,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_hardware_info_args(params);
+    const args = new Heavy_get_hardware_info_args(params);
     try {
       output.writeMessageBegin('get_hardware_info', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -29991,7 +29991,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_hardware_info_result();
+    const result = new Heavy_get_hardware_info_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30020,7 +30020,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_tables_args(params);
+    const args = new Heavy_get_tables_args(params);
     try {
       output.writeMessageBegin('get_tables', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30045,7 +30045,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_tables_result();
+    const result = new Heavy_get_tables_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30075,7 +30075,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       database_name: database_name
     };
-    const args = new OmniSci_get_tables_for_database_args(params);
+    const args = new Heavy_get_tables_for_database_args(params);
     try {
       output.writeMessageBegin('get_tables_for_database', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30100,7 +30100,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_tables_for_database_result();
+    const result = new Heavy_get_tables_for_database_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30129,7 +30129,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_physical_tables_args(params);
+    const args = new Heavy_get_physical_tables_args(params);
     try {
       output.writeMessageBegin('get_physical_tables', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30154,7 +30154,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_physical_tables_result();
+    const result = new Heavy_get_physical_tables_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30183,7 +30183,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_views_args(params);
+    const args = new Heavy_get_views_args(params);
     try {
       output.writeMessageBegin('get_views', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30208,7 +30208,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_views_result();
+    const result = new Heavy_get_views_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30237,7 +30237,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_tables_meta_args(params);
+    const args = new Heavy_get_tables_meta_args(params);
     try {
       output.writeMessageBegin('get_tables_meta', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30262,7 +30262,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_tables_meta_result();
+    const result = new Heavy_get_tables_meta_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30292,7 +30292,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       table_name: table_name
     };
-    const args = new OmniSci_get_table_details_args(params);
+    const args = new Heavy_get_table_details_args(params);
     try {
       output.writeMessageBegin('get_table_details', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30317,7 +30317,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_table_details_result();
+    const result = new Heavy_get_table_details_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30348,7 +30348,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       table_name: table_name,
       database_name: database_name
     };
-    const args = new OmniSci_get_table_details_for_database_args(params);
+    const args = new Heavy_get_table_details_for_database_args(params);
     try {
       output.writeMessageBegin('get_table_details_for_database', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30373,7 +30373,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_table_details_for_database_result();
+    const result = new Heavy_get_table_details_for_database_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30404,7 +30404,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       table_name: table_name,
       include_system_columns: include_system_columns
     };
-    const args = new OmniSci_get_internal_table_details_args(params);
+    const args = new Heavy_get_internal_table_details_args(params);
     try {
       output.writeMessageBegin('get_internal_table_details', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30429,7 +30429,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_internal_table_details_result();
+    const result = new Heavy_get_internal_table_details_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30460,7 +30460,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       table_name: table_name,
       database_name: database_name
     };
-    const args = new OmniSci_get_internal_table_details_for_database_args(params);
+    const args = new Heavy_get_internal_table_details_for_database_args(params);
     try {
       output.writeMessageBegin('get_internal_table_details_for_database', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30485,7 +30485,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_internal_table_details_for_database_result();
+    const result = new Heavy_get_internal_table_details_for_database_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30514,7 +30514,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_users_args(params);
+    const args = new Heavy_get_users_args(params);
     try {
       output.writeMessageBegin('get_users', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30539,7 +30539,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_users_result();
+    const result = new Heavy_get_users_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30568,7 +30568,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_databases_args(params);
+    const args = new Heavy_get_databases_args(params);
     try {
       output.writeMessageBegin('get_databases', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30593,7 +30593,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_databases_result();
+    const result = new Heavy_get_databases_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30619,7 +30619,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
 
   send_get_version () {
     const output = new this.pClass(this.output);
-    const args = new OmniSci_get_version_args();
+    const args = new Heavy_get_version_args();
     try {
       output.writeMessageBegin('get_version', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30644,7 +30644,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_version_result();
+    const result = new Heavy_get_version_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30673,7 +30673,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_start_heap_profile_args(params);
+    const args = new Heavy_start_heap_profile_args(params);
     try {
       output.writeMessageBegin('start_heap_profile', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30698,7 +30698,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_start_heap_profile_result();
+    const result = new Heavy_start_heap_profile_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30724,7 +30724,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_stop_heap_profile_args(params);
+    const args = new Heavy_stop_heap_profile_args(params);
     try {
       output.writeMessageBegin('stop_heap_profile', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30749,7 +30749,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_stop_heap_profile_result();
+    const result = new Heavy_stop_heap_profile_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30775,7 +30775,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_heap_profile_args(params);
+    const args = new Heavy_get_heap_profile_args(params);
     try {
       output.writeMessageBegin('get_heap_profile', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30800,7 +30800,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_heap_profile_result();
+    const result = new Heavy_get_heap_profile_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30830,7 +30830,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       memory_level: memory_level
     };
-    const args = new OmniSci_get_memory_args(params);
+    const args = new Heavy_get_memory_args(params);
     try {
       output.writeMessageBegin('get_memory', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30855,7 +30855,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_memory_result();
+    const result = new Heavy_get_memory_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30884,7 +30884,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_clear_cpu_memory_args(params);
+    const args = new Heavy_clear_cpu_memory_args(params);
     try {
       output.writeMessageBegin('clear_cpu_memory', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30909,7 +30909,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_clear_cpu_memory_result();
+    const result = new Heavy_clear_cpu_memory_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30935,7 +30935,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_clear_gpu_memory_args(params);
+    const args = new Heavy_clear_gpu_memory_args(params);
     try {
       output.writeMessageBegin('clear_gpu_memory', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -30960,7 +30960,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_clear_gpu_memory_result();
+    const result = new Heavy_clear_gpu_memory_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -30990,7 +30990,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       label: label,
       for_running_query_kernel: for_running_query_kernel
     };
-    const args = new OmniSci_set_cur_session_args(params);
+    const args = new Heavy_set_cur_session_args(params);
     try {
       output.writeMessageBegin('set_cur_session', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31015,7 +31015,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_set_cur_session_result();
+    const result = new Heavy_set_cur_session_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31045,7 +31045,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       label: label,
       for_running_query_kernel: for_running_query_kernel
     };
-    const args = new OmniSci_invalidate_cur_session_args(params);
+    const args = new Heavy_invalidate_cur_session_args(params);
     try {
       output.writeMessageBegin('invalidate_cur_session', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31070,7 +31070,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_invalidate_cur_session_result();
+    const result = new Heavy_invalidate_cur_session_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31099,7 +31099,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       table_id: table_id,
       new_epoch: new_epoch
     };
-    const args = new OmniSci_set_table_epoch_args(params);
+    const args = new Heavy_set_table_epoch_args(params);
     try {
       output.writeMessageBegin('set_table_epoch', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31124,7 +31124,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_set_table_epoch_result();
+    const result = new Heavy_set_table_epoch_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31152,7 +31152,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       table_name: table_name,
       new_epoch: new_epoch
     };
-    const args = new OmniSci_set_table_epoch_by_name_args(params);
+    const args = new Heavy_set_table_epoch_by_name_args(params);
     try {
       output.writeMessageBegin('set_table_epoch_by_name', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31177,7 +31177,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_set_table_epoch_by_name_result();
+    const result = new Heavy_set_table_epoch_by_name_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31205,7 +31205,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       db_id: db_id,
       table_id: table_id
     };
-    const args = new OmniSci_get_table_epoch_args(params);
+    const args = new Heavy_get_table_epoch_args(params);
     try {
       output.writeMessageBegin('get_table_epoch', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31230,7 +31230,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_table_epoch_result();
+    const result = new Heavy_get_table_epoch_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31257,7 +31257,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       table_name: table_name
     };
-    const args = new OmniSci_get_table_epoch_by_name_args(params);
+    const args = new Heavy_get_table_epoch_by_name_args(params);
     try {
       output.writeMessageBegin('get_table_epoch_by_name', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31282,7 +31282,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_table_epoch_by_name_result();
+    const result = new Heavy_get_table_epoch_by_name_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31310,7 +31310,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       db_id: db_id,
       table_id: table_id
     };
-    const args = new OmniSci_get_table_epochs_args(params);
+    const args = new Heavy_get_table_epochs_args(params);
     try {
       output.writeMessageBegin('get_table_epochs', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31335,7 +31335,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_table_epochs_result();
+    const result = new Heavy_get_table_epochs_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31363,7 +31363,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       db_id: db_id,
       table_epochs: table_epochs
     };
-    const args = new OmniSci_set_table_epochs_args(params);
+    const args = new Heavy_set_table_epochs_args(params);
     try {
       output.writeMessageBegin('set_table_epochs', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31388,7 +31388,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_set_table_epochs_result();
+    const result = new Heavy_set_table_epochs_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31411,7 +31411,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_session_info_args(params);
+    const args = new Heavy_get_session_info_args(params);
     try {
       output.writeMessageBegin('get_session_info', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31436,7 +31436,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_session_info_result();
+    const result = new Heavy_get_session_info_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31465,7 +31465,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_queries_info_args(params);
+    const args = new Heavy_get_queries_info_args(params);
     try {
       output.writeMessageBegin('get_queries_info', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31490,7 +31490,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_queries_info_result();
+    const result = new Heavy_get_queries_info_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31520,7 +31520,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       leaf_info: leaf_info
     };
-    const args = new OmniSci_set_leaf_info_args(params);
+    const args = new Heavy_set_leaf_info_args(params);
     try {
       output.writeMessageBegin('set_leaf_info', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31545,7 +31545,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_set_leaf_info_result();
+    const result = new Heavy_set_leaf_info_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31576,7 +31576,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       first_n: first_n,
       at_most_n: at_most_n
     };
-    const args = new OmniSci_sql_execute_args(params);
+    const args = new Heavy_sql_execute_args(params);
     try {
       output.writeMessageBegin('sql_execute', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31601,7 +31601,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_sql_execute_result();
+    const result = new Heavy_sql_execute_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31635,7 +31635,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       first_n: first_n,
       transport_method: transport_method
     };
-    const args = new OmniSci_sql_execute_df_args(params);
+    const args = new Heavy_sql_execute_df_args(params);
     try {
       output.writeMessageBegin('sql_execute_df', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31660,7 +31660,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_sql_execute_df_result();
+    const result = new Heavy_sql_execute_df_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31692,7 +31692,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       device_id: device_id,
       first_n: first_n
     };
-    const args = new OmniSci_sql_execute_gdf_args(params);
+    const args = new Heavy_sql_execute_gdf_args(params);
     try {
       output.writeMessageBegin('sql_execute_gdf', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31717,7 +31717,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_sql_execute_gdf_result();
+    const result = new Heavy_sql_execute_gdf_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31749,7 +31749,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       device_type: device_type,
       device_id: device_id
     };
-    const args = new OmniSci_deallocate_df_args(params);
+    const args = new Heavy_deallocate_df_args(params);
     try {
       output.writeMessageBegin('deallocate_df', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31774,7 +31774,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_deallocate_df_result();
+    const result = new Heavy_deallocate_df_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31801,7 +31801,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       query_session: query_session,
       interrupt_session: interrupt_session
     };
-    const args = new OmniSci_interrupt_args(params);
+    const args = new Heavy_interrupt_args(params);
     try {
       output.writeMessageBegin('interrupt', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31826,7 +31826,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_interrupt_result();
+    const result = new Heavy_interrupt_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31853,7 +31853,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       query: query
     };
-    const args = new OmniSci_sql_validate_args(params);
+    const args = new Heavy_sql_validate_args(params);
     try {
       output.writeMessageBegin('sql_validate', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31878,7 +31878,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_sql_validate_result();
+    const result = new Heavy_sql_validate_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31909,7 +31909,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       sql: sql,
       cursor: cursor
     };
-    const args = new OmniSci_get_completion_hints_args(params);
+    const args = new Heavy_get_completion_hints_args(params);
     try {
       output.writeMessageBegin('get_completion_hints', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31934,7 +31934,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_completion_hints_result();
+    const result = new Heavy_get_completion_hints_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -31964,7 +31964,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       mode: mode
     };
-    const args = new OmniSci_set_execution_mode_args(params);
+    const args = new Heavy_set_execution_mode_args(params);
     try {
       output.writeMessageBegin('set_execution_mode', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -31989,7 +31989,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_set_execution_mode_result();
+    const result = new Heavy_set_execution_mode_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32019,7 +32019,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       compression_level: compression_level,
       nonce: nonce
     };
-    const args = new OmniSci_render_vega_args(params);
+    const args = new Heavy_render_vega_args(params);
     try {
       output.writeMessageBegin('render_vega', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32044,7 +32044,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_render_vega_result();
+    const result = new Heavy_render_vega_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32079,7 +32079,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       pixelRadius: pixelRadius,
       nonce: nonce
     };
-    const args = new OmniSci_get_result_row_for_pixel_args(params);
+    const args = new Heavy_get_result_row_for_pixel_args(params);
     try {
       output.writeMessageBegin('get_result_row_for_pixel', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32104,7 +32104,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_result_row_for_pixel_result();
+    const result = new Heavy_get_result_row_for_pixel_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32134,7 +32134,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       custom_expression: custom_expression
     };
-    const args = new OmniSci_create_custom_expression_args(params);
+    const args = new Heavy_create_custom_expression_args(params);
     try {
       output.writeMessageBegin('create_custom_expression', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32159,7 +32159,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_create_custom_expression_result();
+    const result = new Heavy_create_custom_expression_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32188,7 +32188,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_custom_expressions_args(params);
+    const args = new Heavy_get_custom_expressions_args(params);
     try {
       output.writeMessageBegin('get_custom_expressions', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32213,7 +32213,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_custom_expressions_result();
+    const result = new Heavy_get_custom_expressions_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32244,7 +32244,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       id: id,
       expression_json: expression_json
     };
-    const args = new OmniSci_update_custom_expression_args(params);
+    const args = new Heavy_update_custom_expression_args(params);
     try {
       output.writeMessageBegin('update_custom_expression', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32269,7 +32269,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_update_custom_expression_result();
+    const result = new Heavy_update_custom_expression_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32297,7 +32297,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       custom_expression_ids: custom_expression_ids,
       do_soft_delete: do_soft_delete
     };
-    const args = new OmniSci_delete_custom_expressions_args(params);
+    const args = new Heavy_delete_custom_expressions_args(params);
     try {
       output.writeMessageBegin('delete_custom_expressions', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32322,7 +32322,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_delete_custom_expressions_result();
+    const result = new Heavy_delete_custom_expressions_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32349,7 +32349,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       dashboard_id: dashboard_id
     };
-    const args = new OmniSci_get_dashboard_args(params);
+    const args = new Heavy_get_dashboard_args(params);
     try {
       output.writeMessageBegin('get_dashboard', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32374,7 +32374,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_dashboard_result();
+    const result = new Heavy_get_dashboard_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32403,7 +32403,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_dashboards_args(params);
+    const args = new Heavy_get_dashboards_args(params);
     try {
       output.writeMessageBegin('get_dashboards', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32428,7 +32428,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_dashboards_result();
+    const result = new Heavy_get_dashboards_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32461,7 +32461,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       image_hash: image_hash,
       dashboard_metadata: dashboard_metadata
     };
-    const args = new OmniSci_create_dashboard_args(params);
+    const args = new Heavy_create_dashboard_args(params);
     try {
       output.writeMessageBegin('create_dashboard', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32486,7 +32486,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_create_dashboard_result();
+    const result = new Heavy_create_dashboard_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32521,7 +32521,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       image_hash: image_hash,
       dashboard_metadata: dashboard_metadata
     };
-    const args = new OmniSci_replace_dashboard_args(params);
+    const args = new Heavy_replace_dashboard_args(params);
     try {
       output.writeMessageBegin('replace_dashboard', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32546,7 +32546,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_replace_dashboard_result();
+    const result = new Heavy_replace_dashboard_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32573,7 +32573,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       dashboard_id: dashboard_id
     };
-    const args = new OmniSci_delete_dashboard_args(params);
+    const args = new Heavy_delete_dashboard_args(params);
     try {
       output.writeMessageBegin('delete_dashboard', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32598,7 +32598,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_delete_dashboard_result();
+    const result = new Heavy_delete_dashboard_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32627,7 +32627,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       groups: groups,
       permissions: permissions
     };
-    const args = new OmniSci_share_dashboards_args(params);
+    const args = new Heavy_share_dashboards_args(params);
     try {
       output.writeMessageBegin('share_dashboards', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32652,7 +32652,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_share_dashboards_result();
+    const result = new Heavy_share_dashboards_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32679,7 +32679,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       dashboard_ids: dashboard_ids
     };
-    const args = new OmniSci_delete_dashboards_args(params);
+    const args = new Heavy_delete_dashboards_args(params);
     try {
       output.writeMessageBegin('delete_dashboards', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32704,7 +32704,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_delete_dashboards_result();
+    const result = new Heavy_delete_dashboards_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32735,7 +32735,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       permissions: permissions,
       grant_role: grant_role
     };
-    const args = new OmniSci_share_dashboard_args(params);
+    const args = new Heavy_share_dashboard_args(params);
     try {
       output.writeMessageBegin('share_dashboard', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32760,7 +32760,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_share_dashboard_result();
+    const result = new Heavy_share_dashboard_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32790,7 +32790,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       objects: objects,
       permissions: permissions
     };
-    const args = new OmniSci_unshare_dashboard_args(params);
+    const args = new Heavy_unshare_dashboard_args(params);
     try {
       output.writeMessageBegin('unshare_dashboard', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32815,7 +32815,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_unshare_dashboard_result();
+    const result = new Heavy_unshare_dashboard_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32844,7 +32844,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       groups: groups,
       permissions: permissions
     };
-    const args = new OmniSci_unshare_dashboards_args(params);
+    const args = new Heavy_unshare_dashboards_args(params);
     try {
       output.writeMessageBegin('unshare_dashboards', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32869,7 +32869,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_unshare_dashboards_result();
+    const result = new Heavy_unshare_dashboards_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32896,7 +32896,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       dashboard_id: dashboard_id
     };
-    const args = new OmniSci_get_dashboard_grantees_args(params);
+    const args = new Heavy_get_dashboard_grantees_args(params);
     try {
       output.writeMessageBegin('get_dashboard_grantees', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32921,7 +32921,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_dashboard_grantees_result();
+    const result = new Heavy_get_dashboard_grantees_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -32951,7 +32951,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       link: link
     };
-    const args = new OmniSci_get_link_view_args(params);
+    const args = new Heavy_get_link_view_args(params);
     try {
       output.writeMessageBegin('get_link_view', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -32976,7 +32976,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_link_view_result();
+    const result = new Heavy_get_link_view_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33007,7 +33007,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       view_state: view_state,
       view_metadata: view_metadata
     };
-    const args = new OmniSci_create_link_args(params);
+    const args = new Heavy_create_link_args(params);
     try {
       output.writeMessageBegin('create_link', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33032,7 +33032,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_create_link_result();
+    const result = new Heavy_create_link_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33064,7 +33064,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       rows: rows,
       column_names: column_names
     };
-    const args = new OmniSci_load_table_binary_args(params);
+    const args = new Heavy_load_table_binary_args(params);
     try {
       output.writeMessageBegin('load_table_binary', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33089,7 +33089,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_load_table_binary_result();
+    const result = new Heavy_load_table_binary_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33118,7 +33118,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       cols: cols,
       column_names: column_names
     };
-    const args = new OmniSci_load_table_binary_columnar_args(params);
+    const args = new Heavy_load_table_binary_columnar_args(params);
     try {
       output.writeMessageBegin('load_table_binary_columnar', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33143,7 +33143,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_load_table_binary_columnar_result();
+    const result = new Heavy_load_table_binary_columnar_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33173,7 +33173,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       column_names: column_names,
       assign_render_groups: assign_render_groups
     };
-    const args = new OmniSci_load_table_binary_columnar_polys_args(params);
+    const args = new Heavy_load_table_binary_columnar_polys_args(params);
     try {
       output.writeMessageBegin('load_table_binary_columnar_polys', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33198,7 +33198,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_load_table_binary_columnar_polys_result();
+    const result = new Heavy_load_table_binary_columnar_polys_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33227,7 +33227,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       arrow_stream: arrow_stream,
       use_column_names: use_column_names
     };
-    const args = new OmniSci_load_table_binary_arrow_args(params);
+    const args = new Heavy_load_table_binary_arrow_args(params);
     try {
       output.writeMessageBegin('load_table_binary_arrow', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33252,7 +33252,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_load_table_binary_arrow_result();
+    const result = new Heavy_load_table_binary_arrow_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33281,7 +33281,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       rows: rows,
       column_names: column_names
     };
-    const args = new OmniSci_load_table_args(params);
+    const args = new Heavy_load_table_args(params);
     try {
       output.writeMessageBegin('load_table', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33306,7 +33306,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_load_table_result();
+    const result = new Heavy_load_table_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33334,7 +33334,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       file_name: file_name,
       copy_params: copy_params
     };
-    const args = new OmniSci_detect_column_types_args(params);
+    const args = new Heavy_detect_column_types_args(params);
     try {
       output.writeMessageBegin('detect_column_types', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33359,7 +33359,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_detect_column_types_result();
+    const result = new Heavy_detect_column_types_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33391,7 +33391,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       row_desc: row_desc,
       create_params: create_params
     };
-    const args = new OmniSci_create_table_args(params);
+    const args = new Heavy_create_table_args(params);
     try {
       output.writeMessageBegin('create_table', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33416,7 +33416,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_create_table_result();
+    const result = new Heavy_create_table_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33445,7 +33445,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       file_name: file_name,
       copy_params: copy_params
     };
-    const args = new OmniSci_import_table_args(params);
+    const args = new Heavy_import_table_args(params);
     try {
       output.writeMessageBegin('import_table', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33470,7 +33470,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_import_table_result();
+    const result = new Heavy_import_table_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33501,7 +33501,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       row_desc: row_desc,
       create_params: create_params
     };
-    const args = new OmniSci_import_geo_table_args(params);
+    const args = new Heavy_import_geo_table_args(params);
     try {
       output.writeMessageBegin('import_geo_table', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33526,7 +33526,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_import_geo_table_result();
+    const result = new Heavy_import_geo_table_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33553,7 +33553,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       import_id: import_id
     };
-    const args = new OmniSci_import_table_status_args(params);
+    const args = new Heavy_import_table_status_args(params);
     try {
       output.writeMessageBegin('import_table_status', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33578,7 +33578,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_import_table_status_result();
+    const result = new Heavy_import_table_status_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33609,7 +33609,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       archive_path: archive_path,
       copy_params: copy_params
     };
-    const args = new OmniSci_get_first_geo_file_in_archive_args(params);
+    const args = new Heavy_get_first_geo_file_in_archive_args(params);
     try {
       output.writeMessageBegin('get_first_geo_file_in_archive', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33634,7 +33634,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_first_geo_file_in_archive_result();
+    const result = new Heavy_get_first_geo_file_in_archive_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33665,7 +33665,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       archive_path: archive_path,
       copy_params: copy_params
     };
-    const args = new OmniSci_get_all_files_in_archive_args(params);
+    const args = new Heavy_get_all_files_in_archive_args(params);
     try {
       output.writeMessageBegin('get_all_files_in_archive', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33690,7 +33690,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_all_files_in_archive_result();
+    const result = new Heavy_get_all_files_in_archive_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33721,7 +33721,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       file_name: file_name,
       copy_params: copy_params
     };
-    const args = new OmniSci_get_layers_in_geo_file_args(params);
+    const args = new Heavy_get_layers_in_geo_file_args(params);
     try {
       output.writeMessageBegin('get_layers_in_geo_file', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33746,7 +33746,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_layers_in_geo_file_result();
+    const result = new Heavy_get_layers_in_geo_file_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33776,7 +33776,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       query: query
     };
-    const args = new OmniSci_query_get_outer_fragment_count_args(params);
+    const args = new Heavy_query_get_outer_fragment_count_args(params);
     try {
       output.writeMessageBegin('query_get_outer_fragment_count', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33801,7 +33801,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_query_get_outer_fragment_count_result();
+    const result = new Heavy_query_get_outer_fragment_count_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33831,7 +33831,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       table_id: table_id
     };
-    const args = new OmniSci_check_table_consistency_args(params);
+    const args = new Heavy_check_table_consistency_args(params);
     try {
       output.writeMessageBegin('check_table_consistency', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33856,7 +33856,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_check_table_consistency_result();
+    const result = new Heavy_check_table_consistency_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33890,7 +33890,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       just_explain: just_explain,
       outer_fragment_indices: outer_fragment_indices
     };
-    const args = new OmniSci_start_query_args(params);
+    const args = new Heavy_start_query_args(params);
     try {
       output.writeMessageBegin('start_query', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33915,7 +33915,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_start_query_result();
+    const result = new Heavy_start_query_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -33946,7 +33946,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       subquery_id: subquery_id,
       start_time_str: start_time_str
     };
-    const args = new OmniSci_execute_query_step_args(params);
+    const args = new Heavy_execute_query_step_args(params);
     try {
       output.writeMessageBegin('execute_query_step', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -33971,7 +33971,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_execute_query_step_result();
+    const result = new Heavy_execute_query_step_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34004,7 +34004,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       subquery_id: subquery_id,
       is_final_subquery_result: is_final_subquery_result
     };
-    const args = new OmniSci_broadcast_serialized_rows_args(params);
+    const args = new Heavy_broadcast_serialized_rows_args(params);
     try {
       output.writeMessageBegin('broadcast_serialized_rows', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34029,7 +34029,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_broadcast_serialized_rows_result();
+    const result = new Heavy_broadcast_serialized_rows_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34058,7 +34058,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       node_idx: node_idx,
       vega_json: vega_json
     };
-    const args = new OmniSci_start_render_query_args(params);
+    const args = new Heavy_start_render_query_args(params);
     try {
       output.writeMessageBegin('start_render_query', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34083,7 +34083,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_start_render_query_result();
+    const result = new Heavy_start_render_query_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34113,7 +34113,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       pending_render: pending_render,
       merged_data: merged_data
     };
-    const args = new OmniSci_execute_next_render_step_args(params);
+    const args = new Heavy_execute_next_render_step_args(params);
     try {
       output.writeMessageBegin('execute_next_render_step', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34138,7 +34138,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_execute_next_render_step_result();
+    const result = new Heavy_execute_next_render_step_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34168,7 +34168,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       insert_data: insert_data
     };
-    const args = new OmniSci_insert_data_args(params);
+    const args = new Heavy_insert_data_args(params);
     try {
       output.writeMessageBegin('insert_data', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34193,7 +34193,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_insert_data_result();
+    const result = new Heavy_insert_data_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34220,7 +34220,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       insert_chunks: insert_chunks
     };
-    const args = new OmniSci_insert_chunks_args(params);
+    const args = new Heavy_insert_chunks_args(params);
     try {
       output.writeMessageBegin('insert_chunks', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34245,7 +34245,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_insert_chunks_result();
+    const result = new Heavy_insert_chunks_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34272,7 +34272,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       table_id: table_id
     };
-    const args = new OmniSci_checkpoint_args(params);
+    const args = new Heavy_checkpoint_args(params);
     try {
       output.writeMessageBegin('checkpoint', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34297,7 +34297,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_checkpoint_result();
+    const result = new Heavy_checkpoint_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34323,7 +34323,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_roles_args(params);
+    const args = new Heavy_get_roles_args(params);
     try {
       output.writeMessageBegin('get_roles', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34348,7 +34348,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_roles_result();
+    const result = new Heavy_get_roles_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34378,7 +34378,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       roleName: roleName
     };
-    const args = new OmniSci_get_db_objects_for_grantee_args(params);
+    const args = new Heavy_get_db_objects_for_grantee_args(params);
     try {
       output.writeMessageBegin('get_db_objects_for_grantee', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34403,7 +34403,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_db_objects_for_grantee_result();
+    const result = new Heavy_get_db_objects_for_grantee_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34434,7 +34434,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       objectName: objectName,
       type: type
     };
-    const args = new OmniSci_get_db_object_privs_args(params);
+    const args = new Heavy_get_db_object_privs_args(params);
     try {
       output.writeMessageBegin('get_db_object_privs', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34459,7 +34459,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_db_object_privs_result();
+    const result = new Heavy_get_db_object_privs_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34489,7 +34489,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       userName: userName
     };
-    const args = new OmniSci_get_all_roles_for_user_args(params);
+    const args = new Heavy_get_all_roles_for_user_args(params);
     try {
       output.writeMessageBegin('get_all_roles_for_user', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34514,7 +34514,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_all_roles_for_user_result();
+    const result = new Heavy_get_all_roles_for_user_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34544,7 +34544,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       userName: userName
     };
-    const args = new OmniSci_get_all_effective_roles_for_user_args(params);
+    const args = new Heavy_get_all_effective_roles_for_user_args(params);
     try {
       output.writeMessageBegin('get_all_effective_roles_for_user', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34569,7 +34569,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_all_effective_roles_for_user_result();
+    const result = new Heavy_get_all_effective_roles_for_user_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34600,7 +34600,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       granteeName: granteeName,
       roleName: roleName
     };
-    const args = new OmniSci_has_role_args(params);
+    const args = new Heavy_has_role_args(params);
     try {
       output.writeMessageBegin('has_role', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34625,7 +34625,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_has_role_result();
+    const result = new Heavy_has_role_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34658,7 +34658,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       objectType: objectType,
       permissions: permissions
     };
-    const args = new OmniSci_has_object_privilege_args(params);
+    const args = new Heavy_has_object_privilege_args(params);
     try {
       output.writeMessageBegin('has_object_privilege', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34683,7 +34683,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_has_object_privilege_result();
+    const result = new Heavy_has_object_privilege_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34714,7 +34714,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       key: key,
       nonce: nonce
     };
-    const args = new OmniSci_set_license_key_args(params);
+    const args = new Heavy_set_license_key_args(params);
     try {
       output.writeMessageBegin('set_license_key', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34739,7 +34739,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_set_license_key_result();
+    const result = new Heavy_set_license_key_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34769,7 +34769,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       nonce: nonce
     };
-    const args = new OmniSci_get_license_claims_args(params);
+    const args = new Heavy_get_license_claims_args(params);
     try {
       output.writeMessageBegin('get_license_claims', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34794,7 +34794,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_license_claims_result();
+    const result = new Heavy_get_license_claims_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34823,7 +34823,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_device_parameters_args(params);
+    const args = new Heavy_get_device_parameters_args(params);
     try {
       output.writeMessageBegin('get_device_parameters', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34848,7 +34848,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_device_parameters_result();
+    const result = new Heavy_get_device_parameters_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34880,7 +34880,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       udtfs: udtfs,
       device_ir_map: device_ir_map
     };
-    const args = new OmniSci_register_runtime_extension_functions_args(params);
+    const args = new Heavy_register_runtime_extension_functions_args(params);
     try {
       output.writeMessageBegin('register_runtime_extension_functions', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34905,7 +34905,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_register_runtime_extension_functions_result();
+    const result = new Heavy_register_runtime_extension_functions_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34931,7 +34931,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_table_function_names_args(params);
+    const args = new Heavy_get_table_function_names_args(params);
     try {
       output.writeMessageBegin('get_table_function_names', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -34956,7 +34956,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_table_function_names_result();
+    const result = new Heavy_get_table_function_names_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -34985,7 +34985,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     const params = {
       session: session
     };
-    const args = new OmniSci_get_runtime_table_function_names_args(params);
+    const args = new Heavy_get_runtime_table_function_names_args(params);
     try {
       output.writeMessageBegin('get_runtime_table_function_names', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -35010,7 +35010,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_runtime_table_function_names_result();
+    const result = new Heavy_get_runtime_table_function_names_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -35040,7 +35040,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       session: session,
       udtf_names: udtf_names
     };
-    const args = new OmniSci_get_table_function_details_args(params);
+    const args = new Heavy_get_table_function_details_args(params);
     try {
       output.writeMessageBegin('get_table_function_details', Thrift.MessageType.CALL, this.seqid());
       args.write(output);
@@ -35065,7 +35065,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
       input.readMessageEnd();
       return callback(x);
     }
-    const result = new OmniSci_get_table_function_details_result();
+    const result = new Heavy_get_table_function_details_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -35078,7 +35078,7 @@ const OmniSciClient = exports.Client = class OmniSciClient {
     return callback('get_table_function_details failed: unknown result');
   }
 };
-const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
+const HeavyProcessor = exports.Processor = class HeavyProcessor {
   constructor(handler) {
     this._handler = handler;
   }
@@ -35097,7 +35097,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_connect (seqid, input, output) {
-    const args = new OmniSci_connect_args();
+    const args = new Heavy_connect_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.connect.length === 3) {
@@ -35106,7 +35106,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.passwd,
         args.dbname
       )).then(result => {
-        const result_obj = new OmniSci_connect_result({success: result});
+        const result_obj = new Heavy_connect_result({success: result});
         output.writeMessageBegin("connect", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35114,7 +35114,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_connect_result(err);
+          result = new Heavy_connect_result(err);
           output.writeMessageBegin("connect", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35128,7 +35128,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.connect(args.user, args.passwd, args.dbname, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_connect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_connect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("connect", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35141,7 +35141,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_krb5_connect (seqid, input, output) {
-    const args = new OmniSci_krb5_connect_args();
+    const args = new Heavy_krb5_connect_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.krb5_connect.length === 2) {
@@ -35149,7 +35149,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.inputToken,
         args.dbname
       )).then(result => {
-        const result_obj = new OmniSci_krb5_connect_result({success: result});
+        const result_obj = new Heavy_krb5_connect_result({success: result});
         output.writeMessageBegin("krb5_connect", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35157,7 +35157,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_krb5_connect_result(err);
+          result = new Heavy_krb5_connect_result(err);
           output.writeMessageBegin("krb5_connect", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35171,7 +35171,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.krb5_connect(args.inputToken, args.dbname, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_krb5_connect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_krb5_connect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("krb5_connect", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35184,14 +35184,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_disconnect (seqid, input, output) {
-    const args = new OmniSci_disconnect_args();
+    const args = new Heavy_disconnect_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.disconnect.length === 1) {
       Promise.resolve(this._handler.disconnect.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_disconnect_result({success: result});
+        const result_obj = new Heavy_disconnect_result({success: result});
         output.writeMessageBegin("disconnect", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35199,7 +35199,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_disconnect_result(err);
+          result = new Heavy_disconnect_result(err);
           output.writeMessageBegin("disconnect", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35213,7 +35213,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.disconnect(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_disconnect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_disconnect_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("disconnect", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35226,7 +35226,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_switch_database (seqid, input, output) {
-    const args = new OmniSci_switch_database_args();
+    const args = new Heavy_switch_database_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.switch_database.length === 2) {
@@ -35234,7 +35234,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.dbname
       )).then(result => {
-        const result_obj = new OmniSci_switch_database_result({success: result});
+        const result_obj = new Heavy_switch_database_result({success: result});
         output.writeMessageBegin("switch_database", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35242,7 +35242,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_switch_database_result(err);
+          result = new Heavy_switch_database_result(err);
           output.writeMessageBegin("switch_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35256,7 +35256,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.switch_database(args.session, args.dbname, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_switch_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_switch_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("switch_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35269,14 +35269,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_clone_session (seqid, input, output) {
-    const args = new OmniSci_clone_session_args();
+    const args = new Heavy_clone_session_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.clone_session.length === 1) {
       Promise.resolve(this._handler.clone_session.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_clone_session_result({success: result});
+        const result_obj = new Heavy_clone_session_result({success: result});
         output.writeMessageBegin("clone_session", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35284,7 +35284,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_clone_session_result(err);
+          result = new Heavy_clone_session_result(err);
           output.writeMessageBegin("clone_session", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35298,7 +35298,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.clone_session(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_clone_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_clone_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("clone_session", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35311,14 +35311,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_server_status (seqid, input, output) {
-    const args = new OmniSci_get_server_status_args();
+    const args = new Heavy_get_server_status_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_server_status.length === 1) {
       Promise.resolve(this._handler.get_server_status.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_server_status_result({success: result});
+        const result_obj = new Heavy_get_server_status_result({success: result});
         output.writeMessageBegin("get_server_status", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35326,7 +35326,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_server_status_result(err);
+          result = new Heavy_get_server_status_result(err);
           output.writeMessageBegin("get_server_status", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35340,7 +35340,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_server_status(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_server_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_server_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_server_status", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35353,14 +35353,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_status (seqid, input, output) {
-    const args = new OmniSci_get_status_args();
+    const args = new Heavy_get_status_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_status.length === 1) {
       Promise.resolve(this._handler.get_status.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_status_result({success: result});
+        const result_obj = new Heavy_get_status_result({success: result});
         output.writeMessageBegin("get_status", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35368,7 +35368,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_status_result(err);
+          result = new Heavy_get_status_result(err);
           output.writeMessageBegin("get_status", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35382,7 +35382,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_status(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_status", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35395,14 +35395,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_hardware_info (seqid, input, output) {
-    const args = new OmniSci_get_hardware_info_args();
+    const args = new Heavy_get_hardware_info_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_hardware_info.length === 1) {
       Promise.resolve(this._handler.get_hardware_info.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_hardware_info_result({success: result});
+        const result_obj = new Heavy_get_hardware_info_result({success: result});
         output.writeMessageBegin("get_hardware_info", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35410,7 +35410,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_hardware_info_result(err);
+          result = new Heavy_get_hardware_info_result(err);
           output.writeMessageBegin("get_hardware_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35424,7 +35424,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_hardware_info(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_hardware_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_hardware_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_hardware_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35437,14 +35437,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_tables (seqid, input, output) {
-    const args = new OmniSci_get_tables_args();
+    const args = new Heavy_get_tables_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_tables.length === 1) {
       Promise.resolve(this._handler.get_tables.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_tables_result({success: result});
+        const result_obj = new Heavy_get_tables_result({success: result});
         output.writeMessageBegin("get_tables", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35452,7 +35452,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_tables_result(err);
+          result = new Heavy_get_tables_result(err);
           output.writeMessageBegin("get_tables", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35466,7 +35466,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_tables(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_tables_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_tables_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_tables", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35479,7 +35479,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_tables_for_database (seqid, input, output) {
-    const args = new OmniSci_get_tables_for_database_args();
+    const args = new Heavy_get_tables_for_database_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_tables_for_database.length === 2) {
@@ -35487,7 +35487,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.database_name
       )).then(result => {
-        const result_obj = new OmniSci_get_tables_for_database_result({success: result});
+        const result_obj = new Heavy_get_tables_for_database_result({success: result});
         output.writeMessageBegin("get_tables_for_database", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35495,7 +35495,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_tables_for_database_result(err);
+          result = new Heavy_get_tables_for_database_result(err);
           output.writeMessageBegin("get_tables_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35509,7 +35509,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_tables_for_database(args.session, args.database_name, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_tables_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_tables_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_tables_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35522,14 +35522,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_physical_tables (seqid, input, output) {
-    const args = new OmniSci_get_physical_tables_args();
+    const args = new Heavy_get_physical_tables_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_physical_tables.length === 1) {
       Promise.resolve(this._handler.get_physical_tables.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_physical_tables_result({success: result});
+        const result_obj = new Heavy_get_physical_tables_result({success: result});
         output.writeMessageBegin("get_physical_tables", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35537,7 +35537,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_physical_tables_result(err);
+          result = new Heavy_get_physical_tables_result(err);
           output.writeMessageBegin("get_physical_tables", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35551,7 +35551,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_physical_tables(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_physical_tables_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_physical_tables_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_physical_tables", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35564,14 +35564,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_views (seqid, input, output) {
-    const args = new OmniSci_get_views_args();
+    const args = new Heavy_get_views_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_views.length === 1) {
       Promise.resolve(this._handler.get_views.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_views_result({success: result});
+        const result_obj = new Heavy_get_views_result({success: result});
         output.writeMessageBegin("get_views", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35579,7 +35579,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_views_result(err);
+          result = new Heavy_get_views_result(err);
           output.writeMessageBegin("get_views", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35593,7 +35593,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_views(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_views_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_views_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_views", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35606,14 +35606,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_tables_meta (seqid, input, output) {
-    const args = new OmniSci_get_tables_meta_args();
+    const args = new Heavy_get_tables_meta_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_tables_meta.length === 1) {
       Promise.resolve(this._handler.get_tables_meta.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_tables_meta_result({success: result});
+        const result_obj = new Heavy_get_tables_meta_result({success: result});
         output.writeMessageBegin("get_tables_meta", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35621,7 +35621,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_tables_meta_result(err);
+          result = new Heavy_get_tables_meta_result(err);
           output.writeMessageBegin("get_tables_meta", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35635,7 +35635,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_tables_meta(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_tables_meta_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_tables_meta_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_tables_meta", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35648,7 +35648,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_table_details (seqid, input, output) {
-    const args = new OmniSci_get_table_details_args();
+    const args = new Heavy_get_table_details_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_table_details.length === 2) {
@@ -35656,7 +35656,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.table_name
       )).then(result => {
-        const result_obj = new OmniSci_get_table_details_result({success: result});
+        const result_obj = new Heavy_get_table_details_result({success: result});
         output.writeMessageBegin("get_table_details", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35664,7 +35664,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_table_details_result(err);
+          result = new Heavy_get_table_details_result(err);
           output.writeMessageBegin("get_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35678,7 +35678,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_table_details(args.session, args.table_name, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_table_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_table_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35691,7 +35691,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_table_details_for_database (seqid, input, output) {
-    const args = new OmniSci_get_table_details_for_database_args();
+    const args = new Heavy_get_table_details_for_database_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_table_details_for_database.length === 3) {
@@ -35700,7 +35700,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.table_name,
         args.database_name
       )).then(result => {
-        const result_obj = new OmniSci_get_table_details_for_database_result({success: result});
+        const result_obj = new Heavy_get_table_details_for_database_result({success: result});
         output.writeMessageBegin("get_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35708,7 +35708,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_table_details_for_database_result(err);
+          result = new Heavy_get_table_details_for_database_result(err);
           output.writeMessageBegin("get_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35722,7 +35722,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_table_details_for_database(args.session, args.table_name, args.database_name, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_table_details_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_table_details_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35735,7 +35735,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_internal_table_details (seqid, input, output) {
-    const args = new OmniSci_get_internal_table_details_args();
+    const args = new Heavy_get_internal_table_details_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_internal_table_details.length === 3) {
@@ -35744,7 +35744,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.table_name,
         args.include_system_columns
       )).then(result => {
-        const result_obj = new OmniSci_get_internal_table_details_result({success: result});
+        const result_obj = new Heavy_get_internal_table_details_result({success: result});
         output.writeMessageBegin("get_internal_table_details", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35752,7 +35752,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_internal_table_details_result(err);
+          result = new Heavy_get_internal_table_details_result(err);
           output.writeMessageBegin("get_internal_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35766,7 +35766,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_internal_table_details(args.session, args.table_name, args.include_system_columns, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_internal_table_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_internal_table_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_internal_table_details", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35779,7 +35779,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_internal_table_details_for_database (seqid, input, output) {
-    const args = new OmniSci_get_internal_table_details_for_database_args();
+    const args = new Heavy_get_internal_table_details_for_database_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_internal_table_details_for_database.length === 3) {
@@ -35788,7 +35788,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.table_name,
         args.database_name
       )).then(result => {
-        const result_obj = new OmniSci_get_internal_table_details_for_database_result({success: result});
+        const result_obj = new Heavy_get_internal_table_details_for_database_result({success: result});
         output.writeMessageBegin("get_internal_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35796,7 +35796,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_internal_table_details_for_database_result(err);
+          result = new Heavy_get_internal_table_details_for_database_result(err);
           output.writeMessageBegin("get_internal_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35810,7 +35810,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_internal_table_details_for_database(args.session, args.table_name, args.database_name, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_internal_table_details_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_internal_table_details_for_database_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_internal_table_details_for_database", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35823,14 +35823,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_users (seqid, input, output) {
-    const args = new OmniSci_get_users_args();
+    const args = new Heavy_get_users_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_users.length === 1) {
       Promise.resolve(this._handler.get_users.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_users_result({success: result});
+        const result_obj = new Heavy_get_users_result({success: result});
         output.writeMessageBegin("get_users", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35838,7 +35838,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_users_result(err);
+          result = new Heavy_get_users_result(err);
           output.writeMessageBegin("get_users", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35852,7 +35852,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_users(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_users_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_users_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_users", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35865,14 +35865,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_databases (seqid, input, output) {
-    const args = new OmniSci_get_databases_args();
+    const args = new Heavy_get_databases_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_databases.length === 1) {
       Promise.resolve(this._handler.get_databases.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_databases_result({success: result});
+        const result_obj = new Heavy_get_databases_result({success: result});
         output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35880,7 +35880,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_databases_result(err);
+          result = new Heavy_get_databases_result(err);
           output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35894,7 +35894,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_databases(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_databases_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_databases_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35907,13 +35907,13 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_version (seqid, input, output) {
-    const args = new OmniSci_get_version_args();
+    const args = new Heavy_get_version_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_version.length === 0) {
       Promise.resolve(this._handler.get_version.bind(this._handler)(
       )).then(result => {
-        const result_obj = new OmniSci_get_version_result({success: result});
+        const result_obj = new Heavy_get_version_result({success: result});
         output.writeMessageBegin("get_version", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35921,7 +35921,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_version_result(err);
+          result = new Heavy_get_version_result(err);
           output.writeMessageBegin("get_version", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35935,7 +35935,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_version((err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_version_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_version_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_version", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35948,14 +35948,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_start_heap_profile (seqid, input, output) {
-    const args = new OmniSci_start_heap_profile_args();
+    const args = new Heavy_start_heap_profile_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.start_heap_profile.length === 1) {
       Promise.resolve(this._handler.start_heap_profile.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_start_heap_profile_result({success: result});
+        const result_obj = new Heavy_start_heap_profile_result({success: result});
         output.writeMessageBegin("start_heap_profile", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -35963,7 +35963,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_start_heap_profile_result(err);
+          result = new Heavy_start_heap_profile_result(err);
           output.writeMessageBegin("start_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35977,7 +35977,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.start_heap_profile(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_start_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_start_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("start_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -35990,14 +35990,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_stop_heap_profile (seqid, input, output) {
-    const args = new OmniSci_stop_heap_profile_args();
+    const args = new Heavy_stop_heap_profile_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.stop_heap_profile.length === 1) {
       Promise.resolve(this._handler.stop_heap_profile.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_stop_heap_profile_result({success: result});
+        const result_obj = new Heavy_stop_heap_profile_result({success: result});
         output.writeMessageBegin("stop_heap_profile", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36005,7 +36005,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_stop_heap_profile_result(err);
+          result = new Heavy_stop_heap_profile_result(err);
           output.writeMessageBegin("stop_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36019,7 +36019,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.stop_heap_profile(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_stop_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_stop_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("stop_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36032,14 +36032,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_heap_profile (seqid, input, output) {
-    const args = new OmniSci_get_heap_profile_args();
+    const args = new Heavy_get_heap_profile_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_heap_profile.length === 1) {
       Promise.resolve(this._handler.get_heap_profile.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_heap_profile_result({success: result});
+        const result_obj = new Heavy_get_heap_profile_result({success: result});
         output.writeMessageBegin("get_heap_profile", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36047,7 +36047,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_heap_profile_result(err);
+          result = new Heavy_get_heap_profile_result(err);
           output.writeMessageBegin("get_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36061,7 +36061,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_heap_profile(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_heap_profile_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_heap_profile", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36074,7 +36074,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_memory (seqid, input, output) {
-    const args = new OmniSci_get_memory_args();
+    const args = new Heavy_get_memory_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_memory.length === 2) {
@@ -36082,7 +36082,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.memory_level
       )).then(result => {
-        const result_obj = new OmniSci_get_memory_result({success: result});
+        const result_obj = new Heavy_get_memory_result({success: result});
         output.writeMessageBegin("get_memory", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36090,7 +36090,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_memory_result(err);
+          result = new Heavy_get_memory_result(err);
           output.writeMessageBegin("get_memory", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36104,7 +36104,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_memory(args.session, args.memory_level, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_memory", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36117,14 +36117,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_clear_cpu_memory (seqid, input, output) {
-    const args = new OmniSci_clear_cpu_memory_args();
+    const args = new Heavy_clear_cpu_memory_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.clear_cpu_memory.length === 1) {
       Promise.resolve(this._handler.clear_cpu_memory.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_clear_cpu_memory_result({success: result});
+        const result_obj = new Heavy_clear_cpu_memory_result({success: result});
         output.writeMessageBegin("clear_cpu_memory", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36132,7 +36132,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_clear_cpu_memory_result(err);
+          result = new Heavy_clear_cpu_memory_result(err);
           output.writeMessageBegin("clear_cpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36146,7 +36146,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.clear_cpu_memory(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_clear_cpu_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_clear_cpu_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("clear_cpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36159,14 +36159,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_clear_gpu_memory (seqid, input, output) {
-    const args = new OmniSci_clear_gpu_memory_args();
+    const args = new Heavy_clear_gpu_memory_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.clear_gpu_memory.length === 1) {
       Promise.resolve(this._handler.clear_gpu_memory.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_clear_gpu_memory_result({success: result});
+        const result_obj = new Heavy_clear_gpu_memory_result({success: result});
         output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36174,7 +36174,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_clear_gpu_memory_result(err);
+          result = new Heavy_clear_gpu_memory_result(err);
           output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36188,7 +36188,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.clear_gpu_memory(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_clear_gpu_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_clear_gpu_memory_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("clear_gpu_memory", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36201,7 +36201,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_set_cur_session (seqid, input, output) {
-    const args = new OmniSci_set_cur_session_args();
+    const args = new Heavy_set_cur_session_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.set_cur_session.length === 5) {
@@ -36212,7 +36212,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.label,
         args.for_running_query_kernel
       )).then(result => {
-        const result_obj = new OmniSci_set_cur_session_result({success: result});
+        const result_obj = new Heavy_set_cur_session_result({success: result});
         output.writeMessageBegin("set_cur_session", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36220,7 +36220,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_set_cur_session_result(err);
+          result = new Heavy_set_cur_session_result(err);
           output.writeMessageBegin("set_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36234,7 +36234,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.set_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_set_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_set_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36247,7 +36247,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_invalidate_cur_session (seqid, input, output) {
-    const args = new OmniSci_invalidate_cur_session_args();
+    const args = new Heavy_invalidate_cur_session_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.invalidate_cur_session.length === 5) {
@@ -36258,7 +36258,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.label,
         args.for_running_query_kernel
       )).then(result => {
-        const result_obj = new OmniSci_invalidate_cur_session_result({success: result});
+        const result_obj = new Heavy_invalidate_cur_session_result({success: result});
         output.writeMessageBegin("invalidate_cur_session", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36266,7 +36266,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_invalidate_cur_session_result(err);
+          result = new Heavy_invalidate_cur_session_result(err);
           output.writeMessageBegin("invalidate_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36280,7 +36280,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.invalidate_cur_session(args.parent_session, args.leaf_session, args.start_time_str, args.label, args.for_running_query_kernel, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_invalidate_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_invalidate_cur_session_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("invalidate_cur_session", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36293,7 +36293,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_set_table_epoch (seqid, input, output) {
-    const args = new OmniSci_set_table_epoch_args();
+    const args = new Heavy_set_table_epoch_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.set_table_epoch.length === 4) {
@@ -36303,7 +36303,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.table_id,
         args.new_epoch
       )).then(result => {
-        const result_obj = new OmniSci_set_table_epoch_result({success: result});
+        const result_obj = new Heavy_set_table_epoch_result({success: result});
         output.writeMessageBegin("set_table_epoch", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36311,7 +36311,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_set_table_epoch_result(err);
+          result = new Heavy_set_table_epoch_result(err);
           output.writeMessageBegin("set_table_epoch", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36325,7 +36325,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.set_table_epoch(args.session, args.db_id, args.table_id, args.new_epoch, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_set_table_epoch_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_set_table_epoch_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_table_epoch", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36338,7 +36338,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_set_table_epoch_by_name (seqid, input, output) {
-    const args = new OmniSci_set_table_epoch_by_name_args();
+    const args = new Heavy_set_table_epoch_by_name_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.set_table_epoch_by_name.length === 3) {
@@ -36347,7 +36347,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.table_name,
         args.new_epoch
       )).then(result => {
-        const result_obj = new OmniSci_set_table_epoch_by_name_result({success: result});
+        const result_obj = new Heavy_set_table_epoch_by_name_result({success: result});
         output.writeMessageBegin("set_table_epoch_by_name", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36355,7 +36355,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_set_table_epoch_by_name_result(err);
+          result = new Heavy_set_table_epoch_by_name_result(err);
           output.writeMessageBegin("set_table_epoch_by_name", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36369,7 +36369,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.set_table_epoch_by_name(args.session, args.table_name, args.new_epoch, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_set_table_epoch_by_name_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_set_table_epoch_by_name_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_table_epoch_by_name", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36382,7 +36382,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_table_epoch (seqid, input, output) {
-    const args = new OmniSci_get_table_epoch_args();
+    const args = new Heavy_get_table_epoch_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_table_epoch.length === 3) {
@@ -36391,7 +36391,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.db_id,
         args.table_id
       )).then(result => {
-        const result_obj = new OmniSci_get_table_epoch_result({success: result});
+        const result_obj = new Heavy_get_table_epoch_result({success: result});
         output.writeMessageBegin("get_table_epoch", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36408,7 +36408,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_table_epoch(args.session, args.db_id, args.table_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined')) {
-          result_obj = new OmniSci_get_table_epoch_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_table_epoch_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_epoch", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36421,7 +36421,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_table_epoch_by_name (seqid, input, output) {
-    const args = new OmniSci_get_table_epoch_by_name_args();
+    const args = new Heavy_get_table_epoch_by_name_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_table_epoch_by_name.length === 2) {
@@ -36429,7 +36429,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.table_name
       )).then(result => {
-        const result_obj = new OmniSci_get_table_epoch_by_name_result({success: result});
+        const result_obj = new Heavy_get_table_epoch_by_name_result({success: result});
         output.writeMessageBegin("get_table_epoch_by_name", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36446,7 +36446,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_table_epoch_by_name(args.session, args.table_name, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined')) {
-          result_obj = new OmniSci_get_table_epoch_by_name_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_table_epoch_by_name_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_epoch_by_name", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36459,7 +36459,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_table_epochs (seqid, input, output) {
-    const args = new OmniSci_get_table_epochs_args();
+    const args = new Heavy_get_table_epochs_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_table_epochs.length === 3) {
@@ -36468,7 +36468,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.db_id,
         args.table_id
       )).then(result => {
-        const result_obj = new OmniSci_get_table_epochs_result({success: result});
+        const result_obj = new Heavy_get_table_epochs_result({success: result});
         output.writeMessageBegin("get_table_epochs", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36485,7 +36485,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_table_epochs(args.session, args.db_id, args.table_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined')) {
-          result_obj = new OmniSci_get_table_epochs_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_table_epochs_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_epochs", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36498,7 +36498,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_set_table_epochs (seqid, input, output) {
-    const args = new OmniSci_set_table_epochs_args();
+    const args = new Heavy_set_table_epochs_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.set_table_epochs.length === 3) {
@@ -36507,7 +36507,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.db_id,
         args.table_epochs
       )).then(result => {
-        const result_obj = new OmniSci_set_table_epochs_result({success: result});
+        const result_obj = new Heavy_set_table_epochs_result({success: result});
         output.writeMessageBegin("set_table_epochs", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36524,7 +36524,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.set_table_epochs(args.session, args.db_id, args.table_epochs, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined')) {
-          result_obj = new OmniSci_set_table_epochs_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_set_table_epochs_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_table_epochs", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36537,14 +36537,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_session_info (seqid, input, output) {
-    const args = new OmniSci_get_session_info_args();
+    const args = new Heavy_get_session_info_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_session_info.length === 1) {
       Promise.resolve(this._handler.get_session_info.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_session_info_result({success: result});
+        const result_obj = new Heavy_get_session_info_result({success: result});
         output.writeMessageBegin("get_session_info", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36552,7 +36552,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_session_info_result(err);
+          result = new Heavy_get_session_info_result(err);
           output.writeMessageBegin("get_session_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36566,7 +36566,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_session_info(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_session_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_session_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_session_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36579,14 +36579,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_queries_info (seqid, input, output) {
-    const args = new OmniSci_get_queries_info_args();
+    const args = new Heavy_get_queries_info_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_queries_info.length === 1) {
       Promise.resolve(this._handler.get_queries_info.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_queries_info_result({success: result});
+        const result_obj = new Heavy_get_queries_info_result({success: result});
         output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36594,7 +36594,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_queries_info_result(err);
+          result = new Heavy_get_queries_info_result(err);
           output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36608,7 +36608,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_queries_info(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_queries_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_queries_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_queries_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36621,7 +36621,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_set_leaf_info (seqid, input, output) {
-    const args = new OmniSci_set_leaf_info_args();
+    const args = new Heavy_set_leaf_info_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.set_leaf_info.length === 2) {
@@ -36629,7 +36629,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.leaf_info
       )).then(result => {
-        const result_obj = new OmniSci_set_leaf_info_result({success: result});
+        const result_obj = new Heavy_set_leaf_info_result({success: result});
         output.writeMessageBegin("set_leaf_info", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36637,7 +36637,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_set_leaf_info_result(err);
+          result = new Heavy_set_leaf_info_result(err);
           output.writeMessageBegin("set_leaf_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36651,7 +36651,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.set_leaf_info(args.session, args.leaf_info, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_set_leaf_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_set_leaf_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_leaf_info", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36664,7 +36664,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_sql_execute (seqid, input, output) {
-    const args = new OmniSci_sql_execute_args();
+    const args = new Heavy_sql_execute_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.sql_execute.length === 6) {
@@ -36676,7 +36676,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.first_n,
         args.at_most_n
       )).then(result => {
-        const result_obj = new OmniSci_sql_execute_result({success: result});
+        const result_obj = new Heavy_sql_execute_result({success: result});
         output.writeMessageBegin("sql_execute", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36684,7 +36684,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_sql_execute_result(err);
+          result = new Heavy_sql_execute_result(err);
           output.writeMessageBegin("sql_execute", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36698,7 +36698,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.sql_execute(args.session, args.query, args.column_format, args.nonce, args.first_n, args.at_most_n, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_sql_execute_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_sql_execute_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_execute", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36711,7 +36711,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_sql_execute_df (seqid, input, output) {
-    const args = new OmniSci_sql_execute_df_args();
+    const args = new Heavy_sql_execute_df_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.sql_execute_df.length === 6) {
@@ -36723,7 +36723,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.first_n,
         args.transport_method
       )).then(result => {
-        const result_obj = new OmniSci_sql_execute_df_result({success: result});
+        const result_obj = new Heavy_sql_execute_df_result({success: result});
         output.writeMessageBegin("sql_execute_df", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36731,7 +36731,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_sql_execute_df_result(err);
+          result = new Heavy_sql_execute_df_result(err);
           output.writeMessageBegin("sql_execute_df", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36745,7 +36745,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.sql_execute_df(args.session, args.query, args.device_type, args.device_id, args.first_n, args.transport_method, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_sql_execute_df_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_sql_execute_df_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_execute_df", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36758,7 +36758,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_sql_execute_gdf (seqid, input, output) {
-    const args = new OmniSci_sql_execute_gdf_args();
+    const args = new Heavy_sql_execute_gdf_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.sql_execute_gdf.length === 4) {
@@ -36768,7 +36768,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.device_id,
         args.first_n
       )).then(result => {
-        const result_obj = new OmniSci_sql_execute_gdf_result({success: result});
+        const result_obj = new Heavy_sql_execute_gdf_result({success: result});
         output.writeMessageBegin("sql_execute_gdf", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36776,7 +36776,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_sql_execute_gdf_result(err);
+          result = new Heavy_sql_execute_gdf_result(err);
           output.writeMessageBegin("sql_execute_gdf", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36790,7 +36790,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.sql_execute_gdf(args.session, args.query, args.device_id, args.first_n, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_sql_execute_gdf_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_sql_execute_gdf_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_execute_gdf", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36803,7 +36803,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_deallocate_df (seqid, input, output) {
-    const args = new OmniSci_deallocate_df_args();
+    const args = new Heavy_deallocate_df_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.deallocate_df.length === 4) {
@@ -36813,7 +36813,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.device_type,
         args.device_id
       )).then(result => {
-        const result_obj = new OmniSci_deallocate_df_result({success: result});
+        const result_obj = new Heavy_deallocate_df_result({success: result});
         output.writeMessageBegin("deallocate_df", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36821,7 +36821,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_deallocate_df_result(err);
+          result = new Heavy_deallocate_df_result(err);
           output.writeMessageBegin("deallocate_df", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36835,7 +36835,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.deallocate_df(args.session, args.df, args.device_type, args.device_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_deallocate_df_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_deallocate_df_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("deallocate_df", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36848,7 +36848,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_interrupt (seqid, input, output) {
-    const args = new OmniSci_interrupt_args();
+    const args = new Heavy_interrupt_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.interrupt.length === 2) {
@@ -36856,7 +36856,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.query_session,
         args.interrupt_session
       )).then(result => {
-        const result_obj = new OmniSci_interrupt_result({success: result});
+        const result_obj = new Heavy_interrupt_result({success: result});
         output.writeMessageBegin("interrupt", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36864,7 +36864,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_interrupt_result(err);
+          result = new Heavy_interrupt_result(err);
           output.writeMessageBegin("interrupt", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36878,7 +36878,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.interrupt(args.query_session, args.interrupt_session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_interrupt_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_interrupt_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("interrupt", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36891,7 +36891,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_sql_validate (seqid, input, output) {
-    const args = new OmniSci_sql_validate_args();
+    const args = new Heavy_sql_validate_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.sql_validate.length === 2) {
@@ -36899,7 +36899,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.query
       )).then(result => {
-        const result_obj = new OmniSci_sql_validate_result({success: result});
+        const result_obj = new Heavy_sql_validate_result({success: result});
         output.writeMessageBegin("sql_validate", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36907,7 +36907,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_sql_validate_result(err);
+          result = new Heavy_sql_validate_result(err);
           output.writeMessageBegin("sql_validate", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36921,7 +36921,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.sql_validate(args.session, args.query, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_sql_validate_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_sql_validate_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("sql_validate", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36934,7 +36934,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_completion_hints (seqid, input, output) {
-    const args = new OmniSci_get_completion_hints_args();
+    const args = new Heavy_get_completion_hints_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_completion_hints.length === 3) {
@@ -36943,7 +36943,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.sql,
         args.cursor
       )).then(result => {
-        const result_obj = new OmniSci_get_completion_hints_result({success: result});
+        const result_obj = new Heavy_get_completion_hints_result({success: result});
         output.writeMessageBegin("get_completion_hints", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36951,7 +36951,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_completion_hints_result(err);
+          result = new Heavy_get_completion_hints_result(err);
           output.writeMessageBegin("get_completion_hints", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36965,7 +36965,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_completion_hints(args.session, args.sql, args.cursor, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_completion_hints_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_completion_hints_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_completion_hints", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -36978,7 +36978,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_set_execution_mode (seqid, input, output) {
-    const args = new OmniSci_set_execution_mode_args();
+    const args = new Heavy_set_execution_mode_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.set_execution_mode.length === 2) {
@@ -36986,7 +36986,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.mode
       )).then(result => {
-        const result_obj = new OmniSci_set_execution_mode_result({success: result});
+        const result_obj = new Heavy_set_execution_mode_result({success: result});
         output.writeMessageBegin("set_execution_mode", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -36994,7 +36994,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_set_execution_mode_result(err);
+          result = new Heavy_set_execution_mode_result(err);
           output.writeMessageBegin("set_execution_mode", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37008,7 +37008,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.set_execution_mode(args.session, args.mode, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_set_execution_mode_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_set_execution_mode_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_execution_mode", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37021,7 +37021,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_render_vega (seqid, input, output) {
-    const args = new OmniSci_render_vega_args();
+    const args = new Heavy_render_vega_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.render_vega.length === 5) {
@@ -37032,7 +37032,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.compression_level,
         args.nonce
       )).then(result => {
-        const result_obj = new OmniSci_render_vega_result({success: result});
+        const result_obj = new Heavy_render_vega_result({success: result});
         output.writeMessageBegin("render_vega", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37040,7 +37040,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_render_vega_result(err);
+          result = new Heavy_render_vega_result(err);
           output.writeMessageBegin("render_vega", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37054,7 +37054,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.render_vega(args.session, args.widget_id, args.vega_json, args.compression_level, args.nonce, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_render_vega_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_render_vega_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("render_vega", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37067,7 +37067,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_result_row_for_pixel (seqid, input, output) {
-    const args = new OmniSci_get_result_row_for_pixel_args();
+    const args = new Heavy_get_result_row_for_pixel_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_result_row_for_pixel.length === 7) {
@@ -37080,7 +37080,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.pixelRadius,
         args.nonce
       )).then(result => {
-        const result_obj = new OmniSci_get_result_row_for_pixel_result({success: result});
+        const result_obj = new Heavy_get_result_row_for_pixel_result({success: result});
         output.writeMessageBegin("get_result_row_for_pixel", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37088,7 +37088,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_result_row_for_pixel_result(err);
+          result = new Heavy_get_result_row_for_pixel_result(err);
           output.writeMessageBegin("get_result_row_for_pixel", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37102,7 +37102,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_result_row_for_pixel(args.session, args.widget_id, args.pixel, args.table_col_names, args.column_format, args.pixelRadius, args.nonce, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_result_row_for_pixel_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_result_row_for_pixel_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_result_row_for_pixel", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37115,7 +37115,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_create_custom_expression (seqid, input, output) {
-    const args = new OmniSci_create_custom_expression_args();
+    const args = new Heavy_create_custom_expression_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.create_custom_expression.length === 2) {
@@ -37123,7 +37123,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.custom_expression
       )).then(result => {
-        const result_obj = new OmniSci_create_custom_expression_result({success: result});
+        const result_obj = new Heavy_create_custom_expression_result({success: result});
         output.writeMessageBegin("create_custom_expression", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37131,7 +37131,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_create_custom_expression_result(err);
+          result = new Heavy_create_custom_expression_result(err);
           output.writeMessageBegin("create_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37145,7 +37145,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.create_custom_expression(args.session, args.custom_expression, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_create_custom_expression_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_create_custom_expression_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37158,14 +37158,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_custom_expressions (seqid, input, output) {
-    const args = new OmniSci_get_custom_expressions_args();
+    const args = new Heavy_get_custom_expressions_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_custom_expressions.length === 1) {
       Promise.resolve(this._handler.get_custom_expressions.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_custom_expressions_result({success: result});
+        const result_obj = new Heavy_get_custom_expressions_result({success: result});
         output.writeMessageBegin("get_custom_expressions", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37173,7 +37173,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_custom_expressions_result(err);
+          result = new Heavy_get_custom_expressions_result(err);
           output.writeMessageBegin("get_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37187,7 +37187,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_custom_expressions(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_custom_expressions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_custom_expressions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37200,7 +37200,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_update_custom_expression (seqid, input, output) {
-    const args = new OmniSci_update_custom_expression_args();
+    const args = new Heavy_update_custom_expression_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.update_custom_expression.length === 3) {
@@ -37209,7 +37209,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.id,
         args.expression_json
       )).then(result => {
-        const result_obj = new OmniSci_update_custom_expression_result({success: result});
+        const result_obj = new Heavy_update_custom_expression_result({success: result});
         output.writeMessageBegin("update_custom_expression", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37217,7 +37217,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_update_custom_expression_result(err);
+          result = new Heavy_update_custom_expression_result(err);
           output.writeMessageBegin("update_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37231,7 +37231,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.update_custom_expression(args.session, args.id, args.expression_json, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_update_custom_expression_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_update_custom_expression_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("update_custom_expression", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37244,7 +37244,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_delete_custom_expressions (seqid, input, output) {
-    const args = new OmniSci_delete_custom_expressions_args();
+    const args = new Heavy_delete_custom_expressions_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.delete_custom_expressions.length === 3) {
@@ -37253,7 +37253,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.custom_expression_ids,
         args.do_soft_delete
       )).then(result => {
-        const result_obj = new OmniSci_delete_custom_expressions_result({success: result});
+        const result_obj = new Heavy_delete_custom_expressions_result({success: result});
         output.writeMessageBegin("delete_custom_expressions", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37261,7 +37261,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_delete_custom_expressions_result(err);
+          result = new Heavy_delete_custom_expressions_result(err);
           output.writeMessageBegin("delete_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37275,7 +37275,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.delete_custom_expressions(args.session, args.custom_expression_ids, args.do_soft_delete, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_delete_custom_expressions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_delete_custom_expressions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("delete_custom_expressions", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37288,7 +37288,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_dashboard (seqid, input, output) {
-    const args = new OmniSci_get_dashboard_args();
+    const args = new Heavy_get_dashboard_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_dashboard.length === 2) {
@@ -37296,7 +37296,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.dashboard_id
       )).then(result => {
-        const result_obj = new OmniSci_get_dashboard_result({success: result});
+        const result_obj = new Heavy_get_dashboard_result({success: result});
         output.writeMessageBegin("get_dashboard", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37304,7 +37304,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_dashboard_result(err);
+          result = new Heavy_get_dashboard_result(err);
           output.writeMessageBegin("get_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37318,7 +37318,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_dashboard(args.session, args.dashboard_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37331,14 +37331,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_dashboards (seqid, input, output) {
-    const args = new OmniSci_get_dashboards_args();
+    const args = new Heavy_get_dashboards_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_dashboards.length === 1) {
       Promise.resolve(this._handler.get_dashboards.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_dashboards_result({success: result});
+        const result_obj = new Heavy_get_dashboards_result({success: result});
         output.writeMessageBegin("get_dashboards", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37346,7 +37346,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_dashboards_result(err);
+          result = new Heavy_get_dashboards_result(err);
           output.writeMessageBegin("get_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37360,7 +37360,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_dashboards(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37373,7 +37373,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_create_dashboard (seqid, input, output) {
-    const args = new OmniSci_create_dashboard_args();
+    const args = new Heavy_create_dashboard_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.create_dashboard.length === 5) {
@@ -37384,7 +37384,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.image_hash,
         args.dashboard_metadata
       )).then(result => {
-        const result_obj = new OmniSci_create_dashboard_result({success: result});
+        const result_obj = new Heavy_create_dashboard_result({success: result});
         output.writeMessageBegin("create_dashboard", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37392,7 +37392,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_create_dashboard_result(err);
+          result = new Heavy_create_dashboard_result(err);
           output.writeMessageBegin("create_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37406,7 +37406,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.create_dashboard(args.session, args.dashboard_name, args.dashboard_state, args.image_hash, args.dashboard_metadata, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_create_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_create_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37419,7 +37419,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_replace_dashboard (seqid, input, output) {
-    const args = new OmniSci_replace_dashboard_args();
+    const args = new Heavy_replace_dashboard_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.replace_dashboard.length === 7) {
@@ -37432,7 +37432,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.image_hash,
         args.dashboard_metadata
       )).then(result => {
-        const result_obj = new OmniSci_replace_dashboard_result({success: result});
+        const result_obj = new Heavy_replace_dashboard_result({success: result});
         output.writeMessageBegin("replace_dashboard", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37440,7 +37440,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_replace_dashboard_result(err);
+          result = new Heavy_replace_dashboard_result(err);
           output.writeMessageBegin("replace_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37454,7 +37454,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.replace_dashboard(args.session, args.dashboard_id, args.dashboard_name, args.dashboard_owner, args.dashboard_state, args.image_hash, args.dashboard_metadata, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_replace_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_replace_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("replace_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37467,7 +37467,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_delete_dashboard (seqid, input, output) {
-    const args = new OmniSci_delete_dashboard_args();
+    const args = new Heavy_delete_dashboard_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.delete_dashboard.length === 2) {
@@ -37475,7 +37475,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.dashboard_id
       )).then(result => {
-        const result_obj = new OmniSci_delete_dashboard_result({success: result});
+        const result_obj = new Heavy_delete_dashboard_result({success: result});
         output.writeMessageBegin("delete_dashboard", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37483,7 +37483,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_delete_dashboard_result(err);
+          result = new Heavy_delete_dashboard_result(err);
           output.writeMessageBegin("delete_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37497,7 +37497,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.delete_dashboard(args.session, args.dashboard_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_delete_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_delete_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("delete_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37510,7 +37510,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_share_dashboards (seqid, input, output) {
-    const args = new OmniSci_share_dashboards_args();
+    const args = new Heavy_share_dashboards_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.share_dashboards.length === 4) {
@@ -37520,7 +37520,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.groups,
         args.permissions
       )).then(result => {
-        const result_obj = new OmniSci_share_dashboards_result({success: result});
+        const result_obj = new Heavy_share_dashboards_result({success: result});
         output.writeMessageBegin("share_dashboards", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37528,7 +37528,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_share_dashboards_result(err);
+          result = new Heavy_share_dashboards_result(err);
           output.writeMessageBegin("share_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37542,7 +37542,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.share_dashboards(args.session, args.dashboard_ids, args.groups, args.permissions, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_share_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_share_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("share_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37555,7 +37555,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_delete_dashboards (seqid, input, output) {
-    const args = new OmniSci_delete_dashboards_args();
+    const args = new Heavy_delete_dashboards_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.delete_dashboards.length === 2) {
@@ -37563,7 +37563,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.dashboard_ids
       )).then(result => {
-        const result_obj = new OmniSci_delete_dashboards_result({success: result});
+        const result_obj = new Heavy_delete_dashboards_result({success: result});
         output.writeMessageBegin("delete_dashboards", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37571,7 +37571,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_delete_dashboards_result(err);
+          result = new Heavy_delete_dashboards_result(err);
           output.writeMessageBegin("delete_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37585,7 +37585,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.delete_dashboards(args.session, args.dashboard_ids, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_delete_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_delete_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("delete_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37598,7 +37598,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_share_dashboard (seqid, input, output) {
-    const args = new OmniSci_share_dashboard_args();
+    const args = new Heavy_share_dashboard_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.share_dashboard.length === 6) {
@@ -37610,7 +37610,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.permissions,
         args.grant_role
       )).then(result => {
-        const result_obj = new OmniSci_share_dashboard_result({success: result});
+        const result_obj = new Heavy_share_dashboard_result({success: result});
         output.writeMessageBegin("share_dashboard", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37618,7 +37618,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_share_dashboard_result(err);
+          result = new Heavy_share_dashboard_result(err);
           output.writeMessageBegin("share_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37632,7 +37632,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.share_dashboard(args.session, args.dashboard_id, args.groups, args.objects, args.permissions, args.grant_role, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_share_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_share_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("share_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37645,7 +37645,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_unshare_dashboard (seqid, input, output) {
-    const args = new OmniSci_unshare_dashboard_args();
+    const args = new Heavy_unshare_dashboard_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.unshare_dashboard.length === 5) {
@@ -37656,7 +37656,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.objects,
         args.permissions
       )).then(result => {
-        const result_obj = new OmniSci_unshare_dashboard_result({success: result});
+        const result_obj = new Heavy_unshare_dashboard_result({success: result});
         output.writeMessageBegin("unshare_dashboard", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37664,7 +37664,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_unshare_dashboard_result(err);
+          result = new Heavy_unshare_dashboard_result(err);
           output.writeMessageBegin("unshare_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37678,7 +37678,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.unshare_dashboard(args.session, args.dashboard_id, args.groups, args.objects, args.permissions, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_unshare_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_unshare_dashboard_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("unshare_dashboard", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37691,7 +37691,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_unshare_dashboards (seqid, input, output) {
-    const args = new OmniSci_unshare_dashboards_args();
+    const args = new Heavy_unshare_dashboards_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.unshare_dashboards.length === 4) {
@@ -37701,7 +37701,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.groups,
         args.permissions
       )).then(result => {
-        const result_obj = new OmniSci_unshare_dashboards_result({success: result});
+        const result_obj = new Heavy_unshare_dashboards_result({success: result});
         output.writeMessageBegin("unshare_dashboards", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37709,7 +37709,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_unshare_dashboards_result(err);
+          result = new Heavy_unshare_dashboards_result(err);
           output.writeMessageBegin("unshare_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37723,7 +37723,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.unshare_dashboards(args.session, args.dashboard_ids, args.groups, args.permissions, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_unshare_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_unshare_dashboards_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("unshare_dashboards", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37736,7 +37736,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_dashboard_grantees (seqid, input, output) {
-    const args = new OmniSci_get_dashboard_grantees_args();
+    const args = new Heavy_get_dashboard_grantees_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_dashboard_grantees.length === 2) {
@@ -37744,7 +37744,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.dashboard_id
       )).then(result => {
-        const result_obj = new OmniSci_get_dashboard_grantees_result({success: result});
+        const result_obj = new Heavy_get_dashboard_grantees_result({success: result});
         output.writeMessageBegin("get_dashboard_grantees", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37752,7 +37752,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_dashboard_grantees_result(err);
+          result = new Heavy_get_dashboard_grantees_result(err);
           output.writeMessageBegin("get_dashboard_grantees", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37766,7 +37766,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_dashboard_grantees(args.session, args.dashboard_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_dashboard_grantees_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_dashboard_grantees_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_dashboard_grantees", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37779,7 +37779,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_link_view (seqid, input, output) {
-    const args = new OmniSci_get_link_view_args();
+    const args = new Heavy_get_link_view_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_link_view.length === 2) {
@@ -37787,7 +37787,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.link
       )).then(result => {
-        const result_obj = new OmniSci_get_link_view_result({success: result});
+        const result_obj = new Heavy_get_link_view_result({success: result});
         output.writeMessageBegin("get_link_view", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37795,7 +37795,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_link_view_result(err);
+          result = new Heavy_get_link_view_result(err);
           output.writeMessageBegin("get_link_view", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37809,7 +37809,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_link_view(args.session, args.link, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_link_view_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_link_view_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_link_view", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37822,7 +37822,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_create_link (seqid, input, output) {
-    const args = new OmniSci_create_link_args();
+    const args = new Heavy_create_link_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.create_link.length === 3) {
@@ -37831,7 +37831,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.view_state,
         args.view_metadata
       )).then(result => {
-        const result_obj = new OmniSci_create_link_result({success: result});
+        const result_obj = new Heavy_create_link_result({success: result});
         output.writeMessageBegin("create_link", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37839,7 +37839,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_create_link_result(err);
+          result = new Heavy_create_link_result(err);
           output.writeMessageBegin("create_link", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37853,7 +37853,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.create_link(args.session, args.view_state, args.view_metadata, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_create_link_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_create_link_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_link", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37866,7 +37866,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_load_table_binary (seqid, input, output) {
-    const args = new OmniSci_load_table_binary_args();
+    const args = new Heavy_load_table_binary_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.load_table_binary.length === 4) {
@@ -37876,7 +37876,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.rows,
         args.column_names
       )).then(result => {
-        const result_obj = new OmniSci_load_table_binary_result({success: result});
+        const result_obj = new Heavy_load_table_binary_result({success: result});
         output.writeMessageBegin("load_table_binary", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37884,7 +37884,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_load_table_binary_result(err);
+          result = new Heavy_load_table_binary_result(err);
           output.writeMessageBegin("load_table_binary", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37898,7 +37898,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.load_table_binary(args.session, args.table_name, args.rows, args.column_names, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_load_table_binary_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_load_table_binary_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37911,7 +37911,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_load_table_binary_columnar (seqid, input, output) {
-    const args = new OmniSci_load_table_binary_columnar_args();
+    const args = new Heavy_load_table_binary_columnar_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.load_table_binary_columnar.length === 4) {
@@ -37921,7 +37921,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.cols,
         args.column_names
       )).then(result => {
-        const result_obj = new OmniSci_load_table_binary_columnar_result({success: result});
+        const result_obj = new Heavy_load_table_binary_columnar_result({success: result});
         output.writeMessageBegin("load_table_binary_columnar", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37929,7 +37929,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_load_table_binary_columnar_result(err);
+          result = new Heavy_load_table_binary_columnar_result(err);
           output.writeMessageBegin("load_table_binary_columnar", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37943,7 +37943,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.load_table_binary_columnar(args.session, args.table_name, args.cols, args.column_names, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_load_table_binary_columnar_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_load_table_binary_columnar_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary_columnar", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37956,7 +37956,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_load_table_binary_columnar_polys (seqid, input, output) {
-    const args = new OmniSci_load_table_binary_columnar_polys_args();
+    const args = new Heavy_load_table_binary_columnar_polys_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.load_table_binary_columnar_polys.length === 5) {
@@ -37967,7 +37967,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.column_names,
         args.assign_render_groups
       )).then(result => {
-        const result_obj = new OmniSci_load_table_binary_columnar_polys_result({success: result});
+        const result_obj = new Heavy_load_table_binary_columnar_polys_result({success: result});
         output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -37975,7 +37975,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_load_table_binary_columnar_polys_result(err);
+          result = new Heavy_load_table_binary_columnar_polys_result(err);
           output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -37989,7 +37989,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.load_table_binary_columnar_polys(args.session, args.table_name, args.cols, args.column_names, args.assign_render_groups, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_load_table_binary_columnar_polys_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_load_table_binary_columnar_polys_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38002,7 +38002,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_load_table_binary_arrow (seqid, input, output) {
-    const args = new OmniSci_load_table_binary_arrow_args();
+    const args = new Heavy_load_table_binary_arrow_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.load_table_binary_arrow.length === 4) {
@@ -38012,7 +38012,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.arrow_stream,
         args.use_column_names
       )).then(result => {
-        const result_obj = new OmniSci_load_table_binary_arrow_result({success: result});
+        const result_obj = new Heavy_load_table_binary_arrow_result({success: result});
         output.writeMessageBegin("load_table_binary_arrow", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38020,7 +38020,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_load_table_binary_arrow_result(err);
+          result = new Heavy_load_table_binary_arrow_result(err);
           output.writeMessageBegin("load_table_binary_arrow", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38034,7 +38034,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.load_table_binary_arrow(args.session, args.table_name, args.arrow_stream, args.use_column_names, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_load_table_binary_arrow_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_load_table_binary_arrow_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table_binary_arrow", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38047,7 +38047,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_load_table (seqid, input, output) {
-    const args = new OmniSci_load_table_args();
+    const args = new Heavy_load_table_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.load_table.length === 4) {
@@ -38057,7 +38057,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.rows,
         args.column_names
       )).then(result => {
-        const result_obj = new OmniSci_load_table_result({success: result});
+        const result_obj = new Heavy_load_table_result({success: result});
         output.writeMessageBegin("load_table", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38065,7 +38065,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_load_table_result(err);
+          result = new Heavy_load_table_result(err);
           output.writeMessageBegin("load_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38079,7 +38079,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.load_table(args.session, args.table_name, args.rows, args.column_names, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_load_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_load_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("load_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38092,7 +38092,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_detect_column_types (seqid, input, output) {
-    const args = new OmniSci_detect_column_types_args();
+    const args = new Heavy_detect_column_types_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.detect_column_types.length === 3) {
@@ -38101,7 +38101,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.file_name,
         args.copy_params
       )).then(result => {
-        const result_obj = new OmniSci_detect_column_types_result({success: result});
+        const result_obj = new Heavy_detect_column_types_result({success: result});
         output.writeMessageBegin("detect_column_types", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38109,7 +38109,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_detect_column_types_result(err);
+          result = new Heavy_detect_column_types_result(err);
           output.writeMessageBegin("detect_column_types", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38123,7 +38123,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.detect_column_types(args.session, args.file_name, args.copy_params, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_detect_column_types_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_detect_column_types_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("detect_column_types", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38136,7 +38136,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_create_table (seqid, input, output) {
-    const args = new OmniSci_create_table_args();
+    const args = new Heavy_create_table_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.create_table.length === 4) {
@@ -38146,7 +38146,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.row_desc,
         args.create_params
       )).then(result => {
-        const result_obj = new OmniSci_create_table_result({success: result});
+        const result_obj = new Heavy_create_table_result({success: result});
         output.writeMessageBegin("create_table", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38154,7 +38154,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_create_table_result(err);
+          result = new Heavy_create_table_result(err);
           output.writeMessageBegin("create_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38168,7 +38168,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.create_table(args.session, args.table_name, args.row_desc, args.create_params, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_create_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_create_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("create_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38181,7 +38181,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_import_table (seqid, input, output) {
-    const args = new OmniSci_import_table_args();
+    const args = new Heavy_import_table_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.import_table.length === 4) {
@@ -38191,7 +38191,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.file_name,
         args.copy_params
       )).then(result => {
-        const result_obj = new OmniSci_import_table_result({success: result});
+        const result_obj = new Heavy_import_table_result({success: result});
         output.writeMessageBegin("import_table", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38199,7 +38199,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_import_table_result(err);
+          result = new Heavy_import_table_result(err);
           output.writeMessageBegin("import_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38213,7 +38213,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.import_table(args.session, args.table_name, args.file_name, args.copy_params, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_import_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_import_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("import_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38226,7 +38226,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_import_geo_table (seqid, input, output) {
-    const args = new OmniSci_import_geo_table_args();
+    const args = new Heavy_import_geo_table_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.import_geo_table.length === 6) {
@@ -38238,7 +38238,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.row_desc,
         args.create_params
       )).then(result => {
-        const result_obj = new OmniSci_import_geo_table_result({success: result});
+        const result_obj = new Heavy_import_geo_table_result({success: result});
         output.writeMessageBegin("import_geo_table", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38246,7 +38246,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_import_geo_table_result(err);
+          result = new Heavy_import_geo_table_result(err);
           output.writeMessageBegin("import_geo_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38260,7 +38260,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.import_geo_table(args.session, args.table_name, args.file_name, args.copy_params, args.row_desc, args.create_params, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_import_geo_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_import_geo_table_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("import_geo_table", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38273,7 +38273,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_import_table_status (seqid, input, output) {
-    const args = new OmniSci_import_table_status_args();
+    const args = new Heavy_import_table_status_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.import_table_status.length === 2) {
@@ -38281,7 +38281,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.import_id
       )).then(result => {
-        const result_obj = new OmniSci_import_table_status_result({success: result});
+        const result_obj = new Heavy_import_table_status_result({success: result});
         output.writeMessageBegin("import_table_status", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38289,7 +38289,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_import_table_status_result(err);
+          result = new Heavy_import_table_status_result(err);
           output.writeMessageBegin("import_table_status", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38303,7 +38303,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.import_table_status(args.session, args.import_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_import_table_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_import_table_status_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("import_table_status", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38316,7 +38316,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_first_geo_file_in_archive (seqid, input, output) {
-    const args = new OmniSci_get_first_geo_file_in_archive_args();
+    const args = new Heavy_get_first_geo_file_in_archive_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_first_geo_file_in_archive.length === 3) {
@@ -38325,7 +38325,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.archive_path,
         args.copy_params
       )).then(result => {
-        const result_obj = new OmniSci_get_first_geo_file_in_archive_result({success: result});
+        const result_obj = new Heavy_get_first_geo_file_in_archive_result({success: result});
         output.writeMessageBegin("get_first_geo_file_in_archive", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38333,7 +38333,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_first_geo_file_in_archive_result(err);
+          result = new Heavy_get_first_geo_file_in_archive_result(err);
           output.writeMessageBegin("get_first_geo_file_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38347,7 +38347,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_first_geo_file_in_archive(args.session, args.archive_path, args.copy_params, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_first_geo_file_in_archive_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_first_geo_file_in_archive_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_first_geo_file_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38360,7 +38360,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_all_files_in_archive (seqid, input, output) {
-    const args = new OmniSci_get_all_files_in_archive_args();
+    const args = new Heavy_get_all_files_in_archive_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_all_files_in_archive.length === 3) {
@@ -38369,7 +38369,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.archive_path,
         args.copy_params
       )).then(result => {
-        const result_obj = new OmniSci_get_all_files_in_archive_result({success: result});
+        const result_obj = new Heavy_get_all_files_in_archive_result({success: result});
         output.writeMessageBegin("get_all_files_in_archive", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38377,7 +38377,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_all_files_in_archive_result(err);
+          result = new Heavy_get_all_files_in_archive_result(err);
           output.writeMessageBegin("get_all_files_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38391,7 +38391,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_all_files_in_archive(args.session, args.archive_path, args.copy_params, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_all_files_in_archive_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_all_files_in_archive_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_all_files_in_archive", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38404,7 +38404,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_layers_in_geo_file (seqid, input, output) {
-    const args = new OmniSci_get_layers_in_geo_file_args();
+    const args = new Heavy_get_layers_in_geo_file_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_layers_in_geo_file.length === 3) {
@@ -38413,7 +38413,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.file_name,
         args.copy_params
       )).then(result => {
-        const result_obj = new OmniSci_get_layers_in_geo_file_result({success: result});
+        const result_obj = new Heavy_get_layers_in_geo_file_result({success: result});
         output.writeMessageBegin("get_layers_in_geo_file", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38421,7 +38421,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_layers_in_geo_file_result(err);
+          result = new Heavy_get_layers_in_geo_file_result(err);
           output.writeMessageBegin("get_layers_in_geo_file", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38435,7 +38435,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_layers_in_geo_file(args.session, args.file_name, args.copy_params, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_layers_in_geo_file_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_layers_in_geo_file_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_layers_in_geo_file", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38448,7 +38448,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_query_get_outer_fragment_count (seqid, input, output) {
-    const args = new OmniSci_query_get_outer_fragment_count_args();
+    const args = new Heavy_query_get_outer_fragment_count_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.query_get_outer_fragment_count.length === 2) {
@@ -38456,7 +38456,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.query
       )).then(result => {
-        const result_obj = new OmniSci_query_get_outer_fragment_count_result({success: result});
+        const result_obj = new Heavy_query_get_outer_fragment_count_result({success: result});
         output.writeMessageBegin("query_get_outer_fragment_count", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38464,7 +38464,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_query_get_outer_fragment_count_result(err);
+          result = new Heavy_query_get_outer_fragment_count_result(err);
           output.writeMessageBegin("query_get_outer_fragment_count", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38478,7 +38478,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.query_get_outer_fragment_count(args.session, args.query, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_query_get_outer_fragment_count_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_query_get_outer_fragment_count_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("query_get_outer_fragment_count", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38491,7 +38491,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_check_table_consistency (seqid, input, output) {
-    const args = new OmniSci_check_table_consistency_args();
+    const args = new Heavy_check_table_consistency_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.check_table_consistency.length === 2) {
@@ -38499,7 +38499,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.table_id
       )).then(result => {
-        const result_obj = new OmniSci_check_table_consistency_result({success: result});
+        const result_obj = new Heavy_check_table_consistency_result({success: result});
         output.writeMessageBegin("check_table_consistency", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38507,7 +38507,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_check_table_consistency_result(err);
+          result = new Heavy_check_table_consistency_result(err);
           output.writeMessageBegin("check_table_consistency", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38521,7 +38521,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.check_table_consistency(args.session, args.table_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_check_table_consistency_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_check_table_consistency_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("check_table_consistency", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38534,7 +38534,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_start_query (seqid, input, output) {
-    const args = new OmniSci_start_query_args();
+    const args = new Heavy_start_query_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.start_query.length === 6) {
@@ -38546,7 +38546,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.just_explain,
         args.outer_fragment_indices
       )).then(result => {
-        const result_obj = new OmniSci_start_query_result({success: result});
+        const result_obj = new Heavy_start_query_result({success: result});
         output.writeMessageBegin("start_query", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38554,7 +38554,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_start_query_result(err);
+          result = new Heavy_start_query_result(err);
           output.writeMessageBegin("start_query", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38568,7 +38568,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.start_query(args.leaf_session, args.parent_session, args.query_ra, args.start_time_str, args.just_explain, args.outer_fragment_indices, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_start_query_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_start_query_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("start_query", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38581,7 +38581,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_execute_query_step (seqid, input, output) {
-    const args = new OmniSci_execute_query_step_args();
+    const args = new Heavy_execute_query_step_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.execute_query_step.length === 3) {
@@ -38590,7 +38590,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.subquery_id,
         args.start_time_str
       )).then(result => {
-        const result_obj = new OmniSci_execute_query_step_result({success: result});
+        const result_obj = new Heavy_execute_query_step_result({success: result});
         output.writeMessageBegin("execute_query_step", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38598,7 +38598,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_execute_query_step_result(err);
+          result = new Heavy_execute_query_step_result(err);
           output.writeMessageBegin("execute_query_step", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38612,7 +38612,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.execute_query_step(args.pending_query, args.subquery_id, args.start_time_str, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_execute_query_step_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_execute_query_step_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("execute_query_step", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38625,7 +38625,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_broadcast_serialized_rows (seqid, input, output) {
-    const args = new OmniSci_broadcast_serialized_rows_args();
+    const args = new Heavy_broadcast_serialized_rows_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.broadcast_serialized_rows.length === 5) {
@@ -38636,7 +38636,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.subquery_id,
         args.is_final_subquery_result
       )).then(result => {
-        const result_obj = new OmniSci_broadcast_serialized_rows_result({success: result});
+        const result_obj = new Heavy_broadcast_serialized_rows_result({success: result});
         output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38644,7 +38644,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_broadcast_serialized_rows_result(err);
+          result = new Heavy_broadcast_serialized_rows_result(err);
           output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38658,7 +38658,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.broadcast_serialized_rows(args.serialized_rows, args.row_desc, args.query_id, args.subquery_id, args.is_final_subquery_result, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_broadcast_serialized_rows_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_broadcast_serialized_rows_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("broadcast_serialized_rows", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38671,7 +38671,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_start_render_query (seqid, input, output) {
-    const args = new OmniSci_start_render_query_args();
+    const args = new Heavy_start_render_query_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.start_render_query.length === 4) {
@@ -38681,7 +38681,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.node_idx,
         args.vega_json
       )).then(result => {
-        const result_obj = new OmniSci_start_render_query_result({success: result});
+        const result_obj = new Heavy_start_render_query_result({success: result});
         output.writeMessageBegin("start_render_query", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38689,7 +38689,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_start_render_query_result(err);
+          result = new Heavy_start_render_query_result(err);
           output.writeMessageBegin("start_render_query", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38703,7 +38703,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.start_render_query(args.session, args.widget_id, args.node_idx, args.vega_json, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_start_render_query_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_start_render_query_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("start_render_query", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38716,7 +38716,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_execute_next_render_step (seqid, input, output) {
-    const args = new OmniSci_execute_next_render_step_args();
+    const args = new Heavy_execute_next_render_step_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.execute_next_render_step.length === 2) {
@@ -38724,7 +38724,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.pending_render,
         args.merged_data
       )).then(result => {
-        const result_obj = new OmniSci_execute_next_render_step_result({success: result});
+        const result_obj = new Heavy_execute_next_render_step_result({success: result});
         output.writeMessageBegin("execute_next_render_step", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38732,7 +38732,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_execute_next_render_step_result(err);
+          result = new Heavy_execute_next_render_step_result(err);
           output.writeMessageBegin("execute_next_render_step", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38746,7 +38746,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.execute_next_render_step(args.pending_render, args.merged_data, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_execute_next_render_step_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_execute_next_render_step_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("execute_next_render_step", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38759,7 +38759,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_insert_data (seqid, input, output) {
-    const args = new OmniSci_insert_data_args();
+    const args = new Heavy_insert_data_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.insert_data.length === 2) {
@@ -38767,7 +38767,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.insert_data
       )).then(result => {
-        const result_obj = new OmniSci_insert_data_result({success: result});
+        const result_obj = new Heavy_insert_data_result({success: result});
         output.writeMessageBegin("insert_data", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38775,7 +38775,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_insert_data_result(err);
+          result = new Heavy_insert_data_result(err);
           output.writeMessageBegin("insert_data", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38789,7 +38789,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.insert_data(args.session, args.insert_data, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_insert_data_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_insert_data_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("insert_data", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38802,7 +38802,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_insert_chunks (seqid, input, output) {
-    const args = new OmniSci_insert_chunks_args();
+    const args = new Heavy_insert_chunks_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.insert_chunks.length === 2) {
@@ -38810,7 +38810,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.insert_chunks
       )).then(result => {
-        const result_obj = new OmniSci_insert_chunks_result({success: result});
+        const result_obj = new Heavy_insert_chunks_result({success: result});
         output.writeMessageBegin("insert_chunks", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38818,7 +38818,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_insert_chunks_result(err);
+          result = new Heavy_insert_chunks_result(err);
           output.writeMessageBegin("insert_chunks", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38832,7 +38832,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.insert_chunks(args.session, args.insert_chunks, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_insert_chunks_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_insert_chunks_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("insert_chunks", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38845,7 +38845,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_checkpoint (seqid, input, output) {
-    const args = new OmniSci_checkpoint_args();
+    const args = new Heavy_checkpoint_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.checkpoint.length === 2) {
@@ -38853,7 +38853,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.table_id
       )).then(result => {
-        const result_obj = new OmniSci_checkpoint_result({success: result});
+        const result_obj = new Heavy_checkpoint_result({success: result});
         output.writeMessageBegin("checkpoint", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38861,7 +38861,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_checkpoint_result(err);
+          result = new Heavy_checkpoint_result(err);
           output.writeMessageBegin("checkpoint", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38875,7 +38875,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.checkpoint(args.session, args.table_id, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_checkpoint_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_checkpoint_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("checkpoint", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38888,14 +38888,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_roles (seqid, input, output) {
-    const args = new OmniSci_get_roles_args();
+    const args = new Heavy_get_roles_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_roles.length === 1) {
       Promise.resolve(this._handler.get_roles.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_roles_result({success: result});
+        const result_obj = new Heavy_get_roles_result({success: result});
         output.writeMessageBegin("get_roles", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38903,7 +38903,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_roles_result(err);
+          result = new Heavy_get_roles_result(err);
           output.writeMessageBegin("get_roles", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38917,7 +38917,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_roles(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_roles_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_roles_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_roles", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38930,7 +38930,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_db_objects_for_grantee (seqid, input, output) {
-    const args = new OmniSci_get_db_objects_for_grantee_args();
+    const args = new Heavy_get_db_objects_for_grantee_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_db_objects_for_grantee.length === 2) {
@@ -38938,7 +38938,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.roleName
       )).then(result => {
-        const result_obj = new OmniSci_get_db_objects_for_grantee_result({success: result});
+        const result_obj = new Heavy_get_db_objects_for_grantee_result({success: result});
         output.writeMessageBegin("get_db_objects_for_grantee", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38946,7 +38946,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_db_objects_for_grantee_result(err);
+          result = new Heavy_get_db_objects_for_grantee_result(err);
           output.writeMessageBegin("get_db_objects_for_grantee", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38960,7 +38960,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_db_objects_for_grantee(args.session, args.roleName, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_db_objects_for_grantee_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_db_objects_for_grantee_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_db_objects_for_grantee", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -38973,7 +38973,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_db_object_privs (seqid, input, output) {
-    const args = new OmniSci_get_db_object_privs_args();
+    const args = new Heavy_get_db_object_privs_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_db_object_privs.length === 3) {
@@ -38982,7 +38982,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.objectName,
         args.type
       )).then(result => {
-        const result_obj = new OmniSci_get_db_object_privs_result({success: result});
+        const result_obj = new Heavy_get_db_object_privs_result({success: result});
         output.writeMessageBegin("get_db_object_privs", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -38990,7 +38990,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_db_object_privs_result(err);
+          result = new Heavy_get_db_object_privs_result(err);
           output.writeMessageBegin("get_db_object_privs", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39004,7 +39004,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_db_object_privs(args.session, args.objectName, args.type, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_db_object_privs_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_db_object_privs_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_db_object_privs", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39017,7 +39017,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_all_roles_for_user (seqid, input, output) {
-    const args = new OmniSci_get_all_roles_for_user_args();
+    const args = new Heavy_get_all_roles_for_user_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_all_roles_for_user.length === 2) {
@@ -39025,7 +39025,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.userName
       )).then(result => {
-        const result_obj = new OmniSci_get_all_roles_for_user_result({success: result});
+        const result_obj = new Heavy_get_all_roles_for_user_result({success: result});
         output.writeMessageBegin("get_all_roles_for_user", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39033,7 +39033,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_all_roles_for_user_result(err);
+          result = new Heavy_get_all_roles_for_user_result(err);
           output.writeMessageBegin("get_all_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39047,7 +39047,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_all_roles_for_user(args.session, args.userName, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_all_roles_for_user_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_all_roles_for_user_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_all_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39060,7 +39060,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_all_effective_roles_for_user (seqid, input, output) {
-    const args = new OmniSci_get_all_effective_roles_for_user_args();
+    const args = new Heavy_get_all_effective_roles_for_user_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_all_effective_roles_for_user.length === 2) {
@@ -39068,7 +39068,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.userName
       )).then(result => {
-        const result_obj = new OmniSci_get_all_effective_roles_for_user_result({success: result});
+        const result_obj = new Heavy_get_all_effective_roles_for_user_result({success: result});
         output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39076,7 +39076,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_all_effective_roles_for_user_result(err);
+          result = new Heavy_get_all_effective_roles_for_user_result(err);
           output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39090,7 +39090,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_all_effective_roles_for_user(args.session, args.userName, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_all_effective_roles_for_user_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_all_effective_roles_for_user_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_all_effective_roles_for_user", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39103,7 +39103,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_has_role (seqid, input, output) {
-    const args = new OmniSci_has_role_args();
+    const args = new Heavy_has_role_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.has_role.length === 3) {
@@ -39112,7 +39112,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.granteeName,
         args.roleName
       )).then(result => {
-        const result_obj = new OmniSci_has_role_result({success: result});
+        const result_obj = new Heavy_has_role_result({success: result});
         output.writeMessageBegin("has_role", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39120,7 +39120,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_has_role_result(err);
+          result = new Heavy_has_role_result(err);
           output.writeMessageBegin("has_role", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39134,7 +39134,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.has_role(args.session, args.granteeName, args.roleName, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_has_role_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_has_role_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("has_role", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39147,7 +39147,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_has_object_privilege (seqid, input, output) {
-    const args = new OmniSci_has_object_privilege_args();
+    const args = new Heavy_has_object_privilege_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.has_object_privilege.length === 5) {
@@ -39158,7 +39158,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.objectType,
         args.permissions
       )).then(result => {
-        const result_obj = new OmniSci_has_object_privilege_result({success: result});
+        const result_obj = new Heavy_has_object_privilege_result({success: result});
         output.writeMessageBegin("has_object_privilege", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39166,7 +39166,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_has_object_privilege_result(err);
+          result = new Heavy_has_object_privilege_result(err);
           output.writeMessageBegin("has_object_privilege", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39180,7 +39180,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.has_object_privilege(args.session, args.granteeName, args.ObjectName, args.objectType, args.permissions, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_has_object_privilege_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_has_object_privilege_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("has_object_privilege", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39193,7 +39193,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_set_license_key (seqid, input, output) {
-    const args = new OmniSci_set_license_key_args();
+    const args = new Heavy_set_license_key_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.set_license_key.length === 3) {
@@ -39202,7 +39202,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.key,
         args.nonce
       )).then(result => {
-        const result_obj = new OmniSci_set_license_key_result({success: result});
+        const result_obj = new Heavy_set_license_key_result({success: result});
         output.writeMessageBegin("set_license_key", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39210,7 +39210,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_set_license_key_result(err);
+          result = new Heavy_set_license_key_result(err);
           output.writeMessageBegin("set_license_key", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39224,7 +39224,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.set_license_key(args.session, args.key, args.nonce, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_set_license_key_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_set_license_key_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("set_license_key", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39237,7 +39237,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_license_claims (seqid, input, output) {
-    const args = new OmniSci_get_license_claims_args();
+    const args = new Heavy_get_license_claims_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_license_claims.length === 2) {
@@ -39245,7 +39245,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.nonce
       )).then(result => {
-        const result_obj = new OmniSci_get_license_claims_result({success: result});
+        const result_obj = new Heavy_get_license_claims_result({success: result});
         output.writeMessageBegin("get_license_claims", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39253,7 +39253,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_license_claims_result(err);
+          result = new Heavy_get_license_claims_result(err);
           output.writeMessageBegin("get_license_claims", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39267,7 +39267,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_license_claims(args.session, args.nonce, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_license_claims_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_license_claims_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_license_claims", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39280,14 +39280,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_device_parameters (seqid, input, output) {
-    const args = new OmniSci_get_device_parameters_args();
+    const args = new Heavy_get_device_parameters_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_device_parameters.length === 1) {
       Promise.resolve(this._handler.get_device_parameters.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_device_parameters_result({success: result});
+        const result_obj = new Heavy_get_device_parameters_result({success: result});
         output.writeMessageBegin("get_device_parameters", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39295,7 +39295,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_device_parameters_result(err);
+          result = new Heavy_get_device_parameters_result(err);
           output.writeMessageBegin("get_device_parameters", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39309,7 +39309,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_device_parameters(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_device_parameters_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_device_parameters_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_device_parameters", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39322,7 +39322,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_register_runtime_extension_functions (seqid, input, output) {
-    const args = new OmniSci_register_runtime_extension_functions_args();
+    const args = new Heavy_register_runtime_extension_functions_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.register_runtime_extension_functions.length === 4) {
@@ -39332,7 +39332,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.udtfs,
         args.device_ir_map
       )).then(result => {
-        const result_obj = new OmniSci_register_runtime_extension_functions_result({success: result});
+        const result_obj = new Heavy_register_runtime_extension_functions_result({success: result});
         output.writeMessageBegin("register_runtime_extension_functions", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39340,7 +39340,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_register_runtime_extension_functions_result(err);
+          result = new Heavy_register_runtime_extension_functions_result(err);
           output.writeMessageBegin("register_runtime_extension_functions", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39354,7 +39354,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.register_runtime_extension_functions(args.session, args.udfs, args.udtfs, args.device_ir_map, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_register_runtime_extension_functions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_register_runtime_extension_functions_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("register_runtime_extension_functions", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39367,14 +39367,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_table_function_names (seqid, input, output) {
-    const args = new OmniSci_get_table_function_names_args();
+    const args = new Heavy_get_table_function_names_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_table_function_names.length === 1) {
       Promise.resolve(this._handler.get_table_function_names.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_table_function_names_result({success: result});
+        const result_obj = new Heavy_get_table_function_names_result({success: result});
         output.writeMessageBegin("get_table_function_names", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39382,7 +39382,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_table_function_names_result(err);
+          result = new Heavy_get_table_function_names_result(err);
           output.writeMessageBegin("get_table_function_names", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39396,7 +39396,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_table_function_names(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_table_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_table_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_function_names", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39409,14 +39409,14 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_runtime_table_function_names (seqid, input, output) {
-    const args = new OmniSci_get_runtime_table_function_names_args();
+    const args = new Heavy_get_runtime_table_function_names_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_runtime_table_function_names.length === 1) {
       Promise.resolve(this._handler.get_runtime_table_function_names.bind(this._handler)(
         args.session
       )).then(result => {
-        const result_obj = new OmniSci_get_runtime_table_function_names_result({success: result});
+        const result_obj = new Heavy_get_runtime_table_function_names_result({success: result});
         output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39424,7 +39424,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_runtime_table_function_names_result(err);
+          result = new Heavy_get_runtime_table_function_names_result(err);
           output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39438,7 +39438,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_runtime_table_function_names(args.session, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_runtime_table_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_runtime_table_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_runtime_table_function_names", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39451,7 +39451,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
     }
   }
   process_get_table_function_details (seqid, input, output) {
-    const args = new OmniSci_get_table_function_details_args();
+    const args = new Heavy_get_table_function_details_args();
     args.read(input);
     input.readMessageEnd();
     if (this._handler.get_table_function_details.length === 2) {
@@ -39459,7 +39459,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
         args.session,
         args.udtf_names
       )).then(result => {
-        const result_obj = new OmniSci_get_table_function_details_result({success: result});
+        const result_obj = new Heavy_get_table_function_details_result({success: result});
         output.writeMessageBegin("get_table_function_details", Thrift.MessageType.REPLY, seqid);
         result_obj.write(output);
         output.writeMessageEnd();
@@ -39467,7 +39467,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       }).catch(err => {
         let result;
         if (err instanceof ttypes.TDBException) {
-          result = new OmniSci_get_table_function_details_result(err);
+          result = new Heavy_get_table_function_details_result(err);
           output.writeMessageBegin("get_table_function_details", Thrift.MessageType.REPLY, seqid);
         } else {
           result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -39481,7 +39481,7 @@ const OmniSciProcessor = exports.Processor = class OmniSciProcessor {
       this._handler.get_table_function_details(args.session, args.udtf_names, (err, result) => {
         let result_obj;
         if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new OmniSci_get_table_function_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          result_obj = new Heavy_get_table_function_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
           output.writeMessageBegin("get_table_function_details", Thrift.MessageType.REPLY, seqid);
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
@@ -40239,7 +40239,7 @@ const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = cla
 
 /***/ }),
 
-/***/ 356:
+/***/ 2607:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
