@@ -185,7 +185,7 @@ function buildClient(url, useBinaryProtocol) {
   return client
 }
 
-export class MapdCon {
+export class DbCon {
   constructor() {
     this._useBinaryProtocol = false
     this._host = null
@@ -205,7 +205,7 @@ export class MapdCon {
     this.TRasterPointTransformMap = {}
     this.TSourceTypeMap = {}
     this._logging = false
-    this._platform = "mapd"
+    this._platform = "heavydb"
     this._nonce = 0
     this._balanceStrategy = "adaptive"
     this._numConnections = 0
@@ -346,7 +346,7 @@ export class MapdCon {
    * Initializes the connector for use. This is similar to `connect()`, but stops short of
    * actually connecting to the server.
    *
-   * @return {MapdCon} Object.
+   * @return {DbCon} Object.
    */
   initClients() {
     const allAreArrays =
@@ -395,10 +395,10 @@ export class MapdCon {
 
   /**
    * Create a connection to the MapD server, generating a client and session ID.
-   * @return {Promise.MapdCon} Object.
+   * @return {Promise.DbCon} Object.
    *
    * @example <caption>Connect to a MapD server:</caption>
-   * var con = new MapdCon()
+   * var con = new DbCon()
    *   .host('localhost')
    *   .port('8080')
    *   .dbName('myDatabase')
@@ -460,10 +460,10 @@ export class MapdCon {
   /**
    * Create a connection to the MapD server, generating a client and session ID.
    * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-   * @return {Promise.MapdCon} Object.
+   * @return {Promise.DbCon} Object.
    *
    * @example <caption>Connect to a MapD server:</caption>
-   * var con = new MapdCon()
+   * var con = new DbCon()
    *   .host('localhost')
    *   .port('8080')
    *   .dbName('myDatabase')
@@ -495,7 +495,7 @@ export class MapdCon {
 
   /**
    * Disconnect from the server and then clear the client and session values.
-   * @return {Promise.MapdCon} Object.
+   * @return {Promise.DbCon} Object.
    *
    * @example <caption>Disconnect from the server:</caption>
    *
@@ -523,7 +523,7 @@ export class MapdCon {
   /**
    * Disconnect from the server and then clear the client and session values.
    * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
-   * @return {Promise.MapdCon} Object.
+   * @return {Promise.DbCon} Object.
    *
    * @example <caption>Disconnect from the server:</caption>
    *
@@ -1812,7 +1812,7 @@ export class MapdCon {
    * Get or set the session ID used by the server to serve the correct data.
    * This is typically set by {@link connect} and should not be set manually.
    * @param {Number} sessionId The session ID of the current connection.
-   * @return {Number|MapdCon} - The session ID or MapD connector itself.
+   * @return {Number|DbCon} - The session ID or MapD connector itself.
    *
    * @example <caption>Get the session ID:</caption>
    *
@@ -1820,7 +1820,7 @@ export class MapdCon {
    * // sessionID === 3145846410
    *
    * @example <caption>Set the session ID:</caption>
-   * var con = new MapdCon().connect().sessionId(3415846410);
+   * var con = new DbCon().connect().sessionId(3415846410);
    * // NOTE: It is generally unsafe to set the session ID manually.
    */
   sessionId(sessionId) {
@@ -1841,12 +1841,12 @@ export class MapdCon {
 
   /**
    * Get or set the connection server hostname.
-   * This is is typically the first method called after instantiating a new MapdCon.
+   * This is is typically the first method called after instantiating a new DbCon.
    * @param {String} host The hostname address.
-   * @return {String|MapdCon} The hostname or MapD connector itself.
+   * @return {String|DbCon} The hostname or MapD connector itself.
    *
    * @example <caption>Set the hostname:</caption>
-   * var con = new MapdCon().host('localhost');
+   * var con = new DbCon().host('localhost');
    *
    * @example <caption>Get the hostname:</caption>
    * var host = con.host();
@@ -1863,10 +1863,10 @@ export class MapdCon {
   /**
    * Get or set the connection port.
    * @param {String} port - The port to connect on.
-   * @return {String|MapdCon} - The port or MapD connector itself.
+   * @return {String|DbCon} - The port or MapD connector itself.
    *
    * @example <caption>Set the port:</caption>
-   * var con = new MapdCon().port('8080');
+   * var con = new DbCon().port('8080');
    *
    * @example <caption>Get the port:</caption>
    * var port = con.port();
@@ -1883,10 +1883,10 @@ export class MapdCon {
   /**
    * Get or set the username with which to authenticate.
    * @param {String} user - The username with which to authenticate.
-   * @return {String|MapdCon} - The username or MapD connector itself.
+   * @return {String|DbCon} - The username or MapD connector itself.
    *
    * @example <caption>Set the username:</caption>
-   * var con = new MapdCon().user('foo');
+   * var con = new DbCon().user('foo');
    *
    * @example <caption>Get the username:</caption>
    * var username = con.user();
@@ -1903,10 +1903,10 @@ export class MapdCon {
   /**
    * Get or set the user password for authentication.
    * @param {String} password The password with which to authenticate.
-   * @return {String|MapdCon} The password or MapD connector itself.
+   * @return {String|DbCon} The password or MapD connector itself.
    *
    * @example <caption>Set the password:</caption>
-   * var con = new MapdCon().password('bar');
+   * var con = new DbCon().password('bar');
    *
    * @example <caption>Get the username:</caption>
    * var password = con.password();
@@ -1923,10 +1923,10 @@ export class MapdCon {
   /**
    * Get or set the name of the database to connect to.
    * @param {String} dbName - The database to connect to.
-   * @return {String|MapdCon} - The name of the database or the MapD connector itself.
+   * @return {String|DbCon} - The name of the database or the MapD connector itself.
    *
    * @example <caption>Set the database name:</caption>
-   * var con = new MapdCon().dbName('myDatabase');
+   * var con = new DbCon().dbName('myDatabase');
    *
    * @example <caption>Get the database name:</caption>
    * var dbName = con.dbName();
@@ -1944,10 +1944,10 @@ export class MapdCon {
    * Configure whether raw query strings are logged to the console.
    * Used primarily for debugging; `false` by default.
    * @param {Boolean} logging Set to true to enable logging.
-   * @return {Boolean|MapdCon} The current logging flag or MapD connector itself.
+   * @return {Boolean|DbCon} The current logging flag or MapD connector itself.
    *
    * @example <caption>Set logging to true:</caption>
-   * var con = new MapdCon().logging(true);
+   * var con = new DbCon().logging(true);
    *
    * @example <caption>Get the logging flag:</caption>
    * var isLogging = con.logging();
@@ -1966,11 +1966,11 @@ export class MapdCon {
 
   /**
    * The name of the platform.
-   * @param {String} platform The platform; "mapd" by default.
-   * @return {String|MapdCon} - The platform or MapD connector itself.
+   * @param {String} platform The platform; "heavydb" by default.
+   * @return {String|DbCon} - The platform or MapD connector itself.
    *
    * @example <caption>Set the platform name:</caption>
-   * var con = new MapdCon().platform('myPlatform');
+   * var con = new DbCon().platform('myPlatform');
    *
    * @example <caption>Get the platform name:</caption>
    * var platform = con.platform();
@@ -2000,10 +2000,10 @@ export class MapdCon {
   /**
    * The protocol to use for requests.
    * @param {String} protocol <code>http</code> or <code>https</code>.
-   * @return {String|MapdCon} The protocol or MapdCon itself.
+   * @return {String|DbCon} The protocol or DbCon itself.
    *
    * @example <caption>Set the protocol:</caption>
-   * var con = new MapdCon().protocol('http');
+   * var con = new DbCon().protocol('http');
    *
    * @example <caption>Get the protocol:</caption>
    * var protocol = con.protocol();
@@ -2021,7 +2021,7 @@ export class MapdCon {
    * Disables logic that automatically tries to reconnect to the server if there's an error
    *
    * @param {Boolean?} disable - If true, disables auto-reconnect
-   * @return {Boolean|MapdCon} The status of auto-reconnect, or MapdCon itself.
+   * @return {Boolean|DbCon} The status of auto-reconnect, or DbCon itself.
    */
   disableAutoReconnect(disable) {
     if (!arguments.length) {
@@ -2036,7 +2036,7 @@ export class MapdCon {
    * @return {Array<String>} List of endpoints.
    *
    * @example <caption>Get the endpoints:</caption>
-   * var con = new MapdCon().protocol('http').host('localhost').port('8000');
+   * var con = new DbCon().protocol('http').host('localhost').port('8000');
    * var endpoints = con.getEndpoints();
    * // endpoints === [ 'http://localhost:8000' ]
    */
@@ -2088,7 +2088,7 @@ export class MapdCon {
   }
 }
 
-export default MapdCon
+export default DbCon
 
 export * from "../thrift/Heavy"
 export * from "../thrift/common_types"
