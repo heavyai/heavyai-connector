@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>@mapd/connector 6.0.0 | Documentation</title>
-  <meta name='description' content='Connector to omniscidb'>
+  <title>@heavyai/connector 7.0.0 | Documentation</title>
+  <meta name='description' content='Connector to heavydb'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
   <link href='assets/style.css' rel='stylesheet'>
@@ -14,8 +14,8 @@
     <div class='flex'>
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
-          <h3 class='mb0 no-anchor'>@mapd/connector</h3>
-          <div class='mb1'><code>6.0.0</code></div>
+          <h3 class='mb0 no-anchor'>@heavyai/connector</h3>
+          <div class='mb1'><code>7.0.0</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -26,26 +26,6 @@
             type='text' />
           <div id='toc'>
             <ul class='list-reset h5 py1-ul'>
-              
-                
-                <li><a
-                  href='#timestamptoms'
-                  class="">
-                  timestampToMs
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#valuetoboolean'
-                  class="">
-                  valueToBoolean
-                  
-                </a>
-                
-                </li>
               
                 
                 <li><a
@@ -429,6 +409,36 @@
               
                 
                 <li><a
+                  href='#gettablefunctionnamesasync'
+                  class="">
+                  getTableFunctionNamesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getruntimetablefunctionnamesasync'
+                  class="">
+                  getRuntimeTableFunctionNamesAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#gettablefunctiondetailsasync'
+                  class="">
+                  getTableFunctionDetailsAsync
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#getcompletionhintsasync'
                   class="">
                   getCompletionHintsAsync
@@ -689,6 +699,26 @@
               
                 
                 <li><a
+                  href='#timestamptoms'
+                  class="">
+                  timestampToMs
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#valuetoboolean'
+                  class="">
+                  valueToBoolean
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
                   href='#processcolumnarresults'
                   class="">
                   processColumnarResults
@@ -719,9 +749,9 @@
               
                 
                 <li><a
-                  href='#tdatumtype'
+                  href='#ttypeinfo'
                   class="">
-                  TDatumType
+                  TTypeInfo
                   
                 </a>
                 
@@ -759,9 +789,9 @@
               
                 
                 <li><a
-                  href='#ttypeinfo'
+                  href='#tfrontendview'
                   class="">
-                  TTypeInfo
+                  TFrontendView
                   
                 </a>
                 
@@ -769,9 +799,9 @@
               
                 
                 <li><a
-                  href='#tfrontendview'
+                  href='#tdatumtype'
                   class="">
-                  TFrontendView
+                  TDatumType
                   
                 </a>
                 
@@ -872,162 +902,6 @@
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='timestamptoms'>
-      timestampToMs
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
-represent seconds, ms, us, or ns depending on the precision of the column. This value is
-truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
-for passing to the JS Date object constructor.</p>
-
-    <div class='pre p1 fill-light mt0'>timestampToMs(timestamp: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, precision: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>timestamp</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    The raw integer timestamp in the database.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>precision</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    The precision of the timestamp column in the database.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
-        The equivalent timestamp in milliseconds.
-
-      
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='valuetoboolean'>
-      valueToBoolean
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Converts a Number/BigInt value to a Boolean</p>
-
-    <div class='pre p1 fill-light mt0'>valueToBoolean(value: BigInt): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>value</span> <code class='quiet'>(BigInt)</code>
-	    A BigInt value
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
-        The equivalent boolean value representing the buffer
-
-      
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='initclients'>
       initClients
     </h3>
@@ -1039,7 +913,7 @@ for passing to the JS Date object constructor.</p>
   <p>Initializes the connector for use. This is similar to <code>connect()</code>, but stops short of
 actually connecting to the server.</p>
 
-    <div class='pre p1 fill-light mt0'>initClients(): MapdCon</div>
+    <div class='pre p1 fill-light mt0'>initClients(): DbCon</div>
   
   
 
@@ -1057,7 +931,7 @@ actually connecting to the server.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>MapdCon</code>:
+      <code>DbCon</code>:
         Object.
 
       
@@ -1097,7 +971,7 @@ actually connecting to the server.</p>
 
   <p>Create a connection to the MapD server, generating a client and session ID.</p>
 
-    <div class='pre p1 fill-light mt0'>connectAsync(): Promise.MapdCon</div>
+    <div class='pre p1 fill-light mt0'>connectAsync(): Promise.DbCon</div>
   
   
 
@@ -1115,7 +989,7 @@ actually connecting to the server.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Promise.MapdCon</code>:
+      <code>Promise.DbCon</code>:
         Object.
 
       
@@ -1131,7 +1005,7 @@ actually connecting to the server.</p>
     
       <p><p>Connect to a MapD server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon()
   .host(<span class="hljs-string">'localhost'</span>)
   .port(<span class="hljs-string">'8080'</span>)
   .dbName(<span class="hljs-string">'myDatabase'</span>)
@@ -1205,7 +1079,7 @@ actually connecting to the server.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Promise.MapdCon</code>:
+      <code>Promise.DbCon</code>:
         Object.
 
       
@@ -1221,7 +1095,7 @@ actually connecting to the server.</p>
     
       <p><p>Connect to a MapD server:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon()
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon()
   .host(<span class="hljs-string">'localhost'</span>)
   .port(<span class="hljs-string">'8080'</span>)
   .dbName(<span class="hljs-string">'myDatabase'</span>)
@@ -1278,7 +1152,7 @@ actually connecting to the server.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Promise.MapdCon</code>:
+      <code>Promise.DbCon</code>:
         Object.
 
       
@@ -1359,7 +1233,7 @@ actually connecting to the server.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Promise.MapdCon</code>:
+      <code>Promise.DbCon</code>:
         Object.
 
       
@@ -4321,6 +4195,193 @@ con.validateQuery(query).then(<span class="hljs-function"><span class="hljs-para
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='gettablefunctionnamesasync'>
+      getTableFunctionNamesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Returns a list of available table function names</p>
+
+    <div class='pre p1 fill-light mt0'>getTableFunctionNamesAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Promise.Array</code>:
+        An array of table function names (strings)
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getruntimetablefunctionnamesasync'>
+      getRuntimeTableFunctionNamesAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Returns a list of available runtime table function names</p>
+
+    <div class='pre p1 fill-light mt0'>getRuntimeTableFunctionNamesAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Promise.Array</code>:
+        An array of runtime table function names (strings)
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='gettablefunctiondetailsasync'>
+      getTableFunctionDetailsAsync
+    </h3>
+    
+    
+  </div>
+  
+
+  
+    <div class='pre p1 fill-light mt0'>getTableFunctionDetailsAsync</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>udtfNames</span> <code class='quiet'>(Array.String)</code>
+	    The table function names to retrieve details for
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code>Promise.Array</code>:
+        An array of TUserDefinedTableFunction objects describing each supplied table function
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='getcompletionhintsasync'>
       getCompletionHintsAsync
     </h3>
@@ -5531,7 +5592,7 @@ for a specific table that was last rendered at a pixel.</p>
   <p>Get or set the session ID used by the server to serve the correct data.
 This is typically set by <a href="connect">connect</a> and should not be set manually.</p>
 
-    <div class='pre p1 fill-light mt0'>sessionId(sessionId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>sessionId(sessionId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | DbCon)</div>
   
   
 
@@ -5563,7 +5624,7 @@ This is typically set by <a href="connect">connect</a> and should not be set man
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> | DbCon)</code>:
         The session ID or MapD connector itself.
 
       
@@ -5584,7 +5645,7 @@ This is typically set by <a href="connect">connect</a> and should not be set man
     
       <p><p>Set the session ID:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().connect().sessionId(<span class="hljs-number">3415846410</span>);
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().connect().sessionId(<span class="hljs-number">3415846410</span>);
 <span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> It is generally unsafe to set the session ID manually.</span></pre>
     
   
@@ -5615,9 +5676,9 @@ This is typically set by <a href="connect">connect</a> and should not be set man
   
 
   <p>Get or set the connection server hostname.
-This is is typically the first method called after instantiating a new MapdCon.</p>
+This is is typically the first method called after instantiating a new DbCon.</p>
 
-    <div class='pre p1 fill-light mt0'>host(host: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>host(host: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</div>
   
   
 
@@ -5649,7 +5710,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</code>:
         The hostname or MapD connector itself.
 
       
@@ -5665,7 +5726,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
     
       <p><p>Set the hostname:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().host(<span class="hljs-string">'localhost'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().host(<span class="hljs-string">'localhost'</span>);</pre>
     
       <p><p>Get the hostname:</p>
 </p>
@@ -5701,7 +5762,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
 
   <p>Get or set the connection port.</p>
 
-    <div class='pre p1 fill-light mt0'>port(port: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>port(port: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</div>
   
   
 
@@ -5733,7 +5794,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</code>:
         The port or MapD connector itself.
 
       
@@ -5749,7 +5810,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
     
       <p><p>Set the port:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().port(<span class="hljs-string">'8080'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().port(<span class="hljs-string">'8080'</span>);</pre>
     
       <p><p>Get the port:</p>
 </p>
@@ -5785,7 +5846,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
 
   <p>Get or set the username with which to authenticate.</p>
 
-    <div class='pre p1 fill-light mt0'>user(user: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>user(user: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</div>
   
   
 
@@ -5817,7 +5878,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</code>:
         The username or MapD connector itself.
 
       
@@ -5833,7 +5894,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
     
       <p><p>Set the username:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().user(<span class="hljs-string">'foo'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().user(<span class="hljs-string">'foo'</span>);</pre>
     
       <p><p>Get the username:</p>
 </p>
@@ -5869,7 +5930,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
 
   <p>Get or set the user password for authentication.</p>
 
-    <div class='pre p1 fill-light mt0'>password(password: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>password(password: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</div>
   
   
 
@@ -5901,7 +5962,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</code>:
         The password or MapD connector itself.
 
       
@@ -5917,7 +5978,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
     
       <p><p>Set the password:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().password(<span class="hljs-string">'bar'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().password(<span class="hljs-string">'bar'</span>);</pre>
     
       <p><p>Get the username:</p>
 </p>
@@ -5953,7 +6014,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
 
   <p>Get or set the name of the database to connect to.</p>
 
-    <div class='pre p1 fill-light mt0'>dbName(dbName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>dbName(dbName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</div>
   
   
 
@@ -5985,7 +6046,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</code>:
         The name of the database or the MapD connector itself.
 
       
@@ -6001,7 +6062,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
     
       <p><p>Set the database name:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().dbName(<span class="hljs-string">'myDatabase'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().dbName(<span class="hljs-string">'myDatabase'</span>);</pre>
     
       <p><p>Get the database name:</p>
 </p>
@@ -6038,7 +6099,7 @@ This is is typically the first method called after instantiating a new MapdCon.<
   <p>Configure whether raw query strings are logged to the console.
 Used primarily for debugging; <code>false</code> by default.</p>
 
-    <div class='pre p1 fill-light mt0'>logging(logging: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>logging(logging: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | DbCon)</div>
   
   
 
@@ -6070,7 +6131,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | DbCon)</code>:
         The current logging flag or MapD connector itself.
 
       
@@ -6086,7 +6147,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
     
       <p><p>Set logging to true:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().logging(<span class="hljs-literal">true</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().logging(<span class="hljs-literal">true</span>);</pre>
     
       <p><p>Get the logging flag:</p>
 </p>
@@ -6122,7 +6183,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
 
   <p>The name of the platform.</p>
 
-    <div class='pre p1 fill-light mt0'>platform(platform: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>platform(platform: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</div>
   
   
 
@@ -6140,7 +6201,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>platform</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
-	    The platform; "mapd" by default.
+	    The platform; "heavydb" by default.
 
           </div>
           
@@ -6154,7 +6215,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</code>:
         The platform or MapD connector itself.
 
       
@@ -6170,7 +6231,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
     
       <p><p>Set the platform name:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().platform(<span class="hljs-string">'myPlatform'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().platform(<span class="hljs-string">'myPlatform'</span>);</pre>
     
       <p><p>Get the platform name:</p>
 </p>
@@ -6272,7 +6333,7 @@ Used primarily for debugging; <code>false</code> by default.</p>
 
   <p>The protocol to use for requests.</p>
 
-    <div class='pre p1 fill-light mt0'>protocol(protocol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>protocol(protocol: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</div>
   
   
 
@@ -6311,8 +6372,8 @@ https
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | MapdCon)</code>:
-        The protocol or MapdCon itself.
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> | DbCon)</code>:
+        The protocol or DbCon itself.
 
       
     
@@ -6327,7 +6388,7 @@ https
     
       <p><p>Set the protocol:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().protocol(<span class="hljs-string">'http'</span>);</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().protocol(<span class="hljs-string">'http'</span>);</pre>
     
       <p><p>Get the protocol:</p>
 </p>
@@ -6363,7 +6424,7 @@ https
 
   <p>Disables logic that automatically tries to reconnect to the server if there's an error</p>
 
-    <div class='pre p1 fill-light mt0'>disableAutoReconnect(disable: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>?): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</div>
+    <div class='pre p1 fill-light mt0'>disableAutoReconnect(disable: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>?): (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | DbCon)</div>
   
   
 
@@ -6395,8 +6456,8 @@ https
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | MapdCon)</code>:
-        The status of auto-reconnect, or MapdCon itself.
+      <code>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> | DbCon)</code>:
+        The status of auto-reconnect, or DbCon itself.
 
       
     
@@ -6469,7 +6530,7 @@ https
     
       <p><p>Get the endpoints:</p>
 </p>
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> MapdCon().protocol(<span class="hljs-string">'http'</span>).host(<span class="hljs-string">'localhost'</span>).port(<span class="hljs-string">'8000'</span>);
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> con = <span class="hljs-keyword">new</span> DbCon().protocol(<span class="hljs-string">'http'</span>).host(<span class="hljs-string">'localhost'</span>).port(<span class="hljs-string">'8000'</span>);
 <span class="hljs-keyword">var</span> endpoints = con.getEndpoints();
 <span class="hljs-comment">// endpoints === [ 'http://localhost:8000' ]</span></pre>
     
@@ -6697,6 +6758,162 @@ https
       <div class='py1 quiet mt1 prose-big'>Returns</div>
       <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         Claims or Error.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='timestamptoms'>
+      timestampToMs
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Converts a raw integer timestamp value from the DB into milliseconds. The DB timestamp value may
+represent seconds, ms, us, or ns depending on the precision of the column. This value is
+truncated or extended as necessary to convert to ms precision. The returned ms value is suitable
+for passing to the JS Date object constructor.</p>
+
+    <div class='pre p1 fill-light mt0'>timestampToMs(timestamp: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, precision: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>timestamp</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The raw integer timestamp in the database.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>precision</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The precision of the timestamp column in the database.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></code>:
+        The equivalent timestamp in milliseconds.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='valuetoboolean'>
+      valueToBoolean
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Converts a Number/BigInt value to a Boolean</p>
+
+    <div class='pre p1 fill-light mt0'>valueToBoolean(value: BigInt): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>value</span> <code class='quiet'>(BigInt)</code>
+	    A BigInt value
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></code>:
+        The equivalent boolean value representing the buffer
 
       
     
@@ -7088,21 +7305,21 @@ row-based format.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='tdatumtype'>
-      TDatumType
+    <h3 class='fl m0' id='ttypeinfo'>
+      TTypeInfo
     </h3>
     
     
   </div>
   
 
-  <p>The valid types for database field values.</p>
+  <p>The information about a particular field in a given table.</p>
 
-    <div class='pre p1 fill-light mt0'>TDatumType</div>
+    <div class='pre p1 fill-light mt0'>TTypeInfo</div>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+      <a href="#ttypeinfo">TTypeInfo</a>
     </p>
   
   
@@ -7121,142 +7338,26 @@ row-based format.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>SMALLINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =0
-
+          <span class='code bold'>encoding</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>INT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =1
-
+          <span class='code bold'>is_array</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>BIGINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =2
-
+          <span class='code bold'>nullable</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
+          
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>FLOAT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =3
-
+          <span class='code bold'>type</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
           
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>DECIMAL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =4
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>DOUBLE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =5
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>STR</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =6
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =7
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>TIMESTAMP</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =8
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>DATE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =9
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>BOOL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =10
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>INTERVAL_DAY_TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =11
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>INTERVAL_YEAR_MONTH</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =12
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>POINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =13
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>LINESTRING</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =14
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =15
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>MULTIPOLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =16
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>TINYINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =17
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>GEOMETRY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =18
-
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>GEOGRAPHY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          : =19
-
           
         </div>
       
@@ -7512,90 +7613,6 @@ row-based format.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='ttypeinfo'>
-      TTypeInfo
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>The information about a particular field in a given table.</p>
-
-    <div class='pre p1 fill-light mt0'>TTypeInfo</div>
-  
-    <p>
-      Type:
-      <a href="#ttypeinfo">TTypeInfo</a>
-    </p>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Properties</div>
-    <div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>encoding</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>is_array</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>nullable</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</code>
-          
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <span class='code bold'>type</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-          
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
     <h3 class='fl m0' id='tfrontendview'>
       TFrontendView
     </h3>
@@ -7652,6 +7669,206 @@ row-based format.</p>
         <div class='space-bottom0'>
           <span class='code bold'>view_state</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
           : The Base64-encoded string containing the details about the current state of the dashboard.
+
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='tdatumtype'>
+      TDatumType
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>The valid types for database field values.</p>
+
+    <div class='pre p1 fill-light mt0'>TDatumType</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>SMALLINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =0
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>INT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =1
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>BIGINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =2
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>FLOAT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =3
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DECIMAL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =4
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DOUBLE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =5
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>STR</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =6
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =7
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>TIMESTAMP</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =8
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>DATE</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =9
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>BOOL</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =10
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>INTERVAL_DAY_TIME</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =11
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>INTERVAL_YEAR_MONTH</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =12
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>POINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =13
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>LINESTRING</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =14
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>POLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =15
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>MULTIPOLYGON</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =16
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>TINYINT</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =17
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>GEOMETRY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =18
+
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>GEOGRAPHY</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+          : =19
 
           
         </div>
