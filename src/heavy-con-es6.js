@@ -1400,6 +1400,52 @@ export class DbCon {
   getTableEpochByName = this.callbackify("getTableEpochByNameAsync", 0)
 
   /**
+   * Returns a list of available table function names
+   * @returns {Promise.Array} An array of table function names (strings)
+   */
+  getTableFunctionNamesAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_table_function_names",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  getTableFunctionNames = this.callbackify("getTableFunctionNamesAsync", 0)
+
+  /**
+   * Returns a list of available runtime table function names
+   * @returns {Promise.Array} An array of runtime table function names (strings)
+   */
+  getRuntimeTableFunctionNamesAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_runtime_table_function_names",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  getRuntimeTableFunctionNames = this.callbackify(
+    "getRuntimeTableFunctionNamesAsync",
+    0
+  )
+
+  /**
+   * @param {Array.String} udtfNames The table function names to retrieve details for
+   * @returns {Promise.Array} An array of TUserDefinedTableFunction objects describing each supplied table function
+   */
+
+  getTableFunctionDetailsAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_table_function_details",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  getTableFunctionDetails = this.callbackify("getTableFunctionDetailsAsync", 0)
+
+  /**
    * Submits an SQL string to the backend and returns a completion hints object.
    * @param {String} queryString A fragment of SQL input.
    * @param {Object} options An options object continaing the current cursor position, 1-indexed from the start of `queryString`.
