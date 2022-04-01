@@ -1700,6 +1700,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.odbc_dsn = null;
     this.odbc_connection_string = null;
     this.odbc_sql_select = null;
+    this.odbc_sql_order_by = null;
     this.odbc_username = null;
     this.odbc_password = null;
     this.odbc_credential_string = null;
@@ -1809,6 +1810,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.odbc_sql_select !== undefined && args.odbc_sql_select !== null) {
         this.odbc_sql_select = args.odbc_sql_select;
+      }
+      if (args.odbc_sql_order_by !== undefined && args.odbc_sql_order_by !== null) {
+        this.odbc_sql_order_by = args.odbc_sql_order_by;
       }
       if (args.odbc_username !== undefined && args.odbc_username !== null) {
         this.odbc_username = args.odbc_username;
@@ -2082,26 +2086,33 @@ const TCopyParams = module.exports.TCopyParams = class {
         break;
         case 36:
         if (ftype == Thrift.Type.STRING) {
-          this.odbc_username = input.readString();
+          this.odbc_sql_order_by = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
         case 37:
         if (ftype == Thrift.Type.STRING) {
-          this.odbc_password = input.readString();
+          this.odbc_username = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
         case 38:
         if (ftype == Thrift.Type.STRING) {
-          this.odbc_credential_string = input.readString();
+          this.odbc_password = input.readString();
         } else {
           input.skip(ftype);
         }
         break;
         case 39:
+        if (ftype == Thrift.Type.STRING) {
+          this.odbc_credential_string = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 40:
         if (ftype == Thrift.Type.STRING) {
           this.add_metadata_columns = input.readString();
         } else {
@@ -2294,23 +2305,28 @@ const TCopyParams = module.exports.TCopyParams = class {
       output.writeString(this.odbc_sql_select);
       output.writeFieldEnd();
     }
+    if (this.odbc_sql_order_by !== null && this.odbc_sql_order_by !== undefined) {
+      output.writeFieldBegin('odbc_sql_order_by', Thrift.Type.STRING, 36);
+      output.writeString(this.odbc_sql_order_by);
+      output.writeFieldEnd();
+    }
     if (this.odbc_username !== null && this.odbc_username !== undefined) {
-      output.writeFieldBegin('odbc_username', Thrift.Type.STRING, 36);
+      output.writeFieldBegin('odbc_username', Thrift.Type.STRING, 37);
       output.writeString(this.odbc_username);
       output.writeFieldEnd();
     }
     if (this.odbc_password !== null && this.odbc_password !== undefined) {
-      output.writeFieldBegin('odbc_password', Thrift.Type.STRING, 37);
+      output.writeFieldBegin('odbc_password', Thrift.Type.STRING, 38);
       output.writeString(this.odbc_password);
       output.writeFieldEnd();
     }
     if (this.odbc_credential_string !== null && this.odbc_credential_string !== undefined) {
-      output.writeFieldBegin('odbc_credential_string', Thrift.Type.STRING, 38);
+      output.writeFieldBegin('odbc_credential_string', Thrift.Type.STRING, 39);
       output.writeString(this.odbc_credential_string);
       output.writeFieldEnd();
     }
     if (this.add_metadata_columns !== null && this.add_metadata_columns !== undefined) {
-      output.writeFieldBegin('add_metadata_columns', Thrift.Type.STRING, 39);
+      output.writeFieldBegin('add_metadata_columns', Thrift.Type.STRING, 40);
       output.writeString(this.add_metadata_columns);
       output.writeFieldEnd();
     }
