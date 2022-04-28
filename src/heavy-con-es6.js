@@ -1,5 +1,5 @@
 import EventEmitter from "eventemitter3"
-import { Table } from "apache-arrow"
+import { tableFromIPC } from "apache-arrow"
 import util from "util"
 import {
   TDatumType,
@@ -1225,7 +1225,7 @@ export class DbCon {
       }
 
       const buf = Buffer.from(data.df_buffer, "base64")
-      let results = Table.from(buf)
+      let results = tableFromIPC(buf)
       if (options && Boolean(options.returnTiming)) {
         results = {
           results,

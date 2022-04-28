@@ -662,7 +662,7 @@ var DbCon = /*#__PURE__*/function () {
         }
 
         var buf = Buffer.from(data.df_buffer, "base64");
-        var results = apache_arrow__WEBPACK_IMPORTED_MODULE_1__.Table.from(buf);
+        var results = (0,apache_arrow__WEBPACK_IMPORTED_MODULE_1__.tableFromIPC)(buf);
 
         if (options && Boolean(options.returnTiming)) {
           results = {
