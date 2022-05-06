@@ -377,7 +377,7 @@ export class DbCon {
 
     if (!this._protocol) {
       this._protocol = this._host.map(() =>
-        window.location.protocol.replace(":", "")
+        process.env.BROWSER ? window.location.protocol.replace(":", "") : "http"
       )
     }
 

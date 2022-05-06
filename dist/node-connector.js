@@ -1059,7 +1059,7 @@ var DbCon = /*#__PURE__*/function () {
 
       if (!this._protocol) {
         this._protocol = this._host.map(function () {
-          return window.location.protocol.replace(":", "");
+          return process.env.BROWSER ? window.location.protocol.replace(":", "") : "http";
         });
       }
 

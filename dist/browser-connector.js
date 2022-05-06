@@ -1041,7 +1041,7 @@ var DbCon = /*#__PURE__*/function () {
 
       if (!this._protocol) {
         this._protocol = this._host.map(function () {
-          return window.location.protocol.replace(":", "");
+          return  true ? window.location.protocol.replace(":", "") : 0;
         });
       }
 
