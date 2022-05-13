@@ -1622,6 +1622,10 @@ export class DbCon {
    * @param {String} tableName The name of the new table.
    * @param {Array<TColumnType>} rowDescObj Fields in the new table.
    * @param {TCreateParams} createParams Properties to apply to the new table (e.g. replicated)
+   * @param {Object} options
+   * @param {boolean} options.useUnmodifiedRowDesc By default, createTableAsync calls createTable using properties from
+   * both rowDescObj and the descriptor last returned by detectColumnTypesAsync. If true, this simply calls createTable
+   * with the passed rowDescObj, removing the dependence on the previous detectColumnTypesAsync call
    * @return {Promise.<undefined>} Generates an error if unsuccessful, or returns undefined if successful.
    *
    * @example <caption>Create a new table:</caption>
@@ -1633,9 +1637,9 @@ export class DbCon {
     this.wrapThrift(
       "create_table",
       this.overAllClients,
-      ([tableName, rowDescObj, createParams]) => [
+      ([tableName, rowDescObj, createParams, options]) => [
         tableName,
-        helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
+        options?.useUnmodifiedRowDesc ? rowDescObj : helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
         createParams
       ]
     )

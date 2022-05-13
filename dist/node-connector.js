@@ -845,12 +845,13 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "getFields", this.callbackify("getFieldsAsync", 1));
 
     _defineProperty(this, "createTableAsync", this.handleErrors(this.wrapThrift("create_table", this.overAllClients, function (_ref13) {
-      var _ref14 = _slicedToArray(_ref13, 3),
+      var _ref14 = _slicedToArray(_ref13, 4),
           tableName = _ref14[0],
           rowDescObj = _ref14[1],
-          createParams = _ref14[2];
+          createParams = _ref14[2],
+          options = _ref14[3];
 
-      return [tableName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), createParams];
+      return [tableName, (options === null || options === void 0 ? void 0 : options.useUnmodifiedRowDesc) ? rowDescObj : _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), createParams];
     })));
 
     _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
