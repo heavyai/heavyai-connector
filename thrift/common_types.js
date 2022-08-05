@@ -35,7 +35,9 @@ ttypes.TDatumType = {
   'MULTIPOLYGON' : 16,
   'TINYINT' : 17,
   'GEOMETRY' : 18,
-  'GEOGRAPHY' : 19
+  'GEOGRAPHY' : 19,
+  'MULTILINESTRING' : 20,
+  'MULTIPOINT' : 21
 };
 ttypes.TEncodingType = {
   'NONE' : 0,
@@ -45,7 +47,9 @@ ttypes.TEncodingType = {
   'DICT' : 4,
   'SPARSE' : 5,
   'GEOINT' : 6,
-  'DATE_IN_DAYS' : 7
+  'DATE_IN_DAYS' : 7,
+  'ARRAY' : 8,
+  'ARRAY_DICT' : 9
 };
 const TTypeInfo = module.exports.TTypeInfo = class {
   constructor(args) {
