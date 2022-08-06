@@ -1687,7 +1687,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.sanitize_column_names = true;
     this.geo_layer_name = null;
     this.s3_endpoint = null;
-    this.geo_assign_render_groups = true;
+    this.geo_assign_render_groups = false;
     this.geo_explode_collections = false;
     this.source_srid = 0;
     this.s3_session_token = null;
@@ -1705,6 +1705,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.odbc_password = null;
     this.odbc_credential_string = null;
     this.add_metadata_columns = null;
+    this.trim_spaces = null;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -1825,6 +1826,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.add_metadata_columns !== undefined && args.add_metadata_columns !== null) {
         this.add_metadata_columns = args.add_metadata_columns;
+      }
+      if (args.trim_spaces !== undefined && args.trim_spaces !== null) {
+        this.trim_spaces = args.trim_spaces;
       }
     }
   }
@@ -2119,6 +2123,13 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 41:
+        if (ftype == Thrift.Type.BOOL) {
+          this.trim_spaces = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -2328,6 +2339,11 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.add_metadata_columns !== null && this.add_metadata_columns !== undefined) {
       output.writeFieldBegin('add_metadata_columns', Thrift.Type.STRING, 40);
       output.writeString(this.add_metadata_columns);
+      output.writeFieldEnd();
+    }
+    if (this.trim_spaces !== null && this.trim_spaces !== undefined) {
+      output.writeFieldBegin('trim_spaces', Thrift.Type.BOOL, 41);
+      output.writeBool(this.trim_spaces);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
