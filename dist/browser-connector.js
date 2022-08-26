@@ -1563,7 +1563,8 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
-      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).indexOf("Session not valid.") !== -1 || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).includes('Session not valid') || //.indexOf("Session not valid.") !== -1 ||
+      String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
     }
   }]);
 
@@ -29583,6 +29584,446 @@ const Heavy_get_table_function_details_result = class {
   }
 
 };
+const Heavy_get_function_names_args = class {
+  constructor(args) {
+    this.session = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_function_names_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_function_names_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [null]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3520 = input.readListBegin();
+          const _size519 = _rtmp3520.size || 0;
+          for (let _i521 = 0; _i521 < _size519; ++_i521) {
+            let elem522 = null;
+            elem522 = input.readString();
+            this.success.push(elem522);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_function_names_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRING, this.success.length);
+      for (let iter523 in this.success) {
+        if (this.success.hasOwnProperty(iter523)) {
+          iter523 = this.success[iter523];
+          output.writeString(iter523);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_runtime_function_names_args = class {
+  constructor(args) {
+    this.session = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_runtime_function_names_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_runtime_function_names_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [null]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3525 = input.readListBegin();
+          const _size524 = _rtmp3525.size || 0;
+          for (let _i526 = 0; _i526 < _size524; ++_i526) {
+            let elem527 = null;
+            elem527 = input.readString();
+            this.success.push(elem527);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_runtime_function_names_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRING, this.success.length);
+      for (let iter528 in this.success) {
+        if (this.success.hasOwnProperty(iter528)) {
+          iter528 = this.success[iter528];
+          output.writeString(iter528);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_function_details_args = class {
+  constructor(args) {
+    this.session = null;
+    this.udf_names = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+      if (args.udf_names !== undefined && args.udf_names !== null) {
+        this.udf_names = Thrift.copyList(args.udf_names, [null]);
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.LIST) {
+          this.udf_names = [];
+          const _rtmp3530 = input.readListBegin();
+          const _size529 = _rtmp3530.size || 0;
+          for (let _i531 = 0; _i531 < _size529; ++_i531) {
+            let elem532 = null;
+            elem532 = input.readString();
+            this.udf_names.push(elem532);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_function_details_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    if (this.udf_names !== null && this.udf_names !== undefined) {
+      output.writeFieldBegin('udf_names', Thrift.Type.LIST, 2);
+      output.writeListBegin(Thrift.Type.STRING, this.udf_names.length);
+      for (let iter533 in this.udf_names) {
+        if (this.udf_names.hasOwnProperty(iter533)) {
+          iter533 = this.udf_names[iter533];
+          output.writeString(iter533);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_function_details_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [extension_functions_ttypes.TUserDefinedFunction]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3535 = input.readListBegin();
+          const _size534 = _rtmp3535.size || 0;
+          for (let _i536 = 0; _i536 < _size534; ++_i536) {
+            let elem537 = null;
+            elem537 = new extension_functions_ttypes.TUserDefinedFunction();
+            elem537.read(input);
+            this.success.push(elem537);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_function_details_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+      for (let iter538 in this.success) {
+        if (this.success.hasOwnProperty(iter538)) {
+          iter538 = this.success[iter538];
+          iter538.write(output);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
 const HeavyClient = exports.Client = class HeavyClient {
   constructor(output, pClass) {
     this.output = output;
@@ -35096,6 +35537,169 @@ const HeavyClient = exports.Client = class HeavyClient {
     }
     return callback('get_table_function_details failed: unknown result');
   }
+
+  get_function_names (session) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_function_names(session);
+    });
+  }
+
+  send_get_function_names (session) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session
+    };
+    const args = new Heavy_get_function_names_args(params);
+    try {
+      output.writeMessageBegin('get_function_names', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_function_names (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new Heavy_get_function_names_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_function_names failed: unknown result');
+  }
+
+  get_runtime_function_names (session) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_runtime_function_names(session);
+    });
+  }
+
+  send_get_runtime_function_names (session) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session
+    };
+    const args = new Heavy_get_runtime_function_names_args(params);
+    try {
+      output.writeMessageBegin('get_runtime_function_names', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_runtime_function_names (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new Heavy_get_runtime_function_names_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_runtime_function_names failed: unknown result');
+  }
+
+  get_function_details (session, udf_names) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_function_details(session, udf_names);
+    });
+  }
+
+  send_get_function_details (session, udf_names) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session,
+      udf_names: udf_names
+    };
+    const args = new Heavy_get_function_details_args(params);
+    try {
+      output.writeMessageBegin('get_function_details', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_function_details (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new Heavy_get_function_details_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_function_details failed: unknown result');
+  }
 };
 const HeavyProcessor = exports.Processor = class HeavyProcessor {
   constructor(handler) {
@@ -39512,6 +40116,133 @@ const HeavyProcessor = exports.Processor = class HeavyProcessor {
       });
     }
   }
+  process_get_function_names (seqid, input, output) {
+    const args = new Heavy_get_function_names_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_function_names.length === 1) {
+      Promise.resolve(this._handler.get_function_names.bind(this._handler)(
+        args.session
+      )).then(result => {
+        const result_obj = new Heavy_get_function_names_result({success: result});
+        output.writeMessageBegin("get_function_names", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new Heavy_get_function_names_result(err);
+          output.writeMessageBegin("get_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_function_names(args.session, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new Heavy_get_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_runtime_function_names (seqid, input, output) {
+    const args = new Heavy_get_runtime_function_names_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_runtime_function_names.length === 1) {
+      Promise.resolve(this._handler.get_runtime_function_names.bind(this._handler)(
+        args.session
+      )).then(result => {
+        const result_obj = new Heavy_get_runtime_function_names_result({success: result});
+        output.writeMessageBegin("get_runtime_function_names", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new Heavy_get_runtime_function_names_result(err);
+          output.writeMessageBegin("get_runtime_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_runtime_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_runtime_function_names(args.session, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new Heavy_get_runtime_function_names_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_runtime_function_names", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_runtime_function_names", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_function_details (seqid, input, output) {
+    const args = new Heavy_get_function_details_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_function_details.length === 2) {
+      Promise.resolve(this._handler.get_function_details.bind(this._handler)(
+        args.session,
+        args.udf_names
+      )).then(result => {
+        const result_obj = new Heavy_get_function_details_result({success: result});
+        output.writeMessageBegin("get_function_details", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new Heavy_get_function_details_result(err);
+          output.writeMessageBegin("get_function_details", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_function_details", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_function_details(args.session, args.udf_names, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new Heavy_get_function_details_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_function_details", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_function_details", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
 };
 
 
@@ -39558,7 +40289,9 @@ ttypes.TDatumType = {
   'MULTIPOLYGON' : 16,
   'TINYINT' : 17,
   'GEOMETRY' : 18,
-  'GEOGRAPHY' : 19
+  'GEOGRAPHY' : 19,
+  'MULTILINESTRING' : 20,
+  'MULTIPOINT' : 21
 };
 ttypes.TEncodingType = {
   'NONE' : 0,
@@ -39568,7 +40301,9 @@ ttypes.TEncodingType = {
   'DICT' : 4,
   'SPARSE' : 5,
   'GEOINT' : 6,
-  'DATE_IN_DAYS' : 7
+  'DATE_IN_DAYS' : 7,
+  'ARRAY' : 8,
+  'ARRAY_DICT' : 9
 };
 const TTypeInfo = module.exports.TTypeInfo = class {
   constructor(args) {
@@ -39926,7 +40661,31 @@ ttypes.TExtArgumentType = {
   'ColumnTextEncodingDict' : 43,
   'ColumnListTextEncodingDict' : 44,
   'ColumnTimestamp' : 45,
-  'Timestamp' : 46
+  'Timestamp' : 46,
+  'ColumnArrayInt8' : 47,
+  'ColumnArrayInt16' : 48,
+  'ColumnArrayInt32' : 49,
+  'ColumnArrayInt64' : 50,
+  'ColumnArrayFloat' : 51,
+  'ColumnArrayDouble' : 52,
+  'ColumnArrayBool' : 53,
+  'ColumnListArrayInt8' : 54,
+  'ColumnListArrayInt16' : 55,
+  'ColumnListArrayInt32' : 56,
+  'ColumnListArrayInt64' : 57,
+  'ColumnListArrayFloat' : 58,
+  'ColumnListArrayDouble' : 59,
+  'ColumnListArrayBool' : 60,
+  'GeoMultiLineString' : 61,
+  'ArrayTextEncodingNone' : 62,
+  'ColumnTextEncodingNone' : 63,
+  'ColumnListTextEncodingNone' : 64,
+  'ColumnArrayTextEncodingNone' : 65,
+  'ColumnListArrayTextEncodingNone' : 66,
+  'ArrayTextEncodingDict' : 67,
+  'ColumnArrayTextEncodingDict' : 68,
+  'ColumnListArrayTextEncodingDict' : 69,
+  'GeoMultiPoint' : 70
 };
 ttypes.TOutputBufferSizeType = {
   'kConstant' : 0,
@@ -41951,7 +42710,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.sanitize_column_names = true;
     this.geo_layer_name = null;
     this.s3_endpoint = null;
-    this.geo_assign_render_groups = true;
+    this.geo_assign_render_groups = false;
     this.geo_explode_collections = false;
     this.source_srid = 0;
     this.s3_session_token = null;
@@ -41969,6 +42728,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.odbc_password = null;
     this.odbc_credential_string = null;
     this.add_metadata_columns = null;
+    this.trim_spaces = null;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -42089,6 +42849,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.add_metadata_columns !== undefined && args.add_metadata_columns !== null) {
         this.add_metadata_columns = args.add_metadata_columns;
+      }
+      if (args.trim_spaces !== undefined && args.trim_spaces !== null) {
+        this.trim_spaces = args.trim_spaces;
       }
     }
   }
@@ -42383,6 +43146,13 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 41:
+        if (ftype == Thrift.Type.BOOL) {
+          this.trim_spaces = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -42592,6 +43362,11 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.add_metadata_columns !== null && this.add_metadata_columns !== undefined) {
       output.writeFieldBegin('add_metadata_columns', Thrift.Type.STRING, 40);
       output.writeString(this.add_metadata_columns);
+      output.writeFieldEnd();
+    }
+    if (this.trim_spaces !== null && this.trim_spaces !== undefined) {
+      output.writeFieldBegin('trim_spaces', Thrift.Type.BOOL, 41);
+      output.writeBool(this.trim_spaces);
       output.writeFieldEnd();
     }
     output.writeFieldStop();

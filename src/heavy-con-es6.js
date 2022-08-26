@@ -1639,7 +1639,9 @@ export class DbCon {
       this.overAllClients,
       ([tableName, rowDescObj, createParams, options]) => [
         tableName,
-        options?.useUnmodifiedRowDesc ? rowDescObj : helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
+        options?.useUnmodifiedRowDesc
+          ? rowDescObj
+          : helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
         createParams
       ]
     )
@@ -2132,7 +2134,7 @@ export class DbCon {
   isTimeoutError(result) {
     return (
       result instanceof TDBException &&
-      (String(result.error_msg).indexOf("Session not valid.") !== -1 ||
+      (String(result.error_msg).includes("Session not valid") ||
         String(result.error_msg).indexOf("User should re-authenticate.") !== -1)
     )
   }
