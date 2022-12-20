@@ -864,13 +864,13 @@ const Heavy_get_status_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3201 = input.readListBegin();
-          const _size200 = _rtmp3201.size || 0;
-          for (let _i202 = 0; _i202 < _size200; ++_i202) {
-            let elem203 = null;
-            elem203 = new ttypes.TServerStatus();
-            elem203.read(input);
-            this.success.push(elem203);
+          const _rtmp3206 = input.readListBegin();
+          const _size205 = _rtmp3206.size || 0;
+          for (let _i207 = 0; _i207 < _size205; ++_i207) {
+            let elem208 = null;
+            elem208 = new ttypes.TServerStatus();
+            elem208.read(input);
+            this.success.push(elem208);
           }
           input.readListEnd();
         } else {
@@ -899,10 +899,10 @@ const Heavy_get_status_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter204 in this.success) {
-        if (this.success.hasOwnProperty(iter204)) {
-          iter204 = this.success[iter204];
-          iter204.write(output);
+      for (let iter209 in this.success) {
+        if (this.success.hasOwnProperty(iter209)) {
+          iter209 = this.success[iter209];
+          iter209.write(output);
         }
       }
       output.writeListEnd();
@@ -1125,12 +1125,12 @@ const Heavy_get_tables_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3206 = input.readListBegin();
-          const _size205 = _rtmp3206.size || 0;
-          for (let _i207 = 0; _i207 < _size205; ++_i207) {
-            let elem208 = null;
-            elem208 = input.readString();
-            this.success.push(elem208);
+          const _rtmp3211 = input.readListBegin();
+          const _size210 = _rtmp3211.size || 0;
+          for (let _i212 = 0; _i212 < _size210; ++_i212) {
+            let elem213 = null;
+            elem213 = input.readString();
+            this.success.push(elem213);
           }
           input.readListEnd();
         } else {
@@ -1159,10 +1159,10 @@ const Heavy_get_tables_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter209 in this.success) {
-        if (this.success.hasOwnProperty(iter209)) {
-          iter209 = this.success[iter209];
-          output.writeString(iter209);
+      for (let iter214 in this.success) {
+        if (this.success.hasOwnProperty(iter214)) {
+          iter214 = this.success[iter214];
+          output.writeString(iter214);
         }
       }
       output.writeListEnd();
@@ -1275,12 +1275,12 @@ const Heavy_get_tables_for_database_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3211 = input.readListBegin();
-          const _size210 = _rtmp3211.size || 0;
-          for (let _i212 = 0; _i212 < _size210; ++_i212) {
-            let elem213 = null;
-            elem213 = input.readString();
-            this.success.push(elem213);
+          const _rtmp3216 = input.readListBegin();
+          const _size215 = _rtmp3216.size || 0;
+          for (let _i217 = 0; _i217 < _size215; ++_i217) {
+            let elem218 = null;
+            elem218 = input.readString();
+            this.success.push(elem218);
           }
           input.readListEnd();
         } else {
@@ -1309,10 +1309,10 @@ const Heavy_get_tables_for_database_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter214 in this.success) {
-        if (this.success.hasOwnProperty(iter214)) {
-          iter214 = this.success[iter214];
-          output.writeString(iter214);
+      for (let iter219 in this.success) {
+        if (this.success.hasOwnProperty(iter219)) {
+          iter219 = this.success[iter219];
+          output.writeString(iter219);
         }
       }
       output.writeListEnd();
@@ -1412,12 +1412,12 @@ const Heavy_get_physical_tables_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3216 = input.readListBegin();
-          const _size215 = _rtmp3216.size || 0;
-          for (let _i217 = 0; _i217 < _size215; ++_i217) {
-            let elem218 = null;
-            elem218 = input.readString();
-            this.success.push(elem218);
+          const _rtmp3221 = input.readListBegin();
+          const _size220 = _rtmp3221.size || 0;
+          for (let _i222 = 0; _i222 < _size220; ++_i222) {
+            let elem223 = null;
+            elem223 = input.readString();
+            this.success.push(elem223);
           }
           input.readListEnd();
         } else {
@@ -1446,10 +1446,10 @@ const Heavy_get_physical_tables_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter219 in this.success) {
-        if (this.success.hasOwnProperty(iter219)) {
-          iter219 = this.success[iter219];
-          output.writeString(iter219);
+      for (let iter224 in this.success) {
+        if (this.success.hasOwnProperty(iter224)) {
+          iter224 = this.success[iter224];
+          output.writeString(iter224);
         }
       }
       output.writeListEnd();
@@ -1549,12 +1549,12 @@ const Heavy_get_views_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3221 = input.readListBegin();
-          const _size220 = _rtmp3221.size || 0;
-          for (let _i222 = 0; _i222 < _size220; ++_i222) {
-            let elem223 = null;
-            elem223 = input.readString();
-            this.success.push(elem223);
+          const _rtmp3226 = input.readListBegin();
+          const _size225 = _rtmp3226.size || 0;
+          for (let _i227 = 0; _i227 < _size225; ++_i227) {
+            let elem228 = null;
+            elem228 = input.readString();
+            this.success.push(elem228);
           }
           input.readListEnd();
         } else {
@@ -1583,10 +1583,10 @@ const Heavy_get_views_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter224 in this.success) {
-        if (this.success.hasOwnProperty(iter224)) {
-          iter224 = this.success[iter224];
-          output.writeString(iter224);
+      for (let iter229 in this.success) {
+        if (this.success.hasOwnProperty(iter229)) {
+          iter229 = this.success[iter229];
+          output.writeString(iter229);
         }
       }
       output.writeListEnd();
@@ -1686,13 +1686,13 @@ const Heavy_get_tables_meta_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3226 = input.readListBegin();
-          const _size225 = _rtmp3226.size || 0;
-          for (let _i227 = 0; _i227 < _size225; ++_i227) {
-            let elem228 = null;
-            elem228 = new ttypes.TTableMeta();
-            elem228.read(input);
-            this.success.push(elem228);
+          const _rtmp3231 = input.readListBegin();
+          const _size230 = _rtmp3231.size || 0;
+          for (let _i232 = 0; _i232 < _size230; ++_i232) {
+            let elem233 = null;
+            elem233 = new ttypes.TTableMeta();
+            elem233.read(input);
+            this.success.push(elem233);
           }
           input.readListEnd();
         } else {
@@ -1721,10 +1721,10 @@ const Heavy_get_tables_meta_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter229 in this.success) {
-        if (this.success.hasOwnProperty(iter229)) {
-          iter229 = this.success[iter229];
-          iter229.write(output);
+      for (let iter234 in this.success) {
+        if (this.success.hasOwnProperty(iter234)) {
+          iter234 = this.success[iter234];
+          iter234.write(output);
         }
       }
       output.writeListEnd();
@@ -2416,12 +2416,12 @@ const Heavy_get_users_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3231 = input.readListBegin();
-          const _size230 = _rtmp3231.size || 0;
-          for (let _i232 = 0; _i232 < _size230; ++_i232) {
-            let elem233 = null;
-            elem233 = input.readString();
-            this.success.push(elem233);
+          const _rtmp3236 = input.readListBegin();
+          const _size235 = _rtmp3236.size || 0;
+          for (let _i237 = 0; _i237 < _size235; ++_i237) {
+            let elem238 = null;
+            elem238 = input.readString();
+            this.success.push(elem238);
           }
           input.readListEnd();
         } else {
@@ -2450,10 +2450,10 @@ const Heavy_get_users_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter234 in this.success) {
-        if (this.success.hasOwnProperty(iter234)) {
-          iter234 = this.success[iter234];
-          output.writeString(iter234);
+      for (let iter239 in this.success) {
+        if (this.success.hasOwnProperty(iter239)) {
+          iter239 = this.success[iter239];
+          output.writeString(iter239);
         }
       }
       output.writeListEnd();
@@ -2553,13 +2553,13 @@ const Heavy_get_databases_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3236 = input.readListBegin();
-          const _size235 = _rtmp3236.size || 0;
-          for (let _i237 = 0; _i237 < _size235; ++_i237) {
-            let elem238 = null;
-            elem238 = new ttypes.TDBInfo();
-            elem238.read(input);
-            this.success.push(elem238);
+          const _rtmp3241 = input.readListBegin();
+          const _size240 = _rtmp3241.size || 0;
+          for (let _i242 = 0; _i242 < _size240; ++_i242) {
+            let elem243 = null;
+            elem243 = new ttypes.TDBInfo();
+            elem243.read(input);
+            this.success.push(elem243);
           }
           input.readListEnd();
         } else {
@@ -2588,10 +2588,10 @@ const Heavy_get_databases_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter239 in this.success) {
-        if (this.success.hasOwnProperty(iter239)) {
-          iter239 = this.success[iter239];
-          iter239.write(output);
+      for (let iter244 in this.success) {
+        if (this.success.hasOwnProperty(iter244)) {
+          iter244 = this.success[iter244];
+          iter244.write(output);
         }
       }
       output.writeListEnd();
@@ -3141,13 +3141,13 @@ const Heavy_get_memory_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3241 = input.readListBegin();
-          const _size240 = _rtmp3241.size || 0;
-          for (let _i242 = 0; _i242 < _size240; ++_i242) {
-            let elem243 = null;
-            elem243 = new ttypes.TNodeMemoryInfo();
-            elem243.read(input);
-            this.success.push(elem243);
+          const _rtmp3246 = input.readListBegin();
+          const _size245 = _rtmp3246.size || 0;
+          for (let _i247 = 0; _i247 < _size245; ++_i247) {
+            let elem248 = null;
+            elem248 = new ttypes.TNodeMemoryInfo();
+            elem248.read(input);
+            this.success.push(elem248);
           }
           input.readListEnd();
         } else {
@@ -3176,10 +3176,10 @@ const Heavy_get_memory_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter244 in this.success) {
-        if (this.success.hasOwnProperty(iter244)) {
-          iter244 = this.success[iter244];
-          iter244.write(output);
+      for (let iter249 in this.success) {
+        if (this.success.hasOwnProperty(iter249)) {
+          iter249 = this.success[iter249];
+          iter249.write(output);
         }
       }
       output.writeListEnd();
@@ -4400,13 +4400,13 @@ const Heavy_get_table_epochs_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3246 = input.readListBegin();
-          const _size245 = _rtmp3246.size || 0;
-          for (let _i247 = 0; _i247 < _size245; ++_i247) {
-            let elem248 = null;
-            elem248 = new ttypes.TTableEpochInfo();
-            elem248.read(input);
-            this.success.push(elem248);
+          const _rtmp3251 = input.readListBegin();
+          const _size250 = _rtmp3251.size || 0;
+          for (let _i252 = 0; _i252 < _size250; ++_i252) {
+            let elem253 = null;
+            elem253 = new ttypes.TTableEpochInfo();
+            elem253.read(input);
+            this.success.push(elem253);
           }
           input.readListEnd();
         } else {
@@ -4430,10 +4430,10 @@ const Heavy_get_table_epochs_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter249 in this.success) {
-        if (this.success.hasOwnProperty(iter249)) {
-          iter249 = this.success[iter249];
-          iter249.write(output);
+      for (let iter254 in this.success) {
+        if (this.success.hasOwnProperty(iter254)) {
+          iter254 = this.success[iter254];
+          iter254.write(output);
         }
       }
       output.writeListEnd();
@@ -4490,13 +4490,13 @@ const Heavy_set_table_epochs_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.table_epochs = [];
-          const _rtmp3251 = input.readListBegin();
-          const _size250 = _rtmp3251.size || 0;
-          for (let _i252 = 0; _i252 < _size250; ++_i252) {
-            let elem253 = null;
-            elem253 = new ttypes.TTableEpochInfo();
-            elem253.read(input);
-            this.table_epochs.push(elem253);
+          const _rtmp3256 = input.readListBegin();
+          const _size255 = _rtmp3256.size || 0;
+          for (let _i257 = 0; _i257 < _size255; ++_i257) {
+            let elem258 = null;
+            elem258 = new ttypes.TTableEpochInfo();
+            elem258.read(input);
+            this.table_epochs.push(elem258);
           }
           input.readListEnd();
         } else {
@@ -4527,10 +4527,10 @@ const Heavy_set_table_epochs_args = class {
     if (this.table_epochs !== null && this.table_epochs !== undefined) {
       output.writeFieldBegin('table_epochs', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.table_epochs.length);
-      for (let iter254 in this.table_epochs) {
-        if (this.table_epochs.hasOwnProperty(iter254)) {
-          iter254 = this.table_epochs[iter254];
-          iter254.write(output);
+      for (let iter259 in this.table_epochs) {
+        if (this.table_epochs.hasOwnProperty(iter259)) {
+          iter259 = this.table_epochs[iter259];
+          iter259.write(output);
         }
       }
       output.writeListEnd();
@@ -4775,13 +4775,13 @@ const Heavy_get_queries_info_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3256 = input.readListBegin();
-          const _size255 = _rtmp3256.size || 0;
-          for (let _i257 = 0; _i257 < _size255; ++_i257) {
-            let elem258 = null;
-            elem258 = new ttypes.TQueryInfo();
-            elem258.read(input);
-            this.success.push(elem258);
+          const _rtmp3261 = input.readListBegin();
+          const _size260 = _rtmp3261.size || 0;
+          for (let _i262 = 0; _i262 < _size260; ++_i262) {
+            let elem263 = null;
+            elem263 = new ttypes.TQueryInfo();
+            elem263.read(input);
+            this.success.push(elem263);
           }
           input.readListEnd();
         } else {
@@ -4810,10 +4810,10 @@ const Heavy_get_queries_info_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter259 in this.success) {
-        if (this.success.hasOwnProperty(iter259)) {
-          iter259 = this.success[iter259];
-          iter259.write(output);
+      for (let iter264 in this.success) {
+        if (this.success.hasOwnProperty(iter264)) {
+          iter264 = this.success[iter264];
+          iter264.write(output);
         }
       }
       output.writeListEnd();
@@ -5894,13 +5894,13 @@ const Heavy_sql_validate_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3261 = input.readListBegin();
-          const _size260 = _rtmp3261.size || 0;
-          for (let _i262 = 0; _i262 < _size260; ++_i262) {
-            let elem263 = null;
-            elem263 = new ttypes.TColumnType();
-            elem263.read(input);
-            this.success.push(elem263);
+          const _rtmp3266 = input.readListBegin();
+          const _size265 = _rtmp3266.size || 0;
+          for (let _i267 = 0; _i267 < _size265; ++_i267) {
+            let elem268 = null;
+            elem268 = new ttypes.TColumnType();
+            elem268.read(input);
+            this.success.push(elem268);
           }
           input.readListEnd();
         } else {
@@ -5929,10 +5929,10 @@ const Heavy_sql_validate_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter264 in this.success) {
-        if (this.success.hasOwnProperty(iter264)) {
-          iter264 = this.success[iter264];
-          iter264.write(output);
+      for (let iter269 in this.success) {
+        if (this.success.hasOwnProperty(iter269)) {
+          iter269 = this.success[iter269];
+          iter269.write(output);
         }
       }
       output.writeListEnd();
@@ -6061,13 +6061,13 @@ const Heavy_get_completion_hints_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3266 = input.readListBegin();
-          const _size265 = _rtmp3266.size || 0;
-          for (let _i267 = 0; _i267 < _size265; ++_i267) {
-            let elem268 = null;
-            elem268 = new completion_hints_ttypes.TCompletionHint();
-            elem268.read(input);
-            this.success.push(elem268);
+          const _rtmp3271 = input.readListBegin();
+          const _size270 = _rtmp3271.size || 0;
+          for (let _i272 = 0; _i272 < _size270; ++_i272) {
+            let elem273 = null;
+            elem273 = new completion_hints_ttypes.TCompletionHint();
+            elem273.read(input);
+            this.success.push(elem273);
           }
           input.readListEnd();
         } else {
@@ -6096,10 +6096,10 @@ const Heavy_get_completion_hints_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter269 in this.success) {
-        if (this.success.hasOwnProperty(iter269)) {
-          iter269 = this.success[iter269];
-          iter269.write(output);
+      for (let iter274 in this.success) {
+        if (this.success.hasOwnProperty(iter274)) {
+          iter274 = this.success[iter274];
+          iter274.write(output);
         }
       }
       output.writeListEnd();
@@ -6491,22 +6491,22 @@ const Heavy_get_result_row_for_pixel_args = class {
         case 4:
         if (ftype == Thrift.Type.MAP) {
           this.table_col_names = {};
-          const _rtmp3271 = input.readMapBegin();
-          const _size270 = _rtmp3271.size || 0;
-          for (let _i272 = 0; _i272 < _size270; ++_i272) {
-            let key273 = null;
-            let val274 = null;
-            key273 = input.readString();
-            val274 = [];
-            const _rtmp3276 = input.readListBegin();
-            const _size275 = _rtmp3276.size || 0;
-            for (let _i277 = 0; _i277 < _size275; ++_i277) {
-              let elem278 = null;
-              elem278 = input.readString();
-              val274.push(elem278);
+          const _rtmp3276 = input.readMapBegin();
+          const _size275 = _rtmp3276.size || 0;
+          for (let _i277 = 0; _i277 < _size275; ++_i277) {
+            let key278 = null;
+            let val279 = null;
+            key278 = input.readString();
+            val279 = [];
+            const _rtmp3281 = input.readListBegin();
+            const _size280 = _rtmp3281.size || 0;
+            for (let _i282 = 0; _i282 < _size280; ++_i282) {
+              let elem283 = null;
+              elem283 = input.readString();
+              val279.push(elem283);
             }
             input.readListEnd();
-            this.table_col_names[key273] = val274;
+            this.table_col_names[key278] = val279;
           }
           input.readMapEnd();
         } else {
@@ -6563,15 +6563,15 @@ const Heavy_get_result_row_for_pixel_args = class {
     if (this.table_col_names !== null && this.table_col_names !== undefined) {
       output.writeFieldBegin('table_col_names', Thrift.Type.MAP, 4);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(this.table_col_names));
-      for (let kiter279 in this.table_col_names) {
-        if (this.table_col_names.hasOwnProperty(kiter279)) {
-          let viter280 = this.table_col_names[kiter279];
-          output.writeString(kiter279);
-          output.writeListBegin(Thrift.Type.STRING, viter280.length);
-          for (let iter281 in viter280) {
-            if (viter280.hasOwnProperty(iter281)) {
-              iter281 = viter280[iter281];
-              output.writeString(iter281);
+      for (let kiter284 in this.table_col_names) {
+        if (this.table_col_names.hasOwnProperty(kiter284)) {
+          let viter285 = this.table_col_names[kiter284];
+          output.writeString(kiter284);
+          output.writeListBegin(Thrift.Type.STRING, viter285.length);
+          for (let iter286 in viter285) {
+            if (viter285.hasOwnProperty(iter286)) {
+              iter286 = viter285[iter286];
+              output.writeString(iter286);
             }
           }
           output.writeListEnd();
@@ -6891,13 +6891,13 @@ const Heavy_get_custom_expressions_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3283 = input.readListBegin();
-          const _size282 = _rtmp3283.size || 0;
-          for (let _i284 = 0; _i284 < _size282; ++_i284) {
-            let elem285 = null;
-            elem285 = new ttypes.TCustomExpression();
-            elem285.read(input);
-            this.success.push(elem285);
+          const _rtmp3288 = input.readListBegin();
+          const _size287 = _rtmp3288.size || 0;
+          for (let _i289 = 0; _i289 < _size287; ++_i289) {
+            let elem290 = null;
+            elem290 = new ttypes.TCustomExpression();
+            elem290.read(input);
+            this.success.push(elem290);
           }
           input.readListEnd();
         } else {
@@ -6926,10 +6926,10 @@ const Heavy_get_custom_expressions_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter286 in this.success) {
-        if (this.success.hasOwnProperty(iter286)) {
-          iter286 = this.success[iter286];
-          iter286.write(output);
+      for (let iter291 in this.success) {
+        if (this.success.hasOwnProperty(iter291)) {
+          iter291 = this.success[iter291];
+          iter291.write(output);
         }
       }
       output.writeListEnd();
@@ -7122,12 +7122,12 @@ const Heavy_delete_custom_expressions_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.custom_expression_ids = [];
-          const _rtmp3288 = input.readListBegin();
-          const _size287 = _rtmp3288.size || 0;
-          for (let _i289 = 0; _i289 < _size287; ++_i289) {
-            let elem290 = null;
-            elem290 = input.readI32();
-            this.custom_expression_ids.push(elem290);
+          const _rtmp3293 = input.readListBegin();
+          const _size292 = _rtmp3293.size || 0;
+          for (let _i294 = 0; _i294 < _size292; ++_i294) {
+            let elem295 = null;
+            elem295 = input.readI32();
+            this.custom_expression_ids.push(elem295);
           }
           input.readListEnd();
         } else {
@@ -7160,10 +7160,10 @@ const Heavy_delete_custom_expressions_args = class {
     if (this.custom_expression_ids !== null && this.custom_expression_ids !== undefined) {
       output.writeFieldBegin('custom_expression_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.custom_expression_ids.length);
-      for (let iter291 in this.custom_expression_ids) {
-        if (this.custom_expression_ids.hasOwnProperty(iter291)) {
-          iter291 = this.custom_expression_ids[iter291];
-          output.writeI32(iter291);
+      for (let iter296 in this.custom_expression_ids) {
+        if (this.custom_expression_ids.hasOwnProperty(iter296)) {
+          iter296 = this.custom_expression_ids[iter296];
+          output.writeI32(iter296);
         }
       }
       output.writeListEnd();
@@ -7456,13 +7456,13 @@ const Heavy_get_dashboards_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3293 = input.readListBegin();
-          const _size292 = _rtmp3293.size || 0;
-          for (let _i294 = 0; _i294 < _size292; ++_i294) {
-            let elem295 = null;
-            elem295 = new ttypes.TDashboard();
-            elem295.read(input);
-            this.success.push(elem295);
+          const _rtmp3298 = input.readListBegin();
+          const _size297 = _rtmp3298.size || 0;
+          for (let _i299 = 0; _i299 < _size297; ++_i299) {
+            let elem300 = null;
+            elem300 = new ttypes.TDashboard();
+            elem300.read(input);
+            this.success.push(elem300);
           }
           input.readListEnd();
         } else {
@@ -7491,10 +7491,10 @@ const Heavy_get_dashboards_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter296 in this.success) {
-        if (this.success.hasOwnProperty(iter296)) {
-          iter296 = this.success[iter296];
-          iter296.write(output);
+      for (let iter301 in this.success) {
+        if (this.success.hasOwnProperty(iter301)) {
+          iter301 = this.success[iter301];
+          iter301.write(output);
         }
       }
       output.writeListEnd();
@@ -8060,12 +8060,12 @@ const Heavy_share_dashboards_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.dashboard_ids = [];
-          const _rtmp3298 = input.readListBegin();
-          const _size297 = _rtmp3298.size || 0;
-          for (let _i299 = 0; _i299 < _size297; ++_i299) {
-            let elem300 = null;
-            elem300 = input.readI32();
-            this.dashboard_ids.push(elem300);
+          const _rtmp3303 = input.readListBegin();
+          const _size302 = _rtmp3303.size || 0;
+          for (let _i304 = 0; _i304 < _size302; ++_i304) {
+            let elem305 = null;
+            elem305 = input.readI32();
+            this.dashboard_ids.push(elem305);
           }
           input.readListEnd();
         } else {
@@ -8075,12 +8075,12 @@ const Heavy_share_dashboards_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3302 = input.readListBegin();
-          const _size301 = _rtmp3302.size || 0;
-          for (let _i303 = 0; _i303 < _size301; ++_i303) {
-            let elem304 = null;
-            elem304 = input.readString();
-            this.groups.push(elem304);
+          const _rtmp3307 = input.readListBegin();
+          const _size306 = _rtmp3307.size || 0;
+          for (let _i308 = 0; _i308 < _size306; ++_i308) {
+            let elem309 = null;
+            elem309 = input.readString();
+            this.groups.push(elem309);
           }
           input.readListEnd();
         } else {
@@ -8114,10 +8114,10 @@ const Heavy_share_dashboards_args = class {
     if (this.dashboard_ids !== null && this.dashboard_ids !== undefined) {
       output.writeFieldBegin('dashboard_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.dashboard_ids.length);
-      for (let iter305 in this.dashboard_ids) {
-        if (this.dashboard_ids.hasOwnProperty(iter305)) {
-          iter305 = this.dashboard_ids[iter305];
-          output.writeI32(iter305);
+      for (let iter310 in this.dashboard_ids) {
+        if (this.dashboard_ids.hasOwnProperty(iter310)) {
+          iter310 = this.dashboard_ids[iter310];
+          output.writeI32(iter310);
         }
       }
       output.writeListEnd();
@@ -8126,10 +8126,10 @@ const Heavy_share_dashboards_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter306 in this.groups) {
-        if (this.groups.hasOwnProperty(iter306)) {
-          iter306 = this.groups[iter306];
-          output.writeString(iter306);
+      for (let iter311 in this.groups) {
+        if (this.groups.hasOwnProperty(iter311)) {
+          iter311 = this.groups[iter311];
+          output.writeString(iter311);
         }
       }
       output.writeListEnd();
@@ -8237,12 +8237,12 @@ const Heavy_delete_dashboards_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.dashboard_ids = [];
-          const _rtmp3308 = input.readListBegin();
-          const _size307 = _rtmp3308.size || 0;
-          for (let _i309 = 0; _i309 < _size307; ++_i309) {
-            let elem310 = null;
-            elem310 = input.readI32();
-            this.dashboard_ids.push(elem310);
+          const _rtmp3313 = input.readListBegin();
+          const _size312 = _rtmp3313.size || 0;
+          for (let _i314 = 0; _i314 < _size312; ++_i314) {
+            let elem315 = null;
+            elem315 = input.readI32();
+            this.dashboard_ids.push(elem315);
           }
           input.readListEnd();
         } else {
@@ -8268,10 +8268,10 @@ const Heavy_delete_dashboards_args = class {
     if (this.dashboard_ids !== null && this.dashboard_ids !== undefined) {
       output.writeFieldBegin('dashboard_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.dashboard_ids.length);
-      for (let iter311 in this.dashboard_ids) {
-        if (this.dashboard_ids.hasOwnProperty(iter311)) {
-          iter311 = this.dashboard_ids[iter311];
-          output.writeI32(iter311);
+      for (let iter316 in this.dashboard_ids) {
+        if (this.dashboard_ids.hasOwnProperty(iter316)) {
+          iter316 = this.dashboard_ids[iter316];
+          output.writeI32(iter316);
         }
       }
       output.writeListEnd();
@@ -8397,12 +8397,12 @@ const Heavy_share_dashboard_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3313 = input.readListBegin();
-          const _size312 = _rtmp3313.size || 0;
-          for (let _i314 = 0; _i314 < _size312; ++_i314) {
-            let elem315 = null;
-            elem315 = input.readString();
-            this.groups.push(elem315);
+          const _rtmp3318 = input.readListBegin();
+          const _size317 = _rtmp3318.size || 0;
+          for (let _i319 = 0; _i319 < _size317; ++_i319) {
+            let elem320 = null;
+            elem320 = input.readString();
+            this.groups.push(elem320);
           }
           input.readListEnd();
         } else {
@@ -8412,12 +8412,12 @@ const Heavy_share_dashboard_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.objects = [];
-          const _rtmp3317 = input.readListBegin();
-          const _size316 = _rtmp3317.size || 0;
-          for (let _i318 = 0; _i318 < _size316; ++_i318) {
-            let elem319 = null;
-            elem319 = input.readString();
-            this.objects.push(elem319);
+          const _rtmp3322 = input.readListBegin();
+          const _size321 = _rtmp3322.size || 0;
+          for (let _i323 = 0; _i323 < _size321; ++_i323) {
+            let elem324 = null;
+            elem324 = input.readString();
+            this.objects.push(elem324);
           }
           input.readListEnd();
         } else {
@@ -8463,10 +8463,10 @@ const Heavy_share_dashboard_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter320 in this.groups) {
-        if (this.groups.hasOwnProperty(iter320)) {
-          iter320 = this.groups[iter320];
-          output.writeString(iter320);
+      for (let iter325 in this.groups) {
+        if (this.groups.hasOwnProperty(iter325)) {
+          iter325 = this.groups[iter325];
+          output.writeString(iter325);
         }
       }
       output.writeListEnd();
@@ -8475,10 +8475,10 @@ const Heavy_share_dashboard_args = class {
     if (this.objects !== null && this.objects !== undefined) {
       output.writeFieldBegin('objects', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.objects.length);
-      for (let iter321 in this.objects) {
-        if (this.objects.hasOwnProperty(iter321)) {
-          iter321 = this.objects[iter321];
-          output.writeString(iter321);
+      for (let iter326 in this.objects) {
+        if (this.objects.hasOwnProperty(iter326)) {
+          iter326 = this.objects[iter326];
+          output.writeString(iter326);
         }
       }
       output.writeListEnd();
@@ -8610,12 +8610,12 @@ const Heavy_unshare_dashboard_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3323 = input.readListBegin();
-          const _size322 = _rtmp3323.size || 0;
-          for (let _i324 = 0; _i324 < _size322; ++_i324) {
-            let elem325 = null;
-            elem325 = input.readString();
-            this.groups.push(elem325);
+          const _rtmp3328 = input.readListBegin();
+          const _size327 = _rtmp3328.size || 0;
+          for (let _i329 = 0; _i329 < _size327; ++_i329) {
+            let elem330 = null;
+            elem330 = input.readString();
+            this.groups.push(elem330);
           }
           input.readListEnd();
         } else {
@@ -8625,12 +8625,12 @@ const Heavy_unshare_dashboard_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.objects = [];
-          const _rtmp3327 = input.readListBegin();
-          const _size326 = _rtmp3327.size || 0;
-          for (let _i328 = 0; _i328 < _size326; ++_i328) {
-            let elem329 = null;
-            elem329 = input.readString();
-            this.objects.push(elem329);
+          const _rtmp3332 = input.readListBegin();
+          const _size331 = _rtmp3332.size || 0;
+          for (let _i333 = 0; _i333 < _size331; ++_i333) {
+            let elem334 = null;
+            elem334 = input.readString();
+            this.objects.push(elem334);
           }
           input.readListEnd();
         } else {
@@ -8669,10 +8669,10 @@ const Heavy_unshare_dashboard_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter330 in this.groups) {
-        if (this.groups.hasOwnProperty(iter330)) {
-          iter330 = this.groups[iter330];
-          output.writeString(iter330);
+      for (let iter335 in this.groups) {
+        if (this.groups.hasOwnProperty(iter335)) {
+          iter335 = this.groups[iter335];
+          output.writeString(iter335);
         }
       }
       output.writeListEnd();
@@ -8681,10 +8681,10 @@ const Heavy_unshare_dashboard_args = class {
     if (this.objects !== null && this.objects !== undefined) {
       output.writeFieldBegin('objects', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.objects.length);
-      for (let iter331 in this.objects) {
-        if (this.objects.hasOwnProperty(iter331)) {
-          iter331 = this.objects[iter331];
-          output.writeString(iter331);
+      for (let iter336 in this.objects) {
+        if (this.objects.hasOwnProperty(iter336)) {
+          iter336 = this.objects[iter336];
+          output.writeString(iter336);
         }
       }
       output.writeListEnd();
@@ -8800,12 +8800,12 @@ const Heavy_unshare_dashboards_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.dashboard_ids = [];
-          const _rtmp3333 = input.readListBegin();
-          const _size332 = _rtmp3333.size || 0;
-          for (let _i334 = 0; _i334 < _size332; ++_i334) {
-            let elem335 = null;
-            elem335 = input.readI32();
-            this.dashboard_ids.push(elem335);
+          const _rtmp3338 = input.readListBegin();
+          const _size337 = _rtmp3338.size || 0;
+          for (let _i339 = 0; _i339 < _size337; ++_i339) {
+            let elem340 = null;
+            elem340 = input.readI32();
+            this.dashboard_ids.push(elem340);
           }
           input.readListEnd();
         } else {
@@ -8815,12 +8815,12 @@ const Heavy_unshare_dashboards_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.groups = [];
-          const _rtmp3337 = input.readListBegin();
-          const _size336 = _rtmp3337.size || 0;
-          for (let _i338 = 0; _i338 < _size336; ++_i338) {
-            let elem339 = null;
-            elem339 = input.readString();
-            this.groups.push(elem339);
+          const _rtmp3342 = input.readListBegin();
+          const _size341 = _rtmp3342.size || 0;
+          for (let _i343 = 0; _i343 < _size341; ++_i343) {
+            let elem344 = null;
+            elem344 = input.readString();
+            this.groups.push(elem344);
           }
           input.readListEnd();
         } else {
@@ -8854,10 +8854,10 @@ const Heavy_unshare_dashboards_args = class {
     if (this.dashboard_ids !== null && this.dashboard_ids !== undefined) {
       output.writeFieldBegin('dashboard_ids', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.I32, this.dashboard_ids.length);
-      for (let iter340 in this.dashboard_ids) {
-        if (this.dashboard_ids.hasOwnProperty(iter340)) {
-          iter340 = this.dashboard_ids[iter340];
-          output.writeI32(iter340);
+      for (let iter345 in this.dashboard_ids) {
+        if (this.dashboard_ids.hasOwnProperty(iter345)) {
+          iter345 = this.dashboard_ids[iter345];
+          output.writeI32(iter345);
         }
       }
       output.writeListEnd();
@@ -8866,10 +8866,10 @@ const Heavy_unshare_dashboards_args = class {
     if (this.groups !== null && this.groups !== undefined) {
       output.writeFieldBegin('groups', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRING, this.groups.length);
-      for (let iter341 in this.groups) {
-        if (this.groups.hasOwnProperty(iter341)) {
-          iter341 = this.groups[iter341];
-          output.writeString(iter341);
+      for (let iter346 in this.groups) {
+        if (this.groups.hasOwnProperty(iter346)) {
+          iter346 = this.groups[iter346];
+          output.writeString(iter346);
         }
       }
       output.writeListEnd();
@@ -9039,13 +9039,13 @@ const Heavy_get_dashboard_grantees_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3343 = input.readListBegin();
-          const _size342 = _rtmp3343.size || 0;
-          for (let _i344 = 0; _i344 < _size342; ++_i344) {
-            let elem345 = null;
-            elem345 = new ttypes.TDashboardGrantees();
-            elem345.read(input);
-            this.success.push(elem345);
+          const _rtmp3348 = input.readListBegin();
+          const _size347 = _rtmp3348.size || 0;
+          for (let _i349 = 0; _i349 < _size347; ++_i349) {
+            let elem350 = null;
+            elem350 = new ttypes.TDashboardGrantees();
+            elem350.read(input);
+            this.success.push(elem350);
           }
           input.readListEnd();
         } else {
@@ -9074,10 +9074,10 @@ const Heavy_get_dashboard_grantees_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter346 in this.success) {
-        if (this.success.hasOwnProperty(iter346)) {
-          iter346 = this.success[iter346];
-          iter346.write(output);
+      for (let iter351 in this.success) {
+        if (this.success.hasOwnProperty(iter351)) {
+          iter351 = this.success[iter351];
+          iter351.write(output);
         }
       }
       output.writeListEnd();
@@ -9430,13 +9430,13 @@ const Heavy_load_table_binary_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.rows = [];
-          const _rtmp3348 = input.readListBegin();
-          const _size347 = _rtmp3348.size || 0;
-          for (let _i349 = 0; _i349 < _size347; ++_i349) {
-            let elem350 = null;
-            elem350 = new ttypes.TRow();
-            elem350.read(input);
-            this.rows.push(elem350);
+          const _rtmp3353 = input.readListBegin();
+          const _size352 = _rtmp3353.size || 0;
+          for (let _i354 = 0; _i354 < _size352; ++_i354) {
+            let elem355 = null;
+            elem355 = new ttypes.TRow();
+            elem355.read(input);
+            this.rows.push(elem355);
           }
           input.readListEnd();
         } else {
@@ -9446,12 +9446,12 @@ const Heavy_load_table_binary_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.column_names = [];
-          const _rtmp3352 = input.readListBegin();
-          const _size351 = _rtmp3352.size || 0;
-          for (let _i353 = 0; _i353 < _size351; ++_i353) {
-            let elem354 = null;
-            elem354 = input.readString();
-            this.column_names.push(elem354);
+          const _rtmp3357 = input.readListBegin();
+          const _size356 = _rtmp3357.size || 0;
+          for (let _i358 = 0; _i358 < _size356; ++_i358) {
+            let elem359 = null;
+            elem359 = input.readString();
+            this.column_names.push(elem359);
           }
           input.readListEnd();
         } else {
@@ -9482,10 +9482,10 @@ const Heavy_load_table_binary_args = class {
     if (this.rows !== null && this.rows !== undefined) {
       output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-      for (let iter355 in this.rows) {
-        if (this.rows.hasOwnProperty(iter355)) {
-          iter355 = this.rows[iter355];
-          iter355.write(output);
+      for (let iter360 in this.rows) {
+        if (this.rows.hasOwnProperty(iter360)) {
+          iter360 = this.rows[iter360];
+          iter360.write(output);
         }
       }
       output.writeListEnd();
@@ -9494,10 +9494,10 @@ const Heavy_load_table_binary_args = class {
     if (this.column_names !== null && this.column_names !== undefined) {
       output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter356 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter356)) {
-          iter356 = this.column_names[iter356];
-          output.writeString(iter356);
+      for (let iter361 in this.column_names) {
+        if (this.column_names.hasOwnProperty(iter361)) {
+          iter361 = this.column_names[iter361];
+          output.writeString(iter361);
         }
       }
       output.writeListEnd();
@@ -9615,13 +9615,13 @@ const Heavy_load_table_binary_columnar_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.cols = [];
-          const _rtmp3358 = input.readListBegin();
-          const _size357 = _rtmp3358.size || 0;
-          for (let _i359 = 0; _i359 < _size357; ++_i359) {
-            let elem360 = null;
-            elem360 = new ttypes.TColumn();
-            elem360.read(input);
-            this.cols.push(elem360);
+          const _rtmp3363 = input.readListBegin();
+          const _size362 = _rtmp3363.size || 0;
+          for (let _i364 = 0; _i364 < _size362; ++_i364) {
+            let elem365 = null;
+            elem365 = new ttypes.TColumn();
+            elem365.read(input);
+            this.cols.push(elem365);
           }
           input.readListEnd();
         } else {
@@ -9631,12 +9631,12 @@ const Heavy_load_table_binary_columnar_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.column_names = [];
-          const _rtmp3362 = input.readListBegin();
-          const _size361 = _rtmp3362.size || 0;
-          for (let _i363 = 0; _i363 < _size361; ++_i363) {
-            let elem364 = null;
-            elem364 = input.readString();
-            this.column_names.push(elem364);
+          const _rtmp3367 = input.readListBegin();
+          const _size366 = _rtmp3367.size || 0;
+          for (let _i368 = 0; _i368 < _size366; ++_i368) {
+            let elem369 = null;
+            elem369 = input.readString();
+            this.column_names.push(elem369);
           }
           input.readListEnd();
         } else {
@@ -9667,10 +9667,10 @@ const Heavy_load_table_binary_columnar_args = class {
     if (this.cols !== null && this.cols !== undefined) {
       output.writeFieldBegin('cols', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-      for (let iter365 in this.cols) {
-        if (this.cols.hasOwnProperty(iter365)) {
-          iter365 = this.cols[iter365];
-          iter365.write(output);
+      for (let iter370 in this.cols) {
+        if (this.cols.hasOwnProperty(iter370)) {
+          iter370 = this.cols[iter370];
+          iter370.write(output);
         }
       }
       output.writeListEnd();
@@ -9679,10 +9679,10 @@ const Heavy_load_table_binary_columnar_args = class {
     if (this.column_names !== null && this.column_names !== undefined) {
       output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter366 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter366)) {
-          iter366 = this.column_names[iter366];
-          output.writeString(iter366);
+      for (let iter371 in this.column_names) {
+        if (this.column_names.hasOwnProperty(iter371)) {
+          iter371 = this.column_names[iter371];
+          output.writeString(iter371);
         }
       }
       output.writeListEnd();
@@ -9740,207 +9740,6 @@ const Heavy_load_table_binary_columnar_result = class {
 
   write (output) {
     output.writeStructBegin('Heavy_load_table_binary_columnar_result');
-    if (this.e !== null && this.e !== undefined) {
-      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-      this.e.write(output);
-      output.writeFieldEnd();
-    }
-    output.writeFieldStop();
-    output.writeStructEnd();
-    return;
-  }
-
-};
-const Heavy_load_table_binary_columnar_polys_args = class {
-  constructor(args) {
-    this.session = null;
-    this.table_name = null;
-    this.cols = null;
-    this.column_names = [];
-    this.assign_render_groups = true;
-    if (args) {
-      if (args.session !== undefined && args.session !== null) {
-        this.session = args.session;
-      }
-      if (args.table_name !== undefined && args.table_name !== null) {
-        this.table_name = args.table_name;
-      }
-      if (args.cols !== undefined && args.cols !== null) {
-        this.cols = Thrift.copyList(args.cols, [ttypes.TColumn]);
-      }
-      if (args.column_names !== undefined && args.column_names !== null) {
-        this.column_names = Thrift.copyList(args.column_names, [null]);
-      }
-      if (args.assign_render_groups !== undefined && args.assign_render_groups !== null) {
-        this.assign_render_groups = args.assign_render_groups;
-      }
-    }
-  }
-
-  read (input) {
-    input.readStructBegin();
-    while (true) {
-      const ret = input.readFieldBegin();
-      const ftype = ret.ftype;
-      const fid = ret.fid;
-      if (ftype == Thrift.Type.STOP) {
-        break;
-      }
-      switch (fid) {
-        case 1:
-        if (ftype == Thrift.Type.STRING) {
-          this.session = input.readString();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 2:
-        if (ftype == Thrift.Type.STRING) {
-          this.table_name = input.readString();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 3:
-        if (ftype == Thrift.Type.LIST) {
-          this.cols = [];
-          const _rtmp3368 = input.readListBegin();
-          const _size367 = _rtmp3368.size || 0;
-          for (let _i369 = 0; _i369 < _size367; ++_i369) {
-            let elem370 = null;
-            elem370 = new ttypes.TColumn();
-            elem370.read(input);
-            this.cols.push(elem370);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 4:
-        if (ftype == Thrift.Type.LIST) {
-          this.column_names = [];
-          const _rtmp3372 = input.readListBegin();
-          const _size371 = _rtmp3372.size || 0;
-          for (let _i373 = 0; _i373 < _size371; ++_i373) {
-            let elem374 = null;
-            elem374 = input.readString();
-            this.column_names.push(elem374);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 5:
-        if (ftype == Thrift.Type.BOOL) {
-          this.assign_render_groups = input.readBool();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        default:
-          input.skip(ftype);
-      }
-      input.readFieldEnd();
-    }
-    input.readStructEnd();
-    return;
-  }
-
-  write (output) {
-    output.writeStructBegin('Heavy_load_table_binary_columnar_polys_args');
-    if (this.session !== null && this.session !== undefined) {
-      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
-      output.writeString(this.session);
-      output.writeFieldEnd();
-    }
-    if (this.table_name !== null && this.table_name !== undefined) {
-      output.writeFieldBegin('table_name', Thrift.Type.STRING, 2);
-      output.writeString(this.table_name);
-      output.writeFieldEnd();
-    }
-    if (this.cols !== null && this.cols !== undefined) {
-      output.writeFieldBegin('cols', Thrift.Type.LIST, 3);
-      output.writeListBegin(Thrift.Type.STRUCT, this.cols.length);
-      for (let iter375 in this.cols) {
-        if (this.cols.hasOwnProperty(iter375)) {
-          iter375 = this.cols[iter375];
-          iter375.write(output);
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    if (this.column_names !== null && this.column_names !== undefined) {
-      output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
-      output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter376 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter376)) {
-          iter376 = this.column_names[iter376];
-          output.writeString(iter376);
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    if (this.assign_render_groups !== null && this.assign_render_groups !== undefined) {
-      output.writeFieldBegin('assign_render_groups', Thrift.Type.BOOL, 5);
-      output.writeBool(this.assign_render_groups);
-      output.writeFieldEnd();
-    }
-    output.writeFieldStop();
-    output.writeStructEnd();
-    return;
-  }
-
-};
-const Heavy_load_table_binary_columnar_polys_result = class {
-  constructor(args) {
-    this.e = null;
-    if (args instanceof ttypes.TDBException) {
-        this.e = args;
-        return;
-    }
-    if (args) {
-      if (args.e !== undefined && args.e !== null) {
-        this.e = args.e;
-      }
-    }
-  }
-
-  read (input) {
-    input.readStructBegin();
-    while (true) {
-      const ret = input.readFieldBegin();
-      const ftype = ret.ftype;
-      const fid = ret.fid;
-      if (ftype == Thrift.Type.STOP) {
-        break;
-      }
-      switch (fid) {
-        case 1:
-        if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TDBException();
-          this.e.read(input);
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 0:
-          input.skip(ftype);
-          break;
-        default:
-          input.skip(ftype);
-      }
-      input.readFieldEnd();
-    }
-    input.readStructEnd();
-    return;
-  }
-
-  write (output) {
-    output.writeStructBegin('Heavy_load_table_binary_columnar_polys_result');
     if (this.e !== null && this.e !== undefined) {
       output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
       this.e.write(output);
@@ -10155,13 +9954,13 @@ const Heavy_load_table_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.rows = [];
-          const _rtmp3378 = input.readListBegin();
-          const _size377 = _rtmp3378.size || 0;
-          for (let _i379 = 0; _i379 < _size377; ++_i379) {
-            let elem380 = null;
-            elem380 = new ttypes.TStringRow();
-            elem380.read(input);
-            this.rows.push(elem380);
+          const _rtmp3373 = input.readListBegin();
+          const _size372 = _rtmp3373.size || 0;
+          for (let _i374 = 0; _i374 < _size372; ++_i374) {
+            let elem375 = null;
+            elem375 = new ttypes.TStringRow();
+            elem375.read(input);
+            this.rows.push(elem375);
           }
           input.readListEnd();
         } else {
@@ -10171,12 +9970,12 @@ const Heavy_load_table_args = class {
         case 4:
         if (ftype == Thrift.Type.LIST) {
           this.column_names = [];
-          const _rtmp3382 = input.readListBegin();
-          const _size381 = _rtmp3382.size || 0;
-          for (let _i383 = 0; _i383 < _size381; ++_i383) {
-            let elem384 = null;
-            elem384 = input.readString();
-            this.column_names.push(elem384);
+          const _rtmp3377 = input.readListBegin();
+          const _size376 = _rtmp3377.size || 0;
+          for (let _i378 = 0; _i378 < _size376; ++_i378) {
+            let elem379 = null;
+            elem379 = input.readString();
+            this.column_names.push(elem379);
           }
           input.readListEnd();
         } else {
@@ -10207,10 +10006,10 @@ const Heavy_load_table_args = class {
     if (this.rows !== null && this.rows !== undefined) {
       output.writeFieldBegin('rows', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.rows.length);
-      for (let iter385 in this.rows) {
-        if (this.rows.hasOwnProperty(iter385)) {
-          iter385 = this.rows[iter385];
-          iter385.write(output);
+      for (let iter380 in this.rows) {
+        if (this.rows.hasOwnProperty(iter380)) {
+          iter380 = this.rows[iter380];
+          iter380.write(output);
         }
       }
       output.writeListEnd();
@@ -10219,10 +10018,10 @@ const Heavy_load_table_args = class {
     if (this.column_names !== null && this.column_names !== undefined) {
       output.writeFieldBegin('column_names', Thrift.Type.LIST, 4);
       output.writeListBegin(Thrift.Type.STRING, this.column_names.length);
-      for (let iter386 in this.column_names) {
-        if (this.column_names.hasOwnProperty(iter386)) {
-          iter386 = this.column_names[iter386];
-          output.writeString(iter386);
+      for (let iter381 in this.column_names) {
+        if (this.column_names.hasOwnProperty(iter381)) {
+          iter381 = this.column_names[iter381];
+          output.writeString(iter381);
         }
       }
       output.writeListEnd();
@@ -10493,13 +10292,13 @@ const Heavy_create_table_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.row_desc = [];
-          const _rtmp3388 = input.readListBegin();
-          const _size387 = _rtmp3388.size || 0;
-          for (let _i389 = 0; _i389 < _size387; ++_i389) {
-            let elem390 = null;
-            elem390 = new ttypes.TColumnType();
-            elem390.read(input);
-            this.row_desc.push(elem390);
+          const _rtmp3383 = input.readListBegin();
+          const _size382 = _rtmp3383.size || 0;
+          for (let _i384 = 0; _i384 < _size382; ++_i384) {
+            let elem385 = null;
+            elem385 = new ttypes.TColumnType();
+            elem385.read(input);
+            this.row_desc.push(elem385);
           }
           input.readListEnd();
         } else {
@@ -10538,10 +10337,10 @@ const Heavy_create_table_args = class {
     if (this.row_desc !== null && this.row_desc !== undefined) {
       output.writeFieldBegin('row_desc', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-      for (let iter391 in this.row_desc) {
-        if (this.row_desc.hasOwnProperty(iter391)) {
-          iter391 = this.row_desc[iter391];
-          iter391.write(output);
+      for (let iter386 in this.row_desc) {
+        if (this.row_desc.hasOwnProperty(iter386)) {
+          iter386 = this.row_desc[iter386];
+          iter386.write(output);
         }
       }
       output.writeListEnd();
@@ -10842,13 +10641,13 @@ const Heavy_import_geo_table_args = class {
         case 5:
         if (ftype == Thrift.Type.LIST) {
           this.row_desc = [];
-          const _rtmp3393 = input.readListBegin();
-          const _size392 = _rtmp3393.size || 0;
-          for (let _i394 = 0; _i394 < _size392; ++_i394) {
-            let elem395 = null;
-            elem395 = new ttypes.TColumnType();
-            elem395.read(input);
-            this.row_desc.push(elem395);
+          const _rtmp3388 = input.readListBegin();
+          const _size387 = _rtmp3388.size || 0;
+          for (let _i389 = 0; _i389 < _size387; ++_i389) {
+            let elem390 = null;
+            elem390 = new ttypes.TColumnType();
+            elem390.read(input);
+            this.row_desc.push(elem390);
           }
           input.readListEnd();
         } else {
@@ -10897,10 +10696,10 @@ const Heavy_import_geo_table_args = class {
     if (this.row_desc !== null && this.row_desc !== undefined) {
       output.writeFieldBegin('row_desc', Thrift.Type.LIST, 5);
       output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-      for (let iter396 in this.row_desc) {
-        if (this.row_desc.hasOwnProperty(iter396)) {
-          iter396 = this.row_desc[iter396];
-          iter396.write(output);
+      for (let iter391 in this.row_desc) {
+        if (this.row_desc.hasOwnProperty(iter391)) {
+          iter391 = this.row_desc[iter391];
+          iter391.write(output);
         }
       }
       output.writeListEnd();
@@ -11375,12 +11174,12 @@ const Heavy_get_all_files_in_archive_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3398 = input.readListBegin();
-          const _size397 = _rtmp3398.size || 0;
-          for (let _i399 = 0; _i399 < _size397; ++_i399) {
-            let elem400 = null;
-            elem400 = input.readString();
-            this.success.push(elem400);
+          const _rtmp3393 = input.readListBegin();
+          const _size392 = _rtmp3393.size || 0;
+          for (let _i394 = 0; _i394 < _size392; ++_i394) {
+            let elem395 = null;
+            elem395 = input.readString();
+            this.success.push(elem395);
           }
           input.readListEnd();
         } else {
@@ -11409,10 +11208,10 @@ const Heavy_get_all_files_in_archive_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter401 in this.success) {
-        if (this.success.hasOwnProperty(iter401)) {
-          iter401 = this.success[iter401];
-          output.writeString(iter401);
+      for (let iter396 in this.success) {
+        if (this.success.hasOwnProperty(iter396)) {
+          iter396 = this.success[iter396];
+          output.writeString(iter396);
         }
       }
       output.writeListEnd();
@@ -11542,13 +11341,13 @@ const Heavy_get_layers_in_geo_file_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3403 = input.readListBegin();
-          const _size402 = _rtmp3403.size || 0;
-          for (let _i404 = 0; _i404 < _size402; ++_i404) {
-            let elem405 = null;
-            elem405 = new ttypes.TGeoFileLayerInfo();
-            elem405.read(input);
-            this.success.push(elem405);
+          const _rtmp3398 = input.readListBegin();
+          const _size397 = _rtmp3398.size || 0;
+          for (let _i399 = 0; _i399 < _size397; ++_i399) {
+            let elem400 = null;
+            elem400 = new ttypes.TGeoFileLayerInfo();
+            elem400.read(input);
+            this.success.push(elem400);
           }
           input.readListEnd();
         } else {
@@ -11577,10 +11376,10 @@ const Heavy_get_layers_in_geo_file_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter406 in this.success) {
-        if (this.success.hasOwnProperty(iter406)) {
-          iter406 = this.success[iter406];
-          iter406.write(output);
+      for (let iter401 in this.success) {
+        if (this.success.hasOwnProperty(iter401)) {
+          iter401 = this.success[iter401];
+          iter401.write(output);
         }
       }
       output.writeListEnd();
@@ -11946,12 +11745,12 @@ const Heavy_start_query_args = class {
         case 6:
         if (ftype == Thrift.Type.LIST) {
           this.outer_fragment_indices = [];
-          const _rtmp3408 = input.readListBegin();
-          const _size407 = _rtmp3408.size || 0;
-          for (let _i409 = 0; _i409 < _size407; ++_i409) {
-            let elem410 = null;
-            elem410 = input.readI64();
-            this.outer_fragment_indices.push(elem410);
+          const _rtmp3403 = input.readListBegin();
+          const _size402 = _rtmp3403.size || 0;
+          for (let _i404 = 0; _i404 < _size402; ++_i404) {
+            let elem405 = null;
+            elem405 = input.readI64();
+            this.outer_fragment_indices.push(elem405);
           }
           input.readListEnd();
         } else {
@@ -11997,10 +11796,10 @@ const Heavy_start_query_args = class {
     if (this.outer_fragment_indices !== null && this.outer_fragment_indices !== undefined) {
       output.writeFieldBegin('outer_fragment_indices', Thrift.Type.LIST, 6);
       output.writeListBegin(Thrift.Type.I64, this.outer_fragment_indices.length);
-      for (let iter411 in this.outer_fragment_indices) {
-        if (this.outer_fragment_indices.hasOwnProperty(iter411)) {
-          iter411 = this.outer_fragment_indices[iter411];
-          output.writeI64(iter411);
+      for (let iter406 in this.outer_fragment_indices) {
+        if (this.outer_fragment_indices.hasOwnProperty(iter406)) {
+          iter406 = this.outer_fragment_indices[iter406];
+          output.writeI64(iter406);
         }
       }
       output.writeListEnd();
@@ -12283,13 +12082,13 @@ const Heavy_broadcast_serialized_rows_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.row_desc = [];
-          const _rtmp3413 = input.readListBegin();
-          const _size412 = _rtmp3413.size || 0;
-          for (let _i414 = 0; _i414 < _size412; ++_i414) {
-            let elem415 = null;
-            elem415 = new ttypes.TColumnType();
-            elem415.read(input);
-            this.row_desc.push(elem415);
+          const _rtmp3408 = input.readListBegin();
+          const _size407 = _rtmp3408.size || 0;
+          for (let _i409 = 0; _i409 < _size407; ++_i409) {
+            let elem410 = null;
+            elem410 = new ttypes.TColumnType();
+            elem410.read(input);
+            this.row_desc.push(elem410);
           }
           input.readListEnd();
         } else {
@@ -12336,10 +12135,10 @@ const Heavy_broadcast_serialized_rows_args = class {
     if (this.row_desc !== null && this.row_desc !== undefined) {
       output.writeFieldBegin('row_desc', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.STRUCT, this.row_desc.length);
-      for (let iter416 in this.row_desc) {
-        if (this.row_desc.hasOwnProperty(iter416)) {
-          iter416 = this.row_desc[iter416];
-          iter416.write(output);
+      for (let iter411 in this.row_desc) {
+        if (this.row_desc.hasOwnProperty(iter411)) {
+          iter411 = this.row_desc[iter411];
+          iter411.write(output);
         }
       }
       output.writeListEnd();
@@ -12626,53 +12425,53 @@ const Heavy_execute_next_render_step_args = class {
         case 2:
         if (ftype == Thrift.Type.MAP) {
           this.merged_data = {};
-          const _rtmp3418 = input.readMapBegin();
-          const _size417 = _rtmp3418.size || 0;
-          for (let _i419 = 0; _i419 < _size417; ++_i419) {
-            let key420 = null;
-            let val421 = null;
-            key420 = input.readString();
-            val421 = {};
-            const _rtmp3423 = input.readMapBegin();
-            const _size422 = _rtmp3423.size || 0;
-            for (let _i424 = 0; _i424 < _size422; ++_i424) {
-              let key425 = null;
-              let val426 = null;
-              key425 = input.readString();
-              val426 = {};
-              const _rtmp3428 = input.readMapBegin();
-              const _size427 = _rtmp3428.size || 0;
-              for (let _i429 = 0; _i429 < _size427; ++_i429) {
-                let key430 = null;
-                let val431 = null;
-                key430 = input.readString();
-                val431 = {};
-                const _rtmp3433 = input.readMapBegin();
-                const _size432 = _rtmp3433.size || 0;
-                for (let _i434 = 0; _i434 < _size432; ++_i434) {
-                  let key435 = null;
-                  let val436 = null;
-                  key435 = input.readString();
-                  val436 = [];
-                  const _rtmp3438 = input.readListBegin();
-                  const _size437 = _rtmp3438.size || 0;
-                  for (let _i439 = 0; _i439 < _size437; ++_i439) {
-                    let elem440 = null;
-                    elem440 = new ttypes.TRenderDatum();
-                    elem440.read(input);
-                    val436.push(elem440);
+          const _rtmp3413 = input.readMapBegin();
+          const _size412 = _rtmp3413.size || 0;
+          for (let _i414 = 0; _i414 < _size412; ++_i414) {
+            let key415 = null;
+            let val416 = null;
+            key415 = input.readString();
+            val416 = {};
+            const _rtmp3418 = input.readMapBegin();
+            const _size417 = _rtmp3418.size || 0;
+            for (let _i419 = 0; _i419 < _size417; ++_i419) {
+              let key420 = null;
+              let val421 = null;
+              key420 = input.readString();
+              val421 = {};
+              const _rtmp3423 = input.readMapBegin();
+              const _size422 = _rtmp3423.size || 0;
+              for (let _i424 = 0; _i424 < _size422; ++_i424) {
+                let key425 = null;
+                let val426 = null;
+                key425 = input.readString();
+                val426 = {};
+                const _rtmp3428 = input.readMapBegin();
+                const _size427 = _rtmp3428.size || 0;
+                for (let _i429 = 0; _i429 < _size427; ++_i429) {
+                  let key430 = null;
+                  let val431 = null;
+                  key430 = input.readString();
+                  val431 = [];
+                  const _rtmp3433 = input.readListBegin();
+                  const _size432 = _rtmp3433.size || 0;
+                  for (let _i434 = 0; _i434 < _size432; ++_i434) {
+                    let elem435 = null;
+                    elem435 = new ttypes.TRenderDatum();
+                    elem435.read(input);
+                    val431.push(elem435);
                   }
                   input.readListEnd();
-                  val431[key435] = val436;
+                  val426[key430] = val431;
                 }
                 input.readMapEnd();
-                val426[key430] = val431;
+                val421[key425] = val426;
               }
               input.readMapEnd();
-              val421[key425] = val426;
+              val416[key420] = val421;
             }
             input.readMapEnd();
-            this.merged_data[key420] = val421;
+            this.merged_data[key415] = val416;
           }
           input.readMapEnd();
         } else {
@@ -12698,30 +12497,30 @@ const Heavy_execute_next_render_step_args = class {
     if (this.merged_data !== null && this.merged_data !== undefined) {
       output.writeFieldBegin('merged_data', Thrift.Type.MAP, 2);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(this.merged_data));
-      for (let kiter441 in this.merged_data) {
-        if (this.merged_data.hasOwnProperty(kiter441)) {
-          let viter442 = this.merged_data[kiter441];
-          output.writeString(kiter441);
-          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter442));
-          for (let kiter443 in viter442) {
-            if (viter442.hasOwnProperty(kiter443)) {
-              let viter444 = viter442[kiter443];
-              output.writeString(kiter443);
-              output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter444));
-              for (let kiter445 in viter444) {
-                if (viter444.hasOwnProperty(kiter445)) {
-                  let viter446 = viter444[kiter445];
-                  output.writeString(kiter445);
-                  output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter446));
-                  for (let kiter447 in viter446) {
-                    if (viter446.hasOwnProperty(kiter447)) {
-                      let viter448 = viter446[kiter447];
-                      output.writeString(kiter447);
-                      output.writeListBegin(Thrift.Type.STRUCT, viter448.length);
-                      for (let iter449 in viter448) {
-                        if (viter448.hasOwnProperty(iter449)) {
-                          iter449 = viter448[iter449];
-                          iter449.write(output);
+      for (let kiter436 in this.merged_data) {
+        if (this.merged_data.hasOwnProperty(kiter436)) {
+          let viter437 = this.merged_data[kiter436];
+          output.writeString(kiter436);
+          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter437));
+          for (let kiter438 in viter437) {
+            if (viter437.hasOwnProperty(kiter438)) {
+              let viter439 = viter437[kiter438];
+              output.writeString(kiter438);
+              output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.MAP, Thrift.objectLength(viter439));
+              for (let kiter440 in viter439) {
+                if (viter439.hasOwnProperty(kiter440)) {
+                  let viter441 = viter439[kiter440];
+                  output.writeString(kiter440);
+                  output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.LIST, Thrift.objectLength(viter441));
+                  for (let kiter442 in viter441) {
+                    if (viter441.hasOwnProperty(kiter442)) {
+                      let viter443 = viter441[kiter442];
+                      output.writeString(kiter442);
+                      output.writeListBegin(Thrift.Type.STRUCT, viter443.length);
+                      for (let iter444 in viter443) {
+                        if (viter443.hasOwnProperty(iter444)) {
+                          iter444 = viter443[iter444];
+                          iter444.write(output);
                         }
                       }
                       output.writeListEnd();
@@ -13267,12 +13066,12 @@ const Heavy_get_roles_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3451 = input.readListBegin();
-          const _size450 = _rtmp3451.size || 0;
-          for (let _i452 = 0; _i452 < _size450; ++_i452) {
-            let elem453 = null;
-            elem453 = input.readString();
-            this.success.push(elem453);
+          const _rtmp3446 = input.readListBegin();
+          const _size445 = _rtmp3446.size || 0;
+          for (let _i447 = 0; _i447 < _size445; ++_i447) {
+            let elem448 = null;
+            elem448 = input.readString();
+            this.success.push(elem448);
           }
           input.readListEnd();
         } else {
@@ -13301,10 +13100,10 @@ const Heavy_get_roles_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter454 in this.success) {
-        if (this.success.hasOwnProperty(iter454)) {
-          iter454 = this.success[iter454];
-          output.writeString(iter454);
+      for (let iter449 in this.success) {
+        if (this.success.hasOwnProperty(iter449)) {
+          iter449 = this.success[iter449];
+          output.writeString(iter449);
         }
       }
       output.writeListEnd();
@@ -13417,13 +13216,13 @@ const Heavy_get_db_objects_for_grantee_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3456 = input.readListBegin();
-          const _size455 = _rtmp3456.size || 0;
-          for (let _i457 = 0; _i457 < _size455; ++_i457) {
-            let elem458 = null;
-            elem458 = new ttypes.TDBObject();
-            elem458.read(input);
-            this.success.push(elem458);
+          const _rtmp3451 = input.readListBegin();
+          const _size450 = _rtmp3451.size || 0;
+          for (let _i452 = 0; _i452 < _size450; ++_i452) {
+            let elem453 = null;
+            elem453 = new ttypes.TDBObject();
+            elem453.read(input);
+            this.success.push(elem453);
           }
           input.readListEnd();
         } else {
@@ -13452,10 +13251,10 @@ const Heavy_get_db_objects_for_grantee_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter459 in this.success) {
-        if (this.success.hasOwnProperty(iter459)) {
-          iter459 = this.success[iter459];
-          iter459.write(output);
+      for (let iter454 in this.success) {
+        if (this.success.hasOwnProperty(iter454)) {
+          iter454 = this.success[iter454];
+          iter454.write(output);
         }
       }
       output.writeListEnd();
@@ -13584,13 +13383,13 @@ const Heavy_get_db_object_privs_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3461 = input.readListBegin();
-          const _size460 = _rtmp3461.size || 0;
-          for (let _i462 = 0; _i462 < _size460; ++_i462) {
-            let elem463 = null;
-            elem463 = new ttypes.TDBObject();
-            elem463.read(input);
-            this.success.push(elem463);
+          const _rtmp3456 = input.readListBegin();
+          const _size455 = _rtmp3456.size || 0;
+          for (let _i457 = 0; _i457 < _size455; ++_i457) {
+            let elem458 = null;
+            elem458 = new ttypes.TDBObject();
+            elem458.read(input);
+            this.success.push(elem458);
           }
           input.readListEnd();
         } else {
@@ -13619,10 +13418,10 @@ const Heavy_get_db_object_privs_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter464 in this.success) {
-        if (this.success.hasOwnProperty(iter464)) {
-          iter464 = this.success[iter464];
-          iter464.write(output);
+      for (let iter459 in this.success) {
+        if (this.success.hasOwnProperty(iter459)) {
+          iter459 = this.success[iter459];
+          iter459.write(output);
         }
       }
       output.writeListEnd();
@@ -13735,12 +13534,12 @@ const Heavy_get_all_roles_for_user_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3466 = input.readListBegin();
-          const _size465 = _rtmp3466.size || 0;
-          for (let _i467 = 0; _i467 < _size465; ++_i467) {
-            let elem468 = null;
-            elem468 = input.readString();
-            this.success.push(elem468);
+          const _rtmp3461 = input.readListBegin();
+          const _size460 = _rtmp3461.size || 0;
+          for (let _i462 = 0; _i462 < _size460; ++_i462) {
+            let elem463 = null;
+            elem463 = input.readString();
+            this.success.push(elem463);
           }
           input.readListEnd();
         } else {
@@ -13769,10 +13568,10 @@ const Heavy_get_all_roles_for_user_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter469 in this.success) {
-        if (this.success.hasOwnProperty(iter469)) {
-          iter469 = this.success[iter469];
-          output.writeString(iter469);
+      for (let iter464 in this.success) {
+        if (this.success.hasOwnProperty(iter464)) {
+          iter464 = this.success[iter464];
+          output.writeString(iter464);
         }
       }
       output.writeListEnd();
@@ -13885,12 +13684,12 @@ const Heavy_get_all_effective_roles_for_user_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3471 = input.readListBegin();
-          const _size470 = _rtmp3471.size || 0;
-          for (let _i472 = 0; _i472 < _size470; ++_i472) {
-            let elem473 = null;
-            elem473 = input.readString();
-            this.success.push(elem473);
+          const _rtmp3466 = input.readListBegin();
+          const _size465 = _rtmp3466.size || 0;
+          for (let _i467 = 0; _i467 < _size465; ++_i467) {
+            let elem468 = null;
+            elem468 = input.readString();
+            this.success.push(elem468);
           }
           input.readListEnd();
         } else {
@@ -13919,10 +13718,10 @@ const Heavy_get_all_effective_roles_for_user_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter474 in this.success) {
-        if (this.success.hasOwnProperty(iter474)) {
-          iter474 = this.success[iter474];
-          output.writeString(iter474);
+      for (let iter469 in this.success) {
+        if (this.success.hasOwnProperty(iter469)) {
+          iter469 = this.success[iter469];
+          output.writeString(iter469);
         }
       }
       output.writeListEnd();
@@ -14645,14 +14444,14 @@ const Heavy_get_device_parameters_result = class {
         case 0:
         if (ftype == Thrift.Type.MAP) {
           this.success = {};
-          const _rtmp3476 = input.readMapBegin();
-          const _size475 = _rtmp3476.size || 0;
-          for (let _i477 = 0; _i477 < _size475; ++_i477) {
-            let key478 = null;
-            let val479 = null;
-            key478 = input.readString();
-            val479 = input.readString();
-            this.success[key478] = val479;
+          const _rtmp3471 = input.readMapBegin();
+          const _size470 = _rtmp3471.size || 0;
+          for (let _i472 = 0; _i472 < _size470; ++_i472) {
+            let key473 = null;
+            let val474 = null;
+            key473 = input.readString();
+            val474 = input.readString();
+            this.success[key473] = val474;
           }
           input.readMapEnd();
         } else {
@@ -14681,11 +14480,11 @@ const Heavy_get_device_parameters_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.MAP, 0);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.success));
-      for (let kiter480 in this.success) {
-        if (this.success.hasOwnProperty(kiter480)) {
-          let viter481 = this.success[kiter480];
-          output.writeString(kiter480);
-          output.writeString(viter481);
+      for (let kiter475 in this.success) {
+        if (this.success.hasOwnProperty(kiter475)) {
+          let viter476 = this.success[kiter475];
+          output.writeString(kiter475);
+          output.writeString(viter476);
         }
       }
       output.writeMapEnd();
@@ -14744,13 +14543,13 @@ const Heavy_register_runtime_extension_functions_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.udfs = [];
-          const _rtmp3483 = input.readListBegin();
-          const _size482 = _rtmp3483.size || 0;
-          for (let _i484 = 0; _i484 < _size482; ++_i484) {
-            let elem485 = null;
-            elem485 = new extension_functions_ttypes.TUserDefinedFunction();
-            elem485.read(input);
-            this.udfs.push(elem485);
+          const _rtmp3478 = input.readListBegin();
+          const _size477 = _rtmp3478.size || 0;
+          for (let _i479 = 0; _i479 < _size477; ++_i479) {
+            let elem480 = null;
+            elem480 = new extension_functions_ttypes.TUserDefinedFunction();
+            elem480.read(input);
+            this.udfs.push(elem480);
           }
           input.readListEnd();
         } else {
@@ -14760,13 +14559,13 @@ const Heavy_register_runtime_extension_functions_args = class {
         case 3:
         if (ftype == Thrift.Type.LIST) {
           this.udtfs = [];
-          const _rtmp3487 = input.readListBegin();
-          const _size486 = _rtmp3487.size || 0;
-          for (let _i488 = 0; _i488 < _size486; ++_i488) {
-            let elem489 = null;
-            elem489 = new extension_functions_ttypes.TUserDefinedTableFunction();
-            elem489.read(input);
-            this.udtfs.push(elem489);
+          const _rtmp3482 = input.readListBegin();
+          const _size481 = _rtmp3482.size || 0;
+          for (let _i483 = 0; _i483 < _size481; ++_i483) {
+            let elem484 = null;
+            elem484 = new extension_functions_ttypes.TUserDefinedTableFunction();
+            elem484.read(input);
+            this.udtfs.push(elem484);
           }
           input.readListEnd();
         } else {
@@ -14776,14 +14575,14 @@ const Heavy_register_runtime_extension_functions_args = class {
         case 4:
         if (ftype == Thrift.Type.MAP) {
           this.device_ir_map = {};
-          const _rtmp3491 = input.readMapBegin();
-          const _size490 = _rtmp3491.size || 0;
-          for (let _i492 = 0; _i492 < _size490; ++_i492) {
-            let key493 = null;
-            let val494 = null;
-            key493 = input.readString();
-            val494 = input.readString();
-            this.device_ir_map[key493] = val494;
+          const _rtmp3486 = input.readMapBegin();
+          const _size485 = _rtmp3486.size || 0;
+          for (let _i487 = 0; _i487 < _size485; ++_i487) {
+            let key488 = null;
+            let val489 = null;
+            key488 = input.readString();
+            val489 = input.readString();
+            this.device_ir_map[key488] = val489;
           }
           input.readMapEnd();
         } else {
@@ -14809,10 +14608,10 @@ const Heavy_register_runtime_extension_functions_args = class {
     if (this.udfs !== null && this.udfs !== undefined) {
       output.writeFieldBegin('udfs', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.STRUCT, this.udfs.length);
-      for (let iter495 in this.udfs) {
-        if (this.udfs.hasOwnProperty(iter495)) {
-          iter495 = this.udfs[iter495];
-          iter495.write(output);
+      for (let iter490 in this.udfs) {
+        if (this.udfs.hasOwnProperty(iter490)) {
+          iter490 = this.udfs[iter490];
+          iter490.write(output);
         }
       }
       output.writeListEnd();
@@ -14821,10 +14620,10 @@ const Heavy_register_runtime_extension_functions_args = class {
     if (this.udtfs !== null && this.udtfs !== undefined) {
       output.writeFieldBegin('udtfs', Thrift.Type.LIST, 3);
       output.writeListBegin(Thrift.Type.STRUCT, this.udtfs.length);
-      for (let iter496 in this.udtfs) {
-        if (this.udtfs.hasOwnProperty(iter496)) {
-          iter496 = this.udtfs[iter496];
-          iter496.write(output);
+      for (let iter491 in this.udtfs) {
+        if (this.udtfs.hasOwnProperty(iter491)) {
+          iter491 = this.udtfs[iter491];
+          iter491.write(output);
         }
       }
       output.writeListEnd();
@@ -14833,11 +14632,11 @@ const Heavy_register_runtime_extension_functions_args = class {
     if (this.device_ir_map !== null && this.device_ir_map !== undefined) {
       output.writeFieldBegin('device_ir_map', Thrift.Type.MAP, 4);
       output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.device_ir_map));
-      for (let kiter497 in this.device_ir_map) {
-        if (this.device_ir_map.hasOwnProperty(kiter497)) {
-          let viter498 = this.device_ir_map[kiter497];
-          output.writeString(kiter497);
-          output.writeString(viter498);
+      for (let kiter492 in this.device_ir_map) {
+        if (this.device_ir_map.hasOwnProperty(kiter492)) {
+          let viter493 = this.device_ir_map[kiter492];
+          output.writeString(kiter492);
+          output.writeString(viter493);
         }
       }
       output.writeMapEnd();
@@ -14989,12 +14788,12 @@ const Heavy_get_table_function_names_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3500 = input.readListBegin();
-          const _size499 = _rtmp3500.size || 0;
-          for (let _i501 = 0; _i501 < _size499; ++_i501) {
-            let elem502 = null;
-            elem502 = input.readString();
-            this.success.push(elem502);
+          const _rtmp3495 = input.readListBegin();
+          const _size494 = _rtmp3495.size || 0;
+          for (let _i496 = 0; _i496 < _size494; ++_i496) {
+            let elem497 = null;
+            elem497 = input.readString();
+            this.success.push(elem497);
           }
           input.readListEnd();
         } else {
@@ -15023,10 +14822,10 @@ const Heavy_get_table_function_names_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter503 in this.success) {
-        if (this.success.hasOwnProperty(iter503)) {
-          iter503 = this.success[iter503];
-          output.writeString(iter503);
+      for (let iter498 in this.success) {
+        if (this.success.hasOwnProperty(iter498)) {
+          iter498 = this.success[iter498];
+          output.writeString(iter498);
         }
       }
       output.writeListEnd();
@@ -15126,12 +14925,12 @@ const Heavy_get_runtime_table_function_names_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3505 = input.readListBegin();
-          const _size504 = _rtmp3505.size || 0;
-          for (let _i506 = 0; _i506 < _size504; ++_i506) {
-            let elem507 = null;
-            elem507 = input.readString();
-            this.success.push(elem507);
+          const _rtmp3500 = input.readListBegin();
+          const _size499 = _rtmp3500.size || 0;
+          for (let _i501 = 0; _i501 < _size499; ++_i501) {
+            let elem502 = null;
+            elem502 = input.readString();
+            this.success.push(elem502);
           }
           input.readListEnd();
         } else {
@@ -15160,10 +14959,10 @@ const Heavy_get_runtime_table_function_names_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter508 in this.success) {
-        if (this.success.hasOwnProperty(iter508)) {
-          iter508 = this.success[iter508];
-          output.writeString(iter508);
+      for (let iter503 in this.success) {
+        if (this.success.hasOwnProperty(iter503)) {
+          iter503 = this.success[iter503];
+          output.writeString(iter503);
         }
       }
       output.writeListEnd();
@@ -15214,12 +15013,12 @@ const Heavy_get_table_function_details_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.udtf_names = [];
-          const _rtmp3510 = input.readListBegin();
-          const _size509 = _rtmp3510.size || 0;
-          for (let _i511 = 0; _i511 < _size509; ++_i511) {
-            let elem512 = null;
-            elem512 = input.readString();
-            this.udtf_names.push(elem512);
+          const _rtmp3505 = input.readListBegin();
+          const _size504 = _rtmp3505.size || 0;
+          for (let _i506 = 0; _i506 < _size504; ++_i506) {
+            let elem507 = null;
+            elem507 = input.readString();
+            this.udtf_names.push(elem507);
           }
           input.readListEnd();
         } else {
@@ -15245,10 +15044,10 @@ const Heavy_get_table_function_details_args = class {
     if (this.udtf_names !== null && this.udtf_names !== undefined) {
       output.writeFieldBegin('udtf_names', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.STRING, this.udtf_names.length);
-      for (let iter513 in this.udtf_names) {
-        if (this.udtf_names.hasOwnProperty(iter513)) {
-          iter513 = this.udtf_names[iter513];
-          output.writeString(iter513);
+      for (let iter508 in this.udtf_names) {
+        if (this.udtf_names.hasOwnProperty(iter508)) {
+          iter508 = this.udtf_names[iter508];
+          output.writeString(iter508);
         }
       }
       output.writeListEnd();
@@ -15291,13 +15090,13 @@ const Heavy_get_table_function_details_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3515 = input.readListBegin();
-          const _size514 = _rtmp3515.size || 0;
-          for (let _i516 = 0; _i516 < _size514; ++_i516) {
-            let elem517 = null;
-            elem517 = new extension_functions_ttypes.TUserDefinedTableFunction();
-            elem517.read(input);
-            this.success.push(elem517);
+          const _rtmp3510 = input.readListBegin();
+          const _size509 = _rtmp3510.size || 0;
+          for (let _i511 = 0; _i511 < _size509; ++_i511) {
+            let elem512 = null;
+            elem512 = new extension_functions_ttypes.TUserDefinedTableFunction();
+            elem512.read(input);
+            this.success.push(elem512);
           }
           input.readListEnd();
         } else {
@@ -15326,10 +15125,10 @@ const Heavy_get_table_function_details_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter518 in this.success) {
-        if (this.success.hasOwnProperty(iter518)) {
-          iter518 = this.success[iter518];
-          iter518.write(output);
+      for (let iter513 in this.success) {
+        if (this.success.hasOwnProperty(iter513)) {
+          iter513 = this.success[iter513];
+          iter513.write(output);
         }
       }
       output.writeListEnd();
@@ -15429,12 +15228,12 @@ const Heavy_get_function_names_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3520 = input.readListBegin();
-          const _size519 = _rtmp3520.size || 0;
-          for (let _i521 = 0; _i521 < _size519; ++_i521) {
-            let elem522 = null;
-            elem522 = input.readString();
-            this.success.push(elem522);
+          const _rtmp3515 = input.readListBegin();
+          const _size514 = _rtmp3515.size || 0;
+          for (let _i516 = 0; _i516 < _size514; ++_i516) {
+            let elem517 = null;
+            elem517 = input.readString();
+            this.success.push(elem517);
           }
           input.readListEnd();
         } else {
@@ -15463,10 +15262,10 @@ const Heavy_get_function_names_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter523 in this.success) {
-        if (this.success.hasOwnProperty(iter523)) {
-          iter523 = this.success[iter523];
-          output.writeString(iter523);
+      for (let iter518 in this.success) {
+        if (this.success.hasOwnProperty(iter518)) {
+          iter518 = this.success[iter518];
+          output.writeString(iter518);
         }
       }
       output.writeListEnd();
@@ -15566,12 +15365,12 @@ const Heavy_get_runtime_function_names_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3525 = input.readListBegin();
-          const _size524 = _rtmp3525.size || 0;
-          for (let _i526 = 0; _i526 < _size524; ++_i526) {
-            let elem527 = null;
-            elem527 = input.readString();
-            this.success.push(elem527);
+          const _rtmp3520 = input.readListBegin();
+          const _size519 = _rtmp3520.size || 0;
+          for (let _i521 = 0; _i521 < _size519; ++_i521) {
+            let elem522 = null;
+            elem522 = input.readString();
+            this.success.push(elem522);
           }
           input.readListEnd();
         } else {
@@ -15600,10 +15399,10 @@ const Heavy_get_runtime_function_names_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter528 in this.success) {
-        if (this.success.hasOwnProperty(iter528)) {
-          iter528 = this.success[iter528];
-          output.writeString(iter528);
+      for (let iter523 in this.success) {
+        if (this.success.hasOwnProperty(iter523)) {
+          iter523 = this.success[iter523];
+          output.writeString(iter523);
         }
       }
       output.writeListEnd();
@@ -15654,12 +15453,12 @@ const Heavy_get_function_details_args = class {
         case 2:
         if (ftype == Thrift.Type.LIST) {
           this.udf_names = [];
-          const _rtmp3530 = input.readListBegin();
-          const _size529 = _rtmp3530.size || 0;
-          for (let _i531 = 0; _i531 < _size529; ++_i531) {
-            let elem532 = null;
-            elem532 = input.readString();
-            this.udf_names.push(elem532);
+          const _rtmp3525 = input.readListBegin();
+          const _size524 = _rtmp3525.size || 0;
+          for (let _i526 = 0; _i526 < _size524; ++_i526) {
+            let elem527 = null;
+            elem527 = input.readString();
+            this.udf_names.push(elem527);
           }
           input.readListEnd();
         } else {
@@ -15685,10 +15484,10 @@ const Heavy_get_function_details_args = class {
     if (this.udf_names !== null && this.udf_names !== undefined) {
       output.writeFieldBegin('udf_names', Thrift.Type.LIST, 2);
       output.writeListBegin(Thrift.Type.STRING, this.udf_names.length);
-      for (let iter533 in this.udf_names) {
-        if (this.udf_names.hasOwnProperty(iter533)) {
-          iter533 = this.udf_names[iter533];
-          output.writeString(iter533);
+      for (let iter528 in this.udf_names) {
+        if (this.udf_names.hasOwnProperty(iter528)) {
+          iter528 = this.udf_names[iter528];
+          output.writeString(iter528);
         }
       }
       output.writeListEnd();
@@ -15731,13 +15530,13 @@ const Heavy_get_function_details_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3535 = input.readListBegin();
-          const _size534 = _rtmp3535.size || 0;
-          for (let _i536 = 0; _i536 < _size534; ++_i536) {
-            let elem537 = null;
-            elem537 = new extension_functions_ttypes.TUserDefinedFunction();
-            elem537.read(input);
-            this.success.push(elem537);
+          const _rtmp3530 = input.readListBegin();
+          const _size529 = _rtmp3530.size || 0;
+          for (let _i531 = 0; _i531 < _size529; ++_i531) {
+            let elem532 = null;
+            elem532 = new extension_functions_ttypes.TUserDefinedFunction();
+            elem532.read(input);
+            this.success.push(elem532);
           }
           input.readListEnd();
         } else {
@@ -15766,10 +15565,10 @@ const Heavy_get_function_details_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter538 in this.success) {
-        if (this.success.hasOwnProperty(iter538)) {
-          iter538 = this.success[iter538];
-          iter538.write(output);
+      for (let iter533 in this.success) {
+        if (this.success.hasOwnProperty(iter533)) {
+          iter533 = this.success[iter533];
+          iter533.write(output);
         }
       }
       output.writeListEnd();
@@ -19366,61 +19165,6 @@ const HeavyClient = exports.Client = class HeavyClient {
       return callback(x);
     }
     const result = new Heavy_load_table_binary_columnar_result();
-    result.read(input);
-    input.readMessageEnd();
-
-    if (null !== result.e) {
-      return callback(result.e);
-    }
-    callback(null);
-  }
-
-  load_table_binary_columnar_polys (session, table_name, cols, column_names, assign_render_groups) {
-    this._seqid = this.new_seqid();
-    const self = this;
-    return new Promise((resolve, reject) => {
-      self._reqs[self.seqid()] = (error, result) => {
-        return error ? reject(error) : resolve(result);
-      };
-      self.send_load_table_binary_columnar_polys(session, table_name, cols, column_names, assign_render_groups);
-    });
-  }
-
-  send_load_table_binary_columnar_polys (session, table_name, cols, column_names, assign_render_groups) {
-    const output = new this.pClass(this.output);
-    const params = {
-      session: session,
-      table_name: table_name,
-      cols: cols,
-      column_names: column_names,
-      assign_render_groups: assign_render_groups
-    };
-    const args = new Heavy_load_table_binary_columnar_polys_args(params);
-    try {
-      output.writeMessageBegin('load_table_binary_columnar_polys', Thrift.MessageType.CALL, this.seqid());
-      args.write(output);
-      output.writeMessageEnd();
-      return this.output.flush();
-    }
-    catch (e) {
-      delete this._reqs[this.seqid()];
-      if (typeof output.reset === 'function') {
-        output.reset();
-      }
-      throw e;
-    }
-  }
-
-  recv_load_table_binary_columnar_polys (input, mtype, rseqid) {
-    const callback = this._reqs[rseqid] || function() {};
-    delete this._reqs[rseqid];
-    if (mtype == Thrift.MessageType.EXCEPTION) {
-      const x = new Thrift.TApplicationException();
-      x.read(input);
-      input.readMessageEnd();
-      return callback(x);
-    }
-    const result = new Heavy_load_table_binary_columnar_polys_result();
     result.read(input);
     input.readMessageEnd();
 
@@ -24333,52 +24077,6 @@ const HeavyProcessor = exports.Processor = class HeavyProcessor {
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
           output.writeMessageBegin("load_table_binary_columnar", Thrift.MessageType.EXCEPTION, seqid);
-        }
-        result_obj.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      });
-    }
-  }
-  process_load_table_binary_columnar_polys (seqid, input, output) {
-    const args = new Heavy_load_table_binary_columnar_polys_args();
-    args.read(input);
-    input.readMessageEnd();
-    if (this._handler.load_table_binary_columnar_polys.length === 5) {
-      Promise.resolve(this._handler.load_table_binary_columnar_polys.bind(this._handler)(
-        args.session,
-        args.table_name,
-        args.cols,
-        args.column_names,
-        args.assign_render_groups
-      )).then(result => {
-        const result_obj = new Heavy_load_table_binary_columnar_polys_result({success: result});
-        output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
-        result_obj.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      }).catch(err => {
-        let result;
-        if (err instanceof ttypes.TDBException) {
-          result = new Heavy_load_table_binary_columnar_polys_result(err);
-          output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
-        } else {
-          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
-          output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.EXCEPTION, seqid);
-        }
-        result.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      });
-    } else {
-      this._handler.load_table_binary_columnar_polys(args.session, args.table_name, args.cols, args.column_names, args.assign_render_groups, (err, result) => {
-        let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new Heavy_load_table_binary_columnar_polys_result((err !== null || typeof err === 'undefined') ? err : {success: result});
-          output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.REPLY, seqid);
-        } else {
-          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
-          output.writeMessageBegin("load_table_binary_columnar_polys", Thrift.MessageType.EXCEPTION, seqid);
         }
         result_obj.write(output);
         output.writeMessageEnd();
