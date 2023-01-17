@@ -1581,8 +1581,7 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
-      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).includes('Session not valid') || //.indexOf("Session not valid.") !== -1 ||
-      String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).includes("Session not valid") || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
     }
   }]);
 
@@ -1807,6 +1806,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
 
           case "POINT":
           case "LINESTRING":
+          case "MULTILINESTRING":
           case "POLYGON":
           case "MULTIPOLYGON":
             row[fieldName] = data.columns[_c].data.str_col[r];
@@ -1970,6 +1970,7 @@ function processRowResults(data, eliminateNullRows, datumEnum) {
 
           case "POINT":
           case "LINESTRING":
+          case "MULTILINESTRING":
           case "POLYGON":
           case "MULTIPOLYGON":
             row[fieldName] = scalarDatum.val.str_val;

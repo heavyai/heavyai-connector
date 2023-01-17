@@ -95,6 +95,7 @@
  * @property {Number} INTERVAL_YEAR_MONTH=12
  * @property {Number} POINT=13
  * @property {Number} LINESTRING=14
+ * @property {Number} MULTILINESTRING=20
  * @property {Number} POLYGON=15
  * @property {Number} MULTIPOLYGON=16
  * @property {Number} TINYINT=17
