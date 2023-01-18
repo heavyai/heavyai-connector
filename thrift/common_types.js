@@ -36,6 +36,7 @@ ttypes.TDatumType = {
   'TINYINT' : 17,
   'GEOMETRY' : 18,
   'GEOGRAPHY' : 19,
+  'MULTILINESTRING' : 20,
   'MULTIPOINT' : 21
 };
 ttypes.TEncodingType = {
