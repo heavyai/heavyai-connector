@@ -125,6 +125,7 @@ export default function processRowResults(data, eliminateNullRows, datumEnum) {
             break
           case "POINT":
           case "LINESTRING":
+          case "MULTILINESTRING":
           case "POLYGON":
           case "MULTIPOLYGON":
             row[fieldName] = scalarDatum.val.str_val

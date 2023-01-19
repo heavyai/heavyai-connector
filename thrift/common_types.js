@@ -51,6 +51,71 @@ ttypes.TEncodingType = {
   'ARRAY' : 8,
   'ARRAY_DICT' : 9
 };
+const TStringDictKey = module.exports.TStringDictKey = class {
+  constructor(args) {
+    this.db_id = null;
+    this.dict_id = null;
+    if (args) {
+      if (args.db_id !== undefined && args.db_id !== null) {
+        this.db_id = args.db_id;
+      }
+      if (args.dict_id !== undefined && args.dict_id !== null) {
+        this.dict_id = args.dict_id;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.I32) {
+          this.db_id = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.I32) {
+          this.dict_id = input.readI32();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TStringDictKey');
+    if (this.db_id !== null && this.db_id !== undefined) {
+      output.writeFieldBegin('db_id', Thrift.Type.I32, 1);
+      output.writeI32(this.db_id);
+      output.writeFieldEnd();
+    }
+    if (this.dict_id !== null && this.dict_id !== undefined) {
+      output.writeFieldBegin('dict_id', Thrift.Type.I32, 2);
+      output.writeI32(this.dict_id);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
 const TTypeInfo = module.exports.TTypeInfo = class {
   constructor(args) {
     this.type = null;
@@ -61,6 +126,7 @@ const TTypeInfo = module.exports.TTypeInfo = class {
     this.scale = null;
     this.comp_param = null;
     this.size = -1;
+    this.dict_key = null;
     if (args) {
       if (args.type !== undefined && args.type !== null) {
         this.type = args.type;
@@ -85,6 +151,9 @@ const TTypeInfo = module.exports.TTypeInfo = class {
       }
       if (args.size !== undefined && args.size !== null) {
         this.size = args.size;
+      }
+      if (args.dict_key !== undefined && args.dict_key !== null) {
+        this.dict_key = new ttypes.TStringDictKey(args.dict_key);
       }
     }
   }
@@ -155,6 +224,14 @@ const TTypeInfo = module.exports.TTypeInfo = class {
           input.skip(ftype);
         }
         break;
+        case 9:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.dict_key = new ttypes.TStringDictKey();
+          this.dict_key.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -204,6 +281,11 @@ const TTypeInfo = module.exports.TTypeInfo = class {
     if (this.size !== null && this.size !== undefined) {
       output.writeFieldBegin('size', Thrift.Type.I32, 8);
       output.writeI32(this.size);
+      output.writeFieldEnd();
+    }
+    if (this.dict_key !== null && this.dict_key !== undefined) {
+      output.writeFieldBegin('dict_key', Thrift.Type.STRUCT, 9);
+      this.dict_key.write(output);
       output.writeFieldEnd();
     }
     output.writeFieldStop();

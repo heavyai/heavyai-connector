@@ -2,8 +2,8 @@
 const hostname = process.env.HOSTNAME || "metis.mapd.com"
 const protocol = process.env.PROTOCOL || "https"
 const port = process.env.PORT || "443"
-const database = process.env.DATABASE || "mapd"
-const username = process.env.USERNAME || "mapd"
+const database = process.env.DATABASE || "heavyai"
+const username = process.env.USERNAME || "admin"
 const password = process.env.PASSWORD || "HyperInteractive"
 
 const isNodeRuntime = typeof window === "undefined"
@@ -22,16 +22,14 @@ const imageRegex = /^iVBOR/
 const emptyImageRegex = /^.{70,90}(.{12})\1+.{30,50}$/
 
 describe(isNodeRuntime ? "node" : "browser", () => {
-  let connector
-  beforeEach(() => {
-    connector = new Connector()
-      .protocol(protocol)
-      .host(hostname)
-      .port(port)
-      .dbName(database)
-      .user(username)
-      .password(password)
-  })
+  const connector = new Connector()
+    .protocol(protocol)
+    .host(hostname)
+    .port(port)
+    .dbName(database)
+    .user(username)
+    .password(password)
+  let session
 
   const widgetId = 0
   const options = {}
@@ -75,498 +73,472 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   })
 
   it(".connect", (done) => {
-    connector.connect((connectError, session) => {
+    connector.connect((connectError, sess) => {
+      session = sess
       expect(connectError).not.be.an("error")
-      expect(session).to.respondTo("query")
+      expect(sess).to.respondTo("query")
       done()
     })
   })
 
-  it(".disconnect", (done) => {
-    connector.connect((connectError, session) => {
-      expect(connectError).to.not.be.an("error")
-      session.disconnect((disconnectError) => {
-        expect(disconnectError).not.be.an("error")
+  it(".getTablesAsync", (done) => {
+    session
+      .getTablesAsync()
+      .then((data) => {
+        expect(data).to.not.be.empty
         done()
       })
-    })
-  })
-
-  it(".getTablesAsync", (done) => {
-    connector.connect((connectError, session) => {
-      expect(connectError).to.not.be.an("error")
-      session
-        .getTablesAsync()
-        .then((data) => {
-          expect(data).to.not.be.empty
-          done()
-        })
-        .catch((getTablesAsyncError) => {
-          expect(getTablesAsyncError).to.not.be.an("error")
-          done()
-        })
-    })
+      .catch((getTablesAsyncError) => {
+        expect(getTablesAsyncError).to.not.be.an("error")
+        done()
+      })
   })
 
   it(".getDashboardsAsync", (done) => {
-    connector.connect((connectError, session) => {
-      expect(connectError).to.not.be.an("error")
-      session
-        .getDashboardsAsync()
-        // eslint-disable-next-line max-nested-callbacks
-        .then((data) => {
-          // The `update_time` field is too volatile to rely on for unit tests, so strip it out
-          const dataNoUpdateTime = data.map((d) =>
-            Object.assign({}, d, { update_time: null })
-          )
-          expect(dataNoUpdateTime).to.not.be.empty
-          done()
-        })
-        // eslint-disable-next-line max-nested-callbacks
-        .catch((getDashboardsAsyncError) => {
-          expect(getDashboardsAsyncError).to.not.be.an("error")
-          done()
-        })
-    })
+    session
+      .getDashboardsAsync()
+      // eslint-disable-next-line max-nested-callbacks
+      .then((data) => {
+        // The `update_time` field is too volatile to rely on for unit tests, so strip it out
+        const dataNoUpdateTime = data.map((d) =>
+          Object.assign({}, d, { update_time: null })
+        )
+        expect(dataNoUpdateTime).to.not.be.empty
+        done()
+      })
+      // eslint-disable-next-line max-nested-callbacks
+      .catch((getDashboardsAsyncError) => {
+        expect(getDashboardsAsyncError).to.not.be.an("error")
+        done()
+      })
   })
 
   it(".getFields", (done) => {
-    connector.connect((connectError, session) => {
-      expect(connectError).to.not.be.an("error")
-      session.getFields("flights_donotmodify", (getFieldsError, data) => {
-        expect(getFieldsError).to.not.be.an("error")
-        expect(data.view_sql).to.be.a("string")
-        expect(data.columns).to.deep.equal([
-          {
-            is_array: false,
-            is_dict: false,
-            name: "flight_year",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "flight_month",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "flight_dayofmonth",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "flight_dayofweek",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "deptime",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "crsdeptime",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "arrtime",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "crsarrtime",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "uniquecarrier",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "flightnum",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "tailnum",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "actualelapsedtime",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "crselapsedtime",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "airtime",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "arrdelay",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "depdelay",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "origin",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "dest",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "distance",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "taxiin",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "taxiout",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "cancelled",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "cancellationcode",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "diverted",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "carrierdelay",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "weatherdelay",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "nasdelay",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "securitydelay",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "lateaircraftdelay",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "dep_timestamp",
-            type: "TIMESTAMP",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "arr_timestamp",
-            type: "TIMESTAMP",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "carrier_name",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "plane_type",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "plane_manufacturer",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "plane_issue_date",
-            type: "DATE",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "plane_model",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "plane_status",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "plane_aircraft_type",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "plane_engine_type",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "plane_year",
-            type: "SMALLINT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "origin_name",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "origin_city",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "origin_state",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "origin_country",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "origin_lat",
-            type: "FLOAT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "origin_lon",
-            type: "FLOAT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "dest_name",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "dest_city",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "dest_state",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: true,
-            name: "dest_country",
-            type: "STR",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "dest_lat",
-            type: "FLOAT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "dest_lon",
-            type: "FLOAT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "origin_merc_x",
-            type: "FLOAT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "origin_merc_y",
-            type: "FLOAT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "dest_merc_x",
-            type: "FLOAT",
-            precision: 0
-          },
-          {
-            is_array: false,
-            is_dict: false,
-            name: "dest_merc_y",
-            type: "FLOAT",
-            precision: 0
-          }
-        ])
-        done()
-      })
+    session.getFields("flights_donotmodify", (getFieldsError, data) => {
+      expect(getFieldsError).to.not.be.an("error")
+      expect(data.view_sql).to.be.a("string")
+      expect(data.columns).to.deep.equal([
+        {
+          is_array: false,
+          is_dict: false,
+          name: "flight_year",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "flight_month",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "flight_dayofmonth",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "flight_dayofweek",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "deptime",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "crsdeptime",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "arrtime",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "crsarrtime",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "uniquecarrier",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "flightnum",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "tailnum",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "actualelapsedtime",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "crselapsedtime",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "airtime",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "arrdelay",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "depdelay",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "origin",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "dest",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "distance",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "taxiin",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "taxiout",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "cancelled",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "cancellationcode",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "diverted",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "carrierdelay",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "weatherdelay",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "nasdelay",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "securitydelay",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "lateaircraftdelay",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "dep_timestamp",
+          type: "TIMESTAMP",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "arr_timestamp",
+          type: "TIMESTAMP",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "carrier_name",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "plane_type",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "plane_manufacturer",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "plane_issue_date",
+          type: "DATE",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "plane_model",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "plane_status",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "plane_aircraft_type",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "plane_engine_type",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "plane_year",
+          type: "SMALLINT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "origin_name",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "origin_city",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "origin_state",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "origin_country",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "origin_lat",
+          type: "FLOAT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "origin_lon",
+          type: "FLOAT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "dest_name",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "dest_city",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "dest_state",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: true,
+          name: "dest_country",
+          type: "STR",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "dest_lat",
+          type: "FLOAT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "dest_lon",
+          type: "FLOAT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "origin_merc_x",
+          type: "FLOAT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "origin_merc_y",
+          type: "FLOAT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "dest_merc_x",
+          type: "FLOAT",
+          precision: 0
+        },
+        {
+          is_array: false,
+          is_dict: false,
+          name: "dest_merc_y",
+          type: "FLOAT",
+          precision: 0
+        }
+      ])
+      done()
     })
   })
 
   it(".query", (done) => {
-    const sql = "SELECT count(*) AS n FROM tweets_nov_feb WHERE country='CO'"
-    connector.connect((connectError, session) => {
-      expect(connectError).to.not.be.an("error")
-      session.query(sql, options, (error, data) => {
-        expect(error).not.be.an("error")
-        expect(Number(data[0].n)).to.equal(6400)
-        done()
-      })
+    const sql = "SELECT count(*) AS n FROM flights_donotmodify WHERE weatherdelay > 500"
+    session.query(sql, options, (error, data) => {
+      expect(error).not.be.an("error")
+      expect(Number(data[0].n)).to.equal(156)
+      done()
     })
   })
 
   it(".render", (done) => {
-    connector.connect((connectError, session) => {
-      expect(connectError).to.not.be.an("error")
-      session.renderVega(widgetId, vega, options, (renderVegaError, data) => {
-        expect(renderVegaError).to.not.be.an("error")
-        const imageData = convertToDataUrl(data.image)
-        expect(imageData, "should be a image data URL").to.match(imageRegex)
-        expect(imageData, "shouldn't be an empty image").to.not.match(
-          emptyImageRegex
-        )
-        done()
-      })
+    session.renderVega(widgetId, vega, options, (renderVegaError, data) => {
+      expect(renderVegaError).to.not.be.an("error")
+      const imageData = convertToDataUrl(data.image)
+      expect(imageData, "should be a image data URL").to.match(imageRegex)
+      expect(imageData, "shouldn't be an empty image").to.not.match(
+        emptyImageRegex
+      )
+      done()
     })
   })
 
   it(".getResultRowForPixel", (done) => {
     const pixel = { x: 70, y: 275 }
     const tableColNamesMap = { points: ["dest_lon"] } // {vegaDataLayerName: [columnFromDataLayerTable]}
-    connector.connect((connectError, session) => {
-      expect(connectError).to.not.be.an("error")
       session.renderVega(widgetId, vega, options, (renderVegaError) => {
         expect(renderVegaError).to.not.be.an("error")
         session.getResultRowForPixel(
@@ -577,11 +549,17 @@ describe(isNodeRuntime ? "node" : "browser", () => {
           (pixelError, data) => {
             expect(pixelError).to.not.be.an("error")
             const lon = data[0].row_set[0].dest_lon
-            expect(lon).to.be.within(-119.056770325, -119.056770323)
+            expect(lon).to.be.eq(-117.82951354980469)
             done()
           }
         )
       })
+  })
+
+  it(".disconnect", (done) => {
+    session.disconnect((disconnectError) => {
+      expect(disconnectError).not.be.an("error")
+      done()
     })
   })
 })

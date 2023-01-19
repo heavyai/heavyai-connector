@@ -130,6 +130,7 @@ export default function processColumnarResults(
             break
           case "POINT":
           case "LINESTRING":
+          case "MULTILINESTRING":
           case "POLYGON":
           case "MULTIPOLYGON":
             row[fieldName] = data.columns[c].data.str_col[r]
