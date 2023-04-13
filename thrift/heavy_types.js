@@ -1705,7 +1705,8 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.odbc_password = null;
     this.odbc_credential_string = null;
     this.add_metadata_columns = null;
-    this.trim_spaces = null;
+    this.trim_spaces = true;
+    this.geo_validate_geometry = false;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -1829,6 +1830,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.trim_spaces !== undefined && args.trim_spaces !== null) {
         this.trim_spaces = args.trim_spaces;
+      }
+      if (args.geo_validate_geometry !== undefined && args.geo_validate_geometry !== null) {
+        this.geo_validate_geometry = args.geo_validate_geometry;
       }
     }
   }
@@ -2130,6 +2134,13 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 42:
+        if (ftype == Thrift.Type.BOOL) {
+          this.geo_validate_geometry = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -2344,6 +2355,11 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.trim_spaces !== null && this.trim_spaces !== undefined) {
       output.writeFieldBegin('trim_spaces', Thrift.Type.BOOL, 41);
       output.writeBool(this.trim_spaces);
+      output.writeFieldEnd();
+    }
+    if (this.geo_validate_geometry !== null && this.geo_validate_geometry !== undefined) {
+      output.writeFieldBegin('geo_validate_geometry', Thrift.Type.BOOL, 42);
+      output.writeBool(this.geo_validate_geometry);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -2692,6 +2708,7 @@ const TServerStatus = module.exports.TServerStatus = class {
     this.poly_rendering_enabled = null;
     this.role = null;
     this.renderer_status_json = null;
+    this.host_id = null;
     if (args) {
       if (args.read_only !== undefined && args.read_only !== null) {
         this.read_only = args.read_only;
@@ -2719,6 +2736,9 @@ const TServerStatus = module.exports.TServerStatus = class {
       }
       if (args.renderer_status_json !== undefined && args.renderer_status_json !== null) {
         this.renderer_status_json = args.renderer_status_json;
+      }
+      if (args.host_id !== undefined && args.host_id !== null) {
+        this.host_id = args.host_id;
       }
     }
   }
@@ -2796,6 +2816,13 @@ const TServerStatus = module.exports.TServerStatus = class {
           input.skip(ftype);
         }
         break;
+        case 10:
+        if (ftype == Thrift.Type.STRING) {
+          this.host_id = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -2850,6 +2877,11 @@ const TServerStatus = module.exports.TServerStatus = class {
     if (this.renderer_status_json !== null && this.renderer_status_json !== undefined) {
       output.writeFieldBegin('renderer_status_json', Thrift.Type.STRING, 9);
       output.writeString(this.renderer_status_json);
+      output.writeFieldEnd();
+    }
+    if (this.host_id !== null && this.host_id !== undefined) {
+      output.writeFieldBegin('host_id', Thrift.Type.STRING, 10);
+      output.writeString(this.host_id);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -4226,6 +4258,7 @@ const TTableDetails = module.exports.TTableDetails = class {
     this.partition_detail = null;
     this.table_type = null;
     this.refresh_info = null;
+    this.sharded_column_name = null;
     if (args) {
       if (args.row_desc !== undefined && args.row_desc !== null) {
         this.row_desc = Thrift.copyList(args.row_desc, [ttypes.TColumnType]);
@@ -4259,6 +4292,9 @@ const TTableDetails = module.exports.TTableDetails = class {
       }
       if (args.refresh_info !== undefined && args.refresh_info !== null) {
         this.refresh_info = new ttypes.TTableRefreshInfo(args.refresh_info);
+      }
+      if (args.sharded_column_name !== undefined && args.sharded_column_name !== null) {
+        this.sharded_column_name = args.sharded_column_name;
       }
     }
   }
@@ -4360,6 +4396,13 @@ const TTableDetails = module.exports.TTableDetails = class {
           input.skip(ftype);
         }
         break;
+        case 12:
+        if (ftype == Thrift.Type.STRING) {
+          this.sharded_column_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -4431,6 +4474,11 @@ const TTableDetails = module.exports.TTableDetails = class {
     if (this.refresh_info !== null && this.refresh_info !== undefined) {
       output.writeFieldBegin('refresh_info', Thrift.Type.STRUCT, 11);
       this.refresh_info.write(output);
+      output.writeFieldEnd();
+    }
+    if (this.sharded_column_name !== null && this.sharded_column_name !== undefined) {
+      output.writeFieldBegin('sharded_column_name', Thrift.Type.STRING, 12);
+      output.writeString(this.sharded_column_name);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
