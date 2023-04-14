@@ -1446,6 +1446,45 @@ export class DbCon {
   getTableFunctionDetails = this.callbackify("getTableFunctionDetailsAsync", 0)
 
   /**
+   * Returns a list of available function names
+   * @returns {Promise.Array} An array of function names (strings)
+   */
+  getFunctionNamesAsync = this.handleErrors(
+    this.wrapThrift("get_function_names", this.overSingleClient, (args) => args)
+  )
+
+  getFunctionNames = this.callbackify("getFunctionNamesAsync", 0)
+
+  /**
+   * Returns a list of available runtime function names
+   * @returns {Promise.Array} An array of runtime function names (strings)
+   */
+  getRuntimeFunctionNamesAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_runtime_function_names",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  getRuntimeFunctionNames = this.callbackify("getRuntimeFunctionNamesAsync", 0)
+
+  /**
+   * @param {Array.String} udfNames The function names to retrieve details for
+   * @returns {Promise.Array} An array of TUserDefinedFunction objects describing each supplied function
+   */
+
+  getFunctionDetailsAsync = this.handleErrors(
+    this.wrapThrift(
+      "get_function_details",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  getFunctionDetails = this.callbackify("getFunctionDetailsAsync", 0)
+
+  /**
    * Submits an SQL string to the backend and returns a completion hints object.
    * @param {String} queryString A fragment of SQL input.
    * @param {Object} options An options object continaing the current cursor position, 1-indexed from the start of `queryString`.
