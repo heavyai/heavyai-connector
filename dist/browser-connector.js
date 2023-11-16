@@ -756,6 +756,12 @@ var DbCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync", 2));
 
+    _defineProperty(this, "loadTableBinaryColumnarAsync", this.handleErrors(this.wrapThrift("load_table_binary_columnar", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "getCompletionHints", this.callbackify("loadTableBinaryColumnarAsync", 3));
+
     _defineProperty(this, "buildTFileTypeMap", function () {
       for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType) {
         if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType.hasOwnProperty(key)) {
