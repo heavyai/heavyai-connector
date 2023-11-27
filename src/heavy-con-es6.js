@@ -1498,6 +1498,33 @@ export class DbCon {
    */
   getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
+  /**
+   * Load table from other data sources through JDBC
+   *
+   * @param {String} tableName
+   * @param {Array<TColumnType>} cols
+   * @param {Array<String>} columnNames
+   *
+   */
+  loadTableBinaryColumnarAsync = this.handleErrors(
+    this.wrapThrift(
+      "load_table_binary_columnar",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
+  /**
+   * Load table from other data sources through JDBC
+   *
+   * @param {String} tableName
+   * @param {Array<TColumnType>} cols
+   * @param {Array<String>} columnNames
+   * @param {Function} callback An optional callback function with the signature `(err, result) => result`.
+   *
+   */
+  loadTableBinaryColumnar = this.callbackify("loadTableBinaryColumnarAsync", 3)
+
   // TODO: replace all these build* methods w/ a singular method that will map each type object
   buildTFileTypeMap = () => {
     for (const key in TFileType) {
