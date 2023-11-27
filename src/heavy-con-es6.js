@@ -1523,7 +1523,7 @@ export class DbCon {
    * @param {Function} callback An optional callback function with the signature `(err, result) => result`.
    *
    */
-  getCompletionHints = this.callbackify("loadTableBinaryColumnarAsync", 3)
+  loadTableBinaryColumnar = this.callbackify("loadTableBinaryColumnarAsync", 3)
 
   // TODO: replace all these build* methods w/ a singular method that will map each type object
   buildTFileTypeMap = () => {
