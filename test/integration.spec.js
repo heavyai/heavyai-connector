@@ -94,6 +94,19 @@ describe(isNodeRuntime ? "node" : "browser", () => {
       })
   })
 
+  it(".loadTableBinaryColumnarAsync", (done) => {
+    session
+      .loadTableBinaryColumnarAsync()
+      .then((data) => {
+        expect(data).to.not.be.empty
+        done()
+      })
+      .catch((loadTableBinaryColumnarAsyncError) => {
+        expect(loadTableBinaryColumnarAsyncError).to.not.be.an("error")
+        done()
+      })
+  })
+
   it(".getDashboardsAsync", (done) => {
     session
       .getDashboardsAsync()
@@ -516,7 +529,8 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   })
 
   it(".query", (done) => {
-    const sql = "SELECT count(*) AS n FROM flights_donotmodify WHERE weatherdelay > 500"
+    const sql =
+      "SELECT count(*) AS n FROM flights_donotmodify WHERE weatherdelay > 500"
     session.query(sql, options, (error, data) => {
       expect(error).not.be.an("error")
       expect(Number(data[0].n)).to.equal(156)
@@ -539,21 +553,21 @@ describe(isNodeRuntime ? "node" : "browser", () => {
   it(".getResultRowForPixel", (done) => {
     const pixel = { x: 70, y: 275 }
     const tableColNamesMap = { points: ["dest_lon"] } // {vegaDataLayerName: [columnFromDataLayerTable]}
-      session.renderVega(widgetId, vega, options, (renderVegaError) => {
-        expect(renderVegaError).to.not.be.an("error")
-        session.getResultRowForPixel(
-          widgetId,
-          pixel,
-          tableColNamesMap,
-          2,
-          (pixelError, data) => {
-            expect(pixelError).to.not.be.an("error")
-            const lon = data[0].row_set[0].dest_lon
-            expect(lon).to.be.eq(-117.82951354980469)
-            done()
-          }
-        )
-      })
+    session.renderVega(widgetId, vega, options, (renderVegaError) => {
+      expect(renderVegaError).to.not.be.an("error")
+      session.getResultRowForPixel(
+        widgetId,
+        pixel,
+        tableColNamesMap,
+        2,
+        (pixelError, data) => {
+          expect(pixelError).to.not.be.an("error")
+          const lon = data[0].row_set[0].dest_lon
+          expect(lon).to.be.eq(-117.82951354980469)
+          done()
+        }
+      )
+    })
   })
 
   it(".disconnect", (done) => {

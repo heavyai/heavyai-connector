@@ -778,7 +778,7 @@ var DbCon = /*#__PURE__*/function () {
       return args;
     })));
 
-    _defineProperty(this, "getCompletionHints", this.callbackify("loadTableBinaryColumnarAsync", 3));
+    _defineProperty(this, "loadTableBinaryColumnar", this.callbackify("loadTableBinaryColumnarAsync", 3));
 
     _defineProperty(this, "buildTFileTypeMap", function () {
       for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType) {
