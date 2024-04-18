@@ -1,9 +1,9 @@
 "use strict"
-const hostname = process.env.HOSTNAME || "metis.mapd.com"
-const protocol = process.env.PROTOCOL || "https"
-const port = process.env.PORT || "443"
-const database = process.env.DATABASE || "heavyai"
-const username = process.env.USERNAME || "admin"
+const hostname = process.env.HOSTNAME || "forge.mapd.com"
+const protocol = process.env.PROTOCOL || "http"
+const port = process.env.PORT || "9092"
+const database = process.env.DATABASE || "mapd"
+const username = process.env.USERNAME || "mapd"
 const password = process.env.PASSWORD || "HyperInteractive"
 
 const isNodeRuntime = typeof window === "undefined"
@@ -549,7 +549,7 @@ describe(isNodeRuntime ? "node" : "browser", () => {
           (pixelError, data) => {
             expect(pixelError).to.not.be.an("error")
             const lon = data[0].row_set[0].dest_lon
-            expect(lon).to.be.eq(-117.82951354980469)
+            expect(lon).to.be.eq(-119.05677032470703)
             done()
           }
         )
