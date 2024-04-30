@@ -40978,7 +40978,8 @@ ttypes.TDBObjectType = {
   'TableDBObjectType' : 2,
   'DashboardDBObjectType' : 3,
   'ViewDBObjectType' : 4,
-  'ServerDBObjectType' : 5
+  'ServerDBObjectType' : 5,
+  'ColumnDBObjectType' : 6
 };
 ttypes.TDataSourceType = {
   'TABLE' : 0
@@ -41237,6 +41238,7 @@ const TColumnType = module.exports.TColumnType = class {
     this.is_physical = null;
     this.col_id = null;
     this.default_value = null;
+    this.comment = null;
     if (args) {
       if (args.col_name !== undefined && args.col_name !== null) {
         this.col_name = args.col_name;
@@ -41261,6 +41263,9 @@ const TColumnType = module.exports.TColumnType = class {
       }
       if (args.default_value !== undefined && args.default_value !== null) {
         this.default_value = args.default_value;
+      }
+      if (args.comment !== undefined && args.comment !== null) {
+        this.comment = args.comment;
       }
     }
   }
@@ -41332,6 +41337,13 @@ const TColumnType = module.exports.TColumnType = class {
           input.skip(ftype);
         }
         break;
+        case 9:
+        if (ftype == Thrift.Type.STRING) {
+          this.comment = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -41381,6 +41393,11 @@ const TColumnType = module.exports.TColumnType = class {
     if (this.default_value !== null && this.default_value !== undefined) {
       output.writeFieldBegin('default_value', Thrift.Type.STRING, 8);
       output.writeString(this.default_value);
+      output.writeFieldEnd();
+    }
+    if (this.comment !== null && this.comment !== undefined) {
+      output.writeFieldBegin('comment', Thrift.Type.STRING, 9);
+      output.writeString(this.comment);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -42574,6 +42591,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.add_metadata_columns = null;
     this.trim_spaces = true;
     this.geo_validate_geometry = false;
+    this.raster_drop_if_all_null = false;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -42700,6 +42718,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.geo_validate_geometry !== undefined && args.geo_validate_geometry !== null) {
         this.geo_validate_geometry = args.geo_validate_geometry;
+      }
+      if (args.raster_drop_if_all_null !== undefined && args.raster_drop_if_all_null !== null) {
+        this.raster_drop_if_all_null = args.raster_drop_if_all_null;
       }
     }
   }
@@ -43008,6 +43029,13 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 43:
+        if (ftype == Thrift.Type.BOOL) {
+          this.raster_drop_if_all_null = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -43227,6 +43255,11 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.geo_validate_geometry !== null && this.geo_validate_geometry !== undefined) {
       output.writeFieldBegin('geo_validate_geometry', Thrift.Type.BOOL, 42);
       output.writeBool(this.geo_validate_geometry);
+      output.writeFieldEnd();
+    }
+    if (this.raster_drop_if_all_null !== null && this.raster_drop_if_all_null !== undefined) {
+      output.writeFieldBegin('raster_drop_if_all_null', Thrift.Type.BOOL, 43);
+      output.writeBool(this.raster_drop_if_all_null);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -45126,6 +45159,7 @@ const TTableDetails = module.exports.TTableDetails = class {
     this.table_type = null;
     this.refresh_info = null;
     this.sharded_column_name = null;
+    this.comment = null;
     if (args) {
       if (args.row_desc !== undefined && args.row_desc !== null) {
         this.row_desc = Thrift.copyList(args.row_desc, [ttypes.TColumnType]);
@@ -45162,6 +45196,9 @@ const TTableDetails = module.exports.TTableDetails = class {
       }
       if (args.sharded_column_name !== undefined && args.sharded_column_name !== null) {
         this.sharded_column_name = args.sharded_column_name;
+      }
+      if (args.comment !== undefined && args.comment !== null) {
+        this.comment = args.comment;
       }
     }
   }
@@ -45270,6 +45307,13 @@ const TTableDetails = module.exports.TTableDetails = class {
           input.skip(ftype);
         }
         break;
+        case 13:
+        if (ftype == Thrift.Type.STRING) {
+          this.comment = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -45346,6 +45390,11 @@ const TTableDetails = module.exports.TTableDetails = class {
     if (this.sharded_column_name !== null && this.sharded_column_name !== undefined) {
       output.writeFieldBegin('sharded_column_name', Thrift.Type.STRING, 12);
       output.writeString(this.sharded_column_name);
+      output.writeFieldEnd();
+    }
+    if (this.comment !== null && this.comment !== undefined) {
+      output.writeFieldBegin('comment', Thrift.Type.STRING, 13);
+      output.writeString(this.comment);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -47819,6 +47868,58 @@ const TServerPermissions = module.exports.TServerPermissions = class {
   }
 
 };
+const TColumnPermissions = module.exports.TColumnPermissions = class {
+  constructor(args) {
+    this.select_ = null;
+    if (args) {
+      if (args.select_ !== undefined && args.select_ !== null) {
+        this.select_ = args.select_;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.BOOL) {
+          this.select_ = input.readBool();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TColumnPermissions');
+    if (this.select_ !== null && this.select_ !== undefined) {
+      output.writeFieldBegin('select_', Thrift.Type.BOOL, 1);
+      output.writeBool(this.select_);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
 const TDBObjectPermissions = module.exports.TDBObjectPermissions = class {
   constructor(args) {
     this.database_permissions_ = null;
@@ -47826,6 +47927,7 @@ const TDBObjectPermissions = module.exports.TDBObjectPermissions = class {
     this.dashboard_permissions_ = null;
     this.view_permissions_ = null;
     this.server_permissions_ = null;
+    this.column_permissions_ = null;
     if (args) {
       if (args.database_permissions_ !== undefined && args.database_permissions_ !== null) {
         this.database_permissions_ = new ttypes.TDatabasePermissions(args.database_permissions_);
@@ -47841,6 +47943,9 @@ const TDBObjectPermissions = module.exports.TDBObjectPermissions = class {
       }
       if (args.server_permissions_ !== undefined && args.server_permissions_ !== null) {
         this.server_permissions_ = new ttypes.TServerPermissions(args.server_permissions_);
+      }
+      if (args.column_permissions_ !== undefined && args.column_permissions_ !== null) {
+        this.column_permissions_ = new ttypes.TColumnPermissions(args.column_permissions_);
       }
     }
   }
@@ -47895,6 +48000,14 @@ const TDBObjectPermissions = module.exports.TDBObjectPermissions = class {
           input.skip(ftype);
         }
         break;
+        case 6:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.column_permissions_ = new ttypes.TColumnPermissions();
+          this.column_permissions_.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -47929,6 +48042,11 @@ const TDBObjectPermissions = module.exports.TDBObjectPermissions = class {
     if (this.server_permissions_ !== null && this.server_permissions_ !== undefined) {
       output.writeFieldBegin('server_permissions_', Thrift.Type.STRUCT, 5);
       this.server_permissions_.write(output);
+      output.writeFieldEnd();
+    }
+    if (this.column_permissions_ !== null && this.column_permissions_ !== undefined) {
+      output.writeFieldBegin('column_permissions_', Thrift.Type.STRUCT, 6);
+      this.column_permissions_.write(output);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
