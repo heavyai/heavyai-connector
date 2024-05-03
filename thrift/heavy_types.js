@@ -1565,12 +1565,16 @@ const TDBInfo = module.exports.TDBInfo = class {
   constructor(args) {
     this.db_name = null;
     this.db_owner = null;
+    this.immerse_metadata_json = null;
     if (args) {
       if (args.db_name !== undefined && args.db_name !== null) {
         this.db_name = args.db_name;
       }
       if (args.db_owner !== undefined && args.db_owner !== null) {
         this.db_owner = args.db_owner;
+      }
+      if (args.immerse_metadata_json !== undefined && args.immerse_metadata_json !== null) {
+        this.immerse_metadata_json = args.immerse_metadata_json;
       }
     }
   }
@@ -1599,6 +1603,13 @@ const TDBInfo = module.exports.TDBInfo = class {
           input.skip(ftype);
         }
         break;
+        case 3:
+        if (ftype == Thrift.Type.STRING) {
+          this.immerse_metadata_json = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -1618,6 +1629,11 @@ const TDBInfo = module.exports.TDBInfo = class {
     if (this.db_owner !== null && this.db_owner !== undefined) {
       output.writeFieldBegin('db_owner', Thrift.Type.STRING, 2);
       output.writeString(this.db_owner);
+      output.writeFieldEnd();
+    }
+    if (this.immerse_metadata_json !== null && this.immerse_metadata_json !== undefined) {
+      output.writeFieldBegin('immerse_metadata_json', Thrift.Type.STRING, 3);
+      output.writeString(this.immerse_metadata_json);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -1725,6 +1741,7 @@ const TCopyParams = module.exports.TCopyParams = class {
     this.trim_spaces = true;
     this.geo_validate_geometry = false;
     this.raster_drop_if_all_null = false;
+    this.bounding_box_clip = null;
     if (args) {
       if (args.delimiter !== undefined && args.delimiter !== null) {
         this.delimiter = args.delimiter;
@@ -1854,6 +1871,9 @@ const TCopyParams = module.exports.TCopyParams = class {
       }
       if (args.raster_drop_if_all_null !== undefined && args.raster_drop_if_all_null !== null) {
         this.raster_drop_if_all_null = args.raster_drop_if_all_null;
+      }
+      if (args.bounding_box_clip !== undefined && args.bounding_box_clip !== null) {
+        this.bounding_box_clip = args.bounding_box_clip;
       }
     }
   }
@@ -2169,6 +2189,13 @@ const TCopyParams = module.exports.TCopyParams = class {
           input.skip(ftype);
         }
         break;
+        case 44:
+        if (ftype == Thrift.Type.STRING) {
+          this.bounding_box_clip = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
         default:
           input.skip(ftype);
       }
@@ -2393,6 +2420,11 @@ const TCopyParams = module.exports.TCopyParams = class {
     if (this.raster_drop_if_all_null !== null && this.raster_drop_if_all_null !== undefined) {
       output.writeFieldBegin('raster_drop_if_all_null', Thrift.Type.BOOL, 43);
       output.writeBool(this.raster_drop_if_all_null);
+      output.writeFieldEnd();
+    }
+    if (this.bounding_box_clip !== null && this.bounding_box_clip !== undefined) {
+      output.writeFieldBegin('bounding_box_clip', Thrift.Type.STRING, 44);
+      output.writeString(this.bounding_box_clip);
       output.writeFieldEnd();
     }
     output.writeFieldStop();
@@ -8297,6 +8329,167 @@ const TLeafInfo = module.exports.TLeafInfo = class {
     if (this.num_leaves !== null && this.num_leaves !== undefined) {
       output.writeFieldBegin('num_leaves', Thrift.Type.I32, 2);
       output.writeI32(this.num_leaves);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const TImmerseUserMetadata = module.exports.TImmerseUserMetadata = class {
+  constructor(args) {
+    this.username = null;
+    this.immerse_metadata_json = null;
+    if (args) {
+      if (args.username !== undefined && args.username !== null) {
+        this.username = args.username;
+      }
+      if (args.immerse_metadata_json !== undefined && args.immerse_metadata_json !== null) {
+        this.immerse_metadata_json = args.immerse_metadata_json;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.username = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.STRING) {
+          this.immerse_metadata_json = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TImmerseUserMetadata');
+    if (this.username !== null && this.username !== undefined) {
+      output.writeFieldBegin('username', Thrift.Type.STRING, 1);
+      output.writeString(this.username);
+      output.writeFieldEnd();
+    }
+    if (this.immerse_metadata_json !== null && this.immerse_metadata_json !== undefined) {
+      output.writeFieldBegin('immerse_metadata_json', Thrift.Type.STRING, 2);
+      output.writeString(this.immerse_metadata_json);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const TUserInfo = module.exports.TUserInfo = class {
+  constructor(args) {
+    this.username = null;
+    this.roles = null;
+    this.immerse_metadata_json = null;
+    if (args) {
+      if (args.username !== undefined && args.username !== null) {
+        this.username = args.username;
+      }
+      if (args.roles !== undefined && args.roles !== null) {
+        this.roles = Thrift.copyList(args.roles, [null]);
+      }
+      if (args.immerse_metadata_json !== undefined && args.immerse_metadata_json !== null) {
+        this.immerse_metadata_json = args.immerse_metadata_json;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.username = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.LIST) {
+          this.roles = [];
+          const _rtmp3206 = input.readListBegin();
+          const _size205 = _rtmp3206.size || 0;
+          for (let _i207 = 0; _i207 < _size205; ++_i207) {
+            let elem208 = null;
+            elem208 = input.readString();
+            this.roles.push(elem208);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 3:
+        if (ftype == Thrift.Type.STRING) {
+          this.immerse_metadata_json = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('TUserInfo');
+    if (this.username !== null && this.username !== undefined) {
+      output.writeFieldBegin('username', Thrift.Type.STRING, 1);
+      output.writeString(this.username);
+      output.writeFieldEnd();
+    }
+    if (this.roles !== null && this.roles !== undefined) {
+      output.writeFieldBegin('roles', Thrift.Type.LIST, 2);
+      output.writeListBegin(Thrift.Type.STRING, this.roles.length);
+      for (let iter209 in this.roles) {
+        if (this.roles.hasOwnProperty(iter209)) {
+          iter209 = this.roles[iter209];
+          output.writeString(iter209);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.immerse_metadata_json !== null && this.immerse_metadata_json !== undefined) {
+      output.writeFieldBegin('immerse_metadata_json', Thrift.Type.STRING, 3);
+      output.writeString(this.immerse_metadata_json);
       output.writeFieldEnd();
     }
     output.writeFieldStop();

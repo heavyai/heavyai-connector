@@ -864,13 +864,13 @@ const Heavy_get_status_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3206 = input.readListBegin();
-          const _size205 = _rtmp3206.size || 0;
-          for (let _i207 = 0; _i207 < _size205; ++_i207) {
-            let elem208 = null;
-            elem208 = new ttypes.TServerStatus();
-            elem208.read(input);
-            this.success.push(elem208);
+          const _rtmp3211 = input.readListBegin();
+          const _size210 = _rtmp3211.size || 0;
+          for (let _i212 = 0; _i212 < _size210; ++_i212) {
+            let elem213 = null;
+            elem213 = new ttypes.TServerStatus();
+            elem213.read(input);
+            this.success.push(elem213);
           }
           input.readListEnd();
         } else {
@@ -899,10 +899,10 @@ const Heavy_get_status_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter209 in this.success) {
-        if (this.success.hasOwnProperty(iter209)) {
-          iter209 = this.success[iter209];
-          iter209.write(output);
+      for (let iter214 in this.success) {
+        if (this.success.hasOwnProperty(iter214)) {
+          iter214 = this.success[iter214];
+          iter214.write(output);
         }
       }
       output.writeListEnd();
@@ -1125,12 +1125,12 @@ const Heavy_get_tables_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3211 = input.readListBegin();
-          const _size210 = _rtmp3211.size || 0;
-          for (let _i212 = 0; _i212 < _size210; ++_i212) {
-            let elem213 = null;
-            elem213 = input.readString();
-            this.success.push(elem213);
+          const _rtmp3216 = input.readListBegin();
+          const _size215 = _rtmp3216.size || 0;
+          for (let _i217 = 0; _i217 < _size215; ++_i217) {
+            let elem218 = null;
+            elem218 = input.readString();
+            this.success.push(elem218);
           }
           input.readListEnd();
         } else {
@@ -1159,10 +1159,10 @@ const Heavy_get_tables_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter214 in this.success) {
-        if (this.success.hasOwnProperty(iter214)) {
-          iter214 = this.success[iter214];
-          output.writeString(iter214);
+      for (let iter219 in this.success) {
+        if (this.success.hasOwnProperty(iter219)) {
+          iter219 = this.success[iter219];
+          output.writeString(iter219);
         }
       }
       output.writeListEnd();
@@ -1275,12 +1275,12 @@ const Heavy_get_tables_for_database_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3216 = input.readListBegin();
-          const _size215 = _rtmp3216.size || 0;
-          for (let _i217 = 0; _i217 < _size215; ++_i217) {
-            let elem218 = null;
-            elem218 = input.readString();
-            this.success.push(elem218);
+          const _rtmp3221 = input.readListBegin();
+          const _size220 = _rtmp3221.size || 0;
+          for (let _i222 = 0; _i222 < _size220; ++_i222) {
+            let elem223 = null;
+            elem223 = input.readString();
+            this.success.push(elem223);
           }
           input.readListEnd();
         } else {
@@ -1309,10 +1309,10 @@ const Heavy_get_tables_for_database_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter219 in this.success) {
-        if (this.success.hasOwnProperty(iter219)) {
-          iter219 = this.success[iter219];
-          output.writeString(iter219);
+      for (let iter224 in this.success) {
+        if (this.success.hasOwnProperty(iter224)) {
+          iter224 = this.success[iter224];
+          output.writeString(iter224);
         }
       }
       output.writeListEnd();
@@ -1412,12 +1412,12 @@ const Heavy_get_physical_tables_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3221 = input.readListBegin();
-          const _size220 = _rtmp3221.size || 0;
-          for (let _i222 = 0; _i222 < _size220; ++_i222) {
-            let elem223 = null;
-            elem223 = input.readString();
-            this.success.push(elem223);
+          const _rtmp3226 = input.readListBegin();
+          const _size225 = _rtmp3226.size || 0;
+          for (let _i227 = 0; _i227 < _size225; ++_i227) {
+            let elem228 = null;
+            elem228 = input.readString();
+            this.success.push(elem228);
           }
           input.readListEnd();
         } else {
@@ -1446,10 +1446,10 @@ const Heavy_get_physical_tables_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter224 in this.success) {
-        if (this.success.hasOwnProperty(iter224)) {
-          iter224 = this.success[iter224];
-          output.writeString(iter224);
+      for (let iter229 in this.success) {
+        if (this.success.hasOwnProperty(iter229)) {
+          iter229 = this.success[iter229];
+          output.writeString(iter229);
         }
       }
       output.writeListEnd();
@@ -1549,12 +1549,12 @@ const Heavy_get_views_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3226 = input.readListBegin();
-          const _size225 = _rtmp3226.size || 0;
-          for (let _i227 = 0; _i227 < _size225; ++_i227) {
-            let elem228 = null;
-            elem228 = input.readString();
-            this.success.push(elem228);
+          const _rtmp3231 = input.readListBegin();
+          const _size230 = _rtmp3231.size || 0;
+          for (let _i232 = 0; _i232 < _size230; ++_i232) {
+            let elem233 = null;
+            elem233 = input.readString();
+            this.success.push(elem233);
           }
           input.readListEnd();
         } else {
@@ -1583,10 +1583,10 @@ const Heavy_get_views_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter229 in this.success) {
-        if (this.success.hasOwnProperty(iter229)) {
-          iter229 = this.success[iter229];
-          output.writeString(iter229);
+      for (let iter234 in this.success) {
+        if (this.success.hasOwnProperty(iter234)) {
+          iter234 = this.success[iter234];
+          output.writeString(iter234);
         }
       }
       output.writeListEnd();
@@ -1686,13 +1686,13 @@ const Heavy_get_tables_meta_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3231 = input.readListBegin();
-          const _size230 = _rtmp3231.size || 0;
-          for (let _i232 = 0; _i232 < _size230; ++_i232) {
-            let elem233 = null;
-            elem233 = new ttypes.TTableMeta();
-            elem233.read(input);
-            this.success.push(elem233);
+          const _rtmp3236 = input.readListBegin();
+          const _size235 = _rtmp3236.size || 0;
+          for (let _i237 = 0; _i237 < _size235; ++_i237) {
+            let elem238 = null;
+            elem238 = new ttypes.TTableMeta();
+            elem238.read(input);
+            this.success.push(elem238);
           }
           input.readListEnd();
         } else {
@@ -1721,10 +1721,10 @@ const Heavy_get_tables_meta_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-      for (let iter234 in this.success) {
-        if (this.success.hasOwnProperty(iter234)) {
-          iter234 = this.success[iter234];
-          iter234.write(output);
+      for (let iter239 in this.success) {
+        if (this.success.hasOwnProperty(iter239)) {
+          iter239 = this.success[iter239];
+          iter239.write(output);
         }
       }
       output.writeListEnd();
@@ -2416,12 +2416,12 @@ const Heavy_get_users_result = class {
         case 0:
         if (ftype == Thrift.Type.LIST) {
           this.success = [];
-          const _rtmp3236 = input.readListBegin();
-          const _size235 = _rtmp3236.size || 0;
-          for (let _i237 = 0; _i237 < _size235; ++_i237) {
-            let elem238 = null;
-            elem238 = input.readString();
-            this.success.push(elem238);
+          const _rtmp3241 = input.readListBegin();
+          const _size240 = _rtmp3241.size || 0;
+          for (let _i242 = 0; _i242 < _size240; ++_i242) {
+            let elem243 = null;
+            elem243 = input.readString();
+            this.success.push(elem243);
           }
           input.readListEnd();
         } else {
@@ -2450,148 +2450,10 @@ const Heavy_get_users_result = class {
     if (this.success !== null && this.success !== undefined) {
       output.writeFieldBegin('success', Thrift.Type.LIST, 0);
       output.writeListBegin(Thrift.Type.STRING, this.success.length);
-      for (let iter239 in this.success) {
-        if (this.success.hasOwnProperty(iter239)) {
-          iter239 = this.success[iter239];
-          output.writeString(iter239);
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    if (this.e !== null && this.e !== undefined) {
-      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-      this.e.write(output);
-      output.writeFieldEnd();
-    }
-    output.writeFieldStop();
-    output.writeStructEnd();
-    return;
-  }
-
-};
-const Heavy_get_databases_args = class {
-  constructor(args) {
-    this.session = null;
-    if (args) {
-      if (args.session !== undefined && args.session !== null) {
-        this.session = args.session;
-      }
-    }
-  }
-
-  read (input) {
-    input.readStructBegin();
-    while (true) {
-      const ret = input.readFieldBegin();
-      const ftype = ret.ftype;
-      const fid = ret.fid;
-      if (ftype == Thrift.Type.STOP) {
-        break;
-      }
-      switch (fid) {
-        case 1:
-        if (ftype == Thrift.Type.STRING) {
-          this.session = input.readString();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 0:
-          input.skip(ftype);
-          break;
-        default:
-          input.skip(ftype);
-      }
-      input.readFieldEnd();
-    }
-    input.readStructEnd();
-    return;
-  }
-
-  write (output) {
-    output.writeStructBegin('Heavy_get_databases_args');
-    if (this.session !== null && this.session !== undefined) {
-      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
-      output.writeString(this.session);
-      output.writeFieldEnd();
-    }
-    output.writeFieldStop();
-    output.writeStructEnd();
-    return;
-  }
-
-};
-const Heavy_get_databases_result = class {
-  constructor(args) {
-    this.success = null;
-    this.e = null;
-    if (args instanceof ttypes.TDBException) {
-        this.e = args;
-        return;
-    }
-    if (args) {
-      if (args.success !== undefined && args.success !== null) {
-        this.success = Thrift.copyList(args.success, [ttypes.TDBInfo]);
-      }
-      if (args.e !== undefined && args.e !== null) {
-        this.e = args.e;
-      }
-    }
-  }
-
-  read (input) {
-    input.readStructBegin();
-    while (true) {
-      const ret = input.readFieldBegin();
-      const ftype = ret.ftype;
-      const fid = ret.fid;
-      if (ftype == Thrift.Type.STOP) {
-        break;
-      }
-      switch (fid) {
-        case 0:
-        if (ftype == Thrift.Type.LIST) {
-          this.success = [];
-          const _rtmp3241 = input.readListBegin();
-          const _size240 = _rtmp3241.size || 0;
-          for (let _i242 = 0; _i242 < _size240; ++_i242) {
-            let elem243 = null;
-            elem243 = new ttypes.TDBInfo();
-            elem243.read(input);
-            this.success.push(elem243);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 1:
-        if (ftype == Thrift.Type.STRUCT) {
-          this.e = new ttypes.TDBException();
-          this.e.read(input);
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        default:
-          input.skip(ftype);
-      }
-      input.readFieldEnd();
-    }
-    input.readStructEnd();
-    return;
-  }
-
-  write (output) {
-    output.writeStructBegin('Heavy_get_databases_result');
-    if (this.success !== null && this.success !== undefined) {
-      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
-      output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
       for (let iter244 in this.success) {
         if (this.success.hasOwnProperty(iter244)) {
           iter244 = this.success[iter244];
-          iter244.write(output);
+          output.writeString(iter244);
         }
       }
       output.writeListEnd();
@@ -15585,6 +15447,558 @@ const Heavy_get_function_details_result = class {
   }
 
 };
+const Heavy_put_immerse_users_metadata_args = class {
+  constructor(args) {
+    this.session = null;
+    this.immerse_user_metadata_list = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+      if (args.immerse_user_metadata_list !== undefined && args.immerse_user_metadata_list !== null) {
+        this.immerse_user_metadata_list = Thrift.copyList(args.immerse_user_metadata_list, [ttypes.TImmerseUserMetadata]);
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.LIST) {
+          this.immerse_user_metadata_list = [];
+          const _rtmp3535 = input.readListBegin();
+          const _size534 = _rtmp3535.size || 0;
+          for (let _i536 = 0; _i536 < _size534; ++_i536) {
+            let elem537 = null;
+            elem537 = new ttypes.TImmerseUserMetadata();
+            elem537.read(input);
+            this.immerse_user_metadata_list.push(elem537);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_put_immerse_users_metadata_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    if (this.immerse_user_metadata_list !== null && this.immerse_user_metadata_list !== undefined) {
+      output.writeFieldBegin('immerse_user_metadata_list', Thrift.Type.LIST, 2);
+      output.writeListBegin(Thrift.Type.STRUCT, this.immerse_user_metadata_list.length);
+      for (let iter538 in this.immerse_user_metadata_list) {
+        if (this.immerse_user_metadata_list.hasOwnProperty(iter538)) {
+          iter538 = this.immerse_user_metadata_list[iter538];
+          iter538.write(output);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_put_immerse_users_metadata_result = class {
+  constructor(args) {
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_put_immerse_users_metadata_result');
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_put_immerse_database_metadata_args = class {
+  constructor(args) {
+    this.session = null;
+    this.immerse_metadata_json = null;
+    this.database_name = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+      if (args.immerse_metadata_json !== undefined && args.immerse_metadata_json !== null) {
+        this.immerse_metadata_json = args.immerse_metadata_json;
+      }
+      if (args.database_name !== undefined && args.database_name !== null) {
+        this.database_name = args.database_name;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 2:
+        if (ftype == Thrift.Type.STRING) {
+          this.immerse_metadata_json = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 3:
+        if (ftype == Thrift.Type.STRING) {
+          this.database_name = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_put_immerse_database_metadata_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    if (this.immerse_metadata_json !== null && this.immerse_metadata_json !== undefined) {
+      output.writeFieldBegin('immerse_metadata_json', Thrift.Type.STRING, 2);
+      output.writeString(this.immerse_metadata_json);
+      output.writeFieldEnd();
+    }
+    if (this.database_name !== null && this.database_name !== undefined) {
+      output.writeFieldBegin('database_name', Thrift.Type.STRING, 3);
+      output.writeString(this.database_name);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_put_immerse_database_metadata_result = class {
+  constructor(args) {
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_put_immerse_database_metadata_result');
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_users_info_args = class {
+  constructor(args) {
+    this.session = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_users_info_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_users_info_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [ttypes.TUserInfo]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3540 = input.readListBegin();
+          const _size539 = _rtmp3540.size || 0;
+          for (let _i541 = 0; _i541 < _size539; ++_i541) {
+            let elem542 = null;
+            elem542 = new ttypes.TUserInfo();
+            elem542.read(input);
+            this.success.push(elem542);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_users_info_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+      for (let iter543 in this.success) {
+        if (this.success.hasOwnProperty(iter543)) {
+          iter543 = this.success[iter543];
+          iter543.write(output);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_databases_args = class {
+  constructor(args) {
+    this.session = null;
+    if (args) {
+      if (args.session !== undefined && args.session !== null) {
+        this.session = args.session;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 1:
+        if (ftype == Thrift.Type.STRING) {
+          this.session = input.readString();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 0:
+          input.skip(ftype);
+          break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_databases_args');
+    if (this.session !== null && this.session !== undefined) {
+      output.writeFieldBegin('session', Thrift.Type.STRING, 1);
+      output.writeString(this.session);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
+const Heavy_get_databases_result = class {
+  constructor(args) {
+    this.success = null;
+    this.e = null;
+    if (args instanceof ttypes.TDBException) {
+        this.e = args;
+        return;
+    }
+    if (args) {
+      if (args.success !== undefined && args.success !== null) {
+        this.success = Thrift.copyList(args.success, [ttypes.TDBInfo]);
+      }
+      if (args.e !== undefined && args.e !== null) {
+        this.e = args.e;
+      }
+    }
+  }
+
+  read (input) {
+    input.readStructBegin();
+    while (true) {
+      const ret = input.readFieldBegin();
+      const ftype = ret.ftype;
+      const fid = ret.fid;
+      if (ftype == Thrift.Type.STOP) {
+        break;
+      }
+      switch (fid) {
+        case 0:
+        if (ftype == Thrift.Type.LIST) {
+          this.success = [];
+          const _rtmp3545 = input.readListBegin();
+          const _size544 = _rtmp3545.size || 0;
+          for (let _i546 = 0; _i546 < _size544; ++_i546) {
+            let elem547 = null;
+            elem547 = new ttypes.TDBInfo();
+            elem547.read(input);
+            this.success.push(elem547);
+          }
+          input.readListEnd();
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        case 1:
+        if (ftype == Thrift.Type.STRUCT) {
+          this.e = new ttypes.TDBException();
+          this.e.read(input);
+        } else {
+          input.skip(ftype);
+        }
+        break;
+        default:
+          input.skip(ftype);
+      }
+      input.readFieldEnd();
+    }
+    input.readStructEnd();
+    return;
+  }
+
+  write (output) {
+    output.writeStructBegin('Heavy_get_databases_result');
+    if (this.success !== null && this.success !== undefined) {
+      output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+      output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+      for (let iter548 in this.success) {
+        if (this.success.hasOwnProperty(iter548)) {
+          iter548 = this.success[iter548];
+          iter548.write(output);
+        }
+      }
+      output.writeListEnd();
+      output.writeFieldEnd();
+    }
+    if (this.e !== null && this.e !== undefined) {
+      output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
+      this.e.write(output);
+      output.writeFieldEnd();
+    }
+    output.writeFieldStop();
+    output.writeStructEnd();
+    return;
+  }
+
+};
 const HeavyClient = exports.Client = class HeavyClient {
   constructor(output, pClass) {
     this.output = output;
@@ -16571,60 +16985,6 @@ const HeavyClient = exports.Client = class HeavyClient {
       return callback(null, result.success);
     }
     return callback('get_users failed: unknown result');
-  }
-
-  get_databases (session) {
-    this._seqid = this.new_seqid();
-    const self = this;
-    return new Promise((resolve, reject) => {
-      self._reqs[self.seqid()] = (error, result) => {
-        return error ? reject(error) : resolve(result);
-      };
-      self.send_get_databases(session);
-    });
-  }
-
-  send_get_databases (session) {
-    const output = new this.pClass(this.output);
-    const params = {
-      session: session
-    };
-    const args = new Heavy_get_databases_args(params);
-    try {
-      output.writeMessageBegin('get_databases', Thrift.MessageType.CALL, this.seqid());
-      args.write(output);
-      output.writeMessageEnd();
-      return this.output.flush();
-    }
-    catch (e) {
-      delete this._reqs[this.seqid()];
-      if (typeof output.reset === 'function') {
-        output.reset();
-      }
-      throw e;
-    }
-  }
-
-  recv_get_databases (input, mtype, rseqid) {
-    const callback = this._reqs[rseqid] || function() {};
-    delete this._reqs[rseqid];
-    if (mtype == Thrift.MessageType.EXCEPTION) {
-      const x = new Thrift.TApplicationException();
-      x.read(input);
-      input.readMessageEnd();
-      return callback(x);
-    }
-    const result = new Heavy_get_databases_result();
-    result.read(input);
-    input.readMessageEnd();
-
-    if (null !== result.e) {
-      return callback(result.e);
-    }
-    if (null !== result.success) {
-      return callback(null, result.success);
-    }
-    return callback('get_databases failed: unknown result');
   }
 
   get_version () {
@@ -21206,6 +21566,219 @@ const HeavyClient = exports.Client = class HeavyClient {
     }
     return callback('get_function_details failed: unknown result');
   }
+
+  put_immerse_users_metadata (session, immerse_user_metadata_list) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_put_immerse_users_metadata(session, immerse_user_metadata_list);
+    });
+  }
+
+  send_put_immerse_users_metadata (session, immerse_user_metadata_list) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session,
+      immerse_user_metadata_list: immerse_user_metadata_list
+    };
+    const args = new Heavy_put_immerse_users_metadata_args(params);
+    try {
+      output.writeMessageBegin('put_immerse_users_metadata', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_put_immerse_users_metadata (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new Heavy_put_immerse_users_metadata_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    callback(null);
+  }
+
+  put_immerse_database_metadata (session, immerse_metadata_json, database_name) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_put_immerse_database_metadata(session, immerse_metadata_json, database_name);
+    });
+  }
+
+  send_put_immerse_database_metadata (session, immerse_metadata_json, database_name) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session,
+      immerse_metadata_json: immerse_metadata_json,
+      database_name: database_name
+    };
+    const args = new Heavy_put_immerse_database_metadata_args(params);
+    try {
+      output.writeMessageBegin('put_immerse_database_metadata', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_put_immerse_database_metadata (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new Heavy_put_immerse_database_metadata_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    callback(null);
+  }
+
+  get_users_info (session) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_users_info(session);
+    });
+  }
+
+  send_get_users_info (session) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session
+    };
+    const args = new Heavy_get_users_info_args(params);
+    try {
+      output.writeMessageBegin('get_users_info', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_users_info (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new Heavy_get_users_info_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_users_info failed: unknown result');
+  }
+
+  get_databases (session) {
+    this._seqid = this.new_seqid();
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self._reqs[self.seqid()] = (error, result) => {
+        return error ? reject(error) : resolve(result);
+      };
+      self.send_get_databases(session);
+    });
+  }
+
+  send_get_databases (session) {
+    const output = new this.pClass(this.output);
+    const params = {
+      session: session
+    };
+    const args = new Heavy_get_databases_args(params);
+    try {
+      output.writeMessageBegin('get_databases', Thrift.MessageType.CALL, this.seqid());
+      args.write(output);
+      output.writeMessageEnd();
+      return this.output.flush();
+    }
+    catch (e) {
+      delete this._reqs[this.seqid()];
+      if (typeof output.reset === 'function') {
+        output.reset();
+      }
+      throw e;
+    }
+  }
+
+  recv_get_databases (input, mtype, rseqid) {
+    const callback = this._reqs[rseqid] || function() {};
+    delete this._reqs[rseqid];
+    if (mtype == Thrift.MessageType.EXCEPTION) {
+      const x = new Thrift.TApplicationException();
+      x.read(input);
+      input.readMessageEnd();
+      return callback(x);
+    }
+    const result = new Heavy_get_databases_result();
+    result.read(input);
+    input.readMessageEnd();
+
+    if (null !== result.e) {
+      return callback(result.e);
+    }
+    if (null !== result.success) {
+      return callback(null, result.success);
+    }
+    return callback('get_databases failed: unknown result');
+  }
 };
 const HeavyProcessor = exports.Processor = class HeavyProcessor {
   constructor(handler) {
@@ -21986,48 +22559,6 @@ const HeavyProcessor = exports.Processor = class HeavyProcessor {
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
           output.writeMessageBegin("get_users", Thrift.MessageType.EXCEPTION, seqid);
-        }
-        result_obj.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      });
-    }
-  }
-  process_get_databases (seqid, input, output) {
-    const args = new Heavy_get_databases_args();
-    args.read(input);
-    input.readMessageEnd();
-    if (this._handler.get_databases.length === 1) {
-      Promise.resolve(this._handler.get_databases.bind(this._handler)(
-        args.session
-      )).then(result => {
-        const result_obj = new Heavy_get_databases_result({success: result});
-        output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
-        result_obj.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      }).catch(err => {
-        let result;
-        if (err instanceof ttypes.TDBException) {
-          result = new Heavy_get_databases_result(err);
-          output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
-        } else {
-          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
-          output.writeMessageBegin("get_databases", Thrift.MessageType.EXCEPTION, seqid);
-        }
-        result.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      });
-    } else {
-      this._handler.get_databases(args.session, (err, result) => {
-        let result_obj;
-        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
-          result_obj = new Heavy_get_databases_result((err !== null || typeof err === 'undefined') ? err : {success: result});
-          output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
-        } else {
-          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
-          output.writeMessageBegin("get_databases", Thrift.MessageType.EXCEPTION, seqid);
         }
         result_obj.write(output);
         output.writeMessageEnd();
@@ -25696,6 +26227,177 @@ const HeavyProcessor = exports.Processor = class HeavyProcessor {
         } else {
           result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
           output.writeMessageBegin("get_function_details", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_put_immerse_users_metadata (seqid, input, output) {
+    const args = new Heavy_put_immerse_users_metadata_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.put_immerse_users_metadata.length === 2) {
+      Promise.resolve(this._handler.put_immerse_users_metadata.bind(this._handler)(
+        args.session,
+        args.immerse_user_metadata_list
+      )).then(result => {
+        const result_obj = new Heavy_put_immerse_users_metadata_result({success: result});
+        output.writeMessageBegin("put_immerse_users_metadata", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new Heavy_put_immerse_users_metadata_result(err);
+          output.writeMessageBegin("put_immerse_users_metadata", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("put_immerse_users_metadata", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.put_immerse_users_metadata(args.session, args.immerse_user_metadata_list, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new Heavy_put_immerse_users_metadata_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("put_immerse_users_metadata", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("put_immerse_users_metadata", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_put_immerse_database_metadata (seqid, input, output) {
+    const args = new Heavy_put_immerse_database_metadata_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.put_immerse_database_metadata.length === 3) {
+      Promise.resolve(this._handler.put_immerse_database_metadata.bind(this._handler)(
+        args.session,
+        args.immerse_metadata_json,
+        args.database_name
+      )).then(result => {
+        const result_obj = new Heavy_put_immerse_database_metadata_result({success: result});
+        output.writeMessageBegin("put_immerse_database_metadata", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new Heavy_put_immerse_database_metadata_result(err);
+          output.writeMessageBegin("put_immerse_database_metadata", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("put_immerse_database_metadata", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.put_immerse_database_metadata(args.session, args.immerse_metadata_json, args.database_name, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new Heavy_put_immerse_database_metadata_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("put_immerse_database_metadata", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("put_immerse_database_metadata", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_users_info (seqid, input, output) {
+    const args = new Heavy_get_users_info_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_users_info.length === 1) {
+      Promise.resolve(this._handler.get_users_info.bind(this._handler)(
+        args.session
+      )).then(result => {
+        const result_obj = new Heavy_get_users_info_result({success: result});
+        output.writeMessageBegin("get_users_info", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new Heavy_get_users_info_result(err);
+          output.writeMessageBegin("get_users_info", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_users_info", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_users_info(args.session, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new Heavy_get_users_info_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_users_info", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_users_info", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    }
+  }
+  process_get_databases (seqid, input, output) {
+    const args = new Heavy_get_databases_args();
+    args.read(input);
+    input.readMessageEnd();
+    if (this._handler.get_databases.length === 1) {
+      Promise.resolve(this._handler.get_databases.bind(this._handler)(
+        args.session
+      )).then(result => {
+        const result_obj = new Heavy_get_databases_result({success: result});
+        output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
+        result_obj.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }).catch(err => {
+        let result;
+        if (err instanceof ttypes.TDBException) {
+          result = new Heavy_get_databases_result(err);
+          output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_databases", Thrift.MessageType.EXCEPTION, seqid);
+        }
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+    } else {
+      this._handler.get_databases(args.session, (err, result) => {
+        let result_obj;
+        if ((err === null || typeof err === 'undefined') || err instanceof ttypes.TDBException) {
+          result_obj = new Heavy_get_databases_result((err !== null || typeof err === 'undefined') ? err : {success: result});
+          output.writeMessageBegin("get_databases", Thrift.MessageType.REPLY, seqid);
+        } else {
+          result_obj = new Thrift.TApplicationException(Thrift.TApplicationExceptionType.UNKNOWN, err.message);
+          output.writeMessageBegin("get_databases", Thrift.MessageType.EXCEPTION, seqid);
         }
         result_obj.write(output);
         output.writeMessageEnd();
