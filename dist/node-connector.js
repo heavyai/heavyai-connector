@@ -1126,7 +1126,7 @@ var DbCon = /*#__PURE__*/function () {
       clients = this._client; // Reset the client property, so we can add only the ones that we can connect to below
 
       this._client = [];
-      return Promise.all(clients.map(function (client, h) {
+      return Promise.allSettled(clients.map(function (client, h) {
         return client.connect(_this3._user[h], _this3._password[h], _this3._dbName[h]).then(function (sessionId) {
           _this3._client.push(client);
 
@@ -1134,7 +1134,15 @@ var DbCon = /*#__PURE__*/function () {
 
           return null;
         });
-      })).then(function () {
+      })).then(function (results) {
+        var successfulConnections = results.filter(function (result) {
+          return result.status === "fulfilled";
+        });
+
+        if (successfulConnections.length === 0) {
+          return Promise.reject("Failed to connect to any servers.");
+        }
+
         return _this3;
       });
     }

@@ -444,7 +444,7 @@ export class DbCon {
 
     // Reset the client property, so we can add only the ones that we can connect to below
     this._client = []
-    return Promise.all(
+    return Promise.allSettled(
       clients.map((client, h) =>
         client
           .connect(this._user[h], this._password[h], this._dbName[h])
@@ -454,7 +454,16 @@ export class DbCon {
             return null
           })
       )
-    ).then(() => this)
+    ).then((results) => {
+      const successfulConnections = results.filter(
+        (result) => result.status === "fulfilled"
+      )
+      if (successfulConnections.length === 0) {
+        return Promise.reject("Failed to connect to any servers.")
+      }
+
+      return this
+    })
   }
 
   /**
