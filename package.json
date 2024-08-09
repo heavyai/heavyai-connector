@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "eventemitter3": "^3.1.0",
+    "pushid": "^1.0.0",
     "thrift": "~0.14.2"
   },
   "peerDependencies": {

@@ -34,6 +34,8 @@ import {
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
 
+import pushid from "pushid"
+
 const COMPRESSION_LEVEL_DEFAULT = 3
 
 function arrayify(maybeArray) {
@@ -152,8 +154,9 @@ function buildClient(url, useBinaryProtocol) {
   }
 
   let client = null
+  let connection = null
   if (!process.env.BROWSER) {
-    const connection = createHttpConnection(hostname, port, {
+    connection = createHttpConnection(hostname, port, {
       transport: TBufferedTransport,
       protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
@@ -165,10 +168,9 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    connection.on("error", console.error) // eslint-disable-line no-console
     client = createClient(MapDThrift, connection)
   } else {
-    const connection = new CustomXHRConnection(hostname, port, {
+    connection = new CustomXHRConnection(hostname, port, {
       transport: TBufferedTransport,
       protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
@@ -179,10 +181,9 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    connection.on("error", console.error) // eslint-disable-line no-console
     client = createXHRClient(MapDThrift, connection)
   }
-  return client
+  return { client, connection }
 }
 
 export class DbCon {
@@ -199,6 +200,7 @@ export class DbCon {
     this._protocol = null
     this._disableAutoReconnect = false
     this._datumEnum = {}
+    this._pendingRequests = []
     this.TFileTypeMap = {}
     this.TEncodingTypeMap = {}
     this.TImportHeaderRowMap = {}
@@ -254,7 +256,7 @@ export class DbCon {
     return this
   }
 
-  removeConnection(conId) {
+  removeConnection(conId, reason) {
     if (conId < 0 || conId >= this.numConnections) {
       const err = {
         msg: "Remove connection id invalid"
@@ -263,6 +265,8 @@ export class DbCon {
     }
     this._client.splice(conId, 1)
     this._sessionId.splice(conId, 1)
+    this._connections.splice(conId, 1)
+    this.rejectPendingRequests(conId, reason)
     this._numConnections--
   }
 
@@ -306,6 +310,24 @@ export class DbCon {
   overSingleClient = "SINGLE_CLIENT"
   overAllClients = "ALL_CLIENTS"
 
+  addPendingRequest = (clientIdx, requestId, promise) => {
+    if (this._pendingRequests[clientIdx]) {
+      this._pendingRequests[clientIdx][requestId] = promise
+    } else {
+      this._pendingRequests[clientIdx] = { [requestId]: promise }
+    }
+  }
+
+  rejectPendingRequests = (clientIdx, reason) => {
+    Object.values(this._pendingRequests[clientIdx] || {}).forEach(
+      ({ reject }) => {
+        reject(reason)
+      }
+    )
+
+    this._pendingRequests[clientIdx] = {}
+  }
+
   // Wrap a Thrift method to perform session check and mapping over
   // all clients (for mutating methods)
   wrapThrift = (methodName, overClients, processArgs) => (...args) => {
@@ -316,17 +338,30 @@ export class DbCon {
       }
 
       if (overClients === this.overSingleClient) {
-        return this._client[0][methodName].apply(
-          this._client[0],
-          [this._sessionId[0]].concat(processedArgs)
-        )
+        return new Promise((resolve, reject) => {
+          const requestId = pushid()
+          this.addPendingRequest(0, requestId, { resolve, reject })
+          return this._client[0][methodName]
+            .apply(this._client[0], [this._sessionId[0]].concat(processedArgs))
+            .then((res) => {
+              delete this._pendingRequests[0][requestId]
+              return resolve(res)
+            })
+        })
       } else {
         return Promise.all(
-          this._client.map((client, index) =>
-            client[methodName].apply(
-              client,
-              [this._sessionId[index]].concat(processedArgs)
-            )
+          this._client.map(
+            (client, index) =>
+              new Promise((resolve, reject) => {
+                const requestId = pushid()
+                this.addPendingRequest(index, requestId, { resolve, reject })
+                return client[methodName]
+                  .apply(client, [this._sessionId[index]].concat(processedArgs))
+                  .then((res) => {
+                    delete this._pendingRequests[index][requestId]
+                    return resolve(res)
+                  })
+              })
           )
         )
       }
@@ -384,12 +419,18 @@ export class DbCon {
 
     const transportUrls = this.getEndpoints()
     const clients = []
+    const connections = []
 
     for (let h = 0; h < hostLength; h++) {
-      const client = buildClient(transportUrls[h], this._useBinaryProtocol)
+      const { client, connection } = buildClient(
+        transportUrls[h],
+        this._useBinaryProtocol
+      )
       clients.push(client)
+      connections.push(connection)
     }
     this._client = clients
+    this._connections = connections
     this._numConnections = this._client.length
     return this
   }
@@ -478,20 +519,29 @@ export class DbCon {
           client.connect(this._user[h], this._password[h], this._dbName[h]),
           this._connectionTimeout
         ).then((sessionId) => {
-          this._client.push(client)
-          this._sessionId.push(sessionId)
-          return null
+          return { client, sessionId, connection: this._connections[h] }
         })
       )
     ).then((results) => {
-      const successfulConnections = results.filter(
-        (result) => result.status === "fulfilled"
-      )
-      if (successfulConnections.length === 0) {
+      this._connections = []
+      results.forEach(({ status, value }, index) => {
+        if (status === "fulfilled") {
+          this._client.push(value.client)
+          this._sessionId.push(value.sessionId)
+          this._connections.push(value.connection)
+
+          value.connection.on("error", (error) => {
+            this.rejectPendingRequests(index, `Connection error: ${error}`)
+            this._pendingRequests[index] = {}
+          })
+        }
+      })
+
+      if (this._client.length === 0) {
         return Promise.reject("Failed to connect to any servers.")
       }
 
-      if (successfulConnections.length < clients.length) {
+      if (this._client.length < results.length) {
         console.error("Some connections did not succeed")
       }
 
@@ -1211,7 +1261,7 @@ export class DbCon {
       sqlExecute(query, columnarResults, curNonce, limit, AT_MOST_N).catch(
         (err) => {
           if (err.name === "NetworkError") {
-            this.removeConnection(0)
+            this.removeConnection(0, "Network error")
             if (this._numConnections === 0) {
               err.msg = "No remaining database connections"
               throw err
@@ -2177,7 +2227,8 @@ export class DbCon {
     let sessionId = this._sessionId && this._sessionId[0]
     if (!client) {
       const url = `${protocol}://${host}:${port}`
-      client = buildClient(url, this._useBinaryProtocol)
+      const c = buildClient(url, this._useBinaryProtocol)
+      client = c.client
       sessionId = ""
     }
     return client.set_license_key(sessionId, key, this._nonce++)
