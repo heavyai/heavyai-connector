@@ -1172,6 +1172,10 @@ var DbCon = /*#__PURE__*/function () {
           return Promise.reject("Failed to connect to any servers.");
         }
 
+        if (successfulConnections.length < clients.length) {
+          console.error("Some connections did not succeed");
+        }
+
         return _this3;
       });
     }
