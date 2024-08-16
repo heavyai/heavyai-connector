@@ -1447,6 +1447,16 @@ var DbCon = /*#__PURE__*/function () {
      *
      * @param {number} timeout - The time in milliseconds after which any unfulfilled connection attempts will be rejected.
      * @return {number|DbCon} - The connection timeout or connector itself.
+     *
+     * @example <caption>Connect to a server with a timeout:</caption>
+     * var con = new DbCon()
+     *   .host('localhost')
+     *   .port('8080')
+     *   .dbName('myDatabase')
+     *   .user('foo')
+     *   .password('bar')
+     *   .connectionTimeout(2000)
+     *   .connect()
      */
 
   }, {
