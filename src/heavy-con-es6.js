@@ -194,6 +194,7 @@ export class DbCon {
     this._port = null
     this._dbName = null
     this._client = null
+    this._connectionTimeout = null
     this._sessionId = null
     this._protocol = null
     this._disableAutoReconnect = false
@@ -394,6 +395,33 @@ export class DbCon {
   }
 
   /**
+   * Rejects the passed promise if timeout is exceeded
+   *
+   * @param {Promise} promise - The promise to wrap with a timeout.
+   * @param {number} timeout - The time in milliseconds after which the promise will be rejected if not settled.
+   * @return {Promise} A new promise that resolves with the original promise's value, or rejects with an error if the original promise rejects or if the timeout is reached.
+   */
+  wrapTimeout(promise, timeout) {
+    if (timeout === null) {
+      return promise
+    }
+
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error("Timed out")), timeout)
+
+      promise
+        .then((result) => {
+          clearTimeout(timer)
+          resolve(result)
+        })
+        .catch((err) => {
+          clearTimeout(timer)
+          reject(err)
+        })
+    })
+  }
+
+  /**
    * Create a connection to the MapD server, generating a client and session ID.
    * @return {Promise.DbCon} Object.
    *
@@ -444,17 +472,31 @@ export class DbCon {
 
     // Reset the client property, so we can add only the ones that we can connect to below
     this._client = []
-    return Promise.all(
+    return Promise.allSettled(
       clients.map((client, h) =>
-        client
-          .connect(this._user[h], this._password[h], this._dbName[h])
-          .then((sessionId) => {
-            this._client.push(client)
-            this._sessionId.push(sessionId)
-            return null
-          })
+        this.wrapTimeout(
+          client.connect(this._user[h], this._password[h], this._dbName[h]),
+          this._connectionTimeout
+        ).then((sessionId) => {
+          this._client.push(client)
+          this._sessionId.push(sessionId)
+          return null
+        })
       )
-    ).then(() => this)
+    ).then((results) => {
+      const successfulConnections = results.filter(
+        (result) => result.status === "fulfilled"
+      )
+      if (successfulConnections.length === 0) {
+        return Promise.reject("Failed to connect to any servers.")
+      }
+
+      if (successfulConnections.length < clients.length) {
+        console.error("Some connections did not succeed")
+      }
+
+      return this
+    })
   }
 
   /**
@@ -1989,6 +2031,32 @@ export class DbCon {
       return this._dbName
     }
     this._dbName = arrayify(dbName)
+    return this
+  }
+
+  /**
+   * Gets or sets a timeout for connection attempts. If any connections do not succeed
+   * within the specified timeout period, they will be rejected. Successful connections
+   * that complete before the timeout will remain unaffected.
+   *
+   * @param {number} timeout - The time in milliseconds after which any unfulfilled connection attempts will be rejected.
+   * @return {number|DbCon} - The connection timeout or connector itself.
+   *
+   * @example <caption>Connect to a server with a timeout:</caption>
+   * var con = new DbCon()
+   *   .host('localhost')
+   *   .port('8080')
+   *   .dbName('myDatabase')
+   *   .user('foo')
+   *   .password('bar')
+   *   .connectionTimeout(2000)
+   *   .connect()
+   */
+  connectionTimeout(timeout) {
+    if (!arguments.length) {
+      return this._connectionTimeout
+    }
+    this._connectionTimeout = timeout
     return this
   }
 
