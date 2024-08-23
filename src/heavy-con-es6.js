@@ -532,7 +532,6 @@ export class DbCon {
 
           value.connection.on("error", (error) => {
             this.rejectPendingRequests(index, `Connection error: ${error}`)
-            this._pendingRequests[index] = {}
           })
         }
       })

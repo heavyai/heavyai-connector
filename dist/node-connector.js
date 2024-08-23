@@ -85,27 +85,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DbCon": () => /* binding */ DbCon,
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__,
-/* harmony export */   "Client": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__.Client,
-/* harmony export */   "Processor": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__.Processor
+/* harmony export */   "Client": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__.Client,
+/* harmony export */   "Processor": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__.Processor
 /* harmony export */ });
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6729);
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(eventemitter3__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var apache_arrow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3521);
 /* harmony import */ var apache_arrow__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(apache_arrow__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1669);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2818);
-/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2607);
-/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4221);
-/* harmony import */ var thrift__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7392);
-/* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5141);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2033);
-/* harmony import */ var pushid__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8214);
-/* harmony import */ var pushid__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(pushid__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var pushid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8214);
+/* harmony import */ var pushid__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(pushid__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1669);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2818);
+/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2607);
+/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4221);
+/* harmony import */ var thrift__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7392);
+/* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5141);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(2033);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4494);
 /* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__);
@@ -118,7 +118,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3962);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__);
@@ -171,7 +171,7 @@ function arrayify(maybeArray) {
 function CustomXHRConnection(host, port, opts) {
   var _this = this;
 
-  thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection.call(this, host, port, opts);
+  thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection.call(this, host, port, opts);
 
   if (opts.headers["Content-Type"] === "application/vnd.apache.thrift.binary") {
     // this is copy/paste from thrift with the noted changes below
@@ -202,10 +202,10 @@ function CustomXHRConnection(host, port, opts) {
   }
 }
 
-util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomXHRConnection, thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection);
+util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomXHRConnection, thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection);
 
 CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
-  var obj = thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection.prototype.getXmlHttpRequestObject.call(this);
+  var obj = thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection.prototype.getXmlHttpRequestObject.call(this);
   obj.withCredentials = CustomXHRConnection.withCredentials;
   return obj;
 }; // Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
@@ -219,17 +219,17 @@ function CustomTJSONProtocol() {
     args[_key] = arguments[_key];
   }
 
-  thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.apply(this, args);
+  thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.apply(this, args);
 }
 
-util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomTJSONProtocol, thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol);
+util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomTJSONProtocol, thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol);
 
 CustomTJSONProtocol.prototype.writeString = function (arg) {
   if (!(arg instanceof Buffer)) {
     arg = String(arg);
   }
 
-  return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.writeString.call(this, arg);
+  return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.writeString.call(this, arg);
 }; // Additionally, the browser version of connector relied on thrift's old
 // behavior of returning a Number for a 64-bit int. Technically, javascript
 // does not have 64-bits of precision in a Number, so this can end up giving
@@ -241,12 +241,12 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
 
 if (process.env.BROWSER) {
   CustomTJSONProtocol.prototype.readI64 = function () {
-    var n = thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readI64.call(this);
+    var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readI64.call(this);
     return n.toNumber(true);
   };
 
   CustomTJSONProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readString.call(this);
+    return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readString.call(this);
   };
 } // Custom version of the binary protocol to override writeString, readI64, and
 // readBinary as above.
@@ -257,27 +257,27 @@ function CustomBinaryProtocol() {
     args[_key2] = arguments[_key2];
   }
 
-  thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.apply(this, args);
+  thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.apply(this, args);
 }
 
-util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomBinaryProtocol, thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol);
+util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomBinaryProtocol, thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol);
 
 CustomBinaryProtocol.prototype.writeString = function (arg) {
   if (!(arg instanceof Buffer)) {
     arg = String(arg);
   }
 
-  return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.writeString.call(this, arg);
+  return thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.prototype.writeString.call(this, arg);
 };
 
 if (process.env.BROWSER) {
   CustomBinaryProtocol.prototype.readI64 = function () {
-    var n = thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readI64.call(this);
+    var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.prototype.readI64.call(this);
     return n.toNumber(true);
   };
 
   CustomBinaryProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readBinary.call(this).toString("base64");
+    return thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.prototype.readBinary.call(this).toString("base64");
   };
 }
 
@@ -295,8 +295,8 @@ function buildClient(url, useBinaryProtocol) {
   var connection = null;
 
   if (!process.env.BROWSER) {
-    connection = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createHttpConnection)(hostname, port, {
-      transport: thrift__WEBPACK_IMPORTED_MODULE_6__.TBufferedTransport,
+    connection = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createHttpConnection)(hostname, port, {
+      transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
       protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
@@ -305,10 +305,10 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     });
-    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__, connection);
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__, connection);
   } else {
     connection = new CustomXHRConnection(hostname, port, {
-      transport: thrift__WEBPACK_IMPORTED_MODULE_6__.TBufferedTransport,
+      transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
       protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
@@ -316,7 +316,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     });
-    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createXHRClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__, connection);
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createXHRClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__, connection);
   }
 
   return {
@@ -417,7 +417,7 @@ var DbCon = /*#__PURE__*/function () {
 
           if (overClients === _this2.overSingleClient) {
             return new Promise(function (resolve, reject) {
-              var requestId = pushid__WEBPACK_IMPORTED_MODULE_9___default()();
+              var requestId = pushid__WEBPACK_IMPORTED_MODULE_2___default()();
 
               _this2.addPendingRequest(0, requestId, {
                 resolve: resolve,
@@ -432,7 +432,7 @@ var DbCon = /*#__PURE__*/function () {
           } else {
             return Promise.all(_this2._client.map(function (client, index) {
               return new Promise(function (resolve, reject) {
-                var requestId = pushid__WEBPACK_IMPORTED_MODULE_9___default()();
+                var requestId = pushid__WEBPACK_IMPORTED_MODULE_2___default()();
 
                 _this2.addPendingRequest(index, requestId, {
                   resolve: resolve,
@@ -536,7 +536,7 @@ var DbCon = /*#__PURE__*/function () {
           objects = _ref3[2],
           permissions = _ref3[3];
 
-      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "shareDashboardsAsync", this.handleErrors(this.wrapThrift("share_dashboards", this.overAllClients, function (_ref4) {
@@ -545,7 +545,7 @@ var DbCon = /*#__PURE__*/function () {
           groups = _ref5[1],
           permissions = _ref5[2];
 
-      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "unshareDashboardAsync", this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref6) {
@@ -555,7 +555,7 @@ var DbCon = /*#__PURE__*/function () {
           objects = _ref7[2],
           permissions = _ref7[3];
 
-      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "unshareDashboardsAsync", this.handleErrors(this.wrapThrift("unshare_dashboards", this.overAllClients, function (_ref8) {
@@ -564,7 +564,7 @@ var DbCon = /*#__PURE__*/function () {
           groups = _ref9[1],
           permissions = _ref9[2];
 
-      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "getDashboardGranteesAsync", this.handleErrors(this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
@@ -580,7 +580,7 @@ var DbCon = /*#__PURE__*/function () {
           objectName = _ref11[0],
           type = _ref11[1];
 
-      return [objectName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType[type]];
+      return [objectName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectType[type]];
     })));
 
     _defineProperty(this, "getAllRolesForUserAsync", this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
@@ -596,8 +596,8 @@ var DbCon = /*#__PURE__*/function () {
     })));
 
     _defineProperty(this, "hasDbPrivilegesAsync", function (granteeName, dbName, dbPrivs) {
-      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType.DatabaseDBObjectType, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectPermissions({
-        database_permissions_: new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatabasePermissions(dbPrivs)
+      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectType.DatabaseDBObjectType, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectPermissions({
+        database_permissions_: new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDatabasePermissions(dbPrivs)
       }));
     });
 
@@ -623,7 +623,7 @@ var DbCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "detectColumnTypesAsync", this.handleErrors(function (filename, copyParams) {
       var detectColumnTypes = _this2.wrapThrift("detect_column_types", _this2.overSingleClient, function () {
-        return [filename, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
+        return [filename, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
       });
 
       return detectColumnTypes().then(function (res) {
@@ -693,7 +693,7 @@ var DbCon = /*#__PURE__*/function () {
       var limit = -1;
 
       var sqlExecuteDF = _this2.wrapThrift("sql_execute_df", _this2.overSingleClient, function () {
-        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDeviceType.CPU, deviceId, limit, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TArrowTransport.WIRE];
+        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TDeviceType.CPU, deviceId, limit, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TArrowTransport.WIRE];
       });
 
       return sqlExecuteDF().then(function (data) {
@@ -816,49 +816,49 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync", 2));
 
     _defineProperty(this, "buildTFileTypeMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType.hasOwnProperty(key)) {
-          _this2.TFileTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TFileType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TFileType.hasOwnProperty(key)) {
+          _this2.TFileTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TFileType[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTImportHeaderRowMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow.hasOwnProperty(key)) {
-          _this2.TImportHeaderRowMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TImportHeaderRow) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TImportHeaderRow.hasOwnProperty(key)) {
+          _this2.TImportHeaderRowMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TImportHeaderRow[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTEncodingTypeMap", function () {
-      for (var encoding in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType) {
-        if (_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType.hasOwnProperty(encoding)) {
-          _this2.TEncodingTypeMap[_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType[encoding]] = encoding;
+      for (var encoding in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType) {
+        if (_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType.hasOwnProperty(encoding)) {
+          _this2.TEncodingTypeMap[_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType[encoding]] = encoding;
         }
       }
     });
 
     _defineProperty(this, "buildTRasterPointTypeMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType.hasOwnProperty(key)) {
-          _this2.TRasterPointTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointType.hasOwnProperty(key)) {
+          _this2.TRasterPointTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointType[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTRasterPointTransformMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform.hasOwnProperty(key)) {
-          _this2.TRasterPointTransformMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointTransform) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointTransform.hasOwnProperty(key)) {
+          _this2.TRasterPointTransformMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointTransform[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTSourceTypeMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType.hasOwnProperty(key)) {
-          _this2.TSourceTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TSourceType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TSourceType.hasOwnProperty(key)) {
+          _this2.TSourceTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TSourceType[key]] = key;
         }
       }
     });
@@ -892,7 +892,7 @@ var DbCon = /*#__PURE__*/function () {
           createParams = _ref15[2],
           options = _ref15[3];
 
-      return [tableName, (options === null || options === void 0 ? void 0 : options.useUnmodifiedRowDesc) ? rowDescObj : _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), createParams];
+      return [tableName, (options === null || options === void 0 ? void 0 : options.useUnmodifiedRowDesc) ? rowDescObj : _helpers__WEBPACK_IMPORTED_MODULE_9__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), createParams];
     })));
 
     _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
@@ -903,7 +903,7 @@ var DbCon = /*#__PURE__*/function () {
           fileName = _ref17[1],
           copyParams = _ref17[2];
 
-      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
+      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
     })));
 
     _defineProperty(this, "importTableGeoAsync", this.handleErrors(this.wrapThrift("import_geo_table", this.overAllClients, function (_ref18) {
@@ -913,7 +913,7 @@ var DbCon = /*#__PURE__*/function () {
           copyParams = _ref19[2],
           rowDescObj = _ref19[3];
 
-      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TCreateParams()];
+      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_9__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TCreateParams()];
     })));
 
     _defineProperty(this, "renderVegaAsync", this.handleErrors(function (widgetid, vega, options) {
@@ -954,8 +954,8 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "getResultRowForPixelAsync", this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
       var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
 
-      if (!(pixel instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel)) {
-        pixel = new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel(pixel);
+      if (!(pixel instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TPixel)) {
+        pixel = new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TPixel(pixel);
       }
 
       var columnFormat = true; // BOOL
@@ -969,7 +969,7 @@ var DbCon = /*#__PURE__*/function () {
           query: "pixel request",
           queryId: -2
         };
-        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_7__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
+        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
         var numPixels = results.length;
 
         for (var p = 0; p < numPixels; p++) {
@@ -1034,7 +1034,7 @@ var DbCon = /*#__PURE__*/function () {
 
         throw error;
       }).then(function (result) {
-        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_7__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
+        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
         var processResultsObject = processor(options, _this2._datumEnum, result);
         return processResultsObject;
       });
@@ -1229,8 +1229,6 @@ var DbCon = /*#__PURE__*/function () {
 
             value.connection.on("error", function (error) {
               _this3.rejectPendingRequests(index, "Connection error: ".concat(error));
-
-              _this3._pendingRequests[index] = {};
             });
           }
         });
@@ -1276,7 +1274,7 @@ var DbCon = /*#__PURE__*/function () {
             type: this._datumEnum[fields[key].col_type.type],
             precision: fields[key].col_type.precision,
             is_array: fields[key].col_type.is_array,
-            is_dict: fields[key].col_type.encoding === _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType.DICT // eslint-disable-line no-undef
+            is_dict: fields[key].col_type.encoding === _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType.DICT // eslint-disable-line no-undef
 
           });
         }
@@ -1303,7 +1301,7 @@ var DbCon = /*#__PURE__*/function () {
      * @returns {Undefined} This function does not return anything.
      */
     value: function invertDatumTypes() {
-      var datumType = _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDatumType; // eslint-disable-line no-undef
+      var datumType = _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatumType; // eslint-disable-line no-undef
 
       for (var key in datumType) {
         if (datumType.hasOwnProperty(key)) {
@@ -1719,7 +1717,7 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
-      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).includes("Session not valid") || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBException && (String(result.error_msg).includes("Session not valid") || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
     }
   }]);
 
