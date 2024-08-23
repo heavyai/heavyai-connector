@@ -386,22 +386,6 @@ var DbCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "overAllClients", "ALL_CLIENTS");
 
-    _defineProperty(this, "addPendingRequest", function (clientIdx, requestId, promise) {
-      if (_this2._pendingRequests[clientIdx]) {
-        _this2._pendingRequests[clientIdx][requestId] = promise;
-      } else {
-        _this2._pendingRequests[clientIdx] = _defineProperty({}, requestId, promise);
-      }
-    });
-
-    _defineProperty(this, "rejectPendingRequests", function (clientIdx, reason) {
-      Object.values(_this2._pendingRequests[clientIdx] || {}).forEach(function (_ref) {
-        var reject = _ref.reject;
-        reject(reason);
-      });
-      _this2._pendingRequests[clientIdx] = {};
-    });
-
     _defineProperty(this, "wrapThrift", function (methodName, overClients, processArgs) {
       return function () {
         if (_this2._sessionId) {
@@ -450,6 +434,22 @@ var DbCon = /*#__PURE__*/function () {
           return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
         }
       };
+    });
+
+    _defineProperty(this, "addPendingRequest", function (clientIdx, requestId, promise) {
+      if (_this2._pendingRequests[clientIdx]) {
+        _this2._pendingRequests[clientIdx][requestId] = promise;
+      } else {
+        _this2._pendingRequests[clientIdx] = _defineProperty({}, requestId, promise);
+      }
+    });
+
+    _defineProperty(this, "rejectPendingRequests", function (clientIdx, reason) {
+      Object.values(_this2._pendingRequests[clientIdx] || {}).forEach(function (_ref) {
+        var reject = _ref.reject;
+        reject(reason);
+      });
+      _this2._pendingRequests[clientIdx] = {};
     });
 
     _defineProperty(this, "connect", this.callbackify("connectAsync", 0));
@@ -1067,16 +1067,17 @@ var DbCon = /*#__PURE__*/function () {
     key: "xhrWithCredentials",
     value: function xhrWithCredentials(enabled) {
       CustomXHRConnection.withCredentials = Boolean(enabled);
-    }
+    } // Track pending requests by client
+
+  }, {
+    key: "initClients",
+
     /**
      * Initializes the connector for use. This is similar to `connect()`, but stops short of
      * actually connecting to the server.
      *
      * @return {DbCon} Object.
      */
-
-  }, {
-    key: "initClients",
     value: function initClients() {
       var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._dbName);
 

@@ -1,5 +1,6 @@
 import EventEmitter from "eventemitter3"
 import { tableFromIPC } from "apache-arrow"
+import pushid from "pushid"
 import util from "util"
 import {
   TDatumType,
@@ -33,8 +34,6 @@ import {
 } from "thrift"
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
-
-import pushid from "pushid"
 
 const COMPRESSION_LEVEL_DEFAULT = 3
 
@@ -310,24 +309,6 @@ export class DbCon {
   overSingleClient = "SINGLE_CLIENT"
   overAllClients = "ALL_CLIENTS"
 
-  addPendingRequest = (clientIdx, requestId, promise) => {
-    if (this._pendingRequests[clientIdx]) {
-      this._pendingRequests[clientIdx][requestId] = promise
-    } else {
-      this._pendingRequests[clientIdx] = { [requestId]: promise }
-    }
-  }
-
-  rejectPendingRequests = (clientIdx, reason) => {
-    Object.values(this._pendingRequests[clientIdx] || {}).forEach(
-      ({ reject }) => {
-        reject(reason)
-      }
-    )
-
-    this._pendingRequests[clientIdx] = {}
-  }
-
   // Wrap a Thrift method to perform session check and mapping over
   // all clients (for mutating methods)
   wrapThrift = (methodName, overClients, processArgs) => (...args) => {
@@ -376,6 +357,26 @@ export class DbCon {
 
   xhrWithCredentials(enabled) {
     CustomXHRConnection.withCredentials = Boolean(enabled)
+  }
+
+  // Track pending requests by client
+  addPendingRequest = (clientIdx, requestId, promise) => {
+    if (this._pendingRequests[clientIdx]) {
+      this._pendingRequests[clientIdx][requestId] = promise
+    } else {
+      this._pendingRequests[clientIdx] = { [requestId]: promise }
+    }
+  }
+
+  // Reject all pending requests for a given client
+  rejectPendingRequests = (clientIdx, reason) => {
+    Object.values(this._pendingRequests[clientIdx] || {}).forEach(
+      ({ reject }) => {
+        reject(reason)
+      }
+    )
+
+    this._pendingRequests[clientIdx] = {}
   }
 
   /**
