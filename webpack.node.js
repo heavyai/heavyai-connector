@@ -1,5 +1,4 @@
 const path = require("path")
-const webpack = require("webpack")
 
 module.exports = {
   entry: ["./src/heavy-con-es6.js"],
@@ -38,16 +37,5 @@ module.exports = {
     libraryTarget: "commonjs2",
     filename: "node-connector.js"
   },
-  target: "node",
-  // Handle Node.js builtin modules (e.g. node:crypto)
-  plugins: [
-    new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
-      resource.request = resource.request.replace(/^node:/, "")
-    })
-  ],
-  resolve: {
-    fallback: {
-      crypto: false
-    }
-  }
+  target: "node"
 }
