@@ -438,6 +438,14 @@ var DbCon = /*#__PURE__*/function () {
       return args;
     })));
 
+    _defineProperty(this, "getUsersInfoAsync", this.handleErrors(this.wrapThrift("get_users_info", this.overSingleClient, function (args) {
+      return args;
+    })));
+
+    _defineProperty(this, "putImmerseUsersMetadataAsync", this.handleErrors(this.wrapThrift("put_immerse_users_metadata", this.overSingleClient, function (args) {
+      return args;
+    })));
+
     _defineProperty(this, "importTableStatusAsync", this.handleErrors(this.wrapThrift("import_table_status", this.overSingleClient, function (args) {
       return args;
     })));

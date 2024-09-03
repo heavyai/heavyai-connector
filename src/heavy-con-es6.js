@@ -745,6 +745,18 @@ export class DbCon {
     this.wrapThrift("get_users", this.overSingleClient, (args) => args)
   )
 
+  getUsersInfoAsync = this.handleErrors(
+    this.wrapThrift("get_users_info", this.overSingleClient, (args) => args)
+  )
+
+  putImmerseUsersMetadataAsync = this.handleErrors(
+    this.wrapThrift(
+      "put_immerse_users_metadata",
+      this.overSingleClient,
+      (args) => args
+    )
+  )
+
   importTableStatusAsync = this.handleErrors(
     this.wrapThrift(
       "import_table_status",
