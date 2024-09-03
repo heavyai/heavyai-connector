@@ -14,8 +14,8 @@ const defaultConnection = {
   password: "HyperInteractive"
 }
 
-/* 
-  Connect Modal 
+/*
+  Connect Modal
 */
 function hideConnectModal() {
   $("#connect-modal").modal("hide")
@@ -57,6 +57,18 @@ $("form#queryForm").submit(function (evt) {
   executeQuery(query)
 })
 
+$("form#users-info-form").submit(function (evt) {
+  evt.preventDefault()
+  getUsersInfo()
+})
+
+$("form#set-users-info-form").submit(function (evt) {
+  evt.preventDefault()
+  const username = $("form input#metadata-username").val()
+  const metadata = $("form input#metadata").val()
+  putImmerseUsersMetadata([{username, immerse_metadata_json: metadata}])
+})
+
 function tryConnect(connectionOpts) {
   const connector = new DbCon()
   connector
@@ -90,6 +102,22 @@ function executeQuery(query) {
       console.log(results)
       populateResultsTable(results)
     })
+}
+
+function getUsersInfo() {
+  connection
+    .getUsersInfoAsync()
+    .then((results) => {
+      console.log(results)
+    })
+    .catch((err) => console.error(err))
+}
+
+function putImmerseUsersMetadata(payload) {
+  console.log({payload})
+  connection.putImmerseUsersMetadataAsync(payload)
+    .then((result) => console.log(result))
+    .catch((err) => console.error(err))
 }
 
 function populateQuery(query_str) {

@@ -83,7 +83,53 @@
               <tbody id="tbody"></tbody>
             </table>
           </div>
+
+          <div class="card-header">Get Users Info</div>
+          <div>
+            <form id="users-info-form">
+              <div class="input-group mt-3 mb-3">
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-outline-primary"
+                    type="submit"
+                    id="execute-users-info"
+                  >
+                    Get Users Info
+                  </button>
+                </div>
+              </div>
+            </form>
         </div>
+
+        <div class="card-header">Set Users Info</div>
+        <div>
+          <form id="set-users-info-form">
+            <div class="input-group mt-3 mb-3">
+              <input
+                type="text"
+                id="metadata-username"
+                class="form-control"
+                spellcheck="false"
+                placeholder="Username"
+              />
+              <input
+                type="text"
+                id="metadata"
+                class="form-control"
+                spellcheck="false"
+                placeholder="User Metadata"
+              />
+              <div class="input-group-append">
+                <button
+                  class="btn btn-outline-primary"
+                  type="submit"
+                  id="set-users-info"
+                >
+                  Set Users Info
+                </button>
+              </div>
+            </div>
+          </form>
       </div>
     </div>
 
