@@ -200,6 +200,7 @@ export class DbCon {
     this._disableAutoReconnect = false
     this._datumEnum = {}
     this._pendingRequests = []
+    this._rejectPendingErrorCodes = []
     this.TFileTypeMap = {}
     this.TEncodingTypeMap = {}
     this.TImportHeaderRowMap = {}
@@ -532,7 +533,10 @@ export class DbCon {
           this._connections.push(value.connection)
 
           value.connection.on("error", (error) => {
-            this.rejectPendingRequests(index, `Connection error: ${error}`)
+            if (this._rejectPendingErrorCodes.includes(error.code)) {
+              this.rejectPendingRequests(index, `Connection error: ${error}`)
+            }
+            console.error(error)
           })
         }
       })
@@ -2151,6 +2155,24 @@ export class DbCon {
       return this._platform
     }
     this._platform = platform
+    return this
+  }
+
+  /**
+   * Set Node error codes that, when received, should cancel all pending requests
+   * for a connection. Used to terminate hanging requests after a connection error is
+   * thrown.
+   *
+   * @return {DbCon} Object.
+   *
+   * @example <caption>Set error codes:</caption>
+   * var con = new DbCon().rejectPendingErrorCodes(['ENOTFOUND', 'ECONNRESET']);
+   */
+  rejectPendingErrorCodes(errorCodes) {
+    if (!arguments.length) {
+      return this._rejectPendingErrorCodes
+    }
+    this._rejectPendingErrorCodes = errorCodes
     return this
   }
 
