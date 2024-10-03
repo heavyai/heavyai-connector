@@ -536,7 +536,7 @@ export class DbCon {
             if (this._rejectPendingErrorCodes.includes(error.code)) {
               this.rejectPendingRequests(index, `Connection error: ${error}`)
             }
-            console.error(error)
+            console.error(error) // eslint-disable-line no-console
           })
         }
       })
@@ -546,7 +546,7 @@ export class DbCon {
       }
 
       if (this._client.length < results.length) {
-        console.error("Some connections did not succeed")
+        console.error("Some connections did not succeed") // eslint-disable-line no-console
       }
 
       return this

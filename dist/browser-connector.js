@@ -1218,7 +1218,7 @@ var DbCon = /*#__PURE__*/function () {
                 _this3.rejectPendingRequests(index, "Connection error: ".concat(error));
               }
 
-              console.error(error);
+              console.error(error); // eslint-disable-line no-console
             });
           }
         });
@@ -1228,7 +1228,7 @@ var DbCon = /*#__PURE__*/function () {
         }
 
         if (_this3._client.length < results.length) {
-          console.error("Some connections did not succeed");
+          console.error("Some connections did not succeed"); // eslint-disable-line no-console
         }
 
         return _this3;
