@@ -200,7 +200,7 @@ export class DbCon {
     this._disableAutoReconnect = false
     this._datumEnum = {}
     this._pendingRequests = []
-    this._rejectPendingErrorCodes = []
+    this._shouldRejectPendingOnError = () => false
     this.TFileTypeMap = {}
     this.TEncodingTypeMap = {}
     this.TImportHeaderRowMap = {}
@@ -533,7 +533,7 @@ export class DbCon {
           this._connections.push(value.connection)
 
           value.connection.on("error", (error) => {
-            if (this._rejectPendingErrorCodes.includes(error.code)) {
+            if (this._shouldRejectPendingOnError(error)) {
               this.rejectPendingRequests(index, `Connection error: ${error}`)
             }
             console.error(error) // eslint-disable-line no-console
@@ -2159,20 +2159,20 @@ export class DbCon {
   }
 
   /**
-   * Set Node error codes that, when received, should cancel all pending requests
-   * for a connection. Used to terminate hanging requests after a connection error is
-   * thrown.
+   * Sets the value of the `_shouldRejectPendingOnError` method, which is used to determine
+   * whether pending requests should be rejected based on an error triggered on a connection.
    *
-   * @return {DbCon} Object.
+   * @param {function(Object): boolean} predicate - A function that takes a generic error object as its argument.
+   * If it returns `true`, pending requests will be rejected.
    *
-   * @example <caption>Set error codes:</caption>
-   * var con = new DbCon().rejectPendingErrorCodes(['ENOTFOUND', 'ECONNRESET']);
+   * @example <caption>Set _shouldRejectPendingOnError predicate:</caption>
+   * const con = new DbCon().shouldRejectPendingOnError((error) => ['ENOTFOUND', 'ECONNRESET'].includes(error.code));
    */
-  rejectPendingErrorCodes(errorCodes) {
+  shouldRejectPendingOnError(predicate) {
     if (!arguments.length) {
-      return this._rejectPendingErrorCodes
+      return this._shouldRejectPendingOnError
     }
-    this._rejectPendingErrorCodes = errorCodes
+    this._shouldRejectPendingOnError = predicate
     return this
   }
 
