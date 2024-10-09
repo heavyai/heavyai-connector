@@ -85,43 +85,45 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DbCon": () => /* binding */ DbCon,
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__,
-/* harmony export */   "Client": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__.Client,
-/* harmony export */   "Processor": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__.Processor
+/* harmony export */   "Client": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__.Client,
+/* harmony export */   "Processor": () => /* reexport safe */ _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__.Processor
 /* harmony export */ });
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6729);
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(eventemitter3__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var apache_arrow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3521);
 /* harmony import */ var apache_arrow__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(apache_arrow__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1669);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2818);
-/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2607);
-/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4221);
-/* harmony import */ var thrift__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7392);
-/* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5141);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2033);
+/* harmony import */ var pushid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8214);
+/* harmony import */ var pushid__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(pushid__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1669);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2818);
+/* harmony import */ var _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2607);
+/* harmony import */ var _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4221);
+/* harmony import */ var thrift__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7392);
+/* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5141);
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(2033);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4494);
-/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4494);
+/* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_9__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1396);
-/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(1396);
+/* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3962);
-/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3962);
+/* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__) if(["default","DbCon","Client","Processor"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -158,6 +160,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var COMPRESSION_LEVEL_DEFAULT = 3;
 
 function arrayify(maybeArray) {
@@ -168,7 +171,7 @@ function arrayify(maybeArray) {
 function CustomXHRConnection(host, port, opts) {
   var _this = this;
 
-  thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection.call(this, host, port, opts);
+  thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection.call(this, host, port, opts);
 
   if (opts.headers["Content-Type"] === "application/vnd.apache.thrift.binary") {
     // this is copy/paste from thrift with the noted changes below
@@ -199,10 +202,10 @@ function CustomXHRConnection(host, port, opts) {
   }
 }
 
-util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomXHRConnection, thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection);
+util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomXHRConnection, thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection);
 
 CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
-  var obj = thrift__WEBPACK_IMPORTED_MODULE_6__.XHRConnection.prototype.getXmlHttpRequestObject.call(this);
+  var obj = thrift__WEBPACK_IMPORTED_MODULE_7__.XHRConnection.prototype.getXmlHttpRequestObject.call(this);
   obj.withCredentials = CustomXHRConnection.withCredentials;
   return obj;
 }; // Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
@@ -216,17 +219,17 @@ function CustomTJSONProtocol() {
     args[_key] = arguments[_key];
   }
 
-  thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.apply(this, args);
+  thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.apply(this, args);
 }
 
-util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomTJSONProtocol, thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol);
+util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomTJSONProtocol, thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol);
 
 CustomTJSONProtocol.prototype.writeString = function (arg) {
   if (!(arg instanceof Buffer)) {
     arg = String(arg);
   }
 
-  return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.writeString.call(this, arg);
+  return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.writeString.call(this, arg);
 }; // Additionally, the browser version of connector relied on thrift's old
 // behavior of returning a Number for a 64-bit int. Technically, javascript
 // does not have 64-bits of precision in a Number, so this can end up giving
@@ -238,12 +241,12 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
 
 if (process.env.BROWSER) {
   CustomTJSONProtocol.prototype.readI64 = function () {
-    var n = thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readI64.call(this);
+    var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readI64.call(this);
     return n.toNumber(true);
   };
 
   CustomTJSONProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_6__.TJSONProtocol.prototype.readString.call(this);
+    return thrift__WEBPACK_IMPORTED_MODULE_7__.TJSONProtocol.prototype.readString.call(this);
   };
 } // Custom version of the binary protocol to override writeString, readI64, and
 // readBinary as above.
@@ -254,27 +257,27 @@ function CustomBinaryProtocol() {
     args[_key2] = arguments[_key2];
   }
 
-  thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.apply(this, args);
+  thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.apply(this, args);
 }
 
-util__WEBPACK_IMPORTED_MODULE_2___default().inherits(CustomBinaryProtocol, thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol);
+util__WEBPACK_IMPORTED_MODULE_3___default().inherits(CustomBinaryProtocol, thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol);
 
 CustomBinaryProtocol.prototype.writeString = function (arg) {
   if (!(arg instanceof Buffer)) {
     arg = String(arg);
   }
 
-  return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.writeString.call(this, arg);
+  return thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.prototype.writeString.call(this, arg);
 };
 
 if (process.env.BROWSER) {
   CustomBinaryProtocol.prototype.readI64 = function () {
-    var n = thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readI64.call(this);
+    var n = thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.prototype.readI64.call(this);
     return n.toNumber(true);
   };
 
   CustomBinaryProtocol.prototype.readBinary = function () {
-    return thrift__WEBPACK_IMPORTED_MODULE_6__.TBinaryProtocol.prototype.readBinary.call(this).toString("base64");
+    return thrift__WEBPACK_IMPORTED_MODULE_7__.TBinaryProtocol.prototype.readBinary.call(this).toString("base64");
   };
 }
 
@@ -289,10 +292,11 @@ function buildClient(url, useBinaryProtocol) {
   }
 
   var client = null;
+  var connection = null;
 
   if (!process.env.BROWSER) {
-    var connection = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createHttpConnection)(hostname, port, {
-      transport: thrift__WEBPACK_IMPORTED_MODULE_6__.TBufferedTransport,
+    connection = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createHttpConnection)(hostname, port, {
+      transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
       protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
@@ -301,12 +305,10 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     });
-    connection.on("error", console.error); // eslint-disable-line no-console
-
-    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__, connection);
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__, connection);
   } else {
-    var _connection = new CustomXHRConnection(hostname, port, {
-      transport: thrift__WEBPACK_IMPORTED_MODULE_6__.TBufferedTransport,
+    connection = new CustomXHRConnection(hostname, port, {
+      transport: thrift__WEBPACK_IMPORTED_MODULE_7__.TBufferedTransport,
       protocol: useBinaryProtocol ? CustomBinaryProtocol : CustomTJSONProtocol,
       path: "/",
       headers: {
@@ -314,14 +316,13 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     });
-
-    _connection.on("error", console.error); // eslint-disable-line no-console
-
-
-    client = (0,thrift__WEBPACK_IMPORTED_MODULE_6__.createXHRClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_5__, _connection);
+    client = (0,thrift__WEBPACK_IMPORTED_MODULE_7__.createXHRClient)(_thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__, connection);
   }
 
-  return client;
+  return {
+    client: client,
+    connection: connection
+  };
 }
 
 var DbCon = /*#__PURE__*/function () {
@@ -399,16 +400,56 @@ var DbCon = /*#__PURE__*/function () {
           }
 
           if (overClients === _this2.overSingleClient) {
-            return _this2._client[0][methodName].apply(_this2._client[0], [_this2._sessionId[0]].concat(processedArgs));
+            return new Promise(function (resolve, reject) {
+              var requestId = pushid__WEBPACK_IMPORTED_MODULE_2___default()();
+
+              _this2.addPendingRequest(0, requestId, {
+                resolve: resolve,
+                reject: reject
+              });
+
+              return _this2._client[0][methodName].apply(_this2._client[0], [_this2._sessionId[0]].concat(processedArgs)).then(function (res) {
+                delete _this2._pendingRequests[0][requestId];
+                return resolve(res);
+              });
+            });
           } else {
             return Promise.all(_this2._client.map(function (client, index) {
-              return client[methodName].apply(client, [_this2._sessionId[index]].concat(processedArgs));
+              return new Promise(function (resolve, reject) {
+                var requestId = pushid__WEBPACK_IMPORTED_MODULE_2___default()();
+
+                _this2.addPendingRequest(index, requestId, {
+                  resolve: resolve,
+                  reject: reject
+                });
+
+                return client[methodName].apply(client, [_this2._sessionId[index]].concat(processedArgs)).then(function (res) {
+                  delete _this2._pendingRequests[index][requestId];
+                  return resolve(res);
+                });
+              });
             }));
           }
         } else {
           return Promise.reject(new Error("You are not connected to a server. Try running the connect method first."));
         }
       };
+    });
+
+    _defineProperty(this, "addPendingRequest", function (clientIdx, requestId, promise) {
+      if (_this2._pendingRequests[clientIdx]) {
+        _this2._pendingRequests[clientIdx][requestId] = promise;
+      } else {
+        _this2._pendingRequests[clientIdx] = _defineProperty({}, requestId, promise);
+      }
+    });
+
+    _defineProperty(this, "rejectPendingRequests", function (clientIdx, reason) {
+      Object.values(_this2._pendingRequests[clientIdx] || {}).forEach(function (_ref) {
+        var reject = _ref.reject;
+        reject(reason);
+      });
+      _this2._pendingRequests[clientIdx] = {};
     });
 
     _defineProperty(this, "connect", this.callbackify("connectAsync", 0));
@@ -488,42 +529,42 @@ var DbCon = /*#__PURE__*/function () {
       return args;
     })));
 
-    _defineProperty(this, "shareDashboardAsync", this.handleErrors(this.wrapThrift("share_dashboard", this.overAllClients, function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 4),
-          dashboardId = _ref2[0],
-          groups = _ref2[1],
-          objects = _ref2[2],
-          permissions = _ref2[3];
+    _defineProperty(this, "shareDashboardAsync", this.handleErrors(this.wrapThrift("share_dashboard", this.overAllClients, function (_ref2) {
+      var _ref3 = _slicedToArray(_ref2, 4),
+          dashboardId = _ref3[0],
+          groups = _ref3[1],
+          objects = _ref3[2],
+          permissions = _ref3[3];
 
-      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
-    _defineProperty(this, "shareDashboardsAsync", this.handleErrors(this.wrapThrift("share_dashboards", this.overAllClients, function (_ref3) {
-      var _ref4 = _slicedToArray(_ref3, 3),
-          dashboardIds = _ref4[0],
-          groups = _ref4[1],
-          permissions = _ref4[2];
+    _defineProperty(this, "shareDashboardsAsync", this.handleErrors(this.wrapThrift("share_dashboards", this.overAllClients, function (_ref4) {
+      var _ref5 = _slicedToArray(_ref4, 3),
+          dashboardIds = _ref5[0],
+          groups = _ref5[1],
+          permissions = _ref5[2];
 
-      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
-    _defineProperty(this, "unshareDashboardAsync", this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref5) {
-      var _ref6 = _slicedToArray(_ref5, 4),
-          dashboardId = _ref6[0],
-          groups = _ref6[1],
-          objects = _ref6[2],
-          permissions = _ref6[3];
+    _defineProperty(this, "unshareDashboardAsync", this.handleErrors(this.wrapThrift("unshare_dashboard", this.overAllClients, function (_ref6) {
+      var _ref7 = _slicedToArray(_ref6, 4),
+          dashboardId = _ref7[0],
+          groups = _ref7[1],
+          objects = _ref7[2],
+          permissions = _ref7[3];
 
-      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardId, groups, objects, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
-    _defineProperty(this, "unshareDashboardsAsync", this.handleErrors(this.wrapThrift("unshare_dashboards", this.overAllClients, function (_ref7) {
-      var _ref8 = _slicedToArray(_ref7, 3),
-          dashboardIds = _ref8[0],
-          groups = _ref8[1],
-          permissions = _ref8[2];
+    _defineProperty(this, "unshareDashboardsAsync", this.handleErrors(this.wrapThrift("unshare_dashboards", this.overAllClients, function (_ref8) {
+      var _ref9 = _slicedToArray(_ref8, 3),
+          dashboardIds = _ref9[0],
+          groups = _ref9[1],
+          permissions = _ref9[2];
 
-      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDashboardPermissions(permissions)];
+      return [dashboardIds, groups, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDashboardPermissions(permissions)];
     })));
 
     _defineProperty(this, "getDashboardGranteesAsync", this.handleErrors(this.wrapThrift("get_dashboard_grantees", this.overSingleClient, function (args) {
@@ -534,12 +575,12 @@ var DbCon = /*#__PURE__*/function () {
       return args;
     })));
 
-    _defineProperty(this, "getDbObjectPrivsAsync", this.handleErrors(this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref9) {
-      var _ref10 = _slicedToArray(_ref9, 2),
-          objectName = _ref10[0],
-          type = _ref10[1];
+    _defineProperty(this, "getDbObjectPrivsAsync", this.handleErrors(this.wrapThrift("get_db_object_privs", this.overSingleClient, function (_ref10) {
+      var _ref11 = _slicedToArray(_ref10, 2),
+          objectName = _ref11[0],
+          type = _ref11[1];
 
-      return [objectName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType[type]];
+      return [objectName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectType[type]];
     })));
 
     _defineProperty(this, "getAllRolesForUserAsync", this.handleErrors(this.wrapThrift("get_all_roles_for_user", this.overSingleClient, function (args) {
@@ -555,8 +596,8 @@ var DbCon = /*#__PURE__*/function () {
     })));
 
     _defineProperty(this, "hasDbPrivilegesAsync", function (granteeName, dbName, dbPrivs) {
-      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectType.DatabaseDBObjectType, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBObjectPermissions({
-        database_permissions_: new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatabasePermissions(dbPrivs)
+      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectType.DatabaseDBObjectType, new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBObjectPermissions({
+        database_permissions_: new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDatabasePermissions(dbPrivs)
       }));
     });
 
@@ -582,7 +623,7 @@ var DbCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "detectColumnTypesAsync", this.handleErrors(function (filename, copyParams) {
       var detectColumnTypes = _this2.wrapThrift("detect_column_types", _this2.overSingleClient, function () {
-        return [filename, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
+        return [filename, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
       });
 
       return detectColumnTypes().then(function (res) {
@@ -628,7 +669,7 @@ var DbCon = /*#__PURE__*/function () {
       var runQuery = function runQuery() {
         return sqlExecute(query, columnarResults, curNonce, limit, AT_MOST_N)["catch"](function (err) {
           if (err.name === "NetworkError") {
-            _this2.removeConnection(0);
+            _this2.removeConnection(0, "Network error");
 
             if (_this2._numConnections === 0) {
               err.msg = "No remaining database connections";
@@ -652,7 +693,7 @@ var DbCon = /*#__PURE__*/function () {
       var limit = -1;
 
       var sqlExecuteDF = _this2.wrapThrift("sql_execute_df", _this2.overSingleClient, function () {
-        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDeviceType.CPU, deviceId, limit, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TArrowTransport.WIRE];
+        return [query, _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TDeviceType.CPU, deviceId, limit, _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TArrowTransport.WIRE];
       });
 
       return sqlExecuteDF().then(function (data) {
@@ -764,10 +805,10 @@ var DbCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getTableFunctionDetails", this.callbackify("getTableFunctionDetailsAsync", 0));
 
-    _defineProperty(this, "getCompletionHintsAsync", this.handleErrors(this.wrapThrift("get_completion_hints", this.overSingleClient, function (_ref11) {
-      var _ref12 = _slicedToArray(_ref11, 2),
-          queryString = _ref12[0],
-          cursor = _ref12[1].cursor;
+    _defineProperty(this, "getCompletionHintsAsync", this.handleErrors(this.wrapThrift("get_completion_hints", this.overSingleClient, function (_ref12) {
+      var _ref13 = _slicedToArray(_ref12, 2),
+          queryString = _ref13[0],
+          cursor = _ref13[1].cursor;
 
       return [queryString, cursor];
     })));
@@ -775,49 +816,49 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "getCompletionHints", this.callbackify("getCompletionHintsAsync", 2));
 
     _defineProperty(this, "buildTFileTypeMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType.hasOwnProperty(key)) {
-          _this2.TFileTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TFileType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TFileType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TFileType.hasOwnProperty(key)) {
+          _this2.TFileTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TFileType[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTImportHeaderRowMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow.hasOwnProperty(key)) {
-          _this2.TImportHeaderRowMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TImportHeaderRow[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TImportHeaderRow) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TImportHeaderRow.hasOwnProperty(key)) {
+          _this2.TImportHeaderRowMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TImportHeaderRow[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTEncodingTypeMap", function () {
-      for (var encoding in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType) {
-        if (_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType.hasOwnProperty(encoding)) {
-          _this2.TEncodingTypeMap[_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType[encoding]] = encoding;
+      for (var encoding in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType) {
+        if (_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType.hasOwnProperty(encoding)) {
+          _this2.TEncodingTypeMap[_thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType[encoding]] = encoding;
         }
       }
     });
 
     _defineProperty(this, "buildTRasterPointTypeMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType.hasOwnProperty(key)) {
-          _this2.TRasterPointTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointType.hasOwnProperty(key)) {
+          _this2.TRasterPointTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointType[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTRasterPointTransformMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform.hasOwnProperty(key)) {
-          _this2.TRasterPointTransformMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TRasterPointTransform[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointTransform) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointTransform.hasOwnProperty(key)) {
+          _this2.TRasterPointTransformMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TRasterPointTransform[key]] = key;
         }
       }
     });
 
     _defineProperty(this, "buildTSourceTypeMap", function () {
-      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType) {
-        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType.hasOwnProperty(key)) {
-          _this2.TSourceTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TSourceType[key]] = key;
+      for (var key in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TSourceType) {
+        if (_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TSourceType.hasOwnProperty(key)) {
+          _this2.TSourceTypeMap[_thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TSourceType[key]] = key;
         }
       }
     });
@@ -844,35 +885,35 @@ var DbCon = /*#__PURE__*/function () {
 
     _defineProperty(this, "getFields", this.callbackify("getFieldsAsync", 1));
 
-    _defineProperty(this, "createTableAsync", this.handleErrors(this.wrapThrift("create_table", this.overAllClients, function (_ref13) {
-      var _ref14 = _slicedToArray(_ref13, 4),
-          tableName = _ref14[0],
-          rowDescObj = _ref14[1],
-          createParams = _ref14[2],
-          options = _ref14[3];
+    _defineProperty(this, "createTableAsync", this.handleErrors(this.wrapThrift("create_table", this.overAllClients, function (_ref14) {
+      var _ref15 = _slicedToArray(_ref14, 4),
+          tableName = _ref15[0],
+          rowDescObj = _ref15[1],
+          createParams = _ref15[2],
+          options = _ref15[3];
 
-      return [tableName, (options === null || options === void 0 ? void 0 : options.useUnmodifiedRowDesc) ? rowDescObj : _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), createParams];
+      return [tableName, (options === null || options === void 0 ? void 0 : options.useUnmodifiedRowDesc) ? rowDescObj : _helpers__WEBPACK_IMPORTED_MODULE_9__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), createParams];
     })));
 
     _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
 
-    _defineProperty(this, "importTableAsync", this.handleErrors(this.wrapThrift("import_table", this.overAllClients, function (_ref15) {
-      var _ref16 = _slicedToArray(_ref15, 3),
-          tableName = _ref16[0],
-          fileName = _ref16[1],
-          copyParams = _ref16[2];
+    _defineProperty(this, "importTableAsync", this.handleErrors(this.wrapThrift("import_table", this.overAllClients, function (_ref16) {
+      var _ref17 = _slicedToArray(_ref16, 3),
+          tableName = _ref17[0],
+          fileName = _ref17[1],
+          copyParams = _ref17[2];
 
-      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
+      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams)];
     })));
 
-    _defineProperty(this, "importTableGeoAsync", this.handleErrors(this.wrapThrift("import_geo_table", this.overAllClients, function (_ref17) {
-      var _ref18 = _slicedToArray(_ref17, 4),
-          tableName = _ref18[0],
-          fileName = _ref18[1],
-          copyParams = _ref18[2],
-          rowDescObj = _ref18[3];
+    _defineProperty(this, "importTableGeoAsync", this.handleErrors(this.wrapThrift("import_geo_table", this.overAllClients, function (_ref18) {
+      var _ref19 = _slicedToArray(_ref18, 4),
+          tableName = _ref19[0],
+          fileName = _ref19[1],
+          copyParams = _ref19[2],
+          rowDescObj = _ref19[3];
 
-      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_8__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_8__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TCreateParams()];
+      return [tableName, fileName, _helpers__WEBPACK_IMPORTED_MODULE_9__/* .convertObjectToThriftCopyParams */ .Dq(copyParams), _helpers__WEBPACK_IMPORTED_MODULE_9__/* .mutateThriftRowDesc */ .HP(rowDescObj, _this2.importerRowDesc), new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TCreateParams()];
     })));
 
     _defineProperty(this, "renderVegaAsync", this.handleErrors(function (widgetid, vega, options) {
@@ -913,8 +954,8 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "getResultRowForPixelAsync", this.handleErrors(function (widgetId, pixel, tableColNamesMap) {
       var pixelRadius = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 2;
 
-      if (!(pixel instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel)) {
-        pixel = new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TPixel(pixel);
+      if (!(pixel instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TPixel)) {
+        pixel = new _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TPixel(pixel);
       }
 
       var columnFormat = true; // BOOL
@@ -928,7 +969,7 @@ var DbCon = /*#__PURE__*/function () {
           query: "pixel request",
           queryId: -2
         };
-        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_7__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
+        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
         var numPixels = results.length;
 
         for (var p = 0; p < numPixels; p++) {
@@ -953,6 +994,12 @@ var DbCon = /*#__PURE__*/function () {
     this._protocol = null;
     this._disableAutoReconnect = false;
     this._datumEnum = {};
+    this._pendingRequests = [];
+
+    this._shouldRejectPendingOnError = function () {
+      return false;
+    };
+
     this.TFileTypeMap = {};
     this.TEncodingTypeMap = {};
     this.TImportHeaderRowMap = {};
@@ -992,7 +1039,7 @@ var DbCon = /*#__PURE__*/function () {
 
         throw error;
       }).then(function (result) {
-        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_7__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
+        var processor = (0,_process_query_results__WEBPACK_IMPORTED_MODULE_8__/* .default */ .Z)(_this2._logging, _this2.updateQueryTimes);
         var processResultsObject = processor(options, _this2._datumEnum, result);
         return processResultsObject;
       });
@@ -1004,7 +1051,7 @@ var DbCon = /*#__PURE__*/function () {
 
   _createClass(DbCon, [{
     key: "removeConnection",
-    value: function removeConnection(conId) {
+    value: function removeConnection(conId, reason) {
       if (conId < 0 || conId >= this.numConnections) {
         var err = {
           msg: "Remove connection id invalid"
@@ -1016,22 +1063,26 @@ var DbCon = /*#__PURE__*/function () {
 
       this._sessionId.splice(conId, 1);
 
+      this._connections.splice(conId, 1);
+
+      this.rejectPendingRequests(conId, reason);
       this._numConnections--;
     }
   }, {
     key: "xhrWithCredentials",
     value: function xhrWithCredentials(enabled) {
       CustomXHRConnection.withCredentials = Boolean(enabled);
-    }
+    } // Track pending requests by client
+
+  }, {
+    key: "initClients",
+
     /**
      * Initializes the connector for use. This is similar to `connect()`, but stops short of
      * actually connecting to the server.
      *
      * @return {DbCon} Object.
      */
-
-  }, {
-    key: "initClients",
     value: function initClients() {
       var allAreArrays = Array.isArray(this._host) && Array.isArray(this._port) && Array.isArray(this._dbName);
 
@@ -1067,13 +1118,19 @@ var DbCon = /*#__PURE__*/function () {
 
       var transportUrls = this.getEndpoints();
       var clients = [];
+      var connections = [];
 
       for (var h = 0; h < hostLength; h++) {
-        var client = buildClient(transportUrls[h], this._useBinaryProtocol);
+        var _buildClient = buildClient(transportUrls[h], this._useBinaryProtocol),
+            client = _buildClient.client,
+            connection = _buildClient.connection;
+
         clients.push(client);
+        connections.push(connection);
       }
 
       this._client = clients;
+      this._connections = connections;
       this._numConnections = this._client.length;
       return this;
     }
@@ -1157,23 +1214,41 @@ var DbCon = /*#__PURE__*/function () {
       this._client = [];
       return Promise.allSettled(clients.map(function (client, h) {
         return _this3.wrapTimeout(client.connect(_this3._user[h], _this3._password[h], _this3._dbName[h]), _this3._connectionTimeout).then(function (sessionId) {
-          _this3._client.push(client);
-
-          _this3._sessionId.push(sessionId);
-
-          return null;
+          return {
+            client: client,
+            sessionId: sessionId,
+            connection: _this3._connections[h]
+          };
         });
       })).then(function (results) {
-        var successfulConnections = results.filter(function (result) {
-          return result.status === "fulfilled";
+        _this3._connections = [];
+        results.forEach(function (_ref20, index) {
+          var status = _ref20.status,
+              value = _ref20.value;
+
+          if (status === "fulfilled") {
+            _this3._client.push(value.client);
+
+            _this3._sessionId.push(value.sessionId);
+
+            _this3._connections.push(value.connection);
+
+            value.connection.on("error", function (error) {
+              if (_this3._shouldRejectPendingOnError(error)) {
+                _this3.rejectPendingRequests(index, "Connection error: ".concat(error));
+              }
+
+              console.error(error); // eslint-disable-line no-console
+            });
+          }
         });
 
-        if (successfulConnections.length === 0) {
+        if (_this3._client.length === 0) {
           return Promise.reject("Failed to connect to any servers.");
         }
 
-        if (successfulConnections.length < clients.length) {
-          console.error("Some connections did not succeed");
+        if (_this3._client.length < results.length) {
+          console.error("Some connections did not succeed"); // eslint-disable-line no-console
         }
 
         return _this3;
@@ -1209,7 +1284,7 @@ var DbCon = /*#__PURE__*/function () {
             type: this._datumEnum[fields[key].col_type.type],
             precision: fields[key].col_type.precision,
             is_array: fields[key].col_type.is_array,
-            is_dict: fields[key].col_type.encoding === _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TEncodingType.DICT // eslint-disable-line no-undef
+            is_dict: fields[key].col_type.encoding === _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TEncodingType.DICT // eslint-disable-line no-undef
 
           });
         }
@@ -1236,7 +1311,7 @@ var DbCon = /*#__PURE__*/function () {
      * @returns {Undefined} This function does not return anything.
      */
     value: function invertDatumTypes() {
-      var datumType = _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_3__.TDatumType; // eslint-disable-line no-undef
+      var datumType = _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__.TDatumType; // eslint-disable-line no-undef
 
       for (var key in datumType) {
         if (datumType.hasOwnProperty(key)) {
@@ -1524,6 +1599,27 @@ var DbCon = /*#__PURE__*/function () {
       return this;
     }
     /**
+     * Sets the value of the `_shouldRejectPendingOnError` method, which is used to determine
+     * whether pending requests should be rejected based on an error triggered on a connection.
+     *
+     * @param {function(Object): boolean} predicate - A function that takes a generic error object as its argument.
+     * If it returns `true`, pending requests will be rejected.
+     *
+     * @example <caption>Set _shouldRejectPendingOnError predicate:</caption>
+     * const con = new DbCon().shouldRejectPendingOnError((error) => ['ENOTFOUND', 'ECONNRESET'].includes(error.code));
+     */
+
+  }, {
+    key: "shouldRejectPendingOnError",
+    value: function shouldRejectPendingOnError(predicate) {
+      if (!arguments.length) {
+        return this._shouldRejectPendingOnError;
+      }
+
+      this._shouldRejectPendingOnError = predicate;
+      return this;
+    }
+    /**
      * Get the number of connections that are currently open.
      * @return {Number} The number of open connections.
      *
@@ -1606,10 +1702,10 @@ var DbCon = /*#__PURE__*/function () {
 
   }, {
     key: "setLicenseKey",
-    value: function setLicenseKey(key, _ref19) {
-      var protocol = _ref19.protocol,
-          host = _ref19.host,
-          port = _ref19.port;
+    value: function setLicenseKey(key, _ref21) {
+      var protocol = _ref21.protocol,
+          host = _ref21.host,
+          port = _ref21.port;
 
       var client = Array.isArray(this._client) && this._client[0];
 
@@ -1617,7 +1713,8 @@ var DbCon = /*#__PURE__*/function () {
 
       if (!client) {
         var url = "".concat(protocol, "://").concat(host, ":").concat(port);
-        client = buildClient(url, this._useBinaryProtocol);
+        var c = buildClient(url, this._useBinaryProtocol);
+        client = c.client;
         sessionId = "";
       }
 
@@ -1631,10 +1728,10 @@ var DbCon = /*#__PURE__*/function () {
 
   }, {
     key: "getLicenseClaims",
-    value: function getLicenseClaims(_ref20) {
-      var protocol = _ref20.protocol,
-          host = _ref20.host,
-          port = _ref20.port;
+    value: function getLicenseClaims(_ref22) {
+      var protocol = _ref22.protocol,
+          host = _ref22.host,
+          port = _ref22.port;
 
       var client = Array.isArray(this._client) && this._client[0];
 
@@ -1651,7 +1748,7 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "isTimeoutError",
     value: function isTimeoutError(result) {
-      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_4__.TDBException && (String(result.error_msg).includes("Session not valid") || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
+      return result instanceof _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__.TDBException && (String(result.error_msg).includes("Session not valid") || String(result.error_msg).indexOf("User should re-authenticate.") !== -1);
     }
   }]);
 
@@ -2793,6 +2890,79 @@ Int64.prototype = {
   inspect: function() {
     return '[Int64 value:' + this + ' octets:' + this.toOctetString(' ') + ']';
   }
+};
+
+
+/***/ }),
+
+/***/ 8214:
+/***/ ((module) => {
+
+// Original code from : https://gist.github.com/mikelehen/3596a30bd69384624c11
+
+/**
+ * Fancy ID generator that creates 20-character string identifiers with the following properties:
+ *
+ * 1. They're based on timestamp so that they sort *after* any existing ids.
+ * 2. They contain 72-bits of random data after the timestamp so that IDs won't collide with other clients' IDs.
+ * 3. They sort *lexicographically* (so the timestamp is converted to characters that will sort properly).
+ * 4. They're monotonically increasing.  Even if you generate more than one in the same timestamp, the
+ *    latter ones will sort after the former ones.  We do this by using the previous random bits
+ *    but "incrementing" them by 1 (only in the case of a timestamp collision).
+ */
+
+// Modeled after base64 web-safe chars, but ordered by ASCII.
+var PUSH_CHARS = '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+
+// Timestamp of last push, used to prevent local collisions if you push twice in one ms.
+var lastPushTime = 0;
+
+// We generate 72-bits of randomness which get turned into 12 characters and appended to the
+// timestamp to prevent collisions with other clients.  We store the last characters we
+// generated because in the event of a collision, we'll use those same characters except
+// "incremented" by one.
+var lastRandChars = [];
+
+module.exports = function pushid() {
+  var now = new Date().getTime();
+  var duplicateTime = (now === lastPushTime);
+  lastPushTime = now;
+
+  var timeStampChars = new Array(8);
+  for (var i = 7; i >= 0; i--) {
+    timeStampChars[i] = PUSH_CHARS.charAt(now % 64);
+    // NOTE: Can't use << here because javascript will convert to int and lose the upper bits.
+    now = Math.floor(now / 64);
+  }
+
+  if (now !== 0) {
+    throw new Error('We should have converted the entire timestamp.');
+  }
+
+  var id = timeStampChars.join('');
+
+  if ( duplicateTime ) {
+    // If the timestamp hasn't changed since last push, use the same random number, except incremented by 1.
+    for (i = 11; i >= 0 && lastRandChars[i] === 63; i--) {
+      lastRandChars[i] = 0;
+    }
+    lastRandChars[i]++;
+  }
+  else {
+    for (i = 0; i < 12; i++) {
+      lastRandChars[i] = Math.floor(Math.random() * 64);
+    }
+  }
+
+  for (i = 0; i < 12; i++) {
+    id += PUSH_CHARS.charAt(lastRandChars[i]);
+  }
+
+  if ( id.length != 20 ) {
+    throw new Error('Length should be 20.');
+  }
+
+  return id;
 };
 
 
