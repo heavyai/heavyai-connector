@@ -44,7 +44,6 @@
     "buffer": "^6.0.3",
     "chai": "^3.5.0",
     "chai-spies": "^0.7.1",
-    "codecov": "^3.8.1",
     "documentation": "^13.1.0",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
