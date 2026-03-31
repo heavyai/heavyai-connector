@@ -51218,6 +51218,9 @@ var DbCon = /*#__PURE__*/function () {
               return _this2._client[0][methodName].apply(_this2._client[0], [_this2._sessionId[0]].concat(processedArgs)).then(function (res) {
                 delete _this2._pendingRequests[0][requestId];
                 return resolve(res);
+              })["catch"](function (err) {
+                delete _this2._pendingRequests[0][requestId];
+                return reject(err);
               });
             });
           } else {
@@ -51231,6 +51234,9 @@ var DbCon = /*#__PURE__*/function () {
                 return client[methodName].apply(client, [_this2._sessionId[index]].concat(processedArgs)).then(function (res) {
                   delete _this2._pendingRequests[index][requestId];
                   return resolve(res);
+                })["catch"](function (err) {
+                  delete _this2._pendingRequests[index][requestId];
+                  return reject(err);
                 });
               });
             }));
