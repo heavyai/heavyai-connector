@@ -329,6 +329,10 @@ export class DbCon {
               delete this._pendingRequests[0][requestId]
               return resolve(res)
             })
+            .catch((err) => {
+              delete this._pendingRequests[0][requestId]
+              return reject(err)
+            })
         })
       } else {
         return Promise.all(
@@ -342,6 +346,10 @@ export class DbCon {
                   .then((res) => {
                     delete this._pendingRequests[index][requestId]
                     return resolve(res)
+                  })
+                  .catch((err) => {
+                    delete this._pendingRequests[index][requestId]
+                    return reject(err)
                   })
               })
           )
