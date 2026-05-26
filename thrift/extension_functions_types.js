@@ -3,15 +3,12 @@
 //
 // DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 //
-"use strict";
-
-const thrift = require('thrift');
-const Thrift = thrift.Thrift;
-const Int64 = require('node-int64');
+if (typeof Int64 === 'undefined' && typeof require === 'function') {
+  var Int64 = require('node-int64');
+}
 
 
-const ttypes = module.exports = {};
-ttypes.TExtArgumentType = {
+TExtArgumentType = {
   'Int8' : 0,
   'Int16' : 1,
   'Int32' : 2,
@@ -98,378 +95,384 @@ ttypes.TExtArgumentType = {
   'ColumnListGeoMultiLineString' : 83,
   'ColumnListGeoMultiPolygon' : 84
 };
-ttypes.TOutputBufferSizeType = {
+TOutputBufferSizeType = {
   'kConstant' : 0,
   'kUserSpecifiedConstantParameter' : 1,
   'kUserSpecifiedRowMultiplier' : 2,
   'kTableFunctionSpecifiedParameter' : 3,
   'kPreFlightParameter' : 4
 };
-const TUserDefinedFunction = module.exports.TUserDefinedFunction = class {
-  constructor(args) {
-    this.name = null;
-    this.argTypes = null;
-    this.retType = null;
-    this.annotations = null;
-    if (args) {
-      if (args.name !== undefined && args.name !== null) {
-        this.name = args.name;
-      }
-      if (args.argTypes !== undefined && args.argTypes !== null) {
-        this.argTypes = Thrift.copyList(args.argTypes, [null]);
-      }
-      if (args.retType !== undefined && args.retType !== null) {
-        this.retType = args.retType;
-      }
-      if (args.annotations !== undefined && args.annotations !== null) {
-        this.annotations = Thrift.copyList(args.annotations, [Thrift.copyMap, null]);
-      }
+TUserDefinedFunction = function(args) {
+  this.name = null;
+  this.argTypes = null;
+  this.retType = null;
+  this.annotations = null;
+  if (args) {
+    if (args.name !== undefined && args.name !== null) {
+      this.name = args.name;
+    }
+    if (args.argTypes !== undefined && args.argTypes !== null) {
+      this.argTypes = Thrift.copyList(args.argTypes, [null]);
+    }
+    if (args.retType !== undefined && args.retType !== null) {
+      this.retType = args.retType;
+    }
+    if (args.annotations !== undefined && args.annotations !== null) {
+      this.annotations = Thrift.copyList(args.annotations, [Thrift.copyMap, null]);
     }
   }
-
-  read (input) {
-    input.readStructBegin();
-    while (true) {
-      const ret = input.readFieldBegin();
-      const ftype = ret.ftype;
-      const fid = ret.fid;
-      if (ftype == Thrift.Type.STOP) {
-        break;
-      }
-      switch (fid) {
-        case 1:
-        if (ftype == Thrift.Type.STRING) {
-          this.name = input.readString();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 2:
-        if (ftype == Thrift.Type.LIST) {
-          this.argTypes = [];
-          const _rtmp31 = input.readListBegin();
-          const _size0 = _rtmp31.size || 0;
-          for (let _i2 = 0; _i2 < _size0; ++_i2) {
-            let elem3 = null;
-            elem3 = input.readI32();
-            this.argTypes.push(elem3);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 3:
-        if (ftype == Thrift.Type.I32) {
-          this.retType = input.readI32();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 4:
-        if (ftype == Thrift.Type.LIST) {
-          this.annotations = [];
-          const _rtmp35 = input.readListBegin();
-          const _size4 = _rtmp35.size || 0;
-          for (let _i6 = 0; _i6 < _size4; ++_i6) {
-            let elem7 = null;
-            elem7 = {};
-            const _rtmp39 = input.readMapBegin();
-            const _size8 = _rtmp39.size || 0;
-            for (let _i10 = 0; _i10 < _size8; ++_i10) {
-              let key11 = null;
-              let val12 = null;
-              key11 = input.readString();
-              val12 = input.readString();
-              elem7[key11] = val12;
-            }
-            input.readMapEnd();
-            this.annotations.push(elem7);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        default:
-          input.skip(ftype);
-      }
-      input.readFieldEnd();
-    }
-    input.readStructEnd();
-    return;
-  }
-
-  write (output) {
-    output.writeStructBegin('TUserDefinedFunction');
-    if (this.name !== null && this.name !== undefined) {
-      output.writeFieldBegin('name', Thrift.Type.STRING, 1);
-      output.writeString(this.name);
-      output.writeFieldEnd();
-    }
-    if (this.argTypes !== null && this.argTypes !== undefined) {
-      output.writeFieldBegin('argTypes', Thrift.Type.LIST, 2);
-      output.writeListBegin(Thrift.Type.I32, this.argTypes.length);
-      for (let iter13 in this.argTypes) {
-        if (this.argTypes.hasOwnProperty(iter13)) {
-          iter13 = this.argTypes[iter13];
-          output.writeI32(iter13);
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    if (this.retType !== null && this.retType !== undefined) {
-      output.writeFieldBegin('retType', Thrift.Type.I32, 3);
-      output.writeI32(this.retType);
-      output.writeFieldEnd();
-    }
-    if (this.annotations !== null && this.annotations !== undefined) {
-      output.writeFieldBegin('annotations', Thrift.Type.LIST, 4);
-      output.writeListBegin(Thrift.Type.MAP, this.annotations.length);
-      for (let iter14 in this.annotations) {
-        if (this.annotations.hasOwnProperty(iter14)) {
-          iter14 = this.annotations[iter14];
-          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(iter14));
-          for (let kiter15 in iter14) {
-            if (iter14.hasOwnProperty(kiter15)) {
-              let viter16 = iter14[kiter15];
-              output.writeString(kiter15);
-              output.writeString(viter16);
-            }
-          }
-          output.writeMapEnd();
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    output.writeFieldStop();
-    output.writeStructEnd();
-    return;
-  }
-
 };
-const TUserDefinedTableFunction = module.exports.TUserDefinedTableFunction = class {
-  constructor(args) {
-    this.name = null;
-    this.sizerType = null;
-    this.sizerArgPos = null;
-    this.inputArgTypes = null;
-    this.outputArgTypes = null;
-    this.sqlArgTypes = null;
-    this.annotations = null;
-    if (args) {
-      if (args.name !== undefined && args.name !== null) {
-        this.name = args.name;
-      }
-      if (args.sizerType !== undefined && args.sizerType !== null) {
-        this.sizerType = args.sizerType;
-      }
-      if (args.sizerArgPos !== undefined && args.sizerArgPos !== null) {
-        this.sizerArgPos = args.sizerArgPos;
-      }
-      if (args.inputArgTypes !== undefined && args.inputArgTypes !== null) {
-        this.inputArgTypes = Thrift.copyList(args.inputArgTypes, [null]);
-      }
-      if (args.outputArgTypes !== undefined && args.outputArgTypes !== null) {
-        this.outputArgTypes = Thrift.copyList(args.outputArgTypes, [null]);
-      }
-      if (args.sqlArgTypes !== undefined && args.sqlArgTypes !== null) {
-        this.sqlArgTypes = Thrift.copyList(args.sqlArgTypes, [null]);
-      }
-      if (args.annotations !== undefined && args.annotations !== null) {
-        this.annotations = Thrift.copyList(args.annotations, [Thrift.copyMap, null]);
-      }
+TUserDefinedFunction.prototype = {};
+TUserDefinedFunction.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
     }
-  }
-
-  read (input) {
-    input.readStructBegin();
-    while (true) {
-      const ret = input.readFieldBegin();
-      const ftype = ret.ftype;
-      const fid = ret.fid;
-      if (ftype == Thrift.Type.STOP) {
-        break;
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.name = input.readString().value;
+      } else {
+        input.skip(ftype);
       }
-      switch (fid) {
-        case 1:
-        if (ftype == Thrift.Type.STRING) {
-          this.name = input.readString();
-        } else {
-          input.skip(ftype);
+      break;
+      case 2:
+      if (ftype == Thrift.Type.LIST) {
+        this.argTypes = [];
+        var _rtmp31 = input.readListBegin();
+        var _size0 = _rtmp31.size || 0;
+        for (var _i2 = 0; _i2 < _size0; ++_i2) {
+          var elem3 = null;
+          elem3 = input.readI32().value;
+          this.argTypes.push(elem3);
         }
-        break;
-        case 2:
-        if (ftype == Thrift.Type.I32) {
-          this.sizerType = input.readI32();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 3:
-        if (ftype == Thrift.Type.I32) {
-          this.sizerArgPos = input.readI32();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 4:
-        if (ftype == Thrift.Type.LIST) {
-          this.inputArgTypes = [];
-          const _rtmp318 = input.readListBegin();
-          const _size17 = _rtmp318.size || 0;
-          for (let _i19 = 0; _i19 < _size17; ++_i19) {
-            let elem20 = null;
-            elem20 = input.readI32();
-            this.inputArgTypes.push(elem20);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 5:
-        if (ftype == Thrift.Type.LIST) {
-          this.outputArgTypes = [];
-          const _rtmp322 = input.readListBegin();
-          const _size21 = _rtmp322.size || 0;
-          for (let _i23 = 0; _i23 < _size21; ++_i23) {
-            let elem24 = null;
-            elem24 = input.readI32();
-            this.outputArgTypes.push(elem24);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 6:
-        if (ftype == Thrift.Type.LIST) {
-          this.sqlArgTypes = [];
-          const _rtmp326 = input.readListBegin();
-          const _size25 = _rtmp326.size || 0;
-          for (let _i27 = 0; _i27 < _size25; ++_i27) {
-            let elem28 = null;
-            elem28 = input.readI32();
-            this.sqlArgTypes.push(elem28);
-          }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
-        }
-        break;
-        case 7:
-        if (ftype == Thrift.Type.LIST) {
-          this.annotations = [];
-          const _rtmp330 = input.readListBegin();
-          const _size29 = _rtmp330.size || 0;
-          for (let _i31 = 0; _i31 < _size29; ++_i31) {
-            let elem32 = null;
-            elem32 = {};
-            const _rtmp334 = input.readMapBegin();
-            const _size33 = _rtmp334.size || 0;
-            for (let _i35 = 0; _i35 < _size33; ++_i35) {
-              let key36 = null;
-              let val37 = null;
-              key36 = input.readString();
-              val37 = input.readString();
-              elem32[key36] = val37;
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.retType = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.LIST) {
+        this.annotations = [];
+        var _rtmp35 = input.readListBegin();
+        var _size4 = _rtmp35.size || 0;
+        for (var _i6 = 0; _i6 < _size4; ++_i6) {
+          var elem7 = null;
+          elem7 = {};
+          var _rtmp39 = input.readMapBegin();
+          var _size8 = _rtmp39.size || 0;
+          for (var _i10 = 0; _i10 < _size8; ++_i10) {
+            if (_i10 > 0 ) {
+              if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+                input.rstack.pop();
+              }
             }
-            input.readMapEnd();
-            this.annotations.push(elem32);
+            var key11 = null;
+            var val12 = null;
+            key11 = input.readString().value;
+            val12 = input.readString().value;
+            elem7[key11] = val12;
           }
-          input.readListEnd();
-        } else {
-          input.skip(ftype);
+          input.readMapEnd();
+          this.annotations.push(elem7);
         }
-        break;
-        default:
-          input.skip(ftype);
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
       }
-      input.readFieldEnd();
+      break;
+      default:
+        input.skip(ftype);
     }
-    input.readStructEnd();
-    return;
+    input.readFieldEnd();
   }
-
-  write (output) {
-    output.writeStructBegin('TUserDefinedTableFunction');
-    if (this.name !== null && this.name !== undefined) {
-      output.writeFieldBegin('name', Thrift.Type.STRING, 1);
-      output.writeString(this.name);
-      output.writeFieldEnd();
-    }
-    if (this.sizerType !== null && this.sizerType !== undefined) {
-      output.writeFieldBegin('sizerType', Thrift.Type.I32, 2);
-      output.writeI32(this.sizerType);
-      output.writeFieldEnd();
-    }
-    if (this.sizerArgPos !== null && this.sizerArgPos !== undefined) {
-      output.writeFieldBegin('sizerArgPos', Thrift.Type.I32, 3);
-      output.writeI32(this.sizerArgPos);
-      output.writeFieldEnd();
-    }
-    if (this.inputArgTypes !== null && this.inputArgTypes !== undefined) {
-      output.writeFieldBegin('inputArgTypes', Thrift.Type.LIST, 4);
-      output.writeListBegin(Thrift.Type.I32, this.inputArgTypes.length);
-      for (let iter38 in this.inputArgTypes) {
-        if (this.inputArgTypes.hasOwnProperty(iter38)) {
-          iter38 = this.inputArgTypes[iter38];
-          output.writeI32(iter38);
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    if (this.outputArgTypes !== null && this.outputArgTypes !== undefined) {
-      output.writeFieldBegin('outputArgTypes', Thrift.Type.LIST, 5);
-      output.writeListBegin(Thrift.Type.I32, this.outputArgTypes.length);
-      for (let iter39 in this.outputArgTypes) {
-        if (this.outputArgTypes.hasOwnProperty(iter39)) {
-          iter39 = this.outputArgTypes[iter39];
-          output.writeI32(iter39);
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    if (this.sqlArgTypes !== null && this.sqlArgTypes !== undefined) {
-      output.writeFieldBegin('sqlArgTypes', Thrift.Type.LIST, 6);
-      output.writeListBegin(Thrift.Type.I32, this.sqlArgTypes.length);
-      for (let iter40 in this.sqlArgTypes) {
-        if (this.sqlArgTypes.hasOwnProperty(iter40)) {
-          iter40 = this.sqlArgTypes[iter40];
-          output.writeI32(iter40);
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    if (this.annotations !== null && this.annotations !== undefined) {
-      output.writeFieldBegin('annotations', Thrift.Type.LIST, 7);
-      output.writeListBegin(Thrift.Type.MAP, this.annotations.length);
-      for (let iter41 in this.annotations) {
-        if (this.annotations.hasOwnProperty(iter41)) {
-          iter41 = this.annotations[iter41];
-          output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(iter41));
-          for (let kiter42 in iter41) {
-            if (iter41.hasOwnProperty(kiter42)) {
-              let viter43 = iter41[kiter42];
-              output.writeString(kiter42);
-              output.writeString(viter43);
-            }
-          }
-          output.writeMapEnd();
-        }
-      }
-      output.writeListEnd();
-      output.writeFieldEnd();
-    }
-    output.writeFieldStop();
-    output.writeStructEnd();
-    return;
-  }
-
+  input.readStructEnd();
+  return;
 };
+
+TUserDefinedFunction.prototype.write = function(output) {
+  output.writeStructBegin('TUserDefinedFunction');
+  if (this.name !== null && this.name !== undefined) {
+    output.writeFieldBegin('name', Thrift.Type.STRING, 1);
+    output.writeString(this.name);
+    output.writeFieldEnd();
+  }
+  if (this.argTypes !== null && this.argTypes !== undefined) {
+    output.writeFieldBegin('argTypes', Thrift.Type.LIST, 2);
+    output.writeListBegin(Thrift.Type.I32, this.argTypes.length);
+    for (var iter13 in this.argTypes) {
+      if (this.argTypes.hasOwnProperty(iter13)) {
+        iter13 = this.argTypes[iter13];
+        output.writeI32(iter13);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.retType !== null && this.retType !== undefined) {
+    output.writeFieldBegin('retType', Thrift.Type.I32, 3);
+    output.writeI32(this.retType);
+    output.writeFieldEnd();
+  }
+  if (this.annotations !== null && this.annotations !== undefined) {
+    output.writeFieldBegin('annotations', Thrift.Type.LIST, 4);
+    output.writeListBegin(Thrift.Type.MAP, this.annotations.length);
+    for (var iter14 in this.annotations) {
+      if (this.annotations.hasOwnProperty(iter14)) {
+        iter14 = this.annotations[iter14];
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(iter14));
+        for (var kiter15 in iter14) {
+          if (iter14.hasOwnProperty(kiter15)) {
+            var viter16 = iter14[kiter15];
+            output.writeString(kiter15);
+            output.writeString(viter16);
+          }
+        }
+        output.writeMapEnd();
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+TUserDefinedTableFunction = function(args) {
+  this.name = null;
+  this.sizerType = null;
+  this.sizerArgPos = null;
+  this.inputArgTypes = null;
+  this.outputArgTypes = null;
+  this.sqlArgTypes = null;
+  this.annotations = null;
+  if (args) {
+    if (args.name !== undefined && args.name !== null) {
+      this.name = args.name;
+    }
+    if (args.sizerType !== undefined && args.sizerType !== null) {
+      this.sizerType = args.sizerType;
+    }
+    if (args.sizerArgPos !== undefined && args.sizerArgPos !== null) {
+      this.sizerArgPos = args.sizerArgPos;
+    }
+    if (args.inputArgTypes !== undefined && args.inputArgTypes !== null) {
+      this.inputArgTypes = Thrift.copyList(args.inputArgTypes, [null]);
+    }
+    if (args.outputArgTypes !== undefined && args.outputArgTypes !== null) {
+      this.outputArgTypes = Thrift.copyList(args.outputArgTypes, [null]);
+    }
+    if (args.sqlArgTypes !== undefined && args.sqlArgTypes !== null) {
+      this.sqlArgTypes = Thrift.copyList(args.sqlArgTypes, [null]);
+    }
+    if (args.annotations !== undefined && args.annotations !== null) {
+      this.annotations = Thrift.copyList(args.annotations, [Thrift.copyMap, null]);
+    }
+  }
+};
+TUserDefinedTableFunction.prototype = {};
+TUserDefinedTableFunction.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.name = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.sizerType = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.sizerArgPos = input.readI32().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.LIST) {
+        this.inputArgTypes = [];
+        var _rtmp318 = input.readListBegin();
+        var _size17 = _rtmp318.size || 0;
+        for (var _i19 = 0; _i19 < _size17; ++_i19) {
+          var elem20 = null;
+          elem20 = input.readI32().value;
+          this.inputArgTypes.push(elem20);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.LIST) {
+        this.outputArgTypes = [];
+        var _rtmp322 = input.readListBegin();
+        var _size21 = _rtmp322.size || 0;
+        for (var _i23 = 0; _i23 < _size21; ++_i23) {
+          var elem24 = null;
+          elem24 = input.readI32().value;
+          this.outputArgTypes.push(elem24);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.LIST) {
+        this.sqlArgTypes = [];
+        var _rtmp326 = input.readListBegin();
+        var _size25 = _rtmp326.size || 0;
+        for (var _i27 = 0; _i27 < _size25; ++_i27) {
+          var elem28 = null;
+          elem28 = input.readI32().value;
+          this.sqlArgTypes.push(elem28);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.LIST) {
+        this.annotations = [];
+        var _rtmp330 = input.readListBegin();
+        var _size29 = _rtmp330.size || 0;
+        for (var _i31 = 0; _i31 < _size29; ++_i31) {
+          var elem32 = null;
+          elem32 = {};
+          var _rtmp334 = input.readMapBegin();
+          var _size33 = _rtmp334.size || 0;
+          for (var _i35 = 0; _i35 < _size33; ++_i35) {
+            if (_i35 > 0 ) {
+              if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+                input.rstack.pop();
+              }
+            }
+            var key36 = null;
+            var val37 = null;
+            key36 = input.readString().value;
+            val37 = input.readString().value;
+            elem32[key36] = val37;
+          }
+          input.readMapEnd();
+          this.annotations.push(elem32);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TUserDefinedTableFunction.prototype.write = function(output) {
+  output.writeStructBegin('TUserDefinedTableFunction');
+  if (this.name !== null && this.name !== undefined) {
+    output.writeFieldBegin('name', Thrift.Type.STRING, 1);
+    output.writeString(this.name);
+    output.writeFieldEnd();
+  }
+  if (this.sizerType !== null && this.sizerType !== undefined) {
+    output.writeFieldBegin('sizerType', Thrift.Type.I32, 2);
+    output.writeI32(this.sizerType);
+    output.writeFieldEnd();
+  }
+  if (this.sizerArgPos !== null && this.sizerArgPos !== undefined) {
+    output.writeFieldBegin('sizerArgPos', Thrift.Type.I32, 3);
+    output.writeI32(this.sizerArgPos);
+    output.writeFieldEnd();
+  }
+  if (this.inputArgTypes !== null && this.inputArgTypes !== undefined) {
+    output.writeFieldBegin('inputArgTypes', Thrift.Type.LIST, 4);
+    output.writeListBegin(Thrift.Type.I32, this.inputArgTypes.length);
+    for (var iter38 in this.inputArgTypes) {
+      if (this.inputArgTypes.hasOwnProperty(iter38)) {
+        iter38 = this.inputArgTypes[iter38];
+        output.writeI32(iter38);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.outputArgTypes !== null && this.outputArgTypes !== undefined) {
+    output.writeFieldBegin('outputArgTypes', Thrift.Type.LIST, 5);
+    output.writeListBegin(Thrift.Type.I32, this.outputArgTypes.length);
+    for (var iter39 in this.outputArgTypes) {
+      if (this.outputArgTypes.hasOwnProperty(iter39)) {
+        iter39 = this.outputArgTypes[iter39];
+        output.writeI32(iter39);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.sqlArgTypes !== null && this.sqlArgTypes !== undefined) {
+    output.writeFieldBegin('sqlArgTypes', Thrift.Type.LIST, 6);
+    output.writeListBegin(Thrift.Type.I32, this.sqlArgTypes.length);
+    for (var iter40 in this.sqlArgTypes) {
+      if (this.sqlArgTypes.hasOwnProperty(iter40)) {
+        iter40 = this.sqlArgTypes[iter40];
+        output.writeI32(iter40);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.annotations !== null && this.annotations !== undefined) {
+    output.writeFieldBegin('annotations', Thrift.Type.LIST, 7);
+    output.writeListBegin(Thrift.Type.MAP, this.annotations.length);
+    for (var iter41 in this.annotations) {
+      if (this.annotations.hasOwnProperty(iter41)) {
+        iter41 = this.annotations[iter41];
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(iter41));
+        for (var kiter42 in iter41) {
+          if (iter41.hasOwnProperty(kiter42)) {
+            var viter43 = iter41[kiter42];
+            output.writeString(kiter42);
+            output.writeString(viter43);
+          }
+        }
+        output.writeMapEnd();
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
