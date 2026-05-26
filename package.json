@@ -79,7 +79,7 @@
   "dependencies": {
     "eventemitter3": "^3.1.0",
     "pushid": "^1.0.0",
-    "thrift": "~0.14.2"
+    "thrift": "~0.23.0"
   },
   "peerDependencies": {
     "apache-arrow": "^7.0.0"
