@@ -893,69 +893,6 @@ TStringRow.prototype[Symbol.for("write")] = function(output) {
   return;
 };
 
-TKrb5Session = function(args) {
-  this.sessionId = null;
-  this.krbToken = null;
-  if (args) {
-    if (args.sessionId !== undefined && args.sessionId !== null) {
-      this.sessionId = args.sessionId;
-    }
-    if (args.krbToken !== undefined && args.krbToken !== null) {
-      this.krbToken = args.krbToken;
-    }
-  }
-};
-TKrb5Session.prototype = {};
-TKrb5Session.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.sessionId = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.krbToken = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TKrb5Session.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('TKrb5Session');
-  if (this.sessionId !== null && this.sessionId !== undefined) {
-    output.writeFieldBegin('sessionId', Thrift.Type.STRING, 1);
-    output.writeString(this.sessionId);
-    output.writeFieldEnd();
-  }
-  if (this.krbToken !== null && this.krbToken !== undefined) {
-    output.writeFieldBegin('krbToken', Thrift.Type.STRING, 2);
-    output.writeString(this.krbToken);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
 TStepResult = function(args) {
   this.serialized_rows = null;
   this.execution_finished = null;
