@@ -607,7 +607,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //
@@ -3602,7 +3602,7 @@ module.exports = Math.abs;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //
@@ -32788,7 +32788,7 @@ module.exports = Number.isNaN || function isNaN(a) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //
@@ -32918,7 +32918,7 @@ const TCompletionHint = module.exports.TCompletionHint = class {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //
@@ -34958,7 +34958,7 @@ module.exports = URIError;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //
@@ -43469,7 +43469,7 @@ const TUserInfo = module.exports.TUserInfo = class {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //
@@ -49302,7 +49302,7 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: ./src/helpers.js
 var helpers = __webpack_require__(9644);
 ;// ./src/process-columnar-results.js
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 
@@ -49435,7 +49435,7 @@ function processColumnarResults(data, eliminateNullRows, dataEnum) {
   return formattedResult;
 }
 ;// ./src/process-row-results.js
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 
@@ -49575,7 +49575,7 @@ function processRowResults(data, eliminateNullRows, datumEnum) {
   return formattedResult;
 }
 ;// ./src/process-query-results.js
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 
@@ -49905,7 +49905,7 @@ module.exports = Object;
 /* harmony export */ });
 /* harmony import */ var _thrift_heavy_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5464);
 /* harmony import */ var _thrift_heavy_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_thrift_heavy_types__WEBPACK_IMPORTED_MODULE_0__);
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 
@@ -51076,7 +51076,7 @@ function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), 
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 
