@@ -1,3 +1,6 @@
+// Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import { TCopyParams } from "../thrift/heavy_types"
 
 export const convertObjectToThriftCopyParams = (obj) => new TCopyParams(obj) // eslint-disable-line no-undef
