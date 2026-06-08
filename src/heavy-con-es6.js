@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 import EventEmitter from "eventemitter3"
 import { tableFromIPC } from "apache-arrow"
 import pushid from "pushid"
