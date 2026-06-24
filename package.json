@@ -56,7 +56,6 @@
     "karma-jasmine": "^4.0.1",
     "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
-    "license-checker": "^25.0.1",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
     "prettier": "^2.1.2",
