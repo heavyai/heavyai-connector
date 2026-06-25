@@ -25,7 +25,7 @@ import {
   TSourceType,
   TRasterPointTransform
 } from "../thrift/heavy_types.js"
-import MapDThrift from "../thrift/Heavy.js"
+import { HeavyClient } from "../thrift/Heavy.js"
 import {
   TBinaryProtocol,
   TBufferedTransport,
@@ -170,7 +170,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    client = createClient(MapDThrift, connection)
+    client = createClient(HeavyClient, connection)
   } else {
     connection = new CustomXHRConnection(hostname, port, {
       transport: TBufferedTransport,
@@ -183,7 +183,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    client = createXHRClient(MapDThrift, connection)
+    client = createXHRClient(HeavyClient, connection)
   }
   return { client, connection }
 }

@@ -12,6 +12,12 @@ module.exports = {
         use: "babel-loader",
         include: /src/
       },
+      {
+        // Convert Thrift --gen js browser-globals output to named CJS exports
+        test: /\.js$/,
+        use: require.resolve("./scripts/thrift-globals-to-exports-loader.js"),
+        include: /thrift/
+      },
       // The following two objs fix an issue with Apache-Arrow
       // As the package includes both .mjs and .js outputs, webpack errors
       // without this.
