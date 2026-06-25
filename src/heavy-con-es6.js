@@ -31,10 +31,28 @@ import {
   TBufferedTransport,
   TJSONProtocol,
   XHRConnection,
-  createClient,
-  createHttpConnection,
-  createXHRClient
+  createHttpConnection
 } from "thrift"
+
+// Thrift 0.23+ generated send_* methods call this.output.getTransport().flush(),
+// which requires this.output to be a protocol instance (protocols expose getTransport).
+// The upstream createClient passes the raw transport as input and the protocol class
+// as output, which breaks this. We instantiate the protocol around the transport and
+// pass the same protocol instance for both input and output.
+function createClient(ServiceClient, connection) {
+  if (ServiceClient.Client) {
+    ServiceClient = ServiceClient.Client
+  }
+  const writeCb = (buf, seqid) => connection.write(buf, seqid)
+  const transport = new connection.transport(undefined, writeCb)
+  const protocol = new connection.protocol(transport)
+  const client = new ServiceClient(protocol, protocol)
+  transport.client = client
+  connection.client = client
+  return client
+}
+
+const createXHRClient = createClient
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
 

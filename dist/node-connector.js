@@ -28492,7 +28492,7 @@ __webpack_unused_export__ = log.getLogLevel;
 
 var connection = __webpack_require__(3952);
 __webpack_unused_export__ = connection.Connection;
-exports.UU = connection.createClient;
+__webpack_unused_export__ = connection.createClient;
 __webpack_unused_export__ = connection.createConnection;
 __webpack_unused_export__ = connection.createUDSConnection;
 __webpack_unused_export__ = connection.createSSLConnection;
@@ -28513,7 +28513,7 @@ __webpack_unused_export__ = wsConnection.createWSClient;
 var xhrConnection = __webpack_require__(9027);
 exports.$9 = xhrConnection.XHRConnection;
 __webpack_unused_export__ = xhrConnection.createXHRConnection;
-exports.UA = xhrConnection.createXHRClient;
+__webpack_unused_export__ = xhrConnection.createXHRClient;
 
 var server = __webpack_require__(2519);
 __webpack_unused_export__ = server.createServer;
@@ -42158,6 +42158,27 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 
 
+// Thrift 0.23+ generated send_* methods call this.output.getTransport().flush(),
+// which requires this.output to be a protocol instance (protocols expose getTransport).
+// The upstream createClient passes the raw transport as input and the protocol class
+// as output, which breaks this. We instantiate the protocol around the transport and
+// pass the same protocol instance for both input and output.
+function createClient(ServiceClient, connection) {
+  if (ServiceClient.Client) {
+    ServiceClient = ServiceClient.Client;
+  }
+  var writeCb = function writeCb(buf, seqid) {
+    return connection.write(buf, seqid);
+  };
+  var transport = new connection.transport(undefined, writeCb);
+  var protocol = new connection.protocol(transport);
+  var client = new ServiceClient(protocol, protocol);
+  transport.client = client;
+  connection.client = client;
+  return client;
+}
+var createXHRClient = createClient;
+
 
 var COMPRESSION_LEVEL_DEFAULT = 3;
 function arrayify(maybeArray) {
@@ -42280,7 +42301,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     });
-    client = (0,thrift/* createClient */.UU)(Heavy/* HeavyClient */.lZj, connection);
+    client = createClient(Heavy/* HeavyClient */.lZj, connection);
   } else {
     connection = new CustomXHRConnection(hostname, port, {
       transport: thrift.TBufferedTransport,
@@ -42291,7 +42312,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     });
-    client = (0,thrift/* createXHRClient */.UA)(Heavy/* HeavyClient */.lZj, connection);
+    client = createXHRClient(Heavy/* HeavyClient */.lZj, connection);
   }
   return {
     client: client,
