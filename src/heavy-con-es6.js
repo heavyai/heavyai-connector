@@ -1728,7 +1728,6 @@ export class DbCon {
    * Create a table and persist it to the backend.
    * @param {String} tableName The name of the new table.
    * @param {Array<TColumnType>} rowDescObj Fields in the new table.
-   * @param {TCreateParams} createParams Properties to apply to the new table (e.g. replicated)
    * @param {Object} options
    * @param {boolean} options.useUnmodifiedRowDesc By default, createTableAsync calls createTable using properties from
    * both rowDescObj and the descriptor last returned by detectColumnTypesAsync. If true, this simply calls createTable
@@ -1744,12 +1743,11 @@ export class DbCon {
     this.wrapThrift(
       "create_table",
       this.overAllClients,
-      ([tableName, rowDescObj, createParams, options]) => [
+      ([tableName, rowDescObj, options]) => [
         tableName,
         options?.useUnmodifiedRowDesc
           ? rowDescObj
-          : helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
-        createParams
+          : helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
       ]
     )
   )
@@ -1780,7 +1778,7 @@ export class DbCon {
    * @param {String} tableName The name of the new geo table.
    * @param {String} fileName The name of the file containing the table.
    * @param {TCopyParams} copyParams See {@link TCopyParams}
-   * @param {TColumnType[]} headers A colleciton of metadata related to the table headers.
+   * @param {TColumnType[]} headers A collection of metadata related to the table headers.
    */
   importTableGeoAsync = this.handleErrors(
     this.wrapThrift(
@@ -1790,8 +1788,7 @@ export class DbCon {
         tableName,
         fileName,
         helpers.convertObjectToThriftCopyParams(copyParams),
-        helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
-        new TCreateParams()
+        helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
       ]
     )
   )
