@@ -4259,7 +4259,7 @@ module.exports = Math.abs;
 /***/ }),
 
 /***/ 1962:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 /* provided dependency */ var Thrift = __webpack_require__(218)["Thrift"];
 //
@@ -22934,6 +22934,10 @@ HeavyClient.prototype.recv_get_databases = function() {
   }
   throw 'get_databases failed: unknown result';
 };
+
+if (true) {
+  module.exports = { Client: HeavyClient };
+}
 
 
 /***/ }),
