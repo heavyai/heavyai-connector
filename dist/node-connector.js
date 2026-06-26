@@ -47349,6 +47349,27 @@ function createClient(ServiceClient, connection) {
   };
   var transport = new connection.transport(undefined, writeCb);
   var protocol = new connection.protocol(transport);
+  var flush = transport.flush.bind(transport);
+  transport.flush = function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    var callback = args.find(function (arg) {
+      return typeof arg === "function";
+    });
+    if (callback) {
+      connection._responseCallback = function (responseTransport) {
+        var requestTransport = protocol.trans;
+        protocol.trans = responseTransport;
+        try {
+          callback();
+        } finally {
+          protocol.trans = requestTransport;
+        }
+      };
+    }
+    return flush();
+  };
   var client = new ServiceClient(protocol, protocol);
   transport.client = client;
   connection.client = client;
@@ -47447,9 +47468,34 @@ CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   obj.withCredentials = CustomXHRConnection.withCredentials;
   return obj;
 };
+CustomXHRConnection.prototype.setRecvBuffer = function (buf) {
+  var _this = this;
+  this.recv_buf = buf;
+  this.recv_buf_sz = this.recv_buf.length;
+  this.wpos = this.recv_buf.length;
+  this.rpos = 0;
+  var data;
+  if (Object.prototype.toString.call(buf) === "[object ArrayBuffer]") {
+    data = new Uint8Array(buf);
+  }
+  var thing = new Buffer(data || buf);
+  this.transport.receiver(function (transportWithData) {
+    if (_this._responseCallback) {
+      var responseCallback = _this._responseCallback;
+      _this._responseCallback = null;
+      logThriftDebug("response callback", {
+        readCursor: transportWithData.readCursor,
+        writeCursor: transportWithData.writeCursor
+      });
+      responseCallback(transportWithData);
+    } else {
+      _this.__decodeCallback(transportWithData);
+    }
+  })(thing);
+};
 CustomXHRConnection.prototype.flush = function () {
   var _this$protocol$constr,
-    _this = this;
+    _this2 = this;
   if (this.url === undefined || this.url === "") {
     return this.send_buf;
   }
@@ -47481,7 +47527,7 @@ CustomXHRConnection.prototype.flush = function () {
     var responseBody = isBinaryResponse ? xreq.response : xreq.responseText;
     var responsePreview = previewBuffer(responseBody);
     logThriftDebug(xreq.status === 200 ? "response" : "response non-200", {
-      url: _this.url,
+      url: _this2.url,
       status: xreq.status,
       statusText: xreq.statusText,
       contentType: responseContentType,
@@ -47491,44 +47537,44 @@ CustomXHRConnection.prototype.flush = function () {
       bodyPreview: responsePreview
     }, xreq.status === 200 ? "debug" : "warn");
     if (xreq.status === 200) {
-      _this.setRecvBuffer(responseBody);
+      _this2.setRecvBuffer(responseBody);
     }
   };
   xreq.ontimeout = function (error) {
     logThriftDebug("timeout", {
-      url: _this.url,
+      url: _this2.url,
       error: error
     }, "error");
-    _this.emit("error", error);
+    _this2.emit("error", error);
   };
   xreq.onerror = function (error) {
     logThriftDebug("network error", {
-      url: _this.url,
+      url: _this2.url,
       error: error
     }, "error");
-    _this.emit("error", error);
+    _this2.emit("error", error);
   };
   xreq.open("POST", this.url, true);
   if (this.options.timeout) {
     xreq.timeout = this.options.timeout;
   }
   Object.keys(this.headers).forEach(function (headerKey) {
-    xreq.setRequestHeader(headerKey, _this.headers[headerKey]);
+    xreq.setRequestHeader(headerKey, _this2.headers[headerKey]);
   });
   xreq.send(this.send_buf);
 };
 CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
-  var _this2 = this;
+  var _this3 = this;
   var proto = new this.protocol(transportWithData);
   try {
     var _loop = function _loop() {
       var header = proto.readMessageBegin();
       var dummySeqid = header.rseqid * -1;
-      var client = _this2.client;
-      var serviceName = _this2.seqId2Service[header.rseqid];
+      var client = _this3.client;
+      var serviceName = _this3.seqId2Service[header.rseqid];
       if (serviceName) {
-        client = _this2.client[serviceName];
-        delete _this2.seqId2Service[header.rseqid];
+        client = _this3.client[serviceName];
+        delete _this3.seqId2Service[header.rseqid];
       }
       logThriftDebug("decode message begin", {
         fname: header.fname,
@@ -47568,7 +47614,7 @@ CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
           rseqid: header.rseqid,
           error: error
         }, "error");
-        _this2.emit("error", error);
+        _this3.emit("error", error);
       }
     };
     while (true) {
@@ -47596,8 +47642,8 @@ CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
 // example: we use a number for a nonce that is defined as a string type. So,
 // let's just coerce things to a string.
 function CustomTJSONProtocol() {
-  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
+  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    args[_key2] = arguments[_key2];
   }
   thrift.TJSONProtocol.apply(this, args);
 }
@@ -47629,8 +47675,8 @@ if (process.env.BROWSER) {
 // Custom version of the binary protocol to override writeString, readI64, and
 // readBinary as above.
 function CustomBinaryProtocol() {
-  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    args[_key2] = arguments[_key2];
+  for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+    args[_key3] = arguments[_key3];
   }
   thrift.TBinaryProtocol.apply(this, args);
 }
@@ -47691,10 +47737,10 @@ function buildClient(url, useBinaryProtocol) {
 }
 var DbCon = /*#__PURE__*/function () {
   function DbCon() {
-    var _this3 = this;
+    var _this4 = this;
     _classCallCheck(this, DbCon);
     _defineProperty(this, "updateQueryTimes", function (conId, queryId, estimatedQueryTime, execution_time_ms) {
-      _this3.queryTimes[queryId] = execution_time_ms;
+      _this4.queryTimes[queryId] = execution_time_ms;
     });
     _defineProperty(this, "events", new (eventemitter3_default())());
     _defineProperty(this, "EVENT_NAMES", {
@@ -47704,11 +47750,11 @@ var DbCon = /*#__PURE__*/function () {
     // ** Method wrappers **
     _defineProperty(this, "handleErrors", function (method) {
       return function () {
-        for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-          args[_key3] = arguments[_key3];
+        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args[_key4] = arguments[_key4];
         }
-        return method.apply(_this3, args)["catch"](function (error) {
-          _this3.events.emit(_this3.EVENT_NAMES.ERROR, error);
+        return method.apply(_this4, args)["catch"](function (error) {
+          _this4.events.emit(_this4.EVENT_NAMES.ERROR, error);
           throw error;
         });
       };
@@ -47717,13 +47763,13 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "callbackify", function (method, arity) {
       return function () {
         var callback = null;
-        for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-          args[_key4] = arguments[_key4];
+        for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+          args[_key5] = arguments[_key5];
         }
         if (args.length === arity + 1) {
           callback = args.pop();
         }
-        var promise = _this3[method].apply(_this3, args);
+        var promise = _this4[method].apply(_this4, args);
         if (callback) {
           promise["catch"](function (err) {
             return callback(err);
@@ -47740,45 +47786,43 @@ var DbCon = /*#__PURE__*/function () {
     // all clients (for mutating methods)
     _defineProperty(this, "wrapThrift", function (methodName, overClients, processArgs) {
       return function () {
-        if (_this3._sessionId) {
-          for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-            args[_key5] = arguments[_key5];
+        if (_this4._sessionId) {
+          for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+            args[_key6] = arguments[_key6];
           }
           var processedArgs = processArgs(args);
           if (process.env.BROWSER) {
-            _this3.events.emit(_this3.EVENT_NAMES.METHOD_CALLED, methodName);
+            _this4.events.emit(_this4.EVENT_NAMES.METHOD_CALLED, methodName);
           }
-          if (overClients === _this3.overSingleClient) {
+          var callClient = function callClient(client, index) {
             return new Promise(function (resolve, reject) {
               var requestId = pushid_default()();
-              _this3.addPendingRequest(0, requestId, {
+              _this4.addPendingRequest(index, requestId, {
                 resolve: resolve,
                 reject: reject
               });
-              return _this3._client[0][methodName].apply(_this3._client[0], [_this3._sessionId[0]].concat(processedArgs)).then(function (res) {
-                delete _this3._pendingRequests[0][requestId];
-                return resolve(res);
-              })["catch"](function (err) {
-                delete _this3._pendingRequests[0][requestId];
-                return reject(err);
-              });
+              var done = function done(result) {
+                var _result$name;
+                delete _this4._pendingRequests[index][requestId];
+                if (result instanceof Error || result !== null && result !== void 0 && (_result$name = result.name) !== null && _result$name !== void 0 && _result$name.includes("Exception") || result !== null && result !== void 0 && result.error_msg) {
+                  reject(result);
+                } else {
+                  resolve(result);
+                }
+              };
+              try {
+                client[methodName].apply(client, [_this4._sessionId[index]].concat(processedArgs, done));
+              } catch (error) {
+                delete _this4._pendingRequests[index][requestId];
+                reject(error);
+              }
             });
+          };
+          if (overClients === _this4.overSingleClient) {
+            return callClient(_this4._client[0], 0);
           } else {
-            return Promise.all(_this3._client.map(function (client, index) {
-              return new Promise(function (resolve, reject) {
-                var requestId = pushid_default()();
-                _this3.addPendingRequest(index, requestId, {
-                  resolve: resolve,
-                  reject: reject
-                });
-                return client[methodName].apply(client, [_this3._sessionId[index]].concat(processedArgs)).then(function (res) {
-                  delete _this3._pendingRequests[index][requestId];
-                  return resolve(res);
-                })["catch"](function (err) {
-                  delete _this3._pendingRequests[index][requestId];
-                  return reject(err);
-                });
-              });
+            return Promise.all(_this4._client.map(function (client, index) {
+              return callClient(client, index);
             }));
           }
         } else {
@@ -47788,19 +47832,19 @@ var DbCon = /*#__PURE__*/function () {
     });
     // Track pending requests by client
     _defineProperty(this, "addPendingRequest", function (clientIdx, requestId, promise) {
-      if (_this3._pendingRequests[clientIdx]) {
-        _this3._pendingRequests[clientIdx][requestId] = promise;
+      if (_this4._pendingRequests[clientIdx]) {
+        _this4._pendingRequests[clientIdx][requestId] = promise;
       } else {
-        _this3._pendingRequests[clientIdx] = _defineProperty({}, requestId, promise);
+        _this4._pendingRequests[clientIdx] = _defineProperty({}, requestId, promise);
       }
     });
     // Reject all pending requests for a given client
     _defineProperty(this, "rejectPendingRequests", function (clientIdx, reason) {
-      Object.values(_this3._pendingRequests[clientIdx] || {}).forEach(function (_ref) {
+      Object.values(_this4._pendingRequests[clientIdx] || {}).forEach(function (_ref) {
         var reject = _ref.reject;
         reject(reason);
       });
-      _this3._pendingRequests[clientIdx] = {};
+      _this4._pendingRequests[clientIdx] = {};
     });
     /**
      * Create a connection to the MapD server, generating a client and session ID.
@@ -47828,19 +47872,19 @@ var DbCon = /*#__PURE__*/function () {
      * con.disconnect()
      */
     _defineProperty(this, "disconnectAsync", this.handleErrors(function () {
-      return Promise.all(_this3._client.map(function (client, c) {
-        return client.disconnect(_this3._sessionId[c])["catch"](function (error) {
+      return Promise.all(_this4._client.map(function (client, c) {
+        return client.disconnect(_this4._sessionId[c])["catch"](function (error) {
           // ignore timeout errors
-          if (error && !_this3.isTimeoutError(error)) {
+          if (error && !_this4.isTimeoutError(error)) {
             throw error;
           }
         });
       })).then(function () {
-        _this3._sessionId = null;
-        _this3._client = null;
-        _this3._numConnections = 0;
-        _this3.serverPingTimes = null;
-        return _this3;
+        _this4._sessionId = null;
+        _this4._client = null;
+        _this4._numConnections = 0;
+        _this4.serverPingTimes = null;
+        return _this4;
       });
     }));
     /**
@@ -48279,7 +48323,7 @@ var DbCon = /*#__PURE__*/function () {
      * )
      */
     _defineProperty(this, "hasDbPrivilegesAsync", function (granteeName, dbName, dbPrivs) {
-      return _this3.hasObjectPrivilegesAsync(granteeName, dbName, heavy_types/* TDBObjectType */.EW.DatabaseDBObjectType, new heavy_types/* TDBObjectPermissions */.SJ({
+      return _this4.hasObjectPrivilegesAsync(granteeName, dbName, heavy_types/* TDBObjectType */.EW.DatabaseDBObjectType, new heavy_types/* TDBObjectPermissions */.SJ({
         database_permissions_: new heavy_types/* TDatabasePermissions */.kW(dbPrivs)
       }));
     });
@@ -48313,11 +48357,11 @@ var DbCon = /*#__PURE__*/function () {
      *
      */
     _defineProperty(this, "detectColumnTypesAsync", this.handleErrors(function (filename, copyParams) {
-      var detectColumnTypes = _this3.wrapThrift("detect_column_types", _this3.overSingleClient, function () {
+      var detectColumnTypes = _this4.wrapThrift("detect_column_types", _this4.overSingleClient, function () {
         return [filename, convertObjectToThriftCopyParams(copyParams)];
       });
       return detectColumnTypes().then(function (res) {
-        _this3.importerRowDesc = res.row_set.row_desc;
+        _this4.importerRowDesc = res.row_set.row_desc;
         return res;
       });
     }));
@@ -48340,7 +48384,7 @@ var DbCon = /*#__PURE__*/function () {
       var queryId = null;
       var returnTiming = false;
       var limit = -1;
-      var curNonce = (_this3._nonce++).toString();
+      var curNonce = (_this4._nonce++).toString();
       if (options) {
         columnarResults = options.hasOwnProperty("columnarResults") ? options.columnarResults : columnarResults;
         eliminateNullRows = options.hasOwnProperty("eliminateNullRows") ? options.eliminateNullRows : eliminateNullRows;
@@ -48349,7 +48393,7 @@ var DbCon = /*#__PURE__*/function () {
         limit = options.hasOwnProperty("limit") ? options.limit : limit;
         curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
-      var lastQueryTime = queryId in _this3.queryTimes ? _this3.queryTimes[queryId] : _this3.DEFAULT_QUERY_TIME;
+      var lastQueryTime = queryId in _this4.queryTimes ? _this4.queryTimes[queryId] : _this4.DEFAULT_QUERY_TIME;
       var conId = 0;
       var processResultsOptions = {
         returnTiming: returnTiming,
@@ -48361,14 +48405,14 @@ var DbCon = /*#__PURE__*/function () {
         startTime: Date.now()
       };
       var AT_MOST_N = -1;
-      var sqlExecute = _this3.wrapThrift("sql_execute", _this3.overSingleClient, function (args) {
+      var sqlExecute = _this4.wrapThrift("sql_execute", _this4.overSingleClient, function (args) {
         return args;
       });
       var _runQuery = function runQuery() {
         return sqlExecute(query, columnarResults, curNonce, limit, AT_MOST_N)["catch"](function (err) {
           if (err.name === "NetworkError") {
-            _this3.removeConnection(0, "Network error");
-            if (_this3._numConnections === 0) {
+            _this4.removeConnection(0, "Network error");
+            if (_this4._numConnections === 0) {
               err.msg = "No remaining database connections";
               throw err;
             }
@@ -48377,7 +48421,7 @@ var DbCon = /*#__PURE__*/function () {
           throw err;
         });
       };
-      return _this3.processResults(processResultsOptions, _runQuery());
+      return _this4.processResults(processResultsOptions, _runQuery());
     }));
     /**
      * Submit a query to the database and process the results.
@@ -48399,11 +48443,11 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "queryDFAsync", this.handleErrors(function (query, options) {
       var deviceId = 0;
       var limit = -1;
-      var sqlExecuteDF = _this3.wrapThrift("sql_execute_df", _this3.overSingleClient, function () {
+      var sqlExecuteDF = _this4.wrapThrift("sql_execute_df", _this4.overSingleClient, function () {
         return [query, common_types/* TDeviceType */.jh.CPU, deviceId, limit, heavy_types/* TArrowTransport */.Fe.WIRE];
       });
       return sqlExecuteDF().then(function (data) {
-        if (_this3._logging) {
+        if (_this4._logging) {
           // eslint-disable-next-line no-console
           console.log(query, "on Server", 0, "- Execution Time:", data.execution_time_ms, "ms");
         }
@@ -48441,7 +48485,7 @@ var DbCon = /*#__PURE__*/function () {
      *
      */
     _defineProperty(this, "validateQuery", this.handleErrors(function (query) {
-      var sqlValidate = _this3.wrapThrift("sql_validate", _this3.overSingleClient, function (args) {
+      var sqlValidate = _this4.wrapThrift("sql_validate", _this4.overSingleClient, function (args) {
         return args;
       });
       return sqlValidate(query).then(function (fields) {
@@ -48449,7 +48493,7 @@ var DbCon = /*#__PURE__*/function () {
           accum[value.col_name] = value;
           return accum;
         }, {});
-        return _this3.convertFromThriftTypes(rowDict);
+        return _this4.convertFromThriftTypes(rowDict);
       });
     }));
     /**
@@ -48467,7 +48511,7 @@ var DbCon = /*#__PURE__*/function () {
      *  //  ...]
      */
     _defineProperty(this, "getTablesAsync", this.handleErrors(function () {
-      var getTables = _this3.wrapThrift("get_tables", _this3.overSingleClient, function (args) {
+      var getTables = _this4.wrapThrift("get_tables", _this4.overSingleClient, function (args) {
         return args;
       });
       return getTables().then(function (tables) {
@@ -48515,7 +48559,7 @@ var DbCon = /*#__PURE__*/function () {
      *  ...]
      */
     _defineProperty(this, "getTablesWithMetaAsync", this.handleErrors(function () {
-      var getTablesMeta = _this3.wrapThrift("get_tables_meta", _this3.overSingleClient, function (args) {
+      var getTablesMeta = _this4.wrapThrift("get_tables_meta", _this4.overSingleClient, function (args) {
         return args;
       });
       return getTablesMeta().then(function (tables) {
@@ -48524,7 +48568,7 @@ var DbCon = /*#__PURE__*/function () {
             name: table.table_name,
             num_cols: Number(table.num_cols.toString()),
             col_datum_types: table.col_types.map(function (type) {
-              return _this3._datumEnum[type.type];
+              return _this4._datumEnum[type.type];
             }),
             is_view: table.is_view,
             is_replicated: table.is_replicated,
@@ -48642,35 +48686,35 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "buildTImportHeaderRowMap", function () {
       for (var key in heavy_types/* TImportHeaderRow */.xM) {
         if (heavy_types/* TImportHeaderRow */.xM.hasOwnProperty(key)) {
-          _this3.TImportHeaderRowMap[heavy_types/* TImportHeaderRow */.xM[key]] = key;
+          _this4.TImportHeaderRowMap[heavy_types/* TImportHeaderRow */.xM[key]] = key;
         }
       }
     });
     _defineProperty(this, "buildTEncodingTypeMap", function () {
       for (var encoding in common_types/* TEncodingType */.QY) {
         if (common_types/* TEncodingType */.QY.hasOwnProperty(encoding)) {
-          _this3.TEncodingTypeMap[common_types/* TEncodingType */.QY[encoding]] = encoding;
+          _this4.TEncodingTypeMap[common_types/* TEncodingType */.QY[encoding]] = encoding;
         }
       }
     });
     _defineProperty(this, "buildTRasterPointTypeMap", function () {
       for (var key in heavy_types/* TRasterPointType */.Y$) {
         if (heavy_types/* TRasterPointType */.Y$.hasOwnProperty(key)) {
-          _this3.TRasterPointTypeMap[heavy_types/* TRasterPointType */.Y$[key]] = key;
+          _this4.TRasterPointTypeMap[heavy_types/* TRasterPointType */.Y$[key]] = key;
         }
       }
     });
     _defineProperty(this, "buildTRasterPointTransformMap", function () {
       for (var key in heavy_types/* TRasterPointTransform */.Ml) {
         if (heavy_types/* TRasterPointTransform */.Ml.hasOwnProperty(key)) {
-          _this3.TRasterPointTransformMap[heavy_types/* TRasterPointTransform */.Ml[key]] = key;
+          _this4.TRasterPointTransformMap[heavy_types/* TRasterPointTransform */.Ml[key]] = key;
         }
       }
     });
     _defineProperty(this, "buildTSourceTypeMap", function () {
       for (var key in heavy_types/* TSourceType */.E2) {
         if (heavy_types/* TSourceType */.E2.hasOwnProperty(key)) {
-          _this3.TSourceTypeMap[heavy_types/* TSourceType */.E2[key]] = key;
+          _this4.TSourceTypeMap[heavy_types/* TSourceType */.E2[key]] = key;
         }
       }
     });
@@ -48690,7 +48734,7 @@ var DbCon = /*#__PURE__*/function () {
      * }, ...]
      */
     _defineProperty(this, "getFieldsAsync", this.handleErrors(function (tableName) {
-      var getTableDetails = _this3.wrapThrift("get_table_details", _this3.overSingleClient, function (args) {
+      var getTableDetails = _this4.wrapThrift("get_table_details", _this4.overSingleClient, function (args) {
         return args;
       });
       return getTableDetails(tableName).then(function (fields) {
@@ -48700,7 +48744,7 @@ var DbCon = /*#__PURE__*/function () {
             return accum;
           }, {});
           return _objectSpread(_objectSpread({}, fields), {}, {
-            columns: _this3.convertFromThriftTypes(rowDict)
+            columns: _this4.convertFromThriftTypes(rowDict)
           });
         } else {
           throw new Error("Table (".concat(tableName, ") not found"));
@@ -48746,7 +48790,7 @@ var DbCon = /*#__PURE__*/function () {
         rowDescObj = _ref13[1],
         createParams = _ref13[2],
         options = _ref13[3];
-      return [tableName, options !== null && options !== void 0 && options.useUnmodifiedRowDesc ? rowDescObj : mutateThriftRowDesc(rowDescObj, _this3.importerRowDesc), createParams];
+      return [tableName, options !== null && options !== void 0 && options.useUnmodifiedRowDesc ? rowDescObj : mutateThriftRowDesc(rowDescObj, _this4.importerRowDesc), createParams];
     })));
     _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
     /**
@@ -48776,7 +48820,7 @@ var DbCon = /*#__PURE__*/function () {
         fileName = _ref17[1],
         copyParams = _ref17[2],
         rowDescObj = _ref17[3];
-      return [tableName, fileName, convertObjectToThriftCopyParams(copyParams), mutateThriftRowDesc(rowDescObj, _this3.importerRowDesc), new heavy_types/* TCreateParams */.RW()];
+      return [tableName, fileName, convertObjectToThriftCopyParams(copyParams), mutateThriftRowDesc(rowDescObj, _this4.importerRowDesc), new heavy_types/* TCreateParams */.RW()];
     })));
     /**
      * Use for backend rendering. This method fetches a PNG image that is a
@@ -48798,13 +48842,13 @@ var DbCon = /*#__PURE__*/function () {
         queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
         compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
       }
-      var lastQueryTime = queryId in _this3.queryTimes ? _this3.queryTimes[queryId] : _this3.DEFAULT_QUERY_TIME;
-      var curNonce = (_this3._nonce++).toString();
+      var lastQueryTime = queryId in _this4.queryTimes ? _this4.queryTimes[queryId] : _this4.DEFAULT_QUERY_TIME;
+      var curNonce = (_this4._nonce++).toString();
       if (options) {
         curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
       var conId = 0;
-      _this3._lastRenderCon = conId;
+      _this4._lastRenderCon = conId;
       var processResultsOptions = {
         isImage: true,
         query: "render: ".concat(vega),
@@ -48812,10 +48856,10 @@ var DbCon = /*#__PURE__*/function () {
         conId: conId,
         estimatedQueryTime: lastQueryTime
       };
-      var renderVega = _this3.wrapThrift("render_vega", _this3.overSingleClient, function (args) {
+      var renderVega = _this4.wrapThrift("render_vega", _this4.overSingleClient, function (args) {
         return args;
       });
-      return _this3.processResults(processResultsOptions, renderVega(widgetid, vega, compressionLevel, curNonce));
+      return _this4.processResults(processResultsOptions, renderVega(widgetid, vega, compressionLevel, curNonce));
     }));
     /**
      * Use for backend rendering. This method fetches a PNG image that is a
@@ -48848,8 +48892,8 @@ var DbCon = /*#__PURE__*/function () {
         pixel = new heavy_types/* TPixel */.Ht(pixel);
       }
       var columnFormat = true; // BOOL
-      var curNonce = (_this3._nonce++).toString();
-      return _this3._client[_this3._lastRenderCon].get_result_row_for_pixel(_this3._sessionId[_this3._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
+      var curNonce = (_this4._nonce++).toString();
+      return _this4._client[_this4._lastRenderCon].get_result_row_for_pixel(_this4._sessionId[_this4._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
         results = Array.isArray(results) ? results.pixel_rows : [results];
         var processResultsOptions = {
           isImage: false,
@@ -48857,10 +48901,10 @@ var DbCon = /*#__PURE__*/function () {
           query: "pixel request",
           queryId: -2
         };
-        var processor = processQueryResults(_this3._logging, _this3.updateQueryTimes);
+        var processor = processQueryResults(_this4._logging, _this4.updateQueryTimes);
         var numPixels = results.length;
         for (var p = 0; p < numPixels; p++) {
-          results[p].row_set = processor(processResultsOptions, _this3._datumEnum, results[p]);
+          results[p].row_set = processor(processResultsOptions, _this4._datumEnum, results[p]);
         }
         return results;
       });
@@ -48925,14 +48969,14 @@ var DbCon = /*#__PURE__*/function () {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var promise = arguments.length > 1 ? arguments[1] : undefined;
       return promise["catch"](function (error) {
-        if (_this3._logging && options.query) {
+        if (_this4._logging && options.query) {
           // eslint-disable-next-line no-console
           console.error(options.query, "\n", error);
         }
         throw error;
       }).then(function (result) {
-        var processor = processQueryResults(_this3._logging, _this3.updateQueryTimes);
-        var processResultsObject = processor(options, _this3._datumEnum, result);
+        var processor = processQueryResults(_this4._logging, _this4.updateQueryTimes);
+        var processResultsObject = processor(options, _this4._datumEnum, result);
         return processResultsObject;
       });
     };
@@ -49057,7 +49101,7 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "connectAsync",
     value: function connectAsync() {
-      var _this4 = this;
+      var _this5 = this;
       if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
         return Promise.reject("Username and password must be arrays.");
       }
@@ -49084,37 +49128,37 @@ var DbCon = /*#__PURE__*/function () {
       // Reset the client property, so we can add only the ones that we can connect to below
       this._client = [];
       return Promise.allSettled(clients.map(function (client, h) {
-        return _this4.wrapTimeout(client.connect(_this4._user[h], _this4._password[h], _this4._dbName[h]), _this4._connectionTimeout).then(function (sessionId) {
+        return _this5.wrapTimeout(client.connect(_this5._user[h], _this5._password[h], _this5._dbName[h]), _this5._connectionTimeout).then(function (sessionId) {
           return {
             client: client,
             sessionId: sessionId,
-            connection: _this4._connections[h]
+            connection: _this5._connections[h]
           };
         });
       })).then(function (results) {
-        _this4._connections = [];
+        _this5._connections = [];
         results.forEach(function (_ref18, index) {
           var status = _ref18.status,
             value = _ref18.value;
           if (status === "fulfilled") {
-            _this4._client.push(value.client);
-            _this4._sessionId.push(value.sessionId);
-            _this4._connections.push(value.connection);
+            _this5._client.push(value.client);
+            _this5._sessionId.push(value.sessionId);
+            _this5._connections.push(value.connection);
             value.connection.on("error", function (error) {
-              if (_this4._shouldRejectPendingOnError(error)) {
-                _this4.rejectPendingRequests(index, "Connection error: ".concat(error));
+              if (_this5._shouldRejectPendingOnError(error)) {
+                _this5.rejectPendingRequests(index, "Connection error: ".concat(error));
               }
               console.error(error); // eslint-disable-line no-console
             });
           }
         });
-        if (_this4._client.length === 0) {
+        if (_this5._client.length === 0) {
           return Promise.reject("Failed to connect to any servers.");
         }
-        if (_this4._client.length < results.length) {
+        if (_this5._client.length < results.length) {
           console.error("Some connections did not succeed"); // eslint-disable-line no-console
         }
-        return _this4;
+        return _this5;
       });
     }
   }, {
@@ -49490,9 +49534,9 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "getEndpoints",
     value: function getEndpoints() {
-      var _this5 = this;
+      var _this6 = this;
       return this._host.map(function (host, i) {
-        return "".concat(_this5._protocol[i], "://").concat(host, ":").concat(_this5._port[i]);
+        return "".concat(_this6._protocol[i], "://").concat(host, ":").concat(_this6._port[i]);
       });
     }
 

@@ -49,6 +49,22 @@ function createClient(ServiceClient, connection) {
   const writeCb = (buf, seqid) => connection.write(buf, seqid)
   const transport = new connection.transport(undefined, writeCb)
   const protocol = new connection.protocol(transport)
+  const flush = transport.flush.bind(transport)
+  transport.flush = (...args) => {
+    const callback = args.find((arg) => typeof arg === "function")
+    if (callback) {
+      connection._responseCallback = (responseTransport) => {
+        const requestTransport = protocol.trans
+        protocol.trans = responseTransport
+        try {
+          callback()
+        } finally {
+          protocol.trans = requestTransport
+        }
+      }
+    }
+    return flush()
+  }
   const client = new ServiceClient(protocol, protocol)
   transport.client = client
   connection.client = client
@@ -176,6 +192,33 @@ CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   const obj = XHRConnection.prototype.getXmlHttpRequestObject.call(this)
   obj.withCredentials = CustomXHRConnection.withCredentials
   return obj
+}
+
+CustomXHRConnection.prototype.setRecvBuffer = function (buf) {
+  this.recv_buf = buf
+  this.recv_buf_sz = this.recv_buf.length
+  this.wpos = this.recv_buf.length
+  this.rpos = 0
+
+  let data
+  if (Object.prototype.toString.call(buf) === "[object ArrayBuffer]") {
+    data = new Uint8Array(buf)
+  }
+  const thing = new Buffer(data || buf)
+
+  this.transport.receiver((transportWithData) => {
+    if (this._responseCallback) {
+      const responseCallback = this._responseCallback
+      this._responseCallback = null
+      logThriftDebug("response callback", {
+        readCursor: transportWithData.readCursor,
+        writeCursor: transportWithData.writeCursor
+      })
+      responseCallback(transportWithData)
+    } else {
+      this.__decodeCallback(transportWithData)
+    }
+  })(thing)
 }
 
 CustomXHRConnection.prototype.flush = function () {
@@ -573,40 +616,39 @@ export class DbCon {
         this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
       }
 
-      if (overClients === this.overSingleClient) {
-        return new Promise((resolve, reject) => {
+      const callClient = (client, index) =>
+        new Promise((resolve, reject) => {
           const requestId = pushid()
-          this.addPendingRequest(0, requestId, { resolve, reject })
-          return this._client[0][methodName]
-            .apply(this._client[0], [this._sessionId[0]].concat(processedArgs))
-            .then((res) => {
-              delete this._pendingRequests[0][requestId]
-              return resolve(res)
-            })
-            .catch((err) => {
-              delete this._pendingRequests[0][requestId]
-              return reject(err)
-            })
+          this.addPendingRequest(index, requestId, { resolve, reject })
+          const done = (result) => {
+            delete this._pendingRequests[index][requestId]
+            if (
+              result instanceof Error ||
+              result?.name?.includes("Exception") ||
+              result?.error_msg
+            ) {
+              reject(result)
+            } else {
+              resolve(result)
+            }
+          }
+
+          try {
+            client[methodName].apply(
+              client,
+              [this._sessionId[index]].concat(processedArgs, done)
+            )
+          } catch (error) {
+            delete this._pendingRequests[index][requestId]
+            reject(error)
+          }
         })
+
+      if (overClients === this.overSingleClient) {
+        return callClient(this._client[0], 0)
       } else {
         return Promise.all(
-          this._client.map(
-            (client, index) =>
-              new Promise((resolve, reject) => {
-                const requestId = pushid()
-                this.addPendingRequest(index, requestId, { resolve, reject })
-                return client[methodName]
-                  .apply(client, [this._sessionId[index]].concat(processedArgs))
-                  .then((res) => {
-                    delete this._pendingRequests[index][requestId]
-                    return resolve(res)
-                  })
-                  .catch((err) => {
-                    delete this._pendingRequests[index][requestId]
-                    return reject(err)
-                  })
-              })
-          )
+          this._client.map((client, index) => callClient(client, index))
         )
       }
     } else {
