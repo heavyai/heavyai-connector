@@ -7299,21 +7299,21 @@ Heavy_connect_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.user = input.readString().value;
+        this.user = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.passwd = input.readString().value;
+        this.passwd = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.dbname = input.readString().value;
+        this.dbname = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -7378,7 +7378,7 @@ Heavy_connect_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
+        this.success = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -7438,7 +7438,7 @@ Heavy_disconnect_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -7547,14 +7547,14 @@ Heavy_switch_database_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.dbname = input.readString().value;
+        this.dbname = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -7661,7 +7661,7 @@ Heavy_clone_session_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -7719,7 +7719,7 @@ Heavy_clone_session_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
+        this.success = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -7779,7 +7779,7 @@ Heavy_get_server_status_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -7898,7 +7898,7 @@ Heavy_get_status_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8032,7 +8032,7 @@ Heavy_get_hardware_info_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8151,7 +8151,7 @@ Heavy_get_tables_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8214,7 +8214,7 @@ Heavy_get_tables_result.prototype[Symbol.for("read")] = function(input) {
         var _size210 = _rtmp3211.size || 0;
         for (var _i212 = 0; _i212 < _size210; ++_i212) {
           var elem213 = null;
-          elem213 = input.readString().value;
+          elem213 = input.readString();
           this.success.push(elem213);
         }
         input.readListEnd();
@@ -8288,14 +8288,14 @@ Heavy_get_tables_for_database_args.prototype[Symbol.for("read")] = function(inpu
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.database_name = input.readString().value;
+        this.database_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8360,7 +8360,7 @@ Heavy_get_tables_for_database_result.prototype[Symbol.for("read")] = function(in
         var _size215 = _rtmp3216.size || 0;
         for (var _i217 = 0; _i217 < _size215; ++_i217) {
           var elem218 = null;
-          elem218 = input.readString().value;
+          elem218 = input.readString();
           this.success.push(elem218);
         }
         input.readListEnd();
@@ -8430,7 +8430,7 @@ Heavy_get_physical_tables_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8493,7 +8493,7 @@ Heavy_get_physical_tables_result.prototype[Symbol.for("read")] = function(input)
         var _size220 = _rtmp3221.size || 0;
         for (var _i222 = 0; _i222 < _size220; ++_i222) {
           var elem223 = null;
-          elem223 = input.readString().value;
+          elem223 = input.readString();
           this.success.push(elem223);
         }
         input.readListEnd();
@@ -8563,7 +8563,7 @@ Heavy_get_views_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8626,7 +8626,7 @@ Heavy_get_views_result.prototype[Symbol.for("read")] = function(input) {
         var _size225 = _rtmp3226.size || 0;
         for (var _i227 = 0; _i227 < _size225; ++_i227) {
           var elem228 = null;
-          elem228 = input.readString().value;
+          elem228 = input.readString();
           this.success.push(elem228);
         }
         input.readListEnd();
@@ -8696,7 +8696,7 @@ Heavy_get_tables_meta_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8834,14 +8834,14 @@ Heavy_get_table_details_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -8970,21 +8970,21 @@ Heavy_get_table_details_for_database_args.prototype[Symbol.for("read")] = functi
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.database_name = input.readString().value;
+        this.database_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9118,21 +9118,21 @@ Heavy_get_internal_table_details_args.prototype[Symbol.for("read")] = function(i
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.include_system_columns = input.readBool().value;
+        this.include_system_columns = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -9266,21 +9266,21 @@ Heavy_get_internal_table_details_for_database_args.prototype[Symbol.for("read")]
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.database_name = input.readString().value;
+        this.database_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9406,7 +9406,7 @@ Heavy_get_users_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9469,7 +9469,7 @@ Heavy_get_users_result.prototype[Symbol.for("read")] = function(input) {
         var _size235 = _rtmp3236.size || 0;
         for (var _i237 = 0; _i237 < _size235; ++_i237) {
           var elem238 = null;
-          elem238 = input.readString().value;
+          elem238 = input.readString();
           this.success.push(elem238);
         }
         input.readListEnd();
@@ -9572,7 +9572,7 @@ Heavy_get_version_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
+        this.success = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9632,7 +9632,7 @@ Heavy_start_heap_profile_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9737,7 +9737,7 @@ Heavy_stop_heap_profile_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9842,7 +9842,7 @@ Heavy_get_heap_profile_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9900,7 +9900,7 @@ Heavy_get_heap_profile_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
+        this.success = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -9964,14 +9964,14 @@ Heavy_get_memory_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.memory_level = input.readString().value;
+        this.memory_level = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -10107,7 +10107,7 @@ Heavy_clear_cpu_memory_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -10212,7 +10212,7 @@ Heavy_clear_gpu_memory_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -10333,35 +10333,35 @@ Heavy_set_cur_session_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.parent_session = input.readString().value;
+        this.parent_session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.leaf_session = input.readString().value;
+        this.leaf_session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.start_time_str = input.readString().value;
+        this.start_time_str = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.label = input.readString().value;
+        this.label = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.for_running_query_kernel = input.readBool().value;
+        this.for_running_query_kernel = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -10499,35 +10499,35 @@ Heavy_invalidate_cur_session_args.prototype[Symbol.for("read")] = function(input
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.parent_session = input.readString().value;
+        this.parent_session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.leaf_session = input.readString().value;
+        this.leaf_session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.start_time_str = input.readString().value;
+        this.start_time_str = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.label = input.readString().value;
+        this.label = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.for_running_query_kernel = input.readBool().value;
+        this.for_running_query_kernel = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -10661,28 +10661,28 @@ Heavy_set_table_epoch_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.new_epoch = input.readI32().value;
+        this.new_epoch = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -10807,21 +10807,21 @@ Heavy_set_table_epoch_by_name_args.prototype[Symbol.for("read")] = function(inpu
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.new_epoch = input.readI32().value;
+        this.new_epoch = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -10941,21 +10941,21 @@ Heavy_get_table_epoch_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -11012,7 +11012,7 @@ Heavy_get_table_epoch_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.I32) {
-        this.success = input.readI32().value;
+        this.success = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -11066,14 +11066,14 @@ Heavy_get_table_epoch_by_name_args.prototype[Symbol.for("read")] = function(inpu
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -11125,7 +11125,7 @@ Heavy_get_table_epoch_by_name_result.prototype[Symbol.for("read")] = function(in
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.I32) {
-        this.success = input.readI32().value;
+        this.success = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -11183,21 +11183,21 @@ Heavy_get_table_epochs_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -11328,14 +11328,14 @@ Heavy_set_table_epochs_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -11440,7 +11440,7 @@ Heavy_get_session_info_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -11559,7 +11559,7 @@ Heavy_get_queries_info_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -11697,7 +11697,7 @@ Heavy_set_leaf_info_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -11832,42 +11832,42 @@ Heavy_sql_execute_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.query = input.readString().value;
+        this.query = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.column_format = input.readBool().value;
+        this.column_format = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
+        this.nonce = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I32) {
-        this.first_n = input.readI32().value;
+        this.first_n = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.at_most_n = input.readI32().value;
+        this.at_most_n = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -12028,42 +12028,42 @@ Heavy_sql_execute_df_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.query = input.readString().value;
+        this.query = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.device_type = input.readI32().value;
+        this.device_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.device_id = input.readI32().value;
+        this.device_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I32) {
-        this.first_n = input.readI32().value;
+        this.first_n = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.transport_method = input.readI32().value;
+        this.transport_method = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -12216,28 +12216,28 @@ Heavy_sql_execute_gdf_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.query = input.readString().value;
+        this.query = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.device_id = input.readI32().value;
+        this.device_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.first_n = input.readI32().value;
+        this.first_n = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -12380,7 +12380,7 @@ Heavy_deallocate_df_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -12395,14 +12395,14 @@ Heavy_deallocate_df_args.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.device_type = input.readI32().value;
+        this.device_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.device_id = input.readI32().value;
+        this.device_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -12523,14 +12523,14 @@ Heavy_interrupt_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.query_session = input.readString().value;
+        this.query_session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.interrupt_session = input.readString().value;
+        this.interrupt_session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -12641,14 +12641,14 @@ Heavy_sql_validate_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.query = input.readString().value;
+        this.query = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -12792,21 +12792,21 @@ Heavy_get_completion_hints_args.prototype[Symbol.for("read")] = function(input) 
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.sql = input.readString().value;
+        this.sql = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.cursor = input.readI32().value;
+        this.cursor = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -12951,14 +12951,14 @@ Heavy_set_execution_mode_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.mode = input.readI32().value;
+        this.mode = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -13081,35 +13081,35 @@ Heavy_render_vega_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.widget_id = input.readI64().value;
+        this.widget_id = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.vega_json = input.readString().value;
+        this.vega_json = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.compression_level = input.readI32().value;
+        this.compression_level = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
+        this.nonce = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -13269,14 +13269,14 @@ Heavy_get_result_row_for_pixel_args.prototype[Symbol.for("read")] = function(inp
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.widget_id = input.readI64().value;
+        this.widget_id = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -13302,13 +13302,13 @@ Heavy_get_result_row_for_pixel_args.prototype[Symbol.for("read")] = function(inp
           }
           var key273 = null;
           var val274 = null;
-          key273 = input.readString().value;
+          key273 = input.readString();
           val274 = [];
           var _rtmp3276 = input.readListBegin();
           var _size275 = _rtmp3276.size || 0;
           for (var _i277 = 0; _i277 < _size275; ++_i277) {
             var elem278 = null;
-            elem278 = input.readString().value;
+            elem278 = input.readString();
             val274.push(elem278);
           }
           input.readListEnd();
@@ -13321,21 +13321,21 @@ Heavy_get_result_row_for_pixel_args.prototype[Symbol.for("read")] = function(inp
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.column_format = input.readBool().value;
+        this.column_format = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.pixelRadius = input.readI32().value;
+        this.pixelRadius = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
+        this.nonce = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -13500,7 +13500,7 @@ Heavy_create_custom_expression_args.prototype[Symbol.for("read")] = function(inp
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -13568,7 +13568,7 @@ Heavy_create_custom_expression_result.prototype[Symbol.for("read")] = function(i
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.I32) {
-        this.success = input.readI32().value;
+        this.success = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -13628,7 +13628,7 @@ Heavy_get_custom_expressions_args.prototype[Symbol.for("read")] = function(input
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -13770,21 +13770,21 @@ Heavy_update_custom_expression_args.prototype[Symbol.for("read")] = function(inp
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.id = input.readI32().value;
+        this.id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.expression_json = input.readString().value;
+        this.expression_json = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -13904,7 +13904,7 @@ Heavy_delete_custom_expressions_args.prototype[Symbol.for("read")] = function(in
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -13916,7 +13916,7 @@ Heavy_delete_custom_expressions_args.prototype[Symbol.for("read")] = function(in
         var _size287 = _rtmp3288.size || 0;
         for (var _i289 = 0; _i289 < _size287; ++_i289) {
           var elem290 = null;
-          elem290 = input.readI32().value;
+          elem290 = input.readI32();
           this.custom_expression_ids.push(elem290);
         }
         input.readListEnd();
@@ -13926,7 +13926,7 @@ Heavy_delete_custom_expressions_args.prototype[Symbol.for("read")] = function(in
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.do_soft_delete = input.readBool().value;
+        this.do_soft_delete = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -14049,14 +14049,14 @@ Heavy_get_dashboard_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32().value;
+        this.dashboard_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -14177,7 +14177,7 @@ Heavy_get_dashboards_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -14327,35 +14327,35 @@ Heavy_create_dashboard_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_name = input.readString().value;
+        this.dashboard_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_state = input.readString().value;
+        this.dashboard_state = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.image_hash = input.readString().value;
+        this.image_hash = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_metadata = input.readString().value;
+        this.dashboard_metadata = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -14430,7 +14430,7 @@ Heavy_create_dashboard_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.I32) {
-        this.success = input.readI32().value;
+        this.success = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -14514,49 +14514,49 @@ Heavy_replace_dashboard_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32().value;
+        this.dashboard_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_name = input.readString().value;
+        this.dashboard_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_owner = input.readString().value;
+        this.dashboard_owner = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_state = input.readString().value;
+        this.dashboard_state = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.image_hash = input.readString().value;
+        this.image_hash = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_metadata = input.readString().value;
+        this.dashboard_metadata = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -14692,14 +14692,14 @@ Heavy_delete_dashboard_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32().value;
+        this.dashboard_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -14818,7 +14818,7 @@ Heavy_share_dashboards_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -14830,7 +14830,7 @@ Heavy_share_dashboards_args.prototype[Symbol.for("read")] = function(input) {
         var _size297 = _rtmp3298.size || 0;
         for (var _i299 = 0; _i299 < _size297; ++_i299) {
           var elem300 = null;
-          elem300 = input.readI32().value;
+          elem300 = input.readI32();
           this.dashboard_ids.push(elem300);
         }
         input.readListEnd();
@@ -14845,7 +14845,7 @@ Heavy_share_dashboards_args.prototype[Symbol.for("read")] = function(input) {
         var _size301 = _rtmp3302.size || 0;
         for (var _i303 = 0; _i303 < _size301; ++_i303) {
           var elem304 = null;
-          elem304 = input.readString().value;
+          elem304 = input.readString();
           this.groups.push(elem304);
         }
         input.readListEnd();
@@ -14991,7 +14991,7 @@ Heavy_delete_dashboards_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -15003,7 +15003,7 @@ Heavy_delete_dashboards_args.prototype[Symbol.for("read")] = function(input) {
         var _size307 = _rtmp3308.size || 0;
         for (var _i309 = 0; _i309 < _size307; ++_i309) {
           var elem310 = null;
-          elem310 = input.readI32().value;
+          elem310 = input.readI32();
           this.dashboard_ids.push(elem310);
         }
         input.readListEnd();
@@ -15140,14 +15140,14 @@ Heavy_share_dashboard_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32().value;
+        this.dashboard_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -15159,7 +15159,7 @@ Heavy_share_dashboard_args.prototype[Symbol.for("read")] = function(input) {
         var _size312 = _rtmp3313.size || 0;
         for (var _i314 = 0; _i314 < _size312; ++_i314) {
           var elem315 = null;
-          elem315 = input.readString().value;
+          elem315 = input.readString();
           this.groups.push(elem315);
         }
         input.readListEnd();
@@ -15174,7 +15174,7 @@ Heavy_share_dashboard_args.prototype[Symbol.for("read")] = function(input) {
         var _size316 = _rtmp3317.size || 0;
         for (var _i318 = 0; _i318 < _size316; ++_i318) {
           var elem319 = null;
-          elem319 = input.readString().value;
+          elem319 = input.readString();
           this.objects.push(elem319);
         }
         input.readListEnd();
@@ -15192,7 +15192,7 @@ Heavy_share_dashboard_args.prototype[Symbol.for("read")] = function(input) {
       break;
       case 6:
       if (ftype == Thrift.Type.BOOL) {
-        this.grant_role = input.readBool().value;
+        this.grant_role = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -15349,14 +15349,14 @@ Heavy_unshare_dashboard_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32().value;
+        this.dashboard_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -15368,7 +15368,7 @@ Heavy_unshare_dashboard_args.prototype[Symbol.for("read")] = function(input) {
         var _size322 = _rtmp3323.size || 0;
         for (var _i324 = 0; _i324 < _size322; ++_i324) {
           var elem325 = null;
-          elem325 = input.readString().value;
+          elem325 = input.readString();
           this.groups.push(elem325);
         }
         input.readListEnd();
@@ -15383,7 +15383,7 @@ Heavy_unshare_dashboard_args.prototype[Symbol.for("read")] = function(input) {
         var _size326 = _rtmp3327.size || 0;
         for (var _i328 = 0; _i328 < _size326; ++_i328) {
           var elem329 = null;
-          elem329 = input.readString().value;
+          elem329 = input.readString();
           this.objects.push(elem329);
         }
         input.readListEnd();
@@ -15542,7 +15542,7 @@ Heavy_unshare_dashboards_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -15554,7 +15554,7 @@ Heavy_unshare_dashboards_args.prototype[Symbol.for("read")] = function(input) {
         var _size332 = _rtmp3333.size || 0;
         for (var _i334 = 0; _i334 < _size332; ++_i334) {
           var elem335 = null;
-          elem335 = input.readI32().value;
+          elem335 = input.readI32();
           this.dashboard_ids.push(elem335);
         }
         input.readListEnd();
@@ -15569,7 +15569,7 @@ Heavy_unshare_dashboards_args.prototype[Symbol.for("read")] = function(input) {
         var _size336 = _rtmp3337.size || 0;
         for (var _i338 = 0; _i338 < _size336; ++_i338) {
           var elem339 = null;
-          elem339 = input.readString().value;
+          elem339 = input.readString();
           this.groups.push(elem339);
         }
         input.readListEnd();
@@ -15715,14 +15715,14 @@ Heavy_get_dashboard_grantees_args.prototype[Symbol.for("read")] = function(input
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32().value;
+        this.dashboard_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -15862,14 +15862,14 @@ Heavy_get_link_view_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.link = input.readString().value;
+        this.link = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -15998,21 +15998,21 @@ Heavy_create_link_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.view_state = input.readString().value;
+        this.view_state = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.view_metadata = input.readString().value;
+        this.view_metadata = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -16077,7 +16077,7 @@ Heavy_create_link_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
+        this.success = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -16149,14 +16149,14 @@ Heavy_load_table_binary_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -16184,7 +16184,7 @@ Heavy_load_table_binary_args.prototype[Symbol.for("read")] = function(input) {
         var _size351 = _rtmp3352.size || 0;
         for (var _i353 = 0; _i353 < _size351; ++_i353) {
           var elem354 = null;
-          elem354 = input.readString().value;
+          elem354 = input.readString();
           this.column_names.push(elem354);
         }
         input.readListEnd();
@@ -16330,14 +16330,14 @@ Heavy_load_table_binary_columnar_args.prototype[Symbol.for("read")] = function(i
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -16365,7 +16365,7 @@ Heavy_load_table_binary_columnar_args.prototype[Symbol.for("read")] = function(i
         var _size361 = _rtmp3362.size || 0;
         for (var _i363 = 0; _i363 < _size361; ++_i363) {
           var elem364 = null;
-          elem364 = input.readString().value;
+          elem364 = input.readString();
           this.column_names.push(elem364);
         }
         input.readListEnd();
@@ -16511,28 +16511,28 @@ Heavy_load_table_binary_arrow_args.prototype[Symbol.for("read")] = function(inpu
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.arrow_stream = input.readBinary().value;
+        this.arrow_stream = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.use_column_names = input.readBool().value;
+        this.use_column_names = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -16661,14 +16661,14 @@ Heavy_load_table_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -16696,7 +16696,7 @@ Heavy_load_table_args.prototype[Symbol.for("read")] = function(input) {
         var _size371 = _rtmp3372.size || 0;
         for (var _i373 = 0; _i373 < _size371; ++_i373) {
           var elem374 = null;
-          elem374 = input.readString().value;
+          elem374 = input.readString();
           this.column_names.push(elem374);
         }
         input.readListEnd();
@@ -16838,14 +16838,14 @@ Heavy_detect_column_types_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.file_name = input.readString().value;
+        this.file_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -16991,14 +16991,14 @@ Heavy_create_table_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -17158,21 +17158,21 @@ Heavy_import_table_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.file_name = input.readString().value;
+        this.file_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -17317,21 +17317,21 @@ Heavy_import_geo_table_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.file_name = input.readString().value;
+        this.file_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -17501,14 +17501,14 @@ Heavy_import_table_status_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.import_id = input.readString().value;
+        this.import_id = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -17637,14 +17637,14 @@ Heavy_get_first_geo_file_in_archive_args.prototype[Symbol.for("read")] = functio
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.archive_path = input.readString().value;
+        this.archive_path = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -17717,7 +17717,7 @@ Heavy_get_first_geo_file_in_archive_result.prototype[Symbol.for("read")] = funct
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.STRING) {
-        this.success = input.readString().value;
+        this.success = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -17785,14 +17785,14 @@ Heavy_get_all_files_in_archive_args.prototype[Symbol.for("read")] = function(inp
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.archive_path = input.readString().value;
+        this.archive_path = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -17870,7 +17870,7 @@ Heavy_get_all_files_in_archive_result.prototype[Symbol.for("read")] = function(i
         var _size387 = _rtmp3388.size || 0;
         for (var _i389 = 0; _i389 < _size387; ++_i389) {
           var elem390 = null;
-          elem390 = input.readString().value;
+          elem390 = input.readString();
           this.success.push(elem390);
         }
         input.readListEnd();
@@ -17948,14 +17948,14 @@ Heavy_get_layers_in_geo_file_args.prototype[Symbol.for("read")] = function(input
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.file_name = input.readString().value;
+        this.file_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -18108,14 +18108,14 @@ Heavy_query_get_outer_fragment_count_args.prototype[Symbol.for("read")] = functi
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.query = input.readString().value;
+        this.query = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -18175,7 +18175,7 @@ Heavy_query_get_outer_fragment_count_result.prototype[Symbol.for("read")] = func
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.I64) {
-        this.success = input.readI64().value;
+        this.success = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -18239,14 +18239,14 @@ Heavy_check_table_consistency_args.prototype[Symbol.for("read")] = function(inpu
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -18387,35 +18387,35 @@ Heavy_start_query_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.leaf_session = input.readString().value;
+        this.leaf_session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.parent_session = input.readString().value;
+        this.parent_session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.query_ra = input.readString().value;
+        this.query_ra = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.start_time_str = input.readString().value;
+        this.start_time_str = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.just_explain = input.readBool().value;
+        this.just_explain = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -18427,7 +18427,7 @@ Heavy_start_query_args.prototype[Symbol.for("read")] = function(input) {
         var _size397 = _rtmp3398.size || 0;
         for (var _i399 = 0; _i399 < _size397; ++_i399) {
           var elem400 = null;
-          elem400 = input.readI64().value;
+          elem400 = input.readI64();
           this.outer_fragment_indices.push(elem400);
         }
         input.readListEnd();
@@ -18594,14 +18594,14 @@ Heavy_execute_query_step_args.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.subquery_id = input.readI64().value;
+        this.subquery_id = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.start_time_str = input.readString().value;
+        this.start_time_str = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -18767,21 +18767,21 @@ Heavy_broadcast_serialized_rows_args.prototype[Symbol.for("read")] = function(in
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.query_id = input.readI64().value;
+        this.query_id = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.subquery_id = input.readI64().value;
+        this.subquery_id = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_final_subquery_result = input.readBool().value;
+        this.is_final_subquery_result = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -18922,28 +18922,28 @@ Heavy_start_render_query_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.widget_id = input.readI64().value;
+        this.widget_id = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I16) {
-        this.node_idx = input.readI16().value;
+        this.node_idx = input.readI16();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.vega_json = input.readString().value;
+        this.vega_json = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -19097,7 +19097,7 @@ Heavy_execute_next_render_step_args.prototype[Symbol.for("read")] = function(inp
           }
           var key410 = null;
           var val411 = null;
-          key410 = input.readString().value;
+          key410 = input.readString();
           val411 = {};
           var _rtmp3413 = input.readMapBegin();
           var _size412 = _rtmp3413.size || 0;
@@ -19109,7 +19109,7 @@ Heavy_execute_next_render_step_args.prototype[Symbol.for("read")] = function(inp
             }
             var key415 = null;
             var val416 = null;
-            key415 = input.readString().value;
+            key415 = input.readString();
             val416 = {};
             var _rtmp3418 = input.readMapBegin();
             var _size417 = _rtmp3418.size || 0;
@@ -19121,7 +19121,7 @@ Heavy_execute_next_render_step_args.prototype[Symbol.for("read")] = function(inp
               }
               var key420 = null;
               var val421 = null;
-              key420 = input.readString().value;
+              key420 = input.readString();
               val421 = {};
               var _rtmp3423 = input.readMapBegin();
               var _size422 = _rtmp3423.size || 0;
@@ -19133,7 +19133,7 @@ Heavy_execute_next_render_step_args.prototype[Symbol.for("read")] = function(inp
                 }
                 var key425 = null;
                 var val426 = null;
-                key425 = input.readString().value;
+                key425 = input.readString();
                 val426 = [];
                 var _rtmp3428 = input.readListBegin();
                 var _size427 = _rtmp3428.size || 0;
@@ -19319,7 +19319,7 @@ Heavy_insert_data_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -19438,7 +19438,7 @@ Heavy_insert_chunks_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -19557,14 +19557,14 @@ Heavy_checkpoint_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -19671,7 +19671,7 @@ Heavy_get_roles_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -19734,7 +19734,7 @@ Heavy_get_roles_result.prototype[Symbol.for("read")] = function(input) {
         var _size440 = _rtmp3441.size || 0;
         for (var _i442 = 0; _i442 < _size440; ++_i442) {
           var elem443 = null;
-          elem443 = input.readString().value;
+          elem443 = input.readString();
           this.success.push(elem443);
         }
         input.readListEnd();
@@ -19808,14 +19808,14 @@ Heavy_get_db_objects_for_grantee_args.prototype[Symbol.for("read")] = function(i
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.roleName = input.readString().value;
+        this.roleName = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -19959,21 +19959,21 @@ Heavy_get_db_object_privs_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.objectName = input.readString().value;
+        this.objectName = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
+        this.type = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -20118,14 +20118,14 @@ Heavy_get_all_roles_for_user_args.prototype[Symbol.for("read")] = function(input
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.userName = input.readString().value;
+        this.userName = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -20190,7 +20190,7 @@ Heavy_get_all_roles_for_user_result.prototype[Symbol.for("read")] = function(inp
         var _size455 = _rtmp3456.size || 0;
         for (var _i457 = 0; _i457 < _size455; ++_i457) {
           var elem458 = null;
-          elem458 = input.readString().value;
+          elem458 = input.readString();
           this.success.push(elem458);
         }
         input.readListEnd();
@@ -20264,14 +20264,14 @@ Heavy_get_all_effective_roles_for_user_args.prototype[Symbol.for("read")] = func
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.userName = input.readString().value;
+        this.userName = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -20336,7 +20336,7 @@ Heavy_get_all_effective_roles_for_user_result.prototype[Symbol.for("read")] = fu
         var _size460 = _rtmp3461.size || 0;
         for (var _i462 = 0; _i462 < _size460; ++_i462) {
           var elem463 = null;
-          elem463 = input.readString().value;
+          elem463 = input.readString();
           this.success.push(elem463);
         }
         input.readListEnd();
@@ -20414,21 +20414,21 @@ Heavy_has_role_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.granteeName = input.readString().value;
+        this.granteeName = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.roleName = input.readString().value;
+        this.roleName = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -20493,7 +20493,7 @@ Heavy_has_role_result.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.BOOL) {
-        this.success = input.readBool().value;
+        this.success = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -20569,28 +20569,28 @@ Heavy_has_object_privilege_args.prototype[Symbol.for("read")] = function(input) 
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.granteeName = input.readString().value;
+        this.granteeName = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.ObjectName = input.readString().value;
+        this.ObjectName = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.objectType = input.readI32().value;
+        this.objectType = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -20673,7 +20673,7 @@ Heavy_has_object_privilege_result.prototype[Symbol.for("read")] = function(input
     switch (fid) {
       case 0:
       if (ftype == Thrift.Type.BOOL) {
-        this.success = input.readBool().value;
+        this.success = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -20733,7 +20733,7 @@ Heavy_get_device_parameters_args.prototype[Symbol.for("read")] = function(input)
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -20802,8 +20802,8 @@ Heavy_get_device_parameters_result.prototype[Symbol.for("read")] = function(inpu
           }
           var key468 = null;
           var val469 = null;
-          key468 = input.readString().value;
-          val469 = input.readString().value;
+          key468 = input.readString();
+          val469 = input.readString();
           this.success[key468] = val469;
         }
         input.readMapEnd();
@@ -20886,7 +20886,7 @@ Heavy_register_runtime_extension_functions_args.prototype[Symbol.for("read")] = 
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -20936,8 +20936,8 @@ Heavy_register_runtime_extension_functions_args.prototype[Symbol.for("read")] = 
           }
           var key483 = null;
           var val484 = null;
-          key483 = input.readString().value;
-          val484 = input.readString().value;
+          key483 = input.readString();
+          val484 = input.readString();
           this.device_ir_map[key483] = val484;
         }
         input.readMapEnd();
@@ -21079,7 +21079,7 @@ Heavy_get_table_function_names_args.prototype[Symbol.for("read")] = function(inp
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -21142,7 +21142,7 @@ Heavy_get_table_function_names_result.prototype[Symbol.for("read")] = function(i
         var _size489 = _rtmp3490.size || 0;
         for (var _i491 = 0; _i491 < _size489; ++_i491) {
           var elem492 = null;
-          elem492 = input.readString().value;
+          elem492 = input.readString();
           this.success.push(elem492);
         }
         input.readListEnd();
@@ -21212,7 +21212,7 @@ Heavy_get_runtime_table_function_names_args.prototype[Symbol.for("read")] = func
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -21275,7 +21275,7 @@ Heavy_get_runtime_table_function_names_result.prototype[Symbol.for("read")] = fu
         var _size494 = _rtmp3495.size || 0;
         for (var _i496 = 0; _i496 < _size494; ++_i496) {
           var elem497 = null;
-          elem497 = input.readString().value;
+          elem497 = input.readString();
           this.success.push(elem497);
         }
         input.readListEnd();
@@ -21349,7 +21349,7 @@ Heavy_get_table_function_details_args.prototype[Symbol.for("read")] = function(i
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -21361,7 +21361,7 @@ Heavy_get_table_function_details_args.prototype[Symbol.for("read")] = function(i
         var _size499 = _rtmp3500.size || 0;
         for (var _i501 = 0; _i501 < _size499; ++_i501) {
           var elem502 = null;
-          elem502 = input.readString().value;
+          elem502 = input.readString();
           this.udtf_names.push(elem502);
         }
         input.readListEnd();
@@ -21507,7 +21507,7 @@ Heavy_get_function_names_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -21570,7 +21570,7 @@ Heavy_get_function_names_result.prototype[Symbol.for("read")] = function(input) 
         var _size509 = _rtmp3510.size || 0;
         for (var _i511 = 0; _i511 < _size509; ++_i511) {
           var elem512 = null;
-          elem512 = input.readString().value;
+          elem512 = input.readString();
           this.success.push(elem512);
         }
         input.readListEnd();
@@ -21640,7 +21640,7 @@ Heavy_get_runtime_function_names_args.prototype[Symbol.for("read")] = function(i
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -21703,7 +21703,7 @@ Heavy_get_runtime_function_names_result.prototype[Symbol.for("read")] = function
         var _size514 = _rtmp3515.size || 0;
         for (var _i516 = 0; _i516 < _size514; ++_i516) {
           var elem517 = null;
-          elem517 = input.readString().value;
+          elem517 = input.readString();
           this.success.push(elem517);
         }
         input.readListEnd();
@@ -21777,7 +21777,7 @@ Heavy_get_function_details_args.prototype[Symbol.for("read")] = function(input) 
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -21789,7 +21789,7 @@ Heavy_get_function_details_args.prototype[Symbol.for("read")] = function(input) 
         var _size519 = _rtmp3520.size || 0;
         for (var _i521 = 0; _i521 < _size519; ++_i521) {
           var elem522 = null;
-          elem522 = input.readString().value;
+          elem522 = input.readString();
           this.udf_names.push(elem522);
         }
         input.readListEnd();
@@ -21939,7 +21939,7 @@ Heavy_put_immerse_users_metadata_args.prototype[Symbol.for("read")] = function(i
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -22077,21 +22077,21 @@ Heavy_put_immerse_database_metadata_args.prototype[Symbol.for("read")] = functio
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.immerse_metadata_json = input.readString().value;
+        this.immerse_metadata_json = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.database_name = input.readString().value;
+        this.database_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -22203,7 +22203,7 @@ Heavy_get_users_info_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -22337,7 +22337,7 @@ Heavy_get_databases_args.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.session = input.readString().value;
+        this.session = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -29582,14 +29582,14 @@ TStringDictKey.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.dict_id = input.readI32().value;
+        this.dict_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -29673,56 +29673,56 @@ TTypeInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
+        this.type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.encoding = input.readI32().value;
+        this.encoding = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.nullable = input.readBool().value;
+        this.nullable = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_array = input.readBool().value;
+        this.is_array = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I32) {
-        this.precision = input.readI32().value;
+        this.precision = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.scale = input.readI32().value;
+        this.scale = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.I32) {
-        this.comp_param = input.readI32().value;
+        this.comp_param = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.I32) {
-        this.size = input.readI32().value;
+        this.size = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -33105,14 +33105,14 @@ TSlotSize.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I16) {
-        this.padded = input.readI16().value;
+        this.padded = input.readI16();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I16) {
-        this.logical = input.readI16().value;
+        this.logical = input.readI16();
       } else {
         input.skip(ftype);
       }
@@ -33194,7 +33194,7 @@ TColSlotContext.prototype[Symbol.for("read")] = function(input) {
           var _size8 = _rtmp39.size || 0;
           for (var _i10 = 0; _i10 < _size8; ++_i10) {
             var elem11 = null;
-            elem11 = input.readI32().value;
+            elem11 = input.readI32();
             elem7.push(elem11);
           }
           input.readListEnd();
@@ -33293,42 +33293,42 @@ TCountDistinctDescriptor.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.impl_type = input.readI32().value;
+        this.impl_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.min_val = input.readI64().value;
+        this.min_val = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.bitmap_sz_bits = input.readI64().value;
+        this.bitmap_sz_bits = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.approximate = input.readBool().value;
+        this.approximate = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I32) {
-        this.device_type = input.readI32().value;
+        this.device_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I64) {
-        this.sub_bitmap_count = input.readI64().value;
+        this.sub_bitmap_count = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -33452,49 +33452,49 @@ TResultSetBufferDescriptor.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.layout = input.readI32().value;
+        this.layout = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.keyless = input.readBool().value;
+        this.keyless = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.entry_count = input.readI32().value;
+        this.entry_count = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.idx_target_as_key = input.readI32().value;
+        this.idx_target_as_key = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.min_val = input.readI64().value;
+        this.min_val = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I64) {
-        this.max_val = input.readI64().value;
+        this.max_val = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.I64) {
-        this.bucket = input.readI64().value;
+        this.bucket = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -33506,7 +33506,7 @@ TResultSetBufferDescriptor.prototype[Symbol.for("read")] = function(input) {
         var _size15 = _rtmp316.size || 0;
         for (var _i17 = 0; _i17 < _size15; ++_i17) {
           var elem18 = null;
-          elem18 = input.readI16().value;
+          elem18 = input.readI16();
           this.group_col_widths.push(elem18);
         }
         input.readListEnd();
@@ -33516,7 +33516,7 @@ TResultSetBufferDescriptor.prototype[Symbol.for("read")] = function(input) {
       break;
       case 9:
       if (ftype == Thrift.Type.I16) {
-        this.key_bytewidth = input.readI16().value;
+        this.key_bytewidth = input.readI16();
       } else {
         input.skip(ftype);
       }
@@ -33536,7 +33536,7 @@ TResultSetBufferDescriptor.prototype[Symbol.for("read")] = function(input) {
         var _size19 = _rtmp320.size || 0;
         for (var _i21 = 0; _i21 < _size19; ++_i21) {
           var elem22 = null;
-          elem22 = input.readI32().value;
+          elem22 = input.readI32();
           this.target_groupby_indices.push(elem22);
         }
         input.readListEnd();
@@ -33562,14 +33562,14 @@ TResultSetBufferDescriptor.prototype[Symbol.for("read")] = function(input) {
       break;
       case 13:
       if (ftype == Thrift.Type.BOOL) {
-        this.force_4byte_float = input.readBool().value;
+        this.force_4byte_float = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 14:
       if (ftype == Thrift.Type.BOOL) {
-        this.gpu_shared_mem_used = input.readBool().value;
+        this.gpu_shared_mem_used = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -33722,14 +33722,14 @@ TTargetInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_agg = input.readBool().value;
+        this.is_agg = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.kind = input.readI32().value;
+        this.kind = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -33752,14 +33752,14 @@ TTargetInfo.prototype[Symbol.for("read")] = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.skip_nulls = input.readBool().value;
+        this.skip_nulls = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_distinct = input.readBool().value;
+        this.is_distinct = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -33835,7 +33835,7 @@ TCountDistinctSetStorage.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.bitmap = input.readBinary().value;
+        this.bitmap = input.readBinary();
       } else {
         input.skip(ftype);
       }
@@ -33847,7 +33847,7 @@ TCountDistinctSetStorage.prototype[Symbol.for("read")] = function(input) {
         var _size30 = _rtmp331.size || 0;
         for (var _i32 = 0; _i32 < _size30; ++_i32) {
           var elem33 = null;
-          elem33 = input.readI64().value;
+          elem33 = input.readI64();
           this.sparse_set.push(elem33);
         }
         input.readSetEnd();
@@ -33917,7 +33917,7 @@ TCountDistinctSet.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
+        this.type = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -33932,7 +33932,7 @@ TCountDistinctSet.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.remote_ptr = input.readI64().value;
+        this.remote_ptr = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -34030,7 +34030,7 @@ TSerializedRows.prototype[Symbol.for("read")] = function(input) {
         var _size35 = _rtmp336.size || 0;
         for (var _i37 = 0; _i37 < _size35; ++_i37) {
           var elem38 = null;
-          elem38 = input.readBinary().value;
+          elem38 = input.readBinary();
           this.buffers.push(elem38);
         }
         input.readListEnd();
@@ -34045,7 +34045,7 @@ TSerializedRows.prototype[Symbol.for("read")] = function(input) {
         var _size39 = _rtmp340.size || 0;
         for (var _i41 = 0; _i41 < _size39; ++_i41) {
           var elem42 = null;
-          elem42 = input.readI64().value;
+          elem42 = input.readI64();
           this.buffer_lengths.push(elem42);
         }
         input.readListEnd();
@@ -34055,14 +34055,14 @@ TSerializedRows.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.buffers_total_size = input.readI64().value;
+        this.buffers_total_size = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.total_compression_time_ms = input.readI32().value;
+        this.total_compression_time_ms = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -34098,7 +34098,7 @@ TSerializedRows.prototype[Symbol.for("read")] = function(input) {
         var _size47 = _rtmp348.size || 0;
         for (var _i49 = 0; _i49 < _size47; ++_i49) {
           var elem50 = null;
-          elem50 = input.readI64().value;
+          elem50 = input.readI64();
           this.target_init_vals.push(elem50);
         }
         input.readListEnd();
@@ -34113,7 +34113,7 @@ TSerializedRows.prototype[Symbol.for("read")] = function(input) {
         var _size51 = _rtmp352.size || 0;
         for (var _i53 = 0; _i53 < _size51; ++_i53) {
           var elem54 = null;
-          elem54 = input.readBinary().value;
+          elem54 = input.readBinary();
           this.varlen_buffer.push(elem54);
         }
         input.readListEnd();
@@ -34139,7 +34139,7 @@ TSerializedRows.prototype[Symbol.for("read")] = function(input) {
       break;
       case 10:
       if (ftype == Thrift.Type.STRING) {
-        this.explanation = input.readString().value;
+        this.explanation = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -34728,7 +34728,7 @@ TUserDefinedFunction.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString().value;
+        this.name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -34740,7 +34740,7 @@ TUserDefinedFunction.prototype[Symbol.for("read")] = function(input) {
         var _size0 = _rtmp31.size || 0;
         for (var _i2 = 0; _i2 < _size0; ++_i2) {
           var elem3 = null;
-          elem3 = input.readI32().value;
+          elem3 = input.readI32();
           this.argTypes.push(elem3);
         }
         input.readListEnd();
@@ -34750,7 +34750,7 @@ TUserDefinedFunction.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.retType = input.readI32().value;
+        this.retType = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -34773,8 +34773,8 @@ TUserDefinedFunction.prototype[Symbol.for("read")] = function(input) {
             }
             var key11 = null;
             var val12 = null;
-            key11 = input.readString().value;
-            val12 = input.readString().value;
+            key11 = input.readString();
+            val12 = input.readString();
             elem7[key11] = val12;
           }
           input.readMapEnd();
@@ -34888,21 +34888,21 @@ TUserDefinedTableFunction.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString().value;
+        this.name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.sizerType = input.readI32().value;
+        this.sizerType = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.sizerArgPos = input.readI32().value;
+        this.sizerArgPos = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -34914,7 +34914,7 @@ TUserDefinedTableFunction.prototype[Symbol.for("read")] = function(input) {
         var _size17 = _rtmp318.size || 0;
         for (var _i19 = 0; _i19 < _size17; ++_i19) {
           var elem20 = null;
-          elem20 = input.readI32().value;
+          elem20 = input.readI32();
           this.inputArgTypes.push(elem20);
         }
         input.readListEnd();
@@ -34929,7 +34929,7 @@ TUserDefinedTableFunction.prototype[Symbol.for("read")] = function(input) {
         var _size21 = _rtmp322.size || 0;
         for (var _i23 = 0; _i23 < _size21; ++_i23) {
           var elem24 = null;
-          elem24 = input.readI32().value;
+          elem24 = input.readI32();
           this.outputArgTypes.push(elem24);
         }
         input.readListEnd();
@@ -34944,7 +34944,7 @@ TUserDefinedTableFunction.prototype[Symbol.for("read")] = function(input) {
         var _size25 = _rtmp326.size || 0;
         for (var _i27 = 0; _i27 < _size25; ++_i27) {
           var elem28 = null;
-          elem28 = input.readI32().value;
+          elem28 = input.readI32();
           this.sqlArgTypes.push(elem28);
         }
         input.readListEnd();
@@ -34970,8 +34970,8 @@ TUserDefinedTableFunction.prototype[Symbol.for("read")] = function(input) {
             }
             var key36 = null;
             var val37 = null;
-            key36 = input.readString().value;
-            val37 = input.readString().value;
+            key36 = input.readString();
+            val37 = input.readString();
             elem32[key36] = val37;
           }
           input.readMapEnd();
@@ -37963,7 +37963,7 @@ TCompletionHint.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
+        this.type = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -37975,7 +37975,7 @@ TCompletionHint.prototype[Symbol.for("read")] = function(input) {
         var _size0 = _rtmp31.size || 0;
         for (var _i2 = 0; _i2 < _size0; ++_i2) {
           var elem3 = null;
-          elem3 = input.readString().value;
+          elem3 = input.readString();
           this.hints.push(elem3);
         }
         input.readListEnd();
@@ -37985,7 +37985,7 @@ TCompletionHint.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.replaced = input.readString().value;
+        this.replaced = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -40555,21 +40555,21 @@ TDatumVal.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I64) {
-        this.int_val = input.readI64().value;
+        this.int_val = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.DOUBLE) {
-        this.real_val = input.readDouble().value;
+        this.real_val = input.readDouble();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.str_val = input.readString().value;
+        this.str_val = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -40666,7 +40666,7 @@ TDatum.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_null = input.readBool().value;
+        this.is_null = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -40722,14 +40722,14 @@ TStringValue.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.str_val = input.readString().value;
+        this.str_val = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_null = input.readBool().value;
+        this.is_null = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -40813,7 +40813,7 @@ TColumnType.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.col_name = input.readString().value;
+        this.col_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -40828,49 +40828,49 @@ TColumnType.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_reserved_keyword = input.readBool().value;
+        this.is_reserved_keyword = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.src_name = input.readString().value;
+        this.src_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_system = input.readBool().value;
+        this.is_system = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_physical = input.readBool().value;
+        this.is_physical = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.I64) {
-        this.col_id = input.readI64().value;
+        this.col_id = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.STRING) {
-        this.default_value = input.readString().value;
+        this.default_value = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
       if (ftype == Thrift.Type.STRING) {
-        this.comment = input.readString().value;
+        this.comment = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -41040,7 +41040,7 @@ TColumnData.prototype[Symbol.for("read")] = function(input) {
         var _size10 = _rtmp311.size || 0;
         for (var _i12 = 0; _i12 < _size10; ++_i12) {
           var elem13 = null;
-          elem13 = input.readI64().value;
+          elem13 = input.readI64();
           this.int_col.push(elem13);
         }
         input.readListEnd();
@@ -41055,7 +41055,7 @@ TColumnData.prototype[Symbol.for("read")] = function(input) {
         var _size14 = _rtmp315.size || 0;
         for (var _i16 = 0; _i16 < _size14; ++_i16) {
           var elem17 = null;
-          elem17 = input.readDouble().value;
+          elem17 = input.readDouble();
           this.real_col.push(elem17);
         }
         input.readListEnd();
@@ -41070,7 +41070,7 @@ TColumnData.prototype[Symbol.for("read")] = function(input) {
         var _size18 = _rtmp319.size || 0;
         for (var _i20 = 0; _i20 < _size18; ++_i20) {
           var elem21 = null;
-          elem21 = input.readString().value;
+          elem21 = input.readString();
           this.str_col.push(elem21);
         }
         input.readListEnd();
@@ -41196,7 +41196,7 @@ TColumn.prototype[Symbol.for("read")] = function(input) {
         var _size30 = _rtmp331.size || 0;
         for (var _i32 = 0; _i32 < _size30; ++_i32) {
           var elem33 = null;
-          elem33 = input.readBool().value;
+          elem33 = input.readBool();
           this.nulls.push(elem33);
         }
         input.readListEnd();
@@ -41352,21 +41352,21 @@ TStepResult.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.execution_finished = input.readBool().value;
+        this.execution_finished = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.merge_type = input.readI32().value;
+        this.merge_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.sharded = input.readBool().value;
+        this.sharded = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -41389,7 +41389,7 @@ TStepResult.prototype[Symbol.for("read")] = function(input) {
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.node_id = input.readI32().value;
+        this.node_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -41528,7 +41528,7 @@ TRowSet.prototype[Symbol.for("read")] = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_columnar = input.readBool().value;
+        this.is_columnar = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -41643,42 +41643,42 @@ TQueryResult.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.execution_time_ms = input.readI64().value;
+        this.execution_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.total_time_ms = input.readI64().value;
+        this.total_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
+        this.nonce = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.debug = input.readString().value;
+        this.debug = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.BOOL) {
-        this.success = input.readBool().value;
+        this.success = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.I32) {
-        this.query_type = input.readI32().value;
+        this.query_type = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -41779,49 +41779,49 @@ TDataFrame.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.sm_handle = input.readBinary().value;
+        this.sm_handle = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.sm_size = input.readI64().value;
+        this.sm_size = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.df_handle = input.readBinary().value;
+        this.df_handle = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.df_size = input.readI64().value;
+        this.df_size = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.execution_time_ms = input.readI64().value;
+        this.execution_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I64) {
-        this.arrow_conversion_time_ms = input.readI64().value;
+        this.arrow_conversion_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.df_buffer = input.readBinary().value;
+        this.df_buffer = input.readBinary();
       } else {
         input.skip(ftype);
       }
@@ -41906,21 +41906,21 @@ TDBInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.db_name = input.readString().value;
+        this.db_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.db_owner = input.readString().value;
+        this.db_owner = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.immerse_metadata_json = input.readString().value;
+        this.immerse_metadata_json = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -41978,7 +41978,7 @@ TDBException.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.error_msg = input.readString().value;
+        this.error_msg = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -42200,308 +42200,308 @@ TCopyParams.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.delimiter = input.readString().value;
+        this.delimiter = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.null_str = input.readString().value;
+        this.null_str = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.has_header = input.readI32().value;
+        this.has_header = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.quoted = input.readBool().value;
+        this.quoted = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.quote = input.readString().value;
+        this.quote = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.escape = input.readString().value;
+        this.escape = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.line_delim = input.readString().value;
+        this.line_delim = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.STRING) {
-        this.array_delim = input.readString().value;
+        this.array_delim = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
       if (ftype == Thrift.Type.STRING) {
-        this.array_begin = input.readString().value;
+        this.array_begin = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 10:
       if (ftype == Thrift.Type.STRING) {
-        this.array_end = input.readString().value;
+        this.array_end = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 11:
       if (ftype == Thrift.Type.I32) {
-        this.threads = input.readI32().value;
+        this.threads = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 12:
       if (ftype == Thrift.Type.I32) {
-        this.source_type = input.readI32().value;
+        this.source_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 13:
       if (ftype == Thrift.Type.STRING) {
-        this.s3_access_key = input.readString().value;
+        this.s3_access_key = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 14:
       if (ftype == Thrift.Type.STRING) {
-        this.s3_secret_key = input.readString().value;
+        this.s3_secret_key = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 15:
       if (ftype == Thrift.Type.STRING) {
-        this.s3_region = input.readString().value;
+        this.s3_region = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 16:
       if (ftype == Thrift.Type.I32) {
-        this.geo_coords_encoding = input.readI32().value;
+        this.geo_coords_encoding = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 17:
       if (ftype == Thrift.Type.I32) {
-        this.geo_coords_comp_param = input.readI32().value;
+        this.geo_coords_comp_param = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 18:
       if (ftype == Thrift.Type.I32) {
-        this.geo_coords_type = input.readI32().value;
+        this.geo_coords_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 19:
       if (ftype == Thrift.Type.I32) {
-        this.geo_coords_srid = input.readI32().value;
+        this.geo_coords_srid = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 20:
       if (ftype == Thrift.Type.BOOL) {
-        this.sanitize_column_names = input.readBool().value;
+        this.sanitize_column_names = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 21:
       if (ftype == Thrift.Type.STRING) {
-        this.geo_layer_name = input.readString().value;
+        this.geo_layer_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 22:
       if (ftype == Thrift.Type.STRING) {
-        this.s3_endpoint = input.readString().value;
+        this.s3_endpoint = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 23:
       if (ftype == Thrift.Type.BOOL) {
-        this.geo_assign_render_groups = input.readBool().value;
+        this.geo_assign_render_groups = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 24:
       if (ftype == Thrift.Type.BOOL) {
-        this.geo_explode_collections = input.readBool().value;
+        this.geo_explode_collections = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 25:
       if (ftype == Thrift.Type.I32) {
-        this.source_srid = input.readI32().value;
+        this.source_srid = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 26:
       if (ftype == Thrift.Type.STRING) {
-        this.s3_session_token = input.readString().value;
+        this.s3_session_token = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 27:
       if (ftype == Thrift.Type.I32) {
-        this.raster_point_type = input.readI32().value;
+        this.raster_point_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 28:
       if (ftype == Thrift.Type.STRING) {
-        this.raster_import_bands = input.readString().value;
+        this.raster_import_bands = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 29:
       if (ftype == Thrift.Type.I32) {
-        this.raster_scanlines_per_thread = input.readI32().value;
+        this.raster_scanlines_per_thread = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 30:
       if (ftype == Thrift.Type.I32) {
-        this.raster_point_transform = input.readI32().value;
+        this.raster_point_transform = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 31:
       if (ftype == Thrift.Type.BOOL) {
-        this.raster_point_compute_angle = input.readBool().value;
+        this.raster_point_compute_angle = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 32:
       if (ftype == Thrift.Type.STRING) {
-        this.raster_import_dimensions = input.readString().value;
+        this.raster_import_dimensions = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 33:
       if (ftype == Thrift.Type.STRING) {
-        this.odbc_dsn = input.readString().value;
+        this.odbc_dsn = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 34:
       if (ftype == Thrift.Type.STRING) {
-        this.odbc_connection_string = input.readString().value;
+        this.odbc_connection_string = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 35:
       if (ftype == Thrift.Type.STRING) {
-        this.odbc_sql_select = input.readString().value;
+        this.odbc_sql_select = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 36:
       if (ftype == Thrift.Type.STRING) {
-        this.odbc_sql_order_by = input.readString().value;
+        this.odbc_sql_order_by = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 37:
       if (ftype == Thrift.Type.STRING) {
-        this.odbc_username = input.readString().value;
+        this.odbc_username = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 38:
       if (ftype == Thrift.Type.STRING) {
-        this.odbc_password = input.readString().value;
+        this.odbc_password = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 39:
       if (ftype == Thrift.Type.STRING) {
-        this.odbc_credential_string = input.readString().value;
+        this.odbc_credential_string = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 40:
       if (ftype == Thrift.Type.STRING) {
-        this.add_metadata_columns = input.readString().value;
+        this.add_metadata_columns = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 41:
       if (ftype == Thrift.Type.BOOL) {
-        this.trim_spaces = input.readBool().value;
+        this.trim_spaces = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 42:
       if (ftype == Thrift.Type.BOOL) {
-        this.geo_validate_geometry = input.readBool().value;
+        this.geo_validate_geometry = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 43:
       if (ftype == Thrift.Type.BOOL) {
-        this.raster_drop_if_all_null = input.readBool().value;
+        this.raster_drop_if_all_null = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 44:
       if (ftype == Thrift.Type.STRING) {
-        this.bounding_box_clip = input.readString().value;
+        this.bounding_box_clip = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -42763,7 +42763,7 @@ TCreateParams.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_replicated = input.readBool().value;
+        this.is_replicated = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -42890,28 +42890,28 @@ TImportStatus.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I64) {
-        this.elapsed = input.readI64().value;
+        this.elapsed = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.rows_completed = input.readI64().value;
+        this.rows_completed = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.rows_estimated = input.readI64().value;
+        this.rows_estimated = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.rows_rejected = input.readI64().value;
+        this.rows_rejected = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -42989,35 +42989,35 @@ TFrontendView.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.view_name = input.readString().value;
+        this.view_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.view_state = input.readString().value;
+        this.view_state = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.image_hash = input.readString().value;
+        this.image_hash = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.update_time = input.readString().value;
+        this.update_time = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.view_metadata = input.readString().value;
+        this.view_metadata = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -43116,63 +43116,63 @@ TServerStatus.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.read_only = input.readBool().value;
+        this.read_only = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.version = input.readString().value;
+        this.version = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.rendering_enabled = input.readBool().value;
+        this.rendering_enabled = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.start_time = input.readI64().value;
+        this.start_time = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.edition = input.readString().value;
+        this.edition = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.host_name = input.readString().value;
+        this.host_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.BOOL) {
-        this.poly_rendering_enabled = input.readBool().value;
+        this.poly_rendering_enabled = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.I32) {
-        this.role = input.readI32().value;
+        this.role = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
       if (ftype == Thrift.Type.STRING) {
-        this.renderer_status_json = input.readString().value;
+        this.renderer_status_json = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -43263,14 +43263,14 @@ TPixel.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I64) {
-        this.x = input.readI64().value;
+        this.x = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.y = input.readI64().value;
+        this.y = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -43350,7 +43350,7 @@ TPixelTableRowResult.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.vega_table_name = input.readString().value;
+        this.vega_table_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -43362,7 +43362,7 @@ TPixelTableRowResult.prototype[Symbol.for("read")] = function(input) {
         var _size60 = _rtmp361.size || 0;
         for (var _i62 = 0; _i62 < _size60; ++_i62) {
           var elem63 = null;
-          elem63 = input.readI64().value;
+          elem63 = input.readI64();
           this.table_id.push(elem63);
         }
         input.readListEnd();
@@ -43377,7 +43377,7 @@ TPixelTableRowResult.prototype[Symbol.for("read")] = function(input) {
         var _size64 = _rtmp365.size || 0;
         for (var _i66 = 0; _i66 < _size64; ++_i66) {
           var elem67 = null;
-          elem67 = input.readI64().value;
+          elem67 = input.readI64();
           this.row_id.push(elem67);
         }
         input.readListEnd();
@@ -43395,7 +43395,7 @@ TPixelTableRowResult.prototype[Symbol.for("read")] = function(input) {
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
+        this.nonce = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -43501,42 +43501,42 @@ TRenderResult.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.image = input.readBinary().value;
+        this.image = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.nonce = input.readString().value;
+        this.nonce = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.execution_time_ms = input.readI64().value;
+        this.execution_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.render_time_ms = input.readI64().value;
+        this.render_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.total_time_ms = input.readI64().value;
+        this.total_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.vega_metadata = input.readString().value;
+        this.vega_metadata = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -43624,35 +43624,35 @@ TGpuSpecification.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.num_sm = input.readI32().value;
+        this.num_sm = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.clock_frequency_kHz = input.readI64().value;
+        this.clock_frequency_kHz = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.memory = input.readI64().value;
+        this.memory = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I16) {
-        this.compute_capability_major = input.readI16().value;
+        this.compute_capability_major = input.readI16();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I16) {
-        this.compute_capability_minor = input.readI16().value;
+        this.compute_capability_minor = input.readI16();
       } else {
         input.skip(ftype);
       }
@@ -43739,35 +43739,35 @@ THardwareInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I16) {
-        this.num_gpu_hw = input.readI16().value;
+        this.num_gpu_hw = input.readI16();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I16) {
-        this.num_cpu_hw = input.readI16().value;
+        this.num_cpu_hw = input.readI16();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I16) {
-        this.num_gpu_allocated = input.readI16().value;
+        this.num_gpu_allocated = input.readI16();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I16) {
-        this.start_gpu = input.readI16().value;
+        this.start_gpu = input.readI16();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.host_name = input.readString().value;
+        this.host_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -43952,28 +43952,28 @@ TMemoryData.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I64) {
-        this.slab = input.readI64().value;
+        this.slab = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.start_page = input.readI32().value;
+        this.start_page = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.num_pages = input.readI64().value;
+        this.num_pages = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.touch = input.readI32().value;
+        this.touch = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -43985,7 +43985,7 @@ TMemoryData.prototype[Symbol.for("read")] = function(input) {
         var _size80 = _rtmp381.size || 0;
         for (var _i82 = 0; _i82 < _size80; ++_i82) {
           var elem83 = null;
-          elem83 = input.readI64().value;
+          elem83 = input.readI64();
           this.chunk_key.push(elem83);
         }
         input.readListEnd();
@@ -43995,14 +43995,14 @@ TMemoryData.prototype[Symbol.for("read")] = function(input) {
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.buffer_epoch = input.readI32().value;
+        this.buffer_epoch = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_free = input.readBool().value;
+        this.is_free = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -44106,35 +44106,35 @@ TNodeMemoryInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.host_name = input.readString().value;
+        this.host_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.page_size = input.readI64().value;
+        this.page_size = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.max_num_pages = input.readI64().value;
+        this.max_num_pages = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.num_pages_allocated = input.readI64().value;
+        this.num_pages_allocated = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_allocation_capped = input.readBool().value;
+        this.is_allocation_capped = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -44265,56 +44265,56 @@ TTableMeta.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.table_name = input.readString().value;
+        this.table_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.num_cols = input.readI64().value;
+        this.num_cols = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_view = input.readBool().value;
+        this.is_view = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_replicated = input.readBool().value;
+        this.is_replicated = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I64) {
-        this.shard_count = input.readI64().value;
+        this.shard_count = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.I64) {
-        this.max_rows = input.readI64().value;
+        this.max_rows = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.I64) {
-        this.table_id = input.readI64().value;
+        this.table_id = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
       if (ftype == Thrift.Type.I64) {
-        this.max_table_id = input.readI64().value;
+        this.max_table_id = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -44342,7 +44342,7 @@ TTableMeta.prototype[Symbol.for("read")] = function(input) {
         var _size94 = _rtmp395.size || 0;
         for (var _i96 = 0; _i96 < _size94; ++_i96) {
           var elem97 = null;
-          elem97 = input.readString().value;
+          elem97 = input.readString();
           this.col_names.push(elem97);
         }
         input.readListEnd();
@@ -44475,49 +44475,49 @@ TTableRefreshInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.update_type = input.readI32().value;
+        this.update_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.timing_type = input.readI32().value;
+        this.timing_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.start_date_time = input.readString().value;
+        this.start_date_time = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.interval_type = input.readI32().value;
+        this.interval_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.interval_count = input.readI64().value;
+        this.interval_count = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.last_refresh_time = input.readString().value;
+        this.last_refresh_time = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.next_refresh_time = input.readString().value;
+        this.next_refresh_time = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -44658,63 +44658,63 @@ TTableDetails.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.fragment_size = input.readI64().value;
+        this.fragment_size = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.page_size = input.readI64().value;
+        this.page_size = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.max_rows = input.readI64().value;
+        this.max_rows = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.view_sql = input.readString().value;
+        this.view_sql = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I64) {
-        this.shard_count = input.readI64().value;
+        this.shard_count = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.key_metainfo = input.readString().value;
+        this.key_metainfo = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_temporary = input.readBool().value;
+        this.is_temporary = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
       if (ftype == Thrift.Type.I32) {
-        this.partition_detail = input.readI32().value;
+        this.partition_detail = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 10:
       if (ftype == Thrift.Type.I32) {
-        this.table_type = input.readI32().value;
+        this.table_type = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -44729,14 +44729,14 @@ TTableDetails.prototype[Symbol.for("read")] = function(input) {
       break;
       case 12:
       if (ftype == Thrift.Type.STRING) {
-        this.sharded_column_name = input.readString().value;
+        this.sharded_column_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 13:
       if (ftype == Thrift.Type.STRING) {
-        this.comment = input.readString().value;
+        this.comment = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -44886,70 +44886,70 @@ TColumnRange.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
+        this.type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.col_id = input.readI32().value;
+        this.col_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.has_nulls = input.readBool().value;
+        this.has_nulls = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.int_min = input.readI64().value;
+        this.int_min = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I64) {
-        this.int_max = input.readI64().value;
+        this.int_max = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.I64) {
-        this.bucket = input.readI64().value;
+        this.bucket = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.DOUBLE) {
-        this.fp_min = input.readDouble().value;
+        this.fp_min = input.readDouble();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
       if (ftype == Thrift.Type.DOUBLE) {
-        this.fp_max = input.readDouble().value;
+        this.fp_max = input.readDouble();
       } else {
         input.skip(ftype);
       }
       break;
       case 10:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -45049,21 +45049,21 @@ TDictionaryGeneration.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.dict_id = input.readI32().value;
+        this.dict_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.entry_count = input.readI64().value;
+        this.entry_count = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -45132,28 +45132,28 @@ TTableGeneration.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I64) {
-        this.tuple_count = input.readI64().value;
+        this.tuple_count = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.start_rowid = input.readI64().value;
+        this.start_rowid = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -45223,21 +45223,21 @@ TTableCacheStatus.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_cached_on_disk = input.readBool().value;
+        this.is_cached_on_disk = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -45314,7 +45314,7 @@ TPendingQuery.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I64) {
-        this.id = input.readI64().value;
+        this.id = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -45369,7 +45369,7 @@ TPendingQuery.prototype[Symbol.for("read")] = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.parent_session_id = input.readString().value;
+        this.parent_session_id = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -45489,14 +45489,14 @@ TVarLen.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.payload = input.readBinary().value;
+        this.payload = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_null = input.readBool().value;
+        this.is_null = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -45552,7 +45552,7 @@ TDataBlockPtr.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.fixed_len_data = input.readBinary().value;
+        this.fixed_len_data = input.readBinary();
       } else {
         input.skip(ftype);
       }
@@ -45647,14 +45647,14 @@ TInsertData.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -45666,7 +45666,7 @@ TInsertData.prototype[Symbol.for("read")] = function(input) {
         var _size130 = _rtmp3131.size || 0;
         for (var _i132 = 0; _i132 < _size130; ++_i132) {
           var elem133 = null;
-          elem133 = input.readI32().value;
+          elem133 = input.readI32();
           this.column_ids.push(elem133);
         }
         input.readListEnd();
@@ -45692,7 +45692,7 @@ TInsertData.prototype[Symbol.for("read")] = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.num_rows = input.readI64().value;
+        this.num_rows = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -45704,7 +45704,7 @@ TInsertData.prototype[Symbol.for("read")] = function(input) {
         var _size138 = _rtmp3139.size || 0;
         for (var _i140 = 0; _i140 < _size138; ++_i140) {
           var elem141 = null;
-          elem141 = input.readBool().value;
+          elem141 = input.readBool();
           this.is_default.push(elem141);
         }
         input.readListEnd();
@@ -45804,14 +45804,14 @@ TChunkData.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.data_buffer = input.readBinary().value;
+        this.data_buffer = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.index_buffer = input.readBinary().value;
+        this.index_buffer = input.readBinary();
       } else {
         input.skip(ftype);
       }
@@ -45879,14 +45879,14 @@ TInsertChunks.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.db_id = input.readI32().value;
+        this.db_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -45914,7 +45914,7 @@ TInsertChunks.prototype[Symbol.for("read")] = function(input) {
         var _size149 = _rtmp3150.size || 0;
         for (var _i151 = 0; _i151 < _size149; ++_i151) {
           var elem152 = null;
-          elem152 = input.readI64().value;
+          elem152 = input.readI64();
           this.valid_indices.push(elem152);
         }
         input.readListEnd();
@@ -45924,7 +45924,7 @@ TInsertChunks.prototype[Symbol.for("read")] = function(input) {
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.num_rows = input.readI64().value;
+        this.num_rows = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -46005,7 +46005,7 @@ TPendingRenderQuery.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I64) {
-        this.id = input.readI64().value;
+        this.id = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -46071,35 +46071,35 @@ TRenderParseResult.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.merge_type = input.readI32().value;
+        this.merge_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.node_id = input.readI32().value;
+        this.node_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.execution_time_ms = input.readI64().value;
+        this.execution_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.render_time_ms = input.readI64().value;
+        this.render_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.total_time_ms = input.readI64().value;
+        this.total_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -46194,56 +46194,56 @@ TRawRenderPassDataResult.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.num_pixel_channels = input.readI32().value;
+        this.num_pixel_channels = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.num_pixel_samples = input.readI32().value;
+        this.num_pixel_samples = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.pixels = input.readBinary().value;
+        this.pixels = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.row_ids_A = input.readBinary().value;
+        this.row_ids_A = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.row_ids_B = input.readBinary().value;
+        this.row_ids_B = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.table_ids = input.readBinary().value;
+        this.table_ids = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.accum_data = input.readBinary().value;
+        this.accum_data = input.readBinary();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.I32) {
-        this.accum_depth = input.readI32().value;
+        this.accum_depth = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -46333,14 +46333,14 @@ TRawPixelData.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.width = input.readI32().value;
+        this.width = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.height = input.readI32().value;
+        this.height = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -46358,7 +46358,7 @@ TRawPixelData.prototype[Symbol.for("read")] = function(input) {
           }
           var key158 = null;
           var val159 = null;
-          key158 = input.readI32().value;
+          key158 = input.readI32();
           val159 = new TRawRenderPassDataResult();
           val159[Symbol.for("read")](input);
           this.render_pass_map[key158] = val159;
@@ -46436,21 +46436,21 @@ TRenderDatum.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.type = input.readI32().value;
+        this.type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.cnt = input.readI32().value;
+        this.cnt = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.value = input.readBinary().value;
+        this.value = input.readBinary();
       } else {
         input.skip(ftype);
       }
@@ -46534,7 +46534,7 @@ TRenderStepResult.prototype[Symbol.for("read")] = function(input) {
           }
           var key165 = null;
           var val166 = null;
-          key165 = input.readString().value;
+          key165 = input.readString();
           val166 = {};
           var _rtmp3168 = input.readMapBegin();
           var _size167 = _rtmp3168.size || 0;
@@ -46546,7 +46546,7 @@ TRenderStepResult.prototype[Symbol.for("read")] = function(input) {
             }
             var key170 = null;
             var val171 = null;
-            key170 = input.readString().value;
+            key170 = input.readString();
             val171 = {};
             var _rtmp3173 = input.readMapBegin();
             var _size172 = _rtmp3173.size || 0;
@@ -46558,7 +46558,7 @@ TRenderStepResult.prototype[Symbol.for("read")] = function(input) {
               }
               var key175 = null;
               var val176 = null;
-              key175 = input.readString().value;
+              key175 = input.readString();
               val176 = {};
               var _rtmp3178 = input.readMapBegin();
               var _size177 = _rtmp3178.size || 0;
@@ -46570,7 +46570,7 @@ TRenderStepResult.prototype[Symbol.for("read")] = function(input) {
                 }
                 var key180 = null;
                 var val181 = null;
-                key180 = input.readString().value;
+                key180 = input.readString();
                 val181 = [];
                 var _rtmp3183 = input.readListBegin();
                 var _size182 = _rtmp3183.size || 0;
@@ -46607,21 +46607,21 @@ TRenderStepResult.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.execution_time_ms = input.readI64().value;
+        this.execution_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I64) {
-        this.render_time_ms = input.readI64().value;
+        this.render_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I64) {
-        this.total_time_ms = input.readI64().value;
+        this.total_time_ms = input.readI64();
       } else {
         input.skip(ftype);
       }
@@ -46739,28 +46739,28 @@ TDatabasePermissions.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.create_ = input.readBool().value;
+        this.create_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.delete_ = input.readBool().value;
+        this.delete_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.view_sql_editor_ = input.readBool().value;
+        this.view_sql_editor_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.access_ = input.readBool().value;
+        this.access_ = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -46850,56 +46850,56 @@ TTablePermissions.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.create_ = input.readBool().value;
+        this.create_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.drop_ = input.readBool().value;
+        this.drop_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.select_ = input.readBool().value;
+        this.select_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.insert_ = input.readBool().value;
+        this.insert_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.update_ = input.readBool().value;
+        this.update_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.BOOL) {
-        this.delete_ = input.readBool().value;
+        this.delete_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.BOOL) {
-        this.truncate_ = input.readBool().value;
+        this.truncate_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.BOOL) {
-        this.alter_ = input.readBool().value;
+        this.alter_ = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -46993,28 +46993,28 @@ TDashboardPermissions.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.create_ = input.readBool().value;
+        this.create_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.delete_ = input.readBool().value;
+        this.delete_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.view_ = input.readBool().value;
+        this.view_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.edit_ = input.readBool().value;
+        this.edit_ = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -47096,42 +47096,42 @@ TViewPermissions.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.create_ = input.readBool().value;
+        this.create_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.drop_ = input.readBool().value;
+        this.drop_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.select_ = input.readBool().value;
+        this.select_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.insert_ = input.readBool().value;
+        this.insert_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.update_ = input.readBool().value;
+        this.update_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.BOOL) {
-        this.delete_ = input.readBool().value;
+        this.delete_ = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -47215,28 +47215,28 @@ TServerPermissions.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.create_ = input.readBool().value;
+        this.create_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.drop_ = input.readBool().value;
+        this.drop_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.BOOL) {
-        this.alter_ = input.readBool().value;
+        this.alter_ = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.usage_ = input.readBool().value;
+        this.usage_ = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -47298,7 +47298,7 @@ TColumnPermissions.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.select_ = input.readBool().value;
+        this.select_ = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -47501,14 +47501,14 @@ TDBObject.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.objectName = input.readString().value;
+        this.objectName = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.objectType = input.readI32().value;
+        this.objectType = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -47520,7 +47520,7 @@ TDBObject.prototype[Symbol.for("read")] = function(input) {
         var _size195 = _rtmp3196.size || 0;
         for (var _i197 = 0; _i197 < _size195; ++_i197) {
           var elem198 = null;
-          elem198 = input.readBool().value;
+          elem198 = input.readBool();
           this.privs.push(elem198);
         }
         input.readListEnd();
@@ -47530,21 +47530,21 @@ TDBObject.prototype[Symbol.for("read")] = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.grantee = input.readString().value;
+        this.grantee = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I32) {
-        this.privilegeObjectType = input.readI32().value;
+        this.privilegeObjectType = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.objectId = input.readI32().value;
+        this.objectId = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -47631,14 +47631,14 @@ TDashboardGrantees.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString().value;
+        this.name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_user = input.readBool().value;
+        this.is_user = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -47735,56 +47735,56 @@ TDashboard.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_name = input.readString().value;
+        this.dashboard_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_state = input.readString().value;
+        this.dashboard_state = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.image_hash = input.readString().value;
+        this.image_hash = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.update_time = input.readString().value;
+        this.update_time = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_metadata = input.readString().value;
+        this.dashboard_metadata = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.dashboard_id = input.readI32().value;
+        this.dashboard_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.dashboard_owner = input.readString().value;
+        this.dashboard_owner = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_dash_shared = input.readBool().value;
+        this.is_dash_shared = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -47891,28 +47891,28 @@ TSessionInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.user = input.readString().value;
+        this.user = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.database = input.readString().value;
+        this.database = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I64) {
-        this.start_time = input.readI64().value;
+        this.start_time = input.readI64();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_super = input.readBool().value;
+        this.is_super = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -47978,14 +47978,14 @@ TGeoFileLayerInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString().value;
+        this.name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.contents = input.readI32().value;
+        this.contents = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -48045,21 +48045,21 @@ TTableEpochInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.table_id = input.readI32().value;
+        this.table_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.table_epoch = input.readI32().value;
+        this.table_epoch = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.leaf_index = input.readI32().value;
+        this.leaf_index = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -48140,49 +48140,49 @@ TCustomExpression.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.id = input.readI32().value;
+        this.id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString().value;
+        this.name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.expression_json = input.readString().value;
+        this.expression_json = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.I32) {
-        this.data_source_type = input.readI32().value;
+        this.data_source_type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.I32) {
-        this.data_source_id = input.readI32().value;
+        this.data_source_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.BOOL) {
-        this.is_deleted = input.readBool().value;
+        this.is_deleted = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.STRING) {
-        this.data_source_name = input.readString().value;
+        this.data_source_name = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -48295,70 +48295,70 @@ TQueryInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.query_session_id = input.readString().value;
+        this.query_session_id = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.query_public_session_id = input.readString().value;
+        this.query_public_session_id = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.current_status = input.readString().value;
+        this.current_status = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.I32) {
-        this.executor_id = input.readI32().value;
+        this.executor_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.submitted = input.readString().value;
+        this.submitted = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.query_str = input.readString().value;
+        this.query_str = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 7:
       if (ftype == Thrift.Type.STRING) {
-        this.login_name = input.readString().value;
+        this.login_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 8:
       if (ftype == Thrift.Type.STRING) {
-        this.client_address = input.readString().value;
+        this.client_address = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
       if (ftype == Thrift.Type.STRING) {
-        this.db_name = input.readString().value;
+        this.db_name = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 10:
       if (ftype == Thrift.Type.STRING) {
-        this.exec_device_type = input.readString().value;
+        this.exec_device_type = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -48454,14 +48454,14 @@ TLeafInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.I32) {
-        this.leaf_id = input.readI32().value;
+        this.leaf_id = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.num_leaves = input.readI32().value;
+        this.num_leaves = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -48517,14 +48517,14 @@ TImmerseUserMetadata.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.username = input.readString().value;
+        this.username = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.immerse_metadata_json = input.readString().value;
+        this.immerse_metadata_json = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -48584,7 +48584,7 @@ TUserInfo.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.username = input.readString().value;
+        this.username = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -48596,7 +48596,7 @@ TUserInfo.prototype[Symbol.for("read")] = function(input) {
         var _size200 = _rtmp3201.size || 0;
         for (var _i202 = 0; _i202 < _size200; ++_i202) {
           var elem203 = null;
-          elem203 = input.readString().value;
+          elem203 = input.readString();
           this.roles.push(elem203);
         }
         input.readListEnd();
@@ -48606,7 +48606,7 @@ TUserInfo.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.immerse_metadata_json = input.readString().value;
+        this.immerse_metadata_json = input.readString();
       } else {
         input.skip(ftype);
       }

@@ -8,8 +8,25 @@
  * (e.g. `TSourceType = {...}`) with no module.exports, which webpack cannot enumerate
  * for named imports or `export * from` re-exports.
  *
- * This loader scans for top-level bare identifier assignments and appends explicit
- * `exports.X = X` statements so webpack can resolve them as named exports.
+ * This loader:
+ *
+ *   1. Scans for top-level bare identifier assignments and appends explicit
+ *      `exports.X = X` statements so webpack can resolve them as named exports.
+ *
+ *   2. Strips the bogus `.value` accessor from scalar protocol read calls in the
+ *      generated code. The Thrift 0.23 JS code generator emits
+ *      `input.readString().value`, `input.readBool().value`, `input.readI32().value`,
+ *      etc. — but the Apache Thrift 0.23 JS runtime's TBinaryProtocol / TJSONProtocol
+ *      implementations of those scalar reads still return raw scalars, not
+ *      `{ value: ... }` wrappers. The mismatch means every scalar field on every
+ *      generated struct decodes to `undefined` (e.g. dashboard_name, dashboard_id,
+ *      dashboard_metadata on TDashboard) so requests look "successful" but every
+ *      row is blank. Stripping `.value` aligns the codegen with the runtime.
+ *
+ *      We only target the scalar reads that the generator actually emits with
+ *      `.value`: readBinary, readBool, readDouble, readI16, readI32, readI64,
+ *      readString, readUuid. Aggregate reads (readListBegin, readFieldBegin,
+ *      readMessageBegin, ...) already return objects and are left untouched.
  *
  * If the source already contains module.exports (e.g. from --gen js:node output),
  * the file is returned unchanged.
@@ -19,6 +36,14 @@ module.exports = function thriftGlobalsToExportsLoader(source) {
   if (/\bmodule\.exports\b/.test(source)) {
     return source
   }
+
+  // Strip the bogus `.value` accessor from scalar protocol read calls. See the
+  // top-of-file comment for context.
+  // eslint-disable-next-line no-param-reassign
+  source = source.replace(
+    /(\.read(?:Binary|Bool|Double|I16|I32|I64|String|Uuid)\(\))\.value\b/g,
+    "$1"
+  )
 
   const fs = require("fs")
   const path = require("path")
