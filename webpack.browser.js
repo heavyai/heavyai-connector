@@ -9,7 +9,8 @@ module.exports = {
   plugins: [
     new webpack.ProgressPlugin(),
     new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"]
+      Buffer: ["buffer", "Buffer"],
+      Thrift: ["thrift", "Thrift"]
     }),
     new webpack.DefinePlugin({
       "process.env": {

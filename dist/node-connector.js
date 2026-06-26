@@ -4583,7 +4583,7 @@ var __webpack_unused_export__;
  * specific language governing permissions and limitations
  * under the License.
  */
-/* unused reexport */ __webpack_require__(6439);
+exports.Thrift = __webpack_require__(6439);
 
 var log = __webpack_require__(3744);
 __webpack_unused_export__ = log.setLogFunc;
@@ -46669,6 +46669,7 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DbCon: () => (/* binding */ DbCon),
+/* harmony export */   Thrift: () => (/* reexport safe */ thrift__WEBPACK_IMPORTED_MODULE_7__.Thrift),
 /* harmony export */   "default": () => (heavy_con_es6)
 /* harmony export */ });
 /* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(228);
@@ -46689,28 +46690,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _process_query_results__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9227);
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9644);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__) if(["default","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__) if(["default","Thrift","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_Heavy_js__WEBPACK_IMPORTED_MODULE_6__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__) if(["default","Thrift","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_common_types_js__WEBPACK_IMPORTED_MODULE_4__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4608);
 /* harmony import */ var _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__) if(["default","Thrift","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_completion_hints_types__WEBPACK_IMPORTED_MODULE_10__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(332);
 /* harmony import */ var _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__) if(["default","Thrift","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_extension_functions_types__WEBPACK_IMPORTED_MODULE_11__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__) if(["default","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__) if(["default","Thrift","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_heavy_types_js__WEBPACK_IMPORTED_MODULE_5__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(4950);
 /* harmony import */ var _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__) if(["default","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__) if(["default","Thrift","DbCon"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _thrift_serialized_result_set_types__WEBPACK_IMPORTED_MODULE_12__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -46729,6 +46730,7 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
+
 
 
 

@@ -30,11 +30,14 @@ import {
   TBinaryProtocol,
   TBufferedTransport,
   TJSONProtocol,
+  Thrift,
   XHRConnection,
   createClient,
   createHttpConnection,
   createXHRClient
 } from "thrift"
+
+export { Thrift } from "thrift"
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
 
