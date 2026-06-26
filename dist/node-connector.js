@@ -49212,6 +49212,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 // The upstream createClient passes the raw transport as input and the protocol class
 // as output, which breaks this. We instantiate the protocol around the transport and
 // pass the same protocol instance for both input and output.
+//
+// Concurrency model: each generated send_<rpc>() call ends with
+//   this.output.getTransport().flush(true, recvCallback)
+// which we intercept to register `recvCallback` on the connection so that when
+// the corresponding XHR response comes back the wrapper will swap protocol.trans
+// to the response buffer, run the recv (which reads from `this.input`, i.e. the
+// shared client protocol), and restore the previous trans. Because the
+// connection is shared across ALL concurrent thrift calls, we MUST NOT store
+// the callback in a single `_responseCallback` field - a second concurrent
+// call would clobber the first, sending the wrong recv against the wrong XHR
+// response and producing InputBufferUnderrunErrors and "recv error" noise as
+// the dispatcher falls back to its (broken-for-this-codegen) path. Instead we
+// keep a FIFO queue (`_responseCallbacks`) and let each XHR's onreadystatechange
+// shift its own callback off the queue. Within a single keep-alive HTTP/1.x
+// connection responses arrive in request order, and the browser's per-XHR
+// closure (see CustomXHRConnection.prototype.flush below) snapshots the head of
+// the queue at request-creation time so even out-of-order XHR completion is
+// safe.
 function createClient(ServiceClient, connection) {
   if (ServiceClient.Client) {
     ServiceClient = ServiceClient.Client;
@@ -49230,7 +49248,7 @@ function createClient(ServiceClient, connection) {
       return typeof arg === "function";
     });
     if (callback) {
-      connection._responseCallback = function (responseTransport) {
+      var responseCallback = function responseCallback(responseTransport) {
         var requestTransport = protocol.trans;
         protocol.trans = responseTransport;
         try {
@@ -49239,18 +49257,25 @@ function createClient(ServiceClient, connection) {
           protocol.trans = requestTransport;
         }
       };
+      if (!Array.isArray(connection._responseCallbacks)) {
+        connection._responseCallbacks = [];
+      }
+      connection._responseCallbacks.push(responseCallback);
+      // Keep `_responseCallback` set to the most-recently-registered callback
+      // so the upstream non-queue-aware setRecvBuffer fallback still works in
+      // the single-call case. The queue is the source of truth when the
+      // patched setRecvBuffer (below) is in play.
+      connection._responseCallback = responseCallback;
     }
     return flush();
   };
   var client = new ServiceClient(protocol, protocol);
   // Apache Thrift 0.23's `--gen js` (browser globals) emits a HeavyClient
   // constructor that only sets `input`, `output`, and `seqid` - it does NOT
-  // initialize `_reqs`. The XHRConnection's __decodeCallback, however, always
-  // does `client._reqs[dummySeqid] = ...` to register a response handler keyed
-  // by the negated seqid. Without _reqs that assignment throws
-  // "Cannot set properties of undefined (setting '0')" the moment we
-  // successfully decode any response. Seed it here so the decode dispatcher
-  // can record (and clean up) per-call entries.
+  // initialize `_reqs`. The XHRConnection's __decodeCallback path (which we
+  // don't normally hit because we use the response-callback queue above)
+  // touches `client._reqs[dummySeqid]`. Seed it so that path can't throw
+  // "Cannot set properties of undefined" if it's ever reached.
   if (!client._reqs) {
     client._reqs = {};
   }
@@ -49351,7 +49376,7 @@ CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   obj.withCredentials = CustomXHRConnection.withCredentials;
   return obj;
 };
-CustomXHRConnection.prototype.setRecvBuffer = function (buf) {
+CustomXHRConnection.prototype.setRecvBuffer = function (buf, perRequestCallback) {
   var _this = this;
   this.recv_buf = buf;
   this.recv_buf_sz = this.recv_buf.length;
@@ -49363,6 +49388,20 @@ CustomXHRConnection.prototype.setRecvBuffer = function (buf) {
   }
   var thing = new Buffer(data || buf);
   this.transport.receiver(function (transportWithData) {
+    // Preferred path: the XHR's onreadystatechange snapshotted *its own*
+    // response callback off the connection queue when the request was
+    // dispatched, eliminating the cross-request clobber that happens when
+    // multiple concurrent calls share `connection._responseCallback`.
+    if (perRequestCallback) {
+      logThriftDebug("response callback (per-request)", {
+        readCursor: transportWithData.readCursor,
+        writeCursor: transportWithData.writeCursor
+      });
+      perRequestCallback(transportWithData);
+      return;
+    }
+    // Fallback to legacy single-slot field for any caller that still goes
+    // through setRecvBuffer without a snapshot.
     if (_this._responseCallback) {
       var responseCallback = _this._responseCallback;
       _this._responseCallback = null;
@@ -49371,9 +49410,16 @@ CustomXHRConnection.prototype.setRecvBuffer = function (buf) {
         writeCursor: transportWithData.writeCursor
       });
       responseCallback(transportWithData);
-    } else {
-      _this.__decodeCallback(transportWithData);
+      return;
     }
+    // Last resort: the upstream Apache-Thrift `__decodeCallback` dispatcher.
+    // Note this path is essentially dead for our `--gen js` (browser globals)
+    // generated client because its `recv_*` methods read from `this.input`
+    // (the shared client protocol) and ignore the `proto` the dispatcher
+    // creates from `transportWithData` - so it will reliably underrun. We keep
+    // it (and seed `client._reqs = {}` in createClient) only so an unexpected
+    // orphan response doesn't crash the page.
+    _this.__decodeCallback(transportWithData);
   })(thing);
 };
 CustomXHRConnection.prototype.flush = function () {
@@ -49381,6 +49427,23 @@ CustomXHRConnection.prototype.flush = function () {
     _this2 = this;
   if (this.url === undefined || this.url === "") {
     return this.send_buf;
+  }
+
+  // Snapshot this request's response callback off the queue NOW (at request
+  // dispatch time) so each XHR's onreadystatechange runs the callback that
+  // was registered for it - even if another concurrent thrift call appends
+  // additional callbacks to the queue before this XHR completes. See the
+  // comment on createClient for the rationale.
+  var perRequestCallback = null;
+  if (Array.isArray(this._responseCallbacks) && this._responseCallbacks.length) {
+    perRequestCallback = this._responseCallbacks.shift();
+    // Keep `_responseCallback` aligned with the head of the queue so any code
+    // that still reads the legacy single-slot field after we shift sees the
+    // next pending callback rather than a stale value.
+    this._responseCallback = this._responseCallbacks[0] || null;
+  } else if (this._responseCallback) {
+    perRequestCallback = this._responseCallback;
+    this._responseCallback = null;
   }
   var xreq = this.getXmlHttpRequestObject();
   var requestContentType = this.headers["Content-Type"];
@@ -49420,7 +49483,7 @@ CustomXHRConnection.prototype.flush = function () {
       bodyPreview: responsePreview
     }, xreq.status === 200 ? "debug" : "warn");
     if (xreq.status === 200) {
-      _this2.setRecvBuffer(responseBody);
+      _this2.setRecvBuffer(responseBody, perRequestCallback);
     }
   };
   xreq.ontimeout = function (error) {
