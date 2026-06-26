@@ -20,31 +20,53 @@ module.exports = function thriftGlobalsToExportsLoader(source) {
     return source
   }
 
+  const fs = require("fs")
+  const path = require("path")
+
+  const findAssignedNames = (text) => {
+    const names = []
+    const seen = new Set()
+    const re = /^([A-Za-z_$][A-Za-z0-9_$]*)\s*=/gm
+    let m
+    while ((m = re.exec(text)) !== null) {
+      if (!seen.has(m[1])) {
+        seen.add(m[1])
+        names.push(m[1])
+      }
+    }
+    return names
+  }
+
   // Find all top-level bare identifier assignments: lines that start (no leading
   // whitespace) with an identifier followed by `=`. This matches enums and
   // constructor functions that thrift --gen js emits as implicit globals, e.g.:
   //   TSourceType = { 'DELIMITED_FILE': 0, ... }
   //   HeavyClient = function(input, output) { ... }
-  const names = []
-  const seen = new Set()
-  const re = /^([A-Za-z_$][A-Za-z0-9_$]*)\s*=/gm
-  let m
-  while ((m = re.exec(source)) !== null) {
-    if (!seen.has(m[1])) {
-      seen.add(m[1])
-      names.push(m[1])
-    }
-  }
+  const names = findAssignedNames(source)
 
   if (names.length === 0) return source
 
-  const declarations = `var ${names.join(", ")};\n`
+  const thriftDir = path.dirname(this.resourcePath)
+  const allNames = fs
+    .readdirSync(thriftDir)
+    .filter((fileName) => fileName.endsWith(".js"))
+    .flatMap((fileName) =>
+      findAssignedNames(fs.readFileSync(path.join(thriftDir, fileName), "utf8"))
+    )
+    .filter((name, index, all) => all.indexOf(name) === index)
+
+  const declarations = allNames
+    .map((n) => `var ${n} = globalThis.${n};`)
+    .join("\n")
   const suffix =
     "\n// <thrift-globals-to-exports-loader>\n" +
     names
-      .map((n) => `if (typeof ${n} !== 'undefined') exports.${n} = ${n};`)
+      .map(
+        (n) =>
+          `if (typeof ${n} !== 'undefined') { globalThis.${n} = ${n}; exports.${n} = ${n}; }`
+      )
       .join("\n") +
     "\n"
 
-  return declarations + source + suffix
+  return declarations + "\n" + source + suffix
 }

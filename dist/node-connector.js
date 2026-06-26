@@ -8949,7 +8949,318 @@ exports.createStdIOClient = createClient;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 /* provided dependency */ var Thrift = __webpack_require__(5522)["Thrift"];
-var Heavy_connect_args, Heavy_connect_result, Heavy_disconnect_args, Heavy_disconnect_result, Heavy_switch_database_args, Heavy_switch_database_result, Heavy_clone_session_args, Heavy_clone_session_result, Heavy_get_server_status_args, Heavy_get_server_status_result, Heavy_get_status_args, Heavy_get_status_result, Heavy_get_hardware_info_args, Heavy_get_hardware_info_result, Heavy_get_tables_args, Heavy_get_tables_result, Heavy_get_tables_for_database_args, Heavy_get_tables_for_database_result, Heavy_get_physical_tables_args, Heavy_get_physical_tables_result, Heavy_get_views_args, Heavy_get_views_result, Heavy_get_tables_meta_args, Heavy_get_tables_meta_result, Heavy_get_table_details_args, Heavy_get_table_details_result, Heavy_get_table_details_for_database_args, Heavy_get_table_details_for_database_result, Heavy_get_internal_table_details_args, Heavy_get_internal_table_details_result, Heavy_get_internal_table_details_for_database_args, Heavy_get_internal_table_details_for_database_result, Heavy_get_users_args, Heavy_get_users_result, Heavy_get_version_args, Heavy_get_version_result, Heavy_start_heap_profile_args, Heavy_start_heap_profile_result, Heavy_stop_heap_profile_args, Heavy_stop_heap_profile_result, Heavy_get_heap_profile_args, Heavy_get_heap_profile_result, Heavy_get_memory_args, Heavy_get_memory_result, Heavy_clear_cpu_memory_args, Heavy_clear_cpu_memory_result, Heavy_clear_gpu_memory_args, Heavy_clear_gpu_memory_result, Heavy_set_cur_session_args, Heavy_set_cur_session_result, Heavy_invalidate_cur_session_args, Heavy_invalidate_cur_session_result, Heavy_set_table_epoch_args, Heavy_set_table_epoch_result, Heavy_set_table_epoch_by_name_args, Heavy_set_table_epoch_by_name_result, Heavy_get_table_epoch_args, Heavy_get_table_epoch_result, Heavy_get_table_epoch_by_name_args, Heavy_get_table_epoch_by_name_result, Heavy_get_table_epochs_args, Heavy_get_table_epochs_result, Heavy_set_table_epochs_args, Heavy_set_table_epochs_result, Heavy_get_session_info_args, Heavy_get_session_info_result, Heavy_get_queries_info_args, Heavy_get_queries_info_result, Heavy_set_leaf_info_args, Heavy_set_leaf_info_result, Heavy_sql_execute_args, Heavy_sql_execute_result, Heavy_sql_execute_df_args, Heavy_sql_execute_df_result, Heavy_sql_execute_gdf_args, Heavy_sql_execute_gdf_result, Heavy_deallocate_df_args, Heavy_deallocate_df_result, Heavy_interrupt_args, Heavy_interrupt_result, Heavy_sql_validate_args, Heavy_sql_validate_result, Heavy_get_completion_hints_args, Heavy_get_completion_hints_result, Heavy_set_execution_mode_args, Heavy_set_execution_mode_result, Heavy_render_vega_args, Heavy_render_vega_result, Heavy_get_result_row_for_pixel_args, Heavy_get_result_row_for_pixel_result, Heavy_create_custom_expression_args, Heavy_create_custom_expression_result, Heavy_get_custom_expressions_args, Heavy_get_custom_expressions_result, Heavy_update_custom_expression_args, Heavy_update_custom_expression_result, Heavy_delete_custom_expressions_args, Heavy_delete_custom_expressions_result, Heavy_get_dashboard_args, Heavy_get_dashboard_result, Heavy_get_dashboards_args, Heavy_get_dashboards_result, Heavy_create_dashboard_args, Heavy_create_dashboard_result, Heavy_replace_dashboard_args, Heavy_replace_dashboard_result, Heavy_delete_dashboard_args, Heavy_delete_dashboard_result, Heavy_share_dashboards_args, Heavy_share_dashboards_result, Heavy_delete_dashboards_args, Heavy_delete_dashboards_result, Heavy_share_dashboard_args, Heavy_share_dashboard_result, Heavy_unshare_dashboard_args, Heavy_unshare_dashboard_result, Heavy_unshare_dashboards_args, Heavy_unshare_dashboards_result, Heavy_get_dashboard_grantees_args, Heavy_get_dashboard_grantees_result, Heavy_get_link_view_args, Heavy_get_link_view_result, Heavy_create_link_args, Heavy_create_link_result, Heavy_load_table_binary_args, Heavy_load_table_binary_result, Heavy_load_table_binary_columnar_args, Heavy_load_table_binary_columnar_result, Heavy_load_table_binary_arrow_args, Heavy_load_table_binary_arrow_result, Heavy_load_table_args, Heavy_load_table_result, Heavy_detect_column_types_args, Heavy_detect_column_types_result, Heavy_create_table_args, Heavy_create_table_result, Heavy_import_table_args, Heavy_import_table_result, Heavy_import_geo_table_args, Heavy_import_geo_table_result, Heavy_import_table_status_args, Heavy_import_table_status_result, Heavy_get_first_geo_file_in_archive_args, Heavy_get_first_geo_file_in_archive_result, Heavy_get_all_files_in_archive_args, Heavy_get_all_files_in_archive_result, Heavy_get_layers_in_geo_file_args, Heavy_get_layers_in_geo_file_result, Heavy_query_get_outer_fragment_count_args, Heavy_query_get_outer_fragment_count_result, Heavy_check_table_consistency_args, Heavy_check_table_consistency_result, Heavy_start_query_args, Heavy_start_query_result, Heavy_execute_query_step_args, Heavy_execute_query_step_result, Heavy_broadcast_serialized_rows_args, Heavy_broadcast_serialized_rows_result, Heavy_start_render_query_args, Heavy_start_render_query_result, Heavy_execute_next_render_step_args, Heavy_execute_next_render_step_result, Heavy_insert_data_args, Heavy_insert_data_result, Heavy_insert_chunks_args, Heavy_insert_chunks_result, Heavy_checkpoint_args, Heavy_checkpoint_result, Heavy_get_roles_args, Heavy_get_roles_result, Heavy_get_db_objects_for_grantee_args, Heavy_get_db_objects_for_grantee_result, Heavy_get_db_object_privs_args, Heavy_get_db_object_privs_result, Heavy_get_all_roles_for_user_args, Heavy_get_all_roles_for_user_result, Heavy_get_all_effective_roles_for_user_args, Heavy_get_all_effective_roles_for_user_result, Heavy_has_role_args, Heavy_has_role_result, Heavy_has_object_privilege_args, Heavy_has_object_privilege_result, Heavy_get_device_parameters_args, Heavy_get_device_parameters_result, Heavy_register_runtime_extension_functions_args, Heavy_register_runtime_extension_functions_result, Heavy_get_table_function_names_args, Heavy_get_table_function_names_result, Heavy_get_runtime_table_function_names_args, Heavy_get_runtime_table_function_names_result, Heavy_get_table_function_details_args, Heavy_get_table_function_details_result, Heavy_get_function_names_args, Heavy_get_function_names_result, Heavy_get_runtime_function_names_args, Heavy_get_runtime_function_names_result, Heavy_get_function_details_args, Heavy_get_function_details_result, Heavy_put_immerse_users_metadata_args, Heavy_put_immerse_users_metadata_result, Heavy_put_immerse_database_metadata_args, Heavy_put_immerse_database_metadata_result, Heavy_get_users_info_args, Heavy_get_users_info_result, Heavy_get_databases_args, Heavy_get_databases_result, HeavyClient;
+var Heavy_connect_args = globalThis.Heavy_connect_args;
+var Heavy_connect_result = globalThis.Heavy_connect_result;
+var Heavy_disconnect_args = globalThis.Heavy_disconnect_args;
+var Heavy_disconnect_result = globalThis.Heavy_disconnect_result;
+var Heavy_switch_database_args = globalThis.Heavy_switch_database_args;
+var Heavy_switch_database_result = globalThis.Heavy_switch_database_result;
+var Heavy_clone_session_args = globalThis.Heavy_clone_session_args;
+var Heavy_clone_session_result = globalThis.Heavy_clone_session_result;
+var Heavy_get_server_status_args = globalThis.Heavy_get_server_status_args;
+var Heavy_get_server_status_result = globalThis.Heavy_get_server_status_result;
+var Heavy_get_status_args = globalThis.Heavy_get_status_args;
+var Heavy_get_status_result = globalThis.Heavy_get_status_result;
+var Heavy_get_hardware_info_args = globalThis.Heavy_get_hardware_info_args;
+var Heavy_get_hardware_info_result = globalThis.Heavy_get_hardware_info_result;
+var Heavy_get_tables_args = globalThis.Heavy_get_tables_args;
+var Heavy_get_tables_result = globalThis.Heavy_get_tables_result;
+var Heavy_get_tables_for_database_args = globalThis.Heavy_get_tables_for_database_args;
+var Heavy_get_tables_for_database_result = globalThis.Heavy_get_tables_for_database_result;
+var Heavy_get_physical_tables_args = globalThis.Heavy_get_physical_tables_args;
+var Heavy_get_physical_tables_result = globalThis.Heavy_get_physical_tables_result;
+var Heavy_get_views_args = globalThis.Heavy_get_views_args;
+var Heavy_get_views_result = globalThis.Heavy_get_views_result;
+var Heavy_get_tables_meta_args = globalThis.Heavy_get_tables_meta_args;
+var Heavy_get_tables_meta_result = globalThis.Heavy_get_tables_meta_result;
+var Heavy_get_table_details_args = globalThis.Heavy_get_table_details_args;
+var Heavy_get_table_details_result = globalThis.Heavy_get_table_details_result;
+var Heavy_get_table_details_for_database_args = globalThis.Heavy_get_table_details_for_database_args;
+var Heavy_get_table_details_for_database_result = globalThis.Heavy_get_table_details_for_database_result;
+var Heavy_get_internal_table_details_args = globalThis.Heavy_get_internal_table_details_args;
+var Heavy_get_internal_table_details_result = globalThis.Heavy_get_internal_table_details_result;
+var Heavy_get_internal_table_details_for_database_args = globalThis.Heavy_get_internal_table_details_for_database_args;
+var Heavy_get_internal_table_details_for_database_result = globalThis.Heavy_get_internal_table_details_for_database_result;
+var Heavy_get_users_args = globalThis.Heavy_get_users_args;
+var Heavy_get_users_result = globalThis.Heavy_get_users_result;
+var Heavy_get_version_args = globalThis.Heavy_get_version_args;
+var Heavy_get_version_result = globalThis.Heavy_get_version_result;
+var Heavy_start_heap_profile_args = globalThis.Heavy_start_heap_profile_args;
+var Heavy_start_heap_profile_result = globalThis.Heavy_start_heap_profile_result;
+var Heavy_stop_heap_profile_args = globalThis.Heavy_stop_heap_profile_args;
+var Heavy_stop_heap_profile_result = globalThis.Heavy_stop_heap_profile_result;
+var Heavy_get_heap_profile_args = globalThis.Heavy_get_heap_profile_args;
+var Heavy_get_heap_profile_result = globalThis.Heavy_get_heap_profile_result;
+var Heavy_get_memory_args = globalThis.Heavy_get_memory_args;
+var Heavy_get_memory_result = globalThis.Heavy_get_memory_result;
+var Heavy_clear_cpu_memory_args = globalThis.Heavy_clear_cpu_memory_args;
+var Heavy_clear_cpu_memory_result = globalThis.Heavy_clear_cpu_memory_result;
+var Heavy_clear_gpu_memory_args = globalThis.Heavy_clear_gpu_memory_args;
+var Heavy_clear_gpu_memory_result = globalThis.Heavy_clear_gpu_memory_result;
+var Heavy_set_cur_session_args = globalThis.Heavy_set_cur_session_args;
+var Heavy_set_cur_session_result = globalThis.Heavy_set_cur_session_result;
+var Heavy_invalidate_cur_session_args = globalThis.Heavy_invalidate_cur_session_args;
+var Heavy_invalidate_cur_session_result = globalThis.Heavy_invalidate_cur_session_result;
+var Heavy_set_table_epoch_args = globalThis.Heavy_set_table_epoch_args;
+var Heavy_set_table_epoch_result = globalThis.Heavy_set_table_epoch_result;
+var Heavy_set_table_epoch_by_name_args = globalThis.Heavy_set_table_epoch_by_name_args;
+var Heavy_set_table_epoch_by_name_result = globalThis.Heavy_set_table_epoch_by_name_result;
+var Heavy_get_table_epoch_args = globalThis.Heavy_get_table_epoch_args;
+var Heavy_get_table_epoch_result = globalThis.Heavy_get_table_epoch_result;
+var Heavy_get_table_epoch_by_name_args = globalThis.Heavy_get_table_epoch_by_name_args;
+var Heavy_get_table_epoch_by_name_result = globalThis.Heavy_get_table_epoch_by_name_result;
+var Heavy_get_table_epochs_args = globalThis.Heavy_get_table_epochs_args;
+var Heavy_get_table_epochs_result = globalThis.Heavy_get_table_epochs_result;
+var Heavy_set_table_epochs_args = globalThis.Heavy_set_table_epochs_args;
+var Heavy_set_table_epochs_result = globalThis.Heavy_set_table_epochs_result;
+var Heavy_get_session_info_args = globalThis.Heavy_get_session_info_args;
+var Heavy_get_session_info_result = globalThis.Heavy_get_session_info_result;
+var Heavy_get_queries_info_args = globalThis.Heavy_get_queries_info_args;
+var Heavy_get_queries_info_result = globalThis.Heavy_get_queries_info_result;
+var Heavy_set_leaf_info_args = globalThis.Heavy_set_leaf_info_args;
+var Heavy_set_leaf_info_result = globalThis.Heavy_set_leaf_info_result;
+var Heavy_sql_execute_args = globalThis.Heavy_sql_execute_args;
+var Heavy_sql_execute_result = globalThis.Heavy_sql_execute_result;
+var Heavy_sql_execute_df_args = globalThis.Heavy_sql_execute_df_args;
+var Heavy_sql_execute_df_result = globalThis.Heavy_sql_execute_df_result;
+var Heavy_sql_execute_gdf_args = globalThis.Heavy_sql_execute_gdf_args;
+var Heavy_sql_execute_gdf_result = globalThis.Heavy_sql_execute_gdf_result;
+var Heavy_deallocate_df_args = globalThis.Heavy_deallocate_df_args;
+var Heavy_deallocate_df_result = globalThis.Heavy_deallocate_df_result;
+var Heavy_interrupt_args = globalThis.Heavy_interrupt_args;
+var Heavy_interrupt_result = globalThis.Heavy_interrupt_result;
+var Heavy_sql_validate_args = globalThis.Heavy_sql_validate_args;
+var Heavy_sql_validate_result = globalThis.Heavy_sql_validate_result;
+var Heavy_get_completion_hints_args = globalThis.Heavy_get_completion_hints_args;
+var Heavy_get_completion_hints_result = globalThis.Heavy_get_completion_hints_result;
+var Heavy_set_execution_mode_args = globalThis.Heavy_set_execution_mode_args;
+var Heavy_set_execution_mode_result = globalThis.Heavy_set_execution_mode_result;
+var Heavy_render_vega_args = globalThis.Heavy_render_vega_args;
+var Heavy_render_vega_result = globalThis.Heavy_render_vega_result;
+var Heavy_get_result_row_for_pixel_args = globalThis.Heavy_get_result_row_for_pixel_args;
+var Heavy_get_result_row_for_pixel_result = globalThis.Heavy_get_result_row_for_pixel_result;
+var Heavy_create_custom_expression_args = globalThis.Heavy_create_custom_expression_args;
+var Heavy_create_custom_expression_result = globalThis.Heavy_create_custom_expression_result;
+var Heavy_get_custom_expressions_args = globalThis.Heavy_get_custom_expressions_args;
+var Heavy_get_custom_expressions_result = globalThis.Heavy_get_custom_expressions_result;
+var Heavy_update_custom_expression_args = globalThis.Heavy_update_custom_expression_args;
+var Heavy_update_custom_expression_result = globalThis.Heavy_update_custom_expression_result;
+var Heavy_delete_custom_expressions_args = globalThis.Heavy_delete_custom_expressions_args;
+var Heavy_delete_custom_expressions_result = globalThis.Heavy_delete_custom_expressions_result;
+var Heavy_get_dashboard_args = globalThis.Heavy_get_dashboard_args;
+var Heavy_get_dashboard_result = globalThis.Heavy_get_dashboard_result;
+var Heavy_get_dashboards_args = globalThis.Heavy_get_dashboards_args;
+var Heavy_get_dashboards_result = globalThis.Heavy_get_dashboards_result;
+var Heavy_create_dashboard_args = globalThis.Heavy_create_dashboard_args;
+var Heavy_create_dashboard_result = globalThis.Heavy_create_dashboard_result;
+var Heavy_replace_dashboard_args = globalThis.Heavy_replace_dashboard_args;
+var Heavy_replace_dashboard_result = globalThis.Heavy_replace_dashboard_result;
+var Heavy_delete_dashboard_args = globalThis.Heavy_delete_dashboard_args;
+var Heavy_delete_dashboard_result = globalThis.Heavy_delete_dashboard_result;
+var Heavy_share_dashboards_args = globalThis.Heavy_share_dashboards_args;
+var Heavy_share_dashboards_result = globalThis.Heavy_share_dashboards_result;
+var Heavy_delete_dashboards_args = globalThis.Heavy_delete_dashboards_args;
+var Heavy_delete_dashboards_result = globalThis.Heavy_delete_dashboards_result;
+var Heavy_share_dashboard_args = globalThis.Heavy_share_dashboard_args;
+var Heavy_share_dashboard_result = globalThis.Heavy_share_dashboard_result;
+var Heavy_unshare_dashboard_args = globalThis.Heavy_unshare_dashboard_args;
+var Heavy_unshare_dashboard_result = globalThis.Heavy_unshare_dashboard_result;
+var Heavy_unshare_dashboards_args = globalThis.Heavy_unshare_dashboards_args;
+var Heavy_unshare_dashboards_result = globalThis.Heavy_unshare_dashboards_result;
+var Heavy_get_dashboard_grantees_args = globalThis.Heavy_get_dashboard_grantees_args;
+var Heavy_get_dashboard_grantees_result = globalThis.Heavy_get_dashboard_grantees_result;
+var Heavy_get_link_view_args = globalThis.Heavy_get_link_view_args;
+var Heavy_get_link_view_result = globalThis.Heavy_get_link_view_result;
+var Heavy_create_link_args = globalThis.Heavy_create_link_args;
+var Heavy_create_link_result = globalThis.Heavy_create_link_result;
+var Heavy_load_table_binary_args = globalThis.Heavy_load_table_binary_args;
+var Heavy_load_table_binary_result = globalThis.Heavy_load_table_binary_result;
+var Heavy_load_table_binary_columnar_args = globalThis.Heavy_load_table_binary_columnar_args;
+var Heavy_load_table_binary_columnar_result = globalThis.Heavy_load_table_binary_columnar_result;
+var Heavy_load_table_binary_arrow_args = globalThis.Heavy_load_table_binary_arrow_args;
+var Heavy_load_table_binary_arrow_result = globalThis.Heavy_load_table_binary_arrow_result;
+var Heavy_load_table_args = globalThis.Heavy_load_table_args;
+var Heavy_load_table_result = globalThis.Heavy_load_table_result;
+var Heavy_detect_column_types_args = globalThis.Heavy_detect_column_types_args;
+var Heavy_detect_column_types_result = globalThis.Heavy_detect_column_types_result;
+var Heavy_create_table_args = globalThis.Heavy_create_table_args;
+var Heavy_create_table_result = globalThis.Heavy_create_table_result;
+var Heavy_import_table_args = globalThis.Heavy_import_table_args;
+var Heavy_import_table_result = globalThis.Heavy_import_table_result;
+var Heavy_import_geo_table_args = globalThis.Heavy_import_geo_table_args;
+var Heavy_import_geo_table_result = globalThis.Heavy_import_geo_table_result;
+var Heavy_import_table_status_args = globalThis.Heavy_import_table_status_args;
+var Heavy_import_table_status_result = globalThis.Heavy_import_table_status_result;
+var Heavy_get_first_geo_file_in_archive_args = globalThis.Heavy_get_first_geo_file_in_archive_args;
+var Heavy_get_first_geo_file_in_archive_result = globalThis.Heavy_get_first_geo_file_in_archive_result;
+var Heavy_get_all_files_in_archive_args = globalThis.Heavy_get_all_files_in_archive_args;
+var Heavy_get_all_files_in_archive_result = globalThis.Heavy_get_all_files_in_archive_result;
+var Heavy_get_layers_in_geo_file_args = globalThis.Heavy_get_layers_in_geo_file_args;
+var Heavy_get_layers_in_geo_file_result = globalThis.Heavy_get_layers_in_geo_file_result;
+var Heavy_query_get_outer_fragment_count_args = globalThis.Heavy_query_get_outer_fragment_count_args;
+var Heavy_query_get_outer_fragment_count_result = globalThis.Heavy_query_get_outer_fragment_count_result;
+var Heavy_check_table_consistency_args = globalThis.Heavy_check_table_consistency_args;
+var Heavy_check_table_consistency_result = globalThis.Heavy_check_table_consistency_result;
+var Heavy_start_query_args = globalThis.Heavy_start_query_args;
+var Heavy_start_query_result = globalThis.Heavy_start_query_result;
+var Heavy_execute_query_step_args = globalThis.Heavy_execute_query_step_args;
+var Heavy_execute_query_step_result = globalThis.Heavy_execute_query_step_result;
+var Heavy_broadcast_serialized_rows_args = globalThis.Heavy_broadcast_serialized_rows_args;
+var Heavy_broadcast_serialized_rows_result = globalThis.Heavy_broadcast_serialized_rows_result;
+var Heavy_start_render_query_args = globalThis.Heavy_start_render_query_args;
+var Heavy_start_render_query_result = globalThis.Heavy_start_render_query_result;
+var Heavy_execute_next_render_step_args = globalThis.Heavy_execute_next_render_step_args;
+var Heavy_execute_next_render_step_result = globalThis.Heavy_execute_next_render_step_result;
+var Heavy_insert_data_args = globalThis.Heavy_insert_data_args;
+var Heavy_insert_data_result = globalThis.Heavy_insert_data_result;
+var Heavy_insert_chunks_args = globalThis.Heavy_insert_chunks_args;
+var Heavy_insert_chunks_result = globalThis.Heavy_insert_chunks_result;
+var Heavy_checkpoint_args = globalThis.Heavy_checkpoint_args;
+var Heavy_checkpoint_result = globalThis.Heavy_checkpoint_result;
+var Heavy_get_roles_args = globalThis.Heavy_get_roles_args;
+var Heavy_get_roles_result = globalThis.Heavy_get_roles_result;
+var Heavy_get_db_objects_for_grantee_args = globalThis.Heavy_get_db_objects_for_grantee_args;
+var Heavy_get_db_objects_for_grantee_result = globalThis.Heavy_get_db_objects_for_grantee_result;
+var Heavy_get_db_object_privs_args = globalThis.Heavy_get_db_object_privs_args;
+var Heavy_get_db_object_privs_result = globalThis.Heavy_get_db_object_privs_result;
+var Heavy_get_all_roles_for_user_args = globalThis.Heavy_get_all_roles_for_user_args;
+var Heavy_get_all_roles_for_user_result = globalThis.Heavy_get_all_roles_for_user_result;
+var Heavy_get_all_effective_roles_for_user_args = globalThis.Heavy_get_all_effective_roles_for_user_args;
+var Heavy_get_all_effective_roles_for_user_result = globalThis.Heavy_get_all_effective_roles_for_user_result;
+var Heavy_has_role_args = globalThis.Heavy_has_role_args;
+var Heavy_has_role_result = globalThis.Heavy_has_role_result;
+var Heavy_has_object_privilege_args = globalThis.Heavy_has_object_privilege_args;
+var Heavy_has_object_privilege_result = globalThis.Heavy_has_object_privilege_result;
+var Heavy_get_device_parameters_args = globalThis.Heavy_get_device_parameters_args;
+var Heavy_get_device_parameters_result = globalThis.Heavy_get_device_parameters_result;
+var Heavy_register_runtime_extension_functions_args = globalThis.Heavy_register_runtime_extension_functions_args;
+var Heavy_register_runtime_extension_functions_result = globalThis.Heavy_register_runtime_extension_functions_result;
+var Heavy_get_table_function_names_args = globalThis.Heavy_get_table_function_names_args;
+var Heavy_get_table_function_names_result = globalThis.Heavy_get_table_function_names_result;
+var Heavy_get_runtime_table_function_names_args = globalThis.Heavy_get_runtime_table_function_names_args;
+var Heavy_get_runtime_table_function_names_result = globalThis.Heavy_get_runtime_table_function_names_result;
+var Heavy_get_table_function_details_args = globalThis.Heavy_get_table_function_details_args;
+var Heavy_get_table_function_details_result = globalThis.Heavy_get_table_function_details_result;
+var Heavy_get_function_names_args = globalThis.Heavy_get_function_names_args;
+var Heavy_get_function_names_result = globalThis.Heavy_get_function_names_result;
+var Heavy_get_runtime_function_names_args = globalThis.Heavy_get_runtime_function_names_args;
+var Heavy_get_runtime_function_names_result = globalThis.Heavy_get_runtime_function_names_result;
+var Heavy_get_function_details_args = globalThis.Heavy_get_function_details_args;
+var Heavy_get_function_details_result = globalThis.Heavy_get_function_details_result;
+var Heavy_put_immerse_users_metadata_args = globalThis.Heavy_put_immerse_users_metadata_args;
+var Heavy_put_immerse_users_metadata_result = globalThis.Heavy_put_immerse_users_metadata_result;
+var Heavy_put_immerse_database_metadata_args = globalThis.Heavy_put_immerse_database_metadata_args;
+var Heavy_put_immerse_database_metadata_result = globalThis.Heavy_put_immerse_database_metadata_result;
+var Heavy_get_users_info_args = globalThis.Heavy_get_users_info_args;
+var Heavy_get_users_info_result = globalThis.Heavy_get_users_info_result;
+var Heavy_get_databases_args = globalThis.Heavy_get_databases_args;
+var Heavy_get_databases_result = globalThis.Heavy_get_databases_result;
+var HeavyClient = globalThis.HeavyClient;
+var TDeviceType = globalThis.TDeviceType;
+var TDatumType = globalThis.TDatumType;
+var TEncodingType = globalThis.TEncodingType;
+var TStringDictKey = globalThis.TStringDictKey;
+var TTypeInfo = globalThis.TTypeInfo;
+var TCompletionHintType = globalThis.TCompletionHintType;
+var TCompletionHint = globalThis.TCompletionHint;
+var TExtArgumentType = globalThis.TExtArgumentType;
+var TOutputBufferSizeType = globalThis.TOutputBufferSizeType;
+var TUserDefinedFunction = globalThis.TUserDefinedFunction;
+var TUserDefinedTableFunction = globalThis.TUserDefinedTableFunction;
+var TExecuteMode = globalThis.TExecuteMode;
+var TSourceType = globalThis.TSourceType;
+var TPartitionDetail = globalThis.TPartitionDetail;
+var TGeoFileLayerContents = globalThis.TGeoFileLayerContents;
+var TImportHeaderRow = globalThis.TImportHeaderRow;
+var TRole = globalThis.TRole;
+var TTableType = globalThis.TTableType;
+var TTableRefreshUpdateType = globalThis.TTableRefreshUpdateType;
+var TTableRefreshTimingType = globalThis.TTableRefreshTimingType;
+var TTableRefreshIntervalType = globalThis.TTableRefreshIntervalType;
+var TMergeType = globalThis.TMergeType;
+var TRasterPointType = globalThis.TRasterPointType;
+var TRasterPointTransform = globalThis.TRasterPointTransform;
+var TQueryType = globalThis.TQueryType;
+var TArrowTransport = globalThis.TArrowTransport;
+var TExpressionRangeType = globalThis.TExpressionRangeType;
+var TDBObjectType = globalThis.TDBObjectType;
+var TDataSourceType = globalThis.TDataSourceType;
+var TDatumVal = globalThis.TDatumVal;
+var TDatum = globalThis.TDatum;
+var TStringValue = globalThis.TStringValue;
+var TColumnType = globalThis.TColumnType;
+var TRow = globalThis.TRow;
+var TColumnData = globalThis.TColumnData;
+var TColumn = globalThis.TColumn;
+var TStringRow = globalThis.TStringRow;
+var TStepResult = globalThis.TStepResult;
+var TRowSet = globalThis.TRowSet;
+var TQueryResult = globalThis.TQueryResult;
+var TDataFrame = globalThis.TDataFrame;
+var TDBInfo = globalThis.TDBInfo;
+var TDBException = globalThis.TDBException;
+var TCopyParams = globalThis.TCopyParams;
+var TCreateParams = globalThis.TCreateParams;
+var TDetectResult = globalThis.TDetectResult;
+var TImportStatus = globalThis.TImportStatus;
+var TFrontendView = globalThis.TFrontendView;
+var TServerStatus = globalThis.TServerStatus;
+var TPixel = globalThis.TPixel;
+var TPixelTableRowResult = globalThis.TPixelTableRowResult;
+var TRenderResult = globalThis.TRenderResult;
+var TGpuSpecification = globalThis.TGpuSpecification;
+var THardwareInfo = globalThis.THardwareInfo;
+var TClusterHardwareInfo = globalThis.TClusterHardwareInfo;
+var TMemoryData = globalThis.TMemoryData;
+var TNodeMemoryInfo = globalThis.TNodeMemoryInfo;
+var TTableMeta = globalThis.TTableMeta;
+var TTableRefreshInfo = globalThis.TTableRefreshInfo;
+var TTableDetails = globalThis.TTableDetails;
+var TColumnRange = globalThis.TColumnRange;
+var TDictionaryGeneration = globalThis.TDictionaryGeneration;
+var TTableGeneration = globalThis.TTableGeneration;
+var TTableCacheStatus = globalThis.TTableCacheStatus;
+var TPendingQuery = globalThis.TPendingQuery;
+var TVarLen = globalThis.TVarLen;
+var TDataBlockPtr = globalThis.TDataBlockPtr;
+var TInsertData = globalThis.TInsertData;
+var TChunkData = globalThis.TChunkData;
+var TInsertChunks = globalThis.TInsertChunks;
+var TPendingRenderQuery = globalThis.TPendingRenderQuery;
+var TRenderParseResult = globalThis.TRenderParseResult;
+var TRawRenderPassDataResult = globalThis.TRawRenderPassDataResult;
+var TRawPixelData = globalThis.TRawPixelData;
+var TRenderDatum = globalThis.TRenderDatum;
+var TRenderStepResult = globalThis.TRenderStepResult;
+var TDatabasePermissions = globalThis.TDatabasePermissions;
+var TTablePermissions = globalThis.TTablePermissions;
+var TDashboardPermissions = globalThis.TDashboardPermissions;
+var TViewPermissions = globalThis.TViewPermissions;
+var TServerPermissions = globalThis.TServerPermissions;
+var TColumnPermissions = globalThis.TColumnPermissions;
+var TDBObjectPermissions = globalThis.TDBObjectPermissions;
+var TDBObject = globalThis.TDBObject;
+var TDashboardGrantees = globalThis.TDashboardGrantees;
+var TDashboard = globalThis.TDashboard;
+var TSessionInfo = globalThis.TSessionInfo;
+var TGeoFileLayerInfo = globalThis.TGeoFileLayerInfo;
+var TTableEpochInfo = globalThis.TTableEpochInfo;
+var TCustomExpression = globalThis.TCustomExpression;
+var TQueryInfo = globalThis.TQueryInfo;
+var TLeafInfo = globalThis.TLeafInfo;
+var TImmerseUserMetadata = globalThis.TImmerseUserMetadata;
+var TUserInfo = globalThis.TUserInfo;
+var TResultSetLayout = globalThis.TResultSetLayout;
+var TCountDistinctImplType = globalThis.TCountDistinctImplType;
+var TAggKind = globalThis.TAggKind;
+var TSlotSize = globalThis.TSlotSize;
+var TColSlotContext = globalThis.TColSlotContext;
+var TCountDistinctDescriptor = globalThis.TCountDistinctDescriptor;
+var TResultSetBufferDescriptor = globalThis.TResultSetBufferDescriptor;
+var TTargetInfo = globalThis.TTargetInfo;
+var TCountDistinctSetStorage = globalThis.TCountDistinctSetStorage;
+var TCountDistinctSet = globalThis.TCountDistinctSet;
+var TSerializedRows = globalThis.TSerializedRows;
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -30482,213 +30793,213 @@ HeavyClient.prototype.recv_get_databases = function() {
 };
 
 // <thrift-globals-to-exports-loader>
-if (typeof Heavy_connect_args !== 'undefined') exports.ptv = Heavy_connect_args;
-if (typeof Heavy_connect_result !== 'undefined') exports.RTT = Heavy_connect_result;
-if (typeof Heavy_disconnect_args !== 'undefined') exports.lGk = Heavy_disconnect_args;
-if (typeof Heavy_disconnect_result !== 'undefined') exports.Z2 = Heavy_disconnect_result;
-if (typeof Heavy_switch_database_args !== 'undefined') exports.zT = Heavy_switch_database_args;
-if (typeof Heavy_switch_database_result !== 'undefined') exports.d8$ = Heavy_switch_database_result;
-if (typeof Heavy_clone_session_args !== 'undefined') exports.NR7 = Heavy_clone_session_args;
-if (typeof Heavy_clone_session_result !== 'undefined') exports.vcE = Heavy_clone_session_result;
-if (typeof Heavy_get_server_status_args !== 'undefined') exports.ejE = Heavy_get_server_status_args;
-if (typeof Heavy_get_server_status_result !== 'undefined') exports.Y23 = Heavy_get_server_status_result;
-if (typeof Heavy_get_status_args !== 'undefined') exports.cwC = Heavy_get_status_args;
-if (typeof Heavy_get_status_result !== 'undefined') exports.EQ2 = Heavy_get_status_result;
-if (typeof Heavy_get_hardware_info_args !== 'undefined') exports.Z7P = Heavy_get_hardware_info_args;
-if (typeof Heavy_get_hardware_info_result !== 'undefined') exports.PkB = Heavy_get_hardware_info_result;
-if (typeof Heavy_get_tables_args !== 'undefined') exports.jcA = Heavy_get_tables_args;
-if (typeof Heavy_get_tables_result !== 'undefined') exports.z67 = Heavy_get_tables_result;
-if (typeof Heavy_get_tables_for_database_args !== 'undefined') exports.Vk_ = Heavy_get_tables_for_database_args;
-if (typeof Heavy_get_tables_for_database_result !== 'undefined') exports.Z2X = Heavy_get_tables_for_database_result;
-if (typeof Heavy_get_physical_tables_args !== 'undefined') exports.NMf = Heavy_get_physical_tables_args;
-if (typeof Heavy_get_physical_tables_result !== 'undefined') exports.BQh = Heavy_get_physical_tables_result;
-if (typeof Heavy_get_views_args !== 'undefined') exports.C1C = Heavy_get_views_args;
-if (typeof Heavy_get_views_result !== 'undefined') exports.KlX = Heavy_get_views_result;
-if (typeof Heavy_get_tables_meta_args !== 'undefined') exports.XxL = Heavy_get_tables_meta_args;
-if (typeof Heavy_get_tables_meta_result !== 'undefined') exports.Tpw = Heavy_get_tables_meta_result;
-if (typeof Heavy_get_table_details_args !== 'undefined') exports.L2t = Heavy_get_table_details_args;
-if (typeof Heavy_get_table_details_result !== 'undefined') exports.hFW = Heavy_get_table_details_result;
-if (typeof Heavy_get_table_details_for_database_args !== 'undefined') exports.n7S = Heavy_get_table_details_for_database_args;
-if (typeof Heavy_get_table_details_for_database_result !== 'undefined') exports.Hd5 = Heavy_get_table_details_for_database_result;
-if (typeof Heavy_get_internal_table_details_args !== 'undefined') exports.Vcc = Heavy_get_internal_table_details_args;
-if (typeof Heavy_get_internal_table_details_result !== 'undefined') exports.j9B = Heavy_get_internal_table_details_result;
-if (typeof Heavy_get_internal_table_details_for_database_args !== 'undefined') exports.n_F = Heavy_get_internal_table_details_for_database_args;
-if (typeof Heavy_get_internal_table_details_for_database_result !== 'undefined') exports.hBs = Heavy_get_internal_table_details_for_database_result;
-if (typeof Heavy_get_users_args !== 'undefined') exports.Wsq = Heavy_get_users_args;
-if (typeof Heavy_get_users_result !== 'undefined') exports.S0y = Heavy_get_users_result;
-if (typeof Heavy_get_version_args !== 'undefined') exports.c54 = Heavy_get_version_args;
-if (typeof Heavy_get_version_result !== 'undefined') exports._21 = Heavy_get_version_result;
-if (typeof Heavy_start_heap_profile_args !== 'undefined') exports.MBQ = Heavy_start_heap_profile_args;
-if (typeof Heavy_start_heap_profile_result !== 'undefined') exports.CY5 = Heavy_start_heap_profile_result;
-if (typeof Heavy_stop_heap_profile_args !== 'undefined') exports.yjf = Heavy_stop_heap_profile_args;
-if (typeof Heavy_stop_heap_profile_result !== 'undefined') exports.CjI = Heavy_stop_heap_profile_result;
-if (typeof Heavy_get_heap_profile_args !== 'undefined') exports.KcI = Heavy_get_heap_profile_args;
-if (typeof Heavy_get_heap_profile_result !== 'undefined') exports.esm = Heavy_get_heap_profile_result;
-if (typeof Heavy_get_memory_args !== 'undefined') exports.jJ8 = Heavy_get_memory_args;
-if (typeof Heavy_get_memory_result !== 'undefined') exports.Hrr = Heavy_get_memory_result;
-if (typeof Heavy_clear_cpu_memory_args !== 'undefined') exports.B6B = Heavy_clear_cpu_memory_args;
-if (typeof Heavy_clear_cpu_memory_result !== 'undefined') exports.fjr = Heavy_clear_cpu_memory_result;
-if (typeof Heavy_clear_gpu_memory_args !== 'undefined') exports.dG_ = Heavy_clear_gpu_memory_args;
-if (typeof Heavy_clear_gpu_memory_result !== 'undefined') exports.dkX = Heavy_clear_gpu_memory_result;
-if (typeof Heavy_set_cur_session_args !== 'undefined') exports.f0n = Heavy_set_cur_session_args;
-if (typeof Heavy_set_cur_session_result !== 'undefined') exports.lZv = Heavy_set_cur_session_result;
-if (typeof Heavy_invalidate_cur_session_args !== 'undefined') exports.C$F = Heavy_invalidate_cur_session_args;
-if (typeof Heavy_invalidate_cur_session_result !== 'undefined') exports.ORA = Heavy_invalidate_cur_session_result;
-if (typeof Heavy_set_table_epoch_args !== 'undefined') exports.wYv = Heavy_set_table_epoch_args;
-if (typeof Heavy_set_table_epoch_result !== 'undefined') exports.ani = Heavy_set_table_epoch_result;
-if (typeof Heavy_set_table_epoch_by_name_args !== 'undefined') exports.aUh = Heavy_set_table_epoch_by_name_args;
-if (typeof Heavy_set_table_epoch_by_name_result !== 'undefined') exports.q6e = Heavy_set_table_epoch_by_name_result;
-if (typeof Heavy_get_table_epoch_args !== 'undefined') exports.Q_r = Heavy_get_table_epoch_args;
-if (typeof Heavy_get_table_epoch_result !== 'undefined') exports.MkU = Heavy_get_table_epoch_result;
-if (typeof Heavy_get_table_epoch_by_name_args !== 'undefined') exports.Af3 = Heavy_get_table_epoch_by_name_args;
-if (typeof Heavy_get_table_epoch_by_name_result !== 'undefined') exports.auP = Heavy_get_table_epoch_by_name_result;
-if (typeof Heavy_get_table_epochs_args !== 'undefined') exports.x6q = Heavy_get_table_epochs_args;
-if (typeof Heavy_get_table_epochs_result !== 'undefined') exports.bv0 = Heavy_get_table_epochs_result;
-if (typeof Heavy_set_table_epochs_args !== 'undefined') exports.$pj = Heavy_set_table_epochs_args;
-if (typeof Heavy_set_table_epochs_result !== 'undefined') exports.hk_ = Heavy_set_table_epochs_result;
-if (typeof Heavy_get_session_info_args !== 'undefined') exports.tDj = Heavy_get_session_info_args;
-if (typeof Heavy_get_session_info_result !== 'undefined') exports.JPV = Heavy_get_session_info_result;
-if (typeof Heavy_get_queries_info_args !== 'undefined') exports.fK0 = Heavy_get_queries_info_args;
-if (typeof Heavy_get_queries_info_result !== 'undefined') exports.Vns = Heavy_get_queries_info_result;
-if (typeof Heavy_set_leaf_info_args !== 'undefined') exports.ziF = Heavy_set_leaf_info_args;
-if (typeof Heavy_set_leaf_info_result !== 'undefined') exports.ng9 = Heavy_set_leaf_info_result;
-if (typeof Heavy_sql_execute_args !== 'undefined') exports.NKv = Heavy_sql_execute_args;
-if (typeof Heavy_sql_execute_result !== 'undefined') exports.HJd = Heavy_sql_execute_result;
-if (typeof Heavy_sql_execute_df_args !== 'undefined') exports.kqu = Heavy_sql_execute_df_args;
-if (typeof Heavy_sql_execute_df_result !== 'undefined') exports.gy1 = Heavy_sql_execute_df_result;
-if (typeof Heavy_sql_execute_gdf_args !== 'undefined') exports.z5D = Heavy_sql_execute_gdf_args;
-if (typeof Heavy_sql_execute_gdf_result !== 'undefined') exports.t4e = Heavy_sql_execute_gdf_result;
-if (typeof Heavy_deallocate_df_args !== 'undefined') exports.ySt = Heavy_deallocate_df_args;
-if (typeof Heavy_deallocate_df_result !== 'undefined') exports.us0 = Heavy_deallocate_df_result;
-if (typeof Heavy_interrupt_args !== 'undefined') exports.iIA = Heavy_interrupt_args;
-if (typeof Heavy_interrupt_result !== 'undefined') exports.UD8 = Heavy_interrupt_result;
-if (typeof Heavy_sql_validate_args !== 'undefined') exports.ypJ = Heavy_sql_validate_args;
-if (typeof Heavy_sql_validate_result !== 'undefined') exports.geF = Heavy_sql_validate_result;
-if (typeof Heavy_get_completion_hints_args !== 'undefined') exports.$jE = Heavy_get_completion_hints_args;
-if (typeof Heavy_get_completion_hints_result !== 'undefined') exports.$Bc = Heavy_get_completion_hints_result;
-if (typeof Heavy_set_execution_mode_args !== 'undefined') exports.me6 = Heavy_set_execution_mode_args;
-if (typeof Heavy_set_execution_mode_result !== 'undefined') exports.qc2 = Heavy_set_execution_mode_result;
-if (typeof Heavy_render_vega_args !== 'undefined') exports.jR$ = Heavy_render_vega_args;
-if (typeof Heavy_render_vega_result !== 'undefined') exports.bj9 = Heavy_render_vega_result;
-if (typeof Heavy_get_result_row_for_pixel_args !== 'undefined') exports.pFG = Heavy_get_result_row_for_pixel_args;
-if (typeof Heavy_get_result_row_for_pixel_result !== 'undefined') exports.VBX = Heavy_get_result_row_for_pixel_result;
-if (typeof Heavy_create_custom_expression_args !== 'undefined') exports.ae7 = Heavy_create_custom_expression_args;
-if (typeof Heavy_create_custom_expression_result !== 'undefined') exports.UhA = Heavy_create_custom_expression_result;
-if (typeof Heavy_get_custom_expressions_args !== 'undefined') exports.pWI = Heavy_get_custom_expressions_args;
-if (typeof Heavy_get_custom_expressions_result !== 'undefined') exports.Jyp = Heavy_get_custom_expressions_result;
-if (typeof Heavy_update_custom_expression_args !== 'undefined') exports.Xmw = Heavy_update_custom_expression_args;
-if (typeof Heavy_update_custom_expression_result !== 'undefined') exports.Pep = Heavy_update_custom_expression_result;
-if (typeof Heavy_delete_custom_expressions_args !== 'undefined') exports.aC3 = Heavy_delete_custom_expressions_args;
-if (typeof Heavy_delete_custom_expressions_result !== 'undefined') exports.YzM = Heavy_delete_custom_expressions_result;
-if (typeof Heavy_get_dashboard_args !== 'undefined') exports.EZ1 = Heavy_get_dashboard_args;
-if (typeof Heavy_get_dashboard_result !== 'undefined') exports.Y1Q = Heavy_get_dashboard_result;
-if (typeof Heavy_get_dashboards_args !== 'undefined') exports.Xoz = Heavy_get_dashboards_args;
-if (typeof Heavy_get_dashboards_result !== 'undefined') exports.TKP = Heavy_get_dashboards_result;
-if (typeof Heavy_create_dashboard_args !== 'undefined') exports.efR = Heavy_create_dashboard_args;
-if (typeof Heavy_create_dashboard_result !== 'undefined') exports.IY3 = Heavy_create_dashboard_result;
-if (typeof Heavy_replace_dashboard_args !== 'undefined') exports.aAA = Heavy_replace_dashboard_args;
-if (typeof Heavy_replace_dashboard_result !== 'undefined') exports.uy3 = Heavy_replace_dashboard_result;
-if (typeof Heavy_delete_dashboard_args !== 'undefined') exports.lzY = Heavy_delete_dashboard_args;
-if (typeof Heavy_delete_dashboard_result !== 'undefined') exports.VNr = Heavy_delete_dashboard_result;
-if (typeof Heavy_share_dashboards_args !== 'undefined') exports.GkB = Heavy_share_dashboards_args;
-if (typeof Heavy_share_dashboards_result !== 'undefined') exports.wL2 = Heavy_share_dashboards_result;
-if (typeof Heavy_delete_dashboards_args !== 'undefined') exports.Od1 = Heavy_delete_dashboards_args;
-if (typeof Heavy_delete_dashboards_result !== 'undefined') exports.aHG = Heavy_delete_dashboards_result;
-if (typeof Heavy_share_dashboard_args !== 'undefined') exports.te8 = Heavy_share_dashboard_args;
-if (typeof Heavy_share_dashboard_result !== 'undefined') exports.rPe = Heavy_share_dashboard_result;
-if (typeof Heavy_unshare_dashboard_args !== 'undefined') exports.mxn = Heavy_unshare_dashboard_args;
-if (typeof Heavy_unshare_dashboard_result !== 'undefined') exports.Ekh = Heavy_unshare_dashboard_result;
-if (typeof Heavy_unshare_dashboards_args !== 'undefined') exports.Lzh = Heavy_unshare_dashboards_args;
-if (typeof Heavy_unshare_dashboards_result !== 'undefined') exports.vdA = Heavy_unshare_dashboards_result;
-if (typeof Heavy_get_dashboard_grantees_args !== 'undefined') exports.eeA = Heavy_get_dashboard_grantees_args;
-if (typeof Heavy_get_dashboard_grantees_result !== 'undefined') exports.eac = Heavy_get_dashboard_grantees_result;
-if (typeof Heavy_get_link_view_args !== 'undefined') exports.em1 = Heavy_get_link_view_args;
-if (typeof Heavy_get_link_view_result !== 'undefined') exports.sdi = Heavy_get_link_view_result;
-if (typeof Heavy_create_link_args !== 'undefined') exports.oIw = Heavy_create_link_args;
-if (typeof Heavy_create_link_result !== 'undefined') exports.SNt = Heavy_create_link_result;
-if (typeof Heavy_load_table_binary_args !== 'undefined') exports.U2j = Heavy_load_table_binary_args;
-if (typeof Heavy_load_table_binary_result !== 'undefined') exports.skV = Heavy_load_table_binary_result;
-if (typeof Heavy_load_table_binary_columnar_args !== 'undefined') exports.oUX = Heavy_load_table_binary_columnar_args;
-if (typeof Heavy_load_table_binary_columnar_result !== 'undefined') exports.KNp = Heavy_load_table_binary_columnar_result;
-if (typeof Heavy_load_table_binary_arrow_args !== 'undefined') exports.QxR = Heavy_load_table_binary_arrow_args;
-if (typeof Heavy_load_table_binary_arrow_result !== 'undefined') exports.SOX = Heavy_load_table_binary_arrow_result;
-if (typeof Heavy_load_table_args !== 'undefined') exports.U_G = Heavy_load_table_args;
-if (typeof Heavy_load_table_result !== 'undefined') exports.KNJ = Heavy_load_table_result;
-if (typeof Heavy_detect_column_types_args !== 'undefined') exports.Xb9 = Heavy_detect_column_types_args;
-if (typeof Heavy_detect_column_types_result !== 'undefined') exports.X$T = Heavy_detect_column_types_result;
-if (typeof Heavy_create_table_args !== 'undefined') exports.WPy = Heavy_create_table_args;
-if (typeof Heavy_create_table_result !== 'undefined') exports.urd = Heavy_create_table_result;
-if (typeof Heavy_import_table_args !== 'undefined') exports.b3r = Heavy_import_table_args;
-if (typeof Heavy_import_table_result !== 'undefined') exports.bjw = Heavy_import_table_result;
-if (typeof Heavy_import_geo_table_args !== 'undefined') exports.dFv = Heavy_import_geo_table_args;
-if (typeof Heavy_import_geo_table_result !== 'undefined') exports.JhU = Heavy_import_geo_table_result;
-if (typeof Heavy_import_table_status_args !== 'undefined') exports.kK3 = Heavy_import_table_status_args;
-if (typeof Heavy_import_table_status_result !== 'undefined') exports.EWB = Heavy_import_table_status_result;
-if (typeof Heavy_get_first_geo_file_in_archive_args !== 'undefined') exports.S5Z = Heavy_get_first_geo_file_in_archive_args;
-if (typeof Heavy_get_first_geo_file_in_archive_result !== 'undefined') exports.KpT = Heavy_get_first_geo_file_in_archive_result;
-if (typeof Heavy_get_all_files_in_archive_args !== 'undefined') exports.elk = Heavy_get_all_files_in_archive_args;
-if (typeof Heavy_get_all_files_in_archive_result !== 'undefined') exports.eP4 = Heavy_get_all_files_in_archive_result;
-if (typeof Heavy_get_layers_in_geo_file_args !== 'undefined') exports.prf = Heavy_get_layers_in_geo_file_args;
-if (typeof Heavy_get_layers_in_geo_file_result !== 'undefined') exports.nuf = Heavy_get_layers_in_geo_file_result;
-if (typeof Heavy_query_get_outer_fragment_count_args !== 'undefined') exports.zOW = Heavy_query_get_outer_fragment_count_args;
-if (typeof Heavy_query_get_outer_fragment_count_result !== 'undefined') exports.Rj_ = Heavy_query_get_outer_fragment_count_result;
-if (typeof Heavy_check_table_consistency_args !== 'undefined') exports.du0 = Heavy_check_table_consistency_args;
-if (typeof Heavy_check_table_consistency_result !== 'undefined') exports.J2$ = Heavy_check_table_consistency_result;
-if (typeof Heavy_start_query_args !== 'undefined') exports.wRU = Heavy_start_query_args;
-if (typeof Heavy_start_query_result !== 'undefined') exports.auO = Heavy_start_query_result;
-if (typeof Heavy_execute_query_step_args !== 'undefined') exports.y3N = Heavy_execute_query_step_args;
-if (typeof Heavy_execute_query_step_result !== 'undefined') exports.Qw9 = Heavy_execute_query_step_result;
-if (typeof Heavy_broadcast_serialized_rows_args !== 'undefined') exports.LgV = Heavy_broadcast_serialized_rows_args;
-if (typeof Heavy_broadcast_serialized_rows_result !== 'undefined') exports.XGE = Heavy_broadcast_serialized_rows_result;
-if (typeof Heavy_start_render_query_args !== 'undefined') exports.LXc = Heavy_start_render_query_args;
-if (typeof Heavy_start_render_query_result !== 'undefined') exports.jn$ = Heavy_start_render_query_result;
-if (typeof Heavy_execute_next_render_step_args !== 'undefined') exports.aed = Heavy_execute_next_render_step_args;
-if (typeof Heavy_execute_next_render_step_result !== 'undefined') exports.gdi = Heavy_execute_next_render_step_result;
-if (typeof Heavy_insert_data_args !== 'undefined') exports.Dat = Heavy_insert_data_args;
-if (typeof Heavy_insert_data_result !== 'undefined') exports.FLM = Heavy_insert_data_result;
-if (typeof Heavy_insert_chunks_args !== 'undefined') exports.jVN = Heavy_insert_chunks_args;
-if (typeof Heavy_insert_chunks_result !== 'undefined') exports.JcX = Heavy_insert_chunks_result;
-if (typeof Heavy_checkpoint_args !== 'undefined') exports.nRK = Heavy_checkpoint_args;
-if (typeof Heavy_checkpoint_result !== 'undefined') exports.JGF = Heavy_checkpoint_result;
-if (typeof Heavy_get_roles_args !== 'undefined') exports.vEe = Heavy_get_roles_args;
-if (typeof Heavy_get_roles_result !== 'undefined') exports.hV3 = Heavy_get_roles_result;
-if (typeof Heavy_get_db_objects_for_grantee_args !== 'undefined') exports.Onx = Heavy_get_db_objects_for_grantee_args;
-if (typeof Heavy_get_db_objects_for_grantee_result !== 'undefined') exports.qpp = Heavy_get_db_objects_for_grantee_result;
-if (typeof Heavy_get_db_object_privs_args !== 'undefined') exports.LMI = Heavy_get_db_object_privs_args;
-if (typeof Heavy_get_db_object_privs_result !== 'undefined') exports.Pml = Heavy_get_db_object_privs_result;
-if (typeof Heavy_get_all_roles_for_user_args !== 'undefined') exports.LUQ = Heavy_get_all_roles_for_user_args;
-if (typeof Heavy_get_all_roles_for_user_result !== 'undefined') exports.bWl = Heavy_get_all_roles_for_user_result;
-if (typeof Heavy_get_all_effective_roles_for_user_args !== 'undefined') exports.hSO = Heavy_get_all_effective_roles_for_user_args;
-if (typeof Heavy_get_all_effective_roles_for_user_result !== 'undefined') exports.PpB = Heavy_get_all_effective_roles_for_user_result;
-if (typeof Heavy_has_role_args !== 'undefined') exports.Gau = Heavy_has_role_args;
-if (typeof Heavy_has_role_result !== 'undefined') exports.QHc = Heavy_has_role_result;
-if (typeof Heavy_has_object_privilege_args !== 'undefined') exports.Xj3 = Heavy_has_object_privilege_args;
-if (typeof Heavy_has_object_privilege_result !== 'undefined') exports.d8P = Heavy_has_object_privilege_result;
-if (typeof Heavy_get_device_parameters_args !== 'undefined') exports.R_x = Heavy_get_device_parameters_args;
-if (typeof Heavy_get_device_parameters_result !== 'undefined') exports.F22 = Heavy_get_device_parameters_result;
-if (typeof Heavy_register_runtime_extension_functions_args !== 'undefined') exports.b11 = Heavy_register_runtime_extension_functions_args;
-if (typeof Heavy_register_runtime_extension_functions_result !== 'undefined') exports.HRy = Heavy_register_runtime_extension_functions_result;
-if (typeof Heavy_get_table_function_names_args !== 'undefined') exports.ybF = Heavy_get_table_function_names_args;
-if (typeof Heavy_get_table_function_names_result !== 'undefined') exports.Uwc = Heavy_get_table_function_names_result;
-if (typeof Heavy_get_runtime_table_function_names_args !== 'undefined') exports.vfR = Heavy_get_runtime_table_function_names_args;
-if (typeof Heavy_get_runtime_table_function_names_result !== 'undefined') exports.B2 = Heavy_get_runtime_table_function_names_result;
-if (typeof Heavy_get_table_function_details_args !== 'undefined') exports.GGw = Heavy_get_table_function_details_args;
-if (typeof Heavy_get_table_function_details_result !== 'undefined') exports.kXb = Heavy_get_table_function_details_result;
-if (typeof Heavy_get_function_names_args !== 'undefined') exports.PTr = Heavy_get_function_names_args;
-if (typeof Heavy_get_function_names_result !== 'undefined') exports.FkU = Heavy_get_function_names_result;
-if (typeof Heavy_get_runtime_function_names_args !== 'undefined') exports.KhM = Heavy_get_runtime_function_names_args;
-if (typeof Heavy_get_runtime_function_names_result !== 'undefined') exports._vC = Heavy_get_runtime_function_names_result;
-if (typeof Heavy_get_function_details_args !== 'undefined') exports.Xw1 = Heavy_get_function_details_args;
-if (typeof Heavy_get_function_details_result !== 'undefined') exports.PY1 = Heavy_get_function_details_result;
-if (typeof Heavy_put_immerse_users_metadata_args !== 'undefined') exports.CKf = Heavy_put_immerse_users_metadata_args;
-if (typeof Heavy_put_immerse_users_metadata_result !== 'undefined') exports.eS4 = Heavy_put_immerse_users_metadata_result;
-if (typeof Heavy_put_immerse_database_metadata_args !== 'undefined') exports.L5Z = Heavy_put_immerse_database_metadata_args;
-if (typeof Heavy_put_immerse_database_metadata_result !== 'undefined') exports.pCV = Heavy_put_immerse_database_metadata_result;
-if (typeof Heavy_get_users_info_args !== 'undefined') exports.NH = Heavy_get_users_info_args;
-if (typeof Heavy_get_users_info_result !== 'undefined') exports.PgS = Heavy_get_users_info_result;
-if (typeof Heavy_get_databases_args !== 'undefined') exports.iPX = Heavy_get_databases_args;
-if (typeof Heavy_get_databases_result !== 'undefined') exports.UM4 = Heavy_get_databases_result;
-if (typeof HeavyClient !== 'undefined') exports.lZj = HeavyClient;
+if (typeof Heavy_connect_args !== 'undefined') { globalThis.Heavy_connect_args = Heavy_connect_args; exports.ptv = Heavy_connect_args; }
+if (typeof Heavy_connect_result !== 'undefined') { globalThis.Heavy_connect_result = Heavy_connect_result; exports.RTT = Heavy_connect_result; }
+if (typeof Heavy_disconnect_args !== 'undefined') { globalThis.Heavy_disconnect_args = Heavy_disconnect_args; exports.lGk = Heavy_disconnect_args; }
+if (typeof Heavy_disconnect_result !== 'undefined') { globalThis.Heavy_disconnect_result = Heavy_disconnect_result; exports.Z2 = Heavy_disconnect_result; }
+if (typeof Heavy_switch_database_args !== 'undefined') { globalThis.Heavy_switch_database_args = Heavy_switch_database_args; exports.zT = Heavy_switch_database_args; }
+if (typeof Heavy_switch_database_result !== 'undefined') { globalThis.Heavy_switch_database_result = Heavy_switch_database_result; exports.d8$ = Heavy_switch_database_result; }
+if (typeof Heavy_clone_session_args !== 'undefined') { globalThis.Heavy_clone_session_args = Heavy_clone_session_args; exports.NR7 = Heavy_clone_session_args; }
+if (typeof Heavy_clone_session_result !== 'undefined') { globalThis.Heavy_clone_session_result = Heavy_clone_session_result; exports.vcE = Heavy_clone_session_result; }
+if (typeof Heavy_get_server_status_args !== 'undefined') { globalThis.Heavy_get_server_status_args = Heavy_get_server_status_args; exports.ejE = Heavy_get_server_status_args; }
+if (typeof Heavy_get_server_status_result !== 'undefined') { globalThis.Heavy_get_server_status_result = Heavy_get_server_status_result; exports.Y23 = Heavy_get_server_status_result; }
+if (typeof Heavy_get_status_args !== 'undefined') { globalThis.Heavy_get_status_args = Heavy_get_status_args; exports.cwC = Heavy_get_status_args; }
+if (typeof Heavy_get_status_result !== 'undefined') { globalThis.Heavy_get_status_result = Heavy_get_status_result; exports.EQ2 = Heavy_get_status_result; }
+if (typeof Heavy_get_hardware_info_args !== 'undefined') { globalThis.Heavy_get_hardware_info_args = Heavy_get_hardware_info_args; exports.Z7P = Heavy_get_hardware_info_args; }
+if (typeof Heavy_get_hardware_info_result !== 'undefined') { globalThis.Heavy_get_hardware_info_result = Heavy_get_hardware_info_result; exports.PkB = Heavy_get_hardware_info_result; }
+if (typeof Heavy_get_tables_args !== 'undefined') { globalThis.Heavy_get_tables_args = Heavy_get_tables_args; exports.jcA = Heavy_get_tables_args; }
+if (typeof Heavy_get_tables_result !== 'undefined') { globalThis.Heavy_get_tables_result = Heavy_get_tables_result; exports.z67 = Heavy_get_tables_result; }
+if (typeof Heavy_get_tables_for_database_args !== 'undefined') { globalThis.Heavy_get_tables_for_database_args = Heavy_get_tables_for_database_args; exports.Vk_ = Heavy_get_tables_for_database_args; }
+if (typeof Heavy_get_tables_for_database_result !== 'undefined') { globalThis.Heavy_get_tables_for_database_result = Heavy_get_tables_for_database_result; exports.Z2X = Heavy_get_tables_for_database_result; }
+if (typeof Heavy_get_physical_tables_args !== 'undefined') { globalThis.Heavy_get_physical_tables_args = Heavy_get_physical_tables_args; exports.NMf = Heavy_get_physical_tables_args; }
+if (typeof Heavy_get_physical_tables_result !== 'undefined') { globalThis.Heavy_get_physical_tables_result = Heavy_get_physical_tables_result; exports.BQh = Heavy_get_physical_tables_result; }
+if (typeof Heavy_get_views_args !== 'undefined') { globalThis.Heavy_get_views_args = Heavy_get_views_args; exports.C1C = Heavy_get_views_args; }
+if (typeof Heavy_get_views_result !== 'undefined') { globalThis.Heavy_get_views_result = Heavy_get_views_result; exports.KlX = Heavy_get_views_result; }
+if (typeof Heavy_get_tables_meta_args !== 'undefined') { globalThis.Heavy_get_tables_meta_args = Heavy_get_tables_meta_args; exports.XxL = Heavy_get_tables_meta_args; }
+if (typeof Heavy_get_tables_meta_result !== 'undefined') { globalThis.Heavy_get_tables_meta_result = Heavy_get_tables_meta_result; exports.Tpw = Heavy_get_tables_meta_result; }
+if (typeof Heavy_get_table_details_args !== 'undefined') { globalThis.Heavy_get_table_details_args = Heavy_get_table_details_args; exports.L2t = Heavy_get_table_details_args; }
+if (typeof Heavy_get_table_details_result !== 'undefined') { globalThis.Heavy_get_table_details_result = Heavy_get_table_details_result; exports.hFW = Heavy_get_table_details_result; }
+if (typeof Heavy_get_table_details_for_database_args !== 'undefined') { globalThis.Heavy_get_table_details_for_database_args = Heavy_get_table_details_for_database_args; exports.n7S = Heavy_get_table_details_for_database_args; }
+if (typeof Heavy_get_table_details_for_database_result !== 'undefined') { globalThis.Heavy_get_table_details_for_database_result = Heavy_get_table_details_for_database_result; exports.Hd5 = Heavy_get_table_details_for_database_result; }
+if (typeof Heavy_get_internal_table_details_args !== 'undefined') { globalThis.Heavy_get_internal_table_details_args = Heavy_get_internal_table_details_args; exports.Vcc = Heavy_get_internal_table_details_args; }
+if (typeof Heavy_get_internal_table_details_result !== 'undefined') { globalThis.Heavy_get_internal_table_details_result = Heavy_get_internal_table_details_result; exports.j9B = Heavy_get_internal_table_details_result; }
+if (typeof Heavy_get_internal_table_details_for_database_args !== 'undefined') { globalThis.Heavy_get_internal_table_details_for_database_args = Heavy_get_internal_table_details_for_database_args; exports.n_F = Heavy_get_internal_table_details_for_database_args; }
+if (typeof Heavy_get_internal_table_details_for_database_result !== 'undefined') { globalThis.Heavy_get_internal_table_details_for_database_result = Heavy_get_internal_table_details_for_database_result; exports.hBs = Heavy_get_internal_table_details_for_database_result; }
+if (typeof Heavy_get_users_args !== 'undefined') { globalThis.Heavy_get_users_args = Heavy_get_users_args; exports.Wsq = Heavy_get_users_args; }
+if (typeof Heavy_get_users_result !== 'undefined') { globalThis.Heavy_get_users_result = Heavy_get_users_result; exports.S0y = Heavy_get_users_result; }
+if (typeof Heavy_get_version_args !== 'undefined') { globalThis.Heavy_get_version_args = Heavy_get_version_args; exports.c54 = Heavy_get_version_args; }
+if (typeof Heavy_get_version_result !== 'undefined') { globalThis.Heavy_get_version_result = Heavy_get_version_result; exports._21 = Heavy_get_version_result; }
+if (typeof Heavy_start_heap_profile_args !== 'undefined') { globalThis.Heavy_start_heap_profile_args = Heavy_start_heap_profile_args; exports.MBQ = Heavy_start_heap_profile_args; }
+if (typeof Heavy_start_heap_profile_result !== 'undefined') { globalThis.Heavy_start_heap_profile_result = Heavy_start_heap_profile_result; exports.CY5 = Heavy_start_heap_profile_result; }
+if (typeof Heavy_stop_heap_profile_args !== 'undefined') { globalThis.Heavy_stop_heap_profile_args = Heavy_stop_heap_profile_args; exports.yjf = Heavy_stop_heap_profile_args; }
+if (typeof Heavy_stop_heap_profile_result !== 'undefined') { globalThis.Heavy_stop_heap_profile_result = Heavy_stop_heap_profile_result; exports.CjI = Heavy_stop_heap_profile_result; }
+if (typeof Heavy_get_heap_profile_args !== 'undefined') { globalThis.Heavy_get_heap_profile_args = Heavy_get_heap_profile_args; exports.KcI = Heavy_get_heap_profile_args; }
+if (typeof Heavy_get_heap_profile_result !== 'undefined') { globalThis.Heavy_get_heap_profile_result = Heavy_get_heap_profile_result; exports.esm = Heavy_get_heap_profile_result; }
+if (typeof Heavy_get_memory_args !== 'undefined') { globalThis.Heavy_get_memory_args = Heavy_get_memory_args; exports.jJ8 = Heavy_get_memory_args; }
+if (typeof Heavy_get_memory_result !== 'undefined') { globalThis.Heavy_get_memory_result = Heavy_get_memory_result; exports.Hrr = Heavy_get_memory_result; }
+if (typeof Heavy_clear_cpu_memory_args !== 'undefined') { globalThis.Heavy_clear_cpu_memory_args = Heavy_clear_cpu_memory_args; exports.B6B = Heavy_clear_cpu_memory_args; }
+if (typeof Heavy_clear_cpu_memory_result !== 'undefined') { globalThis.Heavy_clear_cpu_memory_result = Heavy_clear_cpu_memory_result; exports.fjr = Heavy_clear_cpu_memory_result; }
+if (typeof Heavy_clear_gpu_memory_args !== 'undefined') { globalThis.Heavy_clear_gpu_memory_args = Heavy_clear_gpu_memory_args; exports.dG_ = Heavy_clear_gpu_memory_args; }
+if (typeof Heavy_clear_gpu_memory_result !== 'undefined') { globalThis.Heavy_clear_gpu_memory_result = Heavy_clear_gpu_memory_result; exports.dkX = Heavy_clear_gpu_memory_result; }
+if (typeof Heavy_set_cur_session_args !== 'undefined') { globalThis.Heavy_set_cur_session_args = Heavy_set_cur_session_args; exports.f0n = Heavy_set_cur_session_args; }
+if (typeof Heavy_set_cur_session_result !== 'undefined') { globalThis.Heavy_set_cur_session_result = Heavy_set_cur_session_result; exports.lZv = Heavy_set_cur_session_result; }
+if (typeof Heavy_invalidate_cur_session_args !== 'undefined') { globalThis.Heavy_invalidate_cur_session_args = Heavy_invalidate_cur_session_args; exports.C$F = Heavy_invalidate_cur_session_args; }
+if (typeof Heavy_invalidate_cur_session_result !== 'undefined') { globalThis.Heavy_invalidate_cur_session_result = Heavy_invalidate_cur_session_result; exports.ORA = Heavy_invalidate_cur_session_result; }
+if (typeof Heavy_set_table_epoch_args !== 'undefined') { globalThis.Heavy_set_table_epoch_args = Heavy_set_table_epoch_args; exports.wYv = Heavy_set_table_epoch_args; }
+if (typeof Heavy_set_table_epoch_result !== 'undefined') { globalThis.Heavy_set_table_epoch_result = Heavy_set_table_epoch_result; exports.ani = Heavy_set_table_epoch_result; }
+if (typeof Heavy_set_table_epoch_by_name_args !== 'undefined') { globalThis.Heavy_set_table_epoch_by_name_args = Heavy_set_table_epoch_by_name_args; exports.aUh = Heavy_set_table_epoch_by_name_args; }
+if (typeof Heavy_set_table_epoch_by_name_result !== 'undefined') { globalThis.Heavy_set_table_epoch_by_name_result = Heavy_set_table_epoch_by_name_result; exports.q6e = Heavy_set_table_epoch_by_name_result; }
+if (typeof Heavy_get_table_epoch_args !== 'undefined') { globalThis.Heavy_get_table_epoch_args = Heavy_get_table_epoch_args; exports.Q_r = Heavy_get_table_epoch_args; }
+if (typeof Heavy_get_table_epoch_result !== 'undefined') { globalThis.Heavy_get_table_epoch_result = Heavy_get_table_epoch_result; exports.MkU = Heavy_get_table_epoch_result; }
+if (typeof Heavy_get_table_epoch_by_name_args !== 'undefined') { globalThis.Heavy_get_table_epoch_by_name_args = Heavy_get_table_epoch_by_name_args; exports.Af3 = Heavy_get_table_epoch_by_name_args; }
+if (typeof Heavy_get_table_epoch_by_name_result !== 'undefined') { globalThis.Heavy_get_table_epoch_by_name_result = Heavy_get_table_epoch_by_name_result; exports.auP = Heavy_get_table_epoch_by_name_result; }
+if (typeof Heavy_get_table_epochs_args !== 'undefined') { globalThis.Heavy_get_table_epochs_args = Heavy_get_table_epochs_args; exports.x6q = Heavy_get_table_epochs_args; }
+if (typeof Heavy_get_table_epochs_result !== 'undefined') { globalThis.Heavy_get_table_epochs_result = Heavy_get_table_epochs_result; exports.bv0 = Heavy_get_table_epochs_result; }
+if (typeof Heavy_set_table_epochs_args !== 'undefined') { globalThis.Heavy_set_table_epochs_args = Heavy_set_table_epochs_args; exports.$pj = Heavy_set_table_epochs_args; }
+if (typeof Heavy_set_table_epochs_result !== 'undefined') { globalThis.Heavy_set_table_epochs_result = Heavy_set_table_epochs_result; exports.hk_ = Heavy_set_table_epochs_result; }
+if (typeof Heavy_get_session_info_args !== 'undefined') { globalThis.Heavy_get_session_info_args = Heavy_get_session_info_args; exports.tDj = Heavy_get_session_info_args; }
+if (typeof Heavy_get_session_info_result !== 'undefined') { globalThis.Heavy_get_session_info_result = Heavy_get_session_info_result; exports.JPV = Heavy_get_session_info_result; }
+if (typeof Heavy_get_queries_info_args !== 'undefined') { globalThis.Heavy_get_queries_info_args = Heavy_get_queries_info_args; exports.fK0 = Heavy_get_queries_info_args; }
+if (typeof Heavy_get_queries_info_result !== 'undefined') { globalThis.Heavy_get_queries_info_result = Heavy_get_queries_info_result; exports.Vns = Heavy_get_queries_info_result; }
+if (typeof Heavy_set_leaf_info_args !== 'undefined') { globalThis.Heavy_set_leaf_info_args = Heavy_set_leaf_info_args; exports.ziF = Heavy_set_leaf_info_args; }
+if (typeof Heavy_set_leaf_info_result !== 'undefined') { globalThis.Heavy_set_leaf_info_result = Heavy_set_leaf_info_result; exports.ng9 = Heavy_set_leaf_info_result; }
+if (typeof Heavy_sql_execute_args !== 'undefined') { globalThis.Heavy_sql_execute_args = Heavy_sql_execute_args; exports.NKv = Heavy_sql_execute_args; }
+if (typeof Heavy_sql_execute_result !== 'undefined') { globalThis.Heavy_sql_execute_result = Heavy_sql_execute_result; exports.HJd = Heavy_sql_execute_result; }
+if (typeof Heavy_sql_execute_df_args !== 'undefined') { globalThis.Heavy_sql_execute_df_args = Heavy_sql_execute_df_args; exports.kqu = Heavy_sql_execute_df_args; }
+if (typeof Heavy_sql_execute_df_result !== 'undefined') { globalThis.Heavy_sql_execute_df_result = Heavy_sql_execute_df_result; exports.gy1 = Heavy_sql_execute_df_result; }
+if (typeof Heavy_sql_execute_gdf_args !== 'undefined') { globalThis.Heavy_sql_execute_gdf_args = Heavy_sql_execute_gdf_args; exports.z5D = Heavy_sql_execute_gdf_args; }
+if (typeof Heavy_sql_execute_gdf_result !== 'undefined') { globalThis.Heavy_sql_execute_gdf_result = Heavy_sql_execute_gdf_result; exports.t4e = Heavy_sql_execute_gdf_result; }
+if (typeof Heavy_deallocate_df_args !== 'undefined') { globalThis.Heavy_deallocate_df_args = Heavy_deallocate_df_args; exports.ySt = Heavy_deallocate_df_args; }
+if (typeof Heavy_deallocate_df_result !== 'undefined') { globalThis.Heavy_deallocate_df_result = Heavy_deallocate_df_result; exports.us0 = Heavy_deallocate_df_result; }
+if (typeof Heavy_interrupt_args !== 'undefined') { globalThis.Heavy_interrupt_args = Heavy_interrupt_args; exports.iIA = Heavy_interrupt_args; }
+if (typeof Heavy_interrupt_result !== 'undefined') { globalThis.Heavy_interrupt_result = Heavy_interrupt_result; exports.UD8 = Heavy_interrupt_result; }
+if (typeof Heavy_sql_validate_args !== 'undefined') { globalThis.Heavy_sql_validate_args = Heavy_sql_validate_args; exports.ypJ = Heavy_sql_validate_args; }
+if (typeof Heavy_sql_validate_result !== 'undefined') { globalThis.Heavy_sql_validate_result = Heavy_sql_validate_result; exports.geF = Heavy_sql_validate_result; }
+if (typeof Heavy_get_completion_hints_args !== 'undefined') { globalThis.Heavy_get_completion_hints_args = Heavy_get_completion_hints_args; exports.$jE = Heavy_get_completion_hints_args; }
+if (typeof Heavy_get_completion_hints_result !== 'undefined') { globalThis.Heavy_get_completion_hints_result = Heavy_get_completion_hints_result; exports.$Bc = Heavy_get_completion_hints_result; }
+if (typeof Heavy_set_execution_mode_args !== 'undefined') { globalThis.Heavy_set_execution_mode_args = Heavy_set_execution_mode_args; exports.me6 = Heavy_set_execution_mode_args; }
+if (typeof Heavy_set_execution_mode_result !== 'undefined') { globalThis.Heavy_set_execution_mode_result = Heavy_set_execution_mode_result; exports.qc2 = Heavy_set_execution_mode_result; }
+if (typeof Heavy_render_vega_args !== 'undefined') { globalThis.Heavy_render_vega_args = Heavy_render_vega_args; exports.jR$ = Heavy_render_vega_args; }
+if (typeof Heavy_render_vega_result !== 'undefined') { globalThis.Heavy_render_vega_result = Heavy_render_vega_result; exports.bj9 = Heavy_render_vega_result; }
+if (typeof Heavy_get_result_row_for_pixel_args !== 'undefined') { globalThis.Heavy_get_result_row_for_pixel_args = Heavy_get_result_row_for_pixel_args; exports.pFG = Heavy_get_result_row_for_pixel_args; }
+if (typeof Heavy_get_result_row_for_pixel_result !== 'undefined') { globalThis.Heavy_get_result_row_for_pixel_result = Heavy_get_result_row_for_pixel_result; exports.VBX = Heavy_get_result_row_for_pixel_result; }
+if (typeof Heavy_create_custom_expression_args !== 'undefined') { globalThis.Heavy_create_custom_expression_args = Heavy_create_custom_expression_args; exports.ae7 = Heavy_create_custom_expression_args; }
+if (typeof Heavy_create_custom_expression_result !== 'undefined') { globalThis.Heavy_create_custom_expression_result = Heavy_create_custom_expression_result; exports.UhA = Heavy_create_custom_expression_result; }
+if (typeof Heavy_get_custom_expressions_args !== 'undefined') { globalThis.Heavy_get_custom_expressions_args = Heavy_get_custom_expressions_args; exports.pWI = Heavy_get_custom_expressions_args; }
+if (typeof Heavy_get_custom_expressions_result !== 'undefined') { globalThis.Heavy_get_custom_expressions_result = Heavy_get_custom_expressions_result; exports.Jyp = Heavy_get_custom_expressions_result; }
+if (typeof Heavy_update_custom_expression_args !== 'undefined') { globalThis.Heavy_update_custom_expression_args = Heavy_update_custom_expression_args; exports.Xmw = Heavy_update_custom_expression_args; }
+if (typeof Heavy_update_custom_expression_result !== 'undefined') { globalThis.Heavy_update_custom_expression_result = Heavy_update_custom_expression_result; exports.Pep = Heavy_update_custom_expression_result; }
+if (typeof Heavy_delete_custom_expressions_args !== 'undefined') { globalThis.Heavy_delete_custom_expressions_args = Heavy_delete_custom_expressions_args; exports.aC3 = Heavy_delete_custom_expressions_args; }
+if (typeof Heavy_delete_custom_expressions_result !== 'undefined') { globalThis.Heavy_delete_custom_expressions_result = Heavy_delete_custom_expressions_result; exports.YzM = Heavy_delete_custom_expressions_result; }
+if (typeof Heavy_get_dashboard_args !== 'undefined') { globalThis.Heavy_get_dashboard_args = Heavy_get_dashboard_args; exports.EZ1 = Heavy_get_dashboard_args; }
+if (typeof Heavy_get_dashboard_result !== 'undefined') { globalThis.Heavy_get_dashboard_result = Heavy_get_dashboard_result; exports.Y1Q = Heavy_get_dashboard_result; }
+if (typeof Heavy_get_dashboards_args !== 'undefined') { globalThis.Heavy_get_dashboards_args = Heavy_get_dashboards_args; exports.Xoz = Heavy_get_dashboards_args; }
+if (typeof Heavy_get_dashboards_result !== 'undefined') { globalThis.Heavy_get_dashboards_result = Heavy_get_dashboards_result; exports.TKP = Heavy_get_dashboards_result; }
+if (typeof Heavy_create_dashboard_args !== 'undefined') { globalThis.Heavy_create_dashboard_args = Heavy_create_dashboard_args; exports.efR = Heavy_create_dashboard_args; }
+if (typeof Heavy_create_dashboard_result !== 'undefined') { globalThis.Heavy_create_dashboard_result = Heavy_create_dashboard_result; exports.IY3 = Heavy_create_dashboard_result; }
+if (typeof Heavy_replace_dashboard_args !== 'undefined') { globalThis.Heavy_replace_dashboard_args = Heavy_replace_dashboard_args; exports.aAA = Heavy_replace_dashboard_args; }
+if (typeof Heavy_replace_dashboard_result !== 'undefined') { globalThis.Heavy_replace_dashboard_result = Heavy_replace_dashboard_result; exports.uy3 = Heavy_replace_dashboard_result; }
+if (typeof Heavy_delete_dashboard_args !== 'undefined') { globalThis.Heavy_delete_dashboard_args = Heavy_delete_dashboard_args; exports.lzY = Heavy_delete_dashboard_args; }
+if (typeof Heavy_delete_dashboard_result !== 'undefined') { globalThis.Heavy_delete_dashboard_result = Heavy_delete_dashboard_result; exports.VNr = Heavy_delete_dashboard_result; }
+if (typeof Heavy_share_dashboards_args !== 'undefined') { globalThis.Heavy_share_dashboards_args = Heavy_share_dashboards_args; exports.GkB = Heavy_share_dashboards_args; }
+if (typeof Heavy_share_dashboards_result !== 'undefined') { globalThis.Heavy_share_dashboards_result = Heavy_share_dashboards_result; exports.wL2 = Heavy_share_dashboards_result; }
+if (typeof Heavy_delete_dashboards_args !== 'undefined') { globalThis.Heavy_delete_dashboards_args = Heavy_delete_dashboards_args; exports.Od1 = Heavy_delete_dashboards_args; }
+if (typeof Heavy_delete_dashboards_result !== 'undefined') { globalThis.Heavy_delete_dashboards_result = Heavy_delete_dashboards_result; exports.aHG = Heavy_delete_dashboards_result; }
+if (typeof Heavy_share_dashboard_args !== 'undefined') { globalThis.Heavy_share_dashboard_args = Heavy_share_dashboard_args; exports.te8 = Heavy_share_dashboard_args; }
+if (typeof Heavy_share_dashboard_result !== 'undefined') { globalThis.Heavy_share_dashboard_result = Heavy_share_dashboard_result; exports.rPe = Heavy_share_dashboard_result; }
+if (typeof Heavy_unshare_dashboard_args !== 'undefined') { globalThis.Heavy_unshare_dashboard_args = Heavy_unshare_dashboard_args; exports.mxn = Heavy_unshare_dashboard_args; }
+if (typeof Heavy_unshare_dashboard_result !== 'undefined') { globalThis.Heavy_unshare_dashboard_result = Heavy_unshare_dashboard_result; exports.Ekh = Heavy_unshare_dashboard_result; }
+if (typeof Heavy_unshare_dashboards_args !== 'undefined') { globalThis.Heavy_unshare_dashboards_args = Heavy_unshare_dashboards_args; exports.Lzh = Heavy_unshare_dashboards_args; }
+if (typeof Heavy_unshare_dashboards_result !== 'undefined') { globalThis.Heavy_unshare_dashboards_result = Heavy_unshare_dashboards_result; exports.vdA = Heavy_unshare_dashboards_result; }
+if (typeof Heavy_get_dashboard_grantees_args !== 'undefined') { globalThis.Heavy_get_dashboard_grantees_args = Heavy_get_dashboard_grantees_args; exports.eeA = Heavy_get_dashboard_grantees_args; }
+if (typeof Heavy_get_dashboard_grantees_result !== 'undefined') { globalThis.Heavy_get_dashboard_grantees_result = Heavy_get_dashboard_grantees_result; exports.eac = Heavy_get_dashboard_grantees_result; }
+if (typeof Heavy_get_link_view_args !== 'undefined') { globalThis.Heavy_get_link_view_args = Heavy_get_link_view_args; exports.em1 = Heavy_get_link_view_args; }
+if (typeof Heavy_get_link_view_result !== 'undefined') { globalThis.Heavy_get_link_view_result = Heavy_get_link_view_result; exports.sdi = Heavy_get_link_view_result; }
+if (typeof Heavy_create_link_args !== 'undefined') { globalThis.Heavy_create_link_args = Heavy_create_link_args; exports.oIw = Heavy_create_link_args; }
+if (typeof Heavy_create_link_result !== 'undefined') { globalThis.Heavy_create_link_result = Heavy_create_link_result; exports.SNt = Heavy_create_link_result; }
+if (typeof Heavy_load_table_binary_args !== 'undefined') { globalThis.Heavy_load_table_binary_args = Heavy_load_table_binary_args; exports.U2j = Heavy_load_table_binary_args; }
+if (typeof Heavy_load_table_binary_result !== 'undefined') { globalThis.Heavy_load_table_binary_result = Heavy_load_table_binary_result; exports.skV = Heavy_load_table_binary_result; }
+if (typeof Heavy_load_table_binary_columnar_args !== 'undefined') { globalThis.Heavy_load_table_binary_columnar_args = Heavy_load_table_binary_columnar_args; exports.oUX = Heavy_load_table_binary_columnar_args; }
+if (typeof Heavy_load_table_binary_columnar_result !== 'undefined') { globalThis.Heavy_load_table_binary_columnar_result = Heavy_load_table_binary_columnar_result; exports.KNp = Heavy_load_table_binary_columnar_result; }
+if (typeof Heavy_load_table_binary_arrow_args !== 'undefined') { globalThis.Heavy_load_table_binary_arrow_args = Heavy_load_table_binary_arrow_args; exports.QxR = Heavy_load_table_binary_arrow_args; }
+if (typeof Heavy_load_table_binary_arrow_result !== 'undefined') { globalThis.Heavy_load_table_binary_arrow_result = Heavy_load_table_binary_arrow_result; exports.SOX = Heavy_load_table_binary_arrow_result; }
+if (typeof Heavy_load_table_args !== 'undefined') { globalThis.Heavy_load_table_args = Heavy_load_table_args; exports.U_G = Heavy_load_table_args; }
+if (typeof Heavy_load_table_result !== 'undefined') { globalThis.Heavy_load_table_result = Heavy_load_table_result; exports.KNJ = Heavy_load_table_result; }
+if (typeof Heavy_detect_column_types_args !== 'undefined') { globalThis.Heavy_detect_column_types_args = Heavy_detect_column_types_args; exports.Xb9 = Heavy_detect_column_types_args; }
+if (typeof Heavy_detect_column_types_result !== 'undefined') { globalThis.Heavy_detect_column_types_result = Heavy_detect_column_types_result; exports.X$T = Heavy_detect_column_types_result; }
+if (typeof Heavy_create_table_args !== 'undefined') { globalThis.Heavy_create_table_args = Heavy_create_table_args; exports.WPy = Heavy_create_table_args; }
+if (typeof Heavy_create_table_result !== 'undefined') { globalThis.Heavy_create_table_result = Heavy_create_table_result; exports.urd = Heavy_create_table_result; }
+if (typeof Heavy_import_table_args !== 'undefined') { globalThis.Heavy_import_table_args = Heavy_import_table_args; exports.b3r = Heavy_import_table_args; }
+if (typeof Heavy_import_table_result !== 'undefined') { globalThis.Heavy_import_table_result = Heavy_import_table_result; exports.bjw = Heavy_import_table_result; }
+if (typeof Heavy_import_geo_table_args !== 'undefined') { globalThis.Heavy_import_geo_table_args = Heavy_import_geo_table_args; exports.dFv = Heavy_import_geo_table_args; }
+if (typeof Heavy_import_geo_table_result !== 'undefined') { globalThis.Heavy_import_geo_table_result = Heavy_import_geo_table_result; exports.JhU = Heavy_import_geo_table_result; }
+if (typeof Heavy_import_table_status_args !== 'undefined') { globalThis.Heavy_import_table_status_args = Heavy_import_table_status_args; exports.kK3 = Heavy_import_table_status_args; }
+if (typeof Heavy_import_table_status_result !== 'undefined') { globalThis.Heavy_import_table_status_result = Heavy_import_table_status_result; exports.EWB = Heavy_import_table_status_result; }
+if (typeof Heavy_get_first_geo_file_in_archive_args !== 'undefined') { globalThis.Heavy_get_first_geo_file_in_archive_args = Heavy_get_first_geo_file_in_archive_args; exports.S5Z = Heavy_get_first_geo_file_in_archive_args; }
+if (typeof Heavy_get_first_geo_file_in_archive_result !== 'undefined') { globalThis.Heavy_get_first_geo_file_in_archive_result = Heavy_get_first_geo_file_in_archive_result; exports.KpT = Heavy_get_first_geo_file_in_archive_result; }
+if (typeof Heavy_get_all_files_in_archive_args !== 'undefined') { globalThis.Heavy_get_all_files_in_archive_args = Heavy_get_all_files_in_archive_args; exports.elk = Heavy_get_all_files_in_archive_args; }
+if (typeof Heavy_get_all_files_in_archive_result !== 'undefined') { globalThis.Heavy_get_all_files_in_archive_result = Heavy_get_all_files_in_archive_result; exports.eP4 = Heavy_get_all_files_in_archive_result; }
+if (typeof Heavy_get_layers_in_geo_file_args !== 'undefined') { globalThis.Heavy_get_layers_in_geo_file_args = Heavy_get_layers_in_geo_file_args; exports.prf = Heavy_get_layers_in_geo_file_args; }
+if (typeof Heavy_get_layers_in_geo_file_result !== 'undefined') { globalThis.Heavy_get_layers_in_geo_file_result = Heavy_get_layers_in_geo_file_result; exports.nuf = Heavy_get_layers_in_geo_file_result; }
+if (typeof Heavy_query_get_outer_fragment_count_args !== 'undefined') { globalThis.Heavy_query_get_outer_fragment_count_args = Heavy_query_get_outer_fragment_count_args; exports.zOW = Heavy_query_get_outer_fragment_count_args; }
+if (typeof Heavy_query_get_outer_fragment_count_result !== 'undefined') { globalThis.Heavy_query_get_outer_fragment_count_result = Heavy_query_get_outer_fragment_count_result; exports.Rj_ = Heavy_query_get_outer_fragment_count_result; }
+if (typeof Heavy_check_table_consistency_args !== 'undefined') { globalThis.Heavy_check_table_consistency_args = Heavy_check_table_consistency_args; exports.du0 = Heavy_check_table_consistency_args; }
+if (typeof Heavy_check_table_consistency_result !== 'undefined') { globalThis.Heavy_check_table_consistency_result = Heavy_check_table_consistency_result; exports.J2$ = Heavy_check_table_consistency_result; }
+if (typeof Heavy_start_query_args !== 'undefined') { globalThis.Heavy_start_query_args = Heavy_start_query_args; exports.wRU = Heavy_start_query_args; }
+if (typeof Heavy_start_query_result !== 'undefined') { globalThis.Heavy_start_query_result = Heavy_start_query_result; exports.auO = Heavy_start_query_result; }
+if (typeof Heavy_execute_query_step_args !== 'undefined') { globalThis.Heavy_execute_query_step_args = Heavy_execute_query_step_args; exports.y3N = Heavy_execute_query_step_args; }
+if (typeof Heavy_execute_query_step_result !== 'undefined') { globalThis.Heavy_execute_query_step_result = Heavy_execute_query_step_result; exports.Qw9 = Heavy_execute_query_step_result; }
+if (typeof Heavy_broadcast_serialized_rows_args !== 'undefined') { globalThis.Heavy_broadcast_serialized_rows_args = Heavy_broadcast_serialized_rows_args; exports.LgV = Heavy_broadcast_serialized_rows_args; }
+if (typeof Heavy_broadcast_serialized_rows_result !== 'undefined') { globalThis.Heavy_broadcast_serialized_rows_result = Heavy_broadcast_serialized_rows_result; exports.XGE = Heavy_broadcast_serialized_rows_result; }
+if (typeof Heavy_start_render_query_args !== 'undefined') { globalThis.Heavy_start_render_query_args = Heavy_start_render_query_args; exports.LXc = Heavy_start_render_query_args; }
+if (typeof Heavy_start_render_query_result !== 'undefined') { globalThis.Heavy_start_render_query_result = Heavy_start_render_query_result; exports.jn$ = Heavy_start_render_query_result; }
+if (typeof Heavy_execute_next_render_step_args !== 'undefined') { globalThis.Heavy_execute_next_render_step_args = Heavy_execute_next_render_step_args; exports.aed = Heavy_execute_next_render_step_args; }
+if (typeof Heavy_execute_next_render_step_result !== 'undefined') { globalThis.Heavy_execute_next_render_step_result = Heavy_execute_next_render_step_result; exports.gdi = Heavy_execute_next_render_step_result; }
+if (typeof Heavy_insert_data_args !== 'undefined') { globalThis.Heavy_insert_data_args = Heavy_insert_data_args; exports.Dat = Heavy_insert_data_args; }
+if (typeof Heavy_insert_data_result !== 'undefined') { globalThis.Heavy_insert_data_result = Heavy_insert_data_result; exports.FLM = Heavy_insert_data_result; }
+if (typeof Heavy_insert_chunks_args !== 'undefined') { globalThis.Heavy_insert_chunks_args = Heavy_insert_chunks_args; exports.jVN = Heavy_insert_chunks_args; }
+if (typeof Heavy_insert_chunks_result !== 'undefined') { globalThis.Heavy_insert_chunks_result = Heavy_insert_chunks_result; exports.JcX = Heavy_insert_chunks_result; }
+if (typeof Heavy_checkpoint_args !== 'undefined') { globalThis.Heavy_checkpoint_args = Heavy_checkpoint_args; exports.nRK = Heavy_checkpoint_args; }
+if (typeof Heavy_checkpoint_result !== 'undefined') { globalThis.Heavy_checkpoint_result = Heavy_checkpoint_result; exports.JGF = Heavy_checkpoint_result; }
+if (typeof Heavy_get_roles_args !== 'undefined') { globalThis.Heavy_get_roles_args = Heavy_get_roles_args; exports.vEe = Heavy_get_roles_args; }
+if (typeof Heavy_get_roles_result !== 'undefined') { globalThis.Heavy_get_roles_result = Heavy_get_roles_result; exports.hV3 = Heavy_get_roles_result; }
+if (typeof Heavy_get_db_objects_for_grantee_args !== 'undefined') { globalThis.Heavy_get_db_objects_for_grantee_args = Heavy_get_db_objects_for_grantee_args; exports.Onx = Heavy_get_db_objects_for_grantee_args; }
+if (typeof Heavy_get_db_objects_for_grantee_result !== 'undefined') { globalThis.Heavy_get_db_objects_for_grantee_result = Heavy_get_db_objects_for_grantee_result; exports.qpp = Heavy_get_db_objects_for_grantee_result; }
+if (typeof Heavy_get_db_object_privs_args !== 'undefined') { globalThis.Heavy_get_db_object_privs_args = Heavy_get_db_object_privs_args; exports.LMI = Heavy_get_db_object_privs_args; }
+if (typeof Heavy_get_db_object_privs_result !== 'undefined') { globalThis.Heavy_get_db_object_privs_result = Heavy_get_db_object_privs_result; exports.Pml = Heavy_get_db_object_privs_result; }
+if (typeof Heavy_get_all_roles_for_user_args !== 'undefined') { globalThis.Heavy_get_all_roles_for_user_args = Heavy_get_all_roles_for_user_args; exports.LUQ = Heavy_get_all_roles_for_user_args; }
+if (typeof Heavy_get_all_roles_for_user_result !== 'undefined') { globalThis.Heavy_get_all_roles_for_user_result = Heavy_get_all_roles_for_user_result; exports.bWl = Heavy_get_all_roles_for_user_result; }
+if (typeof Heavy_get_all_effective_roles_for_user_args !== 'undefined') { globalThis.Heavy_get_all_effective_roles_for_user_args = Heavy_get_all_effective_roles_for_user_args; exports.hSO = Heavy_get_all_effective_roles_for_user_args; }
+if (typeof Heavy_get_all_effective_roles_for_user_result !== 'undefined') { globalThis.Heavy_get_all_effective_roles_for_user_result = Heavy_get_all_effective_roles_for_user_result; exports.PpB = Heavy_get_all_effective_roles_for_user_result; }
+if (typeof Heavy_has_role_args !== 'undefined') { globalThis.Heavy_has_role_args = Heavy_has_role_args; exports.Gau = Heavy_has_role_args; }
+if (typeof Heavy_has_role_result !== 'undefined') { globalThis.Heavy_has_role_result = Heavy_has_role_result; exports.QHc = Heavy_has_role_result; }
+if (typeof Heavy_has_object_privilege_args !== 'undefined') { globalThis.Heavy_has_object_privilege_args = Heavy_has_object_privilege_args; exports.Xj3 = Heavy_has_object_privilege_args; }
+if (typeof Heavy_has_object_privilege_result !== 'undefined') { globalThis.Heavy_has_object_privilege_result = Heavy_has_object_privilege_result; exports.d8P = Heavy_has_object_privilege_result; }
+if (typeof Heavy_get_device_parameters_args !== 'undefined') { globalThis.Heavy_get_device_parameters_args = Heavy_get_device_parameters_args; exports.R_x = Heavy_get_device_parameters_args; }
+if (typeof Heavy_get_device_parameters_result !== 'undefined') { globalThis.Heavy_get_device_parameters_result = Heavy_get_device_parameters_result; exports.F22 = Heavy_get_device_parameters_result; }
+if (typeof Heavy_register_runtime_extension_functions_args !== 'undefined') { globalThis.Heavy_register_runtime_extension_functions_args = Heavy_register_runtime_extension_functions_args; exports.b11 = Heavy_register_runtime_extension_functions_args; }
+if (typeof Heavy_register_runtime_extension_functions_result !== 'undefined') { globalThis.Heavy_register_runtime_extension_functions_result = Heavy_register_runtime_extension_functions_result; exports.HRy = Heavy_register_runtime_extension_functions_result; }
+if (typeof Heavy_get_table_function_names_args !== 'undefined') { globalThis.Heavy_get_table_function_names_args = Heavy_get_table_function_names_args; exports.ybF = Heavy_get_table_function_names_args; }
+if (typeof Heavy_get_table_function_names_result !== 'undefined') { globalThis.Heavy_get_table_function_names_result = Heavy_get_table_function_names_result; exports.Uwc = Heavy_get_table_function_names_result; }
+if (typeof Heavy_get_runtime_table_function_names_args !== 'undefined') { globalThis.Heavy_get_runtime_table_function_names_args = Heavy_get_runtime_table_function_names_args; exports.vfR = Heavy_get_runtime_table_function_names_args; }
+if (typeof Heavy_get_runtime_table_function_names_result !== 'undefined') { globalThis.Heavy_get_runtime_table_function_names_result = Heavy_get_runtime_table_function_names_result; exports.B2 = Heavy_get_runtime_table_function_names_result; }
+if (typeof Heavy_get_table_function_details_args !== 'undefined') { globalThis.Heavy_get_table_function_details_args = Heavy_get_table_function_details_args; exports.GGw = Heavy_get_table_function_details_args; }
+if (typeof Heavy_get_table_function_details_result !== 'undefined') { globalThis.Heavy_get_table_function_details_result = Heavy_get_table_function_details_result; exports.kXb = Heavy_get_table_function_details_result; }
+if (typeof Heavy_get_function_names_args !== 'undefined') { globalThis.Heavy_get_function_names_args = Heavy_get_function_names_args; exports.PTr = Heavy_get_function_names_args; }
+if (typeof Heavy_get_function_names_result !== 'undefined') { globalThis.Heavy_get_function_names_result = Heavy_get_function_names_result; exports.FkU = Heavy_get_function_names_result; }
+if (typeof Heavy_get_runtime_function_names_args !== 'undefined') { globalThis.Heavy_get_runtime_function_names_args = Heavy_get_runtime_function_names_args; exports.KhM = Heavy_get_runtime_function_names_args; }
+if (typeof Heavy_get_runtime_function_names_result !== 'undefined') { globalThis.Heavy_get_runtime_function_names_result = Heavy_get_runtime_function_names_result; exports._vC = Heavy_get_runtime_function_names_result; }
+if (typeof Heavy_get_function_details_args !== 'undefined') { globalThis.Heavy_get_function_details_args = Heavy_get_function_details_args; exports.Xw1 = Heavy_get_function_details_args; }
+if (typeof Heavy_get_function_details_result !== 'undefined') { globalThis.Heavy_get_function_details_result = Heavy_get_function_details_result; exports.PY1 = Heavy_get_function_details_result; }
+if (typeof Heavy_put_immerse_users_metadata_args !== 'undefined') { globalThis.Heavy_put_immerse_users_metadata_args = Heavy_put_immerse_users_metadata_args; exports.CKf = Heavy_put_immerse_users_metadata_args; }
+if (typeof Heavy_put_immerse_users_metadata_result !== 'undefined') { globalThis.Heavy_put_immerse_users_metadata_result = Heavy_put_immerse_users_metadata_result; exports.eS4 = Heavy_put_immerse_users_metadata_result; }
+if (typeof Heavy_put_immerse_database_metadata_args !== 'undefined') { globalThis.Heavy_put_immerse_database_metadata_args = Heavy_put_immerse_database_metadata_args; exports.L5Z = Heavy_put_immerse_database_metadata_args; }
+if (typeof Heavy_put_immerse_database_metadata_result !== 'undefined') { globalThis.Heavy_put_immerse_database_metadata_result = Heavy_put_immerse_database_metadata_result; exports.pCV = Heavy_put_immerse_database_metadata_result; }
+if (typeof Heavy_get_users_info_args !== 'undefined') { globalThis.Heavy_get_users_info_args = Heavy_get_users_info_args; exports.NH = Heavy_get_users_info_args; }
+if (typeof Heavy_get_users_info_result !== 'undefined') { globalThis.Heavy_get_users_info_result = Heavy_get_users_info_result; exports.PgS = Heavy_get_users_info_result; }
+if (typeof Heavy_get_databases_args !== 'undefined') { globalThis.Heavy_get_databases_args = Heavy_get_databases_args; exports.iPX = Heavy_get_databases_args; }
+if (typeof Heavy_get_databases_result !== 'undefined') { globalThis.Heavy_get_databases_result = Heavy_get_databases_result; exports.UM4 = Heavy_get_databases_result; }
+if (typeof HeavyClient !== 'undefined') { globalThis.HeavyClient = HeavyClient; exports.lZj = HeavyClient; }
 
 
 /***/ }),
@@ -30943,7 +31254,318 @@ function createClient(ServiceClient, connection) {
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 /* provided dependency */ var Thrift = __webpack_require__(5522)["Thrift"];
-var TDeviceType, TDatumType, TEncodingType, TStringDictKey, TTypeInfo;
+var Heavy_connect_args = globalThis.Heavy_connect_args;
+var Heavy_connect_result = globalThis.Heavy_connect_result;
+var Heavy_disconnect_args = globalThis.Heavy_disconnect_args;
+var Heavy_disconnect_result = globalThis.Heavy_disconnect_result;
+var Heavy_switch_database_args = globalThis.Heavy_switch_database_args;
+var Heavy_switch_database_result = globalThis.Heavy_switch_database_result;
+var Heavy_clone_session_args = globalThis.Heavy_clone_session_args;
+var Heavy_clone_session_result = globalThis.Heavy_clone_session_result;
+var Heavy_get_server_status_args = globalThis.Heavy_get_server_status_args;
+var Heavy_get_server_status_result = globalThis.Heavy_get_server_status_result;
+var Heavy_get_status_args = globalThis.Heavy_get_status_args;
+var Heavy_get_status_result = globalThis.Heavy_get_status_result;
+var Heavy_get_hardware_info_args = globalThis.Heavy_get_hardware_info_args;
+var Heavy_get_hardware_info_result = globalThis.Heavy_get_hardware_info_result;
+var Heavy_get_tables_args = globalThis.Heavy_get_tables_args;
+var Heavy_get_tables_result = globalThis.Heavy_get_tables_result;
+var Heavy_get_tables_for_database_args = globalThis.Heavy_get_tables_for_database_args;
+var Heavy_get_tables_for_database_result = globalThis.Heavy_get_tables_for_database_result;
+var Heavy_get_physical_tables_args = globalThis.Heavy_get_physical_tables_args;
+var Heavy_get_physical_tables_result = globalThis.Heavy_get_physical_tables_result;
+var Heavy_get_views_args = globalThis.Heavy_get_views_args;
+var Heavy_get_views_result = globalThis.Heavy_get_views_result;
+var Heavy_get_tables_meta_args = globalThis.Heavy_get_tables_meta_args;
+var Heavy_get_tables_meta_result = globalThis.Heavy_get_tables_meta_result;
+var Heavy_get_table_details_args = globalThis.Heavy_get_table_details_args;
+var Heavy_get_table_details_result = globalThis.Heavy_get_table_details_result;
+var Heavy_get_table_details_for_database_args = globalThis.Heavy_get_table_details_for_database_args;
+var Heavy_get_table_details_for_database_result = globalThis.Heavy_get_table_details_for_database_result;
+var Heavy_get_internal_table_details_args = globalThis.Heavy_get_internal_table_details_args;
+var Heavy_get_internal_table_details_result = globalThis.Heavy_get_internal_table_details_result;
+var Heavy_get_internal_table_details_for_database_args = globalThis.Heavy_get_internal_table_details_for_database_args;
+var Heavy_get_internal_table_details_for_database_result = globalThis.Heavy_get_internal_table_details_for_database_result;
+var Heavy_get_users_args = globalThis.Heavy_get_users_args;
+var Heavy_get_users_result = globalThis.Heavy_get_users_result;
+var Heavy_get_version_args = globalThis.Heavy_get_version_args;
+var Heavy_get_version_result = globalThis.Heavy_get_version_result;
+var Heavy_start_heap_profile_args = globalThis.Heavy_start_heap_profile_args;
+var Heavy_start_heap_profile_result = globalThis.Heavy_start_heap_profile_result;
+var Heavy_stop_heap_profile_args = globalThis.Heavy_stop_heap_profile_args;
+var Heavy_stop_heap_profile_result = globalThis.Heavy_stop_heap_profile_result;
+var Heavy_get_heap_profile_args = globalThis.Heavy_get_heap_profile_args;
+var Heavy_get_heap_profile_result = globalThis.Heavy_get_heap_profile_result;
+var Heavy_get_memory_args = globalThis.Heavy_get_memory_args;
+var Heavy_get_memory_result = globalThis.Heavy_get_memory_result;
+var Heavy_clear_cpu_memory_args = globalThis.Heavy_clear_cpu_memory_args;
+var Heavy_clear_cpu_memory_result = globalThis.Heavy_clear_cpu_memory_result;
+var Heavy_clear_gpu_memory_args = globalThis.Heavy_clear_gpu_memory_args;
+var Heavy_clear_gpu_memory_result = globalThis.Heavy_clear_gpu_memory_result;
+var Heavy_set_cur_session_args = globalThis.Heavy_set_cur_session_args;
+var Heavy_set_cur_session_result = globalThis.Heavy_set_cur_session_result;
+var Heavy_invalidate_cur_session_args = globalThis.Heavy_invalidate_cur_session_args;
+var Heavy_invalidate_cur_session_result = globalThis.Heavy_invalidate_cur_session_result;
+var Heavy_set_table_epoch_args = globalThis.Heavy_set_table_epoch_args;
+var Heavy_set_table_epoch_result = globalThis.Heavy_set_table_epoch_result;
+var Heavy_set_table_epoch_by_name_args = globalThis.Heavy_set_table_epoch_by_name_args;
+var Heavy_set_table_epoch_by_name_result = globalThis.Heavy_set_table_epoch_by_name_result;
+var Heavy_get_table_epoch_args = globalThis.Heavy_get_table_epoch_args;
+var Heavy_get_table_epoch_result = globalThis.Heavy_get_table_epoch_result;
+var Heavy_get_table_epoch_by_name_args = globalThis.Heavy_get_table_epoch_by_name_args;
+var Heavy_get_table_epoch_by_name_result = globalThis.Heavy_get_table_epoch_by_name_result;
+var Heavy_get_table_epochs_args = globalThis.Heavy_get_table_epochs_args;
+var Heavy_get_table_epochs_result = globalThis.Heavy_get_table_epochs_result;
+var Heavy_set_table_epochs_args = globalThis.Heavy_set_table_epochs_args;
+var Heavy_set_table_epochs_result = globalThis.Heavy_set_table_epochs_result;
+var Heavy_get_session_info_args = globalThis.Heavy_get_session_info_args;
+var Heavy_get_session_info_result = globalThis.Heavy_get_session_info_result;
+var Heavy_get_queries_info_args = globalThis.Heavy_get_queries_info_args;
+var Heavy_get_queries_info_result = globalThis.Heavy_get_queries_info_result;
+var Heavy_set_leaf_info_args = globalThis.Heavy_set_leaf_info_args;
+var Heavy_set_leaf_info_result = globalThis.Heavy_set_leaf_info_result;
+var Heavy_sql_execute_args = globalThis.Heavy_sql_execute_args;
+var Heavy_sql_execute_result = globalThis.Heavy_sql_execute_result;
+var Heavy_sql_execute_df_args = globalThis.Heavy_sql_execute_df_args;
+var Heavy_sql_execute_df_result = globalThis.Heavy_sql_execute_df_result;
+var Heavy_sql_execute_gdf_args = globalThis.Heavy_sql_execute_gdf_args;
+var Heavy_sql_execute_gdf_result = globalThis.Heavy_sql_execute_gdf_result;
+var Heavy_deallocate_df_args = globalThis.Heavy_deallocate_df_args;
+var Heavy_deallocate_df_result = globalThis.Heavy_deallocate_df_result;
+var Heavy_interrupt_args = globalThis.Heavy_interrupt_args;
+var Heavy_interrupt_result = globalThis.Heavy_interrupt_result;
+var Heavy_sql_validate_args = globalThis.Heavy_sql_validate_args;
+var Heavy_sql_validate_result = globalThis.Heavy_sql_validate_result;
+var Heavy_get_completion_hints_args = globalThis.Heavy_get_completion_hints_args;
+var Heavy_get_completion_hints_result = globalThis.Heavy_get_completion_hints_result;
+var Heavy_set_execution_mode_args = globalThis.Heavy_set_execution_mode_args;
+var Heavy_set_execution_mode_result = globalThis.Heavy_set_execution_mode_result;
+var Heavy_render_vega_args = globalThis.Heavy_render_vega_args;
+var Heavy_render_vega_result = globalThis.Heavy_render_vega_result;
+var Heavy_get_result_row_for_pixel_args = globalThis.Heavy_get_result_row_for_pixel_args;
+var Heavy_get_result_row_for_pixel_result = globalThis.Heavy_get_result_row_for_pixel_result;
+var Heavy_create_custom_expression_args = globalThis.Heavy_create_custom_expression_args;
+var Heavy_create_custom_expression_result = globalThis.Heavy_create_custom_expression_result;
+var Heavy_get_custom_expressions_args = globalThis.Heavy_get_custom_expressions_args;
+var Heavy_get_custom_expressions_result = globalThis.Heavy_get_custom_expressions_result;
+var Heavy_update_custom_expression_args = globalThis.Heavy_update_custom_expression_args;
+var Heavy_update_custom_expression_result = globalThis.Heavy_update_custom_expression_result;
+var Heavy_delete_custom_expressions_args = globalThis.Heavy_delete_custom_expressions_args;
+var Heavy_delete_custom_expressions_result = globalThis.Heavy_delete_custom_expressions_result;
+var Heavy_get_dashboard_args = globalThis.Heavy_get_dashboard_args;
+var Heavy_get_dashboard_result = globalThis.Heavy_get_dashboard_result;
+var Heavy_get_dashboards_args = globalThis.Heavy_get_dashboards_args;
+var Heavy_get_dashboards_result = globalThis.Heavy_get_dashboards_result;
+var Heavy_create_dashboard_args = globalThis.Heavy_create_dashboard_args;
+var Heavy_create_dashboard_result = globalThis.Heavy_create_dashboard_result;
+var Heavy_replace_dashboard_args = globalThis.Heavy_replace_dashboard_args;
+var Heavy_replace_dashboard_result = globalThis.Heavy_replace_dashboard_result;
+var Heavy_delete_dashboard_args = globalThis.Heavy_delete_dashboard_args;
+var Heavy_delete_dashboard_result = globalThis.Heavy_delete_dashboard_result;
+var Heavy_share_dashboards_args = globalThis.Heavy_share_dashboards_args;
+var Heavy_share_dashboards_result = globalThis.Heavy_share_dashboards_result;
+var Heavy_delete_dashboards_args = globalThis.Heavy_delete_dashboards_args;
+var Heavy_delete_dashboards_result = globalThis.Heavy_delete_dashboards_result;
+var Heavy_share_dashboard_args = globalThis.Heavy_share_dashboard_args;
+var Heavy_share_dashboard_result = globalThis.Heavy_share_dashboard_result;
+var Heavy_unshare_dashboard_args = globalThis.Heavy_unshare_dashboard_args;
+var Heavy_unshare_dashboard_result = globalThis.Heavy_unshare_dashboard_result;
+var Heavy_unshare_dashboards_args = globalThis.Heavy_unshare_dashboards_args;
+var Heavy_unshare_dashboards_result = globalThis.Heavy_unshare_dashboards_result;
+var Heavy_get_dashboard_grantees_args = globalThis.Heavy_get_dashboard_grantees_args;
+var Heavy_get_dashboard_grantees_result = globalThis.Heavy_get_dashboard_grantees_result;
+var Heavy_get_link_view_args = globalThis.Heavy_get_link_view_args;
+var Heavy_get_link_view_result = globalThis.Heavy_get_link_view_result;
+var Heavy_create_link_args = globalThis.Heavy_create_link_args;
+var Heavy_create_link_result = globalThis.Heavy_create_link_result;
+var Heavy_load_table_binary_args = globalThis.Heavy_load_table_binary_args;
+var Heavy_load_table_binary_result = globalThis.Heavy_load_table_binary_result;
+var Heavy_load_table_binary_columnar_args = globalThis.Heavy_load_table_binary_columnar_args;
+var Heavy_load_table_binary_columnar_result = globalThis.Heavy_load_table_binary_columnar_result;
+var Heavy_load_table_binary_arrow_args = globalThis.Heavy_load_table_binary_arrow_args;
+var Heavy_load_table_binary_arrow_result = globalThis.Heavy_load_table_binary_arrow_result;
+var Heavy_load_table_args = globalThis.Heavy_load_table_args;
+var Heavy_load_table_result = globalThis.Heavy_load_table_result;
+var Heavy_detect_column_types_args = globalThis.Heavy_detect_column_types_args;
+var Heavy_detect_column_types_result = globalThis.Heavy_detect_column_types_result;
+var Heavy_create_table_args = globalThis.Heavy_create_table_args;
+var Heavy_create_table_result = globalThis.Heavy_create_table_result;
+var Heavy_import_table_args = globalThis.Heavy_import_table_args;
+var Heavy_import_table_result = globalThis.Heavy_import_table_result;
+var Heavy_import_geo_table_args = globalThis.Heavy_import_geo_table_args;
+var Heavy_import_geo_table_result = globalThis.Heavy_import_geo_table_result;
+var Heavy_import_table_status_args = globalThis.Heavy_import_table_status_args;
+var Heavy_import_table_status_result = globalThis.Heavy_import_table_status_result;
+var Heavy_get_first_geo_file_in_archive_args = globalThis.Heavy_get_first_geo_file_in_archive_args;
+var Heavy_get_first_geo_file_in_archive_result = globalThis.Heavy_get_first_geo_file_in_archive_result;
+var Heavy_get_all_files_in_archive_args = globalThis.Heavy_get_all_files_in_archive_args;
+var Heavy_get_all_files_in_archive_result = globalThis.Heavy_get_all_files_in_archive_result;
+var Heavy_get_layers_in_geo_file_args = globalThis.Heavy_get_layers_in_geo_file_args;
+var Heavy_get_layers_in_geo_file_result = globalThis.Heavy_get_layers_in_geo_file_result;
+var Heavy_query_get_outer_fragment_count_args = globalThis.Heavy_query_get_outer_fragment_count_args;
+var Heavy_query_get_outer_fragment_count_result = globalThis.Heavy_query_get_outer_fragment_count_result;
+var Heavy_check_table_consistency_args = globalThis.Heavy_check_table_consistency_args;
+var Heavy_check_table_consistency_result = globalThis.Heavy_check_table_consistency_result;
+var Heavy_start_query_args = globalThis.Heavy_start_query_args;
+var Heavy_start_query_result = globalThis.Heavy_start_query_result;
+var Heavy_execute_query_step_args = globalThis.Heavy_execute_query_step_args;
+var Heavy_execute_query_step_result = globalThis.Heavy_execute_query_step_result;
+var Heavy_broadcast_serialized_rows_args = globalThis.Heavy_broadcast_serialized_rows_args;
+var Heavy_broadcast_serialized_rows_result = globalThis.Heavy_broadcast_serialized_rows_result;
+var Heavy_start_render_query_args = globalThis.Heavy_start_render_query_args;
+var Heavy_start_render_query_result = globalThis.Heavy_start_render_query_result;
+var Heavy_execute_next_render_step_args = globalThis.Heavy_execute_next_render_step_args;
+var Heavy_execute_next_render_step_result = globalThis.Heavy_execute_next_render_step_result;
+var Heavy_insert_data_args = globalThis.Heavy_insert_data_args;
+var Heavy_insert_data_result = globalThis.Heavy_insert_data_result;
+var Heavy_insert_chunks_args = globalThis.Heavy_insert_chunks_args;
+var Heavy_insert_chunks_result = globalThis.Heavy_insert_chunks_result;
+var Heavy_checkpoint_args = globalThis.Heavy_checkpoint_args;
+var Heavy_checkpoint_result = globalThis.Heavy_checkpoint_result;
+var Heavy_get_roles_args = globalThis.Heavy_get_roles_args;
+var Heavy_get_roles_result = globalThis.Heavy_get_roles_result;
+var Heavy_get_db_objects_for_grantee_args = globalThis.Heavy_get_db_objects_for_grantee_args;
+var Heavy_get_db_objects_for_grantee_result = globalThis.Heavy_get_db_objects_for_grantee_result;
+var Heavy_get_db_object_privs_args = globalThis.Heavy_get_db_object_privs_args;
+var Heavy_get_db_object_privs_result = globalThis.Heavy_get_db_object_privs_result;
+var Heavy_get_all_roles_for_user_args = globalThis.Heavy_get_all_roles_for_user_args;
+var Heavy_get_all_roles_for_user_result = globalThis.Heavy_get_all_roles_for_user_result;
+var Heavy_get_all_effective_roles_for_user_args = globalThis.Heavy_get_all_effective_roles_for_user_args;
+var Heavy_get_all_effective_roles_for_user_result = globalThis.Heavy_get_all_effective_roles_for_user_result;
+var Heavy_has_role_args = globalThis.Heavy_has_role_args;
+var Heavy_has_role_result = globalThis.Heavy_has_role_result;
+var Heavy_has_object_privilege_args = globalThis.Heavy_has_object_privilege_args;
+var Heavy_has_object_privilege_result = globalThis.Heavy_has_object_privilege_result;
+var Heavy_get_device_parameters_args = globalThis.Heavy_get_device_parameters_args;
+var Heavy_get_device_parameters_result = globalThis.Heavy_get_device_parameters_result;
+var Heavy_register_runtime_extension_functions_args = globalThis.Heavy_register_runtime_extension_functions_args;
+var Heavy_register_runtime_extension_functions_result = globalThis.Heavy_register_runtime_extension_functions_result;
+var Heavy_get_table_function_names_args = globalThis.Heavy_get_table_function_names_args;
+var Heavy_get_table_function_names_result = globalThis.Heavy_get_table_function_names_result;
+var Heavy_get_runtime_table_function_names_args = globalThis.Heavy_get_runtime_table_function_names_args;
+var Heavy_get_runtime_table_function_names_result = globalThis.Heavy_get_runtime_table_function_names_result;
+var Heavy_get_table_function_details_args = globalThis.Heavy_get_table_function_details_args;
+var Heavy_get_table_function_details_result = globalThis.Heavy_get_table_function_details_result;
+var Heavy_get_function_names_args = globalThis.Heavy_get_function_names_args;
+var Heavy_get_function_names_result = globalThis.Heavy_get_function_names_result;
+var Heavy_get_runtime_function_names_args = globalThis.Heavy_get_runtime_function_names_args;
+var Heavy_get_runtime_function_names_result = globalThis.Heavy_get_runtime_function_names_result;
+var Heavy_get_function_details_args = globalThis.Heavy_get_function_details_args;
+var Heavy_get_function_details_result = globalThis.Heavy_get_function_details_result;
+var Heavy_put_immerse_users_metadata_args = globalThis.Heavy_put_immerse_users_metadata_args;
+var Heavy_put_immerse_users_metadata_result = globalThis.Heavy_put_immerse_users_metadata_result;
+var Heavy_put_immerse_database_metadata_args = globalThis.Heavy_put_immerse_database_metadata_args;
+var Heavy_put_immerse_database_metadata_result = globalThis.Heavy_put_immerse_database_metadata_result;
+var Heavy_get_users_info_args = globalThis.Heavy_get_users_info_args;
+var Heavy_get_users_info_result = globalThis.Heavy_get_users_info_result;
+var Heavy_get_databases_args = globalThis.Heavy_get_databases_args;
+var Heavy_get_databases_result = globalThis.Heavy_get_databases_result;
+var HeavyClient = globalThis.HeavyClient;
+var TDeviceType = globalThis.TDeviceType;
+var TDatumType = globalThis.TDatumType;
+var TEncodingType = globalThis.TEncodingType;
+var TStringDictKey = globalThis.TStringDictKey;
+var TTypeInfo = globalThis.TTypeInfo;
+var TCompletionHintType = globalThis.TCompletionHintType;
+var TCompletionHint = globalThis.TCompletionHint;
+var TExtArgumentType = globalThis.TExtArgumentType;
+var TOutputBufferSizeType = globalThis.TOutputBufferSizeType;
+var TUserDefinedFunction = globalThis.TUserDefinedFunction;
+var TUserDefinedTableFunction = globalThis.TUserDefinedTableFunction;
+var TExecuteMode = globalThis.TExecuteMode;
+var TSourceType = globalThis.TSourceType;
+var TPartitionDetail = globalThis.TPartitionDetail;
+var TGeoFileLayerContents = globalThis.TGeoFileLayerContents;
+var TImportHeaderRow = globalThis.TImportHeaderRow;
+var TRole = globalThis.TRole;
+var TTableType = globalThis.TTableType;
+var TTableRefreshUpdateType = globalThis.TTableRefreshUpdateType;
+var TTableRefreshTimingType = globalThis.TTableRefreshTimingType;
+var TTableRefreshIntervalType = globalThis.TTableRefreshIntervalType;
+var TMergeType = globalThis.TMergeType;
+var TRasterPointType = globalThis.TRasterPointType;
+var TRasterPointTransform = globalThis.TRasterPointTransform;
+var TQueryType = globalThis.TQueryType;
+var TArrowTransport = globalThis.TArrowTransport;
+var TExpressionRangeType = globalThis.TExpressionRangeType;
+var TDBObjectType = globalThis.TDBObjectType;
+var TDataSourceType = globalThis.TDataSourceType;
+var TDatumVal = globalThis.TDatumVal;
+var TDatum = globalThis.TDatum;
+var TStringValue = globalThis.TStringValue;
+var TColumnType = globalThis.TColumnType;
+var TRow = globalThis.TRow;
+var TColumnData = globalThis.TColumnData;
+var TColumn = globalThis.TColumn;
+var TStringRow = globalThis.TStringRow;
+var TStepResult = globalThis.TStepResult;
+var TRowSet = globalThis.TRowSet;
+var TQueryResult = globalThis.TQueryResult;
+var TDataFrame = globalThis.TDataFrame;
+var TDBInfo = globalThis.TDBInfo;
+var TDBException = globalThis.TDBException;
+var TCopyParams = globalThis.TCopyParams;
+var TCreateParams = globalThis.TCreateParams;
+var TDetectResult = globalThis.TDetectResult;
+var TImportStatus = globalThis.TImportStatus;
+var TFrontendView = globalThis.TFrontendView;
+var TServerStatus = globalThis.TServerStatus;
+var TPixel = globalThis.TPixel;
+var TPixelTableRowResult = globalThis.TPixelTableRowResult;
+var TRenderResult = globalThis.TRenderResult;
+var TGpuSpecification = globalThis.TGpuSpecification;
+var THardwareInfo = globalThis.THardwareInfo;
+var TClusterHardwareInfo = globalThis.TClusterHardwareInfo;
+var TMemoryData = globalThis.TMemoryData;
+var TNodeMemoryInfo = globalThis.TNodeMemoryInfo;
+var TTableMeta = globalThis.TTableMeta;
+var TTableRefreshInfo = globalThis.TTableRefreshInfo;
+var TTableDetails = globalThis.TTableDetails;
+var TColumnRange = globalThis.TColumnRange;
+var TDictionaryGeneration = globalThis.TDictionaryGeneration;
+var TTableGeneration = globalThis.TTableGeneration;
+var TTableCacheStatus = globalThis.TTableCacheStatus;
+var TPendingQuery = globalThis.TPendingQuery;
+var TVarLen = globalThis.TVarLen;
+var TDataBlockPtr = globalThis.TDataBlockPtr;
+var TInsertData = globalThis.TInsertData;
+var TChunkData = globalThis.TChunkData;
+var TInsertChunks = globalThis.TInsertChunks;
+var TPendingRenderQuery = globalThis.TPendingRenderQuery;
+var TRenderParseResult = globalThis.TRenderParseResult;
+var TRawRenderPassDataResult = globalThis.TRawRenderPassDataResult;
+var TRawPixelData = globalThis.TRawPixelData;
+var TRenderDatum = globalThis.TRenderDatum;
+var TRenderStepResult = globalThis.TRenderStepResult;
+var TDatabasePermissions = globalThis.TDatabasePermissions;
+var TTablePermissions = globalThis.TTablePermissions;
+var TDashboardPermissions = globalThis.TDashboardPermissions;
+var TViewPermissions = globalThis.TViewPermissions;
+var TServerPermissions = globalThis.TServerPermissions;
+var TColumnPermissions = globalThis.TColumnPermissions;
+var TDBObjectPermissions = globalThis.TDBObjectPermissions;
+var TDBObject = globalThis.TDBObject;
+var TDashboardGrantees = globalThis.TDashboardGrantees;
+var TDashboard = globalThis.TDashboard;
+var TSessionInfo = globalThis.TSessionInfo;
+var TGeoFileLayerInfo = globalThis.TGeoFileLayerInfo;
+var TTableEpochInfo = globalThis.TTableEpochInfo;
+var TCustomExpression = globalThis.TCustomExpression;
+var TQueryInfo = globalThis.TQueryInfo;
+var TLeafInfo = globalThis.TLeafInfo;
+var TImmerseUserMetadata = globalThis.TImmerseUserMetadata;
+var TUserInfo = globalThis.TUserInfo;
+var TResultSetLayout = globalThis.TResultSetLayout;
+var TCountDistinctImplType = globalThis.TCountDistinctImplType;
+var TAggKind = globalThis.TAggKind;
+var TSlotSize = globalThis.TSlotSize;
+var TColSlotContext = globalThis.TColSlotContext;
+var TCountDistinctDescriptor = globalThis.TCountDistinctDescriptor;
+var TResultSetBufferDescriptor = globalThis.TResultSetBufferDescriptor;
+var TTargetInfo = globalThis.TTargetInfo;
+var TCountDistinctSetStorage = globalThis.TCountDistinctSetStorage;
+var TCountDistinctSet = globalThis.TCountDistinctSet;
+var TSerializedRows = globalThis.TSerializedRows;
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -31241,11 +31863,11 @@ TTypeInfo.prototype[Symbol.for("write")] = function(output) {
 
 
 // <thrift-globals-to-exports-loader>
-if (typeof TDeviceType !== 'undefined') exports.jh = TDeviceType;
-if (typeof TDatumType !== 'undefined') exports.M2 = TDatumType;
-if (typeof TEncodingType !== 'undefined') exports.QY = TEncodingType;
-if (typeof TStringDictKey !== 'undefined') exports.NQ = TStringDictKey;
-if (typeof TTypeInfo !== 'undefined') exports.BZ = TTypeInfo;
+if (typeof TDeviceType !== 'undefined') { globalThis.TDeviceType = TDeviceType; exports.jh = TDeviceType; }
+if (typeof TDatumType !== 'undefined') { globalThis.TDatumType = TDatumType; exports.M2 = TDatumType; }
+if (typeof TEncodingType !== 'undefined') { globalThis.TEncodingType = TEncodingType; exports.QY = TEncodingType; }
+if (typeof TStringDictKey !== 'undefined') { globalThis.TStringDictKey = TStringDictKey; exports.NQ = TStringDictKey; }
+if (typeof TTypeInfo !== 'undefined') { globalThis.TTypeInfo = TTypeInfo; exports.BZ = TTypeInfo; }
 
 
 /***/ }),
@@ -34313,7 +34935,318 @@ exports.writeDouble = function (buff, v) {
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 /* provided dependency */ var Thrift = __webpack_require__(5522)["Thrift"];
-var TResultSetLayout, TCountDistinctImplType, TAggKind, TSlotSize, TColSlotContext, TCountDistinctDescriptor, TResultSetBufferDescriptor, TTargetInfo, TCountDistinctSetStorage, TCountDistinctSet, TSerializedRows;
+var Heavy_connect_args = globalThis.Heavy_connect_args;
+var Heavy_connect_result = globalThis.Heavy_connect_result;
+var Heavy_disconnect_args = globalThis.Heavy_disconnect_args;
+var Heavy_disconnect_result = globalThis.Heavy_disconnect_result;
+var Heavy_switch_database_args = globalThis.Heavy_switch_database_args;
+var Heavy_switch_database_result = globalThis.Heavy_switch_database_result;
+var Heavy_clone_session_args = globalThis.Heavy_clone_session_args;
+var Heavy_clone_session_result = globalThis.Heavy_clone_session_result;
+var Heavy_get_server_status_args = globalThis.Heavy_get_server_status_args;
+var Heavy_get_server_status_result = globalThis.Heavy_get_server_status_result;
+var Heavy_get_status_args = globalThis.Heavy_get_status_args;
+var Heavy_get_status_result = globalThis.Heavy_get_status_result;
+var Heavy_get_hardware_info_args = globalThis.Heavy_get_hardware_info_args;
+var Heavy_get_hardware_info_result = globalThis.Heavy_get_hardware_info_result;
+var Heavy_get_tables_args = globalThis.Heavy_get_tables_args;
+var Heavy_get_tables_result = globalThis.Heavy_get_tables_result;
+var Heavy_get_tables_for_database_args = globalThis.Heavy_get_tables_for_database_args;
+var Heavy_get_tables_for_database_result = globalThis.Heavy_get_tables_for_database_result;
+var Heavy_get_physical_tables_args = globalThis.Heavy_get_physical_tables_args;
+var Heavy_get_physical_tables_result = globalThis.Heavy_get_physical_tables_result;
+var Heavy_get_views_args = globalThis.Heavy_get_views_args;
+var Heavy_get_views_result = globalThis.Heavy_get_views_result;
+var Heavy_get_tables_meta_args = globalThis.Heavy_get_tables_meta_args;
+var Heavy_get_tables_meta_result = globalThis.Heavy_get_tables_meta_result;
+var Heavy_get_table_details_args = globalThis.Heavy_get_table_details_args;
+var Heavy_get_table_details_result = globalThis.Heavy_get_table_details_result;
+var Heavy_get_table_details_for_database_args = globalThis.Heavy_get_table_details_for_database_args;
+var Heavy_get_table_details_for_database_result = globalThis.Heavy_get_table_details_for_database_result;
+var Heavy_get_internal_table_details_args = globalThis.Heavy_get_internal_table_details_args;
+var Heavy_get_internal_table_details_result = globalThis.Heavy_get_internal_table_details_result;
+var Heavy_get_internal_table_details_for_database_args = globalThis.Heavy_get_internal_table_details_for_database_args;
+var Heavy_get_internal_table_details_for_database_result = globalThis.Heavy_get_internal_table_details_for_database_result;
+var Heavy_get_users_args = globalThis.Heavy_get_users_args;
+var Heavy_get_users_result = globalThis.Heavy_get_users_result;
+var Heavy_get_version_args = globalThis.Heavy_get_version_args;
+var Heavy_get_version_result = globalThis.Heavy_get_version_result;
+var Heavy_start_heap_profile_args = globalThis.Heavy_start_heap_profile_args;
+var Heavy_start_heap_profile_result = globalThis.Heavy_start_heap_profile_result;
+var Heavy_stop_heap_profile_args = globalThis.Heavy_stop_heap_profile_args;
+var Heavy_stop_heap_profile_result = globalThis.Heavy_stop_heap_profile_result;
+var Heavy_get_heap_profile_args = globalThis.Heavy_get_heap_profile_args;
+var Heavy_get_heap_profile_result = globalThis.Heavy_get_heap_profile_result;
+var Heavy_get_memory_args = globalThis.Heavy_get_memory_args;
+var Heavy_get_memory_result = globalThis.Heavy_get_memory_result;
+var Heavy_clear_cpu_memory_args = globalThis.Heavy_clear_cpu_memory_args;
+var Heavy_clear_cpu_memory_result = globalThis.Heavy_clear_cpu_memory_result;
+var Heavy_clear_gpu_memory_args = globalThis.Heavy_clear_gpu_memory_args;
+var Heavy_clear_gpu_memory_result = globalThis.Heavy_clear_gpu_memory_result;
+var Heavy_set_cur_session_args = globalThis.Heavy_set_cur_session_args;
+var Heavy_set_cur_session_result = globalThis.Heavy_set_cur_session_result;
+var Heavy_invalidate_cur_session_args = globalThis.Heavy_invalidate_cur_session_args;
+var Heavy_invalidate_cur_session_result = globalThis.Heavy_invalidate_cur_session_result;
+var Heavy_set_table_epoch_args = globalThis.Heavy_set_table_epoch_args;
+var Heavy_set_table_epoch_result = globalThis.Heavy_set_table_epoch_result;
+var Heavy_set_table_epoch_by_name_args = globalThis.Heavy_set_table_epoch_by_name_args;
+var Heavy_set_table_epoch_by_name_result = globalThis.Heavy_set_table_epoch_by_name_result;
+var Heavy_get_table_epoch_args = globalThis.Heavy_get_table_epoch_args;
+var Heavy_get_table_epoch_result = globalThis.Heavy_get_table_epoch_result;
+var Heavy_get_table_epoch_by_name_args = globalThis.Heavy_get_table_epoch_by_name_args;
+var Heavy_get_table_epoch_by_name_result = globalThis.Heavy_get_table_epoch_by_name_result;
+var Heavy_get_table_epochs_args = globalThis.Heavy_get_table_epochs_args;
+var Heavy_get_table_epochs_result = globalThis.Heavy_get_table_epochs_result;
+var Heavy_set_table_epochs_args = globalThis.Heavy_set_table_epochs_args;
+var Heavy_set_table_epochs_result = globalThis.Heavy_set_table_epochs_result;
+var Heavy_get_session_info_args = globalThis.Heavy_get_session_info_args;
+var Heavy_get_session_info_result = globalThis.Heavy_get_session_info_result;
+var Heavy_get_queries_info_args = globalThis.Heavy_get_queries_info_args;
+var Heavy_get_queries_info_result = globalThis.Heavy_get_queries_info_result;
+var Heavy_set_leaf_info_args = globalThis.Heavy_set_leaf_info_args;
+var Heavy_set_leaf_info_result = globalThis.Heavy_set_leaf_info_result;
+var Heavy_sql_execute_args = globalThis.Heavy_sql_execute_args;
+var Heavy_sql_execute_result = globalThis.Heavy_sql_execute_result;
+var Heavy_sql_execute_df_args = globalThis.Heavy_sql_execute_df_args;
+var Heavy_sql_execute_df_result = globalThis.Heavy_sql_execute_df_result;
+var Heavy_sql_execute_gdf_args = globalThis.Heavy_sql_execute_gdf_args;
+var Heavy_sql_execute_gdf_result = globalThis.Heavy_sql_execute_gdf_result;
+var Heavy_deallocate_df_args = globalThis.Heavy_deallocate_df_args;
+var Heavy_deallocate_df_result = globalThis.Heavy_deallocate_df_result;
+var Heavy_interrupt_args = globalThis.Heavy_interrupt_args;
+var Heavy_interrupt_result = globalThis.Heavy_interrupt_result;
+var Heavy_sql_validate_args = globalThis.Heavy_sql_validate_args;
+var Heavy_sql_validate_result = globalThis.Heavy_sql_validate_result;
+var Heavy_get_completion_hints_args = globalThis.Heavy_get_completion_hints_args;
+var Heavy_get_completion_hints_result = globalThis.Heavy_get_completion_hints_result;
+var Heavy_set_execution_mode_args = globalThis.Heavy_set_execution_mode_args;
+var Heavy_set_execution_mode_result = globalThis.Heavy_set_execution_mode_result;
+var Heavy_render_vega_args = globalThis.Heavy_render_vega_args;
+var Heavy_render_vega_result = globalThis.Heavy_render_vega_result;
+var Heavy_get_result_row_for_pixel_args = globalThis.Heavy_get_result_row_for_pixel_args;
+var Heavy_get_result_row_for_pixel_result = globalThis.Heavy_get_result_row_for_pixel_result;
+var Heavy_create_custom_expression_args = globalThis.Heavy_create_custom_expression_args;
+var Heavy_create_custom_expression_result = globalThis.Heavy_create_custom_expression_result;
+var Heavy_get_custom_expressions_args = globalThis.Heavy_get_custom_expressions_args;
+var Heavy_get_custom_expressions_result = globalThis.Heavy_get_custom_expressions_result;
+var Heavy_update_custom_expression_args = globalThis.Heavy_update_custom_expression_args;
+var Heavy_update_custom_expression_result = globalThis.Heavy_update_custom_expression_result;
+var Heavy_delete_custom_expressions_args = globalThis.Heavy_delete_custom_expressions_args;
+var Heavy_delete_custom_expressions_result = globalThis.Heavy_delete_custom_expressions_result;
+var Heavy_get_dashboard_args = globalThis.Heavy_get_dashboard_args;
+var Heavy_get_dashboard_result = globalThis.Heavy_get_dashboard_result;
+var Heavy_get_dashboards_args = globalThis.Heavy_get_dashboards_args;
+var Heavy_get_dashboards_result = globalThis.Heavy_get_dashboards_result;
+var Heavy_create_dashboard_args = globalThis.Heavy_create_dashboard_args;
+var Heavy_create_dashboard_result = globalThis.Heavy_create_dashboard_result;
+var Heavy_replace_dashboard_args = globalThis.Heavy_replace_dashboard_args;
+var Heavy_replace_dashboard_result = globalThis.Heavy_replace_dashboard_result;
+var Heavy_delete_dashboard_args = globalThis.Heavy_delete_dashboard_args;
+var Heavy_delete_dashboard_result = globalThis.Heavy_delete_dashboard_result;
+var Heavy_share_dashboards_args = globalThis.Heavy_share_dashboards_args;
+var Heavy_share_dashboards_result = globalThis.Heavy_share_dashboards_result;
+var Heavy_delete_dashboards_args = globalThis.Heavy_delete_dashboards_args;
+var Heavy_delete_dashboards_result = globalThis.Heavy_delete_dashboards_result;
+var Heavy_share_dashboard_args = globalThis.Heavy_share_dashboard_args;
+var Heavy_share_dashboard_result = globalThis.Heavy_share_dashboard_result;
+var Heavy_unshare_dashboard_args = globalThis.Heavy_unshare_dashboard_args;
+var Heavy_unshare_dashboard_result = globalThis.Heavy_unshare_dashboard_result;
+var Heavy_unshare_dashboards_args = globalThis.Heavy_unshare_dashboards_args;
+var Heavy_unshare_dashboards_result = globalThis.Heavy_unshare_dashboards_result;
+var Heavy_get_dashboard_grantees_args = globalThis.Heavy_get_dashboard_grantees_args;
+var Heavy_get_dashboard_grantees_result = globalThis.Heavy_get_dashboard_grantees_result;
+var Heavy_get_link_view_args = globalThis.Heavy_get_link_view_args;
+var Heavy_get_link_view_result = globalThis.Heavy_get_link_view_result;
+var Heavy_create_link_args = globalThis.Heavy_create_link_args;
+var Heavy_create_link_result = globalThis.Heavy_create_link_result;
+var Heavy_load_table_binary_args = globalThis.Heavy_load_table_binary_args;
+var Heavy_load_table_binary_result = globalThis.Heavy_load_table_binary_result;
+var Heavy_load_table_binary_columnar_args = globalThis.Heavy_load_table_binary_columnar_args;
+var Heavy_load_table_binary_columnar_result = globalThis.Heavy_load_table_binary_columnar_result;
+var Heavy_load_table_binary_arrow_args = globalThis.Heavy_load_table_binary_arrow_args;
+var Heavy_load_table_binary_arrow_result = globalThis.Heavy_load_table_binary_arrow_result;
+var Heavy_load_table_args = globalThis.Heavy_load_table_args;
+var Heavy_load_table_result = globalThis.Heavy_load_table_result;
+var Heavy_detect_column_types_args = globalThis.Heavy_detect_column_types_args;
+var Heavy_detect_column_types_result = globalThis.Heavy_detect_column_types_result;
+var Heavy_create_table_args = globalThis.Heavy_create_table_args;
+var Heavy_create_table_result = globalThis.Heavy_create_table_result;
+var Heavy_import_table_args = globalThis.Heavy_import_table_args;
+var Heavy_import_table_result = globalThis.Heavy_import_table_result;
+var Heavy_import_geo_table_args = globalThis.Heavy_import_geo_table_args;
+var Heavy_import_geo_table_result = globalThis.Heavy_import_geo_table_result;
+var Heavy_import_table_status_args = globalThis.Heavy_import_table_status_args;
+var Heavy_import_table_status_result = globalThis.Heavy_import_table_status_result;
+var Heavy_get_first_geo_file_in_archive_args = globalThis.Heavy_get_first_geo_file_in_archive_args;
+var Heavy_get_first_geo_file_in_archive_result = globalThis.Heavy_get_first_geo_file_in_archive_result;
+var Heavy_get_all_files_in_archive_args = globalThis.Heavy_get_all_files_in_archive_args;
+var Heavy_get_all_files_in_archive_result = globalThis.Heavy_get_all_files_in_archive_result;
+var Heavy_get_layers_in_geo_file_args = globalThis.Heavy_get_layers_in_geo_file_args;
+var Heavy_get_layers_in_geo_file_result = globalThis.Heavy_get_layers_in_geo_file_result;
+var Heavy_query_get_outer_fragment_count_args = globalThis.Heavy_query_get_outer_fragment_count_args;
+var Heavy_query_get_outer_fragment_count_result = globalThis.Heavy_query_get_outer_fragment_count_result;
+var Heavy_check_table_consistency_args = globalThis.Heavy_check_table_consistency_args;
+var Heavy_check_table_consistency_result = globalThis.Heavy_check_table_consistency_result;
+var Heavy_start_query_args = globalThis.Heavy_start_query_args;
+var Heavy_start_query_result = globalThis.Heavy_start_query_result;
+var Heavy_execute_query_step_args = globalThis.Heavy_execute_query_step_args;
+var Heavy_execute_query_step_result = globalThis.Heavy_execute_query_step_result;
+var Heavy_broadcast_serialized_rows_args = globalThis.Heavy_broadcast_serialized_rows_args;
+var Heavy_broadcast_serialized_rows_result = globalThis.Heavy_broadcast_serialized_rows_result;
+var Heavy_start_render_query_args = globalThis.Heavy_start_render_query_args;
+var Heavy_start_render_query_result = globalThis.Heavy_start_render_query_result;
+var Heavy_execute_next_render_step_args = globalThis.Heavy_execute_next_render_step_args;
+var Heavy_execute_next_render_step_result = globalThis.Heavy_execute_next_render_step_result;
+var Heavy_insert_data_args = globalThis.Heavy_insert_data_args;
+var Heavy_insert_data_result = globalThis.Heavy_insert_data_result;
+var Heavy_insert_chunks_args = globalThis.Heavy_insert_chunks_args;
+var Heavy_insert_chunks_result = globalThis.Heavy_insert_chunks_result;
+var Heavy_checkpoint_args = globalThis.Heavy_checkpoint_args;
+var Heavy_checkpoint_result = globalThis.Heavy_checkpoint_result;
+var Heavy_get_roles_args = globalThis.Heavy_get_roles_args;
+var Heavy_get_roles_result = globalThis.Heavy_get_roles_result;
+var Heavy_get_db_objects_for_grantee_args = globalThis.Heavy_get_db_objects_for_grantee_args;
+var Heavy_get_db_objects_for_grantee_result = globalThis.Heavy_get_db_objects_for_grantee_result;
+var Heavy_get_db_object_privs_args = globalThis.Heavy_get_db_object_privs_args;
+var Heavy_get_db_object_privs_result = globalThis.Heavy_get_db_object_privs_result;
+var Heavy_get_all_roles_for_user_args = globalThis.Heavy_get_all_roles_for_user_args;
+var Heavy_get_all_roles_for_user_result = globalThis.Heavy_get_all_roles_for_user_result;
+var Heavy_get_all_effective_roles_for_user_args = globalThis.Heavy_get_all_effective_roles_for_user_args;
+var Heavy_get_all_effective_roles_for_user_result = globalThis.Heavy_get_all_effective_roles_for_user_result;
+var Heavy_has_role_args = globalThis.Heavy_has_role_args;
+var Heavy_has_role_result = globalThis.Heavy_has_role_result;
+var Heavy_has_object_privilege_args = globalThis.Heavy_has_object_privilege_args;
+var Heavy_has_object_privilege_result = globalThis.Heavy_has_object_privilege_result;
+var Heavy_get_device_parameters_args = globalThis.Heavy_get_device_parameters_args;
+var Heavy_get_device_parameters_result = globalThis.Heavy_get_device_parameters_result;
+var Heavy_register_runtime_extension_functions_args = globalThis.Heavy_register_runtime_extension_functions_args;
+var Heavy_register_runtime_extension_functions_result = globalThis.Heavy_register_runtime_extension_functions_result;
+var Heavy_get_table_function_names_args = globalThis.Heavy_get_table_function_names_args;
+var Heavy_get_table_function_names_result = globalThis.Heavy_get_table_function_names_result;
+var Heavy_get_runtime_table_function_names_args = globalThis.Heavy_get_runtime_table_function_names_args;
+var Heavy_get_runtime_table_function_names_result = globalThis.Heavy_get_runtime_table_function_names_result;
+var Heavy_get_table_function_details_args = globalThis.Heavy_get_table_function_details_args;
+var Heavy_get_table_function_details_result = globalThis.Heavy_get_table_function_details_result;
+var Heavy_get_function_names_args = globalThis.Heavy_get_function_names_args;
+var Heavy_get_function_names_result = globalThis.Heavy_get_function_names_result;
+var Heavy_get_runtime_function_names_args = globalThis.Heavy_get_runtime_function_names_args;
+var Heavy_get_runtime_function_names_result = globalThis.Heavy_get_runtime_function_names_result;
+var Heavy_get_function_details_args = globalThis.Heavy_get_function_details_args;
+var Heavy_get_function_details_result = globalThis.Heavy_get_function_details_result;
+var Heavy_put_immerse_users_metadata_args = globalThis.Heavy_put_immerse_users_metadata_args;
+var Heavy_put_immerse_users_metadata_result = globalThis.Heavy_put_immerse_users_metadata_result;
+var Heavy_put_immerse_database_metadata_args = globalThis.Heavy_put_immerse_database_metadata_args;
+var Heavy_put_immerse_database_metadata_result = globalThis.Heavy_put_immerse_database_metadata_result;
+var Heavy_get_users_info_args = globalThis.Heavy_get_users_info_args;
+var Heavy_get_users_info_result = globalThis.Heavy_get_users_info_result;
+var Heavy_get_databases_args = globalThis.Heavy_get_databases_args;
+var Heavy_get_databases_result = globalThis.Heavy_get_databases_result;
+var HeavyClient = globalThis.HeavyClient;
+var TDeviceType = globalThis.TDeviceType;
+var TDatumType = globalThis.TDatumType;
+var TEncodingType = globalThis.TEncodingType;
+var TStringDictKey = globalThis.TStringDictKey;
+var TTypeInfo = globalThis.TTypeInfo;
+var TCompletionHintType = globalThis.TCompletionHintType;
+var TCompletionHint = globalThis.TCompletionHint;
+var TExtArgumentType = globalThis.TExtArgumentType;
+var TOutputBufferSizeType = globalThis.TOutputBufferSizeType;
+var TUserDefinedFunction = globalThis.TUserDefinedFunction;
+var TUserDefinedTableFunction = globalThis.TUserDefinedTableFunction;
+var TExecuteMode = globalThis.TExecuteMode;
+var TSourceType = globalThis.TSourceType;
+var TPartitionDetail = globalThis.TPartitionDetail;
+var TGeoFileLayerContents = globalThis.TGeoFileLayerContents;
+var TImportHeaderRow = globalThis.TImportHeaderRow;
+var TRole = globalThis.TRole;
+var TTableType = globalThis.TTableType;
+var TTableRefreshUpdateType = globalThis.TTableRefreshUpdateType;
+var TTableRefreshTimingType = globalThis.TTableRefreshTimingType;
+var TTableRefreshIntervalType = globalThis.TTableRefreshIntervalType;
+var TMergeType = globalThis.TMergeType;
+var TRasterPointType = globalThis.TRasterPointType;
+var TRasterPointTransform = globalThis.TRasterPointTransform;
+var TQueryType = globalThis.TQueryType;
+var TArrowTransport = globalThis.TArrowTransport;
+var TExpressionRangeType = globalThis.TExpressionRangeType;
+var TDBObjectType = globalThis.TDBObjectType;
+var TDataSourceType = globalThis.TDataSourceType;
+var TDatumVal = globalThis.TDatumVal;
+var TDatum = globalThis.TDatum;
+var TStringValue = globalThis.TStringValue;
+var TColumnType = globalThis.TColumnType;
+var TRow = globalThis.TRow;
+var TColumnData = globalThis.TColumnData;
+var TColumn = globalThis.TColumn;
+var TStringRow = globalThis.TStringRow;
+var TStepResult = globalThis.TStepResult;
+var TRowSet = globalThis.TRowSet;
+var TQueryResult = globalThis.TQueryResult;
+var TDataFrame = globalThis.TDataFrame;
+var TDBInfo = globalThis.TDBInfo;
+var TDBException = globalThis.TDBException;
+var TCopyParams = globalThis.TCopyParams;
+var TCreateParams = globalThis.TCreateParams;
+var TDetectResult = globalThis.TDetectResult;
+var TImportStatus = globalThis.TImportStatus;
+var TFrontendView = globalThis.TFrontendView;
+var TServerStatus = globalThis.TServerStatus;
+var TPixel = globalThis.TPixel;
+var TPixelTableRowResult = globalThis.TPixelTableRowResult;
+var TRenderResult = globalThis.TRenderResult;
+var TGpuSpecification = globalThis.TGpuSpecification;
+var THardwareInfo = globalThis.THardwareInfo;
+var TClusterHardwareInfo = globalThis.TClusterHardwareInfo;
+var TMemoryData = globalThis.TMemoryData;
+var TNodeMemoryInfo = globalThis.TNodeMemoryInfo;
+var TTableMeta = globalThis.TTableMeta;
+var TTableRefreshInfo = globalThis.TTableRefreshInfo;
+var TTableDetails = globalThis.TTableDetails;
+var TColumnRange = globalThis.TColumnRange;
+var TDictionaryGeneration = globalThis.TDictionaryGeneration;
+var TTableGeneration = globalThis.TTableGeneration;
+var TTableCacheStatus = globalThis.TTableCacheStatus;
+var TPendingQuery = globalThis.TPendingQuery;
+var TVarLen = globalThis.TVarLen;
+var TDataBlockPtr = globalThis.TDataBlockPtr;
+var TInsertData = globalThis.TInsertData;
+var TChunkData = globalThis.TChunkData;
+var TInsertChunks = globalThis.TInsertChunks;
+var TPendingRenderQuery = globalThis.TPendingRenderQuery;
+var TRenderParseResult = globalThis.TRenderParseResult;
+var TRawRenderPassDataResult = globalThis.TRawRenderPassDataResult;
+var TRawPixelData = globalThis.TRawPixelData;
+var TRenderDatum = globalThis.TRenderDatum;
+var TRenderStepResult = globalThis.TRenderStepResult;
+var TDatabasePermissions = globalThis.TDatabasePermissions;
+var TTablePermissions = globalThis.TTablePermissions;
+var TDashboardPermissions = globalThis.TDashboardPermissions;
+var TViewPermissions = globalThis.TViewPermissions;
+var TServerPermissions = globalThis.TServerPermissions;
+var TColumnPermissions = globalThis.TColumnPermissions;
+var TDBObjectPermissions = globalThis.TDBObjectPermissions;
+var TDBObject = globalThis.TDBObject;
+var TDashboardGrantees = globalThis.TDashboardGrantees;
+var TDashboard = globalThis.TDashboard;
+var TSessionInfo = globalThis.TSessionInfo;
+var TGeoFileLayerInfo = globalThis.TGeoFileLayerInfo;
+var TTableEpochInfo = globalThis.TTableEpochInfo;
+var TCustomExpression = globalThis.TCustomExpression;
+var TQueryInfo = globalThis.TQueryInfo;
+var TLeafInfo = globalThis.TLeafInfo;
+var TImmerseUserMetadata = globalThis.TImmerseUserMetadata;
+var TUserInfo = globalThis.TUserInfo;
+var TResultSetLayout = globalThis.TResultSetLayout;
+var TCountDistinctImplType = globalThis.TCountDistinctImplType;
+var TAggKind = globalThis.TAggKind;
+var TSlotSize = globalThis.TSlotSize;
+var TColSlotContext = globalThis.TColSlotContext;
+var TCountDistinctDescriptor = globalThis.TCountDistinctDescriptor;
+var TResultSetBufferDescriptor = globalThis.TResultSetBufferDescriptor;
+var TTargetInfo = globalThis.TTargetInfo;
+var TCountDistinctSetStorage = globalThis.TCountDistinctSetStorage;
+var TCountDistinctSet = globalThis.TCountDistinctSet;
+var TSerializedRows = globalThis.TSerializedRows;
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -35527,17 +36460,17 @@ TSerializedRows.prototype[Symbol.for("write")] = function(output) {
 
 
 // <thrift-globals-to-exports-loader>
-if (typeof TResultSetLayout !== 'undefined') exports.SW = TResultSetLayout;
-if (typeof TCountDistinctImplType !== 'undefined') exports.mO = TCountDistinctImplType;
-if (typeof TAggKind !== 'undefined') exports.g2 = TAggKind;
-if (typeof TSlotSize !== 'undefined') exports.Y4 = TSlotSize;
-if (typeof TColSlotContext !== 'undefined') exports.e1 = TColSlotContext;
-if (typeof TCountDistinctDescriptor !== 'undefined') exports.Hm = TCountDistinctDescriptor;
-if (typeof TResultSetBufferDescriptor !== 'undefined') exports.nJ = TResultSetBufferDescriptor;
-if (typeof TTargetInfo !== 'undefined') exports.aB = TTargetInfo;
-if (typeof TCountDistinctSetStorage !== 'undefined') exports.rS = TCountDistinctSetStorage;
-if (typeof TCountDistinctSet !== 'undefined') exports.wc = TCountDistinctSet;
-if (typeof TSerializedRows !== 'undefined') exports.Mz = TSerializedRows;
+if (typeof TResultSetLayout !== 'undefined') { globalThis.TResultSetLayout = TResultSetLayout; exports.SW = TResultSetLayout; }
+if (typeof TCountDistinctImplType !== 'undefined') { globalThis.TCountDistinctImplType = TCountDistinctImplType; exports.mO = TCountDistinctImplType; }
+if (typeof TAggKind !== 'undefined') { globalThis.TAggKind = TAggKind; exports.g2 = TAggKind; }
+if (typeof TSlotSize !== 'undefined') { globalThis.TSlotSize = TSlotSize; exports.Y4 = TSlotSize; }
+if (typeof TColSlotContext !== 'undefined') { globalThis.TColSlotContext = TColSlotContext; exports.e1 = TColSlotContext; }
+if (typeof TCountDistinctDescriptor !== 'undefined') { globalThis.TCountDistinctDescriptor = TCountDistinctDescriptor; exports.Hm = TCountDistinctDescriptor; }
+if (typeof TResultSetBufferDescriptor !== 'undefined') { globalThis.TResultSetBufferDescriptor = TResultSetBufferDescriptor; exports.nJ = TResultSetBufferDescriptor; }
+if (typeof TTargetInfo !== 'undefined') { globalThis.TTargetInfo = TTargetInfo; exports.aB = TTargetInfo; }
+if (typeof TCountDistinctSetStorage !== 'undefined') { globalThis.TCountDistinctSetStorage = TCountDistinctSetStorage; exports.rS = TCountDistinctSetStorage; }
+if (typeof TCountDistinctSet !== 'undefined') { globalThis.TCountDistinctSet = TCountDistinctSet; exports.wc = TCountDistinctSet; }
+if (typeof TSerializedRows !== 'undefined') { globalThis.TSerializedRows = TSerializedRows; exports.Mz = TSerializedRows; }
 
 
 /***/ }),
@@ -35564,7 +36497,318 @@ module.exports = WebSocket;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 /* provided dependency */ var Thrift = __webpack_require__(5522)["Thrift"];
-var TExtArgumentType, TOutputBufferSizeType, TUserDefinedFunction, TUserDefinedTableFunction;
+var Heavy_connect_args = globalThis.Heavy_connect_args;
+var Heavy_connect_result = globalThis.Heavy_connect_result;
+var Heavy_disconnect_args = globalThis.Heavy_disconnect_args;
+var Heavy_disconnect_result = globalThis.Heavy_disconnect_result;
+var Heavy_switch_database_args = globalThis.Heavy_switch_database_args;
+var Heavy_switch_database_result = globalThis.Heavy_switch_database_result;
+var Heavy_clone_session_args = globalThis.Heavy_clone_session_args;
+var Heavy_clone_session_result = globalThis.Heavy_clone_session_result;
+var Heavy_get_server_status_args = globalThis.Heavy_get_server_status_args;
+var Heavy_get_server_status_result = globalThis.Heavy_get_server_status_result;
+var Heavy_get_status_args = globalThis.Heavy_get_status_args;
+var Heavy_get_status_result = globalThis.Heavy_get_status_result;
+var Heavy_get_hardware_info_args = globalThis.Heavy_get_hardware_info_args;
+var Heavy_get_hardware_info_result = globalThis.Heavy_get_hardware_info_result;
+var Heavy_get_tables_args = globalThis.Heavy_get_tables_args;
+var Heavy_get_tables_result = globalThis.Heavy_get_tables_result;
+var Heavy_get_tables_for_database_args = globalThis.Heavy_get_tables_for_database_args;
+var Heavy_get_tables_for_database_result = globalThis.Heavy_get_tables_for_database_result;
+var Heavy_get_physical_tables_args = globalThis.Heavy_get_physical_tables_args;
+var Heavy_get_physical_tables_result = globalThis.Heavy_get_physical_tables_result;
+var Heavy_get_views_args = globalThis.Heavy_get_views_args;
+var Heavy_get_views_result = globalThis.Heavy_get_views_result;
+var Heavy_get_tables_meta_args = globalThis.Heavy_get_tables_meta_args;
+var Heavy_get_tables_meta_result = globalThis.Heavy_get_tables_meta_result;
+var Heavy_get_table_details_args = globalThis.Heavy_get_table_details_args;
+var Heavy_get_table_details_result = globalThis.Heavy_get_table_details_result;
+var Heavy_get_table_details_for_database_args = globalThis.Heavy_get_table_details_for_database_args;
+var Heavy_get_table_details_for_database_result = globalThis.Heavy_get_table_details_for_database_result;
+var Heavy_get_internal_table_details_args = globalThis.Heavy_get_internal_table_details_args;
+var Heavy_get_internal_table_details_result = globalThis.Heavy_get_internal_table_details_result;
+var Heavy_get_internal_table_details_for_database_args = globalThis.Heavy_get_internal_table_details_for_database_args;
+var Heavy_get_internal_table_details_for_database_result = globalThis.Heavy_get_internal_table_details_for_database_result;
+var Heavy_get_users_args = globalThis.Heavy_get_users_args;
+var Heavy_get_users_result = globalThis.Heavy_get_users_result;
+var Heavy_get_version_args = globalThis.Heavy_get_version_args;
+var Heavy_get_version_result = globalThis.Heavy_get_version_result;
+var Heavy_start_heap_profile_args = globalThis.Heavy_start_heap_profile_args;
+var Heavy_start_heap_profile_result = globalThis.Heavy_start_heap_profile_result;
+var Heavy_stop_heap_profile_args = globalThis.Heavy_stop_heap_profile_args;
+var Heavy_stop_heap_profile_result = globalThis.Heavy_stop_heap_profile_result;
+var Heavy_get_heap_profile_args = globalThis.Heavy_get_heap_profile_args;
+var Heavy_get_heap_profile_result = globalThis.Heavy_get_heap_profile_result;
+var Heavy_get_memory_args = globalThis.Heavy_get_memory_args;
+var Heavy_get_memory_result = globalThis.Heavy_get_memory_result;
+var Heavy_clear_cpu_memory_args = globalThis.Heavy_clear_cpu_memory_args;
+var Heavy_clear_cpu_memory_result = globalThis.Heavy_clear_cpu_memory_result;
+var Heavy_clear_gpu_memory_args = globalThis.Heavy_clear_gpu_memory_args;
+var Heavy_clear_gpu_memory_result = globalThis.Heavy_clear_gpu_memory_result;
+var Heavy_set_cur_session_args = globalThis.Heavy_set_cur_session_args;
+var Heavy_set_cur_session_result = globalThis.Heavy_set_cur_session_result;
+var Heavy_invalidate_cur_session_args = globalThis.Heavy_invalidate_cur_session_args;
+var Heavy_invalidate_cur_session_result = globalThis.Heavy_invalidate_cur_session_result;
+var Heavy_set_table_epoch_args = globalThis.Heavy_set_table_epoch_args;
+var Heavy_set_table_epoch_result = globalThis.Heavy_set_table_epoch_result;
+var Heavy_set_table_epoch_by_name_args = globalThis.Heavy_set_table_epoch_by_name_args;
+var Heavy_set_table_epoch_by_name_result = globalThis.Heavy_set_table_epoch_by_name_result;
+var Heavy_get_table_epoch_args = globalThis.Heavy_get_table_epoch_args;
+var Heavy_get_table_epoch_result = globalThis.Heavy_get_table_epoch_result;
+var Heavy_get_table_epoch_by_name_args = globalThis.Heavy_get_table_epoch_by_name_args;
+var Heavy_get_table_epoch_by_name_result = globalThis.Heavy_get_table_epoch_by_name_result;
+var Heavy_get_table_epochs_args = globalThis.Heavy_get_table_epochs_args;
+var Heavy_get_table_epochs_result = globalThis.Heavy_get_table_epochs_result;
+var Heavy_set_table_epochs_args = globalThis.Heavy_set_table_epochs_args;
+var Heavy_set_table_epochs_result = globalThis.Heavy_set_table_epochs_result;
+var Heavy_get_session_info_args = globalThis.Heavy_get_session_info_args;
+var Heavy_get_session_info_result = globalThis.Heavy_get_session_info_result;
+var Heavy_get_queries_info_args = globalThis.Heavy_get_queries_info_args;
+var Heavy_get_queries_info_result = globalThis.Heavy_get_queries_info_result;
+var Heavy_set_leaf_info_args = globalThis.Heavy_set_leaf_info_args;
+var Heavy_set_leaf_info_result = globalThis.Heavy_set_leaf_info_result;
+var Heavy_sql_execute_args = globalThis.Heavy_sql_execute_args;
+var Heavy_sql_execute_result = globalThis.Heavy_sql_execute_result;
+var Heavy_sql_execute_df_args = globalThis.Heavy_sql_execute_df_args;
+var Heavy_sql_execute_df_result = globalThis.Heavy_sql_execute_df_result;
+var Heavy_sql_execute_gdf_args = globalThis.Heavy_sql_execute_gdf_args;
+var Heavy_sql_execute_gdf_result = globalThis.Heavy_sql_execute_gdf_result;
+var Heavy_deallocate_df_args = globalThis.Heavy_deallocate_df_args;
+var Heavy_deallocate_df_result = globalThis.Heavy_deallocate_df_result;
+var Heavy_interrupt_args = globalThis.Heavy_interrupt_args;
+var Heavy_interrupt_result = globalThis.Heavy_interrupt_result;
+var Heavy_sql_validate_args = globalThis.Heavy_sql_validate_args;
+var Heavy_sql_validate_result = globalThis.Heavy_sql_validate_result;
+var Heavy_get_completion_hints_args = globalThis.Heavy_get_completion_hints_args;
+var Heavy_get_completion_hints_result = globalThis.Heavy_get_completion_hints_result;
+var Heavy_set_execution_mode_args = globalThis.Heavy_set_execution_mode_args;
+var Heavy_set_execution_mode_result = globalThis.Heavy_set_execution_mode_result;
+var Heavy_render_vega_args = globalThis.Heavy_render_vega_args;
+var Heavy_render_vega_result = globalThis.Heavy_render_vega_result;
+var Heavy_get_result_row_for_pixel_args = globalThis.Heavy_get_result_row_for_pixel_args;
+var Heavy_get_result_row_for_pixel_result = globalThis.Heavy_get_result_row_for_pixel_result;
+var Heavy_create_custom_expression_args = globalThis.Heavy_create_custom_expression_args;
+var Heavy_create_custom_expression_result = globalThis.Heavy_create_custom_expression_result;
+var Heavy_get_custom_expressions_args = globalThis.Heavy_get_custom_expressions_args;
+var Heavy_get_custom_expressions_result = globalThis.Heavy_get_custom_expressions_result;
+var Heavy_update_custom_expression_args = globalThis.Heavy_update_custom_expression_args;
+var Heavy_update_custom_expression_result = globalThis.Heavy_update_custom_expression_result;
+var Heavy_delete_custom_expressions_args = globalThis.Heavy_delete_custom_expressions_args;
+var Heavy_delete_custom_expressions_result = globalThis.Heavy_delete_custom_expressions_result;
+var Heavy_get_dashboard_args = globalThis.Heavy_get_dashboard_args;
+var Heavy_get_dashboard_result = globalThis.Heavy_get_dashboard_result;
+var Heavy_get_dashboards_args = globalThis.Heavy_get_dashboards_args;
+var Heavy_get_dashboards_result = globalThis.Heavy_get_dashboards_result;
+var Heavy_create_dashboard_args = globalThis.Heavy_create_dashboard_args;
+var Heavy_create_dashboard_result = globalThis.Heavy_create_dashboard_result;
+var Heavy_replace_dashboard_args = globalThis.Heavy_replace_dashboard_args;
+var Heavy_replace_dashboard_result = globalThis.Heavy_replace_dashboard_result;
+var Heavy_delete_dashboard_args = globalThis.Heavy_delete_dashboard_args;
+var Heavy_delete_dashboard_result = globalThis.Heavy_delete_dashboard_result;
+var Heavy_share_dashboards_args = globalThis.Heavy_share_dashboards_args;
+var Heavy_share_dashboards_result = globalThis.Heavy_share_dashboards_result;
+var Heavy_delete_dashboards_args = globalThis.Heavy_delete_dashboards_args;
+var Heavy_delete_dashboards_result = globalThis.Heavy_delete_dashboards_result;
+var Heavy_share_dashboard_args = globalThis.Heavy_share_dashboard_args;
+var Heavy_share_dashboard_result = globalThis.Heavy_share_dashboard_result;
+var Heavy_unshare_dashboard_args = globalThis.Heavy_unshare_dashboard_args;
+var Heavy_unshare_dashboard_result = globalThis.Heavy_unshare_dashboard_result;
+var Heavy_unshare_dashboards_args = globalThis.Heavy_unshare_dashboards_args;
+var Heavy_unshare_dashboards_result = globalThis.Heavy_unshare_dashboards_result;
+var Heavy_get_dashboard_grantees_args = globalThis.Heavy_get_dashboard_grantees_args;
+var Heavy_get_dashboard_grantees_result = globalThis.Heavy_get_dashboard_grantees_result;
+var Heavy_get_link_view_args = globalThis.Heavy_get_link_view_args;
+var Heavy_get_link_view_result = globalThis.Heavy_get_link_view_result;
+var Heavy_create_link_args = globalThis.Heavy_create_link_args;
+var Heavy_create_link_result = globalThis.Heavy_create_link_result;
+var Heavy_load_table_binary_args = globalThis.Heavy_load_table_binary_args;
+var Heavy_load_table_binary_result = globalThis.Heavy_load_table_binary_result;
+var Heavy_load_table_binary_columnar_args = globalThis.Heavy_load_table_binary_columnar_args;
+var Heavy_load_table_binary_columnar_result = globalThis.Heavy_load_table_binary_columnar_result;
+var Heavy_load_table_binary_arrow_args = globalThis.Heavy_load_table_binary_arrow_args;
+var Heavy_load_table_binary_arrow_result = globalThis.Heavy_load_table_binary_arrow_result;
+var Heavy_load_table_args = globalThis.Heavy_load_table_args;
+var Heavy_load_table_result = globalThis.Heavy_load_table_result;
+var Heavy_detect_column_types_args = globalThis.Heavy_detect_column_types_args;
+var Heavy_detect_column_types_result = globalThis.Heavy_detect_column_types_result;
+var Heavy_create_table_args = globalThis.Heavy_create_table_args;
+var Heavy_create_table_result = globalThis.Heavy_create_table_result;
+var Heavy_import_table_args = globalThis.Heavy_import_table_args;
+var Heavy_import_table_result = globalThis.Heavy_import_table_result;
+var Heavy_import_geo_table_args = globalThis.Heavy_import_geo_table_args;
+var Heavy_import_geo_table_result = globalThis.Heavy_import_geo_table_result;
+var Heavy_import_table_status_args = globalThis.Heavy_import_table_status_args;
+var Heavy_import_table_status_result = globalThis.Heavy_import_table_status_result;
+var Heavy_get_first_geo_file_in_archive_args = globalThis.Heavy_get_first_geo_file_in_archive_args;
+var Heavy_get_first_geo_file_in_archive_result = globalThis.Heavy_get_first_geo_file_in_archive_result;
+var Heavy_get_all_files_in_archive_args = globalThis.Heavy_get_all_files_in_archive_args;
+var Heavy_get_all_files_in_archive_result = globalThis.Heavy_get_all_files_in_archive_result;
+var Heavy_get_layers_in_geo_file_args = globalThis.Heavy_get_layers_in_geo_file_args;
+var Heavy_get_layers_in_geo_file_result = globalThis.Heavy_get_layers_in_geo_file_result;
+var Heavy_query_get_outer_fragment_count_args = globalThis.Heavy_query_get_outer_fragment_count_args;
+var Heavy_query_get_outer_fragment_count_result = globalThis.Heavy_query_get_outer_fragment_count_result;
+var Heavy_check_table_consistency_args = globalThis.Heavy_check_table_consistency_args;
+var Heavy_check_table_consistency_result = globalThis.Heavy_check_table_consistency_result;
+var Heavy_start_query_args = globalThis.Heavy_start_query_args;
+var Heavy_start_query_result = globalThis.Heavy_start_query_result;
+var Heavy_execute_query_step_args = globalThis.Heavy_execute_query_step_args;
+var Heavy_execute_query_step_result = globalThis.Heavy_execute_query_step_result;
+var Heavy_broadcast_serialized_rows_args = globalThis.Heavy_broadcast_serialized_rows_args;
+var Heavy_broadcast_serialized_rows_result = globalThis.Heavy_broadcast_serialized_rows_result;
+var Heavy_start_render_query_args = globalThis.Heavy_start_render_query_args;
+var Heavy_start_render_query_result = globalThis.Heavy_start_render_query_result;
+var Heavy_execute_next_render_step_args = globalThis.Heavy_execute_next_render_step_args;
+var Heavy_execute_next_render_step_result = globalThis.Heavy_execute_next_render_step_result;
+var Heavy_insert_data_args = globalThis.Heavy_insert_data_args;
+var Heavy_insert_data_result = globalThis.Heavy_insert_data_result;
+var Heavy_insert_chunks_args = globalThis.Heavy_insert_chunks_args;
+var Heavy_insert_chunks_result = globalThis.Heavy_insert_chunks_result;
+var Heavy_checkpoint_args = globalThis.Heavy_checkpoint_args;
+var Heavy_checkpoint_result = globalThis.Heavy_checkpoint_result;
+var Heavy_get_roles_args = globalThis.Heavy_get_roles_args;
+var Heavy_get_roles_result = globalThis.Heavy_get_roles_result;
+var Heavy_get_db_objects_for_grantee_args = globalThis.Heavy_get_db_objects_for_grantee_args;
+var Heavy_get_db_objects_for_grantee_result = globalThis.Heavy_get_db_objects_for_grantee_result;
+var Heavy_get_db_object_privs_args = globalThis.Heavy_get_db_object_privs_args;
+var Heavy_get_db_object_privs_result = globalThis.Heavy_get_db_object_privs_result;
+var Heavy_get_all_roles_for_user_args = globalThis.Heavy_get_all_roles_for_user_args;
+var Heavy_get_all_roles_for_user_result = globalThis.Heavy_get_all_roles_for_user_result;
+var Heavy_get_all_effective_roles_for_user_args = globalThis.Heavy_get_all_effective_roles_for_user_args;
+var Heavy_get_all_effective_roles_for_user_result = globalThis.Heavy_get_all_effective_roles_for_user_result;
+var Heavy_has_role_args = globalThis.Heavy_has_role_args;
+var Heavy_has_role_result = globalThis.Heavy_has_role_result;
+var Heavy_has_object_privilege_args = globalThis.Heavy_has_object_privilege_args;
+var Heavy_has_object_privilege_result = globalThis.Heavy_has_object_privilege_result;
+var Heavy_get_device_parameters_args = globalThis.Heavy_get_device_parameters_args;
+var Heavy_get_device_parameters_result = globalThis.Heavy_get_device_parameters_result;
+var Heavy_register_runtime_extension_functions_args = globalThis.Heavy_register_runtime_extension_functions_args;
+var Heavy_register_runtime_extension_functions_result = globalThis.Heavy_register_runtime_extension_functions_result;
+var Heavy_get_table_function_names_args = globalThis.Heavy_get_table_function_names_args;
+var Heavy_get_table_function_names_result = globalThis.Heavy_get_table_function_names_result;
+var Heavy_get_runtime_table_function_names_args = globalThis.Heavy_get_runtime_table_function_names_args;
+var Heavy_get_runtime_table_function_names_result = globalThis.Heavy_get_runtime_table_function_names_result;
+var Heavy_get_table_function_details_args = globalThis.Heavy_get_table_function_details_args;
+var Heavy_get_table_function_details_result = globalThis.Heavy_get_table_function_details_result;
+var Heavy_get_function_names_args = globalThis.Heavy_get_function_names_args;
+var Heavy_get_function_names_result = globalThis.Heavy_get_function_names_result;
+var Heavy_get_runtime_function_names_args = globalThis.Heavy_get_runtime_function_names_args;
+var Heavy_get_runtime_function_names_result = globalThis.Heavy_get_runtime_function_names_result;
+var Heavy_get_function_details_args = globalThis.Heavy_get_function_details_args;
+var Heavy_get_function_details_result = globalThis.Heavy_get_function_details_result;
+var Heavy_put_immerse_users_metadata_args = globalThis.Heavy_put_immerse_users_metadata_args;
+var Heavy_put_immerse_users_metadata_result = globalThis.Heavy_put_immerse_users_metadata_result;
+var Heavy_put_immerse_database_metadata_args = globalThis.Heavy_put_immerse_database_metadata_args;
+var Heavy_put_immerse_database_metadata_result = globalThis.Heavy_put_immerse_database_metadata_result;
+var Heavy_get_users_info_args = globalThis.Heavy_get_users_info_args;
+var Heavy_get_users_info_result = globalThis.Heavy_get_users_info_result;
+var Heavy_get_databases_args = globalThis.Heavy_get_databases_args;
+var Heavy_get_databases_result = globalThis.Heavy_get_databases_result;
+var HeavyClient = globalThis.HeavyClient;
+var TDeviceType = globalThis.TDeviceType;
+var TDatumType = globalThis.TDatumType;
+var TEncodingType = globalThis.TEncodingType;
+var TStringDictKey = globalThis.TStringDictKey;
+var TTypeInfo = globalThis.TTypeInfo;
+var TCompletionHintType = globalThis.TCompletionHintType;
+var TCompletionHint = globalThis.TCompletionHint;
+var TExtArgumentType = globalThis.TExtArgumentType;
+var TOutputBufferSizeType = globalThis.TOutputBufferSizeType;
+var TUserDefinedFunction = globalThis.TUserDefinedFunction;
+var TUserDefinedTableFunction = globalThis.TUserDefinedTableFunction;
+var TExecuteMode = globalThis.TExecuteMode;
+var TSourceType = globalThis.TSourceType;
+var TPartitionDetail = globalThis.TPartitionDetail;
+var TGeoFileLayerContents = globalThis.TGeoFileLayerContents;
+var TImportHeaderRow = globalThis.TImportHeaderRow;
+var TRole = globalThis.TRole;
+var TTableType = globalThis.TTableType;
+var TTableRefreshUpdateType = globalThis.TTableRefreshUpdateType;
+var TTableRefreshTimingType = globalThis.TTableRefreshTimingType;
+var TTableRefreshIntervalType = globalThis.TTableRefreshIntervalType;
+var TMergeType = globalThis.TMergeType;
+var TRasterPointType = globalThis.TRasterPointType;
+var TRasterPointTransform = globalThis.TRasterPointTransform;
+var TQueryType = globalThis.TQueryType;
+var TArrowTransport = globalThis.TArrowTransport;
+var TExpressionRangeType = globalThis.TExpressionRangeType;
+var TDBObjectType = globalThis.TDBObjectType;
+var TDataSourceType = globalThis.TDataSourceType;
+var TDatumVal = globalThis.TDatumVal;
+var TDatum = globalThis.TDatum;
+var TStringValue = globalThis.TStringValue;
+var TColumnType = globalThis.TColumnType;
+var TRow = globalThis.TRow;
+var TColumnData = globalThis.TColumnData;
+var TColumn = globalThis.TColumn;
+var TStringRow = globalThis.TStringRow;
+var TStepResult = globalThis.TStepResult;
+var TRowSet = globalThis.TRowSet;
+var TQueryResult = globalThis.TQueryResult;
+var TDataFrame = globalThis.TDataFrame;
+var TDBInfo = globalThis.TDBInfo;
+var TDBException = globalThis.TDBException;
+var TCopyParams = globalThis.TCopyParams;
+var TCreateParams = globalThis.TCreateParams;
+var TDetectResult = globalThis.TDetectResult;
+var TImportStatus = globalThis.TImportStatus;
+var TFrontendView = globalThis.TFrontendView;
+var TServerStatus = globalThis.TServerStatus;
+var TPixel = globalThis.TPixel;
+var TPixelTableRowResult = globalThis.TPixelTableRowResult;
+var TRenderResult = globalThis.TRenderResult;
+var TGpuSpecification = globalThis.TGpuSpecification;
+var THardwareInfo = globalThis.THardwareInfo;
+var TClusterHardwareInfo = globalThis.TClusterHardwareInfo;
+var TMemoryData = globalThis.TMemoryData;
+var TNodeMemoryInfo = globalThis.TNodeMemoryInfo;
+var TTableMeta = globalThis.TTableMeta;
+var TTableRefreshInfo = globalThis.TTableRefreshInfo;
+var TTableDetails = globalThis.TTableDetails;
+var TColumnRange = globalThis.TColumnRange;
+var TDictionaryGeneration = globalThis.TDictionaryGeneration;
+var TTableGeneration = globalThis.TTableGeneration;
+var TTableCacheStatus = globalThis.TTableCacheStatus;
+var TPendingQuery = globalThis.TPendingQuery;
+var TVarLen = globalThis.TVarLen;
+var TDataBlockPtr = globalThis.TDataBlockPtr;
+var TInsertData = globalThis.TInsertData;
+var TChunkData = globalThis.TChunkData;
+var TInsertChunks = globalThis.TInsertChunks;
+var TPendingRenderQuery = globalThis.TPendingRenderQuery;
+var TRenderParseResult = globalThis.TRenderParseResult;
+var TRawRenderPassDataResult = globalThis.TRawRenderPassDataResult;
+var TRawPixelData = globalThis.TRawPixelData;
+var TRenderDatum = globalThis.TRenderDatum;
+var TRenderStepResult = globalThis.TRenderStepResult;
+var TDatabasePermissions = globalThis.TDatabasePermissions;
+var TTablePermissions = globalThis.TTablePermissions;
+var TDashboardPermissions = globalThis.TDashboardPermissions;
+var TViewPermissions = globalThis.TViewPermissions;
+var TServerPermissions = globalThis.TServerPermissions;
+var TColumnPermissions = globalThis.TColumnPermissions;
+var TDBObjectPermissions = globalThis.TDBObjectPermissions;
+var TDBObject = globalThis.TDBObject;
+var TDashboardGrantees = globalThis.TDashboardGrantees;
+var TDashboard = globalThis.TDashboard;
+var TSessionInfo = globalThis.TSessionInfo;
+var TGeoFileLayerInfo = globalThis.TGeoFileLayerInfo;
+var TTableEpochInfo = globalThis.TTableEpochInfo;
+var TCustomExpression = globalThis.TCustomExpression;
+var TQueryInfo = globalThis.TQueryInfo;
+var TLeafInfo = globalThis.TLeafInfo;
+var TImmerseUserMetadata = globalThis.TImmerseUserMetadata;
+var TUserInfo = globalThis.TUserInfo;
+var TResultSetLayout = globalThis.TResultSetLayout;
+var TCountDistinctImplType = globalThis.TCountDistinctImplType;
+var TAggKind = globalThis.TAggKind;
+var TSlotSize = globalThis.TSlotSize;
+var TColSlotContext = globalThis.TColSlotContext;
+var TCountDistinctDescriptor = globalThis.TCountDistinctDescriptor;
+var TResultSetBufferDescriptor = globalThis.TResultSetBufferDescriptor;
+var TTargetInfo = globalThis.TTargetInfo;
+var TCountDistinctSetStorage = globalThis.TCountDistinctSetStorage;
+var TCountDistinctSet = globalThis.TCountDistinctSet;
+var TSerializedRows = globalThis.TSerializedRows;
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -36051,10 +37295,10 @@ TUserDefinedTableFunction.prototype[Symbol.for("write")] = function(output) {
 
 
 // <thrift-globals-to-exports-loader>
-if (typeof TExtArgumentType !== 'undefined') exports.xk = TExtArgumentType;
-if (typeof TOutputBufferSizeType !== 'undefined') exports.Zq = TOutputBufferSizeType;
-if (typeof TUserDefinedFunction !== 'undefined') exports.Tj = TUserDefinedFunction;
-if (typeof TUserDefinedTableFunction !== 'undefined') exports.Xg = TUserDefinedTableFunction;
+if (typeof TExtArgumentType !== 'undefined') { globalThis.TExtArgumentType = TExtArgumentType; exports.xk = TExtArgumentType; }
+if (typeof TOutputBufferSizeType !== 'undefined') { globalThis.TOutputBufferSizeType = TOutputBufferSizeType; exports.Zq = TOutputBufferSizeType; }
+if (typeof TUserDefinedFunction !== 'undefined') { globalThis.TUserDefinedFunction = TUserDefinedFunction; exports.Tj = TUserDefinedFunction; }
+if (typeof TUserDefinedTableFunction !== 'undefined') { globalThis.TUserDefinedTableFunction = TUserDefinedTableFunction; exports.Xg = TUserDefinedTableFunction; }
 
 
 /***/ }),
@@ -36286,7 +37530,318 @@ exports.isJsDom = isJsDom;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 /* provided dependency */ var Thrift = __webpack_require__(5522)["Thrift"];
-var TCompletionHintType, TCompletionHint;
+var Heavy_connect_args = globalThis.Heavy_connect_args;
+var Heavy_connect_result = globalThis.Heavy_connect_result;
+var Heavy_disconnect_args = globalThis.Heavy_disconnect_args;
+var Heavy_disconnect_result = globalThis.Heavy_disconnect_result;
+var Heavy_switch_database_args = globalThis.Heavy_switch_database_args;
+var Heavy_switch_database_result = globalThis.Heavy_switch_database_result;
+var Heavy_clone_session_args = globalThis.Heavy_clone_session_args;
+var Heavy_clone_session_result = globalThis.Heavy_clone_session_result;
+var Heavy_get_server_status_args = globalThis.Heavy_get_server_status_args;
+var Heavy_get_server_status_result = globalThis.Heavy_get_server_status_result;
+var Heavy_get_status_args = globalThis.Heavy_get_status_args;
+var Heavy_get_status_result = globalThis.Heavy_get_status_result;
+var Heavy_get_hardware_info_args = globalThis.Heavy_get_hardware_info_args;
+var Heavy_get_hardware_info_result = globalThis.Heavy_get_hardware_info_result;
+var Heavy_get_tables_args = globalThis.Heavy_get_tables_args;
+var Heavy_get_tables_result = globalThis.Heavy_get_tables_result;
+var Heavy_get_tables_for_database_args = globalThis.Heavy_get_tables_for_database_args;
+var Heavy_get_tables_for_database_result = globalThis.Heavy_get_tables_for_database_result;
+var Heavy_get_physical_tables_args = globalThis.Heavy_get_physical_tables_args;
+var Heavy_get_physical_tables_result = globalThis.Heavy_get_physical_tables_result;
+var Heavy_get_views_args = globalThis.Heavy_get_views_args;
+var Heavy_get_views_result = globalThis.Heavy_get_views_result;
+var Heavy_get_tables_meta_args = globalThis.Heavy_get_tables_meta_args;
+var Heavy_get_tables_meta_result = globalThis.Heavy_get_tables_meta_result;
+var Heavy_get_table_details_args = globalThis.Heavy_get_table_details_args;
+var Heavy_get_table_details_result = globalThis.Heavy_get_table_details_result;
+var Heavy_get_table_details_for_database_args = globalThis.Heavy_get_table_details_for_database_args;
+var Heavy_get_table_details_for_database_result = globalThis.Heavy_get_table_details_for_database_result;
+var Heavy_get_internal_table_details_args = globalThis.Heavy_get_internal_table_details_args;
+var Heavy_get_internal_table_details_result = globalThis.Heavy_get_internal_table_details_result;
+var Heavy_get_internal_table_details_for_database_args = globalThis.Heavy_get_internal_table_details_for_database_args;
+var Heavy_get_internal_table_details_for_database_result = globalThis.Heavy_get_internal_table_details_for_database_result;
+var Heavy_get_users_args = globalThis.Heavy_get_users_args;
+var Heavy_get_users_result = globalThis.Heavy_get_users_result;
+var Heavy_get_version_args = globalThis.Heavy_get_version_args;
+var Heavy_get_version_result = globalThis.Heavy_get_version_result;
+var Heavy_start_heap_profile_args = globalThis.Heavy_start_heap_profile_args;
+var Heavy_start_heap_profile_result = globalThis.Heavy_start_heap_profile_result;
+var Heavy_stop_heap_profile_args = globalThis.Heavy_stop_heap_profile_args;
+var Heavy_stop_heap_profile_result = globalThis.Heavy_stop_heap_profile_result;
+var Heavy_get_heap_profile_args = globalThis.Heavy_get_heap_profile_args;
+var Heavy_get_heap_profile_result = globalThis.Heavy_get_heap_profile_result;
+var Heavy_get_memory_args = globalThis.Heavy_get_memory_args;
+var Heavy_get_memory_result = globalThis.Heavy_get_memory_result;
+var Heavy_clear_cpu_memory_args = globalThis.Heavy_clear_cpu_memory_args;
+var Heavy_clear_cpu_memory_result = globalThis.Heavy_clear_cpu_memory_result;
+var Heavy_clear_gpu_memory_args = globalThis.Heavy_clear_gpu_memory_args;
+var Heavy_clear_gpu_memory_result = globalThis.Heavy_clear_gpu_memory_result;
+var Heavy_set_cur_session_args = globalThis.Heavy_set_cur_session_args;
+var Heavy_set_cur_session_result = globalThis.Heavy_set_cur_session_result;
+var Heavy_invalidate_cur_session_args = globalThis.Heavy_invalidate_cur_session_args;
+var Heavy_invalidate_cur_session_result = globalThis.Heavy_invalidate_cur_session_result;
+var Heavy_set_table_epoch_args = globalThis.Heavy_set_table_epoch_args;
+var Heavy_set_table_epoch_result = globalThis.Heavy_set_table_epoch_result;
+var Heavy_set_table_epoch_by_name_args = globalThis.Heavy_set_table_epoch_by_name_args;
+var Heavy_set_table_epoch_by_name_result = globalThis.Heavy_set_table_epoch_by_name_result;
+var Heavy_get_table_epoch_args = globalThis.Heavy_get_table_epoch_args;
+var Heavy_get_table_epoch_result = globalThis.Heavy_get_table_epoch_result;
+var Heavy_get_table_epoch_by_name_args = globalThis.Heavy_get_table_epoch_by_name_args;
+var Heavy_get_table_epoch_by_name_result = globalThis.Heavy_get_table_epoch_by_name_result;
+var Heavy_get_table_epochs_args = globalThis.Heavy_get_table_epochs_args;
+var Heavy_get_table_epochs_result = globalThis.Heavy_get_table_epochs_result;
+var Heavy_set_table_epochs_args = globalThis.Heavy_set_table_epochs_args;
+var Heavy_set_table_epochs_result = globalThis.Heavy_set_table_epochs_result;
+var Heavy_get_session_info_args = globalThis.Heavy_get_session_info_args;
+var Heavy_get_session_info_result = globalThis.Heavy_get_session_info_result;
+var Heavy_get_queries_info_args = globalThis.Heavy_get_queries_info_args;
+var Heavy_get_queries_info_result = globalThis.Heavy_get_queries_info_result;
+var Heavy_set_leaf_info_args = globalThis.Heavy_set_leaf_info_args;
+var Heavy_set_leaf_info_result = globalThis.Heavy_set_leaf_info_result;
+var Heavy_sql_execute_args = globalThis.Heavy_sql_execute_args;
+var Heavy_sql_execute_result = globalThis.Heavy_sql_execute_result;
+var Heavy_sql_execute_df_args = globalThis.Heavy_sql_execute_df_args;
+var Heavy_sql_execute_df_result = globalThis.Heavy_sql_execute_df_result;
+var Heavy_sql_execute_gdf_args = globalThis.Heavy_sql_execute_gdf_args;
+var Heavy_sql_execute_gdf_result = globalThis.Heavy_sql_execute_gdf_result;
+var Heavy_deallocate_df_args = globalThis.Heavy_deallocate_df_args;
+var Heavy_deallocate_df_result = globalThis.Heavy_deallocate_df_result;
+var Heavy_interrupt_args = globalThis.Heavy_interrupt_args;
+var Heavy_interrupt_result = globalThis.Heavy_interrupt_result;
+var Heavy_sql_validate_args = globalThis.Heavy_sql_validate_args;
+var Heavy_sql_validate_result = globalThis.Heavy_sql_validate_result;
+var Heavy_get_completion_hints_args = globalThis.Heavy_get_completion_hints_args;
+var Heavy_get_completion_hints_result = globalThis.Heavy_get_completion_hints_result;
+var Heavy_set_execution_mode_args = globalThis.Heavy_set_execution_mode_args;
+var Heavy_set_execution_mode_result = globalThis.Heavy_set_execution_mode_result;
+var Heavy_render_vega_args = globalThis.Heavy_render_vega_args;
+var Heavy_render_vega_result = globalThis.Heavy_render_vega_result;
+var Heavy_get_result_row_for_pixel_args = globalThis.Heavy_get_result_row_for_pixel_args;
+var Heavy_get_result_row_for_pixel_result = globalThis.Heavy_get_result_row_for_pixel_result;
+var Heavy_create_custom_expression_args = globalThis.Heavy_create_custom_expression_args;
+var Heavy_create_custom_expression_result = globalThis.Heavy_create_custom_expression_result;
+var Heavy_get_custom_expressions_args = globalThis.Heavy_get_custom_expressions_args;
+var Heavy_get_custom_expressions_result = globalThis.Heavy_get_custom_expressions_result;
+var Heavy_update_custom_expression_args = globalThis.Heavy_update_custom_expression_args;
+var Heavy_update_custom_expression_result = globalThis.Heavy_update_custom_expression_result;
+var Heavy_delete_custom_expressions_args = globalThis.Heavy_delete_custom_expressions_args;
+var Heavy_delete_custom_expressions_result = globalThis.Heavy_delete_custom_expressions_result;
+var Heavy_get_dashboard_args = globalThis.Heavy_get_dashboard_args;
+var Heavy_get_dashboard_result = globalThis.Heavy_get_dashboard_result;
+var Heavy_get_dashboards_args = globalThis.Heavy_get_dashboards_args;
+var Heavy_get_dashboards_result = globalThis.Heavy_get_dashboards_result;
+var Heavy_create_dashboard_args = globalThis.Heavy_create_dashboard_args;
+var Heavy_create_dashboard_result = globalThis.Heavy_create_dashboard_result;
+var Heavy_replace_dashboard_args = globalThis.Heavy_replace_dashboard_args;
+var Heavy_replace_dashboard_result = globalThis.Heavy_replace_dashboard_result;
+var Heavy_delete_dashboard_args = globalThis.Heavy_delete_dashboard_args;
+var Heavy_delete_dashboard_result = globalThis.Heavy_delete_dashboard_result;
+var Heavy_share_dashboards_args = globalThis.Heavy_share_dashboards_args;
+var Heavy_share_dashboards_result = globalThis.Heavy_share_dashboards_result;
+var Heavy_delete_dashboards_args = globalThis.Heavy_delete_dashboards_args;
+var Heavy_delete_dashboards_result = globalThis.Heavy_delete_dashboards_result;
+var Heavy_share_dashboard_args = globalThis.Heavy_share_dashboard_args;
+var Heavy_share_dashboard_result = globalThis.Heavy_share_dashboard_result;
+var Heavy_unshare_dashboard_args = globalThis.Heavy_unshare_dashboard_args;
+var Heavy_unshare_dashboard_result = globalThis.Heavy_unshare_dashboard_result;
+var Heavy_unshare_dashboards_args = globalThis.Heavy_unshare_dashboards_args;
+var Heavy_unshare_dashboards_result = globalThis.Heavy_unshare_dashboards_result;
+var Heavy_get_dashboard_grantees_args = globalThis.Heavy_get_dashboard_grantees_args;
+var Heavy_get_dashboard_grantees_result = globalThis.Heavy_get_dashboard_grantees_result;
+var Heavy_get_link_view_args = globalThis.Heavy_get_link_view_args;
+var Heavy_get_link_view_result = globalThis.Heavy_get_link_view_result;
+var Heavy_create_link_args = globalThis.Heavy_create_link_args;
+var Heavy_create_link_result = globalThis.Heavy_create_link_result;
+var Heavy_load_table_binary_args = globalThis.Heavy_load_table_binary_args;
+var Heavy_load_table_binary_result = globalThis.Heavy_load_table_binary_result;
+var Heavy_load_table_binary_columnar_args = globalThis.Heavy_load_table_binary_columnar_args;
+var Heavy_load_table_binary_columnar_result = globalThis.Heavy_load_table_binary_columnar_result;
+var Heavy_load_table_binary_arrow_args = globalThis.Heavy_load_table_binary_arrow_args;
+var Heavy_load_table_binary_arrow_result = globalThis.Heavy_load_table_binary_arrow_result;
+var Heavy_load_table_args = globalThis.Heavy_load_table_args;
+var Heavy_load_table_result = globalThis.Heavy_load_table_result;
+var Heavy_detect_column_types_args = globalThis.Heavy_detect_column_types_args;
+var Heavy_detect_column_types_result = globalThis.Heavy_detect_column_types_result;
+var Heavy_create_table_args = globalThis.Heavy_create_table_args;
+var Heavy_create_table_result = globalThis.Heavy_create_table_result;
+var Heavy_import_table_args = globalThis.Heavy_import_table_args;
+var Heavy_import_table_result = globalThis.Heavy_import_table_result;
+var Heavy_import_geo_table_args = globalThis.Heavy_import_geo_table_args;
+var Heavy_import_geo_table_result = globalThis.Heavy_import_geo_table_result;
+var Heavy_import_table_status_args = globalThis.Heavy_import_table_status_args;
+var Heavy_import_table_status_result = globalThis.Heavy_import_table_status_result;
+var Heavy_get_first_geo_file_in_archive_args = globalThis.Heavy_get_first_geo_file_in_archive_args;
+var Heavy_get_first_geo_file_in_archive_result = globalThis.Heavy_get_first_geo_file_in_archive_result;
+var Heavy_get_all_files_in_archive_args = globalThis.Heavy_get_all_files_in_archive_args;
+var Heavy_get_all_files_in_archive_result = globalThis.Heavy_get_all_files_in_archive_result;
+var Heavy_get_layers_in_geo_file_args = globalThis.Heavy_get_layers_in_geo_file_args;
+var Heavy_get_layers_in_geo_file_result = globalThis.Heavy_get_layers_in_geo_file_result;
+var Heavy_query_get_outer_fragment_count_args = globalThis.Heavy_query_get_outer_fragment_count_args;
+var Heavy_query_get_outer_fragment_count_result = globalThis.Heavy_query_get_outer_fragment_count_result;
+var Heavy_check_table_consistency_args = globalThis.Heavy_check_table_consistency_args;
+var Heavy_check_table_consistency_result = globalThis.Heavy_check_table_consistency_result;
+var Heavy_start_query_args = globalThis.Heavy_start_query_args;
+var Heavy_start_query_result = globalThis.Heavy_start_query_result;
+var Heavy_execute_query_step_args = globalThis.Heavy_execute_query_step_args;
+var Heavy_execute_query_step_result = globalThis.Heavy_execute_query_step_result;
+var Heavy_broadcast_serialized_rows_args = globalThis.Heavy_broadcast_serialized_rows_args;
+var Heavy_broadcast_serialized_rows_result = globalThis.Heavy_broadcast_serialized_rows_result;
+var Heavy_start_render_query_args = globalThis.Heavy_start_render_query_args;
+var Heavy_start_render_query_result = globalThis.Heavy_start_render_query_result;
+var Heavy_execute_next_render_step_args = globalThis.Heavy_execute_next_render_step_args;
+var Heavy_execute_next_render_step_result = globalThis.Heavy_execute_next_render_step_result;
+var Heavy_insert_data_args = globalThis.Heavy_insert_data_args;
+var Heavy_insert_data_result = globalThis.Heavy_insert_data_result;
+var Heavy_insert_chunks_args = globalThis.Heavy_insert_chunks_args;
+var Heavy_insert_chunks_result = globalThis.Heavy_insert_chunks_result;
+var Heavy_checkpoint_args = globalThis.Heavy_checkpoint_args;
+var Heavy_checkpoint_result = globalThis.Heavy_checkpoint_result;
+var Heavy_get_roles_args = globalThis.Heavy_get_roles_args;
+var Heavy_get_roles_result = globalThis.Heavy_get_roles_result;
+var Heavy_get_db_objects_for_grantee_args = globalThis.Heavy_get_db_objects_for_grantee_args;
+var Heavy_get_db_objects_for_grantee_result = globalThis.Heavy_get_db_objects_for_grantee_result;
+var Heavy_get_db_object_privs_args = globalThis.Heavy_get_db_object_privs_args;
+var Heavy_get_db_object_privs_result = globalThis.Heavy_get_db_object_privs_result;
+var Heavy_get_all_roles_for_user_args = globalThis.Heavy_get_all_roles_for_user_args;
+var Heavy_get_all_roles_for_user_result = globalThis.Heavy_get_all_roles_for_user_result;
+var Heavy_get_all_effective_roles_for_user_args = globalThis.Heavy_get_all_effective_roles_for_user_args;
+var Heavy_get_all_effective_roles_for_user_result = globalThis.Heavy_get_all_effective_roles_for_user_result;
+var Heavy_has_role_args = globalThis.Heavy_has_role_args;
+var Heavy_has_role_result = globalThis.Heavy_has_role_result;
+var Heavy_has_object_privilege_args = globalThis.Heavy_has_object_privilege_args;
+var Heavy_has_object_privilege_result = globalThis.Heavy_has_object_privilege_result;
+var Heavy_get_device_parameters_args = globalThis.Heavy_get_device_parameters_args;
+var Heavy_get_device_parameters_result = globalThis.Heavy_get_device_parameters_result;
+var Heavy_register_runtime_extension_functions_args = globalThis.Heavy_register_runtime_extension_functions_args;
+var Heavy_register_runtime_extension_functions_result = globalThis.Heavy_register_runtime_extension_functions_result;
+var Heavy_get_table_function_names_args = globalThis.Heavy_get_table_function_names_args;
+var Heavy_get_table_function_names_result = globalThis.Heavy_get_table_function_names_result;
+var Heavy_get_runtime_table_function_names_args = globalThis.Heavy_get_runtime_table_function_names_args;
+var Heavy_get_runtime_table_function_names_result = globalThis.Heavy_get_runtime_table_function_names_result;
+var Heavy_get_table_function_details_args = globalThis.Heavy_get_table_function_details_args;
+var Heavy_get_table_function_details_result = globalThis.Heavy_get_table_function_details_result;
+var Heavy_get_function_names_args = globalThis.Heavy_get_function_names_args;
+var Heavy_get_function_names_result = globalThis.Heavy_get_function_names_result;
+var Heavy_get_runtime_function_names_args = globalThis.Heavy_get_runtime_function_names_args;
+var Heavy_get_runtime_function_names_result = globalThis.Heavy_get_runtime_function_names_result;
+var Heavy_get_function_details_args = globalThis.Heavy_get_function_details_args;
+var Heavy_get_function_details_result = globalThis.Heavy_get_function_details_result;
+var Heavy_put_immerse_users_metadata_args = globalThis.Heavy_put_immerse_users_metadata_args;
+var Heavy_put_immerse_users_metadata_result = globalThis.Heavy_put_immerse_users_metadata_result;
+var Heavy_put_immerse_database_metadata_args = globalThis.Heavy_put_immerse_database_metadata_args;
+var Heavy_put_immerse_database_metadata_result = globalThis.Heavy_put_immerse_database_metadata_result;
+var Heavy_get_users_info_args = globalThis.Heavy_get_users_info_args;
+var Heavy_get_users_info_result = globalThis.Heavy_get_users_info_result;
+var Heavy_get_databases_args = globalThis.Heavy_get_databases_args;
+var Heavy_get_databases_result = globalThis.Heavy_get_databases_result;
+var HeavyClient = globalThis.HeavyClient;
+var TDeviceType = globalThis.TDeviceType;
+var TDatumType = globalThis.TDatumType;
+var TEncodingType = globalThis.TEncodingType;
+var TStringDictKey = globalThis.TStringDictKey;
+var TTypeInfo = globalThis.TTypeInfo;
+var TCompletionHintType = globalThis.TCompletionHintType;
+var TCompletionHint = globalThis.TCompletionHint;
+var TExtArgumentType = globalThis.TExtArgumentType;
+var TOutputBufferSizeType = globalThis.TOutputBufferSizeType;
+var TUserDefinedFunction = globalThis.TUserDefinedFunction;
+var TUserDefinedTableFunction = globalThis.TUserDefinedTableFunction;
+var TExecuteMode = globalThis.TExecuteMode;
+var TSourceType = globalThis.TSourceType;
+var TPartitionDetail = globalThis.TPartitionDetail;
+var TGeoFileLayerContents = globalThis.TGeoFileLayerContents;
+var TImportHeaderRow = globalThis.TImportHeaderRow;
+var TRole = globalThis.TRole;
+var TTableType = globalThis.TTableType;
+var TTableRefreshUpdateType = globalThis.TTableRefreshUpdateType;
+var TTableRefreshTimingType = globalThis.TTableRefreshTimingType;
+var TTableRefreshIntervalType = globalThis.TTableRefreshIntervalType;
+var TMergeType = globalThis.TMergeType;
+var TRasterPointType = globalThis.TRasterPointType;
+var TRasterPointTransform = globalThis.TRasterPointTransform;
+var TQueryType = globalThis.TQueryType;
+var TArrowTransport = globalThis.TArrowTransport;
+var TExpressionRangeType = globalThis.TExpressionRangeType;
+var TDBObjectType = globalThis.TDBObjectType;
+var TDataSourceType = globalThis.TDataSourceType;
+var TDatumVal = globalThis.TDatumVal;
+var TDatum = globalThis.TDatum;
+var TStringValue = globalThis.TStringValue;
+var TColumnType = globalThis.TColumnType;
+var TRow = globalThis.TRow;
+var TColumnData = globalThis.TColumnData;
+var TColumn = globalThis.TColumn;
+var TStringRow = globalThis.TStringRow;
+var TStepResult = globalThis.TStepResult;
+var TRowSet = globalThis.TRowSet;
+var TQueryResult = globalThis.TQueryResult;
+var TDataFrame = globalThis.TDataFrame;
+var TDBInfo = globalThis.TDBInfo;
+var TDBException = globalThis.TDBException;
+var TCopyParams = globalThis.TCopyParams;
+var TCreateParams = globalThis.TCreateParams;
+var TDetectResult = globalThis.TDetectResult;
+var TImportStatus = globalThis.TImportStatus;
+var TFrontendView = globalThis.TFrontendView;
+var TServerStatus = globalThis.TServerStatus;
+var TPixel = globalThis.TPixel;
+var TPixelTableRowResult = globalThis.TPixelTableRowResult;
+var TRenderResult = globalThis.TRenderResult;
+var TGpuSpecification = globalThis.TGpuSpecification;
+var THardwareInfo = globalThis.THardwareInfo;
+var TClusterHardwareInfo = globalThis.TClusterHardwareInfo;
+var TMemoryData = globalThis.TMemoryData;
+var TNodeMemoryInfo = globalThis.TNodeMemoryInfo;
+var TTableMeta = globalThis.TTableMeta;
+var TTableRefreshInfo = globalThis.TTableRefreshInfo;
+var TTableDetails = globalThis.TTableDetails;
+var TColumnRange = globalThis.TColumnRange;
+var TDictionaryGeneration = globalThis.TDictionaryGeneration;
+var TTableGeneration = globalThis.TTableGeneration;
+var TTableCacheStatus = globalThis.TTableCacheStatus;
+var TPendingQuery = globalThis.TPendingQuery;
+var TVarLen = globalThis.TVarLen;
+var TDataBlockPtr = globalThis.TDataBlockPtr;
+var TInsertData = globalThis.TInsertData;
+var TChunkData = globalThis.TChunkData;
+var TInsertChunks = globalThis.TInsertChunks;
+var TPendingRenderQuery = globalThis.TPendingRenderQuery;
+var TRenderParseResult = globalThis.TRenderParseResult;
+var TRawRenderPassDataResult = globalThis.TRawRenderPassDataResult;
+var TRawPixelData = globalThis.TRawPixelData;
+var TRenderDatum = globalThis.TRenderDatum;
+var TRenderStepResult = globalThis.TRenderStepResult;
+var TDatabasePermissions = globalThis.TDatabasePermissions;
+var TTablePermissions = globalThis.TTablePermissions;
+var TDashboardPermissions = globalThis.TDashboardPermissions;
+var TViewPermissions = globalThis.TViewPermissions;
+var TServerPermissions = globalThis.TServerPermissions;
+var TColumnPermissions = globalThis.TColumnPermissions;
+var TDBObjectPermissions = globalThis.TDBObjectPermissions;
+var TDBObject = globalThis.TDBObject;
+var TDashboardGrantees = globalThis.TDashboardGrantees;
+var TDashboard = globalThis.TDashboard;
+var TSessionInfo = globalThis.TSessionInfo;
+var TGeoFileLayerInfo = globalThis.TGeoFileLayerInfo;
+var TTableEpochInfo = globalThis.TTableEpochInfo;
+var TCustomExpression = globalThis.TCustomExpression;
+var TQueryInfo = globalThis.TQueryInfo;
+var TLeafInfo = globalThis.TLeafInfo;
+var TImmerseUserMetadata = globalThis.TImmerseUserMetadata;
+var TUserInfo = globalThis.TUserInfo;
+var TResultSetLayout = globalThis.TResultSetLayout;
+var TCountDistinctImplType = globalThis.TCountDistinctImplType;
+var TAggKind = globalThis.TAggKind;
+var TSlotSize = globalThis.TSlotSize;
+var TColSlotContext = globalThis.TColSlotContext;
+var TCountDistinctDescriptor = globalThis.TCountDistinctDescriptor;
+var TResultSetBufferDescriptor = globalThis.TResultSetBufferDescriptor;
+var TTargetInfo = globalThis.TTargetInfo;
+var TCountDistinctSetStorage = globalThis.TCountDistinctSetStorage;
+var TCountDistinctSet = globalThis.TCountDistinctSet;
+var TSerializedRows = globalThis.TSerializedRows;
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -36409,8 +37964,8 @@ TCompletionHint.prototype[Symbol.for("write")] = function(output) {
 
 
 // <thrift-globals-to-exports-loader>
-if (typeof TCompletionHintType !== 'undefined') exports.A = TCompletionHintType;
-if (typeof TCompletionHint !== 'undefined') exports.e = TCompletionHint;
+if (typeof TCompletionHintType !== 'undefined') { globalThis.TCompletionHintType = TCompletionHintType; exports.A = TCompletionHintType; }
+if (typeof TCompletionHint !== 'undefined') { globalThis.TCompletionHint = TCompletionHint; exports.e = TCompletionHint; }
 
 
 /***/ }),
@@ -38170,7 +39725,318 @@ module.exports = require("fs");
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 /* provided dependency */ var Thrift = __webpack_require__(5522)["Thrift"];
-var TExecuteMode, TSourceType, TPartitionDetail, TGeoFileLayerContents, TImportHeaderRow, TRole, TTableType, TTableRefreshUpdateType, TTableRefreshTimingType, TTableRefreshIntervalType, TMergeType, TRasterPointType, TRasterPointTransform, TQueryType, TArrowTransport, TExpressionRangeType, TDBObjectType, TDataSourceType, TDatumVal, TDatum, TStringValue, TColumnType, TRow, TColumnData, TColumn, TStringRow, TStepResult, TRowSet, TQueryResult, TDataFrame, TDBInfo, TDBException, TCopyParams, TCreateParams, TDetectResult, TImportStatus, TFrontendView, TServerStatus, TPixel, TPixelTableRowResult, TRenderResult, TGpuSpecification, THardwareInfo, TClusterHardwareInfo, TMemoryData, TNodeMemoryInfo, TTableMeta, TTableRefreshInfo, TTableDetails, TColumnRange, TDictionaryGeneration, TTableGeneration, TTableCacheStatus, TPendingQuery, TVarLen, TDataBlockPtr, TInsertData, TChunkData, TInsertChunks, TPendingRenderQuery, TRenderParseResult, TRawRenderPassDataResult, TRawPixelData, TRenderDatum, TRenderStepResult, TDatabasePermissions, TTablePermissions, TDashboardPermissions, TViewPermissions, TServerPermissions, TColumnPermissions, TDBObjectPermissions, TDBObject, TDashboardGrantees, TDashboard, TSessionInfo, TGeoFileLayerInfo, TTableEpochInfo, TCustomExpression, TQueryInfo, TLeafInfo, TImmerseUserMetadata, TUserInfo;
+var Heavy_connect_args = globalThis.Heavy_connect_args;
+var Heavy_connect_result = globalThis.Heavy_connect_result;
+var Heavy_disconnect_args = globalThis.Heavy_disconnect_args;
+var Heavy_disconnect_result = globalThis.Heavy_disconnect_result;
+var Heavy_switch_database_args = globalThis.Heavy_switch_database_args;
+var Heavy_switch_database_result = globalThis.Heavy_switch_database_result;
+var Heavy_clone_session_args = globalThis.Heavy_clone_session_args;
+var Heavy_clone_session_result = globalThis.Heavy_clone_session_result;
+var Heavy_get_server_status_args = globalThis.Heavy_get_server_status_args;
+var Heavy_get_server_status_result = globalThis.Heavy_get_server_status_result;
+var Heavy_get_status_args = globalThis.Heavy_get_status_args;
+var Heavy_get_status_result = globalThis.Heavy_get_status_result;
+var Heavy_get_hardware_info_args = globalThis.Heavy_get_hardware_info_args;
+var Heavy_get_hardware_info_result = globalThis.Heavy_get_hardware_info_result;
+var Heavy_get_tables_args = globalThis.Heavy_get_tables_args;
+var Heavy_get_tables_result = globalThis.Heavy_get_tables_result;
+var Heavy_get_tables_for_database_args = globalThis.Heavy_get_tables_for_database_args;
+var Heavy_get_tables_for_database_result = globalThis.Heavy_get_tables_for_database_result;
+var Heavy_get_physical_tables_args = globalThis.Heavy_get_physical_tables_args;
+var Heavy_get_physical_tables_result = globalThis.Heavy_get_physical_tables_result;
+var Heavy_get_views_args = globalThis.Heavy_get_views_args;
+var Heavy_get_views_result = globalThis.Heavy_get_views_result;
+var Heavy_get_tables_meta_args = globalThis.Heavy_get_tables_meta_args;
+var Heavy_get_tables_meta_result = globalThis.Heavy_get_tables_meta_result;
+var Heavy_get_table_details_args = globalThis.Heavy_get_table_details_args;
+var Heavy_get_table_details_result = globalThis.Heavy_get_table_details_result;
+var Heavy_get_table_details_for_database_args = globalThis.Heavy_get_table_details_for_database_args;
+var Heavy_get_table_details_for_database_result = globalThis.Heavy_get_table_details_for_database_result;
+var Heavy_get_internal_table_details_args = globalThis.Heavy_get_internal_table_details_args;
+var Heavy_get_internal_table_details_result = globalThis.Heavy_get_internal_table_details_result;
+var Heavy_get_internal_table_details_for_database_args = globalThis.Heavy_get_internal_table_details_for_database_args;
+var Heavy_get_internal_table_details_for_database_result = globalThis.Heavy_get_internal_table_details_for_database_result;
+var Heavy_get_users_args = globalThis.Heavy_get_users_args;
+var Heavy_get_users_result = globalThis.Heavy_get_users_result;
+var Heavy_get_version_args = globalThis.Heavy_get_version_args;
+var Heavy_get_version_result = globalThis.Heavy_get_version_result;
+var Heavy_start_heap_profile_args = globalThis.Heavy_start_heap_profile_args;
+var Heavy_start_heap_profile_result = globalThis.Heavy_start_heap_profile_result;
+var Heavy_stop_heap_profile_args = globalThis.Heavy_stop_heap_profile_args;
+var Heavy_stop_heap_profile_result = globalThis.Heavy_stop_heap_profile_result;
+var Heavy_get_heap_profile_args = globalThis.Heavy_get_heap_profile_args;
+var Heavy_get_heap_profile_result = globalThis.Heavy_get_heap_profile_result;
+var Heavy_get_memory_args = globalThis.Heavy_get_memory_args;
+var Heavy_get_memory_result = globalThis.Heavy_get_memory_result;
+var Heavy_clear_cpu_memory_args = globalThis.Heavy_clear_cpu_memory_args;
+var Heavy_clear_cpu_memory_result = globalThis.Heavy_clear_cpu_memory_result;
+var Heavy_clear_gpu_memory_args = globalThis.Heavy_clear_gpu_memory_args;
+var Heavy_clear_gpu_memory_result = globalThis.Heavy_clear_gpu_memory_result;
+var Heavy_set_cur_session_args = globalThis.Heavy_set_cur_session_args;
+var Heavy_set_cur_session_result = globalThis.Heavy_set_cur_session_result;
+var Heavy_invalidate_cur_session_args = globalThis.Heavy_invalidate_cur_session_args;
+var Heavy_invalidate_cur_session_result = globalThis.Heavy_invalidate_cur_session_result;
+var Heavy_set_table_epoch_args = globalThis.Heavy_set_table_epoch_args;
+var Heavy_set_table_epoch_result = globalThis.Heavy_set_table_epoch_result;
+var Heavy_set_table_epoch_by_name_args = globalThis.Heavy_set_table_epoch_by_name_args;
+var Heavy_set_table_epoch_by_name_result = globalThis.Heavy_set_table_epoch_by_name_result;
+var Heavy_get_table_epoch_args = globalThis.Heavy_get_table_epoch_args;
+var Heavy_get_table_epoch_result = globalThis.Heavy_get_table_epoch_result;
+var Heavy_get_table_epoch_by_name_args = globalThis.Heavy_get_table_epoch_by_name_args;
+var Heavy_get_table_epoch_by_name_result = globalThis.Heavy_get_table_epoch_by_name_result;
+var Heavy_get_table_epochs_args = globalThis.Heavy_get_table_epochs_args;
+var Heavy_get_table_epochs_result = globalThis.Heavy_get_table_epochs_result;
+var Heavy_set_table_epochs_args = globalThis.Heavy_set_table_epochs_args;
+var Heavy_set_table_epochs_result = globalThis.Heavy_set_table_epochs_result;
+var Heavy_get_session_info_args = globalThis.Heavy_get_session_info_args;
+var Heavy_get_session_info_result = globalThis.Heavy_get_session_info_result;
+var Heavy_get_queries_info_args = globalThis.Heavy_get_queries_info_args;
+var Heavy_get_queries_info_result = globalThis.Heavy_get_queries_info_result;
+var Heavy_set_leaf_info_args = globalThis.Heavy_set_leaf_info_args;
+var Heavy_set_leaf_info_result = globalThis.Heavy_set_leaf_info_result;
+var Heavy_sql_execute_args = globalThis.Heavy_sql_execute_args;
+var Heavy_sql_execute_result = globalThis.Heavy_sql_execute_result;
+var Heavy_sql_execute_df_args = globalThis.Heavy_sql_execute_df_args;
+var Heavy_sql_execute_df_result = globalThis.Heavy_sql_execute_df_result;
+var Heavy_sql_execute_gdf_args = globalThis.Heavy_sql_execute_gdf_args;
+var Heavy_sql_execute_gdf_result = globalThis.Heavy_sql_execute_gdf_result;
+var Heavy_deallocate_df_args = globalThis.Heavy_deallocate_df_args;
+var Heavy_deallocate_df_result = globalThis.Heavy_deallocate_df_result;
+var Heavy_interrupt_args = globalThis.Heavy_interrupt_args;
+var Heavy_interrupt_result = globalThis.Heavy_interrupt_result;
+var Heavy_sql_validate_args = globalThis.Heavy_sql_validate_args;
+var Heavy_sql_validate_result = globalThis.Heavy_sql_validate_result;
+var Heavy_get_completion_hints_args = globalThis.Heavy_get_completion_hints_args;
+var Heavy_get_completion_hints_result = globalThis.Heavy_get_completion_hints_result;
+var Heavy_set_execution_mode_args = globalThis.Heavy_set_execution_mode_args;
+var Heavy_set_execution_mode_result = globalThis.Heavy_set_execution_mode_result;
+var Heavy_render_vega_args = globalThis.Heavy_render_vega_args;
+var Heavy_render_vega_result = globalThis.Heavy_render_vega_result;
+var Heavy_get_result_row_for_pixel_args = globalThis.Heavy_get_result_row_for_pixel_args;
+var Heavy_get_result_row_for_pixel_result = globalThis.Heavy_get_result_row_for_pixel_result;
+var Heavy_create_custom_expression_args = globalThis.Heavy_create_custom_expression_args;
+var Heavy_create_custom_expression_result = globalThis.Heavy_create_custom_expression_result;
+var Heavy_get_custom_expressions_args = globalThis.Heavy_get_custom_expressions_args;
+var Heavy_get_custom_expressions_result = globalThis.Heavy_get_custom_expressions_result;
+var Heavy_update_custom_expression_args = globalThis.Heavy_update_custom_expression_args;
+var Heavy_update_custom_expression_result = globalThis.Heavy_update_custom_expression_result;
+var Heavy_delete_custom_expressions_args = globalThis.Heavy_delete_custom_expressions_args;
+var Heavy_delete_custom_expressions_result = globalThis.Heavy_delete_custom_expressions_result;
+var Heavy_get_dashboard_args = globalThis.Heavy_get_dashboard_args;
+var Heavy_get_dashboard_result = globalThis.Heavy_get_dashboard_result;
+var Heavy_get_dashboards_args = globalThis.Heavy_get_dashboards_args;
+var Heavy_get_dashboards_result = globalThis.Heavy_get_dashboards_result;
+var Heavy_create_dashboard_args = globalThis.Heavy_create_dashboard_args;
+var Heavy_create_dashboard_result = globalThis.Heavy_create_dashboard_result;
+var Heavy_replace_dashboard_args = globalThis.Heavy_replace_dashboard_args;
+var Heavy_replace_dashboard_result = globalThis.Heavy_replace_dashboard_result;
+var Heavy_delete_dashboard_args = globalThis.Heavy_delete_dashboard_args;
+var Heavy_delete_dashboard_result = globalThis.Heavy_delete_dashboard_result;
+var Heavy_share_dashboards_args = globalThis.Heavy_share_dashboards_args;
+var Heavy_share_dashboards_result = globalThis.Heavy_share_dashboards_result;
+var Heavy_delete_dashboards_args = globalThis.Heavy_delete_dashboards_args;
+var Heavy_delete_dashboards_result = globalThis.Heavy_delete_dashboards_result;
+var Heavy_share_dashboard_args = globalThis.Heavy_share_dashboard_args;
+var Heavy_share_dashboard_result = globalThis.Heavy_share_dashboard_result;
+var Heavy_unshare_dashboard_args = globalThis.Heavy_unshare_dashboard_args;
+var Heavy_unshare_dashboard_result = globalThis.Heavy_unshare_dashboard_result;
+var Heavy_unshare_dashboards_args = globalThis.Heavy_unshare_dashboards_args;
+var Heavy_unshare_dashboards_result = globalThis.Heavy_unshare_dashboards_result;
+var Heavy_get_dashboard_grantees_args = globalThis.Heavy_get_dashboard_grantees_args;
+var Heavy_get_dashboard_grantees_result = globalThis.Heavy_get_dashboard_grantees_result;
+var Heavy_get_link_view_args = globalThis.Heavy_get_link_view_args;
+var Heavy_get_link_view_result = globalThis.Heavy_get_link_view_result;
+var Heavy_create_link_args = globalThis.Heavy_create_link_args;
+var Heavy_create_link_result = globalThis.Heavy_create_link_result;
+var Heavy_load_table_binary_args = globalThis.Heavy_load_table_binary_args;
+var Heavy_load_table_binary_result = globalThis.Heavy_load_table_binary_result;
+var Heavy_load_table_binary_columnar_args = globalThis.Heavy_load_table_binary_columnar_args;
+var Heavy_load_table_binary_columnar_result = globalThis.Heavy_load_table_binary_columnar_result;
+var Heavy_load_table_binary_arrow_args = globalThis.Heavy_load_table_binary_arrow_args;
+var Heavy_load_table_binary_arrow_result = globalThis.Heavy_load_table_binary_arrow_result;
+var Heavy_load_table_args = globalThis.Heavy_load_table_args;
+var Heavy_load_table_result = globalThis.Heavy_load_table_result;
+var Heavy_detect_column_types_args = globalThis.Heavy_detect_column_types_args;
+var Heavy_detect_column_types_result = globalThis.Heavy_detect_column_types_result;
+var Heavy_create_table_args = globalThis.Heavy_create_table_args;
+var Heavy_create_table_result = globalThis.Heavy_create_table_result;
+var Heavy_import_table_args = globalThis.Heavy_import_table_args;
+var Heavy_import_table_result = globalThis.Heavy_import_table_result;
+var Heavy_import_geo_table_args = globalThis.Heavy_import_geo_table_args;
+var Heavy_import_geo_table_result = globalThis.Heavy_import_geo_table_result;
+var Heavy_import_table_status_args = globalThis.Heavy_import_table_status_args;
+var Heavy_import_table_status_result = globalThis.Heavy_import_table_status_result;
+var Heavy_get_first_geo_file_in_archive_args = globalThis.Heavy_get_first_geo_file_in_archive_args;
+var Heavy_get_first_geo_file_in_archive_result = globalThis.Heavy_get_first_geo_file_in_archive_result;
+var Heavy_get_all_files_in_archive_args = globalThis.Heavy_get_all_files_in_archive_args;
+var Heavy_get_all_files_in_archive_result = globalThis.Heavy_get_all_files_in_archive_result;
+var Heavy_get_layers_in_geo_file_args = globalThis.Heavy_get_layers_in_geo_file_args;
+var Heavy_get_layers_in_geo_file_result = globalThis.Heavy_get_layers_in_geo_file_result;
+var Heavy_query_get_outer_fragment_count_args = globalThis.Heavy_query_get_outer_fragment_count_args;
+var Heavy_query_get_outer_fragment_count_result = globalThis.Heavy_query_get_outer_fragment_count_result;
+var Heavy_check_table_consistency_args = globalThis.Heavy_check_table_consistency_args;
+var Heavy_check_table_consistency_result = globalThis.Heavy_check_table_consistency_result;
+var Heavy_start_query_args = globalThis.Heavy_start_query_args;
+var Heavy_start_query_result = globalThis.Heavy_start_query_result;
+var Heavy_execute_query_step_args = globalThis.Heavy_execute_query_step_args;
+var Heavy_execute_query_step_result = globalThis.Heavy_execute_query_step_result;
+var Heavy_broadcast_serialized_rows_args = globalThis.Heavy_broadcast_serialized_rows_args;
+var Heavy_broadcast_serialized_rows_result = globalThis.Heavy_broadcast_serialized_rows_result;
+var Heavy_start_render_query_args = globalThis.Heavy_start_render_query_args;
+var Heavy_start_render_query_result = globalThis.Heavy_start_render_query_result;
+var Heavy_execute_next_render_step_args = globalThis.Heavy_execute_next_render_step_args;
+var Heavy_execute_next_render_step_result = globalThis.Heavy_execute_next_render_step_result;
+var Heavy_insert_data_args = globalThis.Heavy_insert_data_args;
+var Heavy_insert_data_result = globalThis.Heavy_insert_data_result;
+var Heavy_insert_chunks_args = globalThis.Heavy_insert_chunks_args;
+var Heavy_insert_chunks_result = globalThis.Heavy_insert_chunks_result;
+var Heavy_checkpoint_args = globalThis.Heavy_checkpoint_args;
+var Heavy_checkpoint_result = globalThis.Heavy_checkpoint_result;
+var Heavy_get_roles_args = globalThis.Heavy_get_roles_args;
+var Heavy_get_roles_result = globalThis.Heavy_get_roles_result;
+var Heavy_get_db_objects_for_grantee_args = globalThis.Heavy_get_db_objects_for_grantee_args;
+var Heavy_get_db_objects_for_grantee_result = globalThis.Heavy_get_db_objects_for_grantee_result;
+var Heavy_get_db_object_privs_args = globalThis.Heavy_get_db_object_privs_args;
+var Heavy_get_db_object_privs_result = globalThis.Heavy_get_db_object_privs_result;
+var Heavy_get_all_roles_for_user_args = globalThis.Heavy_get_all_roles_for_user_args;
+var Heavy_get_all_roles_for_user_result = globalThis.Heavy_get_all_roles_for_user_result;
+var Heavy_get_all_effective_roles_for_user_args = globalThis.Heavy_get_all_effective_roles_for_user_args;
+var Heavy_get_all_effective_roles_for_user_result = globalThis.Heavy_get_all_effective_roles_for_user_result;
+var Heavy_has_role_args = globalThis.Heavy_has_role_args;
+var Heavy_has_role_result = globalThis.Heavy_has_role_result;
+var Heavy_has_object_privilege_args = globalThis.Heavy_has_object_privilege_args;
+var Heavy_has_object_privilege_result = globalThis.Heavy_has_object_privilege_result;
+var Heavy_get_device_parameters_args = globalThis.Heavy_get_device_parameters_args;
+var Heavy_get_device_parameters_result = globalThis.Heavy_get_device_parameters_result;
+var Heavy_register_runtime_extension_functions_args = globalThis.Heavy_register_runtime_extension_functions_args;
+var Heavy_register_runtime_extension_functions_result = globalThis.Heavy_register_runtime_extension_functions_result;
+var Heavy_get_table_function_names_args = globalThis.Heavy_get_table_function_names_args;
+var Heavy_get_table_function_names_result = globalThis.Heavy_get_table_function_names_result;
+var Heavy_get_runtime_table_function_names_args = globalThis.Heavy_get_runtime_table_function_names_args;
+var Heavy_get_runtime_table_function_names_result = globalThis.Heavy_get_runtime_table_function_names_result;
+var Heavy_get_table_function_details_args = globalThis.Heavy_get_table_function_details_args;
+var Heavy_get_table_function_details_result = globalThis.Heavy_get_table_function_details_result;
+var Heavy_get_function_names_args = globalThis.Heavy_get_function_names_args;
+var Heavy_get_function_names_result = globalThis.Heavy_get_function_names_result;
+var Heavy_get_runtime_function_names_args = globalThis.Heavy_get_runtime_function_names_args;
+var Heavy_get_runtime_function_names_result = globalThis.Heavy_get_runtime_function_names_result;
+var Heavy_get_function_details_args = globalThis.Heavy_get_function_details_args;
+var Heavy_get_function_details_result = globalThis.Heavy_get_function_details_result;
+var Heavy_put_immerse_users_metadata_args = globalThis.Heavy_put_immerse_users_metadata_args;
+var Heavy_put_immerse_users_metadata_result = globalThis.Heavy_put_immerse_users_metadata_result;
+var Heavy_put_immerse_database_metadata_args = globalThis.Heavy_put_immerse_database_metadata_args;
+var Heavy_put_immerse_database_metadata_result = globalThis.Heavy_put_immerse_database_metadata_result;
+var Heavy_get_users_info_args = globalThis.Heavy_get_users_info_args;
+var Heavy_get_users_info_result = globalThis.Heavy_get_users_info_result;
+var Heavy_get_databases_args = globalThis.Heavy_get_databases_args;
+var Heavy_get_databases_result = globalThis.Heavy_get_databases_result;
+var HeavyClient = globalThis.HeavyClient;
+var TDeviceType = globalThis.TDeviceType;
+var TDatumType = globalThis.TDatumType;
+var TEncodingType = globalThis.TEncodingType;
+var TStringDictKey = globalThis.TStringDictKey;
+var TTypeInfo = globalThis.TTypeInfo;
+var TCompletionHintType = globalThis.TCompletionHintType;
+var TCompletionHint = globalThis.TCompletionHint;
+var TExtArgumentType = globalThis.TExtArgumentType;
+var TOutputBufferSizeType = globalThis.TOutputBufferSizeType;
+var TUserDefinedFunction = globalThis.TUserDefinedFunction;
+var TUserDefinedTableFunction = globalThis.TUserDefinedTableFunction;
+var TExecuteMode = globalThis.TExecuteMode;
+var TSourceType = globalThis.TSourceType;
+var TPartitionDetail = globalThis.TPartitionDetail;
+var TGeoFileLayerContents = globalThis.TGeoFileLayerContents;
+var TImportHeaderRow = globalThis.TImportHeaderRow;
+var TRole = globalThis.TRole;
+var TTableType = globalThis.TTableType;
+var TTableRefreshUpdateType = globalThis.TTableRefreshUpdateType;
+var TTableRefreshTimingType = globalThis.TTableRefreshTimingType;
+var TTableRefreshIntervalType = globalThis.TTableRefreshIntervalType;
+var TMergeType = globalThis.TMergeType;
+var TRasterPointType = globalThis.TRasterPointType;
+var TRasterPointTransform = globalThis.TRasterPointTransform;
+var TQueryType = globalThis.TQueryType;
+var TArrowTransport = globalThis.TArrowTransport;
+var TExpressionRangeType = globalThis.TExpressionRangeType;
+var TDBObjectType = globalThis.TDBObjectType;
+var TDataSourceType = globalThis.TDataSourceType;
+var TDatumVal = globalThis.TDatumVal;
+var TDatum = globalThis.TDatum;
+var TStringValue = globalThis.TStringValue;
+var TColumnType = globalThis.TColumnType;
+var TRow = globalThis.TRow;
+var TColumnData = globalThis.TColumnData;
+var TColumn = globalThis.TColumn;
+var TStringRow = globalThis.TStringRow;
+var TStepResult = globalThis.TStepResult;
+var TRowSet = globalThis.TRowSet;
+var TQueryResult = globalThis.TQueryResult;
+var TDataFrame = globalThis.TDataFrame;
+var TDBInfo = globalThis.TDBInfo;
+var TDBException = globalThis.TDBException;
+var TCopyParams = globalThis.TCopyParams;
+var TCreateParams = globalThis.TCreateParams;
+var TDetectResult = globalThis.TDetectResult;
+var TImportStatus = globalThis.TImportStatus;
+var TFrontendView = globalThis.TFrontendView;
+var TServerStatus = globalThis.TServerStatus;
+var TPixel = globalThis.TPixel;
+var TPixelTableRowResult = globalThis.TPixelTableRowResult;
+var TRenderResult = globalThis.TRenderResult;
+var TGpuSpecification = globalThis.TGpuSpecification;
+var THardwareInfo = globalThis.THardwareInfo;
+var TClusterHardwareInfo = globalThis.TClusterHardwareInfo;
+var TMemoryData = globalThis.TMemoryData;
+var TNodeMemoryInfo = globalThis.TNodeMemoryInfo;
+var TTableMeta = globalThis.TTableMeta;
+var TTableRefreshInfo = globalThis.TTableRefreshInfo;
+var TTableDetails = globalThis.TTableDetails;
+var TColumnRange = globalThis.TColumnRange;
+var TDictionaryGeneration = globalThis.TDictionaryGeneration;
+var TTableGeneration = globalThis.TTableGeneration;
+var TTableCacheStatus = globalThis.TTableCacheStatus;
+var TPendingQuery = globalThis.TPendingQuery;
+var TVarLen = globalThis.TVarLen;
+var TDataBlockPtr = globalThis.TDataBlockPtr;
+var TInsertData = globalThis.TInsertData;
+var TChunkData = globalThis.TChunkData;
+var TInsertChunks = globalThis.TInsertChunks;
+var TPendingRenderQuery = globalThis.TPendingRenderQuery;
+var TRenderParseResult = globalThis.TRenderParseResult;
+var TRawRenderPassDataResult = globalThis.TRawRenderPassDataResult;
+var TRawPixelData = globalThis.TRawPixelData;
+var TRenderDatum = globalThis.TRenderDatum;
+var TRenderStepResult = globalThis.TRenderStepResult;
+var TDatabasePermissions = globalThis.TDatabasePermissions;
+var TTablePermissions = globalThis.TTablePermissions;
+var TDashboardPermissions = globalThis.TDashboardPermissions;
+var TViewPermissions = globalThis.TViewPermissions;
+var TServerPermissions = globalThis.TServerPermissions;
+var TColumnPermissions = globalThis.TColumnPermissions;
+var TDBObjectPermissions = globalThis.TDBObjectPermissions;
+var TDBObject = globalThis.TDBObject;
+var TDashboardGrantees = globalThis.TDashboardGrantees;
+var TDashboard = globalThis.TDashboard;
+var TSessionInfo = globalThis.TSessionInfo;
+var TGeoFileLayerInfo = globalThis.TGeoFileLayerInfo;
+var TTableEpochInfo = globalThis.TTableEpochInfo;
+var TCustomExpression = globalThis.TCustomExpression;
+var TQueryInfo = globalThis.TQueryInfo;
+var TLeafInfo = globalThis.TLeafInfo;
+var TImmerseUserMetadata = globalThis.TImmerseUserMetadata;
+var TUserInfo = globalThis.TUserInfo;
+var TResultSetLayout = globalThis.TResultSetLayout;
+var TCountDistinctImplType = globalThis.TCountDistinctImplType;
+var TAggKind = globalThis.TAggKind;
+var TSlotSize = globalThis.TSlotSize;
+var TColSlotContext = globalThis.TColSlotContext;
+var TCountDistinctDescriptor = globalThis.TCountDistinctDescriptor;
+var TResultSetBufferDescriptor = globalThis.TResultSetBufferDescriptor;
+var TTargetInfo = globalThis.TTargetInfo;
+var TCountDistinctSetStorage = globalThis.TCountDistinctSetStorage;
+var TCountDistinctSet = globalThis.TCountDistinctSet;
+var TSerializedRows = globalThis.TSerializedRows;
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -46417,89 +48283,89 @@ TUserInfo.prototype[Symbol.for("write")] = function(output) {
 
 
 // <thrift-globals-to-exports-loader>
-if (typeof TExecuteMode !== 'undefined') exports.j9 = TExecuteMode;
-if (typeof TSourceType !== 'undefined') exports.E2 = TSourceType;
-if (typeof TPartitionDetail !== 'undefined') exports.cG = TPartitionDetail;
-if (typeof TGeoFileLayerContents !== 'undefined') exports.T1 = TGeoFileLayerContents;
-if (typeof TImportHeaderRow !== 'undefined') exports.xM = TImportHeaderRow;
-if (typeof TRole !== 'undefined') exports.dB = TRole;
-if (typeof TTableType !== 'undefined') exports.FS = TTableType;
-if (typeof TTableRefreshUpdateType !== 'undefined') exports.LB = TTableRefreshUpdateType;
-if (typeof TTableRefreshTimingType !== 'undefined') exports._P = TTableRefreshTimingType;
-if (typeof TTableRefreshIntervalType !== 'undefined') exports.p8 = TTableRefreshIntervalType;
-if (typeof TMergeType !== 'undefined') exports.H$ = TMergeType;
-if (typeof TRasterPointType !== 'undefined') exports.Y$ = TRasterPointType;
-if (typeof TRasterPointTransform !== 'undefined') exports.Ml = TRasterPointTransform;
-if (typeof TQueryType !== 'undefined') exports.z7 = TQueryType;
-if (typeof TArrowTransport !== 'undefined') exports.Fe = TArrowTransport;
-if (typeof TExpressionRangeType !== 'undefined') exports.i9 = TExpressionRangeType;
-if (typeof TDBObjectType !== 'undefined') exports.EW = TDBObjectType;
-if (typeof TDataSourceType !== 'undefined') exports.ce = TDataSourceType;
-if (typeof TDatumVal !== 'undefined') exports.v$ = TDatumVal;
-if (typeof TDatum !== 'undefined') exports.K5 = TDatum;
-if (typeof TStringValue !== 'undefined') exports.fi = TStringValue;
-if (typeof TColumnType !== 'undefined') exports.dG = TColumnType;
-if (typeof TRow !== 'undefined') exports.lO = TRow;
-if (typeof TColumnData !== 'undefined') exports.PJ = TColumnData;
-if (typeof TColumn !== 'undefined') exports.ZC = TColumn;
-if (typeof TStringRow !== 'undefined') exports.wS = TStringRow;
-if (typeof TStepResult !== 'undefined') exports.AP = TStepResult;
-if (typeof TRowSet !== 'undefined') exports.bk = TRowSet;
-if (typeof TQueryResult !== 'undefined') exports._A = TQueryResult;
-if (typeof TDataFrame !== 'undefined') exports.O0 = TDataFrame;
-if (typeof TDBInfo !== 'undefined') exports.hm = TDBInfo;
-if (typeof TDBException !== 'undefined') exports.U2 = TDBException;
-if (typeof TCopyParams !== 'undefined') exports.op = TCopyParams;
-if (typeof TCreateParams !== 'undefined') exports.RW = TCreateParams;
-if (typeof TDetectResult !== 'undefined') exports.t_ = TDetectResult;
-if (typeof TImportStatus !== 'undefined') exports.ee = TImportStatus;
-if (typeof TFrontendView !== 'undefined') exports.q9 = TFrontendView;
-if (typeof TServerStatus !== 'undefined') exports.e7 = TServerStatus;
-if (typeof TPixel !== 'undefined') exports.Ht = TPixel;
-if (typeof TPixelTableRowResult !== 'undefined') exports.iK = TPixelTableRowResult;
-if (typeof TRenderResult !== 'undefined') exports.sK = TRenderResult;
-if (typeof TGpuSpecification !== 'undefined') exports.Oc = TGpuSpecification;
-if (typeof THardwareInfo !== 'undefined') exports.ll = THardwareInfo;
-if (typeof TClusterHardwareInfo !== 'undefined') exports.jA = TClusterHardwareInfo;
-if (typeof TMemoryData !== 'undefined') exports.s$ = TMemoryData;
-if (typeof TNodeMemoryInfo !== 'undefined') exports.OK = TNodeMemoryInfo;
-if (typeof TTableMeta !== 'undefined') exports.C6 = TTableMeta;
-if (typeof TTableRefreshInfo !== 'undefined') exports.AL = TTableRefreshInfo;
-if (typeof TTableDetails !== 'undefined') exports.lw = TTableDetails;
-if (typeof TColumnRange !== 'undefined') exports.mz = TColumnRange;
-if (typeof TDictionaryGeneration !== 'undefined') exports.Tv = TDictionaryGeneration;
-if (typeof TTableGeneration !== 'undefined') exports.l3 = TTableGeneration;
-if (typeof TTableCacheStatus !== 'undefined') exports.xX = TTableCacheStatus;
-if (typeof TPendingQuery !== 'undefined') exports.m1 = TPendingQuery;
-if (typeof TVarLen !== 'undefined') exports.NH = TVarLen;
-if (typeof TDataBlockPtr !== 'undefined') exports.Yu = TDataBlockPtr;
-if (typeof TInsertData !== 'undefined') exports.A6 = TInsertData;
-if (typeof TChunkData !== 'undefined') exports.Wm = TChunkData;
-if (typeof TInsertChunks !== 'undefined') exports.W2 = TInsertChunks;
-if (typeof TPendingRenderQuery !== 'undefined') exports.Yk = TPendingRenderQuery;
-if (typeof TRenderParseResult !== 'undefined') exports.xl = TRenderParseResult;
-if (typeof TRawRenderPassDataResult !== 'undefined') exports.tH = TRawRenderPassDataResult;
-if (typeof TRawPixelData !== 'undefined') exports.tG = TRawPixelData;
-if (typeof TRenderDatum !== 'undefined') exports.SB = TRenderDatum;
-if (typeof TRenderStepResult !== 'undefined') exports.Og = TRenderStepResult;
-if (typeof TDatabasePermissions !== 'undefined') exports.kW = TDatabasePermissions;
-if (typeof TTablePermissions !== 'undefined') exports.Zr = TTablePermissions;
-if (typeof TDashboardPermissions !== 'undefined') exports.$6 = TDashboardPermissions;
-if (typeof TViewPermissions !== 'undefined') exports.Ym = TViewPermissions;
-if (typeof TServerPermissions !== 'undefined') exports.gT = TServerPermissions;
-if (typeof TColumnPermissions !== 'undefined') exports.fm = TColumnPermissions;
-if (typeof TDBObjectPermissions !== 'undefined') exports.SJ = TDBObjectPermissions;
-if (typeof TDBObject !== 'undefined') exports.Gn = TDBObject;
-if (typeof TDashboardGrantees !== 'undefined') exports.ED = TDashboardGrantees;
-if (typeof TDashboard !== 'undefined') exports.zT = TDashboard;
-if (typeof TSessionInfo !== 'undefined') exports.nF = TSessionInfo;
-if (typeof TGeoFileLayerInfo !== 'undefined') exports.vg = TGeoFileLayerInfo;
-if (typeof TTableEpochInfo !== 'undefined') exports.oM = TTableEpochInfo;
-if (typeof TCustomExpression !== 'undefined') exports.k6 = TCustomExpression;
-if (typeof TQueryInfo !== 'undefined') exports.$5 = TQueryInfo;
-if (typeof TLeafInfo !== 'undefined') exports.He = TLeafInfo;
-if (typeof TImmerseUserMetadata !== 'undefined') exports.l0 = TImmerseUserMetadata;
-if (typeof TUserInfo !== 'undefined') exports.kN = TUserInfo;
+if (typeof TExecuteMode !== 'undefined') { globalThis.TExecuteMode = TExecuteMode; exports.j9 = TExecuteMode; }
+if (typeof TSourceType !== 'undefined') { globalThis.TSourceType = TSourceType; exports.E2 = TSourceType; }
+if (typeof TPartitionDetail !== 'undefined') { globalThis.TPartitionDetail = TPartitionDetail; exports.cG = TPartitionDetail; }
+if (typeof TGeoFileLayerContents !== 'undefined') { globalThis.TGeoFileLayerContents = TGeoFileLayerContents; exports.T1 = TGeoFileLayerContents; }
+if (typeof TImportHeaderRow !== 'undefined') { globalThis.TImportHeaderRow = TImportHeaderRow; exports.xM = TImportHeaderRow; }
+if (typeof TRole !== 'undefined') { globalThis.TRole = TRole; exports.dB = TRole; }
+if (typeof TTableType !== 'undefined') { globalThis.TTableType = TTableType; exports.FS = TTableType; }
+if (typeof TTableRefreshUpdateType !== 'undefined') { globalThis.TTableRefreshUpdateType = TTableRefreshUpdateType; exports.LB = TTableRefreshUpdateType; }
+if (typeof TTableRefreshTimingType !== 'undefined') { globalThis.TTableRefreshTimingType = TTableRefreshTimingType; exports._P = TTableRefreshTimingType; }
+if (typeof TTableRefreshIntervalType !== 'undefined') { globalThis.TTableRefreshIntervalType = TTableRefreshIntervalType; exports.p8 = TTableRefreshIntervalType; }
+if (typeof TMergeType !== 'undefined') { globalThis.TMergeType = TMergeType; exports.H$ = TMergeType; }
+if (typeof TRasterPointType !== 'undefined') { globalThis.TRasterPointType = TRasterPointType; exports.Y$ = TRasterPointType; }
+if (typeof TRasterPointTransform !== 'undefined') { globalThis.TRasterPointTransform = TRasterPointTransform; exports.Ml = TRasterPointTransform; }
+if (typeof TQueryType !== 'undefined') { globalThis.TQueryType = TQueryType; exports.z7 = TQueryType; }
+if (typeof TArrowTransport !== 'undefined') { globalThis.TArrowTransport = TArrowTransport; exports.Fe = TArrowTransport; }
+if (typeof TExpressionRangeType !== 'undefined') { globalThis.TExpressionRangeType = TExpressionRangeType; exports.i9 = TExpressionRangeType; }
+if (typeof TDBObjectType !== 'undefined') { globalThis.TDBObjectType = TDBObjectType; exports.EW = TDBObjectType; }
+if (typeof TDataSourceType !== 'undefined') { globalThis.TDataSourceType = TDataSourceType; exports.ce = TDataSourceType; }
+if (typeof TDatumVal !== 'undefined') { globalThis.TDatumVal = TDatumVal; exports.v$ = TDatumVal; }
+if (typeof TDatum !== 'undefined') { globalThis.TDatum = TDatum; exports.K5 = TDatum; }
+if (typeof TStringValue !== 'undefined') { globalThis.TStringValue = TStringValue; exports.fi = TStringValue; }
+if (typeof TColumnType !== 'undefined') { globalThis.TColumnType = TColumnType; exports.dG = TColumnType; }
+if (typeof TRow !== 'undefined') { globalThis.TRow = TRow; exports.lO = TRow; }
+if (typeof TColumnData !== 'undefined') { globalThis.TColumnData = TColumnData; exports.PJ = TColumnData; }
+if (typeof TColumn !== 'undefined') { globalThis.TColumn = TColumn; exports.ZC = TColumn; }
+if (typeof TStringRow !== 'undefined') { globalThis.TStringRow = TStringRow; exports.wS = TStringRow; }
+if (typeof TStepResult !== 'undefined') { globalThis.TStepResult = TStepResult; exports.AP = TStepResult; }
+if (typeof TRowSet !== 'undefined') { globalThis.TRowSet = TRowSet; exports.bk = TRowSet; }
+if (typeof TQueryResult !== 'undefined') { globalThis.TQueryResult = TQueryResult; exports._A = TQueryResult; }
+if (typeof TDataFrame !== 'undefined') { globalThis.TDataFrame = TDataFrame; exports.O0 = TDataFrame; }
+if (typeof TDBInfo !== 'undefined') { globalThis.TDBInfo = TDBInfo; exports.hm = TDBInfo; }
+if (typeof TDBException !== 'undefined') { globalThis.TDBException = TDBException; exports.U2 = TDBException; }
+if (typeof TCopyParams !== 'undefined') { globalThis.TCopyParams = TCopyParams; exports.op = TCopyParams; }
+if (typeof TCreateParams !== 'undefined') { globalThis.TCreateParams = TCreateParams; exports.RW = TCreateParams; }
+if (typeof TDetectResult !== 'undefined') { globalThis.TDetectResult = TDetectResult; exports.t_ = TDetectResult; }
+if (typeof TImportStatus !== 'undefined') { globalThis.TImportStatus = TImportStatus; exports.ee = TImportStatus; }
+if (typeof TFrontendView !== 'undefined') { globalThis.TFrontendView = TFrontendView; exports.q9 = TFrontendView; }
+if (typeof TServerStatus !== 'undefined') { globalThis.TServerStatus = TServerStatus; exports.e7 = TServerStatus; }
+if (typeof TPixel !== 'undefined') { globalThis.TPixel = TPixel; exports.Ht = TPixel; }
+if (typeof TPixelTableRowResult !== 'undefined') { globalThis.TPixelTableRowResult = TPixelTableRowResult; exports.iK = TPixelTableRowResult; }
+if (typeof TRenderResult !== 'undefined') { globalThis.TRenderResult = TRenderResult; exports.sK = TRenderResult; }
+if (typeof TGpuSpecification !== 'undefined') { globalThis.TGpuSpecification = TGpuSpecification; exports.Oc = TGpuSpecification; }
+if (typeof THardwareInfo !== 'undefined') { globalThis.THardwareInfo = THardwareInfo; exports.ll = THardwareInfo; }
+if (typeof TClusterHardwareInfo !== 'undefined') { globalThis.TClusterHardwareInfo = TClusterHardwareInfo; exports.jA = TClusterHardwareInfo; }
+if (typeof TMemoryData !== 'undefined') { globalThis.TMemoryData = TMemoryData; exports.s$ = TMemoryData; }
+if (typeof TNodeMemoryInfo !== 'undefined') { globalThis.TNodeMemoryInfo = TNodeMemoryInfo; exports.OK = TNodeMemoryInfo; }
+if (typeof TTableMeta !== 'undefined') { globalThis.TTableMeta = TTableMeta; exports.C6 = TTableMeta; }
+if (typeof TTableRefreshInfo !== 'undefined') { globalThis.TTableRefreshInfo = TTableRefreshInfo; exports.AL = TTableRefreshInfo; }
+if (typeof TTableDetails !== 'undefined') { globalThis.TTableDetails = TTableDetails; exports.lw = TTableDetails; }
+if (typeof TColumnRange !== 'undefined') { globalThis.TColumnRange = TColumnRange; exports.mz = TColumnRange; }
+if (typeof TDictionaryGeneration !== 'undefined') { globalThis.TDictionaryGeneration = TDictionaryGeneration; exports.Tv = TDictionaryGeneration; }
+if (typeof TTableGeneration !== 'undefined') { globalThis.TTableGeneration = TTableGeneration; exports.l3 = TTableGeneration; }
+if (typeof TTableCacheStatus !== 'undefined') { globalThis.TTableCacheStatus = TTableCacheStatus; exports.xX = TTableCacheStatus; }
+if (typeof TPendingQuery !== 'undefined') { globalThis.TPendingQuery = TPendingQuery; exports.m1 = TPendingQuery; }
+if (typeof TVarLen !== 'undefined') { globalThis.TVarLen = TVarLen; exports.NH = TVarLen; }
+if (typeof TDataBlockPtr !== 'undefined') { globalThis.TDataBlockPtr = TDataBlockPtr; exports.Yu = TDataBlockPtr; }
+if (typeof TInsertData !== 'undefined') { globalThis.TInsertData = TInsertData; exports.A6 = TInsertData; }
+if (typeof TChunkData !== 'undefined') { globalThis.TChunkData = TChunkData; exports.Wm = TChunkData; }
+if (typeof TInsertChunks !== 'undefined') { globalThis.TInsertChunks = TInsertChunks; exports.W2 = TInsertChunks; }
+if (typeof TPendingRenderQuery !== 'undefined') { globalThis.TPendingRenderQuery = TPendingRenderQuery; exports.Yk = TPendingRenderQuery; }
+if (typeof TRenderParseResult !== 'undefined') { globalThis.TRenderParseResult = TRenderParseResult; exports.xl = TRenderParseResult; }
+if (typeof TRawRenderPassDataResult !== 'undefined') { globalThis.TRawRenderPassDataResult = TRawRenderPassDataResult; exports.tH = TRawRenderPassDataResult; }
+if (typeof TRawPixelData !== 'undefined') { globalThis.TRawPixelData = TRawPixelData; exports.tG = TRawPixelData; }
+if (typeof TRenderDatum !== 'undefined') { globalThis.TRenderDatum = TRenderDatum; exports.SB = TRenderDatum; }
+if (typeof TRenderStepResult !== 'undefined') { globalThis.TRenderStepResult = TRenderStepResult; exports.Og = TRenderStepResult; }
+if (typeof TDatabasePermissions !== 'undefined') { globalThis.TDatabasePermissions = TDatabasePermissions; exports.kW = TDatabasePermissions; }
+if (typeof TTablePermissions !== 'undefined') { globalThis.TTablePermissions = TTablePermissions; exports.Zr = TTablePermissions; }
+if (typeof TDashboardPermissions !== 'undefined') { globalThis.TDashboardPermissions = TDashboardPermissions; exports.$6 = TDashboardPermissions; }
+if (typeof TViewPermissions !== 'undefined') { globalThis.TViewPermissions = TViewPermissions; exports.Ym = TViewPermissions; }
+if (typeof TServerPermissions !== 'undefined') { globalThis.TServerPermissions = TServerPermissions; exports.gT = TServerPermissions; }
+if (typeof TColumnPermissions !== 'undefined') { globalThis.TColumnPermissions = TColumnPermissions; exports.fm = TColumnPermissions; }
+if (typeof TDBObjectPermissions !== 'undefined') { globalThis.TDBObjectPermissions = TDBObjectPermissions; exports.SJ = TDBObjectPermissions; }
+if (typeof TDBObject !== 'undefined') { globalThis.TDBObject = TDBObject; exports.Gn = TDBObject; }
+if (typeof TDashboardGrantees !== 'undefined') { globalThis.TDashboardGrantees = TDashboardGrantees; exports.ED = TDashboardGrantees; }
+if (typeof TDashboard !== 'undefined') { globalThis.TDashboard = TDashboard; exports.zT = TDashboard; }
+if (typeof TSessionInfo !== 'undefined') { globalThis.TSessionInfo = TSessionInfo; exports.nF = TSessionInfo; }
+if (typeof TGeoFileLayerInfo !== 'undefined') { globalThis.TGeoFileLayerInfo = TGeoFileLayerInfo; exports.vg = TGeoFileLayerInfo; }
+if (typeof TTableEpochInfo !== 'undefined') { globalThis.TTableEpochInfo = TTableEpochInfo; exports.oM = TTableEpochInfo; }
+if (typeof TCustomExpression !== 'undefined') { globalThis.TCustomExpression = TCustomExpression; exports.k6 = TCustomExpression; }
+if (typeof TQueryInfo !== 'undefined') { globalThis.TQueryInfo = TQueryInfo; exports.$5 = TQueryInfo; }
+if (typeof TLeafInfo !== 'undefined') { globalThis.TLeafInfo = TLeafInfo; exports.He = TLeafInfo; }
+if (typeof TImmerseUserMetadata !== 'undefined') { globalThis.TImmerseUserMetadata = TImmerseUserMetadata; exports.l0 = TImmerseUserMetadata; }
+if (typeof TUserInfo !== 'undefined') { globalThis.TUserInfo = TUserInfo; exports.kN = TUserInfo; }
 
 
 /***/ })
