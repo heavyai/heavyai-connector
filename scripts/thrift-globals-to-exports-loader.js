@@ -38,6 +38,7 @@ module.exports = function thriftGlobalsToExportsLoader(source) {
 
   if (names.length === 0) return source
 
+  const declarations = `var ${names.join(", ")};\n`
   const suffix =
     "\n// <thrift-globals-to-exports-loader>\n" +
     names
@@ -45,5 +46,5 @@ module.exports = function thriftGlobalsToExportsLoader(source) {
       .join("\n") +
     "\n"
 
-  return source + suffix
+  return declarations + source + suffix
 }
