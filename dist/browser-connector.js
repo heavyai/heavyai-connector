@@ -37852,7 +37852,7 @@ exports.TJSONProtocol = __webpack_require__(3861);
 exports.TBinaryProtocol = __webpack_require__(9412);
 /* unused reexport */ __webpack_require__(6050);
 
-/* unused reexport */ __webpack_require__(1448);
+exports.InputBufferUnderrunError = __webpack_require__(1448);
 
 
 /***/ }),
@@ -47758,41 +47758,234 @@ var COMPRESSION_LEVEL_DEFAULT = 3;
 function arrayify(maybeArray) {
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray];
 }
+var THRIFT_DEBUG_STORAGE_KEY = "HEAVYAI_THRIFT_DEBUG";
+var THRIFT_DEBUG_PREVIEW_LENGTH = 2000;
+function getBrowserDebugFlag() {
+  if ( false || typeof window === "undefined") {
+    return false;
+  }
+  try {
+    var _window$localStorage;
+    var localStorageValue = (_window$localStorage = window.localStorage) === null || _window$localStorage === void 0 ? void 0 : _window$localStorage.getItem(THRIFT_DEBUG_STORAGE_KEY);
+    return window.HEAVYAI_THRIFT_DEBUG === true || localStorageValue === "true" || localStorageValue === "1";
+  } catch (_error) {
+    return window.HEAVYAI_THRIFT_DEBUG === true;
+  }
+}
+function isThriftDebugEnabled() {
+  return Boolean(CustomXHRConnection.thriftDebug || getBrowserDebugFlag());
+}
+function previewBuffer(value) {
+  if (value === undefined || value === null) {
+    return value;
+  }
+  if (typeof value === "string") {
+    return value.length > THRIFT_DEBUG_PREVIEW_LENGTH ? "".concat(value.slice(0, THRIFT_DEBUG_PREVIEW_LENGTH), "...<truncated ").concat(value.length, " chars>") : value;
+  }
+  if (Object.prototype.toString.call(value) === "[object ArrayBuffer]") {
+    var byteLength = value.byteLength;
+    try {
+      if (typeof TextDecoder !== "undefined") {
+        return previewBuffer(new TextDecoder().decode(value));
+      }
+    } catch (_error) {
+      // Fall through to byte-length summary.
+    }
+    return "<ArrayBuffer byteLength=".concat(byteLength, ">");
+  }
+  if (Buffer.isBuffer(value)) {
+    try {
+      return previewBuffer(value.toString("utf8"));
+    } catch (_error) {
+      return "<Buffer length=".concat(value.length, ">");
+    }
+  }
+  return value;
+}
+function parseThriftJsonEnvelope(body) {
+  if (typeof body !== "string") {
+    return null;
+  }
+  try {
+    var parsed = JSON.parse(body);
+    if (Array.isArray(parsed)) {
+      return {
+        version: parsed[0],
+        method: parsed[1],
+        messageType: parsed[2],
+        seqid: parsed[3]
+      };
+    }
+  } catch (_error) {
+    return null;
+  }
+  return null;
+}
+function logThriftDebug(label, payload) {
+  var level = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "debug";
+  if (!isThriftDebugEnabled() || typeof console === "undefined") {
+    return;
+  }
+  var logger = console[level] || console.debug || console.log;
+  logger.call(console, "[heavyai thrift] ".concat(label), payload);
+}
+function isBinaryThriftContentType(contentType) {
+  return /application\/vnd\.apache\.thrift\.binary/i.test(contentType || "");
+}
 
 // custom version of XHRConnection which can set `withCredentials` for CORS
 function CustomXHRConnection(host, port, opts) {
-  var _this = this;
   browser/* XHRConnection */.$9.call(this, host, port, opts);
-  if (opts.headers["Content-Type"] === "application/vnd.apache.thrift.binary") {
-    // this is copy/paste from thrift with the noted changes below
-    this.flush = function () {
-      if (_this.url === undefined || _this.url === "") {
-        return _this.send_buf;
-      }
-      var xreq = _this.getXmlHttpRequestObject();
-
-      // removed overrideMimeType since we're expecting binary data
-      // added responseType
-      xreq.responseType = "arraybuffer";
-      xreq.onreadystatechange = function () {
-        if (xreq.readyState === 4 && xreq.status === 200) {
-          // changed responseText -> response
-          _this.setRecvBuffer(xreq.response);
-        }
-      };
-      xreq.open("POST", _this.url, true);
-      Object.keys(_this.headers).forEach(function (headerKey) {
-        xreq.setRequestHeader(headerKey, _this.headers[headerKey]);
-      });
-      xreq.send(_this.send_buf);
-    };
-  }
 }
 util_default().inherits(CustomXHRConnection, browser/* XHRConnection */.$9);
+CustomXHRConnection.thriftDebug = false;
 CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   var obj = browser/* XHRConnection */.$9.prototype.getXmlHttpRequestObject.call(this);
   obj.withCredentials = CustomXHRConnection.withCredentials;
   return obj;
+};
+CustomXHRConnection.prototype.flush = function () {
+  var _this$protocol$constr,
+    _this = this;
+  if (this.url === undefined || this.url === "") {
+    return this.send_buf;
+  }
+  var xreq = this.getXmlHttpRequestObject();
+  var requestContentType = this.headers["Content-Type"];
+  var isBinaryRequest = isBinaryThriftContentType(requestContentType);
+  var requestPreview = previewBuffer(this.send_buf);
+  var requestEnvelope = parseThriftJsonEnvelope(requestPreview);
+  if (isBinaryRequest) {
+    xreq.responseType = "arraybuffer";
+    xreq.overrideMimeType("application/octet-stream");
+  } else {
+    xreq.overrideMimeType("application/json");
+  }
+  logThriftDebug("request", {
+    url: this.url,
+    contentType: requestContentType,
+    protocol: this.protocol && (this.protocol.name || ((_this$protocol$constr = this.protocol.constructor) === null || _this$protocol$constr === void 0 ? void 0 : _this$protocol$constr.name)),
+    isBinaryRequest: isBinaryRequest,
+    envelope: requestEnvelope,
+    bodyPreview: requestPreview
+  });
+  xreq.onreadystatechange = function () {
+    if (xreq.readyState !== 4) {
+      return;
+    }
+    var responseContentType = xreq.getResponseHeader("Content-Type");
+    var isBinaryResponse = isBinaryRequest || isBinaryThriftContentType(responseContentType);
+    var responseBody = isBinaryResponse ? xreq.response : xreq.responseText;
+    var responsePreview = previewBuffer(responseBody);
+    logThriftDebug(xreq.status === 200 ? "response" : "response non-200", {
+      url: _this.url,
+      status: xreq.status,
+      statusText: xreq.statusText,
+      contentType: responseContentType,
+      allHeaders: xreq.getAllResponseHeaders(),
+      isBinaryResponse: isBinaryResponse,
+      envelope: parseThriftJsonEnvelope(responsePreview),
+      bodyPreview: responsePreview
+    }, xreq.status === 200 ? "debug" : "warn");
+    if (xreq.status === 200) {
+      _this.setRecvBuffer(responseBody);
+    }
+  };
+  xreq.ontimeout = function (error) {
+    logThriftDebug("timeout", {
+      url: _this.url,
+      error: error
+    }, "error");
+    _this.emit("error", error);
+  };
+  xreq.onerror = function (error) {
+    logThriftDebug("network error", {
+      url: _this.url,
+      error: error
+    }, "error");
+    _this.emit("error", error);
+  };
+  xreq.open("POST", this.url, true);
+  if (this.options.timeout) {
+    xreq.timeout = this.options.timeout;
+  }
+  Object.keys(this.headers).forEach(function (headerKey) {
+    xreq.setRequestHeader(headerKey, _this.headers[headerKey]);
+  });
+  xreq.send(this.send_buf);
+};
+CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
+  var _this2 = this;
+  var proto = new this.protocol(transportWithData);
+  try {
+    var _loop = function _loop() {
+      var header = proto.readMessageBegin();
+      var dummySeqid = header.rseqid * -1;
+      var client = _this2.client;
+      var serviceName = _this2.seqId2Service[header.rseqid];
+      if (serviceName) {
+        client = _this2.client[serviceName];
+        delete _this2.seqId2Service[header.rseqid];
+      }
+      logThriftDebug("decode message begin", {
+        fname: header.fname,
+        mtype: header.mtype,
+        rseqid: header.rseqid,
+        dummySeqid: dummySeqid,
+        serviceName: serviceName
+      });
+      client._reqs[dummySeqid] = function (err, success) {
+        transportWithData.commitPosition();
+        var clientCallback = client._reqs[header.rseqid];
+        delete client._reqs[header.rseqid];
+        if (clientCallback) {
+          clientCallback(err, success);
+        }
+      };
+      if (client["recv_".concat(header.fname)]) {
+        try {
+          client["recv_".concat(header.fname)](proto, header.mtype, dummySeqid);
+          logThriftDebug("recv completed", {
+            fname: header.fname,
+            rseqid: header.rseqid
+          });
+        } catch (error) {
+          logThriftDebug("recv error", {
+            fname: header.fname,
+            rseqid: header.rseqid,
+            error: error
+          }, "error");
+          throw error;
+        }
+      } else {
+        delete client._reqs[dummySeqid];
+        var error = new browser.Thrift.TApplicationException(browser.Thrift.TApplicationExceptionType.WRONG_METHOD_NAME, "Received a response to an unknown RPC function");
+        logThriftDebug("unknown response method", {
+          fname: header.fname,
+          rseqid: header.rseqid,
+          error: error
+        }, "error");
+        _this2.emit("error", error);
+      }
+    };
+    while (true) {
+      _loop();
+    }
+  } catch (error) {
+    if (error instanceof browser.InputBufferUnderrunError || (error === null || error === void 0 ? void 0 : error.name) === "InputBufferUnderrunError") {
+      logThriftDebug("input buffer underrun", {
+        error: error,
+        readCursor: transportWithData.readCursor,
+        writeCursor: transportWithData.writeCursor
+      });
+      transportWithData.rollbackPosition();
+    } else {
+      logThriftDebug("decode error", {
+        error: error
+      }, "error");
+      throw error;
+    }
+  }
 };
 
 // Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
@@ -47884,10 +48077,10 @@ function buildClient(url, useBinaryProtocol) {
 }
 var DbCon = /*#__PURE__*/function () {
   function DbCon() {
-    var _this2 = this;
+    var _this3 = this;
     _classCallCheck(this, DbCon);
     _defineProperty(this, "updateQueryTimes", function (conId, queryId, estimatedQueryTime, execution_time_ms) {
-      _this2.queryTimes[queryId] = execution_time_ms;
+      _this3.queryTimes[queryId] = execution_time_ms;
     });
     _defineProperty(this, "events", new (eventemitter3_default())());
     _defineProperty(this, "EVENT_NAMES", {
@@ -47900,8 +48093,8 @@ var DbCon = /*#__PURE__*/function () {
         for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
           args[_key3] = arguments[_key3];
         }
-        return method.apply(_this2, args)["catch"](function (error) {
-          _this2.events.emit(_this2.EVENT_NAMES.ERROR, error);
+        return method.apply(_this3, args)["catch"](function (error) {
+          _this3.events.emit(_this3.EVENT_NAMES.ERROR, error);
           throw error;
         });
       };
@@ -47916,7 +48109,7 @@ var DbCon = /*#__PURE__*/function () {
         if (args.length === arity + 1) {
           callback = args.pop();
         }
-        var promise = _this2[method].apply(_this2, args);
+        var promise = _this3[method].apply(_this3, args);
         if (callback) {
           promise["catch"](function (err) {
             return callback(err);
@@ -47933,42 +48126,42 @@ var DbCon = /*#__PURE__*/function () {
     // all clients (for mutating methods)
     _defineProperty(this, "wrapThrift", function (methodName, overClients, processArgs) {
       return function () {
-        if (_this2._sessionId) {
+        if (_this3._sessionId) {
           for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
             args[_key5] = arguments[_key5];
           }
           var processedArgs = processArgs(args);
           if (true) {
-            _this2.events.emit(_this2.EVENT_NAMES.METHOD_CALLED, methodName);
+            _this3.events.emit(_this3.EVENT_NAMES.METHOD_CALLED, methodName);
           }
-          if (overClients === _this2.overSingleClient) {
+          if (overClients === _this3.overSingleClient) {
             return new Promise(function (resolve, reject) {
               var requestId = pushid_default()();
-              _this2.addPendingRequest(0, requestId, {
+              _this3.addPendingRequest(0, requestId, {
                 resolve: resolve,
                 reject: reject
               });
-              return _this2._client[0][methodName].apply(_this2._client[0], [_this2._sessionId[0]].concat(processedArgs)).then(function (res) {
-                delete _this2._pendingRequests[0][requestId];
+              return _this3._client[0][methodName].apply(_this3._client[0], [_this3._sessionId[0]].concat(processedArgs)).then(function (res) {
+                delete _this3._pendingRequests[0][requestId];
                 return resolve(res);
               })["catch"](function (err) {
-                delete _this2._pendingRequests[0][requestId];
+                delete _this3._pendingRequests[0][requestId];
                 return reject(err);
               });
             });
           } else {
-            return Promise.all(_this2._client.map(function (client, index) {
+            return Promise.all(_this3._client.map(function (client, index) {
               return new Promise(function (resolve, reject) {
                 var requestId = pushid_default()();
-                _this2.addPendingRequest(index, requestId, {
+                _this3.addPendingRequest(index, requestId, {
                   resolve: resolve,
                   reject: reject
                 });
-                return client[methodName].apply(client, [_this2._sessionId[index]].concat(processedArgs)).then(function (res) {
-                  delete _this2._pendingRequests[index][requestId];
+                return client[methodName].apply(client, [_this3._sessionId[index]].concat(processedArgs)).then(function (res) {
+                  delete _this3._pendingRequests[index][requestId];
                   return resolve(res);
                 })["catch"](function (err) {
-                  delete _this2._pendingRequests[index][requestId];
+                  delete _this3._pendingRequests[index][requestId];
                   return reject(err);
                 });
               });
@@ -47981,19 +48174,19 @@ var DbCon = /*#__PURE__*/function () {
     });
     // Track pending requests by client
     _defineProperty(this, "addPendingRequest", function (clientIdx, requestId, promise) {
-      if (_this2._pendingRequests[clientIdx]) {
-        _this2._pendingRequests[clientIdx][requestId] = promise;
+      if (_this3._pendingRequests[clientIdx]) {
+        _this3._pendingRequests[clientIdx][requestId] = promise;
       } else {
-        _this2._pendingRequests[clientIdx] = _defineProperty({}, requestId, promise);
+        _this3._pendingRequests[clientIdx] = _defineProperty({}, requestId, promise);
       }
     });
     // Reject all pending requests for a given client
     _defineProperty(this, "rejectPendingRequests", function (clientIdx, reason) {
-      Object.values(_this2._pendingRequests[clientIdx] || {}).forEach(function (_ref) {
+      Object.values(_this3._pendingRequests[clientIdx] || {}).forEach(function (_ref) {
         var reject = _ref.reject;
         reject(reason);
       });
-      _this2._pendingRequests[clientIdx] = {};
+      _this3._pendingRequests[clientIdx] = {};
     });
     /**
      * Create a connection to the MapD server, generating a client and session ID.
@@ -48021,19 +48214,19 @@ var DbCon = /*#__PURE__*/function () {
      * con.disconnect()
      */
     _defineProperty(this, "disconnectAsync", this.handleErrors(function () {
-      return Promise.all(_this2._client.map(function (client, c) {
-        return client.disconnect(_this2._sessionId[c])["catch"](function (error) {
+      return Promise.all(_this3._client.map(function (client, c) {
+        return client.disconnect(_this3._sessionId[c])["catch"](function (error) {
           // ignore timeout errors
-          if (error && !_this2.isTimeoutError(error)) {
+          if (error && !_this3.isTimeoutError(error)) {
             throw error;
           }
         });
       })).then(function () {
-        _this2._sessionId = null;
-        _this2._client = null;
-        _this2._numConnections = 0;
-        _this2.serverPingTimes = null;
-        return _this2;
+        _this3._sessionId = null;
+        _this3._client = null;
+        _this3._numConnections = 0;
+        _this3.serverPingTimes = null;
+        return _this3;
       });
     }));
     /**
@@ -48472,7 +48665,7 @@ var DbCon = /*#__PURE__*/function () {
      * )
      */
     _defineProperty(this, "hasDbPrivilegesAsync", function (granteeName, dbName, dbPrivs) {
-      return _this2.hasObjectPrivilegesAsync(granteeName, dbName, heavy_types/* TDBObjectType */.EW.DatabaseDBObjectType, new heavy_types/* TDBObjectPermissions */.SJ({
+      return _this3.hasObjectPrivilegesAsync(granteeName, dbName, heavy_types/* TDBObjectType */.EW.DatabaseDBObjectType, new heavy_types/* TDBObjectPermissions */.SJ({
         database_permissions_: new heavy_types/* TDatabasePermissions */.kW(dbPrivs)
       }));
     });
@@ -48506,11 +48699,11 @@ var DbCon = /*#__PURE__*/function () {
      *
      */
     _defineProperty(this, "detectColumnTypesAsync", this.handleErrors(function (filename, copyParams) {
-      var detectColumnTypes = _this2.wrapThrift("detect_column_types", _this2.overSingleClient, function () {
+      var detectColumnTypes = _this3.wrapThrift("detect_column_types", _this3.overSingleClient, function () {
         return [filename, convertObjectToThriftCopyParams(copyParams)];
       });
       return detectColumnTypes().then(function (res) {
-        _this2.importerRowDesc = res.row_set.row_desc;
+        _this3.importerRowDesc = res.row_set.row_desc;
         return res;
       });
     }));
@@ -48533,7 +48726,7 @@ var DbCon = /*#__PURE__*/function () {
       var queryId = null;
       var returnTiming = false;
       var limit = -1;
-      var curNonce = (_this2._nonce++).toString();
+      var curNonce = (_this3._nonce++).toString();
       if (options) {
         columnarResults = options.hasOwnProperty("columnarResults") ? options.columnarResults : columnarResults;
         eliminateNullRows = options.hasOwnProperty("eliminateNullRows") ? options.eliminateNullRows : eliminateNullRows;
@@ -48542,7 +48735,7 @@ var DbCon = /*#__PURE__*/function () {
         limit = options.hasOwnProperty("limit") ? options.limit : limit;
         curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
-      var lastQueryTime = queryId in _this2.queryTimes ? _this2.queryTimes[queryId] : _this2.DEFAULT_QUERY_TIME;
+      var lastQueryTime = queryId in _this3.queryTimes ? _this3.queryTimes[queryId] : _this3.DEFAULT_QUERY_TIME;
       var conId = 0;
       var processResultsOptions = {
         returnTiming: returnTiming,
@@ -48554,14 +48747,14 @@ var DbCon = /*#__PURE__*/function () {
         startTime: Date.now()
       };
       var AT_MOST_N = -1;
-      var sqlExecute = _this2.wrapThrift("sql_execute", _this2.overSingleClient, function (args) {
+      var sqlExecute = _this3.wrapThrift("sql_execute", _this3.overSingleClient, function (args) {
         return args;
       });
       var _runQuery = function runQuery() {
         return sqlExecute(query, columnarResults, curNonce, limit, AT_MOST_N)["catch"](function (err) {
           if (err.name === "NetworkError") {
-            _this2.removeConnection(0, "Network error");
-            if (_this2._numConnections === 0) {
+            _this3.removeConnection(0, "Network error");
+            if (_this3._numConnections === 0) {
               err.msg = "No remaining database connections";
               throw err;
             }
@@ -48570,7 +48763,7 @@ var DbCon = /*#__PURE__*/function () {
           throw err;
         });
       };
-      return _this2.processResults(processResultsOptions, _runQuery());
+      return _this3.processResults(processResultsOptions, _runQuery());
     }));
     /**
      * Submit a query to the database and process the results.
@@ -48592,11 +48785,11 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "queryDFAsync", this.handleErrors(function (query, options) {
       var deviceId = 0;
       var limit = -1;
-      var sqlExecuteDF = _this2.wrapThrift("sql_execute_df", _this2.overSingleClient, function () {
+      var sqlExecuteDF = _this3.wrapThrift("sql_execute_df", _this3.overSingleClient, function () {
         return [query, common_types/* TDeviceType */.jh.CPU, deviceId, limit, heavy_types/* TArrowTransport */.Fe.WIRE];
       });
       return sqlExecuteDF().then(function (data) {
-        if (_this2._logging) {
+        if (_this3._logging) {
           // eslint-disable-next-line no-console
           console.log(query, "on Server", 0, "- Execution Time:", data.execution_time_ms, "ms");
         }
@@ -48634,7 +48827,7 @@ var DbCon = /*#__PURE__*/function () {
      *
      */
     _defineProperty(this, "validateQuery", this.handleErrors(function (query) {
-      var sqlValidate = _this2.wrapThrift("sql_validate", _this2.overSingleClient, function (args) {
+      var sqlValidate = _this3.wrapThrift("sql_validate", _this3.overSingleClient, function (args) {
         return args;
       });
       return sqlValidate(query).then(function (fields) {
@@ -48642,7 +48835,7 @@ var DbCon = /*#__PURE__*/function () {
           accum[value.col_name] = value;
           return accum;
         }, {});
-        return _this2.convertFromThriftTypes(rowDict);
+        return _this3.convertFromThriftTypes(rowDict);
       });
     }));
     /**
@@ -48660,7 +48853,7 @@ var DbCon = /*#__PURE__*/function () {
      *  //  ...]
      */
     _defineProperty(this, "getTablesAsync", this.handleErrors(function () {
-      var getTables = _this2.wrapThrift("get_tables", _this2.overSingleClient, function (args) {
+      var getTables = _this3.wrapThrift("get_tables", _this3.overSingleClient, function (args) {
         return args;
       });
       return getTables().then(function (tables) {
@@ -48708,7 +48901,7 @@ var DbCon = /*#__PURE__*/function () {
      *  ...]
      */
     _defineProperty(this, "getTablesWithMetaAsync", this.handleErrors(function () {
-      var getTablesMeta = _this2.wrapThrift("get_tables_meta", _this2.overSingleClient, function (args) {
+      var getTablesMeta = _this3.wrapThrift("get_tables_meta", _this3.overSingleClient, function (args) {
         return args;
       });
       return getTablesMeta().then(function (tables) {
@@ -48717,7 +48910,7 @@ var DbCon = /*#__PURE__*/function () {
             name: table.table_name,
             num_cols: Number(table.num_cols.toString()),
             col_datum_types: table.col_types.map(function (type) {
-              return _this2._datumEnum[type.type];
+              return _this3._datumEnum[type.type];
             }),
             is_view: table.is_view,
             is_replicated: table.is_replicated,
@@ -48835,35 +49028,35 @@ var DbCon = /*#__PURE__*/function () {
     _defineProperty(this, "buildTImportHeaderRowMap", function () {
       for (var key in heavy_types/* TImportHeaderRow */.xM) {
         if (heavy_types/* TImportHeaderRow */.xM.hasOwnProperty(key)) {
-          _this2.TImportHeaderRowMap[heavy_types/* TImportHeaderRow */.xM[key]] = key;
+          _this3.TImportHeaderRowMap[heavy_types/* TImportHeaderRow */.xM[key]] = key;
         }
       }
     });
     _defineProperty(this, "buildTEncodingTypeMap", function () {
       for (var encoding in common_types/* TEncodingType */.QY) {
         if (common_types/* TEncodingType */.QY.hasOwnProperty(encoding)) {
-          _this2.TEncodingTypeMap[common_types/* TEncodingType */.QY[encoding]] = encoding;
+          _this3.TEncodingTypeMap[common_types/* TEncodingType */.QY[encoding]] = encoding;
         }
       }
     });
     _defineProperty(this, "buildTRasterPointTypeMap", function () {
       for (var key in heavy_types/* TRasterPointType */.Y$) {
         if (heavy_types/* TRasterPointType */.Y$.hasOwnProperty(key)) {
-          _this2.TRasterPointTypeMap[heavy_types/* TRasterPointType */.Y$[key]] = key;
+          _this3.TRasterPointTypeMap[heavy_types/* TRasterPointType */.Y$[key]] = key;
         }
       }
     });
     _defineProperty(this, "buildTRasterPointTransformMap", function () {
       for (var key in heavy_types/* TRasterPointTransform */.Ml) {
         if (heavy_types/* TRasterPointTransform */.Ml.hasOwnProperty(key)) {
-          _this2.TRasterPointTransformMap[heavy_types/* TRasterPointTransform */.Ml[key]] = key;
+          _this3.TRasterPointTransformMap[heavy_types/* TRasterPointTransform */.Ml[key]] = key;
         }
       }
     });
     _defineProperty(this, "buildTSourceTypeMap", function () {
       for (var key in heavy_types/* TSourceType */.E2) {
         if (heavy_types/* TSourceType */.E2.hasOwnProperty(key)) {
-          _this2.TSourceTypeMap[heavy_types/* TSourceType */.E2[key]] = key;
+          _this3.TSourceTypeMap[heavy_types/* TSourceType */.E2[key]] = key;
         }
       }
     });
@@ -48883,7 +49076,7 @@ var DbCon = /*#__PURE__*/function () {
      * }, ...]
      */
     _defineProperty(this, "getFieldsAsync", this.handleErrors(function (tableName) {
-      var getTableDetails = _this2.wrapThrift("get_table_details", _this2.overSingleClient, function (args) {
+      var getTableDetails = _this3.wrapThrift("get_table_details", _this3.overSingleClient, function (args) {
         return args;
       });
       return getTableDetails(tableName).then(function (fields) {
@@ -48893,7 +49086,7 @@ var DbCon = /*#__PURE__*/function () {
             return accum;
           }, {});
           return _objectSpread(_objectSpread({}, fields), {}, {
-            columns: _this2.convertFromThriftTypes(rowDict)
+            columns: _this3.convertFromThriftTypes(rowDict)
           });
         } else {
           throw new Error("Table (".concat(tableName, ") not found"));
@@ -48939,7 +49132,7 @@ var DbCon = /*#__PURE__*/function () {
         rowDescObj = _ref13[1],
         createParams = _ref13[2],
         options = _ref13[3];
-      return [tableName, options !== null && options !== void 0 && options.useUnmodifiedRowDesc ? rowDescObj : mutateThriftRowDesc(rowDescObj, _this2.importerRowDesc), createParams];
+      return [tableName, options !== null && options !== void 0 && options.useUnmodifiedRowDesc ? rowDescObj : mutateThriftRowDesc(rowDescObj, _this3.importerRowDesc), createParams];
     })));
     _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
     /**
@@ -48969,7 +49162,7 @@ var DbCon = /*#__PURE__*/function () {
         fileName = _ref17[1],
         copyParams = _ref17[2],
         rowDescObj = _ref17[3];
-      return [tableName, fileName, convertObjectToThriftCopyParams(copyParams), mutateThriftRowDesc(rowDescObj, _this2.importerRowDesc), new heavy_types/* TCreateParams */.RW()];
+      return [tableName, fileName, convertObjectToThriftCopyParams(copyParams), mutateThriftRowDesc(rowDescObj, _this3.importerRowDesc), new heavy_types/* TCreateParams */.RW()];
     })));
     /**
      * Use for backend rendering. This method fetches a PNG image that is a
@@ -48991,13 +49184,13 @@ var DbCon = /*#__PURE__*/function () {
         queryId = options.hasOwnProperty("queryId") ? options.queryId : queryId;
         compressionLevel = options.hasOwnProperty("compressionLevel") ? options.compressionLevel : compressionLevel;
       }
-      var lastQueryTime = queryId in _this2.queryTimes ? _this2.queryTimes[queryId] : _this2.DEFAULT_QUERY_TIME;
-      var curNonce = (_this2._nonce++).toString();
+      var lastQueryTime = queryId in _this3.queryTimes ? _this3.queryTimes[queryId] : _this3.DEFAULT_QUERY_TIME;
+      var curNonce = (_this3._nonce++).toString();
       if (options) {
         curNonce = options.hasOwnProperty("logValues") ? _typeof(options.logValues) === "object" ? JSON.stringify(options.logValues) : options.logValues : curNonce;
       }
       var conId = 0;
-      _this2._lastRenderCon = conId;
+      _this3._lastRenderCon = conId;
       var processResultsOptions = {
         isImage: true,
         query: "render: ".concat(vega),
@@ -49005,10 +49198,10 @@ var DbCon = /*#__PURE__*/function () {
         conId: conId,
         estimatedQueryTime: lastQueryTime
       };
-      var renderVega = _this2.wrapThrift("render_vega", _this2.overSingleClient, function (args) {
+      var renderVega = _this3.wrapThrift("render_vega", _this3.overSingleClient, function (args) {
         return args;
       });
-      return _this2.processResults(processResultsOptions, renderVega(widgetid, vega, compressionLevel, curNonce));
+      return _this3.processResults(processResultsOptions, renderVega(widgetid, vega, compressionLevel, curNonce));
     }));
     /**
      * Use for backend rendering. This method fetches a PNG image that is a
@@ -49041,8 +49234,8 @@ var DbCon = /*#__PURE__*/function () {
         pixel = new heavy_types/* TPixel */.Ht(pixel);
       }
       var columnFormat = true; // BOOL
-      var curNonce = (_this2._nonce++).toString();
-      return _this2._client[_this2._lastRenderCon].get_result_row_for_pixel(_this2._sessionId[_this2._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
+      var curNonce = (_this3._nonce++).toString();
+      return _this3._client[_this3._lastRenderCon].get_result_row_for_pixel(_this3._sessionId[_this3._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
         results = Array.isArray(results) ? results.pixel_rows : [results];
         var processResultsOptions = {
           isImage: false,
@@ -49050,10 +49243,10 @@ var DbCon = /*#__PURE__*/function () {
           query: "pixel request",
           queryId: -2
         };
-        var processor = processQueryResults(_this2._logging, _this2.updateQueryTimes);
+        var processor = processQueryResults(_this3._logging, _this3.updateQueryTimes);
         var numPixels = results.length;
         for (var p = 0; p < numPixels; p++) {
-          results[p].row_set = processor(processResultsOptions, _this2._datumEnum, results[p]);
+          results[p].row_set = processor(processResultsOptions, _this3._datumEnum, results[p]);
         }
         return results;
       });
@@ -49118,14 +49311,14 @@ var DbCon = /*#__PURE__*/function () {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var promise = arguments.length > 1 ? arguments[1] : undefined;
       return promise["catch"](function (error) {
-        if (_this2._logging && options.query) {
+        if (_this3._logging && options.query) {
           // eslint-disable-next-line no-console
           console.error(options.query, "\n", error);
         }
         throw error;
       }).then(function (result) {
-        var processor = processQueryResults(_this2._logging, _this2.updateQueryTimes);
-        var processResultsObject = processor(options, _this2._datumEnum, result);
+        var processor = processQueryResults(_this3._logging, _this3.updateQueryTimes);
+        var processResultsObject = processor(options, _this3._datumEnum, result);
         return processResultsObject;
       });
     };
@@ -49250,7 +49443,7 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "connectAsync",
     value: function connectAsync() {
-      var _this3 = this;
+      var _this4 = this;
       if (!Array.isArray(this._user) || !Array.isArray(this._password)) {
         return Promise.reject("Username and password must be arrays.");
       }
@@ -49277,37 +49470,37 @@ var DbCon = /*#__PURE__*/function () {
       // Reset the client property, so we can add only the ones that we can connect to below
       this._client = [];
       return Promise.allSettled(clients.map(function (client, h) {
-        return _this3.wrapTimeout(client.connect(_this3._user[h], _this3._password[h], _this3._dbName[h]), _this3._connectionTimeout).then(function (sessionId) {
+        return _this4.wrapTimeout(client.connect(_this4._user[h], _this4._password[h], _this4._dbName[h]), _this4._connectionTimeout).then(function (sessionId) {
           return {
             client: client,
             sessionId: sessionId,
-            connection: _this3._connections[h]
+            connection: _this4._connections[h]
           };
         });
       })).then(function (results) {
-        _this3._connections = [];
+        _this4._connections = [];
         results.forEach(function (_ref18, index) {
           var status = _ref18.status,
             value = _ref18.value;
           if (status === "fulfilled") {
-            _this3._client.push(value.client);
-            _this3._sessionId.push(value.sessionId);
-            _this3._connections.push(value.connection);
+            _this4._client.push(value.client);
+            _this4._sessionId.push(value.sessionId);
+            _this4._connections.push(value.connection);
             value.connection.on("error", function (error) {
-              if (_this3._shouldRejectPendingOnError(error)) {
-                _this3.rejectPendingRequests(index, "Connection error: ".concat(error));
+              if (_this4._shouldRejectPendingOnError(error)) {
+                _this4.rejectPendingRequests(index, "Connection error: ".concat(error));
               }
               console.error(error); // eslint-disable-line no-console
             });
           }
         });
-        if (_this3._client.length === 0) {
+        if (_this4._client.length === 0) {
           return Promise.reject("Failed to connect to any servers.");
         }
-        if (_this3._client.length < results.length) {
+        if (_this4._client.length < results.length) {
           console.error("Some connections did not succeed"); // eslint-disable-line no-console
         }
-        return _this3;
+        return _this4;
       });
     }
   }, {
@@ -49563,6 +49756,18 @@ var DbCon = /*#__PURE__*/function () {
       var isEnabledTxt = _logging ? "enabled" : "disabled";
       return "SQL logging is now ".concat(isEnabledTxt);
     }
+  }, {
+    key: "thriftDebug",
+    value: function thriftDebug(enabled) {
+      if (typeof enabled === "undefined") {
+        return isThriftDebugEnabled();
+      } else if (typeof enabled !== "boolean") {
+        return "thriftDebug can only be set with boolean values";
+      }
+      CustomXHRConnection.thriftDebug = enabled;
+      var isEnabledTxt = enabled ? "enabled" : "disabled";
+      return "Thrift debug logging is now ".concat(isEnabledTxt);
+    }
 
     /**
      * The name of the platform.
@@ -49671,9 +49876,9 @@ var DbCon = /*#__PURE__*/function () {
   }, {
     key: "getEndpoints",
     value: function getEndpoints() {
-      var _this4 = this;
+      var _this5 = this;
       return this._host.map(function (host, i) {
-        return "".concat(_this4._protocol[i], "://").concat(host, ":").concat(_this4._port[i]);
+        return "".concat(_this5._protocol[i], "://").concat(host, ":").concat(_this5._port[i]);
       });
     }
 

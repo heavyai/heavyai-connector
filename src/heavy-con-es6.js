@@ -26,9 +26,11 @@ import {
 } from "../thrift/heavy_types.js"
 import { HeavyClient } from "../thrift/Heavy.js"
 import {
+  InputBufferUnderrunError,
   TBinaryProtocol,
   TBufferedTransport,
   TJSONProtocol,
+  Thrift,
   XHRConnection,
   createHttpConnection
 } from "thrift"
@@ -64,45 +66,274 @@ function arrayify(maybeArray) {
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray]
 }
 
-// custom version of XHRConnection which can set `withCredentials` for CORS
-function CustomXHRConnection(host, port, opts) {
-  XHRConnection.call(this, host, port, opts)
-  if (opts.headers["Content-Type"] === "application/vnd.apache.thrift.binary") {
-    // this is copy/paste from thrift with the noted changes below
-    this.flush = () => {
-      if (this.url === undefined || this.url === "") {
-        return this.send_buf
-      }
+const THRIFT_DEBUG_STORAGE_KEY = "HEAVYAI_THRIFT_DEBUG"
+const THRIFT_DEBUG_PREVIEW_LENGTH = 2000
 
-      const xreq = this.getXmlHttpRequestObject()
+function getBrowserDebugFlag() {
+  if (!process.env.BROWSER || typeof window === "undefined") {
+    return false
+  }
 
-      // removed overrideMimeType since we're expecting binary data
-      // added responseType
-      xreq.responseType = "arraybuffer"
-      xreq.onreadystatechange = () => {
-        if (xreq.readyState === 4 && xreq.status === 200) {
-          // changed responseText -> response
-          this.setRecvBuffer(xreq.response)
-        }
-      }
-
-      xreq.open("POST", this.url, true)
-
-      Object.keys(this.headers).forEach((headerKey) => {
-        xreq.setRequestHeader(headerKey, this.headers[headerKey])
-      })
-
-      xreq.send(this.send_buf)
-    }
+  try {
+    const localStorageValue = window.localStorage?.getItem(
+      THRIFT_DEBUG_STORAGE_KEY
+    )
+    return (
+      window.HEAVYAI_THRIFT_DEBUG === true ||
+      localStorageValue === "true" ||
+      localStorageValue === "1"
+    )
+  } catch (_error) {
+    return window.HEAVYAI_THRIFT_DEBUG === true
   }
 }
 
+function isThriftDebugEnabled() {
+  return Boolean(CustomXHRConnection.thriftDebug || getBrowserDebugFlag())
+}
+
+function previewBuffer(value) {
+  if (value === undefined || value === null) {
+    return value
+  }
+
+  if (typeof value === "string") {
+    return value.length > THRIFT_DEBUG_PREVIEW_LENGTH
+      ? `${value.slice(0, THRIFT_DEBUG_PREVIEW_LENGTH)}...<truncated ${
+          value.length
+        } chars>`
+      : value
+  }
+
+  if (Object.prototype.toString.call(value) === "[object ArrayBuffer]") {
+    const byteLength = value.byteLength
+    try {
+      if (typeof TextDecoder !== "undefined") {
+        return previewBuffer(new TextDecoder().decode(value))
+      }
+    } catch (_error) {
+      // Fall through to byte-length summary.
+    }
+    return `<ArrayBuffer byteLength=${byteLength}>`
+  }
+
+  if (Buffer.isBuffer(value)) {
+    try {
+      return previewBuffer(value.toString("utf8"))
+    } catch (_error) {
+      return `<Buffer length=${value.length}>`
+    }
+  }
+
+  return value
+}
+
+function parseThriftJsonEnvelope(body) {
+  if (typeof body !== "string") {
+    return null
+  }
+
+  try {
+    const parsed = JSON.parse(body)
+    if (Array.isArray(parsed)) {
+      return {
+        version: parsed[0],
+        method: parsed[1],
+        messageType: parsed[2],
+        seqid: parsed[3]
+      }
+    }
+  } catch (_error) {
+    return null
+  }
+
+  return null
+}
+
+function logThriftDebug(label, payload, level = "debug") {
+  if (!isThriftDebugEnabled() || typeof console === "undefined") {
+    return
+  }
+
+  const logger = console[level] || console.debug || console.log
+  logger.call(console, `[heavyai thrift] ${label}`, payload)
+}
+
+function isBinaryThriftContentType(contentType) {
+  return /application\/vnd\.apache\.thrift\.binary/i.test(contentType || "")
+}
+
+// custom version of XHRConnection which can set `withCredentials` for CORS
+function CustomXHRConnection(host, port, opts) {
+  XHRConnection.call(this, host, port, opts)
+}
+
 util.inherits(CustomXHRConnection, XHRConnection)
+
+CustomXHRConnection.thriftDebug = false
 
 CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   const obj = XHRConnection.prototype.getXmlHttpRequestObject.call(this)
   obj.withCredentials = CustomXHRConnection.withCredentials
   return obj
+}
+
+CustomXHRConnection.prototype.flush = function () {
+  if (this.url === undefined || this.url === "") {
+    return this.send_buf
+  }
+
+  const xreq = this.getXmlHttpRequestObject()
+  const requestContentType = this.headers["Content-Type"]
+  const isBinaryRequest = isBinaryThriftContentType(requestContentType)
+  const requestPreview = previewBuffer(this.send_buf)
+  const requestEnvelope = parseThriftJsonEnvelope(requestPreview)
+
+  if (isBinaryRequest) {
+    xreq.responseType = "arraybuffer"
+    xreq.overrideMimeType("application/octet-stream")
+  } else {
+    xreq.overrideMimeType("application/json")
+  }
+
+  logThriftDebug("request", {
+    url: this.url,
+    contentType: requestContentType,
+    protocol:
+      this.protocol && (this.protocol.name || this.protocol.constructor?.name),
+    isBinaryRequest,
+    envelope: requestEnvelope,
+    bodyPreview: requestPreview
+  })
+
+  xreq.onreadystatechange = () => {
+    if (xreq.readyState !== 4) {
+      return
+    }
+
+    const responseContentType = xreq.getResponseHeader("Content-Type")
+    const isBinaryResponse =
+      isBinaryRequest || isBinaryThriftContentType(responseContentType)
+    const responseBody = isBinaryResponse ? xreq.response : xreq.responseText
+    const responsePreview = previewBuffer(responseBody)
+
+    logThriftDebug(xreq.status === 200 ? "response" : "response non-200", {
+      url: this.url,
+      status: xreq.status,
+      statusText: xreq.statusText,
+      contentType: responseContentType,
+      allHeaders: xreq.getAllResponseHeaders(),
+      isBinaryResponse,
+      envelope: parseThriftJsonEnvelope(responsePreview),
+      bodyPreview: responsePreview
+    }, xreq.status === 200 ? "debug" : "warn")
+
+    if (xreq.status === 200) {
+      this.setRecvBuffer(responseBody)
+    }
+  }
+
+  xreq.ontimeout = (error) => {
+    logThriftDebug("timeout", { url: this.url, error }, "error")
+    this.emit("error", error)
+  }
+  xreq.onerror = (error) => {
+    logThriftDebug("network error", { url: this.url, error }, "error")
+    this.emit("error", error)
+  }
+
+  xreq.open("POST", this.url, true)
+  if (this.options.timeout) {
+    xreq.timeout = this.options.timeout
+  }
+
+  Object.keys(this.headers).forEach((headerKey) => {
+    xreq.setRequestHeader(headerKey, this.headers[headerKey])
+  })
+
+  xreq.send(this.send_buf)
+}
+
+CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
+  const proto = new this.protocol(transportWithData)
+  try {
+    while (true) {
+      const header = proto.readMessageBegin()
+      const dummySeqid = header.rseqid * -1
+      let client = this.client
+      const serviceName = this.seqId2Service[header.rseqid]
+
+      if (serviceName) {
+        client = this.client[serviceName]
+        delete this.seqId2Service[header.rseqid]
+      }
+
+      logThriftDebug("decode message begin", {
+        fname: header.fname,
+        mtype: header.mtype,
+        rseqid: header.rseqid,
+        dummySeqid,
+        serviceName
+      })
+
+      client._reqs[dummySeqid] = (err, success) => {
+        transportWithData.commitPosition()
+        const clientCallback = client._reqs[header.rseqid]
+        delete client._reqs[header.rseqid]
+        if (clientCallback) {
+          clientCallback(err, success)
+        }
+      }
+
+      if (client[`recv_${header.fname}`]) {
+        try {
+          client[`recv_${header.fname}`](proto, header.mtype, dummySeqid)
+          logThriftDebug("recv completed", {
+            fname: header.fname,
+            rseqid: header.rseqid
+          })
+        } catch (error) {
+          logThriftDebug(
+            "recv error",
+            {
+              fname: header.fname,
+              rseqid: header.rseqid,
+              error
+            },
+            "error"
+          )
+          throw error
+        }
+      } else {
+        delete client._reqs[dummySeqid]
+        const error = new Thrift.TApplicationException(
+          Thrift.TApplicationExceptionType.WRONG_METHOD_NAME,
+          "Received a response to an unknown RPC function"
+        )
+        logThriftDebug(
+          "unknown response method",
+          { fname: header.fname, rseqid: header.rseqid, error },
+          "error"
+        )
+        this.emit("error", error)
+      }
+    }
+  } catch (error) {
+    if (
+      error instanceof InputBufferUnderrunError ||
+      error?.name === "InputBufferUnderrunError"
+    ) {
+      logThriftDebug("input buffer underrun", {
+        error,
+        readCursor: transportWithData.readCursor,
+        writeCursor: transportWithData.writeCursor
+      })
+      transportWithData.rollbackPosition()
+    } else {
+      logThriftDebug("decode error", { error }, "error")
+      throw error
+    }
+  }
 }
 
 // Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
@@ -2161,6 +2392,18 @@ export class DbCon {
     this._logging = logging
     const isEnabledTxt = logging ? "enabled" : "disabled"
     return `SQL logging is now ${isEnabledTxt}`
+  }
+
+  thriftDebug(enabled) {
+    if (typeof enabled === "undefined") {
+      return isThriftDebugEnabled()
+    } else if (typeof enabled !== "boolean") {
+      return "thriftDebug can only be set with boolean values"
+    }
+
+    CustomXHRConnection.thriftDebug = enabled
+    const isEnabledTxt = enabled ? "enabled" : "disabled"
+    return `Thrift debug logging is now ${isEnabledTxt}`
   }
 
   /**
