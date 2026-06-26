@@ -49581,8 +49581,6 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
@@ -49591,6 +49589,12 @@ function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), 
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -49681,6 +49685,34 @@ function createClient(ServiceClient, connection) {
   return client;
 }
 var createXHRClient = createClient;
+
+// Apache Thrift 0.23's `--gen js` (browser globals) emits methods that look
+// like `client.foo(arg1, arg2, ..., callback)`. They only return a useful
+// value when a callback is supplied: send_foo(...) is called and the response
+// is delivered via `callback(result)`. Without a callback, the generator
+// falls back to `return this.recv_foo()` *synchronously*, which throws an
+// InputBufferUnderrunError because the XHR is still in flight. The previous
+// `--gen js:node` bindings used to return a Promise here, so any call site
+// that still does `client.foo(...).then(...)` (rather than going through
+// wrapThrift, which adds a done callback) needs this helper to bridge the
+// two shapes.
+var promisifyThriftCall = function promisifyThriftCall(client, methodName, args) {
+  return new Promise(function (resolve, reject) {
+    var done = function done(result) {
+      var _result$name;
+      if (result instanceof Error || result !== null && result !== void 0 && (_result$name = result.name) !== null && _result$name !== void 0 && _result$name.includes("Exception") || result !== null && result !== void 0 && result.error_msg) {
+        reject(result);
+      } else {
+        resolve(result);
+      }
+    };
+    try {
+      client[methodName].apply(client, [].concat(_toConsumableArray(args), [done]));
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 
 var COMPRESSION_LEVEL_DEFAULT = 3;
@@ -50134,9 +50166,9 @@ var DbCon = /*#__PURE__*/function () {
                 reject: reject
               });
               var done = function done(result) {
-                var _result$name;
+                var _result$name2;
                 delete _this4._pendingRequests[index][requestId];
-                if (result instanceof Error || result !== null && result !== void 0 && (_result$name = result.name) !== null && _result$name !== void 0 && _result$name.includes("Exception") || result !== null && result !== void 0 && result.error_msg) {
+                if (result instanceof Error || result !== null && result !== void 0 && (_result$name2 = result.name) !== null && _result$name2 !== void 0 && _result$name2.includes("Exception") || result !== null && result !== void 0 && result.error_msg) {
                   reject(result);
                 } else {
                   resolve(result);
@@ -51225,7 +51257,8 @@ var DbCon = /*#__PURE__*/function () {
       }
       var columnFormat = true; // BOOL
       var curNonce = (_this4._nonce++).toString();
-      return _this4._client[_this4._lastRenderCon].get_result_row_for_pixel(_this4._sessionId[_this4._lastRenderCon], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce).then(function (results) {
+      var conIndex = _this4._lastRenderCon;
+      return promisifyThriftCall(_this4._client[conIndex], "get_result_row_for_pixel", [_this4._sessionId[conIndex], widgetId, pixel, tableColNamesMap, columnFormat, pixelRadius, curNonce]).then(function (results) {
         results = Array.isArray(results) ? results.pixel_rows : [results];
         var processResultsOptions = {
           isImage: false,
@@ -51892,7 +51925,7 @@ var DbCon = /*#__PURE__*/function () {
         client = c.client;
         sessionId = "";
       }
-      return client.set_license_key(sessionId, key, this._nonce++);
+      return promisifyThriftCall(client, "set_license_key", [sessionId, key, this._nonce++]);
     }
 
     /**
@@ -51910,10 +51943,11 @@ var DbCon = /*#__PURE__*/function () {
       var sessionId = this._sessionId && this._sessionId[0];
       if (!client) {
         var url = "".concat(protocol, "://").concat(host, ":").concat(port);
-        client = buildClient(url, this._useBinaryProtocol);
+        var c = buildClient(url, this._useBinaryProtocol);
+        client = c.client;
         sessionId = "";
       }
-      return client.get_license_claims(sessionId, this._nonce++);
+      return promisifyThriftCall(client, "get_license_claims", [sessionId, this._nonce++]);
     }
   }, {
     key: "isTimeoutError",

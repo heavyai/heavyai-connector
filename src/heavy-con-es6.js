@@ -109,6 +109,36 @@ function createClient(ServiceClient, connection) {
 
 const createXHRClient = createClient
 
+// Apache Thrift 0.23's `--gen js` (browser globals) emits methods that look
+// like `client.foo(arg1, arg2, ..., callback)`. They only return a useful
+// value when a callback is supplied: send_foo(...) is called and the response
+// is delivered via `callback(result)`. Without a callback, the generator
+// falls back to `return this.recv_foo()` *synchronously*, which throws an
+// InputBufferUnderrunError because the XHR is still in flight. The previous
+// `--gen js:node` bindings used to return a Promise here, so any call site
+// that still does `client.foo(...).then(...)` (rather than going through
+// wrapThrift, which adds a done callback) needs this helper to bridge the
+// two shapes.
+const promisifyThriftCall = (client, methodName, args) =>
+  new Promise((resolve, reject) => {
+    const done = (result) => {
+      if (
+        result instanceof Error ||
+        result?.name?.includes("Exception") ||
+        result?.error_msg
+      ) {
+        reject(result)
+      } else {
+        resolve(result)
+      }
+    }
+    try {
+      client[methodName].apply(client, [...args, done])
+    } catch (error) {
+      reject(error)
+    }
+  })
+
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
 
@@ -2275,41 +2305,44 @@ export class DbCon {
       const columnFormat = true // BOOL
       const curNonce = (this._nonce++).toString()
 
-      return this._client[this._lastRenderCon]
-        .get_result_row_for_pixel(
-          this._sessionId[this._lastRenderCon],
+      const conIndex = this._lastRenderCon
+      return promisifyThriftCall(
+        this._client[conIndex],
+        "get_result_row_for_pixel",
+        [
+          this._sessionId[conIndex],
           widgetId,
           pixel,
           tableColNamesMap,
           columnFormat,
           pixelRadius,
           curNonce
+        ]
+      ).then((results) => {
+        results = Array.isArray(results) ? results.pixel_rows : [results]
+
+        const processResultsOptions = {
+          isImage: false,
+          eliminateNullRows: false,
+          query: "pixel request",
+          queryId: -2
+        }
+        const processor = processQueryResults(
+          this._logging,
+          this.updateQueryTimes
         )
-        .then((results) => {
-          results = Array.isArray(results) ? results.pixel_rows : [results]
 
-          const processResultsOptions = {
-            isImage: false,
-            eliminateNullRows: false,
-            query: "pixel request",
-            queryId: -2
-          }
-          const processor = processQueryResults(
-            this._logging,
-            this.updateQueryTimes
+        const numPixels = results.length
+        for (let p = 0; p < numPixels; p++) {
+          results[p].row_set = processor(
+            processResultsOptions,
+            this._datumEnum,
+            results[p]
           )
+        }
 
-          const numPixels = results.length
-          for (let p = 0; p < numPixels; p++) {
-            results[p].row_set = processor(
-              processResultsOptions,
-              this._datumEnum,
-              results[p]
-            )
-          }
-
-          return results
-        })
+        return results
+      })
     }
   )
 
@@ -2637,7 +2670,11 @@ export class DbCon {
       client = c.client
       sessionId = ""
     }
-    return client.set_license_key(sessionId, key, this._nonce++)
+    return promisifyThriftCall(client, "set_license_key", [
+      sessionId,
+      key,
+      this._nonce++
+    ])
   }
 
   /**
@@ -2650,10 +2687,14 @@ export class DbCon {
     let sessionId = this._sessionId && this._sessionId[0]
     if (!client) {
       const url = `${protocol}://${host}:${port}`
-      client = buildClient(url, this._useBinaryProtocol)
+      const c = buildClient(url, this._useBinaryProtocol)
+      client = c.client
       sessionId = ""
     }
-    return client.get_license_claims(sessionId, this._nonce++)
+    return promisifyThriftCall(client, "get_license_claims", [
+      sessionId,
+      this._nonce++
+    ])
   }
 
   isTimeoutError(result) {
