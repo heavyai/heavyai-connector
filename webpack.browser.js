@@ -28,6 +28,13 @@ module.exports = {
         include: /src/
       },
       {
+        // Convert Thrift --gen js browser-globals output to named CJS exports
+        // so webpack can resolve `import { TSourceType }` and `export * from`.
+        test: /\.js$/,
+        use: require.resolve("./scripts/thrift-globals-to-exports-loader.js"),
+        include: /thrift/
+      },
+      {
         test: /\.mjs$/,
         include: /node_modules/,
         type: "javascript/auto"

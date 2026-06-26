@@ -20,24 +20,41 @@ import {
   TPixel,
   TDBException,
   TImportHeaderRow,
-  TFileType,
   TRasterPointType,
   TSourceType,
   TRasterPointTransform
 } from "../thrift/heavy_types.js"
-import MapDThrift from "../thrift/Heavy.js"
+import { HeavyClient } from "../thrift/Heavy.js"
 import {
   TBinaryProtocol,
   TBufferedTransport,
   TJSONProtocol,
-  Thrift,
   XHRConnection,
-  createClient,
-  createHttpConnection,
-  createXHRClient
+  createHttpConnection
 } from "thrift"
 
 export { Thrift } from "thrift"
+
+// Thrift 0.23+ generated send_* methods call this.output.getTransport().flush(),
+// which requires this.output to be a protocol instance (protocols expose getTransport).
+// The upstream createClient passes the raw transport as input and the protocol class
+// as output, which breaks this. We instantiate the protocol around the transport and
+// pass the same protocol instance for both input and output.
+function createClient(ServiceClient, connection) {
+  if (ServiceClient.Client) {
+    ServiceClient = ServiceClient.Client
+  }
+  const writeCb = (buf, seqid) => connection.write(buf, seqid)
+  const transport = new connection.transport(undefined, writeCb)
+  const protocol = new connection.protocol(transport)
+  const client = new ServiceClient(protocol, protocol)
+  transport.client = client
+  connection.client = client
+  return client
+}
+
+const createXHRClient = createClient
+
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
 
@@ -173,7 +190,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    client = createClient(MapDThrift, connection)
+    client = createClient(HeavyClient, connection)
   } else {
     connection = new CustomXHRConnection(hostname, port, {
       transport: TBufferedTransport,
@@ -186,7 +203,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    client = createXHRClient(MapDThrift, connection)
+    client = createXHRClient(HeavyClient, connection)
   }
   return { client, connection }
 }
@@ -1609,13 +1626,7 @@ export class DbCon {
   getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
   // TODO: replace all these build* methods w/ a singular method that will map each type object
-  buildTFileTypeMap = () => {
-    for (const key in TFileType) {
-      if (TFileType.hasOwnProperty(key)) {
-        this.TFileTypeMap[TFileType[key]] = key
-      }
-    }
-  }
+  buildTFileTypeMap = () => {}
 
   buildTImportHeaderRowMap = () => {
     for (const key in TImportHeaderRow) {
