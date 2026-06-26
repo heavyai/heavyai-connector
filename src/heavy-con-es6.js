@@ -37,29 +37,8 @@ import {
 
 export { Thrift } from "thrift"
 
-// Thrift 0.23+ generated send_* methods call this.output.getTransport().flush(),
-// which requires this.output to be a protocol instance (protocols expose getTransport).
-// The upstream createClient passes the raw transport as input and the protocol class
-// as output, which breaks this. We instantiate the protocol around the transport and
-// pass the same protocol instance for both input and output.
-//
-// Concurrency model: each generated send_<rpc>() call ends with
-//   this.output.getTransport().flush(true, recvCallback)
-// which we intercept to register `recvCallback` on the connection so that when
-// the corresponding XHR response comes back the wrapper will swap protocol.trans
-// to the response buffer, run the recv (which reads from `this.input`, i.e. the
-// shared client protocol), and restore the previous trans. Because the
-// connection is shared across ALL concurrent thrift calls, we MUST NOT store
-// the callback in a single `_responseCallback` field - a second concurrent
-// call would clobber the first, sending the wrong recv against the wrong XHR
-// response and producing InputBufferUnderrunErrors and "recv error" noise as
-// the dispatcher falls back to its (broken-for-this-codegen) path. Instead we
-// keep a FIFO queue (`_responseCallbacks`) and let each XHR's onreadystatechange
-// shift its own callback off the queue. Within a single keep-alive HTTP/1.x
-// connection responses arrive in request order, and the browser's per-XHR
-// closure (see CustomXHRConnection.prototype.flush below) snapshots the head of
-// the queue at request-creation time so even out-of-order XHR completion is
-// safe.
+// Thrift 0.23 generated clients need protocol-backed input/output, and shared
+// connections need queued recv callbacks for concurrent requests.
 function createClient(ServiceClient, connection) {
   if (ServiceClient.Client) {
     ServiceClient = ServiceClient.Client
@@ -84,21 +63,15 @@ function createClient(ServiceClient, connection) {
         connection._responseCallbacks = []
       }
       connection._responseCallbacks.push(responseCallback)
-      // Keep `_responseCallback` set to the most-recently-registered callback
-      // so the upstream non-queue-aware setRecvBuffer fallback still works in
-      // the single-call case. The queue is the source of truth when the
-      // patched setRecvBuffer (below) is in play.
+      // Preserve the legacy single callback for fallback paths; the queue is
+      // the source of truth for patched setRecvBuffer.
       connection._responseCallback = responseCallback
     }
     return flush()
   }
   const client = new ServiceClient(protocol, protocol)
-  // Apache Thrift 0.23's `--gen js` (browser globals) emits a HeavyClient
-  // constructor that only sets `input`, `output`, and `seqid` - it does NOT
-  // initialize `_reqs`. The XHRConnection's __decodeCallback path (which we
-  // don't normally hit because we use the response-callback queue above)
-  // touches `client._reqs[dummySeqid]`. Seed it so that path can't throw
-  // "Cannot set properties of undefined" if it's ever reached.
+  // The browser-globals client does not initialize `_reqs`, but thrift's
+  // fallback decoder still expects it to exist.
   if (!client._reqs) {
     client._reqs = {}
   }
@@ -109,16 +82,8 @@ function createClient(ServiceClient, connection) {
 
 const createXHRClient = createClient
 
-// Apache Thrift 0.23's `--gen js` (browser globals) emits methods that look
-// like `client.foo(arg1, arg2, ..., callback)`. They only return a useful
-// value when a callback is supplied: send_foo(...) is called and the response
-// is delivered via `callback(result)`. Without a callback, the generator
-// falls back to `return this.recv_foo()` *synchronously*, which throws an
-// InputBufferUnderrunError because the XHR is still in flight. The previous
-// `--gen js:node` bindings used to return a Promise here, so any call site
-// that still does `client.foo(...).then(...)` (rather than going through
-// wrapThrift, which adds a done callback) needs this helper to bridge the
-// two shapes.
+// Bridge callback-only Thrift 0.23 methods for older direct call sites that
+// still expect promise-returning generated client methods.
 const promisifyThriftCall = (client, methodName, args) =>
   new Promise((resolve, reject) => {
     const done = (result) => {
@@ -148,99 +113,6 @@ function arrayify(maybeArray) {
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray]
 }
 
-const THRIFT_DEBUG_STORAGE_KEY = "HEAVYAI_THRIFT_DEBUG"
-const THRIFT_DEBUG_PREVIEW_LENGTH = 2000
-
-function getBrowserDebugFlag() {
-  if (!process.env.BROWSER || typeof window === "undefined") {
-    return false
-  }
-
-  try {
-    const localStorageValue = window.localStorage?.getItem(
-      THRIFT_DEBUG_STORAGE_KEY
-    )
-    return (
-      window.HEAVYAI_THRIFT_DEBUG === true ||
-      localStorageValue === "true" ||
-      localStorageValue === "1"
-    )
-  } catch (_error) {
-    return window.HEAVYAI_THRIFT_DEBUG === true
-  }
-}
-
-function isThriftDebugEnabled() {
-  return Boolean(CustomXHRConnection.thriftDebug || getBrowserDebugFlag())
-}
-
-function previewBuffer(value) {
-  if (value === undefined || value === null) {
-    return value
-  }
-
-  if (typeof value === "string") {
-    return value.length > THRIFT_DEBUG_PREVIEW_LENGTH
-      ? `${value.slice(0, THRIFT_DEBUG_PREVIEW_LENGTH)}...<truncated ${
-          value.length
-        } chars>`
-      : value
-  }
-
-  if (Object.prototype.toString.call(value) === "[object ArrayBuffer]") {
-    const byteLength = value.byteLength
-    try {
-      if (typeof TextDecoder !== "undefined") {
-        return previewBuffer(new TextDecoder().decode(value))
-      }
-    } catch (_error) {
-      // Fall through to byte-length summary.
-    }
-    return `<ArrayBuffer byteLength=${byteLength}>`
-  }
-
-  if (Buffer.isBuffer(value)) {
-    try {
-      return previewBuffer(value.toString("utf8"))
-    } catch (_error) {
-      return `<Buffer length=${value.length}>`
-    }
-  }
-
-  return value
-}
-
-function parseThriftJsonEnvelope(body) {
-  if (typeof body !== "string") {
-    return null
-  }
-
-  try {
-    const parsed = JSON.parse(body)
-    if (Array.isArray(parsed)) {
-      return {
-        version: parsed[0],
-        method: parsed[1],
-        messageType: parsed[2],
-        seqid: parsed[3]
-      }
-    }
-  } catch (_error) {
-    return null
-  }
-
-  return null
-}
-
-function logThriftDebug(label, payload, level = "debug") {
-  if (!isThriftDebugEnabled() || typeof console === "undefined") {
-    return
-  }
-
-  const logger = console[level] || console.debug || console.log
-  logger.call(console, `[heavyai thrift] ${label}`, payload)
-}
-
 function isBinaryThriftContentType(contentType) {
   return /application\/vnd\.apache\.thrift\.binary/i.test(contentType || "")
 }
@@ -251,8 +123,6 @@ function CustomXHRConnection(host, port, opts) {
 }
 
 util.inherits(CustomXHRConnection, XHRConnection)
-
-CustomXHRConnection.thriftDebug = false
 
 CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   const obj = XHRConnection.prototype.getXmlHttpRequestObject.call(this)
@@ -273,15 +143,9 @@ CustomXHRConnection.prototype.setRecvBuffer = function (buf, perRequestCallback)
   const thing = new Buffer(data || buf)
 
   this.transport.receiver((transportWithData) => {
-    // Preferred path: the XHR's onreadystatechange snapshotted *its own*
-    // response callback off the connection queue when the request was
-    // dispatched, eliminating the cross-request clobber that happens when
-    // multiple concurrent calls share `connection._responseCallback`.
+    // Preferred path: use the callback snapshotted for this XHR when it was
+    // dispatched, avoiding cross-request callback clobbering.
     if (perRequestCallback) {
-      logThriftDebug("response callback (per-request)", {
-        readCursor: transportWithData.readCursor,
-        writeCursor: transportWithData.writeCursor
-      })
       perRequestCallback(transportWithData)
       return
     }
@@ -290,20 +154,11 @@ CustomXHRConnection.prototype.setRecvBuffer = function (buf, perRequestCallback)
     if (this._responseCallback) {
       const responseCallback = this._responseCallback
       this._responseCallback = null
-      logThriftDebug("response callback", {
-        readCursor: transportWithData.readCursor,
-        writeCursor: transportWithData.writeCursor
-      })
       responseCallback(transportWithData)
       return
     }
-    // Last resort: the upstream Apache-Thrift `__decodeCallback` dispatcher.
-    // Note this path is essentially dead for our `--gen js` (browser globals)
-    // generated client because its `recv_*` methods read from `this.input`
-    // (the shared client protocol) and ignore the `proto` the dispatcher
-    // creates from `transportWithData` - so it will reliably underrun. We keep
-    // it (and seed `client._reqs = {}` in createClient) only so an unexpected
-    // orphan response doesn't crash the page.
+    // Last resort: keep thrift's decoder path available for orphan responses,
+    // even though the queued callback path should handle normal responses.
     this.__decodeCallback(transportWithData)
   })(thing)
 }
@@ -313,17 +168,12 @@ CustomXHRConnection.prototype.flush = function () {
     return this.send_buf
   }
 
-  // Snapshot this request's response callback off the queue NOW (at request
-  // dispatch time) so each XHR's onreadystatechange runs the callback that
-  // was registered for it - even if another concurrent thrift call appends
-  // additional callbacks to the queue before this XHR completes. See the
-  // comment on createClient for the rationale.
+  // Snapshot this request's callback at dispatch so concurrent XHR completion
+  // cannot use the wrong recv callback.
   let perRequestCallback = null
   if (Array.isArray(this._responseCallbacks) && this._responseCallbacks.length) {
     perRequestCallback = this._responseCallbacks.shift()
-    // Keep `_responseCallback` aligned with the head of the queue so any code
-    // that still reads the legacy single-slot field after we shift sees the
-    // next pending callback rather than a stale value.
+    // Keep the legacy single-slot callback aligned with the queue head.
     this._responseCallback = this._responseCallbacks[0] || null
   } else if (this._responseCallback) {
     perRequestCallback = this._responseCallback
@@ -333,8 +183,6 @@ CustomXHRConnection.prototype.flush = function () {
   const xreq = this.getXmlHttpRequestObject()
   const requestContentType = this.headers["Content-Type"]
   const isBinaryRequest = isBinaryThriftContentType(requestContentType)
-  const requestPreview = previewBuffer(this.send_buf)
-  const requestEnvelope = parseThriftJsonEnvelope(requestPreview)
 
   if (isBinaryRequest) {
     xreq.responseType = "arraybuffer"
@@ -342,16 +190,6 @@ CustomXHRConnection.prototype.flush = function () {
   } else {
     xreq.overrideMimeType("application/json")
   }
-
-  logThriftDebug("request", {
-    url: this.url,
-    contentType: requestContentType,
-    protocol:
-      this.protocol && (this.protocol.name || this.protocol.constructor?.name),
-    isBinaryRequest,
-    envelope: requestEnvelope,
-    bodyPreview: requestPreview
-  })
 
   xreq.onreadystatechange = () => {
     if (xreq.readyState !== 4) {
@@ -362,18 +200,6 @@ CustomXHRConnection.prototype.flush = function () {
     const isBinaryResponse =
       isBinaryRequest || isBinaryThriftContentType(responseContentType)
     const responseBody = isBinaryResponse ? xreq.response : xreq.responseText
-    const responsePreview = previewBuffer(responseBody)
-
-    logThriftDebug(xreq.status === 200 ? "response" : "response non-200", {
-      url: this.url,
-      status: xreq.status,
-      statusText: xreq.statusText,
-      contentType: responseContentType,
-      allHeaders: xreq.getAllResponseHeaders(),
-      isBinaryResponse,
-      envelope: parseThriftJsonEnvelope(responsePreview),
-      bodyPreview: responsePreview
-    }, xreq.status === 200 ? "debug" : "warn")
 
     if (xreq.status === 200) {
       this.setRecvBuffer(responseBody, perRequestCallback)
@@ -381,11 +207,9 @@ CustomXHRConnection.prototype.flush = function () {
   }
 
   xreq.ontimeout = (error) => {
-    logThriftDebug("timeout", { url: this.url, error }, "error")
     this.emit("error", error)
   }
   xreq.onerror = (error) => {
-    logThriftDebug("network error", { url: this.url, error }, "error")
     this.emit("error", error)
   }
 
@@ -415,14 +239,6 @@ CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
         delete this.seqId2Service[header.rseqid]
       }
 
-      logThriftDebug("decode message begin", {
-        fname: header.fname,
-        mtype: header.mtype,
-        rseqid: header.rseqid,
-        dummySeqid,
-        serviceName
-      })
-
       client._reqs[dummySeqid] = (err, success) => {
         transportWithData.commitPosition()
         const clientCallback = client._reqs[header.rseqid]
@@ -435,20 +251,7 @@ CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
       if (client[`recv_${header.fname}`]) {
         try {
           client[`recv_${header.fname}`](proto, header.mtype, dummySeqid)
-          logThriftDebug("recv completed", {
-            fname: header.fname,
-            rseqid: header.rseqid
-          })
         } catch (error) {
-          logThriftDebug(
-            "recv error",
-            {
-              fname: header.fname,
-              rseqid: header.rseqid,
-              error
-            },
-            "error"
-          )
           throw error
         }
       } else {
@@ -456,11 +259,6 @@ CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
         const error = new Thrift.TApplicationException(
           Thrift.TApplicationExceptionType.WRONG_METHOD_NAME,
           "Received a response to an unknown RPC function"
-        )
-        logThriftDebug(
-          "unknown response method",
-          { fname: header.fname, rseqid: header.rseqid, error },
-          "error"
         )
         this.emit("error", error)
       }
@@ -470,23 +268,15 @@ CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
       error instanceof InputBufferUnderrunError ||
       error?.name === "InputBufferUnderrunError"
     ) {
-      logThriftDebug("input buffer underrun", {
-        error,
-        readCursor: transportWithData.readCursor,
-        writeCursor: transportWithData.writeCursor
-      })
       transportWithData.rollbackPosition()
     } else {
-      logThriftDebug("decode error", { error }, "error")
       throw error
     }
   }
 }
 
-// Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
-// anything other than a string or Buffer is passed to writeString. For
-// example: we use a number for a nonce that is defined as a string type. So,
-// let's just coerce things to a string.
+// Preserve old connector behavior by coercing non-Buffer values before writing
+// string fields such as nonce.
 function CustomTJSONProtocol(...args) {
   TJSONProtocol.apply(this, args)
 }
@@ -500,13 +290,7 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
   return TJSONProtocol.prototype.writeString.call(this, arg)
 }
 
-// Additionally, the browser version of connector relied on thrift's old
-// behavior of returning a Number for a 64-bit int. Technically, javascript
-// does not have 64-bits of precision in a Number, so this can end up giving
-// incorrect results.
-//
-// Lastly, the browser version relied on thrift returning a string from a
-// binary type.
+// Preserve browser connector compatibility for thrift I64 and binary reads.
 if (process.env.BROWSER) {
   CustomTJSONProtocol.prototype.readI64 = function () {
     const n = TJSONProtocol.prototype.readI64.call(this)
@@ -518,8 +302,7 @@ if (process.env.BROWSER) {
   }
 }
 
-// Custom version of the binary protocol to override writeString, readI64, and
-// readBinary as above.
+// Binary protocol with the same connector compatibility overrides as JSON.
 function CustomBinaryProtocol(...args) {
   TBinaryProtocol.apply(this, args)
 }
@@ -2541,18 +2324,6 @@ export class DbCon {
     this._logging = logging
     const isEnabledTxt = logging ? "enabled" : "disabled"
     return `SQL logging is now ${isEnabledTxt}`
-  }
-
-  thriftDebug(enabled) {
-    if (typeof enabled === "undefined") {
-      return isThriftDebugEnabled()
-    } else if (typeof enabled !== "boolean") {
-      return "thriftDebug can only be set with boolean values"
-    }
-
-    CustomXHRConnection.thriftDebug = enabled
-    const isEnabledTxt = enabled ? "enabled" : "disabled"
-    return `Thrift debug logging is now ${isEnabledTxt}`
   }
 
   /**

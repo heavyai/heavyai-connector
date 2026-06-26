@@ -24,9 +24,8 @@ module.exports = {
         use: require.resolve("./scripts/thrift-globals-to-exports-loader.js"),
         include: /thrift/
       },
-      // The following two objs fix an issue with Apache-Arrow
-      // As the package includes both .mjs and .js outputs, webpack errors
-      // without this.
+      // Apache Arrow ships both .mjs and .js outputs; webpack needs this
+      // resolution relaxation to bundle it cleanly.
       {
         test: /\.m?js/,
         resolve: {
