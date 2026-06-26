@@ -49243,6 +49243,17 @@ function createClient(ServiceClient, connection) {
     return flush();
   };
   var client = new ServiceClient(protocol, protocol);
+  // Apache Thrift 0.23's `--gen js` (browser globals) emits a HeavyClient
+  // constructor that only sets `input`, `output`, and `seqid` - it does NOT
+  // initialize `_reqs`. The XHRConnection's __decodeCallback, however, always
+  // does `client._reqs[dummySeqid] = ...` to register a response handler keyed
+  // by the negated seqid. Without _reqs that assignment throws
+  // "Cannot set properties of undefined (setting '0')" the moment we
+  // successfully decode any response. Seed it here so the decode dispatcher
+  // can record (and clean up) per-call entries.
+  if (!client._reqs) {
+    client._reqs = {};
+  }
   transport.client = client;
   connection.client = client;
   return client;
