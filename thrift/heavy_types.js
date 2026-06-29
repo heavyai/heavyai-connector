@@ -24,6 +24,7 @@ TSourceType = {
 };
 TPartitionDetail = {
   'DEFAULT' : 0,
+  'REPLICATED' : 1,
   'SHARDED' : 2,
   'OTHER' : 3
 };
@@ -2171,6 +2172,56 @@ TCopyParams.prototype[Symbol.for("write")] = function(output) {
   return;
 };
 
+TCreateParams = function(args) {
+  this.is_replicated = null;
+  if (args) {
+    if (args.is_replicated !== undefined && args.is_replicated !== null) {
+      this.is_replicated = args.is_replicated;
+    }
+  }
+};
+TCreateParams.prototype = {};
+TCreateParams.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_replicated = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TCreateParams.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('TCreateParams');
+  if (this.is_replicated !== null && this.is_replicated !== undefined) {
+    output.writeFieldBegin('is_replicated', Thrift.Type.BOOL, 1);
+    output.writeBool(this.is_replicated);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 TDetectResult = function(args) {
   this.row_set = null;
   this.copy_params = null;
@@ -3575,6 +3626,7 @@ TTableMeta = function(args) {
   this.table_name = null;
   this.num_cols = null;
   this.is_view = null;
+  this.is_replicated = null;
   this.shard_count = null;
   this.max_rows = null;
   this.table_id = null;
@@ -3590,6 +3642,9 @@ TTableMeta = function(args) {
     }
     if (args.is_view !== undefined && args.is_view !== null) {
       this.is_view = args.is_view;
+    }
+    if (args.is_replicated !== undefined && args.is_replicated !== null) {
+      this.is_replicated = args.is_replicated;
     }
     if (args.shard_count !== undefined && args.shard_count !== null) {
       this.shard_count = args.shard_count;
@@ -3639,6 +3694,13 @@ TTableMeta.prototype[Symbol.for("read")] = function(input) {
       case 4:
       if (ftype == Thrift.Type.BOOL) {
         this.is_view = input.readBool().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.BOOL) {
+        this.is_replicated = input.readBool().value;
       } else {
         input.skip(ftype);
       }
@@ -3726,6 +3788,11 @@ TTableMeta.prototype[Symbol.for("write")] = function(output) {
   if (this.is_view !== null && this.is_view !== undefined) {
     output.writeFieldBegin('is_view', Thrift.Type.BOOL, 4);
     output.writeBool(this.is_view);
+    output.writeFieldEnd();
+  }
+  if (this.is_replicated !== null && this.is_replicated !== undefined) {
+    output.writeFieldBegin('is_replicated', Thrift.Type.BOOL, 5);
+    output.writeBool(this.is_replicated);
     output.writeFieldEnd();
   }
   if (this.shard_count !== null && this.shard_count !== undefined) {
