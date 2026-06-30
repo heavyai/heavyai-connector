@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * The configuration required to import a table into MapD.
+ * The configuration required to import a table into HEAVY.AI.
  * See {@link detectColumnTypes} for a usage example.
  * @typedef {TCopyParams} TCopyParams
  * @property {String} array_begin=null

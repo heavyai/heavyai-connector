@@ -86,3 +86,5 @@ License descriptions and public license URLs are maintained in licenses.json as 
 
 Interested in contributing? We'd love for you to help! Check out
 [Contributing.MD](.github/CONTRIBUTING.md)
+
+*Variables and function names are used as convention and do not reference any commercial product.*

@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 "use strict"
-const hostname = process.env.HOSTNAME || "forge.mapd.com"
+const hostname = process.env.HOSTNAME || "localhost"
 const protocol = process.env.PROTOCOL || "http"
 const port = process.env.PORT || "9092"
-const database = process.env.DATABASE || "mapd"
-const username = process.env.USERNAME || "mapd"
+const database = process.env.DATABASE || "heavyai"
+const username = process.env.USERNAME || "admin"
 const password = process.env.PASSWORD || "HyperInteractive"
 
 const isNodeRuntime = typeof window === "undefined"

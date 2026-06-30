@@ -656,10 +656,10 @@ export class DbCon {
   }
 
   /**
-   * Create a connection to the MapD server, generating a client and session ID.
+   * Create a connection to the HEAVY.AI server, generating a client and session ID.
    * @return {Promise.DbCon} Object.
    *
-   * @example <caption>Connect to a MapD server:</caption>
+   * @example <caption>Connect to a HEAVY.AI server:</caption>
    * var con = new DbCon()
    *   .host('localhost')
    *   .port('8080')
@@ -745,11 +745,11 @@ export class DbCon {
   }
 
   /**
-   * Create a connection to the MapD server, generating a client and session ID.
+   * Create a connection to the HEAVY.AI server, generating a client and session ID.
    * @param {Function} callback An optional callback that takes `(err, success)` as its signature.  Returns con singleton if successful.
    * @return {Promise.DbCon} Object.
    *
-   * @example <caption>Connect to a MapD server:</caption>
+   * @example <caption>Connect to a HEAVY.AI server:</caption>
    * var con = new DbCon()
    *   .host('localhost')
    *   .port('8080')
@@ -864,7 +864,7 @@ export class DbCon {
   /**
    * Get information about the server hardware:
    * - Number of GPUs.
-   * - Number of GPUs allocated to MapD.
+   * - Number of GPUs allocated to HEAVY.AI.
    * - Start GPU.
    * - Number of SMs, SMXs, or CUs (streaming multiprocessors).
    * - Clock frequency of each GPU.
@@ -905,7 +905,7 @@ export class DbCon {
   /**
    * Get information about the server hardware:
    * - Number of GPUs.
-   * - Number of GPUs allocated to MapD.
+   * - Number of GPUs allocated to HEAVY.AI.
    * - Start GPU.
    * - Number of SMs, SMXs, or CUs (streaming multiprocessors).
    * - Clock frequency of each GPU.
@@ -2148,7 +2148,7 @@ export class DbCon {
    * Get or set the session ID used by the server to serve the correct data.
    * This is typically set by {@link connect} and should not be set manually.
    * @param {Number} sessionId The session ID of the current connection.
-   * @return {Number|DbCon} - The session ID or MapD connector itself.
+   * @return {Number|DbCon} - The session ID or HEAVY.AI connector itself.
    *
    * @example <caption>Get the session ID:</caption>
    *
@@ -2179,7 +2179,7 @@ export class DbCon {
    * Get or set the connection server hostname.
    * This is is typically the first method called after instantiating a new DbCon.
    * @param {String} host The hostname address.
-   * @return {String|DbCon} The hostname or MapD connector itself.
+   * @return {String|DbCon} The hostname or HEAVY.AI connector itself.
    *
    * @example <caption>Set the hostname:</caption>
    * var con = new DbCon().host('localhost');
@@ -2199,7 +2199,7 @@ export class DbCon {
   /**
    * Get or set the connection port.
    * @param {String} port - The port to connect on.
-   * @return {String|DbCon} - The port or MapD connector itself.
+   * @return {String|DbCon} - The port or HEAVY.AI connector itself.
    *
    * @example <caption>Set the port:</caption>
    * var con = new DbCon().port('8080');
@@ -2219,7 +2219,7 @@ export class DbCon {
   /**
    * Get or set the username with which to authenticate.
    * @param {String} user - The username with which to authenticate.
-   * @return {String|DbCon} - The username or MapD connector itself.
+   * @return {String|DbCon} - The username or HEAVY.AI connector itself.
    *
    * @example <caption>Set the username:</caption>
    * var con = new DbCon().user('foo');
@@ -2239,7 +2239,7 @@ export class DbCon {
   /**
    * Get or set the user password for authentication.
    * @param {String} password The password with which to authenticate.
-   * @return {String|DbCon} The password or MapD connector itself.
+   * @return {String|DbCon} The password or HEAVY.AI connector itself.
    *
    * @example <caption>Set the password:</caption>
    * var con = new DbCon().password('bar');
@@ -2259,7 +2259,7 @@ export class DbCon {
   /**
    * Get or set the name of the database to connect to.
    * @param {String} dbName - The database to connect to.
-   * @return {String|DbCon} - The name of the database or the MapD connector itself.
+   * @return {String|DbCon} - The name of the database or the HEAVY.AI connector itself.
    *
    * @example <caption>Set the database name:</caption>
    * var con = new DbCon().dbName('myDatabase');
@@ -2306,7 +2306,7 @@ export class DbCon {
    * Configure whether raw query strings are logged to the console.
    * Used primarily for debugging; `false` by default.
    * @param {Boolean} logging Set to true to enable logging.
-   * @return {Boolean|DbCon} The current logging flag or MapD connector itself.
+   * @return {Boolean|DbCon} The current logging flag or HEAVY.AI connector itself.
    *
    * @example <caption>Set logging to true:</caption>
    * var con = new DbCon().logging(true);
@@ -2329,7 +2329,7 @@ export class DbCon {
   /**
    * The name of the platform.
    * @param {String} platform The platform; "heavydb" by default.
-   * @return {String|DbCon} - The platform or MapD connector itself.
+   * @return {String|DbCon} - The platform or HEAVY.AI connector itself.
    *
    * @example <caption>Set the platform name:</caption>
    * var con = new DbCon().platform('myPlatform');
