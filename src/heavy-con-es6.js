@@ -20,21 +20,90 @@ import {
   TPixel,
   TDBException,
   TImportHeaderRow,
-  TFileType,
   TRasterPointType,
   TSourceType,
   TRasterPointTransform
 } from "../thrift/heavy_types.js"
-import MapDThrift from "../thrift/Heavy.js"
+import { HeavyClient } from "../thrift/Heavy.js"
 import {
+  InputBufferUnderrunError,
   TBinaryProtocol,
   TBufferedTransport,
   TJSONProtocol,
+  Thrift,
   XHRConnection,
-  createClient,
-  createHttpConnection,
-  createXHRClient
+  createHttpConnection
 } from "thrift"
+
+export { Thrift } from "thrift"
+
+// Thrift 0.23 generated clients need protocol-backed input/output, and shared
+// connections need queued recv callbacks for concurrent requests.
+function createClient(ServiceClient, connection) {
+  if (ServiceClient.Client) {
+    ServiceClient = ServiceClient.Client
+  }
+  const writeCb = (buf, seqid) => connection.write(buf, seqid)
+  const transport = new connection.transport(undefined, writeCb)
+  const protocol = new connection.protocol(transport)
+  const flush = transport.flush.bind(transport)
+  transport.flush = (...args) => {
+    const callback = args.find((arg) => typeof arg === "function")
+    if (callback) {
+      const responseCallback = (responseTransport) => {
+        const requestTransport = protocol.trans
+        protocol.trans = responseTransport
+        try {
+          callback()
+        } finally {
+          protocol.trans = requestTransport
+        }
+      }
+      if (!Array.isArray(connection._responseCallbacks)) {
+        connection._responseCallbacks = []
+      }
+      connection._responseCallbacks.push(responseCallback)
+      // Preserve the legacy single callback for fallback paths; the queue is
+      // the source of truth for patched setRecvBuffer.
+      connection._responseCallback = responseCallback
+    }
+    return flush()
+  }
+  const client = new ServiceClient(protocol, protocol)
+  // The browser-globals client does not initialize `_reqs`, but thrift's
+  // fallback decoder still expects it to exist.
+  if (!client._reqs) {
+    client._reqs = {}
+  }
+  transport.client = client
+  connection.client = client
+  return client
+}
+
+const createXHRClient = createClient
+
+// Bridge callback-only Thrift 0.23 methods for older direct call sites that
+// still expect promise-returning generated client methods.
+const promisifyThriftCall = (client, methodName, args) =>
+  new Promise((resolve, reject) => {
+    const done = (result) => {
+      if (
+        result instanceof Error ||
+        result?.name?.includes("Exception") ||
+        result?.error_msg
+      ) {
+        reject(result)
+      } else {
+        resolve(result)
+      }
+    }
+    try {
+      client[methodName].apply(client, [...args, done])
+    } catch (error) {
+      reject(error)
+    }
+  })
+
 import processQueryResults from "./process-query-results"
 import * as helpers from "./helpers"
 
@@ -44,37 +113,13 @@ function arrayify(maybeArray) {
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray]
 }
 
+function isBinaryThriftContentType(contentType) {
+  return /application\/vnd\.apache\.thrift\.binary/i.test(contentType || "")
+}
+
 // custom version of XHRConnection which can set `withCredentials` for CORS
 function CustomXHRConnection(host, port, opts) {
   XHRConnection.call(this, host, port, opts)
-  if (opts.headers["Content-Type"] === "application/vnd.apache.thrift.binary") {
-    // this is copy/paste from thrift with the noted changes below
-    this.flush = () => {
-      if (this.url === undefined || this.url === "") {
-        return this.send_buf
-      }
-
-      const xreq = this.getXmlHttpRequestObject()
-
-      // removed overrideMimeType since we're expecting binary data
-      // added responseType
-      xreq.responseType = "arraybuffer"
-      xreq.onreadystatechange = () => {
-        if (xreq.readyState === 4 && xreq.status === 200) {
-          // changed responseText -> response
-          this.setRecvBuffer(xreq.response)
-        }
-      }
-
-      xreq.open("POST", this.url, true)
-
-      Object.keys(this.headers).forEach((headerKey) => {
-        xreq.setRequestHeader(headerKey, this.headers[headerKey])
-      })
-
-      xreq.send(this.send_buf)
-    }
-  }
 }
 
 util.inherits(CustomXHRConnection, XHRConnection)
@@ -85,10 +130,153 @@ CustomXHRConnection.prototype.getXmlHttpRequestObject = function () {
   return obj
 }
 
-// Custom version of TJSONProtocol - thrift 0.14.0 throws an exception if
-// anything other than a string or Buffer is passed to writeString. For
-// example: we use a number for a nonce that is defined as a string type. So,
-// let's just coerce things to a string.
+CustomXHRConnection.prototype.setRecvBuffer = function (buf, perRequestCallback) {
+  this.recv_buf = buf
+  this.recv_buf_sz = this.recv_buf.length
+  this.wpos = this.recv_buf.length
+  this.rpos = 0
+
+  let data
+  if (Object.prototype.toString.call(buf) === "[object ArrayBuffer]") {
+    data = new Uint8Array(buf)
+  }
+  const thing = new Buffer(data || buf)
+
+  this.transport.receiver((transportWithData) => {
+    // Preferred path: use the callback snapshotted for this XHR when it was
+    // dispatched, avoiding cross-request callback clobbering.
+    if (perRequestCallback) {
+      perRequestCallback(transportWithData)
+      return
+    }
+    // Fallback to legacy single-slot field for any caller that still goes
+    // through setRecvBuffer without a snapshot.
+    if (this._responseCallback) {
+      const responseCallback = this._responseCallback
+      this._responseCallback = null
+      responseCallback(transportWithData)
+      return
+    }
+    // Last resort: keep thrift's decoder path available for orphan responses,
+    // even though the queued callback path should handle normal responses.
+    this.__decodeCallback(transportWithData)
+  })(thing)
+}
+
+CustomXHRConnection.prototype.flush = function () {
+  if (this.url === undefined || this.url === "") {
+    return this.send_buf
+  }
+
+  // Snapshot this request's callback at dispatch so concurrent XHR completion
+  // cannot use the wrong recv callback.
+  let perRequestCallback = null
+  if (Array.isArray(this._responseCallbacks) && this._responseCallbacks.length) {
+    perRequestCallback = this._responseCallbacks.shift()
+    // Keep the legacy single-slot callback aligned with the queue head.
+    this._responseCallback = this._responseCallbacks[0] || null
+  } else if (this._responseCallback) {
+    perRequestCallback = this._responseCallback
+    this._responseCallback = null
+  }
+
+  const xreq = this.getXmlHttpRequestObject()
+  const requestContentType = this.headers["Content-Type"]
+  const isBinaryRequest = isBinaryThriftContentType(requestContentType)
+
+  if (isBinaryRequest) {
+    xreq.responseType = "arraybuffer"
+    xreq.overrideMimeType("application/octet-stream")
+  } else {
+    xreq.overrideMimeType("application/json")
+  }
+
+  xreq.onreadystatechange = () => {
+    if (xreq.readyState !== 4) {
+      return
+    }
+
+    const responseContentType = xreq.getResponseHeader("Content-Type")
+    const isBinaryResponse =
+      isBinaryRequest || isBinaryThriftContentType(responseContentType)
+    const responseBody = isBinaryResponse ? xreq.response : xreq.responseText
+
+    if (xreq.status === 200) {
+      this.setRecvBuffer(responseBody, perRequestCallback)
+    }
+  }
+
+  xreq.ontimeout = (error) => {
+    this.emit("error", error)
+  }
+  xreq.onerror = (error) => {
+    this.emit("error", error)
+  }
+
+  xreq.open("POST", this.url, true)
+  if (this.options.timeout) {
+    xreq.timeout = this.options.timeout
+  }
+
+  Object.keys(this.headers).forEach((headerKey) => {
+    xreq.setRequestHeader(headerKey, this.headers[headerKey])
+  })
+
+  xreq.send(this.send_buf)
+}
+
+CustomXHRConnection.prototype.__decodeCallback = function (transportWithData) {
+  const proto = new this.protocol(transportWithData)
+  try {
+    while (true) {
+      const header = proto.readMessageBegin()
+      const dummySeqid = header.rseqid * -1
+      let client = this.client
+      const serviceName = this.seqId2Service[header.rseqid]
+
+      if (serviceName) {
+        client = this.client[serviceName]
+        delete this.seqId2Service[header.rseqid]
+      }
+
+      client._reqs[dummySeqid] = (err, success) => {
+        transportWithData.commitPosition()
+        const clientCallback = client._reqs[header.rseqid]
+        delete client._reqs[header.rseqid]
+        if (clientCallback) {
+          clientCallback(err, success)
+        }
+      }
+
+      if (client[`recv_${header.fname}`]) {
+        try {
+          client[`recv_${header.fname}`](proto, header.mtype, dummySeqid)
+        } catch (error) {
+          throw error
+        }
+      } else {
+        delete client._reqs[dummySeqid]
+        const error = new Thrift.TApplicationException(
+          Thrift.TApplicationExceptionType.WRONG_METHOD_NAME,
+          "Received a response to an unknown RPC function"
+        )
+        this.emit("error", error)
+      }
+    }
+  } catch (error) {
+    if (
+      error instanceof InputBufferUnderrunError ||
+      error?.name === "InputBufferUnderrunError"
+    ) {
+      transportWithData.rollbackPosition()
+    } else {
+      throw error
+    }
+  }
+}
+
+// Preserve old connector behavior by coercing non-Buffer values before writing
+// string fields such as nonce.
 function CustomTJSONProtocol(...args) {
   TJSONProtocol.apply(this, args)
 }
@@ -102,13 +290,7 @@ CustomTJSONProtocol.prototype.writeString = function (arg) {
   return TJSONProtocol.prototype.writeString.call(this, arg)
 }
 
-// Additionally, the browser version of connector relied on thrift's old
-// behavior of returning a Number for a 64-bit int. Technically, javascript
-// does not have 64-bits of precision in a Number, so this can end up giving
-// incorrect results.
-//
-// Lastly, the browser version relied on thrift returning a string from a
-// binary type.
+// Preserve browser connector compatibility for thrift I64 and binary reads.
 if (process.env.BROWSER) {
   CustomTJSONProtocol.prototype.readI64 = function () {
     const n = TJSONProtocol.prototype.readI64.call(this)
@@ -120,8 +302,7 @@ if (process.env.BROWSER) {
   }
 }
 
-// Custom version of the binary protocol to override writeString, readI64, and
-// readBinary as above.
+// Binary protocol with the same connector compatibility overrides as JSON.
 function CustomBinaryProtocol(...args) {
   TBinaryProtocol.apply(this, args)
 }
@@ -170,7 +351,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    client = createClient(MapDThrift, connection)
+    client = createClient(HeavyClient, connection)
   } else {
     connection = new CustomXHRConnection(hostname, port, {
       transport: TBufferedTransport,
@@ -183,7 +364,7 @@ function buildClient(url, useBinaryProtocol) {
       },
       https: protocol === "https:"
     })
-    client = createXHRClient(MapDThrift, connection)
+    client = createXHRClient(HeavyClient, connection)
   }
   return { client, connection }
 }
@@ -322,40 +503,39 @@ export class DbCon {
         this.events.emit(this.EVENT_NAMES.METHOD_CALLED, methodName)
       }
 
-      if (overClients === this.overSingleClient) {
-        return new Promise((resolve, reject) => {
+      const callClient = (client, index) =>
+        new Promise((resolve, reject) => {
           const requestId = pushid()
-          this.addPendingRequest(0, requestId, { resolve, reject })
-          return this._client[0][methodName]
-            .apply(this._client[0], [this._sessionId[0]].concat(processedArgs))
-            .then((res) => {
-              delete this._pendingRequests[0][requestId]
-              return resolve(res)
-            })
-            .catch((err) => {
-              delete this._pendingRequests[0][requestId]
-              return reject(err)
-            })
+          this.addPendingRequest(index, requestId, { resolve, reject })
+          const done = (result) => {
+            delete this._pendingRequests[index][requestId]
+            if (
+              result instanceof Error ||
+              result?.name?.includes("Exception") ||
+              result?.error_msg
+            ) {
+              reject(result)
+            } else {
+              resolve(result)
+            }
+          }
+
+          try {
+            client[methodName].apply(
+              client,
+              [this._sessionId[index]].concat(processedArgs, done)
+            )
+          } catch (error) {
+            delete this._pendingRequests[index][requestId]
+            reject(error)
+          }
         })
+
+      if (overClients === this.overSingleClient) {
+        return callClient(this._client[0], 0)
       } else {
         return Promise.all(
-          this._client.map(
-            (client, index) =>
-              new Promise((resolve, reject) => {
-                const requestId = pushid()
-                this.addPendingRequest(index, requestId, { resolve, reject })
-                return client[methodName]
-                  .apply(client, [this._sessionId[index]].concat(processedArgs))
-                  .then((res) => {
-                    delete this._pendingRequests[index][requestId]
-                    return resolve(res)
-                  })
-                  .catch((err) => {
-                    delete this._pendingRequests[index][requestId]
-                    return reject(err)
-                  })
-              })
-          )
+          this._client.map((client, index) => callClient(client, index))
         )
       }
     } else {
@@ -1606,13 +1786,7 @@ export class DbCon {
   getCompletionHints = this.callbackify("getCompletionHintsAsync", 2)
 
   // TODO: replace all these build* methods w/ a singular method that will map each type object
-  buildTFileTypeMap = () => {
-    for (const key in TFileType) {
-      if (TFileType.hasOwnProperty(key)) {
-        this.TFileTypeMap[TFileType[key]] = key
-      }
-    }
-  }
+  buildTFileTypeMap = () => {}
 
   buildTImportHeaderRowMap = () => {
     for (const key in TImportHeaderRow) {
@@ -1914,41 +2088,44 @@ export class DbCon {
       const columnFormat = true // BOOL
       const curNonce = (this._nonce++).toString()
 
-      return this._client[this._lastRenderCon]
-        .get_result_row_for_pixel(
-          this._sessionId[this._lastRenderCon],
+      const conIndex = this._lastRenderCon
+      return promisifyThriftCall(
+        this._client[conIndex],
+        "get_result_row_for_pixel",
+        [
+          this._sessionId[conIndex],
           widgetId,
           pixel,
           tableColNamesMap,
           columnFormat,
           pixelRadius,
           curNonce
+        ]
+      ).then((results) => {
+        results = Array.isArray(results) ? results.pixel_rows : [results]
+
+        const processResultsOptions = {
+          isImage: false,
+          eliminateNullRows: false,
+          query: "pixel request",
+          queryId: -2
+        }
+        const processor = processQueryResults(
+          this._logging,
+          this.updateQueryTimes
         )
-        .then((results) => {
-          results = Array.isArray(results) ? results.pixel_rows : [results]
 
-          const processResultsOptions = {
-            isImage: false,
-            eliminateNullRows: false,
-            query: "pixel request",
-            queryId: -2
-          }
-          const processor = processQueryResults(
-            this._logging,
-            this.updateQueryTimes
+        const numPixels = results.length
+        for (let p = 0; p < numPixels; p++) {
+          results[p].row_set = processor(
+            processResultsOptions,
+            this._datumEnum,
+            results[p]
           )
+        }
 
-          const numPixels = results.length
-          for (let p = 0; p < numPixels; p++) {
-            results[p].row_set = processor(
-              processResultsOptions,
-              this._datumEnum,
-              results[p]
-            )
-          }
-
-          return results
-        })
+        return results
+      })
     }
   )
 
@@ -2264,7 +2441,11 @@ export class DbCon {
       client = c.client
       sessionId = ""
     }
-    return client.set_license_key(sessionId, key, this._nonce++)
+    return promisifyThriftCall(client, "set_license_key", [
+      sessionId,
+      key,
+      this._nonce++
+    ])
   }
 
   /**
@@ -2277,10 +2458,14 @@ export class DbCon {
     let sessionId = this._sessionId && this._sessionId[0]
     if (!client) {
       const url = `${protocol}://${host}:${port}`
-      client = buildClient(url, this._useBinaryProtocol)
+      const c = buildClient(url, this._useBinaryProtocol)
+      client = c.client
       sessionId = ""
     }
-    return client.get_license_claims(sessionId, this._nonce++)
+    return promisifyThriftCall(client, "get_license_claims", [
+      sessionId,
+      this._nonce++
+    ])
   }
 
   isTimeoutError(result) {

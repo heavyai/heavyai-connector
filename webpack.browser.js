@@ -9,7 +9,8 @@ module.exports = {
   plugins: [
     new webpack.ProgressPlugin(),
     new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"]
+      Buffer: ["buffer", "Buffer"],
+      Thrift: ["thrift", "Thrift"]
     }),
     new webpack.DefinePlugin({
       "process.env": {
@@ -25,6 +26,13 @@ module.exports = {
           loader: "babel-loader"
         },
         include: /src/
+      },
+      {
+        // Convert Thrift --gen js browser-globals output to named CJS exports
+        // so webpack can resolve `import { TSourceType }` and `export * from`.
+        test: /\.js$/,
+        use: require.resolve("./scripts/thrift-globals-to-exports-loader.js"),
+        include: /thrift/
       },
       {
         test: /\.mjs$/,

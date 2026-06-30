@@ -2,9 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const path = require("path")
+const webpack = require("webpack")
 
 module.exports = {
   entry: ["./src/heavy-con-es6.js"],
+  plugins: [
+    new webpack.ProvidePlugin({
+      Thrift: ["thrift", "Thrift"]
+    })
+  ],
   module: {
     rules: [
       {
@@ -12,9 +18,14 @@ module.exports = {
         use: "babel-loader",
         include: /src/
       },
-      // The following two objs fix an issue with Apache-Arrow
-      // As the package includes both .mjs and .js outputs, webpack errors
-      // without this.
+      {
+        // Convert Thrift --gen js browser-globals output to named CJS exports.
+        test: /\.js$/,
+        use: require.resolve("./scripts/thrift-globals-to-exports-loader.js"),
+        include: /thrift/
+      },
+      // Apache Arrow ships both .mjs and .js outputs; webpack needs this
+      // resolution relaxation to bundle it cleanly.
       {
         test: /\.m?js/,
         resolve: {
