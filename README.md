@@ -1,6 +1,6 @@
-# HEAVY.AI Connector
+# HeavyAI Connector
 
-A JavaScript library for connecting to an HEAVY.AI GPU database and running
+A JavaScript library for connecting to a HeavyAI GPU database and running
 queries.
 
 ![alt text](https://cloud.githubusercontent.com/assets/2932405/25765834/e18ae5c2-31a3-11e7-9afc-989dcf42941c.png "Connector Example with a d3 rendered chart")
