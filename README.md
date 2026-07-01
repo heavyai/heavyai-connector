@@ -1,6 +1,6 @@
-# HEAVY.AI Connector
+# HeavyAI Connector
 
-A JavaScript library for connecting to an HEAVY.AI GPU database and running
+A JavaScript library for connecting to a HeavyAI GPU database and running
 queries.
 
 ![alt text](https://cloud.githubusercontent.com/assets/2932405/25765834/e18ae5c2-31a3-11e7-9afc-989dcf42941c.png "Connector Example with a d3 rendered chart")
@@ -70,7 +70,7 @@ Command | Description
 
 # Third-party vendor licenses
 
-A full list of third-party npm packages and their licenses is maintained in [`license/THIRD_PARTY_LICENSES.md`](license/THIRD_PARTY_LICENSES.md). To regenerate it after dependency changes, run:
+A full list of third-party npm packages and their licenses is maintained in [`third_party_licenses/THIRD_PARTY_LICENSES.md`](third_party_licenses/THIRD_PARTY_LICENSES.md). To regenerate it after dependency changes, run:
 
 ```sh
 npx github:heavyai/js-license-list
@@ -86,3 +86,5 @@ License descriptions and public license URLs are maintained in licenses.json as 
 
 Interested in contributing? We'd love for you to help! Check out
 [Contributing.MD](.github/CONTRIBUTING.md)
+
+*Variables and function names are used as convention and do not reference any commercial product.*
