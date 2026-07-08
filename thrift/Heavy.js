@@ -9254,7 +9254,6 @@ Heavy_create_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.row_desc = null;
-  this.create_params = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -9264,9 +9263,6 @@ Heavy_create_table_args = function(args) {
     }
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
-    }
-    if (args.create_params !== undefined && args.create_params !== null) {
-      this.create_params = new TCreateParams(args.create_params);
     }
   }
 };
@@ -9311,14 +9307,6 @@ Heavy_create_table_args.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 4:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.create_params = new TCreateParams();
-        this.create_params[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -9350,11 +9338,6 @@ Heavy_create_table_args.prototype[Symbol.for("write")] = function(output) {
       }
     }
     output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.create_params !== null && this.create_params !== undefined) {
-    output.writeFieldBegin('create_params', Thrift.Type.STRUCT, 4);
-    this.create_params[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -9574,7 +9557,6 @@ Heavy_import_geo_table_args = function(args) {
   this.file_name = null;
   this.copy_params = null;
   this.row_desc = null;
-  this.create_params = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -9590,9 +9572,6 @@ Heavy_import_geo_table_args = function(args) {
     }
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
-    }
-    if (args.create_params !== undefined && args.create_params !== null) {
-      this.create_params = new TCreateParams(args.create_params);
     }
   }
 };
@@ -9652,14 +9631,6 @@ Heavy_import_geo_table_args.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 6:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.create_params = new TCreateParams();
-        this.create_params[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -9701,11 +9672,6 @@ Heavy_import_geo_table_args.prototype[Symbol.for("write")] = function(output) {
       }
     }
     output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.create_params !== null && this.create_params !== undefined) {
-    output.writeFieldBegin('create_params', Thrift.Type.STRUCT, 6);
-    this.create_params[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -17102,19 +17068,18 @@ HeavyClient.prototype.recv_detect_column_types = function() {
   throw 'detect_column_types failed: unknown result';
 };
 
-HeavyClient.prototype.create_table = function(session, table_name, row_desc, create_params, callback) {
-  this.send_create_table(session, table_name, row_desc, create_params, callback); 
+HeavyClient.prototype.create_table = function(session, table_name, row_desc, callback) {
+  this.send_create_table(session, table_name, row_desc, callback); 
   if (!callback) {
   this.recv_create_table();
   }
 };
 
-HeavyClient.prototype.send_create_table = function(session, table_name, row_desc, create_params, callback) {
+HeavyClient.prototype.send_create_table = function(session, table_name, row_desc, callback) {
   var params = {
     session: session,
     table_name: table_name,
-    row_desc: row_desc,
-    create_params: create_params
+    row_desc: row_desc
   };
   var args = new Heavy_create_table_args(params);
   try {
@@ -17224,21 +17189,20 @@ HeavyClient.prototype.recv_import_table = function() {
   return;
 };
 
-HeavyClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
-  this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, create_params, callback); 
+HeavyClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
+  this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, callback); 
   if (!callback) {
   this.recv_import_geo_table();
   }
 };
 
-HeavyClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
+HeavyClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
   var params = {
     session: session,
     table_name: table_name,
     file_name: file_name,
     copy_params: copy_params,
-    row_desc: row_desc,
-    create_params: create_params
+    row_desc: row_desc
   };
   var args = new Heavy_import_geo_table_args(params);
   try {
