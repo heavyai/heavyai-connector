@@ -13987,7 +13987,6 @@ var TDataFrame = globalThis.TDataFrame;
 var TDBInfo = globalThis.TDBInfo;
 var TDBException = globalThis.TDBException;
 var TCopyParams = globalThis.TCopyParams;
-var TCreateParams = globalThis.TCreateParams;
 var TDetectResult = globalThis.TDetectResult;
 var TImportStatus = globalThis.TImportStatus;
 var TFrontendView = globalThis.TFrontendView;
@@ -23287,7 +23286,6 @@ Heavy_create_table_args = function(args) {
   this.session = null;
   this.table_name = null;
   this.row_desc = null;
-  this.create_params = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -23297,9 +23295,6 @@ Heavy_create_table_args = function(args) {
     }
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
-    }
-    if (args.create_params !== undefined && args.create_params !== null) {
-      this.create_params = new TCreateParams(args.create_params);
     }
   }
 };
@@ -23344,14 +23339,6 @@ Heavy_create_table_args.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 4:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.create_params = new TCreateParams();
-        this.create_params[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -23383,11 +23370,6 @@ Heavy_create_table_args.prototype[Symbol.for("write")] = function(output) {
       }
     }
     output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.create_params !== null && this.create_params !== undefined) {
-    output.writeFieldBegin('create_params', Thrift.Type.STRUCT, 4);
-    this.create_params[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -23607,7 +23589,6 @@ Heavy_import_geo_table_args = function(args) {
   this.file_name = null;
   this.copy_params = null;
   this.row_desc = null;
-  this.create_params = null;
   if (args) {
     if (args.session !== undefined && args.session !== null) {
       this.session = args.session;
@@ -23623,9 +23604,6 @@ Heavy_import_geo_table_args = function(args) {
     }
     if (args.row_desc !== undefined && args.row_desc !== null) {
       this.row_desc = Thrift.copyList(args.row_desc, [TColumnType]);
-    }
-    if (args.create_params !== undefined && args.create_params !== null) {
-      this.create_params = new TCreateParams(args.create_params);
     }
   }
 };
@@ -23685,14 +23663,6 @@ Heavy_import_geo_table_args.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 6:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.create_params = new TCreateParams();
-        this.create_params[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -23734,11 +23704,6 @@ Heavy_import_geo_table_args.prototype[Symbol.for("write")] = function(output) {
       }
     }
     output.writeListEnd();
-    output.writeFieldEnd();
-  }
-  if (this.create_params !== null && this.create_params !== undefined) {
-    output.writeFieldBegin('create_params', Thrift.Type.STRUCT, 6);
-    this.create_params[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -31135,19 +31100,18 @@ HeavyClient.prototype.recv_detect_column_types = function() {
   throw 'detect_column_types failed: unknown result';
 };
 
-HeavyClient.prototype.create_table = function(session, table_name, row_desc, create_params, callback) {
-  this.send_create_table(session, table_name, row_desc, create_params, callback); 
+HeavyClient.prototype.create_table = function(session, table_name, row_desc, callback) {
+  this.send_create_table(session, table_name, row_desc, callback); 
   if (!callback) {
   this.recv_create_table();
   }
 };
 
-HeavyClient.prototype.send_create_table = function(session, table_name, row_desc, create_params, callback) {
+HeavyClient.prototype.send_create_table = function(session, table_name, row_desc, callback) {
   var params = {
     session: session,
     table_name: table_name,
-    row_desc: row_desc,
-    create_params: create_params
+    row_desc: row_desc
   };
   var args = new Heavy_create_table_args(params);
   try {
@@ -31257,21 +31221,20 @@ HeavyClient.prototype.recv_import_table = function() {
   return;
 };
 
-HeavyClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
-  this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, create_params, callback); 
+HeavyClient.prototype.import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
+  this.send_import_geo_table(session, table_name, file_name, copy_params, row_desc, callback); 
   if (!callback) {
   this.recv_import_geo_table();
   }
 };
 
-HeavyClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, create_params, callback) {
+HeavyClient.prototype.send_import_geo_table = function(session, table_name, file_name, copy_params, row_desc, callback) {
   var params = {
     session: session,
     table_name: table_name,
     file_name: file_name,
     copy_params: copy_params,
-    row_desc: row_desc,
-    create_params: create_params
+    row_desc: row_desc
   };
   var args = new Heavy_import_geo_table_args(params);
   try {
@@ -33151,7 +33114,6 @@ var TDataFrame = globalThis.TDataFrame;
 var TDBInfo = globalThis.TDBInfo;
 var TDBException = globalThis.TDBException;
 var TCopyParams = globalThis.TCopyParams;
-var TCreateParams = globalThis.TCreateParams;
 var TDetectResult = globalThis.TDetectResult;
 var TImportStatus = globalThis.TImportStatus;
 var TFrontendView = globalThis.TFrontendView;
@@ -33723,7 +33685,6 @@ var TDataFrame = globalThis.TDataFrame;
 var TDBInfo = globalThis.TDBInfo;
 var TDBException = globalThis.TDBException;
 var TCopyParams = globalThis.TCopyParams;
-var TCreateParams = globalThis.TCreateParams;
 var TDetectResult = globalThis.TDetectResult;
 var TImportStatus = globalThis.TImportStatus;
 var TFrontendView = globalThis.TFrontendView;
@@ -34117,7 +34078,6 @@ var TDataFrame = globalThis.TDataFrame;
 var TDBInfo = globalThis.TDBInfo;
 var TDBException = globalThis.TDBException;
 var TCopyParams = globalThis.TCopyParams;
-var TCreateParams = globalThis.TCreateParams;
 var TDetectResult = globalThis.TDetectResult;
 var TImportStatus = globalThis.TImportStatus;
 var TFrontendView = globalThis.TFrontendView;
@@ -34877,7 +34837,6 @@ var TDataFrame = globalThis.TDataFrame;
 var TDBInfo = globalThis.TDBInfo;
 var TDBException = globalThis.TDBException;
 var TCopyParams = globalThis.TCopyParams;
-var TCreateParams = globalThis.TCreateParams;
 var TDetectResult = globalThis.TDetectResult;
 var TImportStatus = globalThis.TImportStatus;
 var TFrontendView = globalThis.TFrontendView;
@@ -34947,7 +34906,6 @@ TSourceType = {
 };
 TPartitionDetail = {
   'DEFAULT' : 0,
-  'REPLICATED' : 1,
   'SHARDED' : 2,
   'OTHER' : 3
 };
@@ -37095,56 +37053,6 @@ TCopyParams.prototype[Symbol.for("write")] = function(output) {
   return;
 };
 
-TCreateParams = function(args) {
-  this.is_replicated = null;
-  if (args) {
-    if (args.is_replicated !== undefined && args.is_replicated !== null) {
-      this.is_replicated = args.is_replicated;
-    }
-  }
-};
-TCreateParams.prototype = {};
-TCreateParams.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.BOOL) {
-        this.is_replicated = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 0:
-        input.skip(ftype);
-        break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TCreateParams.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('TCreateParams');
-  if (this.is_replicated !== null && this.is_replicated !== undefined) {
-    output.writeFieldBegin('is_replicated', Thrift.Type.BOOL, 1);
-    output.writeBool(this.is_replicated);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
 TDetectResult = function(args) {
   this.row_set = null;
   this.copy_params = null;
@@ -38549,7 +38457,6 @@ TTableMeta = function(args) {
   this.table_name = null;
   this.num_cols = null;
   this.is_view = null;
-  this.is_replicated = null;
   this.shard_count = null;
   this.max_rows = null;
   this.table_id = null;
@@ -38565,9 +38472,6 @@ TTableMeta = function(args) {
     }
     if (args.is_view !== undefined && args.is_view !== null) {
       this.is_view = args.is_view;
-    }
-    if (args.is_replicated !== undefined && args.is_replicated !== null) {
-      this.is_replicated = args.is_replicated;
     }
     if (args.shard_count !== undefined && args.shard_count !== null) {
       this.shard_count = args.shard_count;
@@ -38617,13 +38521,6 @@ TTableMeta.prototype[Symbol.for("read")] = function(input) {
       case 4:
       if (ftype == Thrift.Type.BOOL) {
         this.is_view = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.BOOL) {
-        this.is_replicated = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -38711,11 +38608,6 @@ TTableMeta.prototype[Symbol.for("write")] = function(output) {
   if (this.is_view !== null && this.is_view !== undefined) {
     output.writeFieldBegin('is_view', Thrift.Type.BOOL, 4);
     output.writeBool(this.is_view);
-    output.writeFieldEnd();
-  }
-  if (this.is_replicated !== null && this.is_replicated !== undefined) {
-    output.writeFieldBegin('is_replicated', Thrift.Type.BOOL, 5);
-    output.writeBool(this.is_replicated);
     output.writeFieldEnd();
   }
   if (this.shard_count !== null && this.shard_count !== undefined) {
@@ -41061,7 +40953,6 @@ if (typeof TDataFrame !== 'undefined') { globalThis.TDataFrame = TDataFrame; exp
 if (typeof TDBInfo !== 'undefined') { globalThis.TDBInfo = TDBInfo; exports.hm = TDBInfo; }
 if (typeof TDBException !== 'undefined') { globalThis.TDBException = TDBException; exports.U2 = TDBException; }
 if (typeof TCopyParams !== 'undefined') { globalThis.TCopyParams = TCopyParams; exports.op = TCopyParams; }
-if (typeof TCreateParams !== 'undefined') { globalThis.TCreateParams = TCreateParams; exports.RW = TCreateParams; }
 if (typeof TDetectResult !== 'undefined') { globalThis.TDetectResult = TDetectResult; exports.t_ = TDetectResult; }
 if (typeof TImportStatus !== 'undefined') { globalThis.TImportStatus = TImportStatus; exports.ee = TImportStatus; }
 if (typeof TFrontendView !== 'undefined') { globalThis.TFrontendView = TFrontendView; exports.q9 = TFrontendView; }
@@ -41323,7 +41214,6 @@ var TDataFrame = globalThis.TDataFrame;
 var TDBInfo = globalThis.TDBInfo;
 var TDBException = globalThis.TDBException;
 var TCopyParams = globalThis.TCopyParams;
-var TCreateParams = globalThis.TCreateParams;
 var TDetectResult = globalThis.TDetectResult;
 var TImportStatus = globalThis.TImportStatus;
 var TFrontendView = globalThis.TFrontendView;
@@ -43083,7 +42973,6 @@ __webpack_require__.d(__webpack_exports__, {
   TCountDistinctImplType: () => (/* reexport */ serialized_result_set_types/* TCountDistinctImplType */.mO),
   TCountDistinctSet: () => (/* reexport */ serialized_result_set_types/* TCountDistinctSet */.wc),
   TCountDistinctSetStorage: () => (/* reexport */ serialized_result_set_types/* TCountDistinctSetStorage */.rS),
-  TCreateParams: () => (/* reexport */ heavy_types/* TCreateParams */.RW),
   TCustomExpression: () => (/* reexport */ heavy_types/* TCustomExpression */.k6),
   TDBException: () => (/* reexport */ heavy_types/* TDBException */.U2),
   TDBInfo: () => (/* reexport */ heavy_types/* TDBInfo */.hm),
@@ -43941,15 +43830,15 @@ var DbCon = /*#__PURE__*/function () {
         for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
           args[_key5] = arguments[_key5];
         }
-        if (args.length === arity + 1) {
+        if (args.length >= arity && typeof args[args.length - 1] === "function") {
           callback = args.pop();
         }
         var promise = _this4[method].apply(_this4, args);
         if (callback) {
-          promise["catch"](function (err) {
-            return callback(err);
-          }).then(function (res) {
+          promise.then(function (res) {
             return callback(null, res);
+          })["catch"](function (err) {
+            return callback(err);
           });
         }
         return promise;
@@ -44947,27 +44836,21 @@ var DbCon = /*#__PURE__*/function () {
      * Create a table and persist it to the backend.
      * @param {String} tableName The name of the new table.
      * @param {Array<TColumnType>} rowDescObj Fields in the new table.
-     * @param {TCreateParams} createParams Properties to apply to the new table (e.g. replicated)
-     * @param {Object} options
-     * @param {boolean} options.useUnmodifiedRowDesc By default, createTableAsync calls createTable using properties from
-     * both rowDescObj and the descriptor last returned by detectColumnTypesAsync. If true, this simply calls createTable
-     * with the passed rowDescObj, removing the dependence on the previous detectColumnTypesAsync call
      * @return {Promise.<undefined>} Generates an error if unsuccessful, or returns undefined if successful.
      *
      * @example <caption>Create a new table:</caption>
      *
-     *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
+     *  con.createTable('mynewtable', [TColumnType, TColumnType, ...]).then(res => console.log(res));
      *  // undefined
      */
     _defineProperty(this, "createTableAsync", this.handleErrors(this.wrapThrift("create_table", this.overAllClients, function (_ref12) {
-      var _ref13 = _slicedToArray(_ref12, 4),
+      var _ref13 = _slicedToArray(_ref12, 3),
         tableName = _ref13[0],
         rowDescObj = _ref13[1],
-        createParams = _ref13[2],
-        options = _ref13[3];
-      return [tableName, options !== null && options !== void 0 && options.useUnmodifiedRowDesc ? rowDescObj : mutateThriftRowDesc(rowDescObj, _this4.importerRowDesc), createParams];
+        options = _ref13[2];
+      return [tableName, options !== null && options !== void 0 && options.useUnmodifiedRowDesc ? rowDescObj : mutateThriftRowDesc(rowDescObj, _this4.importerRowDesc)];
     })));
-    _defineProperty(this, "createTable", this.callbackify("createTableAsync", 4));
+    _defineProperty(this, "createTable", this.callbackify("createTableAsync", 3));
     /**
      * Import a delimited table from a file.
      * @param {String} tableName The name of the new table.
@@ -44995,7 +44878,7 @@ var DbCon = /*#__PURE__*/function () {
         fileName = _ref17[1],
         copyParams = _ref17[2],
         rowDescObj = _ref17[3];
-      return [tableName, fileName, convertObjectToThriftCopyParams(copyParams), mutateThriftRowDesc(rowDescObj, _this4.importerRowDesc), new heavy_types/* TCreateParams */.RW()];
+      return [tableName, fileName, convertObjectToThriftCopyParams(copyParams), mutateThriftRowDesc(rowDescObj, _this4.importerRowDesc)];
     })));
     /**
      * Use for backend rendering. This method fetches a PNG image that is a

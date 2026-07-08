@@ -12,7 +12,6 @@ import {
 } from "../thrift/common_types.js"
 import {
   TArrowTransport,
-  TCreateParams,
   TDashboardPermissions,
   TDatabasePermissions,
   TDBObjectPermissions,
@@ -480,13 +479,16 @@ export class DbCon {
   // for backward compatibility
   callbackify = (method, arity) => (...args) => {
     let callback = null
-    if (args.length === arity + 1) {
+    if (
+      args.length >= arity &&
+      typeof args[args.length - 1] === "function"
+    ) {
       callback = args.pop()
     }
 
     const promise = this[method].apply(this, args)
     if (callback) {
-      promise.catch((err) => callback(err)).then((res) => callback(null, res))
+      promise.then((res) => callback(null, res)).catch((err) => callback(err))
     }
     return promise
   }
@@ -1902,33 +1904,27 @@ export class DbCon {
    * Create a table and persist it to the backend.
    * @param {String} tableName The name of the new table.
    * @param {Array<TColumnType>} rowDescObj Fields in the new table.
-   * @param {TCreateParams} createParams Properties to apply to the new table (e.g. replicated)
-   * @param {Object} options
-   * @param {boolean} options.useUnmodifiedRowDesc By default, createTableAsync calls createTable using properties from
-   * both rowDescObj and the descriptor last returned by detectColumnTypesAsync. If true, this simply calls createTable
-   * with the passed rowDescObj, removing the dependence on the previous detectColumnTypesAsync call
    * @return {Promise.<undefined>} Generates an error if unsuccessful, or returns undefined if successful.
    *
    * @example <caption>Create a new table:</caption>
    *
-   *  con.createTable('mynewtable', [TColumnType, TColumnType, ...], 0).then(res => console.log(res));
+   *  con.createTable('mynewtable', [TColumnType, TColumnType, ...]).then(res => console.log(res));
    *  // undefined
    */
   createTableAsync = this.handleErrors(
     this.wrapThrift(
       "create_table",
       this.overAllClients,
-      ([tableName, rowDescObj, createParams, options]) => [
+      ([tableName, rowDescObj, options]) => [
         tableName,
         options?.useUnmodifiedRowDesc
           ? rowDescObj
-          : helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
-        createParams
+          : helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
       ]
     )
   )
 
-  createTable = this.callbackify("createTableAsync", 4)
+  createTable = this.callbackify("createTableAsync", 3)
 
   /**
    * Import a delimited table from a file.
@@ -1964,8 +1960,7 @@ export class DbCon {
         tableName,
         fileName,
         helpers.convertObjectToThriftCopyParams(copyParams),
-        helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc),
-        new TCreateParams()
+        helpers.mutateThriftRowDesc(rowDescObj, this.importerRowDesc)
       ]
     )
   )
