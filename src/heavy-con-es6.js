@@ -36,7 +36,7 @@ import {
 
 export { Thrift } from "thrift"
 
-// Thrift 0.23 generated clients need protocol-backed input/output, and shared
+// Thrift 0.24 generated clients need protocol-backed input/output, and shared
 // connections need queued recv callbacks for concurrent requests.
 function createClient(ServiceClient, connection) {
   if (ServiceClient.Client) {
@@ -81,7 +81,7 @@ function createClient(ServiceClient, connection) {
 
 const createXHRClient = createClient
 
-// Bridge callback-only Thrift 0.23 methods for older direct call sites that
+// Bridge callback-only Thrift 0.24 methods for older direct call sites that
 // still expect promise-returning generated client methods.
 const promisifyThriftCall = (client, methodName, args) =>
   new Promise((resolve, reject) => {
