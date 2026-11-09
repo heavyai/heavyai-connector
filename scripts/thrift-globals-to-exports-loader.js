@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-// Adapts Thrift 0.23 browser-globals output into webpack-friendly exports and
+// Adapts Thrift 0.25 browser-globals output into webpack-friendly exports and
 // strips scalar `.value` reads that no longer match the JS runtime.
 module.exports = function thriftGlobalsToExportsLoader(source) {
   // Already has module.exports - leave it alone (handles --gen js:node output)
@@ -9,7 +9,7 @@ module.exports = function thriftGlobalsToExportsLoader(source) {
     return source
   }
 
-  // Scalar protocol reads already return raw values in thrift 0.23.
+  // Scalar protocol reads already return raw values in Thrift 0.25.
   // eslint-disable-next-line no-param-reassign
   source = source.replace(
     /(\.read(?:Binary|Bool|Double|I16|I32|I64|String|Uuid)\(\))\.value\b/g,
